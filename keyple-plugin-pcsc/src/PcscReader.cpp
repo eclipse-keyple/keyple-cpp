@@ -12,7 +12,7 @@
  * \brief Implements the PcscReader class
  */
 
-#include "KplSdkConfig.hpp"
+#include "PlatformConfig.hpp"
 #include <cstring>
 #include <iostream>
 #include <iomanip>

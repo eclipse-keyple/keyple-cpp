@@ -12,7 +12,7 @@
  * \brief Implements the se proxy service class
  */
 
-#include "KplSdkConfig.hpp"
+#include "PlatformConfig.hpp"
 #include "SeProxyService.hpp"
 #include "ProxyReader.hpp"
 #include "SeRequest.hpp"

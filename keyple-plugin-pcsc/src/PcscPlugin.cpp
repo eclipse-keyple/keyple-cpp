@@ -13,7 +13,7 @@
  * \brief Implements the PcscPlugin class
  */
 
-#include "KplSdkConfig.hpp"
+#include "PlatformConfig.hpp"
 #include <iostream>
 #include <winscard.h>
 #include "ReadersPlugin.hpp"

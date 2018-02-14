@@ -9,7 +9,7 @@
 // TestPlugin.cpp : Defines the entry point for the console application.
 //
 
-#include "KplSdkConfig.hpp"
+#include "PlatformConfig.hpp"
 #include <stdio.h>
 #include <string>
 #include <iostream>
