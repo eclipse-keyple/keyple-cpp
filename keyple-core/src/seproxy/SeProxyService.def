@@ -1,0 +1,9 @@
+; DLL export definition file
+
+LIBRARY												SeProxyService
+;DESCRIPTION										"SeProxyService module library"
+
+VERSION												1.00
+
+EXPORTS
+	CreateClass										@1
