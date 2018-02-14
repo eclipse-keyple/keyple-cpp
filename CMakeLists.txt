@@ -15,6 +15,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # add projects
-add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/keyple-core/src/seproxy )
-add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/keyple-plugin-pcsc/src/ )
-add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/keyple-example-pc/src/seproxy_testapplication ) 
+add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/keyple-core/ )
+add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/keyple-plugin-pcsc/ )
+add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/keyple-example-pc/ ) 
