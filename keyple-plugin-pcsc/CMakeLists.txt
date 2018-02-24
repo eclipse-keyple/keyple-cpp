@@ -30,10 +30,6 @@ IF(WIN32)
 ADD_DEFINITIONS(-DK_OS_KPL_PLATFORM=K_OS_KPL_PLATFORM_WIN32)
 ENDIF(WIN32)
 
-IF(APPLE)
-include_directories(/usr/local/opt/pcsc-lite/include)
-ENDIF(APPLE)
-
 # enable standard output log (debug)
 ADD_DEFINITIONS(-DSTANDARD_OUTPUT_LOG)
 
