@@ -23,6 +23,7 @@ jobs:
       - image: nnadeau/docker-doxygen
     steps:
       - checkout
+      - cd doc && doxygen
       - ./.circleci/doxygen.sh
 workflows:
   version: 2
