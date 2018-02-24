@@ -27,9 +27,9 @@ fi
 git config --global user.email "$GH_EMAIL" > /dev/null 2>&1
 git config --global user.name "$GH_NAME" > /dev/null 2>&1
 git init
-git remote add --fetch origin "$remote"
-
+git remote add origin "$remote"
 sed -i -e "s/git@github.com:calypsonet/https:\/\/${GITHUB_TOKEN}:x-oauth-basic@github.com\/calypsonet/" .git/config
+git fetch -v
 
 
 # switch into the the gh-pages branch
