@@ -5,6 +5,8 @@ jobs:
       - image: rikorose/gcc-cmake:gcc-7
     steps:
       - checkout
+      - run: apt-get update
+      - run: apt-get install libpcsclite-dev -y
       - run: cmake .
       - run: make
 
