@@ -9,9 +9,18 @@ jobs:
       - run: apt-get install libpcsclite-dev -y
       - run: cmake .
       - run: make
-
+  build_gcc_6:
+    docker:
+      - image: rikorose/gcc-cmake:gcc-6
+    steps:
+      - checkout
+      - run: apt-get update
+      - run: apt-get install libpcsclite-dev -y
+      - run: cmake .
+      - run: make
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build_gcc_7
+      - build_gcc_6
