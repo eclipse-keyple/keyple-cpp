@@ -29,3 +29,4 @@ workflows:
     jobs:
       - build_gcc_7
       - build_gcc_6
+      - doxygen
