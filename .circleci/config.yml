@@ -2,7 +2,7 @@ version: 2.0
 jobs:
   build_gcc_7:
     docker:
-      - image: rikorose/gcc-cmake:7
+      - image: rikorose/gcc-cmake:gcc-7
     steps:
       - checkout
       - run: cmake .
