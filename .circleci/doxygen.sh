@@ -1,5 +1,6 @@
 #!/bin/sh
-mkdir -p ~/artifacts
+mkdir -p ~/pages
 cd doc
 doxygen
-cp -a . ~/artifacts/doxygen
+cd ..
+cp -a doc ~/pages/doxygen
