@@ -23,8 +23,7 @@ jobs:
       - image: nnadeau/docker-doxygen
     steps:
       - checkout
-      - run: apk update
-      - run: apk add git
+      - run: apk update && apk add git ssh
       - run: .circleci/doxygen.sh
       - run: .circleci/push_gh_pages.sh
 workflows:
