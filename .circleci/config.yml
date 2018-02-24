@@ -18,6 +18,11 @@ jobs:
       - run: apt-get install libpcsclite-dev -y
       - run: cmake .
       - run: make
+  doxygen:
+    docker:
+      - image: nnadeau/docker-doxygen
+    steps:
+      - .circleci/doxygen.sh
 workflows:
   version: 2
   build_and_test:
