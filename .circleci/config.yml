@@ -24,6 +24,7 @@ jobs:
     steps:
       - checkout
       - run: .circleci/doxygen.sh
+      - run: .circleci/push_gh_pages.sh
 workflows:
   version: 2
   build_and_test:
