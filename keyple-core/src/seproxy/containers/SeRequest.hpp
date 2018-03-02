@@ -84,7 +84,7 @@ namespace keyple {
 			 * \brief @return whether or not to keep the channel open after exchanging the APDU requests with
 			 * the SE
 			 *
-			 * \return True if it succeeds, false if it fails.
+			 * \return True if channel need to be left open.
 			 */
 
 			bool askKeepChannelOpen() { return keepChannelOpen; }

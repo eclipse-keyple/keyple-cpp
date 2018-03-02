@@ -6,11 +6,11 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
-/*!
- * \file PcscReader.cpp.
- *
- * \brief Implements the PcscReader class
- */
+ /*!
+  * \file PcscReader.cpp.
+  *
+  * \brief Implements the PcscReader class
+  */
 
 #include "PlatformConfig.hpp"
 #include <cstring>
@@ -114,9 +114,9 @@ keyple::containers::SeResponse PcscReader::transmit(keyple::containers::SeReques
 			this->m_atr.clear();
 			/// Get the ATR buffer as attribute
 			if (SCardGetAttrib(this->m_card,
-							   SCARD_ATTR_ATR_STRING,
-							   (uint8_t*)&atr,
-							   &cbyte) == SCARD_S_SUCCESS)
+				SCARD_ATTR_ATR_STRING,
+				(uint8_t*)&atr,
+				&cbyte) == SCARD_S_SUCCESS)
 			{
 				/// Put response in ATR vector
 				this->m_atr.assign(atr, atr + cbyte);
@@ -131,6 +131,7 @@ keyple::containers::SeResponse PcscReader::transmit(keyple::containers::SeReques
 		}
 		/// We consider here that no channel is open since we just connect to the card
 		this->m_channel_openned = false;
+		this->m_fci.clear();
 	}
 
 	/// Handle channel opening
@@ -140,51 +141,34 @@ keyple::containers::SeResponse PcscReader::transmit(keyple::containers::SeReques
 		/// 
 		std::vector<uint8_t> aid = inSeApplicationRequest->getAidToSelect();
 		if (aid.size() > 0) {
-			/// Get the FCI executing application selection
-			std::vector<uint8_t> selectApplicationAPDU(5);
-			/// Build the selection application APDU
-			selectApplicationAPDU[0] = (uint8_t)0x00;
-			selectApplicationAPDU[1] = (uint8_t)0xA4;
-			selectApplicationAPDU[2] = (uint8_t)0x04;
-			selectApplicationAPDU[3] = (uint8_t)0x00;
-			selectApplicationAPDU[4] = (uint8_t)aid.size();
-
-			selectApplicationAPDU.insert(std::end(selectApplicationAPDU),
-				std::begin(aid),
-				std::end(aid));
-			fci = scardTransmit(selectApplicationAPDU);
-			if (fci.size() == 0)
-			{
+			this->m_fci = getFCI(aid);
+			if (this->m_fci.size() == 0) {
 				this->m_channel_openned = false;
 			}
-			else
-			{
-				this->m_fci = fci;
+			else {
 				this->m_channel_openned = true;
 			}
 		}
 		else
 		{
 			/// We assume here that the Secure Element do not need an explicit application selection.
-			// TODO check what to do here!
-			this->m_fci.clear();
+			/// The card ATR is returned in place of FCI
+			this->m_fci = this->m_atr;
 			this->m_channel_openned = true;
 		}
 	}
-	else
-	{
-		/// Set the FCI previously obtained from the card.
-		fci = this->m_fci;
-	}
 
 	/// Build FCI Apdu response output (may be empty)
-	keyple::containers::ApduResponse fciApduResponse(fci, true);
+	keyple::containers::ApduResponse fciApduResponse(this->m_fci, true);
 
 	/// Handle the requests looping for all requests present in the provided list
 	std::list<keyple::containers::ApduResponse> apduResponses;
+	std::list<keyple::containers::ApduRequest> requestList;
 	std::list<keyple::containers::ApduRequest>::iterator iterator;
-	
-	for (iterator = inSeApplicationRequest->getApduRequests().begin(); iterator != inSeApplicationRequest->getApduRequests().end(); iterator++)
+
+	requestList = inSeApplicationRequest->getApduRequests();
+
+	for (iterator = requestList.begin(); iterator != requestList.end(); iterator++)
 	{
 		keyple::containers::ApduRequest apduRequest = *iterator;
 		std::vector<uint8_t> apdu = apduRequest.getBytes();
@@ -192,20 +176,30 @@ keyple::containers::SeResponse PcscReader::transmit(keyple::containers::SeReques
 		/// low level transmission (may throw an exeception)
 		std::vector<uint8_t> response = scardTransmit(apdu);
 
+
+		/// handle case 4: sw1sw2 = 0x9000 and case 4 flag set
+		if (response.size() == 2
+			&& apduRequest.isCase4()
+			&& response[response.size() - 2] == 0x90
+			&& response[response.size() - 1] == 0x00)
+		{
+			response = getResponseCase4();
+		}
+
 		/// build ApduResponse
-		// TODO change condition to set successful flag true or false
-		// TODO handle case4
 		keyple::containers::ApduResponse apduResponse(response, response.size() != 0 ? true : false);
 
 		/// add response to the list
 		apduResponses.push_back(apduResponse);
 	}
 
+
 	/// Close connection if requested by the application
 	if (inSeApplicationRequest->askKeepChannelOpen() == false)
 	{
 		/// Disconnect according to disposition setting
 		// TODO handle error code
+		this->m_fci.clear();
 		SCardDisconnect(this->m_card, this->m_disposition);
 	}
 
@@ -236,11 +230,11 @@ bool PcscReader::isSePresent()
 		// try to connect
 
 		lReturn = SCardConnect((SCARDCONTEXT)this->m_context,
-								this->m_name,
-								this->m_share_mode,
-								this->m_protocol,
-								&hCardHandle,
-								&dwAP);
+			this->m_name,
+			this->m_share_mode,
+			this->m_protocol,
+			&hCardHandle,
+			&dwAP);
 		if (SCARD_S_SUCCESS != lReturn)
 		{
 			DBG_ERROR_MSG("Failed SCardConnect");
@@ -268,7 +262,7 @@ bool PcscReader::isSePresent()
 			this->m_card_presence = true;
 		}
 	}
-	
+
 	return this->m_card_presence;
 }
 
@@ -583,7 +577,7 @@ ExecutionStatus PcscReader::setContext(SCARDCONTEXT context)
  * \fn void PcscReader::cardPresenceMonitoringThread()
  *
  * \brief Card presence monitoring thread
-		  Launched when the PcscReader object is created, this thread is 
+		  Launched when the PcscReader object is created, this thread is
 		  dedicated to the card presence PC/SC event monitoring.
 		  The thread is waiting for a change and updates the m_card_presence flag
 		  accordingly.
@@ -603,7 +597,7 @@ void PcscReader::cardPresenceMonitoringThread()
 	}
 
 	memset(&rgscState, 0, sizeof(rgscState));
-	
+
 	rgscState.szReader = this->m_name;
 	rgscState.dwCurrentState = SCARD_STATE_UNAWARE;
 
@@ -612,15 +606,15 @@ void PcscReader::cardPresenceMonitoringThread()
 		while (m_monitoring_is_running == true)
 		{
 			lReturn = SCardGetStatusChange(this->m_context,
-										   INFINITE, // infinite wait
-										   &rgscState,
-										   1);
+				INFINITE, // infinite wait
+				&rgscState,
+				1);
 			rgscState.dwCurrentState = rgscState.dwEventState;
 			if (lReturn == SCARD_S_SUCCESS)
 			{
 				if (rgscState.dwEventState & SCARD_STATE_PRESENT)
 				{
-					if(this->m_card == 0)
+					if (this->m_card == 0)
 					{
 						keyple::containers::ReaderEvent event(this, keyple::containers::ReaderEvent::SE_INSERTED);
 						this->notifyObservers(event);
@@ -673,19 +667,40 @@ std::vector<uint8_t> PcscReader::scardTransmit(std::vector<uint8_t> apdu)
 	DBG_DUMP_HEX_VECTOR("APDU: ", apdu);
 
 	lReturn = SCardTransmit(this->m_card,
-							&scioReq,
-							reinterpret_cast<uint8_t*>(apdu.data()),
-							apdu.size(),
-							NULL,
-							responseBuffer,
-							(unsigned long*)&responseApduLength);
+		&scioReq,
+		reinterpret_cast<uint8_t*>(apdu.data()),
+		apdu.size(),
+		NULL,
+		responseBuffer,
+		(unsigned long*)&responseApduLength);
 
 	if (lReturn == SCARD_S_SUCCESS)
 	{
+
+		if ( responseApduLength == 2 &&
+			(responseBuffer[0] == 0x61
+		  || responseBuffer[0] == 0x6C
+		  || responseBuffer[0] == 0x9F)) {
+			DBG_DUMP_HEX_VECTOR("RESPONSE: ", std::vector<uint8_t> (responseBuffer, responseBuffer + responseApduLength));
+			/// handle outgoing data: sw1sw2 = 0x61xx, 0x6Cxx or 0x9Fxx
+			uint8_t getResponse[] = {0x00, 0xC0, 0x00, 0x00, responseBuffer[1] };
+			responseApduLength = sizeof(responseBuffer);
+			DBG_DUMP_HEX_VECTOR("APDU: ", std::vector<uint8_t>(getResponse, getResponse + 5));
+			lReturn = SCardTransmit(this->m_card,
+				&scioReq,
+				getResponse,
+				5,
+				NULL,
+				responseBuffer,
+				(unsigned long*)&responseApduLength);
+			if (lReturn != SCARD_S_SUCCESS) {
+				throw(std::system_error((int)lReturn, std::system_category()));
+			}
+		}
 		/// Put response in responseApdu vector
 		std::vector<uint8_t> responseApdu(responseBuffer, responseBuffer + responseApduLength);
 
-		DBG_DUMP_HEX_VECTOR("RESPONSE: ", apdu);
+		DBG_DUMP_HEX_VECTOR("RESPONSE: ", responseApdu);
 
 		return responseApdu;
 	}
@@ -694,3 +709,59 @@ std::vector<uint8_t> PcscReader::scardTransmit(std::vector<uint8_t> apdu)
 		throw(std::system_error((int)lReturn, std::system_category()));
 	}
 }
+
+/*!
+ * \fn std::vector<uint8_t> PcscReader::getFCI(std::vector<uint8_t> aid)
+ *
+ * \brief Gets the application FCI
+ *
+ * \param aid The application ID.
+ *
+ * \return The fci.
+ */
+
+std::vector<uint8_t> PcscReader::getFCI(std::vector<uint8_t> aid)
+{
+	/// Get the FCI executing application selection
+	std::vector<uint8_t> selectApplicationAPDU(5);
+	/// Build the selection application APDU
+	selectApplicationAPDU[0] = (uint8_t)0x00;
+	selectApplicationAPDU[1] = (uint8_t)0xA4;
+	selectApplicationAPDU[2] = (uint8_t)0x04;
+	selectApplicationAPDU[3] = (uint8_t)0x00;
+	selectApplicationAPDU[4] = (uint8_t)aid.size();
+
+	selectApplicationAPDU.insert(std::end(selectApplicationAPDU),
+		std::begin(aid),
+		std::end(aid));
+	std::vector<uint8_t> response = scardTransmit(selectApplicationAPDU);
+	if (response.size() == 2
+		&& response[0] == 0x90
+		&& response[1] == 0x00) {
+		response = getResponseCase4();
+	}
+	return response;
+}
+
+/*!
+ * \fn std::vector<uint8_t> PcscReader::getResponseCase4()
+ *
+ * \brief Execute Get Response
+ *
+ * \return The response.
+ */
+
+std::vector<uint8_t> PcscReader::getResponseCase4()
+{
+	/// Get the outgoing data executing get response apdu with Le = 0 to retrieve the effective length
+	std::vector<uint8_t> getResponseAPDU(5);
+	/// Build the selection application APDU
+	getResponseAPDU[0] = (uint8_t)0x00;
+	getResponseAPDU[1] = (uint8_t)0xC0;
+	getResponseAPDU[2] = (uint8_t)0x04;
+	getResponseAPDU[3] = (uint8_t)0x00;
+	getResponseAPDU[4] = (uint8_t)0x00;
+
+	return scardTransmit(getResponseAPDU);
+}
+

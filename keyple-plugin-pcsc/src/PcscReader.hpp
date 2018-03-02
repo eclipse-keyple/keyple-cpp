@@ -195,6 +195,8 @@ public:
 
 private:
 	std::vector<uint8_t> scardTransmit(std::vector<uint8_t>apdu);
+	std::vector<uint8_t> getFCI(std::vector<uint8_t> aid);
+	std::vector<uint8_t> getResponseCase4();
 
 	/// These properties are accessed by the card presence monitoring thread.
 	std::thread m_monitor;
