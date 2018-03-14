@@ -15,48 +15,51 @@
 #ifndef KEYPLE_SEPROXY_APDUREQUEST_H
 #define KEYPLE_SEPROXY_APDUREQUEST_H
 
-
 namespace keyple {
-	namespace containers {
+    namespace containers {
 
-		/*!
+        /*!
 		 * \class ApduRequest
 		 *
 		 * \brief A container class for a single APDU command request
 		 */
 
-		class ApduRequest {
-		public:
-
-			/*!
+        class ApduRequest {
+          public:
+            /*!
 			 * \fn ApduRequest::ApduRequest()
 			 *
-			 * \brief Default constructor
+			 * \brief Default constructor 
 			 */
 
-			ApduRequest() { }
+            ApduRequest()
+            {
+            }
 
-			/*!
+            /*!
 			 * \fn ApduRequest::ApduRequest(std::vector<uint8_t> inApdu, bool inCase4 = false)
 			 *
 			 * \param inApdu  The APDU bytes.
 			 * \param inCase4 (Optional) True if in case 4.
 			 */
 
-			ApduRequest(std::vector<uint8_t> inApdu, bool inCase4 = false) {
-				this->apdu = inApdu;
-				this->case4 = inCase4;
-			}
+            ApduRequest(std::vector<uint8_t> inApdu, bool inCase4 = false)
+            {
+                this->apdu  = inApdu;
+                this->case4 = inCase4;
+            }
 
-			/*!
+            /*!
 			 * \fn ApduRequest::~ApduRequest()
 			 *
 			 * \brief Destructor
 			 */
 
-			~ApduRequest() {}
+            ~ApduRequest()
+            {
+            }
 
-			/*!
+            /*!
 			 * \fn std::vector<uint8_t> ApduRequest::getBytes()
 			 *
 			 * \brief Gets the APDU bytes
@@ -64,9 +67,12 @@ namespace keyple {
 			 * \return The bytes.
 			 */
 
-			std::vector<uint8_t> getBytes() { return this->apdu;  }
+            std::vector<uint8_t> getBytes()
+            {
+                return this->apdu;
+            }
 
-			/*!
+            /*!
 			 * \fn bool ApduRequest::isCase4()
 			 *
 			 * \brief @return case4 the case4 flag.
@@ -74,21 +80,23 @@ namespace keyple {
 			 * \return True if case 4, false if not.
 			 */
 
-			bool isCase4() { return this->case4; }
+            bool isCase4()
+            {
+                return this->case4;
+            }
 
-		private:
-
-			/*!
+          private:
+            /*!
 			 * \brief a ‘case 4’ flag in order to explicitly specify, if it’s expected that the APDU command
 			 * returns data.
 			 */
 
-			bool case4;
+            bool case4;
 
-			/*! \brief The apdu */
-			std::vector<uint8_t> apdu;
-		};
-	} // of namespace seproxy
-} // of namespace keyple
+            /*! \brief The apdu */
+            std::vector<uint8_t> apdu;
+        };
+    } // namespace containers
+} // namespace keyple
 
 #endif

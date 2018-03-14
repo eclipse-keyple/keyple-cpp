@@ -19,26 +19,27 @@
 #include <vector>
 
 namespace keyple {
-	namespace containers {
+    namespace containers {
 
-		/*!
+        /*!
 		 * \class ApduResponse
 		 *
 		 * \brief A container class for a single APDU command response
 		 */
 
-		class ApduResponse {
-		public:
-
-			/*!
+        class ApduResponse {
+          public:
+            /*!
 			 * \fn ApduResponse::ApduResponse()
 			 *
 			 * \brief Default constructor
 			 */
 
-			ApduResponse() { }
+            ApduResponse()
+            {
+            }
 
-			/*!
+            /*!
 			 * \fn ApduResponse::ApduResponse(std::vector<uint8_t> inApdu, bool inSuccessful)
 			 *
 			 * \brief Build the APDU response
@@ -47,31 +48,36 @@ namespace keyple {
 			 * \param inSuccessful True if the operation was a success, false if it failed.
 			 */
 
-			ApduResponse(std::vector<uint8_t> inApdu, bool inSuccessful)
-			{
-				this->apdu = inApdu;
-				this->successful = inSuccessful;
-			}
+            ApduResponse(std::vector<uint8_t> inApdu, bool inSuccessful)
+            {
+                this->apdu       = inApdu;
+                this->successful = inSuccessful;
+            }
 
-			/*!
+            /*!
 			 * \fn ApduResponse::~ApduResponse();
 			 *
 			 * \brief Destructor
 			 */
 
-			~ApduResponse() { }
+            ~ApduResponse()
+            {
+            }
 
-			/*!
-			 * \fn std::vector<uint8_t> ApduResponse::getBytes();
+            /*!
+			 * \fn std::vector<uint8_t> ApduResponse::getBytes(); 
 			 *
 			 * \brief return the bytes of the APDU response.
 			 *
 			 * \return The bytes vector.
 			 */
 
-			std::vector<uint8_t> getBytes() { return apdu; }
+            std::vector<uint8_t> getBytes()
+            {
+                return apdu;
+            }
 
-			/*!
+            /*!
 			 * \fn bool ApduResponse::isSuccessful();
 			 *
 			 * \brief @return status
@@ -79,21 +85,23 @@ namespace keyple {
 			 * \return True if successful, false if not.
 			 */
 
-			bool isSuccessful() { return successful; }
+            bool isSuccessful()
+            {
+                return successful;
+            }
 
-		private:
-
-			/*!
+          private:
+            /*!
 			 * \brief an array of the bytes of an APDU response (none structured, including the dataOut field
 			 * and the status of the command).
 			 */
 
-			std::vector<uint8_t> apdu;
+            std::vector<uint8_t> apdu;
 
-			/*! \brief the success result of the processed APDU command. */
-			bool successful;
-		};
-	} // of namespace seproxy
-} // of namespace keyple
+            /*! \brief the success result of the processed APDU command. */
+            bool successful;
+        };
+    } // namespace containers
+} // namespace keyple
 
 #endif

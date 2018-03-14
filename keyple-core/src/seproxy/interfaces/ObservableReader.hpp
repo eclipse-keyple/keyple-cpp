@@ -25,9 +25,9 @@
 #include "ExecutionStatus.hpp"
 
 namespace keyple {
-	namespace seproxy {
+    namespace seproxy {
 
-		/*!
+        /*!
 		 * \class ObservableReader
 		 *
 		 * \brief Abstract class  ObservableReader. In order to notify a client application in case of specific
@@ -36,10 +36,9 @@ namespace keyple {
 		 * 		  Insertion or removal.
 		 */
 
-		class ObservableReader : virtual public ProxyReader {
-		public:
-
-			/*!
+        class ObservableReader : virtual public ProxyReader {
+          public:
+            /*!
 			 * \fn virtual ExecutionStatus ObservableReader::attachObserver(keyple::seproxy::ReaderObserver *callBack) = 0;
 			 *
 			 * \brief This method shall be called only from a terminal application implementing ObservableReader
@@ -51,9 +50,9 @@ namespace keyple {
 			 * \return The ExecutionStatus.
 			 */
 
-			virtual ExecutionStatus attachObserver(keyple::seproxy::ReaderObserver *callBack) = 0;
+            virtual ExecutionStatus attachObserver(keyple::seproxy::ReaderObserver *callBack) = 0;
 
-			/*!
+            /*!
 			 * \fn virtual ExecutionStatus ObservableReader::detachObserver(keyple::seproxy::ReaderObserver *callBack) = 0;
 			 *
 			 * \brief This method shall be called only from a terminal application implementing ObservableReader
@@ -64,9 +63,9 @@ namespace keyple {
 			 * \return The ExecutionStatus.
 			 */
 
-			virtual ExecutionStatus detachObserver(keyple::seproxy::ReaderObserver *callBack) = 0;
+            virtual ExecutionStatus detachObserver(keyple::seproxy::ReaderObserver *callBack) = 0;
 
-			/*!
+            /*!
 			 * \fn virtual void ObservableReader::notifyObservers(keyple::containers::ReaderEvent event) = 0;
 			 *
 			 * \brief This method shall be called only from a SE Proxy plugin by a reader implementing ObservableReader
@@ -75,9 +74,9 @@ namespace keyple {
 			 * \param event The event.
 			 */
 
-			virtual void notifyObservers(keyple::containers::ReaderEvent event) = 0;
-		};
-	} // of namespace seproxy
-} // of namespace keyple
+            virtual void notifyObservers(keyple::containers::ReaderEvent event) = 0;
+        };
+    } // namespace seproxy
+} // namespace keyple
 
 #endif
