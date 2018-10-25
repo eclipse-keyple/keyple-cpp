@@ -29,22 +29,21 @@ using namespace std;
  */
 
 class SeProxyServiceImpl : public SeProxyService {
-public:
-
-	/*!
+  public:
+    /*!
 	 * \fn static SeProxyService* getInstance()
-	 *
+	 * 
 	 * \brief Gets the instance
 	 *
 	 * \return the instance.
 	 */
 
-	static SeProxyService* getInstance()
-	{
-		return &m_instance;
-	}
+    static SeProxyService *getInstance()
+    {
+        return &m_instance;
+    }
 
-	/*!
+    /*!
 	 * \fn uint32_t getVersion()
 	 *
 	 * \brief Gets the version level of the API
@@ -52,13 +51,13 @@ public:
 	 * \return The version.
 	 */
 
-	uint32_t getVersion()
-	{
-		DBG_TRACE_CALL();
-		return 1;
-	}
+    uint32_t getVersion()
+    {
+        DBG_TRACE_CALL();
+        return 1;
+    }
 
-	/*!
+    /*!
 	 * \fn void setPlugins(std::list<ReadersPlugin*> plugins)
 	 *
 	 * \brief Sets the plugins through a provided list of plugins
@@ -66,14 +65,14 @@ public:
 	 * \param [in,out] plugins If non-null, the plugins.
 	 */
 
-	void setPlugins(std::list<ReadersPlugin*> plugins)
-	{
-		// /!\ empty the list before fill it again
-		DBG_TRACE_CALL();
-		this->plugins = plugins;
-	}
+    void setPlugins(std::list<ReadersPlugin *> plugins)
+    {
+        // /!\ empty the list before fill it again
+        DBG_TRACE_CALL();
+        this->plugins = plugins;
+    }
 
-	/*!
+    /*!
 	 * \fn std::list<ReadersPlugin*> getPlugins()
 	 *
 	 * \brief Gets the readers plugins
@@ -81,37 +80,36 @@ public:
 	 * \return Null if it fails, else the plugins.
 	 */
 
-	std::list<ReadersPlugin*> getPlugins()
-	{
-		DBG_TRACE_CALL();
-		return this->plugins;
-	}
+    std::list<ReadersPlugin *> getPlugins()
+    {
+        DBG_TRACE_CALL();
+        return this->plugins;
+    }
 
-	/*!
+    /*!
 	 * \fn SeProxyServiceImpl()
 	 *
 	 * \brief Default constructor
 	 */
 
-	SeProxyServiceImpl()
-	{
-		DBG_TRACE_CALL();
-	}
+    SeProxyServiceImpl()
+    {
+        DBG_TRACE_CALL();
+    }
 
-	/*!
+    /*!
 	 * \fn ~SeProxyServiceImpl()
 	 *
 	 * \brief Destructor
 	 */
 
-	~SeProxyServiceImpl()
-	{
-		DBG_TRACE_CALL();
-	}
+    ~SeProxyServiceImpl()
+    {
+        DBG_TRACE_CALL();
+    }
 
-private:
-
-	/*!
+  private:
+    /*!
 	 * \fn SeProxyServiceImpl & operator= (const SeProxyServiceImpl*)
 	 *
 	 * \brief Assignment operator
@@ -121,9 +119,11 @@ private:
 	 * \return A shallow copy of this object.
 	 */
 
-	SeProxyServiceImpl & operator= (const SeProxyServiceImpl*) {}
+    SeProxyServiceImpl &operator=(const SeProxyServiceImpl *)
+    {
+    }
 
-	/*!
+    /*!
 	 * \fn SeProxyServiceImpl(const SeProxyServiceImpl*)
 	 *
 	 * \brief Constructor
@@ -131,13 +131,15 @@ private:
 	 * \param parameter1 The first parameter.
 	 */
 
-	SeProxyServiceImpl(const SeProxyServiceImpl*) {}
+    SeProxyServiceImpl(const SeProxyServiceImpl *)
+    {
+    }
 
-	/*! \brief The instance */
-	static SeProxyServiceImpl m_instance;
+    /*! \brief The instance */
+    static SeProxyServiceImpl m_instance;
 
-	/*! \brief The plugins */
-	std::list<ReadersPlugin*> plugins;
+    /*! \brief The plugins */
+    std::list<ReadersPlugin *> plugins;
 };
 
 /*! \brief The se proxy service implementation m instance */
@@ -151,7 +153,7 @@ SeProxyServiceImpl SeProxyServiceImpl::m_instance = SeProxyServiceImpl();
  * \return Null if it fails, else the new class.
  */
 
-extern "C" EXPORT SeProxyService* CreateClass()
+extern "C" EXPORT SeProxyService *CreateClass()
 {
-	return SeProxyServiceImpl::getInstance();
+    return SeProxyServiceImpl::getInstance();
 }

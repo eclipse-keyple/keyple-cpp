@@ -6,7 +6,7 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
- /*!
+/*!
  * \file pcscplugin/PcscReader.hpp.
  *
  * \brief Declares the PcscReader class
@@ -31,28 +31,27 @@
  */
 
 class PcscReader : public keyple::seproxy::ConfigurableReader, public keyple::seproxy::ObservableReader {
-public:
-
-	/*!
+  public:
+    /*!
 	 * \fn PcscReader::PcscReader();
 	 *
 	 * \brief Default constructor
 	 */
 
-	PcscReader();
+    PcscReader();
 
-	/*!
+    /*!
 	 * \fn PcscReader::~PcscReader();
 	 *
 	 * \brief Destructor
 	 */
 
-	~PcscReader();
+    ~PcscReader();
 
-	///
-	/// ProxyReader members
+    ///
+    /// ProxyReader members
 
-	/*!
+    /*!
 	 * \fn std::string PcscReader::getName();
 	 *
 	 * \brief Gets the name of the reader
@@ -60,9 +59,9 @@ public:
 	 * \return The name.
 	 */
 
-	std::string getName();
+    std::string getName();
 
-	/*!
+    /*!
 	 * \fn keyple::containers::SeResponse PcscReader::transmit(keyple::containers::SeRequest* inSeApplicationRequest);
 	 *
 	 * \brief Transmits the given in SE application request, returns a SE response.
@@ -72,9 +71,9 @@ public:
 	 * \return A keyple::containers::SeResponse.
 	 */
 
-	keyple::containers::SeResponse transmit(keyple::containers::SeRequest* inSeApplicationRequest);
+    keyple::containers::SeResponse transmit(keyple::containers::SeRequest *inSeApplicationRequest);
 
-	/*!
+    /*!
 	 * \fn bool PcscReader::isSePresent();
 	 *
 	 * \brief Query if Secure Element is present
@@ -82,12 +81,12 @@ public:
 	 * \return True if se present, false if not.
 	 */
 
-	bool isSePresent();
+    bool isSePresent();
 
-	///
-	/// ConfigurableReader members
-	
-	/*!
+    ///
+    /// ConfigurableReader members
+
+    /*!
 	 * \fn std::map<std::string, std::string>* PcscReader::getParameters();
 	 *
 	 * \brief Gets the parameters
@@ -95,9 +94,9 @@ public:
 	 * \return Null if it fails, else the parameters.
 	 */
 
-	std::map<std::string, std::string>* getParameters();
+    std::map<std::string, std::string> *getParameters();
 
-	/*!
+    /*!
 	 * \fn ExecutionStatus PcscReader::setAParameter(std::string inKey, std::string inValue);
 	 *
 	 * \brief Sets a parameter
@@ -108,9 +107,9 @@ public:
 	 * \return The ExecutionStatus.
 	 */
 
-	ExecutionStatus setAParameter(std::string inKey, std::string inValue);
+    ExecutionStatus setAParameter(std::string inKey, std::string inValue);
 
-	/*!
+    /*!
 	 * \fn ExecutionStatus PcscReader::setParameters(std::map<std::string, std::string>* inSettings);
 	 *
 	 * \brief Sets the parameters
@@ -120,9 +119,9 @@ public:
 	 * \return The ExecutionStatus.
 	 */
 
-	ExecutionStatus setParameters(std::map<std::string, std::string>* inSettings);
+    ExecutionStatus setParameters(std::map<std::string, std::string> *inSettings);
 
-	/*!
+    /*!
 	 * \fn ExecutionStatus PcscReader::attachObserver(keyple::seproxy::ReaderObserver * callBack);
 	 *
 	 * \brief Attach observer
@@ -132,12 +131,12 @@ public:
 	 * \return The ExecutionStatus.
 	 */
 
-	 ///
-	 /// ObservableReader members
-	 
-	ExecutionStatus attachObserver(keyple::seproxy::ReaderObserver * callBack);
+    ///
+    /// ObservableReader members
 
-	/*!
+    ExecutionStatus attachObserver(keyple::seproxy::ReaderObserver *callBack);
+
+    /*!
 	 * \fn ExecutionStatus PcscReader::detachObserver(keyple::seproxy::ReaderObserver * callBack);
 	 *
 	 * \brief Detach observer
@@ -147,9 +146,9 @@ public:
 	 * \return The ExecutionStatus.
 	 */
 
-	ExecutionStatus detachObserver(keyple::seproxy::ReaderObserver * callBack);
+    ExecutionStatus detachObserver(keyple::seproxy::ReaderObserver *callBack);
 
-	/*!
+    /*!
 	 * \fn void PcscReader::notifyObservers(keyple::containers::ReaderEvent event);
 	 *
 	 * \brief Notifies the observers
@@ -157,11 +156,11 @@ public:
 	 * \param event The event.
 	 */
 
-	void notifyObservers(keyple::containers::ReaderEvent event);
+    void notifyObservers(keyple::containers::ReaderEvent event);
 
-	/// PCSC Specific members
+    /// PCSC Specific members
 
-	/*!
+    /*!
 	 * \fn ExecutionStatus PcscReader::setName(std::string name);
 	 *
 	 * \brief Sets a name
@@ -171,9 +170,9 @@ public:
 	 * \return The ExecutionStatus.
 	 */
 
-	ExecutionStatus setName(std::string name);
+    ExecutionStatus setName(std::string name);
 
-	/*!
+    /*!
 	 * \fn ExecutionStatus PcscReader::setContext(SCARDCONTEXT context);
 	 *
 	 * \brief Sets a context
@@ -183,38 +182,38 @@ public:
 	 * \return The ExecutionStatus.
 	 */
 
-	ExecutionStatus setContext(SCARDCONTEXT context);
+    ExecutionStatus setContext(SCARDCONTEXT context);
 
-	/*!
+    /*!
 	 * \fn void PcscReader::cardPresenceMonitoringThread();
 	 *
 	 * \brief Card presence monitoring thread
 	 */
 
-	void cardPresenceMonitoringThread();
+    void cardPresenceMonitoringThread();
 
-private:
-	std::vector<uint8_t> scardTransmit(std::vector<uint8_t>apdu);
-	std::vector<uint8_t> getFCI(std::vector<uint8_t> aid);
-	std::vector<uint8_t> getResponseCase4();
+  private:
+    std::vector<uint8_t> scardTransmit(std::vector<uint8_t> apdu);
+    std::vector<uint8_t> getFCI(std::vector<uint8_t> aid);
+    std::vector<uint8_t> getResponseCase4();
 
-	/// These properties are accessed by the card presence monitoring thread.
-	std::thread m_monitor;
-	std::atomic<bool> m_monitoring_is_running;
-	std::atomic<bool> m_card_presence;
+    /// These properties are accessed by the card presence monitoring thread.
+    std::thread m_monitor;
+    std::atomic<bool> m_monitoring_is_running;
+    std::atomic<bool> m_card_presence;
 
-	char m_name[K_OS_KPL_DEV_NAME_MAX_LENGTH]; // TODO change type (string?)
-	SCARDCONTEXT m_context;
-	SCARDHANDLE m_card;	
-	uint32_t m_share_mode;
-	uint32_t m_protocol;
-	uint32_t m_active_protocol;
-	uint32_t m_disposition;
-	bool m_channel_openned;
-	std::vector<uint8_t> m_fci;
-	std::vector<uint8_t> m_atr;
-	std::map<std::string, std::string> m_settings;
-	std::list<keyple::seproxy::ReaderObserver*> m_observers_list;
+    char m_name[K_OS_KPL_DEV_NAME_MAX_LENGTH]; // TODO change type (string?)
+    SCARDCONTEXT m_context;
+    SCARDHANDLE m_card;
+    uint32_t m_share_mode;
+    uint32_t m_protocol;
+    uint32_t m_active_protocol;
+    uint32_t m_disposition;
+    bool m_channel_openned;
+    std::vector<uint8_t> m_fci;
+    std::vector<uint8_t> m_atr;
+    std::map<std::string, std::string> m_settings;
+    std::list<keyple::seproxy::ReaderObserver *> m_observers_list;
 };
 
 #endif

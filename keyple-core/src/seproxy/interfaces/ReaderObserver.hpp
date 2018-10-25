@@ -6,33 +6,30 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
- /*!
+/*!
  * \file interfaces\ReaderObserver.hpp.
  *
  * \brief Declares the ReaderObserver class
  */
 
-
 #ifndef KEYPLE_SEPROXY_READER_OBSERVER_H
 #define KEYPLE_SEPROXY_READER_OBSERVER_H
-
 
 #include "ReaderEvent.hpp"
 #include "ExecutionStatus.hpp"
 
 namespace keyple {
-	namespace seproxy {
-	
-		/*!
+    namespace seproxy {
+
+        /*!
 		 * \class ReaderObserver
 		 *
 		 * \brief ReaderObserver abstract class .
 		 */
 
-		class ReaderObserver {
-		public:
-
-			/*!
+        class ReaderObserver {
+          public:
+            /*!
 			 * \fn virtual ExecutionStatus ReaderObserver::notify(keyple::containers::ReaderEvent event) = 0;
 			 *
 			 * \brief This method is called when information about an Reader which was previously requested using
@@ -43,9 +40,9 @@ namespace keyple {
 			 * \return The ExecutionStatus.
 			 */
 
-			virtual ExecutionStatus notify(keyple::containers::ReaderEvent event) = 0;
-		};
-	}
-}
+            virtual ExecutionStatus notify(keyple::containers::ReaderEvent event) = 0;
+        };
+    } // namespace seproxy
+} // namespace keyple
 
 #endif

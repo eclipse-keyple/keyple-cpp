@@ -17,21 +17,19 @@
  * \brief An observer class to receive ReadersPlugin events.
  */
 
-class Observer : public keyple::seproxy::ReaderObserver
-{
-public:
-
-	/*!
+class Observer : public keyple::seproxy::ReaderObserver {
+  public:
+    /*!
 	 * \fn ExecutionStatus Observer::notify(keyple::containers::ReaderEvent event);
 	 *
 	 * \brief Notifies the given event
 	 *
-	 * \param event The event.
+	 * \param event The event. 
 	 *
 	 * \return The ExecutionStatus.
 	 */
 
-	ExecutionStatus notify(keyple::containers::ReaderEvent event);
+    ExecutionStatus notify(keyple::containers::ReaderEvent event);
 };
 
 #endif

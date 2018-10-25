@@ -6,7 +6,7 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
- /*!
+/*!
  * \file interfaces\ProxyReader.hpp.
  *
  * \brief Declares the ProxyReader class
@@ -25,19 +25,17 @@
 #include "SeResponse.hpp"
 
 namespace keyple {
+    namespace seproxy {
 
-	namespace seproxy {
-
-		/*!
+        /*!
 		 * \class ProxyReader
 		 *
 		 * \brief ProxyReader abstract class.
 		 */
 
-		class ProxyReader {
-		public:
-
-			/*!
+        class ProxyReader {
+          public:
+            /*!
 			 * \fn virtual std::string ProxyReader::getName() = 0;
 			 *
 			 * \brief returns the ‘unique’ name of the SE reader for the selected plugin.
@@ -45,9 +43,9 @@ namespace keyple {
 			 * \return The name.
 			 */
 
-			virtual std::string getName() = 0;
+            virtual std::string getName() = 0;
 
-			/*!
+            /*!
 			 * \fn virtual keyple::containers::SeResponse ProxyReader::transmit(keyple::containers::SeRequest* inSeApplicationRequest) = 0;
 			 *
 			 * \brief Transmits a request to a SE application and get back the corresponding SE response
@@ -65,9 +63,10 @@ namespace keyple {
 			 * \return A keyple::containers::SeResponse.
 			 */
 
-			virtual keyple::containers::SeResponse transmit(keyple::containers::SeRequest* inSeApplicationRequest) = 0;
+            virtual keyple::containers::SeResponse
+            transmit(keyple::containers::SeRequest *inSeApplicationRequest) = 0;
 
-			/*!
+            /*!
 			 * \fn virtual bool ProxyReader::isSePresent() = 0;
 			 *
 			 * \brief returns the SE presence
@@ -75,10 +74,9 @@ namespace keyple {
 			 * \return true if a Secure Element is present in the reader
 			 */
 
-			virtual bool isSePresent() = 0;
-		};
-	} // of namespace seproxy
-
-} // of namespace keyple
+            virtual bool isSePresent() = 0;
+        };
+    } // namespace seproxy
+} // namespace keyple
 
 #endif

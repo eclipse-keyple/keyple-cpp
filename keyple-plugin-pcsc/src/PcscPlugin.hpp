@@ -6,12 +6,11 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
- /*!
+/*!
  * \file pcscplugin/PcscPlugin.hpp.
  *
  * \brief Declares the PcscPlugin class
  */
-
 
 #ifndef KEYPLE_SEPROXY_PCSC_READERS_PLUGIN_H
 #define KEYPLE_SEPROXY_PCSC_READERS_PLUGIN_H
@@ -26,30 +25,29 @@
 
 /*!
  * \class PcscPlugin
- *
+ * 
  * \brief PCSC plugin class.
  */
 
 class PcscPlugin : public keyple::seproxy::ReadersPlugin {
-public:
-
-	/*!
+  public:
+    /*!
 	 * \fn PcscPlugin::PcscPlugin();
 	 *
 	 * \brief Default constructor
 	 */
 
-	PcscPlugin();
+    PcscPlugin();
 
-	/*!
+    /*!
 	 * \fn PcscPlugin::~PcscPlugin();
 	 *
 	 * \brief Destructor
 	 */
 
-	~PcscPlugin();
+    ~PcscPlugin();
 
-	/*!
+    /*!
 	 * \fn static ReadersPlugin* PcscPlugin::getInstance();
 	 *
 	 * \brief Gets the instance
@@ -57,17 +55,17 @@ public:
 	 * \return Null if it fails, else the instance.
 	 */
 
-	static ReadersPlugin* getInstance();
+    static ReadersPlugin *getInstance();
 
-	/*!
+    /*!
 	 * \fn void PcscPlugin::destroy();
 	 *
 	 * \brief Destroys this object
 	 */
 
-	void destroy();
+    void destroy();
 
-	/*!
+    /*!
 	 * \fn std::string PcscPlugin::getName();
 	 *
 	 * \brief Gets the name
@@ -75,9 +73,9 @@ public:
 	 * \return The name.
 	 */
 
-	std::string getName();
+    std::string getName();
 
-	/*!
+    /*!
 	 * \fn std::list<keyple::seproxy::ProxyReader*> PcscPlugin::getReaders();
 	 *
 	 * \brief Gets the readers
@@ -85,29 +83,29 @@ public:
 	 * \return Null if it fails, else the readers.
 	 */
 
-	std::list<keyple::seproxy::ProxyReader*> getReaders();
+    std::list<keyple::seproxy::ProxyReader *> getReaders();
 
-	/*!
+    /*!
 	 * \fn void PcscPlugin::readerPresenceMonitoringThread();
 	 *
 	 * \brief Reader presence monitoring thread
 	 */
 
-	void readerPresenceMonitoringThread();
+    void readerPresenceMonitoringThread();
 
-private:
-	PcscPlugin & operator= (const PcscPlugin*) {};
+  private:
+    PcscPlugin &operator=(const PcscPlugin *){};
 
-	PcscPlugin(const PcscPlugin*) {};
+    PcscPlugin(const PcscPlugin *){};
 
-	static PcscPlugin m_instance;
+    static PcscPlugin m_instance;
 
-	static std::atomic<bool> m_monitoring_is_running;
+    static std::atomic<bool> m_monitoring_is_running;
 
-	std::list<keyple::seproxy::ProxyReader*> m_readers_list;
+    std::list<keyple::seproxy::ProxyReader *> m_readers_list;
 
-	/* PCSC Specific */
-	SCARDCONTEXT	m_context;
+    /* PCSC Specific */
+    SCARDCONTEXT m_context;
 };
 
 #endif // KEYPLE_SEPROXY_PCSC_READERS_PLUGIN_H
