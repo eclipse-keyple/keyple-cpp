@@ -33,7 +33,12 @@ ENDIF(WIN32)
 # enable standard output log (debug)
 ADD_DEFINITIONS(-DSTANDARD_OUTPUT_LOG)
 
-INCLUDE_DIRECTORIES(/usr/include/PCSC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../keyple-core/src/seproxy/interfaces ${CMAKE_CURRENT_SOURCE_DIR}/../keyple-core/src/seproxy/containers ) 
+INCLUDE_DIRECTORIES(
+	/usr/include/PCSC
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/interfaces
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/containers
+) 
 
 # PcscPlugin library
 add_library(PcscPlugin SHARED

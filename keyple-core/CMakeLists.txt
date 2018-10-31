@@ -29,7 +29,11 @@ IF(WIN32)
 ADD_DEFINITIONS(-DK_OS_KPL_PLATFORM=K_OS_KPL_PLATFORM_WIN32)
 ENDIF(WIN32)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../keyple-core/src/seproxy/interfaces ${CMAKE_CURRENT_SOURCE_DIR}/../keyple-core/src/seproxy/containers ) 
+INCLUDE_DIRECTORIES(
+		${CMAKE_CURRENT_SOURCE_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/interfaces
+		${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/containers
+) 
 
 # SeProxyService library
 add_library(SeProxyService SHARED
