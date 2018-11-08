@@ -30,13 +30,20 @@ ADD_DEFINITIONS(-DK_OS_KPL_PLATFORM=K_OS_KPL_PLATFORM_WIN32)
 ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
-		${CMAKE_CURRENT_SOURCE_DIR}
-		${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/interfaces
-		${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/containers
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/interfaces
+	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/containers
+	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/util
+	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/command
+	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/transaction
 ) 
 
 # SeProxyService library
 add_library(SeProxyService SHARED
-    	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeProxyService.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeProxyService.def
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeProxyService.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeProxyService.def
 )

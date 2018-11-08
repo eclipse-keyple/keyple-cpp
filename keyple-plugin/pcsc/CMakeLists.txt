@@ -36,8 +36,15 @@ ADD_DEFINITIONS(-DSTANDARD_OUTPUT_LOG)
 INCLUDE_DIRECTORIES(
 	/usr/include/PCSC
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/interfaces
 	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/containers
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/util
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/transaction
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/command
 ) 
 
 # PcscPlugin library

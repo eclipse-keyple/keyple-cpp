@@ -15,97 +15,167 @@
 #ifndef KEYPLE_SEPROXY_PCSC_READERS_PLUGIN_H
 #define KEYPLE_SEPROXY_PCSC_READERS_PLUGIN_H
 
-#include "ProxyReader.hpp"
-#include "ReadersPlugin.hpp"
-
 #include <string>
 #include <list>
 #include <thread>
 #include <atomic>
 
-/*!
- * \class PcscPlugin
- * 
- * \brief PCSC plugin class.
- */
+#include "ProxyReader.hpp"
+#include "ReaderPlugin.hpp"
+#include "AbstractThreadedObservablePlugin.hpp"
 
-class PcscPlugin : public keyple::seproxy::ReadersPlugin {
-  public:
-    /*!
-	 * \fn PcscPlugin::PcscPlugin();
-	 *
-	 * \brief Default constructor
-	 */
+using namespace keyple::seproxy;
+using namespace keyple::seproxy::plugin;
 
-    PcscPlugin();
+namespace keyple {
+    namespace plugin {
+        namespace pcsc {
 
-    /*!
-	 * \fn PcscPlugin::~PcscPlugin();
-	 *
-	 * \brief Destructor
-	 */
+            /*!
+             * \class PcscPlugin
+             *
+             * \brief PCSC plugin class.
+             */
+            class PcscPlugin : public AbstractThreadedObservablePlugin {
+              public:
+                /**
+                 * Gets the single instance of PcscPlugin.
+                 *
+                 * @return single instance of PcscPlugin
+                 */
+                static PcscPlugin &getInstance()
+                {
+                    /**
+                     * Singleton instance of SeProxyService
+                     */
+                    static PcscPlugin instance;
 
-    ~PcscPlugin();
+                    return instance;
+                }
 
-    /*!
-	 * \fn static ReadersPlugin* PcscPlugin::getInstance();
-	 *
-	 * \brief Gets the instance
-	 *
-	 * \return Null if it fails, else the instance.
-	 */
+                /**
+                 * @return the ‘unique’ name of the item
+                 */
+                const std::string getName()
+                {
+                    return "PcscPlugin";
+                }
 
-    static ReadersPlugin *getInstance();
+                /**
+                 * Gets the parameters
+                 *
+                 * @return the configuration of the item
+                 */
+                std::map<std::string, std::string> *getParameters()
+                {
+                    return NULL;
+                }
 
-    /*!
-	 * \fn void PcscPlugin::destroy();
-	 *
-	 * \brief Destroys this object
-	 */
+                /**
+                 * allows to define a proprietary setting for a reader or a plugin (contactless protocols
+                 * polling sequence, baud rate, … etc.).
+                 *
+                 * @param key the parameter key
+                 * @param value the parameter value
+                 * @throws IllegalArgumentException if the parameter or the value is not supported
+                 * @throws KeypleBaseException if the parameter fails to be set up
+                 */
+                void setParameter(std::string key, std::string value)
+                {
+                }
 
-    void destroy();
+                /**
+                 * allows to define a set of proprietary settings for a reader or a plugin (contactless
+                 * protocols polling sequence, baud rate, … etc.).
+                 *
+                 * @param parameters Parameters to setup
+                 * @throws IllegalArgumentException if the parameters or the values is not supported
+                 * @throws KeypleBaseException if the parameter fails to be set up
+                 */
+                void setParameters(std::map<std::string, std::string> parameters)
+                {
+                }
 
-    /*!
-	 * \fn std::string PcscPlugin::getName();
-	 *
-	 * \brief Gets the name
-	 *
-	 * \return The name.
-	 */
+                /**
+                 * Enable the logging
+                 *
+                 * @param logging If logging is enabled
+                 * @return Same instance (fluent setter)
+                 * @deprecated
+                 */
+                PcscPlugin *setLogging(boolean logging);
 
-    std::string getName();
+                /**
+                 * Gets the readers.
+                 *
+                 * @return the ‘unique’ name of the readers’ plugin.
+                 * @throws KeypleReaderException if the list of readers has not been initialized
+                 */
+                std::set<ProxyReader> *getReaders()
+                {
+                    return NULL;
+                }
 
-    /*!
-	 * \fn std::list<keyple::seproxy::ProxyReader*> PcscPlugin::getReaders();
-	 *
-	 * \brief Gets the readers
-	 *
-	 * \return Null if it fails, else the readers.
-	 */
+                /**
+                 * Gets the reader whose name is provided as an argument
+                 * 
+                 * @param name of the reader
+                 * @return the ProxyReader object.
+                 * @throws KeypleReaderNotFoundException if the wanted reader is not found
+                 */
+                ProxyReader *getReader(std::string name)
+                {
+                    return NULL;
+                }
 
-    std::list<keyple::seproxy::ProxyReader *> getReaders();
+              private:
+                boolean logging = false;
 
-    /*!
-	 * \fn void PcscPlugin::readerPresenceMonitoringThread();
-	 *
-	 * \brief Reader presence monitoring thread
-	 */
+                /*!
+                 * \fn PcscPlugin::PcscPlugin();
+                 *
+                 * \brief Default constructor
+                 */
+                PcscPlugin();
 
-    void readerPresenceMonitoringThread();
+                /*!
+                 * \fn PcscPlugin::~PcscPlugin();
+                 *
+                 * \brief Destructor
+                 */
+                ~PcscPlugin();
 
-  private:
-    PcscPlugin &operator=(const PcscPlugin *){};
+                //  /*!
+                //* \fn void PcscPlugin::destroy();
+                //*
+                //* \brief Destroys this object
+                //*/
 
-    PcscPlugin(const PcscPlugin *){};
+                //  void destroy();
 
-    static PcscPlugin m_instance;
+                //  /*!
+                //* \fn void PcscPlugin::readerPresenceMonitoringThread();
+                //*
+                //* \brief Reader presence monitoring thread
+                //*/
 
-    static std::atomic<bool> m_monitoring_is_running;
+                //  void readerPresenceMonitoringThread();
 
-    std::list<keyple::seproxy::ProxyReader *> m_readers_list;
+                //  PcscPlugin &operator=(const PcscPlugin *){};
 
-    /* PCSC Specific */
-    SCARDCONTEXT m_context;
-};
+                //  PcscPlugin(const PcscPlugin *){};
+
+                //  static PcscPlugin m_instance;
+
+                //  static std::atomic<bool> m_monitoring_is_running;
+
+                //std::list<keyple::seproxy::ProxyReader *> m_readers_list;
+
+                /* PCSC Specific */
+                SCARDCONTEXT m_context;
+            };
+        } // namespace pcsc
+    }     // namespace plugin
+} // namespace keyple
 
 #endif // KEYPLE_SEPROXY_PCSC_READERS_PLUGIN_H

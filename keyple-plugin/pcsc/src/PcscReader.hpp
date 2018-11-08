@@ -12,208 +12,283 @@
  * \brief Declares the PcscReader class
  */
 
-#ifndef KEYPLE_SEPROXY_PCSC_READER_H
-#define KEYPLE_SEPROXY_PCSC_READER_H
-
-#include "ProxyReader.hpp"
-#include "ConfigurableReader.hpp"
-#include "ObservableReader.hpp"
-#include "ReaderObserver.hpp"
+#ifndef KEYPLE_PLUGIN_PCSC_READER_H
+#define KEYPLE_PLUGIN_PCSC_READER_H
 
 #include <atomic>
 #include <thread>
 #include <vector>
 
-/*!
- * \class PcscReader
- *
- * \brief PCSC reader plugin class.
- */
+#include "AbstractThreadedLocalReader.hpp"
 
-class PcscReader : public keyple::seproxy::ConfigurableReader, public keyple::seproxy::ObservableReader {
-  public:
-    /*!
-	 * \fn PcscReader::PcscReader();
-	 *
-	 * \brief Default constructor
-	 */
+namespace keyple {
+    namespace plugin {
+        namespace pcsc {
 
-    PcscReader();
+            /**
+             *
+             */
+            class PcscReader : public keyple::seproxy::plugin::AbstractThreadedLocalReader {
+              public:
+                /*!
+                  * \fn PcscReader::PcscReader();
+                  *
+                  * \brief Default constructor
+                  */
+                PcscReader(std::string &pluginName); // CardTerminal terminal);
 
-    /*!
-	 * \fn PcscReader::~PcscReader();
-	 *
-	 * \brief Destructor
-	 */
+                /*!
+                 * \fn PcscReader::~PcscReader();
+                 *
+                 * \brief Destructor
+                 */
+                ~PcscReader();
 
-    ~PcscReader();
+                //  ///
+                //  /// ProxyReader members
 
-    ///
-    /// ProxyReader members
+                //  /*!
+                //* \fn std::string PcscReader::getName();
+                //*
+                //* \brief Gets the name of the reader
+                //*
+                //* \return The name.
+                //*/
 
-    /*!
-	 * \fn std::string PcscReader::getName();
-	 *
-	 * \brief Gets the name of the reader
-	 *
-	 * \return The name.
-	 */
+                //  std::string getName();
 
-    std::string getName();
+                //  /*!
+                //* \fn keyple::containers::SeResponse PcscReader::transmit(keyple::containers::SeRequest* inSeApplicationRequest);
+                //*
+                //* \brief Transmits the given in SE application request, returns a SE response.
+                //*
+                //* \param [in] inSeApplicationRequest If non-null, the in se application request.
+                //*
+                //* \return A keyple::containers::SeResponse.
+                //*/
 
-    /*!
-	 * \fn keyple::containers::SeResponse PcscReader::transmit(keyple::containers::SeRequest* inSeApplicationRequest);
-	 *
-	 * \brief Transmits the given in SE application request, returns a SE response.
-	 *
-	 * \param [in] inSeApplicationRequest If non-null, the in se application request.
-	 *
-	 * \return A keyple::containers::SeResponse.
-	 */
+                //  keyple::containers::SeResponse transmit(keyple::containers::SeRequest *inSeApplicationRequest);
 
-    keyple::containers::SeResponse transmit(keyple::containers::SeRequest *inSeApplicationRequest);
+                //  /*!
+                //* \fn bool PcscReader::isSePresent();
+                //*
+                //* \brief Query if Secure Element is present
+                //*
+                //* \return True if se present, false if not.
+                //*/
 
-    /*!
-	 * \fn bool PcscReader::isSePresent();
-	 *
-	 * \brief Query if Secure Element is present
-	 *
-	 * \return True if se present, false if not.
-	 */
+                //  bool isSePresent();
 
-    bool isSePresent();
+                //  ///
+                //  /// ConfigurableReader members
 
-    ///
-    /// ConfigurableReader members
+                //  /*!
+                //* \fn std::map<std::string, std::string>* PcscReader::getParameters();
+                //*
+                //* \brief Gets the parameters
+                //*
+                //* \return Null if it fails, else the parameters.
+                //*/
 
-    /*!
-	 * \fn std::map<std::string, std::string>* PcscReader::getParameters();
-	 *
-	 * \brief Gets the parameters
-	 *
-	 * \return Null if it fails, else the parameters.
-	 */
+                //  std::map<std::string, std::string> *getParameters();
 
-    std::map<std::string, std::string> *getParameters();
+                //  /*!
+                //* \fn ExecutionStatus PcscReader::setAParameter(std::string inKey, std::string inValue);
+                //*
+                //* \brief Sets a parameter
+                //*
+                //* \param inKey   The in key.
+                //* \param inValue The in value.
+                //*
+                //* \return The ExecutionStatus.
+                //*/
 
-    /*!
-	 * \fn ExecutionStatus PcscReader::setAParameter(std::string inKey, std::string inValue);
-	 *
-	 * \brief Sets a parameter
-	 *
-	 * \param inKey   The in key.
-	 * \param inValue The in value.
-	 *
-	 * \return The ExecutionStatus.
-	 */
+                //  ExecutionStatus setAParameter(std::string inKey, std::string inValue);
 
-    ExecutionStatus setAParameter(std::string inKey, std::string inValue);
+                /**
+                 * Set a parameter.
+                 * <p>
+                 * These are the parameters you can use with their associated values:
+                 * <ul>
+                 * <li><strong>protocol</strong>:
+                 * <ul>
+                 * <li>Tx: Automatic negotiation (default)</li>
+                 * <li>T0: T0 protocol</li>
+                 * <li>T1: T1 protocol</li>
+                 * </ul>
+                 * </li>
+                 * <li><strong>mode</strong>:
+                 * <ul>
+                 * <li>shared: Shared between apps and threads (default)</li>
+                 * <li>exclusive: Exclusive to this app and the current thread</li>
+                 * </ul>
+                 * </li>
+                 * <li><strong>disconnect</strong>:
+                 * <ul>
+                 * <li>reset: Reset the card</li>
+                 * <li>unpower: Simply unpower it</li>
+                 * <li>leave: Unsupported</li>
+                 * <li>eject: Eject</li>
+                 * </ul>
+                 * </li>
+                 * <li><strong>thread_wait_timeout</strong>: Number of milliseconds to wait</li>
+                 * </ul>
+                 *
+                 * @param name Parameter name
+                 * @param value Parameter value
+                 * @throws KeypleBaseException This method can fail when disabling the exclusive mode as it's
+                 *         executed instantly
+                 * @throws IllegalArgumentException when parameter is wrong
+                 *
+                 *
+                 */
+                void setParameter(std::string key, std::string value);
 
-    /*!
-	 * \fn ExecutionStatus PcscReader::setParameters(std::map<std::string, std::string>* inSettings);
-	 *
-	 * \brief Sets the parameters
-	 *
-	 * \param [in,out] inSettings If non-null, the in settings.
-	 *
-	 * \return The ExecutionStatus.
-	 */
+                //  /*!
+                //* \fn ExecutionStatus PcscReader::attachObserver(keyple::seproxy::ReaderObserver * callBack);
+                //*
+                //* \brief Attach observer
+                //*
+                //* \param [in,out] callBack If non-null, the call back.
+                //*
+                //* \return The ExecutionStatus.
+                //*/
 
-    ExecutionStatus setParameters(std::map<std::string, std::string> *inSettings);
+                //  ///
+                //  /// ObservableReader members
 
-    /*!
-	 * \fn ExecutionStatus PcscReader::attachObserver(keyple::seproxy::ReaderObserver * callBack);
-	 *
-	 * \brief Attach observer
-	 *
-	 * \param [in,out] callBack If non-null, the call back.
-	 *
-	 * \return The ExecutionStatus.
-	 */
+                //  ExecutionStatus attachObserver(keyple::seproxy::ReaderObserver *callBack);
 
-    ///
-    /// ObservableReader members
+                //  /*!
+                //* \fn ExecutionStatus PcscReader::detachObserver(keyple::seproxy::ReaderObserver * callBack);
+                //*
+                //* \brief Detach observer
+                //*
+                //* \param [in,out] callBack If non-null, the call back.
+                //*
+                //* \return The ExecutionStatus.
+                //*/
 
-    ExecutionStatus attachObserver(keyple::seproxy::ReaderObserver *callBack);
+                //  ExecutionStatus detachObserver(keyple::seproxy::ReaderObserver *callBack);
 
-    /*!
-	 * \fn ExecutionStatus PcscReader::detachObserver(keyple::seproxy::ReaderObserver * callBack);
-	 *
-	 * \brief Detach observer
-	 *
-	 * \param [in,out] callBack If non-null, the call back.
-	 *
-	 * \return The ExecutionStatus.
-	 */
+                //  /*!
+                //* \fn void PcscReader::notifyObservers(keyple::containers::ReaderEvent event);
+                //*
+                //* \brief Notifies the observers
+                //*
+                //* \param event The event.
+                //*/
 
-    ExecutionStatus detachObserver(keyple::seproxy::ReaderObserver *callBack);
+                //  void notifyObservers(keyple::containers::ReaderEvent event);
 
-    /*!
-	 * \fn void PcscReader::notifyObservers(keyple::containers::ReaderEvent event);
-	 *
-	 * \brief Notifies the observers
-	 *
-	 * \param event The event.
-	 */
+                //  /// PCSC Specific members
 
-    void notifyObservers(keyple::containers::ReaderEvent event);
+                //  /*!
+                //* \fn ExecutionStatus PcscReader::setName(std::string name);
+                //*
+                //* \brief Sets a name
+                //*
+                //* \param name The name.
+                //*
+                //* \return The ExecutionStatus.
+                //*/
 
-    /// PCSC Specific members
+                //  ExecutionStatus setName(std::string name);
 
-    /*!
-	 * \fn ExecutionStatus PcscReader::setName(std::string name);
-	 *
-	 * \brief Sets a name
-	 *
-	 * \param name The name.
-	 *
-	 * \return The ExecutionStatus.
-	 */
+                //  /*!
+                //* \fn ExecutionStatus PcscReader::setContext(SCARDCONTEXT context);
+                //*
+                //* \brief Sets a context
+                //*
+                //* \param context The context.
+                //*
+                //* \return The ExecutionStatus.
+                //*/
 
-    ExecutionStatus setName(std::string name);
+                //  ExecutionStatus setContext(SCARDCONTEXT context);
 
-    /*!
-	 * \fn ExecutionStatus PcscReader::setContext(SCARDCONTEXT context);
-	 *
-	 * \brief Sets a context
-	 *
-	 * \param context The context.
-	 *
-	 * \return The ExecutionStatus.
-	 */
+                //  /*!
+                //* \fn void PcscReader::cardPresenceMonitoringThread();
+                //*
+                //* \brief Card presence monitoring thread
+                //*/
 
-    ExecutionStatus setContext(SCARDCONTEXT context);
+                //  void cardPresenceMonitoringThread();
 
-    /*!
-	 * \fn void PcscReader::cardPresenceMonitoringThread();
-	 *
-	 * \brief Card presence monitoring thread
-	 */
+                ///**
+                // * Gets the SE Answer to reset
+                // *
+                // * @return ATR returned by the SE or reconstructed by the reader (contactless)
+                // */
+                //std::vector<uint8_t> *getATR();
 
-    void cardPresenceMonitoringThread();
+                ///**
+                // * Tells if the physical channel is open or not
+                // *
+                // * @return true is the channel is open
+                // */
+                //bool isPhysicalChannelOpen()
+                //{
+                //    return false;
+                //}
 
-  private:
-    std::vector<uint8_t> scardTransmit(std::vector<uint8_t> apdu);
-    std::vector<uint8_t> getFCI(std::vector<uint8_t> aid);
-    std::vector<uint8_t> getResponseCase4();
+                ///**
+                // * Waits for a card. Returns true if a card is detected before the end of the provided timeout.
+                // * Returns false if no card detected within the delay.
+                // *
+                // * @param timeout the delay in millisecond we wait for a card insertion
+                // * @return presence status
+                // * @throws NoStackTraceThrowable a exception without stack trace in order to be catched and
+                // *         processed silently
+                // */
+                //bool waitForCardPresent(long timeout)
+                //{
+                //    return false;
+                //}
+                //// throws NoStackTraceThrowable;
 
-    /// These properties are accessed by the card presence monitoring thread.
-    std::thread m_monitor;
-    std::atomic<bool> m_monitoring_is_running;
-    std::atomic<bool> m_card_presence;
+                ///**
+                // * Wait until the card disappears. Returns true if a card has disappeared before the end of the
+                // * provided timeout. Returns false if the is still present within the delay. Closes the physical
+                // * channel when the card has disappeared.
+                // *
+                // * @param timeout the delay in millisecond we wait for a card to be withdrawn
+                // * @return presence status
+                // * @throws NoStackTraceThrowable a exception without stack trace in order to be catched and
+                // *         processed silently
+                // */
+                //bool waitForCardAbsent(long timeout)
+                //{
+                //    return false;
+                //}
 
-    char m_name[K_OS_KPL_DEV_NAME_MAX_LENGTH]; // TODO change type (string?)
-    SCARDCONTEXT m_context;
-    SCARDHANDLE m_card;
-    uint32_t m_share_mode;
-    uint32_t m_protocol;
-    uint32_t m_active_protocol;
-    uint32_t m_disposition;
-    bool m_channel_openned;
-    std::vector<uint8_t> m_fci;
-    std::vector<uint8_t> m_atr;
-    std::map<std::string, std::string> m_settings;
-    std::list<keyple::seproxy::ReaderObserver *> m_observers_list;
-};
+              private:
+                bool logging;
+                std::string parameterCardProtocol;
+                //  std::vector<uint8_t> scardTransmit(std::vector<uint8_t> apdu);
+                //  std::vector<uint8_t> getFCI(std::vector<uint8_t> aid);
+                //  std::vector<uint8_t> getResponseCase4();
 
-#endif
+                //  /// These properties are accessed by the card presence monitoring thread.
+                //  std::thread m_monitor;
+                //  std::atomic<bool> m_monitoring_is_running;
+                //  std::atomic<bool> m_card_presence;
+
+                //  char m_name[K_OS_KPL_DEV_NAME_MAX_LENGTH]; // TODO change type (string?)
+                //  SCARDCONTEXT m_context;
+                //  SCARDHANDLE m_card;
+                //  uint32_t m_share_mode;
+                //  uint32_t m_protocol;
+                //  uint32_t m_active_protocol;
+                //  uint32_t m_disposition;
+                //  bool m_channel_openned;
+                //  std::vector<uint8_t> m_fci;
+                //  std::vector<uint8_t> m_atr;
+                //  std::map<std::string, std::string> m_settings;
+                //  std::list<keyple::seproxy::ReaderObserver *> m_observers_list;
+            };
+        } // namespace pcsc
+    }     // namespace plugin
+} // namespace keyple
+
+#endif // KEYPLE_PLUGIN_PCSC_READER_H

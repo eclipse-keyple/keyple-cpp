@@ -35,8 +35,12 @@ ADD_DEFINITIONS(-DSTANDARD_OUTPUT_LOG)
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/interfaces
 	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/containers
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../keyple-core/src/util
 ) 
 
 # Add the executable
