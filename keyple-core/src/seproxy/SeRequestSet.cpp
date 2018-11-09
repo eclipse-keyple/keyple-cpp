@@ -9,9 +9,14 @@
  *
  */
 
+#include <set>
+
+#include "SeRequest.hpp"
 #include "SeRequestSet.hpp"
 
-SeRequestSet::SeRequestSet(std::set<SeRequest> seRequests) : sortedRequests(seRequest)
+using namespace keyple::seproxy;
+
+SeRequestSet::SeRequestSet(std::set<SeRequest> &seRequests) : sortedRequests(seRequests)
 {
 }
     //

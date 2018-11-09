@@ -14,6 +14,7 @@
 #include "SeResponse.hpp"
 #include "SeResponseSet.hpp"
 
+using namespace keyple::seproxy;
 //
 ///**
 // * Aggregates the seResponses of a response from a local or remote SE Reader, received through a
@@ -50,7 +51,7 @@
 //     * @param seResponses List of seResponses
 //     */
 //  public
-SeResponseSet::SeResponseSet(std::list<SeResponse> seResponses) : seResponses(seResponses)
+SeResponseSet::SeResponseSet(std::list<SeResponse> &seResponses) : seResponses(seResponses)
 {
 }
 
@@ -58,7 +59,7 @@ SeResponseSet::~SeResponseSet()
 {
 }
 
-std::list<SeResponse> SeResponseSet::getResponses();
+std::list<SeResponse> SeResponseSet::getResponses()
 {
     return seResponses;
 }

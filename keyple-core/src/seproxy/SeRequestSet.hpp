@@ -49,7 +49,7 @@ namespace keyple {
              *
              * @param seRequests List of {@link SeRequest}s
              */
-            SeRequestSet(std::set<SeRequest> seRequests);
+            SeRequestSet(std::set<SeRequest> &seRequests);
         //
         //    /**
         //     * Create an {@link SeRequestSet} from a single {@link SeRequest}.

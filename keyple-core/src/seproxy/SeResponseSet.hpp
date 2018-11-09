@@ -14,6 +14,8 @@
 
 #include <list>
 
+#include "SeResponse.hpp"
+
 namespace keyple {
     namespace seproxy {
 

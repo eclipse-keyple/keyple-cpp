@@ -21,6 +21,7 @@ namespace keyple {
          * @see SeRequest
          */
         class SeResponse {
+          public:
         //
         //    static final long serialVersionUID = 265369841119873812L;
         //

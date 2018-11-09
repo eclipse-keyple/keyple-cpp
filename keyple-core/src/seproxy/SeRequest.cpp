@@ -11,6 +11,8 @@
 
 #include "SeRequest.hpp"
 
+using namespace keyple::seproxy;
+
 ///**
 // * List of APDU requests that will result in a {@link SeResponse}
 // * 
@@ -222,7 +224,7 @@
 //  private
 //    boolean keepChannelOpen;
 //
-SeRequest()
+SeRequest::SeRequest()
 //Selector selector, List<ApduRequest> apduRequests, boolean keepChannelOpen,
               //seprotocol protocolflag, set<integer> successfulselectionstatuscodes)
 {
