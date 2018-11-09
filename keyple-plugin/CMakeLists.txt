@@ -6,5 +6,4 @@
 # available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
 #
 
-add_subdirectory(src)
-add_subdirectory(test)
+add_subdirectory(pcsc)
