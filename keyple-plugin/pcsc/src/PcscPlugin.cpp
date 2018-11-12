@@ -117,9 +117,10 @@ PcscPlugin *PcscPlugin::setLogging(bool logging)
  *
  * \return Null if it fails, else the new class.
  */
+#if defined(WIN32)
 extern "C" __declspec(dllexport) PcscPlugin &CreateClass()
 {
     //DBG_TRACE_CALL();
     return PcscPlugin::getInstance();
 }
-
+#endif
