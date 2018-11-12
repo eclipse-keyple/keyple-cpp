@@ -131,8 +131,9 @@ using namespace std;
  *
  * \return Null if it fails, else the new class.
  */
-
+#if defined(WIN32)
 extern "C" __declspec(dllexport) SeProxyService &CreateClass()
 {
     return SeProxyService::getInstance();
 }
+#endif
