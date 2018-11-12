@@ -103,7 +103,7 @@ namespace keyple {
                  * @return Same instance (fluent setter)
                  * @deprecated
                  */
-                PcscPlugin *setLogging(boolean logging);
+                PcscPlugin *setLogging(bool logging);
 
                 /**
                  * Gets the readers.
@@ -129,7 +129,7 @@ namespace keyple {
                 }
 
               private:
-                boolean logging = false;
+                bool logging = false;
 
                 /*!
                  * \fn PcscPlugin::PcscPlugin();

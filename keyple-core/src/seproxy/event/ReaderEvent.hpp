@@ -45,8 +45,7 @@ namespace keyple {
                  * @param readerName the name of the current reader
                  * @param eventType the type of event
                  */
-                ReaderEvent(std::string &pluginName = std::string(""),
-                            std::string &readerName = std::string(""), EventType eventType = IO_ERROR)
+                ReaderEvent(std::string &pluginName, std::string &readerName, EventType eventType = IO_ERROR)
                     : pluginName(pluginName), readerName(readerName)
                 {
                     this->eventType = eventType;

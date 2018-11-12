@@ -44,7 +44,7 @@ PcscPlugin::~PcscPlugin()
     //DBG_TRACE_CALL();
 }
 
-PcscPlugin *PcscPlugin::setLogging(boolean logging)
+PcscPlugin *PcscPlugin::setLogging(bool logging)
 {
     this->logging = logging;
     return this;
@@ -122,3 +122,4 @@ extern "C" __declspec(dllexport) PcscPlugin &CreateClass()
     //DBG_TRACE_CALL();
     return PcscPlugin::getInstance();
 }
+
