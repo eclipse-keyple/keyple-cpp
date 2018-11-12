@@ -49,6 +49,17 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
 # Test Files
 #
 file(GLOB SRCS *.cpp)
+
+include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/../src
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/util
+)
+
 add_executable(pcscplugintest ${SRCS})
 target_link_libraries(pcscplugintest pcscplugin gtest gmock)
 

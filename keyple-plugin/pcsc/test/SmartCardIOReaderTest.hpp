@@ -14,27 +14,30 @@
 
 #include "PcscReader.hpp"
 
-class SmartCardIOReaderTest {
+#include "gtest/gtest.h"
 
-private:
-    PcscReader reader;
-    std::string readerName;
-    byte[] responseApduByte;
+using namespace keyple::plugin::pcsc;
 
-public:
-    CardTerminal terminal;
+class SmartCardIOReaderTest : public ::testing::Test {
+
+  private:
+    /* std::string readerName;
+   */
+    //byte[] responseApduByte;
+
+  public:
+    PcscReader *reader;
+    /*CardTerminal terminal;
     Card card;
     CCardChannel channel;
     ATR atr;
     ResponseAPDU res;
-
-    void setUp() // throws CardException, IllegalArgumentException, KeypleBaseException
-
-  private
-    
-
-    @Before public 
+*/
+    void SetUp() // throws CardException, IllegalArgumentException, KeypleBaseException
     {
+        reader = NULL;
+
+        /*
         when(terminal.connect(any(String.class))).thenReturn(card);
         when(card.getBasicChannel()).thenReturn(channel);
 
@@ -46,175 +49,196 @@ public:
         readerName = "reader";
         reader     = new PcscReader("pcscPlugin", terminal);
         reader.setParameter(PcscReader.SETTING_KEY_LOGGING, "true");
+        */
     }
 
-    @Test public void testSmartCardIOReader()
-    {
-        assertNotNull(reader);
-    }
-
-    // TODO redesign @Test
-  public
-    void testGettersSetters() throws IllegalArgumentException, KeypleBaseException
-    {
-        // this.reader = new PcscReader(terminal, readerName);
-        reader.setParameter("TOTO", "TOTO");
-        assertEquals(reader.getParameters().size(), 1);
-
-        Map<String, String> test = new HashMap<String, String>();
-        test.put("TITI", "TITI");
-        test.put("TATA", "TATA");
-        reader.setParameters(test);
-        assertEquals(reader.getParameters().size(), 3);
-
-        assertTrue(readerName.equals(reader.getName()));
-    }
-
-    @Test public void testIsSEPresent() throws CardException, NoStackTraceThrowable
+    void TearDown()
     {
 
-        // this.reader = new PcscReader(terminal, readerName);
-        when(terminal.isCardPresent()).thenReturn(true);
-        assertTrue(reader.isSePresent());
-        when(terminal.isCardPresent()).thenReturn(false);
-        assertFalse(reader.isSePresent());
     }
 
-    @Test(expected = KeypleReaderException.class) public void testIsSEPresentWithException() throws
-        CardException,
-        NoStackTraceThrowable
-    {
+    //  @Before public
+    //  {
+    //      when(terminal.connect(any(String.class))).thenReturn(card);
+    //      when(card.getBasicChannel()).thenReturn(channel);
 
-        when(terminal.waitForCardAbsent(0)).thenReturn(false);
-        doThrow(new CardException("erreur", new Exception())).when(terminal).isCardPresent();
-        reader.isSePresent();
-    }
+    //      responseApduByte =
+    //          new byte[]{(byte)0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12, 0x12, 0x00, 0x00, 0x01, 0x03,
+    //                     0x01,       0x01, 0x00, 0x7E, 0x7E, 0x7E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    //      res = new ResponseAPDU(responseApduByte);
 
-    // TODO redesign @Test
-  public
-    void testTransmitCardNotPresent() throws CardException, KeypleReaderException, KeypleReaderException
-    {
+    //      readerName = "reader";
+    //      reader     = new PcscReader("pcscPlugin", terminal);
+    //      reader.setParameter(PcscReader.SETTING_KEY_LOGGING, "true");
+    //  }
 
-        when(terminal.isCardPresent()).thenReturn(false);
-        ApduRequest apduRequestMF = new ApduRequest(ByteArrayUtils.fromHex("94A40000023F02"), false);
+    //  @Test public void testSmartCardIOReader()
+    //  {
+    //      assertNotNull(reader);
+    //  }
 
-        // code de la requete
-        byte[] aidToSelect = new byte[0];
+    //  // TODO redesign @Test
+    //public
+    //  void testGettersSetters() throws IllegalArgumentException, KeypleBaseException
+    //  {
+    //      // this.reader = new PcscReader(terminal, readerName);
+    //      reader.setParameter("TOTO", "TOTO");
+    //      assertEquals(reader.getParameters().size(), 1);
 
-        List<ApduRequest> apduRequests = new ArrayList<ApduRequest>();
-        apduRequests.add(apduRequestMF);
-        SeRequestSet seApplicationRequest =
-            new SeRequestSet(new SeRequest(new SeRequest.AidSelector(aidToSelect), apduRequests, true));
+    //      Map<String, String> test = new HashMap<String, String>();
+    //      test.put("TITI", "TITI");
+    //      test.put("TATA", "TATA");
+    //      reader.setParameters(test);
+    //      assertEquals(reader.getParameters().size(), 3);
 
-        SeResponseSet reponseActuelle = reader.transmit(seApplicationRequest);
+    //      assertTrue(readerName.equals(reader.getName()));
+    //  }
 
-        assertNull(reponseActuelle.getSingleResponse().getFci());
-        assertEquals(reponseActuelle.getSingleResponse().getApduResponses().size(), 0);
-        assertFalse(reponseActuelle.getSingleResponse().wasChannelPreviouslyOpen());
-    }
+    //  @Test public void testIsSEPresent() throws CardException, NoStackTraceThrowable
+    //  {
 
-    // TODO redesign @Test
-  public
-    void testTransmitToCardWithoutAidToSelect() throws CardException, KeypleReaderException,
-        KeypleReaderException
-    {
+    //      // this.reader = new PcscReader(terminal, readerName);
+    //      when(terminal.isCardPresent()).thenReturn(true);
+    //      assertTrue(reader.isSePresent());
+    //      when(terminal.isCardPresent()).thenReturn(false);
+    //      assertFalse(reader.isSePresent());
+    //  }
 
-        atr = new ATR(new byte[]{(byte)0x85, 0x17, 0x00, 0x01});
-        when(terminal.isCardPresent()).thenReturn(true);
-        when(channel.transmit(any(CommandAPDU.class))).thenReturn(res);
-        when(card.getATR()).thenReturn(atr);
-        // this.reader = new PcscReader(terminal, readerName);
-        byte[] returnOK = {(byte)0x90, (byte)0x00};
-        ApduResponse responseMockMF =
-            new ApduResponse(new byte[]{(byte)0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12,       0x12,
-                                        0x00,       0x00, 0x01, 0x03, 0x01, 0x01, 0x00, 0x7E,       0x7E,
-                                        0x7E,       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x90, 0x00},
-                             null);
-        ApduRequest apduRequestMF = new ApduRequest(ByteArrayUtils.fromHex("94A40000023F02"), false);
+    //  @Test(expected = KeypleReaderException.class) public void testIsSEPresentWithException() throws
+    //      CardException,
+    //      NoStackTraceThrowable
+    //  {
 
-        // code de la requete
-        byte[] aidToSelect = null;
+    //      when(terminal.waitForCardAbsent(0)).thenReturn(false);
+    //      doThrow(new CardException("erreur", new Exception())).when(terminal).isCardPresent();
+    //      reader.isSePresent();
+    //  }
 
-        List<ApduRequest> apduRequests = new ArrayList<ApduRequest>();
-        apduRequests.add(apduRequestMF);
-        SeRequestSet seApplicationRequest =
-            new SeRequestSet(new SeRequest(new SeRequest.AidSelector(aidToSelect), apduRequests, true));
+    //  // TODO redesign @Test
+    //public
+    //  void testTransmitCardNotPresent() throws CardException, KeypleReaderException, KeypleReaderException
+    //  {
 
-        PcscReader spiedReader        = spy(this.reader);
-        SeResponseSet reponseActuelle = spiedReader.transmit(seApplicationRequest);
+    //      when(terminal.isCardPresent()).thenReturn(false);
+    //      ApduRequest apduRequestMF = new ApduRequest(ByteArrayUtils.fromHex("94A40000023F02"), false);
 
-        assertEquals(reponseActuelle.getSingleResponse().getApduResponses().size(),
-                     seApplicationRequest.getSingleRequest().getApduRequests().size());
-        // assertNotNull(Whitebox.getInternalState(spiedReader, "card"));
-        // assertNotNull(Whitebox.getInternalState(spiedReader, "channel"));
-        assertNotNull(reponseActuelle.getSingleResponse().getFci());
-    }
+    //      // code de la requete
+    //      byte[] aidToSelect = new byte[0];
 
-    // TODO redesign @Test
-  public
-    void testTransmitToCardWithAidToSelect() throws CardException, KeypleReaderException,
-        KeypleReaderException
-    {
+    //      List<ApduRequest> apduRequests = new ArrayList<ApduRequest>();
+    //      apduRequests.add(apduRequestMF);
+    //      SeRequestSet seApplicationRequest =
+    //          new SeRequestSet(new SeRequest(new SeRequest.AidSelector(aidToSelect), apduRequests, true));
 
-        when(terminal.isCardPresent()).thenReturn(true);
-        when(channel.transmit(any(CommandAPDU.class))).thenReturn(res);
-        atr = new ATR(new byte[]{(byte)0x85, 0x17, 0x00, 0x01});
-        when(card.getATR()).thenReturn(atr);
-        byte[] returnOK = {(byte)0x90, (byte)0x00};
-        ApduResponse responseMockMF =
-            new ApduResponse(new byte[]{(byte)0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12,       0x12,
-                                        0x00,       0x00, 0x01, 0x03, 0x01, 0x01, 0x00, 0x7E,       0x7E,
-                                        0x7E,       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x90, 0x00},
-                             null);
-        ApduRequest apduRequestMF = new ApduRequest(ByteArrayUtils.fromHex("94A40000023F02"), false);
+    //      SeResponseSet reponseActuelle = reader.transmit(seApplicationRequest);
 
-        // code de la requete
-        byte[] aidToSelect = new byte[]{(byte)0x94, (byte)0xCA, 0x00, 0x4F, 0x00};
+    //      assertNull(reponseActuelle.getSingleResponse().getFci());
+    //      assertEquals(reponseActuelle.getSingleResponse().getApduResponses().size(), 0);
+    //      assertFalse(reponseActuelle.getSingleResponse().wasChannelPreviouslyOpen());
+    //  }
 
-        List<ApduRequest> apduRequests = new ArrayList<ApduRequest>();
-        apduRequests.add(apduRequestMF);
-        SeRequestSet seApplicationRequest =
-            new SeRequestSet(new SeRequest(new SeRequest.AidSelector(aidToSelect), apduRequests, true));
+    //  // TODO redesign @Test
+    //public
+    //  void testTransmitToCardWithoutAidToSelect() throws CardException, KeypleReaderException,
+    //      KeypleReaderException
+    //  {
 
-        PcscReader spiedReader = spy(this.reader);
+    //      atr = new ATR(new byte[]{(byte)0x85, 0x17, 0x00, 0x01});
+    //      when(terminal.isCardPresent()).thenReturn(true);
+    //      when(channel.transmit(any(CommandAPDU.class))).thenReturn(res);
+    //      when(card.getATR()).thenReturn(atr);
+    //      // this.reader = new PcscReader(terminal, readerName);
+    //      byte[] returnOK = {(byte)0x90, (byte)0x00};
+    //      ApduResponse responseMockMF =
+    //          new ApduResponse(new byte[]{(byte)0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12,       0x12,
+    //                                      0x00,       0x00, 0x01, 0x03, 0x01, 0x01, 0x00, 0x7E,       0x7E,
+    //                                      0x7E,       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x90, 0x00},
+    //                           null);
+    //      ApduRequest apduRequestMF = new ApduRequest(ByteArrayUtils.fromHex("94A40000023F02"), false);
 
-        SeResponseSet reponseActuelle = spiedReader.transmit(seApplicationRequest);
-        assertNotNull(reponseActuelle.getSingleResponse().getFci());
-        assertEquals(reponseActuelle.getSingleResponse().getApduResponses().size(),
-                     seApplicationRequest.getSingleRequest().getApduRequests().size());
-    }
+    //      // code de la requete
+    //      byte[] aidToSelect = null;
 
-    // TODO redesign @Test
-  public
-    void testTransmitToCardAndDisconnect() throws CardException, KeypleReaderException, KeypleReaderException
-    {
+    //      List<ApduRequest> apduRequests = new ArrayList<ApduRequest>();
+    //      apduRequests.add(apduRequestMF);
+    //      SeRequestSet seApplicationRequest =
+    //          new SeRequestSet(new SeRequest(new SeRequest.AidSelector(aidToSelect), apduRequests, true));
 
-        when(terminal.isCardPresent()).thenReturn(true);
-        when(channel.transmit(any(CommandAPDU.class))).thenReturn(res);
-        byte[] returnOK = {(byte)0x90, (byte)0x00};
-        ApduResponse responseMockMF =
-            new ApduResponse(new byte[]{(byte)0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12,       0x12,
-                                        0x00,       0x00, 0x01, 0x03, 0x01, 0x01, 0x00, 0x7E,       0x7E,
-                                        0x7E,       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x90, 0x00},
-                             null);
-        ApduRequest apduRequestMF = new ApduRequest(ByteArrayUtils.fromHex("94A40000023F02"), false);
-        // code de la requete
-        byte[] aidToSelect = new byte[]{(byte)0x94, (byte)0xCA, 0x00, 0x4F, 0x00};
+    //      PcscReader spiedReader        = spy(this.reader);
+    //      SeResponseSet reponseActuelle = spiedReader.transmit(seApplicationRequest);
 
-        List<ApduRequest> apduRequests = new ArrayList<ApduRequest>();
-        apduRequests.add(apduRequestMF);
-        SeRequestSet seApplicationRequest =
-            new SeRequestSet(new SeRequest(new SeRequest.AidSelector(aidToSelect), apduRequests, false));
+    //      assertEquals(reponseActuelle.getSingleResponse().getApduResponses().size(),
+    //                   seApplicationRequest.getSingleRequest().getApduRequests().size());
+    //      // assertNotNull(Whitebox.getInternalState(spiedReader, "card"));
+    //      // assertNotNull(Whitebox.getInternalState(spiedReader, "channel"));
+    //      assertNotNull(reponseActuelle.getSingleResponse().getFci());
+    //  }
 
-        PcscReader spiedReader = spy(this.reader);
+    //  // TODO redesign @Test
+    //public
+    //  void testTransmitToCardWithAidToSelect() throws CardException, KeypleReaderException,
+    //      KeypleReaderException
+    //  {
 
-        SeResponseSet reponseActuelle = spiedReader.transmit(seApplicationRequest);
-        assertNotNull(reponseActuelle.getSingleResponse().getFci());
-        assertEquals(reponseActuelle.getSingleResponse().getApduResponses().size(),
-                     seApplicationRequest.getSingleRequest().getApduRequests().size());
-        // assertNull(Whitebox.getInternalState(spiedReader, "card"));
-        // assertNull(Whitebox.getInternalState(spiedReader, "channel"));
-    }
-}
+    //      when(terminal.isCardPresent()).thenReturn(true);
+    //      when(channel.transmit(any(CommandAPDU.class))).thenReturn(res);
+    //      atr = new ATR(new byte[]{(byte)0x85, 0x17, 0x00, 0x01});
+    //      when(card.getATR()).thenReturn(atr);
+    //      byte[] returnOK = {(byte)0x90, (byte)0x00};
+    //      ApduResponse responseMockMF =
+    //          new ApduResponse(new byte[]{(byte)0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12,       0x12,
+    //                                      0x00,       0x00, 0x01, 0x03, 0x01, 0x01, 0x00, 0x7E,       0x7E,
+    //                                      0x7E,       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x90, 0x00},
+    //                           null);
+    //      ApduRequest apduRequestMF = new ApduRequest(ByteArrayUtils.fromHex("94A40000023F02"), false);
+
+    //      // code de la requete
+    //      byte[] aidToSelect = new byte[]{(byte)0x94, (byte)0xCA, 0x00, 0x4F, 0x00};
+
+    //      List<ApduRequest> apduRequests = new ArrayList<ApduRequest>();
+    //      apduRequests.add(apduRequestMF);
+    //      SeRequestSet seApplicationRequest =
+    //          new SeRequestSet(new SeRequest(new SeRequest.AidSelector(aidToSelect), apduRequests, true));
+
+    //      PcscReader spiedReader = spy(this.reader);
+
+    //      SeResponseSet reponseActuelle = spiedReader.transmit(seApplicationRequest);
+    //      assertNotNull(reponseActuelle.getSingleResponse().getFci());
+    //      assertEquals(reponseActuelle.getSingleResponse().getApduResponses().size(),
+    //                   seApplicationRequest.getSingleRequest().getApduRequests().size());
+    //  }
+
+    //  // TODO redesign @Test
+    //public
+    //  void testTransmitToCardAndDisconnect() throws CardException, KeypleReaderException, KeypleReaderException
+    //  {
+
+    //      when(terminal.isCardPresent()).thenReturn(true);
+    //      when(channel.transmit(any(CommandAPDU.class))).thenReturn(res);
+    //      byte[] returnOK = {(byte)0x90, (byte)0x00};
+    //      ApduResponse responseMockMF =
+    //          new ApduResponse(new byte[]{(byte)0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12,       0x12,
+    //                                      0x00,       0x00, 0x01, 0x03, 0x01, 0x01, 0x00, 0x7E,       0x7E,
+    //                                      0x7E,       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x90, 0x00},
+    //                           null);
+    //      ApduRequest apduRequestMF = new ApduRequest(ByteArrayUtils.fromHex("94A40000023F02"), false);
+    //      // code de la requete
+    //      byte[] aidToSelect = new byte[]{(byte)0x94, (byte)0xCA, 0x00, 0x4F, 0x00};
+
+    //      List<ApduRequest> apduRequests = new ArrayList<ApduRequest>();
+    //      apduRequests.add(apduRequestMF);
+    //      SeRequestSet seApplicationRequest =
+    //          new SeRequestSet(new SeRequest(new SeRequest.AidSelector(aidToSelect), apduRequests, false));
+
+    //      PcscReader spiedReader = spy(this.reader);
+
+    //      SeResponseSet reponseActuelle = spiedReader.transmit(seApplicationRequest);
+    //      assertNotNull(reponseActuelle.getSingleResponse().getFci());
+    //      assertEquals(reponseActuelle.getSingleResponse().getApduResponses().size(),
+    //                   seApplicationRequest.getSingleRequest().getApduRequests().size());
+    //      // assertNull(Whitebox.getInternalState(spiedReader, "card"));
+    //      // assertNull(Whitebox.getInternalState(spiedReader, "channel"));
+    //  }
+};
 
 #endif // KEYPLE_PLUGIN_PCSC_TEST_SMC_IO
