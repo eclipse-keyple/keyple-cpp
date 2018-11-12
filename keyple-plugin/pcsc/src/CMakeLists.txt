@@ -6,7 +6,7 @@
 # available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
 #
 
-PROJECT(PcscPlugin C CXX)
+PROJECT(pcscplugin C CXX)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 SET(VERSION_MAJOR "0")
 SET(VERSION_MINOR "1")
@@ -14,7 +14,7 @@ SET(VERSION_PATCH "0")
 
 SET(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
-SET(PACKAGE_NAME "PcscPlugin")
+SET(PACKAGE_NAME "pcscplugin")
 SET(PACKAGE_VERSION ${VERSION})
 SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 
@@ -44,15 +44,15 @@ INCLUDE_DIRECTORIES(
 ) 
 
 # PcscPlugin library
-add_library(PcscPlugin SHARED
+add_library(pcscplugin SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/PcscReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/PcscPlugin.cpp
 )
 
 IF(WIN32)
-target_link_libraries(PcscPlugin winscard)
+target_link_libraries(pcscplugin winscard)
 ENDIF(WIN32)
 
 IF(UNIX)
-target_link_libraries(PcscPlugin pcsclite pthread)
+target_link_libraries(pcscplugin pcsclite pthread)
 ENDIF(UNIX)

@@ -30,22 +30,30 @@ IF(WIN32)
 ADD_DEFINITIONS(-DK_KPL_OS_PLATFORM=K_KPL_OS_PLATFORM_WIN32)
 ENDIF(WIN32)
 
-INCLUDE_DIRECTORIES(
+message(STATUS "base dir: ${CMAKE_CURRENT_SOURCE_DIR}")
+
+include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/event
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/exception
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/plugin
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/util
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/command
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/transaction
+	${CMAKE_CURRENT_SOURCE_DIR}/src/util
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/src/command
+	${CMAKE_CURRENT_SOURCE_DIR}/src/transaction
 )
 
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach(dir ${dirs})
+	  message(STATUS "dir='${dir}'")
+endforeach()
+
 add_library(libkeyplecore SHARED
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/SeProxyService.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/SeRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/SeRequestSet.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/SeResponse.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/seproxy/SeResponseSet.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}../../keyple-core/src/util/Observable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeProxyService.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeRequestSet.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeResponse.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeResponseSet.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/util/Observable.cpp
 )
+

@@ -49,12 +49,7 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
 # Test Files
 #
 file(GLOB SRCS *.cpp)
-ADD_EXECUTABLE(PcscPluginTest ${SRCS})
-TARGET_LINK_LIBRARIES(
-    PcscPluginTest
-    PcscPlugin
-    gtest
-    gmock
-)
-add_test(NAME PcscTest
-         COMMAND testPcscPlugin)
+add_executable(pcscplugintest ${SRCS})
+target_link_libraries(pcscplugintest pcscplugin gtest gmock)
+
+add_test(name PcscTest command testPcscPlugin)
