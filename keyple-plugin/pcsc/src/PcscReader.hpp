@@ -20,6 +20,10 @@
 #include <vector>
 
 #include "AbstractThreadedLocalReader.hpp"
+#include "CardTerminal.hpp"
+
+using namespace keyple::plugin::pcsc;
+using namespace keyple::seproxy::plugin;
 
 namespace keyple {
     namespace plugin {
@@ -28,14 +32,30 @@ namespace keyple {
             /**
              *
              */
-            class PcscReader : public keyple::seproxy::plugin::AbstractThreadedLocalReader {
+            class PcscReader : public AbstractThreadedLocalReader {
               public:
+                static constexpr const char* const KEY = "TheKey";
+                static constexpr const char* const SETTING_KEY_PROTOCOL = "protocol";
+                static constexpr const char* const SETTING_PROTOCOL_T0 = "T0";
+                static constexpr const char* const SETTING_PROTOCOL_T1 = "T1";
+                static constexpr const char* const SETTING_PROTOCOL_TX = "Tx";
+                static constexpr const char* const SETTING_KEY_MODE = "mode";
+                static constexpr const char* const SETTING_MODE_EXCLUSIVE = "exclusive";
+                static constexpr const char* const SETTING_MODE_SHARED = "shared";
+                static constexpr const char* const SETTING_KEY_DISCONNECT = "disconnect";
+                static constexpr const char* const SETTING_DISCONNECT_RESET = "reset";
+                static constexpr const char* const SETTING_DISCONNECT_UNPOWER = "unpower";
+                static constexpr const char* const SETTING_DISCONNECT_LEAVE = "leave";
+                static constexpr const char* const SETTING_DISCONNECT_EJECT = "eject";
+                static constexpr const char* const SETTING_KEY_THREAD_TIMEOUT = "thread_wait_timeout";
+                static constexpr const char* const SETTING_KEY_LOGGING = "logging";
+
                 /*!
                   * \fn PcscReader::PcscReader();
                   *
                   * \brief Default constructor
                   */
-                PcscReader(std::string &pluginName); // CardTerminal terminal);
+                PcscReader(const std::string &pluginName, CardTerminal &terminal);
 
                 /*!
                  * \fn PcscReader::~PcscReader();
@@ -69,15 +89,15 @@ namespace keyple {
 
                 //  keyple::containers::SeResponse transmit(keyple::containers::SeRequest *inSeApplicationRequest);
 
-                //  /*!
-                //* \fn bool PcscReader::isSePresent();
-                //*
-                //* \brief Query if Secure Element is present
-                //*
-                //* \return True if se present, false if not.
-                //*/
+                /**
+                 * Checks if is SE present.
+                 *
+                 * @return true if a Secure Element is present in the reader
+                 * @throws NoStackTraceThrowable a exception without stack trace in order to be catched and
+                 *         processed silently
+                 */
+                bool isSePresent() /*throws NoStackTraceThrowable; */ final override;
 
-                //  bool isSePresent();
 
                 //  ///
                 //  /// ConfigurableReader members
@@ -215,12 +235,12 @@ namespace keyple {
 
                 //  void cardPresenceMonitoringThread();
 
-                ///**
-                // * Gets the SE Answer to reset
-                // *
-                // * @return ATR returned by the SE or reconstructed by the reader (contactless)
-                // */
-                //std::vector<uint8_t> *getATR();
+                /**
+                 * Gets the SE Answer to reset
+                 *
+                 * @return ATR returned by the SE or reconstructed by the reader (contactless)
+                 */
+                std::vector<uint8_t>& getATR() final override;
 
                 ///**
                 // * Tells if the physical channel is open or not
@@ -263,8 +283,26 @@ namespace keyple {
                 //}
 
               private:
+                /*
+                 *
+                 */
                 bool logging;
+                
+                /*
+                 *
+                 */
                 std::string parameterCardProtocol;
+                
+                /*
+                 * 
+                 */
+                CardTerminal terminal;
+                
+                /*
+                 *
+                 */
+                Card card;
+
                 //  std::vector<uint8_t> scardTransmit(std::vector<uint8_t> apdu);
                 //  std::vector<uint8_t> getFCI(std::vector<uint8_t> aid);
                 //  std::vector<uint8_t> getResponseCase4();

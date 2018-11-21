@@ -44,10 +44,16 @@ PcscPlugin::~PcscPlugin()
     //DBG_TRACE_CALL();
 }
 
-PcscPlugin *PcscPlugin::setLogging(bool logging)
+PcscPlugin& PcscPlugin::setLogging(bool logging)
 {
     this->logging = logging;
-    return this;
+
+    return this->getInstance();
+}
+
+const std::string& PcscPlugin::getName()
+{
+ 
 }
 
 //void PcscPlugin::destroy()

@@ -70,7 +70,7 @@ namespace keyple {
              *
              * \param event The event.
              */
-            virtual void notifyObservers(keyple::seproxy::event::ReaderEvent event) = 0;
+            virtual void notifyObservers(keyple::seproxy::event::ReaderEvent event);
         };
     } // namespace seproxy
 } // namespace keyple

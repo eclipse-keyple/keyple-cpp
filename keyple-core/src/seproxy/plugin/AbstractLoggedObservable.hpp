@@ -23,21 +23,27 @@ namespace keyple {
                  *
                  * @param name name of the observed object
                  */
-                AbstractLoggedObservable(std::string name) : name(name)
+                AbstractLoggedObservable(const std::string name) : name(name)
                 {
                 }
-
+                
                 /**
-                 * Gets the reader name
+                 * Set a list of parameters on a reader.
+                 * <p>
+                 * See {@link #setParameter(String, String)} for more details
                  *
-                 * @return the reader name string
+                 * @param parameters the new parameters
+                 * @throws KeypleBaseException This method can fail when disabling the exclusive mode as it's
+                 *         executed instantly
                  */
-                virtual const std::string getName()
-                {
-                    return name;
-                }
+                void setParameters(std::map<std::string, std::string> parameters) {
+                       // throws IllegalArgumentException, KeypleBaseException {
+                  // for (Map.Entry<String, String> en : parameters.entrySet()) {
+                    //   setParameter(en.getKey(), en.getValue());
+                   //}
+               }
 
-              private:
+            protected:
                 /**
                  * The item name (must be unique)
                  */

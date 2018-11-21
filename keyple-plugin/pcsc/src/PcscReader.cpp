@@ -25,6 +25,8 @@
 
 //#include "ReaderParameters.hpp"
 //#include "ReaderEvent.hpp"
+#include "CardTerminal.hpp"
+#include "CardException.hpp"
 #include "PcscReader.hpp"
 
 using namespace keyple::plugin::pcsc;
@@ -34,7 +36,8 @@ using namespace keyple::plugin::pcsc;
  *
  * \brief Default constructor
  */
-PcscReader::PcscReader(std::string &pluginName) : AbstractThreadedLocalReader(pluginName, pluginName)
+PcscReader::PcscReader(const std::string &pluginName, CardTerminal &terminal)
+: AbstractThreadedLocalReader(pluginName, terminal.getName())
 {
     //DBG_TRACE_CALL();
     //// initialize default value of private properties
@@ -203,16 +206,17 @@ PcscReader::~PcscReader()
 //
 //    return seResponse;
 //}
-//
-///*!
-// * \fn bool PcscReader::isSePresent()
-// *
-// * \brief Query if this object is se present
-// *
-// * \return True if se present, false if not.
-// */
-//
-//bool PcscReader::isSePresent()
+
+bool PcscReader::isSePresent() /*throws NoStackTraceThrowable*/
+{
+    try {
+        return terminal.isCardPresent();
+    } catch (CardException &e) {
+        //logger.trace("[{}] Exception occured in isSePresent. Message: {}", this.getName(),
+        //        e.getMessage());
+        //throw new NoStackTraceThrowable();
+    }
+}
 //{
 //    DBG_TRACE_CALL();
 //
@@ -560,6 +564,11 @@ void PcscReader::setParameter(std::string name, std::string value)
     //{
     //    throw new IllegalArgumentException("This parameter is unknown !" + name + " : " + value);
     //}
+}
+
+std::vector<uint8_t>& PcscReader::getATR()
+{
+    return card.getATR();
 }
 
 ///*!

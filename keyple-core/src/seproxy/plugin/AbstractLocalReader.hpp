@@ -11,6 +11,8 @@
 
 #include "AbstractObservableReader.hpp"
 
+using namespace keyple::seproxy::plugin;
+
 namespace keyple {
     namespace seproxy {
         namespace plugin {
@@ -18,9 +20,9 @@ namespace keyple {
             /**
              *
              */
-            class AbstractLocalReader : public keyple::seproxy::plugin::AbstractObservableReader {
+            class AbstractLocalReader : public AbstractObservableReader {
               public:
-                AbstractLocalReader(std::string &pluginName, std::string &readerName)
+                AbstractLocalReader(const std::string &pluginName, std::string &readerName)
                     : AbstractObservableReader(pluginName, readerName)
                 {
                 }

@@ -45,7 +45,7 @@ namespace keyple {
              * @throws NoStackTraceThrowable a exception without stack trace in order to be catched and
              *         processed silently
              */
-            virtual bool isSePresent() = 0; // throws NoStackTraceThrowable;
+            virtual bool isSePresent() {} // throws NoStackTraceThrowable;
 
             /**
              * Transmits a {@link SeRequestSet} (list of {@link SeRequest}) to a SE application and get back
@@ -65,7 +65,7 @@ namespace keyple {
              * flag is set to false, the transmission go on for the next {@link SeRequest}. The channel is
              * left closed.
              * <p>
-             * This method could also fail in case of IO error or wrong card state &rarr; some reader’s
+             * This method could also fail in case of IO error or wrong card state &rarr; some readerï¿½s
              * exception (SE missing, IO error, wrong card state, timeout) have to be caught during the
              * processing of the SE request transmission.
              *
@@ -73,7 +73,7 @@ namespace keyple {
              * @return the SE response
              * @throws KeypleReaderException An error occurs during transmit (channel, IO)
              */
-            virtual SeResponseSet transmit(SeRequestSet seApplicationRequest) = 0;
+            virtual SeResponseSet transmit(SeRequestSet seApplicationRequest) {}
             // throws KeypleReaderException, IllegalArgumentException;
 
             /**
@@ -87,7 +87,7 @@ namespace keyple {
              * The logical channel is set according to the keepChannelOpen flag.
              *
              * <p>
-             * This method could also fail in case of IO error or wrong card state &rarr; some reader’s
+             * This method could also fail in case of IO error or wrong card state &rarr; some readerï¿½s
              * exception (SE missing, IO error, wrong card state, timeout) have to be caught during the
              * processing of the SE request transmission. *
              * 
@@ -96,7 +96,7 @@ namespace keyple {
              * @throws KeypleReaderException in case of a reader exception
              * @throws IllegalArgumentException if a bad argument is provided
              */
-            virtual SeResponse transmit(SeRequest &seApplicationRequest) = 0;
+            virtual SeResponse transmit(SeRequest &seApplicationRequest) {}
             //throws KeypleReaderException, IllegalArgumentException;
 
  //           virtual void addSeProtocolSetting(SeProtocolSetting &seProtocolSetting);

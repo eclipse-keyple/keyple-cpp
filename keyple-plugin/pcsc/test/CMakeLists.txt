@@ -52,15 +52,20 @@ file(GLOB SRCS *.cpp)
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
+
 	${CMAKE_CURRENT_SOURCE_DIR}/../src
+	${CMAKE_CURRENT_SOURCE_DIR}/../src/smartcardio
+
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/event
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/util
+
+    /usr/include/PCSC
 )
 
-add_executable(pcscplugintest ${SRCS})
-target_link_libraries(pcscplugintest pcscplugin gtest gmock)
+add_executable(keyplepluginpcsctest ${SRCS})
+target_link_libraries(keyplepluginpcsctest keyplepluginpcsc gtest gmock pcsclite)
 
 add_test(name PcscTest command testPcscPlugin)

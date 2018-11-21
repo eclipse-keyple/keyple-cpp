@@ -12,6 +12,9 @@
 #ifndef KEYPLE_PLUGIN_PCSC_TEST_SMC_IO
 #define KEYPLE_PLUGIN_PCSC_TEST_SMC_IO
 
+#include "Card.hpp"
+#include "CardChannel.hpp"
+#include "CardTerminal.hpp"
 #include "PcscReader.hpp"
 
 #include "gtest/gtest.h"
@@ -19,37 +22,32 @@
 using namespace keyple::plugin::pcsc;
 
 class SmartCardIOReaderTest : public ::testing::Test {
-
-  private:
-    /* std::string readerName;
-   */
-    //byte[] responseApduByte;
-
-  public:
-    PcscReader *reader;
-    /*CardTerminal terminal;
-    Card card;
-    CCardChannel channel;
-    ATR atr;
-    ResponseAPDU res;
-*/
+public:
+    /*
+     *
+     */
     void SetUp() // throws CardException, IllegalArgumentException, KeypleBaseException
     {
-        reader = NULL;
+        try {
+            card = terminal.connect("*");
+        } catch (const std::exception& e) {
+            
+        }
+        
+        try {
+            channel = card.getBasicChannel();
+        } catch (const std::exception& e) {
+            
+        }
 
-        /*
-        when(terminal.connect(any(String.class))).thenReturn(card);
-        when(card.getBasicChannel()).thenReturn(channel);
-
-        responseApduByte =
-            new byte[]{(byte)0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12, 0x12, 0x00, 0x00, 0x01, 0x03,
-                       0x01,       0x01, 0x00, 0x7E, 0x7E, 0x7E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+        const uint8_t apdu[] = {0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12, 0x12, 0x00, 0x00,
+                                0x01, 0x03, 0x01, 0x01, 0x00, 0x7E, 0x7E, 0x7E, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00};
+        std::vector<uint8_t> responseApduByte(apdu, apdu + sizeof(apdu));
         res = new ResponseAPDU(responseApduByte);
 
-        readerName = "reader";
-        reader     = new PcscReader("pcscPlugin", terminal);
-        reader.setParameter(PcscReader.SETTING_KEY_LOGGING, "true");
-        */
+        reader = new PcscReader("pcscPlugin", terminal);
+        reader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");
     }
 
     void TearDown()
@@ -239,6 +237,42 @@ class SmartCardIOReaderTest : public ::testing::Test {
     //      // assertNull(Whitebox.getInternalState(spiedReader, "card"));
     //      // assertNull(Whitebox.getInternalState(spiedReader, "channel"));
     //  }
+  protected:
+    /*
+     *
+     */
+    PcscReader *reader;
+    
+  private:
+    /*
+     * 
+     */
+    CardTerminal terminal;
+    
+    /*
+     * 
+     */
+    Card card;
+    
+    /*
+     *
+     */
+    CardChannel channel;
+    
+    /*
+     *
+     */
+    std::vector<uint8_t> responseApduByte;
+    
+    /*
+     *
+     */
+    ResponseAPDU *res;
+    
+    /*
+     *
+     */
+    const std::string readerName = "reader";
 };
 
 #endif // KEYPLE_PLUGIN_PCSC_TEST_SMC_IO

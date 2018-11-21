@@ -23,7 +23,7 @@ namespace keyple {
                 /**
                  *
                  */
-                AbstractThreadedLocalReader(std::string &pluginName, std::string &readerName)
+                AbstractThreadedLocalReader(const std::string &pluginName, std::string &readerName)
                     : AbstractSelectionLocalReader(pluginName, readerName)
                 {
                     /// create and launch a monitoring thread
@@ -49,7 +49,7 @@ namespace keyple {
                  * @throws NoStackTraceThrowable a exception without stack trace in order to be catched and
                  *         processed silently
                  */
-                virtual bool waitForCardPresent(long timeout) = 0;
+                virtual bool waitForCardPresent(long timeout);
                 // throws NoStackTraceThrowable;
 
                 /**
@@ -62,7 +62,7 @@ namespace keyple {
                  * @throws NoStackTraceThrowable a exception without stack trace in order to be catched and
                  *         processed silently
                  */
-                virtual bool waitForCardAbsent(long timeout) = 0;
+                virtual bool waitForCardAbsent(long timeout);
                 //throws NoStackTraceThrowable;
 
               private:

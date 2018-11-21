@@ -6,41 +6,41 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
+#ifndef KEYPLE_PLUGIN_PCSC_CARD_EXCEPTION_H
+#define KEYPLE_PLUGIN_PCSC_CARD_EXCEPTION_H
+
 #include <exception>
 
 namespace keyple {
-    namespace seproxy {
-        namespace exception {
-            class KeypleBaseException : public std::exception {
+    namespace plugin {
+        namespace pcsc {
+            
+            /*
+             *
+             */
+            class CardException : public std::exception {
               public:
                 /**
                  * New exception to be thrown
                  * 
                  * @param message : message to identify the exception and the context
                  */
-                explicit KeypleBaseException(const std::string &message)
+                explicit CardException(const std::string &message)
                 {
                 }
-
-                /**
-                 * Encapsulate a lower level exception (ie CardException, IOException, HostNotFoundException..)
-                 * 
-                 * @param message : message to identify the exception and the context
-                 * @param cause : lower level exception
-                 */
-                /*explicit KeypleBaseException(std::string &message, Throwable cause)
-                {
-                }*/
 
                 /**
                  * Destructor.
                  * 
                  * Virtual to allow for subclassing.
                  */
-                virtual ~KeypleBaseException() throw()
+                virtual ~CardException() throw()
                 {
                 }
             };
-        } // namespace exception
-    } // namespace seproxy
+        } // namespace pcsc
+    } // namespace plugin
 } // namespace keyple
+
+#endif /* KEYPLE_PLUGIN_PCSC_CARD_EXCEPTION_H*/
+

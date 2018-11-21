@@ -21,38 +21,38 @@ namespace keyple {
         class NameableConfigurable {
           public:
             /**
-             * @return the ‘unique’ name of the item
+             * @return the ï¿½uniqueï¿½ name of the item
              */
-            virtual const std::string getName() = 0;
+            virtual const std::string &getName() {}
 
             /**
              * Gets the parameters
              *
              * @return the configuration of the item
              */
-            virtual std::map<std::string, std::string> *getParameters() = 0;
+            virtual std::map<std::string, std::string> &getParameters() {}
 
             /**
              * allows to define a proprietary setting for a reader or a plugin (contactless protocols
-             * polling sequence, baud rate, … etc.).
+             * polling sequence, baud rate, ï¿½ etc.).
              *
              * @param key the parameter key
              * @param value the parameter value
              * @throws IllegalArgumentException if the parameter or the value is not supported
              * @throws KeypleBaseException if the parameter fails to be set up
              */
-            virtual void setParameter(std::string key, std::string value) = 0; //throw(
+            virtual void setParameter(std::string &key, std::string &value) {} //throw(
             //std::illegal_argument, keyple::seproxy::exception::KeypleBaseException);
 
             /**
              * allows to define a set of proprietary settings for a reader or a plugin (contactless
-             * protocols polling sequence, baud rate, … etc.).
+             * protocols polling sequence, baud rate, ï¿½ etc.).
              *
              * @param parameters Parameters to setup
              * @throws IllegalArgumentException if the parameters or the values is not supported
              * @throws KeypleBaseException if the parameter fails to be set up
              */
-            virtual void setParameters(std::map<std::string, std::string> parameters) = 0; //throw(
+            virtual void setParameters(std::map<std::string, std::string> &parameters) {} //throw(
             //std::illegal_argument, keyple::seproxy::exception::KeypleBaseException);
         };
     } // namespace util

@@ -54,46 +54,44 @@ namespace keyple {
                 }
 
                 /**
-                 * @return the ‘unique’ name of the item
+                 * @return the ï¿½uniqueï¿½ name of the item
                  */
-                const std::string getName()
-                {
-                    return "PcscPlugin";
-                }
+                const std::string &getName() final override;
 
                 /**
                  * Gets the parameters
                  *
                  * @return the configuration of the item
                  */
-                std::map<std::string, std::string> *getParameters()
+                std::map<std::string, std::string> &getParameters()
                 {
-                    return NULL;
+                    return parameters;
                 }
 
                 /**
                  * allows to define a proprietary setting for a reader or a plugin (contactless protocols
-                 * polling sequence, baud rate, … etc.).
+                 * polling sequence, baud rate, ï¿½ etc.).
                  *
                  * @param key the parameter key
                  * @param value the parameter value
                  * @throws IllegalArgumentException if the parameter or the value is not supported
                  * @throws KeypleBaseException if the parameter fails to be set up
                  */
-                void setParameter(std::string key, std::string value)
+                void setParameter(std::string &key, std::string &value)
                 {
                 }
 
                 /**
                  * allows to define a set of proprietary settings for a reader or a plugin (contactless
-                 * protocols polling sequence, baud rate, … etc.).
+                 * protocols polling sequence, baud rate, ï¿½ etc.).
                  *
                  * @param parameters Parameters to setup
                  * @throws IllegalArgumentException if the parameters or the values is not supported
                  * @throws KeypleBaseException if the parameter fails to be set up
                  */
-                void setParameters(std::map<std::string, std::string> parameters)
+                void setParameters(std::map<std::string, std::string> &parameters)
                 {
+                    this->parameters = parameters;
                 }
 
                 /**
@@ -103,33 +101,18 @@ namespace keyple {
                  * @return Same instance (fluent setter)
                  * @deprecated
                  */
-                PcscPlugin *setLogging(bool logging);
-
-                /**
-                 * Gets the readers.
-                 *
-                 * @return the ‘unique’ name of the readers’ plugin.
-                 * @throws KeypleReaderException if the list of readers has not been initialized
-                 */
-                std::set<ProxyReader> *getReaders()
-                {
-                    return NULL;
-                }
-
-                /**
-                 * Gets the reader whose name is provided as an argument
-                 * 
-                 * @param name of the reader
-                 * @return the ProxyReader object.
-                 * @throws KeypleReaderNotFoundException if the wanted reader is not found
-                 */
-                ProxyReader *getReader(std::string name)
-                {
-                    return NULL;
-                }
+                PcscPlugin &setLogging(bool logging);
 
               private:
+                /*
+                 *
+                 */
                 bool logging = false;
+
+                /*
+                 *
+                 */
+                std::map<std::string, std::string> parameters;
 
                 /*!
                  * \fn PcscPlugin::PcscPlugin();

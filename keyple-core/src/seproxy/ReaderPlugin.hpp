@@ -13,10 +13,13 @@
 #define KEYPLE_SEPROXY_READER_PLUGIN_H
 
 #include <set>
+#include <type_traits>
 
 #include "NameableConfigurable.hpp"
 #include "ProxyReader.hpp"
 #include "ReaderPlugin.hpp"
+
+using namespace keyple::util;
 
 namespace keyple {
     namespace seproxy {
@@ -29,19 +32,19 @@ namespace keyple {
             /**
              * Gets the readers.
              *
-             * @return the ‘unique’ name of the readers’ plugin.
+             * @return the unique name of the reader plugin.
              * @throws KeypleReaderException if the list of readers has not been initialized
              */
-            virtual std::set<ProxyReader> *getReaders() = 0; //throws KeypleReaderException;
+            virtual std::set<ProxyReader> const* getReaders() const = 0; //throws KeypleReaderException;
 
             /**
              * Gets the reader whose name is provided as an argument
-             * 
+             *
              * @param name of the reader
              * @return the ProxyReader object.
              * @throws KeypleReaderNotFoundException if the wanted reader is not found
              */
-            virtual ProxyReader *getReader(std::string name) = 0; // throws KeypleReaderNotFoundException;
+            virtual ProxyReader const& getReader(const std::string name) const = 0; // throws KeypleReaderNotFoundException;
         };
     } // namespace seproxy
 } // namespace keyple

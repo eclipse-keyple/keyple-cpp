@@ -7,12 +7,16 @@
  */
 
 #include "AbstractLoggedObservable.hpp"
+#include "ProxyReader.hpp"
 #include "ReaderEvent.hpp"
+
+using namespace keyple::seproxy::event;
 
 namespace keyple {
     namespace seproxy {
         namespace plugin {
-            class AbstractObservableReader : public AbstractLoggedObservable<keyple::seproxy::event::ReaderEvent> {
+            class AbstractObservableReader : public AbstractLoggedObservable<ReaderEvent>,
+                                             public ProxyReader {
               public:
                 /**
                  * Reader constructor
@@ -22,7 +26,7 @@ namespace keyple {
                  * @param pluginName the name of the plugin that instantiated the reader
                  * @param readerName the name of the reader
                  */
-                AbstractObservableReader(std::string &pluginName, std::string &readerName)
+                AbstractObservableReader(const std::string &pluginName, std::string &readerName)
                     : AbstractLoggedObservable(readerName), pluginName(pluginName)
                 {
                     this->before     = 0; //System.nanoTime();
@@ -33,6 +37,11 @@ namespace keyple {
                  * The name of the plugin handling the reader that produced the event
                  */
                 const std::string pluginName;
+                
+                /**
+                 *
+                 */
+                const std::string name;
               
                 /**
                  * Timestamp recorder
