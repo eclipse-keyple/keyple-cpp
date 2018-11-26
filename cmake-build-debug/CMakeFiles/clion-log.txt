@@ -1,0 +1,36 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/amunsch/Documents/GitHub/keyple-cpp
+-- base dir: /Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core/src/util'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core/src/seproxy'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core/src/seproxy/event'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core/src/seproxy/exception'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core/src/seproxy/message'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core/src/seproxy/plugin'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core/src/seproxy/protocol'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core/src/command'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-core/src/transaction'
+-- base dir: /Users/amunsch/Documents/GitHub/keyple-cpp/keyple-plugin/pcsc/src
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-plugin/pcsc/src'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-plugin/pcsc/src/smartcardio'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-plugin/pcsc/src/../../../keyple-core/src/seproxy'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-plugin/pcsc/src/../../../keyple-core/src/seproxy/event'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-plugin/pcsc/src/../../../keyple-core/src/seproxy/exception'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-plugin/pcsc/src/../../../keyple-core/src/seproxy/message'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-plugin/pcsc/src/../../../keyple-core/src/seproxy/plugin'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-plugin/pcsc/src/../../../keyple-core/src/seproxy/protocol'
+-- dir='/Users/amunsch/Documents/GitHub/keyple-cpp/keyple-plugin/pcsc/src/../../../keyple-core/src/util'
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/amunsch/Documents/GitHub/keyple-cpp/cmake-build-debug/keyple-plugin/pcsc/test/googletest-download
+[ 11%] Performing update step for 'googletest'
+Current branch master is up to date.
+[ 22%] No configure step for 'googletest'
+[ 33%] No build step for 'googletest'
+[ 44%] No install step for 'googletest'
+[ 55%] No test step for 'googletest'
+[ 66%] Completed 'googletest'
+[100%] Built target googletest
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/amunsch/Documents/GitHub/keyple-cpp/cmake-build-debug

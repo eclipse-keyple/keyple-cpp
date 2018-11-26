@@ -215,6 +215,7 @@ bool PcscReader::isSePresent() /*throws NoStackTraceThrowable*/
         //logger.trace("[{}] Exception occured in isSePresent. Message: {}", this.getName(),
         //        e.getMessage());
         //throw new NoStackTraceThrowable();
+        return false;
     }
 }
 //{
@@ -462,7 +463,7 @@ bool PcscReader::isSePresent() /*throws NoStackTraceThrowable*/
 //    return status;
 //}
 
-void PcscReader::setParameter(std::string name, std::string value)
+void PcscReader::setParameter(std::string &name, std::string &value)
 {
     //if (logging)
     //{
@@ -566,7 +567,7 @@ void PcscReader::setParameter(std::string name, std::string value)
     //}
 }
 
-std::vector<uint8_t>& PcscReader::getATR()
+std::vector<uint8_t>* PcscReader::getATR()
 {
     return card.getATR();
 }

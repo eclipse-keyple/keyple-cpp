@@ -25,7 +25,7 @@ CardChannel& Card::getBasicChannel()
     return channel;
 }
 
-std::vector<uint8_t>& Card::getATR()
+std::vector<uint8_t>* Card::getATR()
 {
-    return atr;
+    return &atr;
 }

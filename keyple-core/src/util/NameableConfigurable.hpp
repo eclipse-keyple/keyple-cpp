@@ -19,18 +19,26 @@
 namespace keyple {
     namespace util {
         class NameableConfigurable {
-          public:
+        public:
             /**
              * @return the �unique� name of the item
              */
-            virtual const std::string &getName() {}
+            virtual const std::string& getName()
+            {
+                static const std::string name = "NameableConfigurable";
+
+                return name;
+            }
 
             /**
              * Gets the parameters
              *
              * @return the configuration of the item
              */
-            virtual std::map<std::string, std::string> &getParameters() {}
+            virtual std::map<std::string, std::string>* getParameters()
+            {
+                return nullptr;
+            }
 
             /**
              * allows to define a proprietary setting for a reader or a plugin (contactless protocols
@@ -54,6 +62,12 @@ namespace keyple {
              */
             virtual void setParameters(std::map<std::string, std::string> &parameters) {} //throw(
             //std::illegal_argument, keyple::seproxy::exception::KeypleBaseException);
+
+        protected:
+            /**
+             *
+             */
+             NameableConfigurable() {}
         };
     } // namespace util
 } // namespace keyple

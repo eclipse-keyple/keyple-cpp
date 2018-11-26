@@ -17,8 +17,12 @@ namespace keyple {
             /**
              *
              */
-            class AbstractThreadedObservablePlugin : public AbstractObservablePlugin {
-              public:
+            class AbstractThreadedObservablePlugin : public virtual AbstractObservablePlugin {
+            public:
+                /**
+                 *
+                 * @param name
+                 */
                 AbstractThreadedObservablePlugin(std::string name) : AbstractObservablePlugin(name)
                 {
                     /* Create and launch the monitoring thread */

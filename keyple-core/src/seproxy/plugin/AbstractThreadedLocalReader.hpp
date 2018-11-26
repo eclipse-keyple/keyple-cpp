@@ -49,8 +49,11 @@ namespace keyple {
                  * @throws NoStackTraceThrowable a exception without stack trace in order to be catched and
                  *         processed silently
                  */
-                virtual bool waitForCardPresent(long timeout);
+                virtual bool waitForCardPresent(long timeout)
                 // throws NoStackTraceThrowable;
+                {
+                    return false;
+                }
 
                 /**
                  * Wait until the card disappears. Returns true if a card has disappeared before the end of the
@@ -62,8 +65,11 @@ namespace keyple {
                  * @throws NoStackTraceThrowable a exception without stack trace in order to be catched and
                  *         processed silently
                  */
-                virtual bool waitForCardAbsent(long timeout);
+                virtual bool waitForCardAbsent(long timeout)
                 //throws NoStackTraceThrowable;
+                {
+                    return false;
+                }
 
               private:
                 /**

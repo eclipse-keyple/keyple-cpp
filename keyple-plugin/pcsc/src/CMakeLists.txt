@@ -18,6 +18,8 @@ SET(PACKAGE_NAME "keyplepluginpcsc")
 SET(PACKAGE_VERSION ${VERSION})
 SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 
+set(CMAKE_MACOSX_RPATH 1)
+
 # Common definitions
 ADD_DEFINITIONS(-DK_KPL_PLUGIN_PCSC_SUPPORT -DK_KPL_OS_MEMORY_DEBUG -D_CRT_SECURE_NO_WARNINGS)
 
@@ -39,10 +41,10 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/event
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/message
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/protocol
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/util
-
-    /usr/include/PCSC
 )
 
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
@@ -59,4 +61,3 @@ add_library(keyplepluginpcsc SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/smartcardio/CommandAPDU.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/smartcardio/ResponseAPDU.cpp
 )
-

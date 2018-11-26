@@ -16,7 +16,7 @@ namespace keyple {
              * ReaderEvent used to notify changes at reader level
              */
             class ReaderEvent {
-              public:
+            public:
                 /**
                  * The different types of reader event
                  */

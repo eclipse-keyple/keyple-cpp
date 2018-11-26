@@ -38,7 +38,7 @@ namespace keyple {
                  *
                  * @return the ATR of this card.
                  */
-                std::vector<uint8_t>& getATR();
+                std::vector<uint8_t>* getATR();
 
 //              protected:
                 /**

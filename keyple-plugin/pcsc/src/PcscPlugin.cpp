@@ -7,7 +7,13 @@
  */
 
 #include <iostream>
+
+#ifdef __APPLE__
+#include <PCSC/winscard.h>
+#include <PCSC/wintypes.h>
+#else
 #include <winscard.h>
+#endif
 
 //#include "PlatformConfig.hpp"
 #include "ReaderPlugin.hpp"
@@ -49,11 +55,6 @@ PcscPlugin& PcscPlugin::setLogging(bool logging)
     this->logging = logging;
 
     return this->getInstance();
-}
-
-const std::string& PcscPlugin::getName()
-{
- 
 }
 
 //void PcscPlugin::destroy()

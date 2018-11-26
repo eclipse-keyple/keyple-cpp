@@ -65,7 +65,23 @@ include_directories(
     /usr/include/PCSC
 )
 
+IF(APPLE)
+	find_library(PCSC PCSC)
+ENDIF(APPLE)
+
+IF(UNIX)
+	find_library(PCSC pcsclite)
+ENDIF(UNIX)
+
+IF(WIN32)
+	find_libray(PCSC pcsclite)
+ENDIF(WIN32)
+
+if(NOT PCSC)
+	message(FATAL_ERROR "PC/SC framework/library not found")
+endif()
+
 add_executable(keyplepluginpcsctest ${SRCS})
-target_link_libraries(keyplepluginpcsctest keyplepluginpcsc gtest gmock pcsclite)
+target_link_libraries(keyplepluginpcsctest keyplepluginpcsc gtest gmock ${PCSC})
 
 add_test(name PcscTest command testPcscPlugin)

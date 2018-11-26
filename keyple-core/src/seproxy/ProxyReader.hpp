@@ -13,12 +13,13 @@
 #define KEYPLE_SEPROXY_PROXY_READER_H
 
 #include "NameableConfigurable.hpp"
-#include "SeRequest.hpp"
-#include "SeRequestSet.hpp"
-#include "SeResponse.hpp"
-#include "SeResponseSet.hpp"
+#include "message/SeRequest.hpp"
+#include "message/SeRequestSet.hpp"
+#include "message/SeResponse.hpp"
+#include "message/SeResponseSet.hpp"
 
 using namespace keyple::util;
+using namespace keyple::seproxy::message;
 
 namespace keyple {
     namespace seproxy {
@@ -36,8 +37,8 @@ namespace keyple {
          * </ul>
          * Interface each {@link ReaderPlugin} should implement
          */
-        class ProxyReader : public NameableConfigurable { //, public Comparable<ProxyReader> {
-          public:
+        class ProxyReader : public virtual NameableConfigurable { //, public Comparable<ProxyReader> {
+        public:
             /**
              * Checks if is SE present.
              *
@@ -45,7 +46,11 @@ namespace keyple {
              * @throws NoStackTraceThrowable a exception without stack trace in order to be catched and
              *         processed silently
              */
-            virtual bool isSePresent() {} // throws NoStackTraceThrowable;
+            virtual bool isSePresent()
+            // throws NoStackTraceThrowable;
+            {
+                return false;
+            }
 
             /**
              * Transmits a {@link SeRequestSet} (list of {@link SeRequest}) to a SE application and get back
@@ -73,8 +78,11 @@ namespace keyple {
              * @return the SE response
              * @throws KeypleReaderException An error occurs during transmit (channel, IO)
              */
-            virtual SeResponseSet transmit(SeRequestSet seApplicationRequest) {}
+            virtual SeResponseSet* transmit(SeRequestSet seApplicationRequest)
             // throws KeypleReaderException, IllegalArgumentException;
+            {
+                return nullptr;
+            }
 
             /**
              * Transmits a single {@link SeRequest} (list of {@link ApduRequest}) and get back the
@@ -96,8 +104,11 @@ namespace keyple {
              * @throws KeypleReaderException in case of a reader exception
              * @throws IllegalArgumentException if a bad argument is provided
              */
-            virtual SeResponse transmit(SeRequest &seApplicationRequest) {}
+            virtual SeResponse* transmit(SeRequest &seApplicationRequest)
             //throws KeypleReaderException, IllegalArgumentException;
+            {
+                return nullptr;
+            }
 
  //           virtual void addSeProtocolSetting(SeProtocolSetting &seProtocolSetting);
         };

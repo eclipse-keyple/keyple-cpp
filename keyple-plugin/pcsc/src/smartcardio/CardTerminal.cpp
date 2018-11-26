@@ -31,20 +31,20 @@ Card& CardTerminal::connect(std::string protocol)
 
 std::string &CardTerminal::getName()
 {
-
+    return name;
 }
 
 bool CardTerminal::isCardPresent()
 {
-
+    return isPresent;
 }
 
 bool CardTerminal::waitForCardAbsent(long timeout)
 {
-
+    return false;
 }
 
 bool CardTerminal::waitForCardPresent(long timeout)
 {
-
+    return false;
 }

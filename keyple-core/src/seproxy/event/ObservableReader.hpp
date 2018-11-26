@@ -35,7 +35,7 @@ namespace keyple {
          *    is optionally proposed by plugins for readers able to notify events in case of IO Error, SE
          *    Insertion or removal.
          */
-        class ObservableReader : public ProxyReader {
+        class ObservableReader : public virtual ProxyReader {
           public:
             /*!
              * \fn virtual ExecutionStatus ObservableReader::attachObserver(keyple::seproxy::ReaderObserver *callBack) = 0;
@@ -70,7 +70,7 @@ namespace keyple {
              *
              * \param event The event.
              */
-            virtual void notifyObservers(keyple::seproxy::event::ReaderEvent event);
+//            virtual void notifyObservers(keyple::seproxy::event::ReaderEvent event);
         };
     } // namespace seproxy
 } // namespace keyple

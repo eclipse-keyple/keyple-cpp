@@ -15,7 +15,7 @@
 //#include "PlatformConfig.hpp"
 #include "SeProxyService.hpp"
 #include "ProxyReader.hpp"
-#include "SeRequest.hpp"
+#include "src/seproxy/message/SeRequest.hpp"
 #include <iostream>
 
 using namespace keyple;

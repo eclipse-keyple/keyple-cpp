@@ -18,6 +18,8 @@ SET(PACKAGE_NAME "KeypleCore")
 SET(PACKAGE_VERSION ${VERSION})
 SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 
+set(CMAKE_MACOSX_RPATH 1)
+
 # Common definitions
 ADD_DEFINITIONS(-DK_KPL_PLUGIN_PCSC_SUPPORT -DK_KPL_OS_MEMORY_DEBUG -D_CRT_SECURE_NO_WARNINGS)
 
@@ -38,7 +40,9 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/event
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/src/command
 	${CMAKE_CURRENT_SOURCE_DIR}/src/transaction
 )
@@ -50,10 +54,10 @@ endforeach()
 
 add_library(libkeyplecore SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeProxyService.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeRequestSet.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeResponse.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeResponseSet.cpp
+        src/seproxy/message/SeRequest.cpp
+        src/seproxy/message/SeRequestSet.cpp
+		src/seproxy/message/SeResponse.cpp
+		src/seproxy/message/SeResponseSet.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/util/Observable.cpp
 )
 

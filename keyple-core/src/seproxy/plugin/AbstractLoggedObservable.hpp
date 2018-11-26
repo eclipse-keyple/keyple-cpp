@@ -16,8 +16,24 @@ using namespace keyple::util;
 namespace keyple {
     namespace seproxy {
         namespace plugin {
-            template <class T> class AbstractLoggedObservable : public NameableConfigurable {
-              public:
+            template <class T> class AbstractLoggedObservable : public virtual NameableConfigurable {
+            public:
+                /**
+                 * Gets the reader name
+                 *
+                 * @return the reader name string
+                 */
+                const std::string& getName() const
+                {
+                    return name;
+                }
+
+            protected:
+                /**
+                 * Default constructor
+                 */
+                AbstractLoggedObservable() {}
+
                 /**
                  * Item constructor Force the definition of a name through the use of super method.
                  *
@@ -41,9 +57,8 @@ namespace keyple {
                   // for (Map.Entry<String, String> en : parameters.entrySet()) {
                     //   setParameter(en.getKey(), en.getValue());
                    //}
-               }
+                }
 
-            protected:
                 /**
                  * The item name (must be unique)
                  */

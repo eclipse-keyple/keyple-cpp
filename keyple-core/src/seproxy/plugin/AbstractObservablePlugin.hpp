@@ -14,6 +14,7 @@
 #include <thread>
 
 #include "AbstractLocalReader.hpp"
+#include "KeypleReaderNotFoundException.hpp"
 #include "ObservableReader.hpp"
 #include "PluginEvent.hpp"
 #include "ProxyReader.hpp"
@@ -21,6 +22,7 @@
 
 using namespace keyple::seproxy;
 using namespace keyple::seproxy::event;
+using namespace keyple::seproxy::exception;
 
 namespace keyple {
     namespace seproxy {
@@ -29,9 +31,14 @@ namespace keyple {
             /**
              *
              */
-            class AbstractObservablePlugin : public AbstractLoggedObservable<PluginEvent>,
-                                             public ReaderPlugin {
-              public:
+            class AbstractObservablePlugin : public virtual AbstractLoggedObservable<PluginEvent>,
+                                             public virtual ReaderPlugin {
+            public:
+                /**
+                 * Default constructor
+                 */
+                AbstractObservablePlugin() {}
+
                 /**
                  * Instanciates a new ReaderPlugin. Retrieve the current readers list.
                  *
@@ -75,13 +82,14 @@ namespace keyple {
                  * @throws KeypleReaderNotFoundException if the wanted reader is not found
                  */
                 ProxyReader const& getReader(std::string name) const override
-                { //throws KeypleReaderNotFoundException {
-//                    for (auto reader : readers) {
-//                        if (reader.getName().compare(name) == 0) {
-//                            return reader;
-//                        }
-//                    }
-                    //throw new KeypleReaderNotFoundException("Reader " + name + "not found.");
+                {
+                    for (auto &reader : readers) {
+                        if (reader.getName().compare(name) == 0) {
+                            return reader;
+                        }
+                    }
+
+                    throw(KeypleReaderNofFoundException("Reader " + name + "not found."));
                 }
 
             protected:

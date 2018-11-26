@@ -15,7 +15,7 @@
 #ifndef KEYPLE_SEPROXY_PCSC_READERS_PLUGIN_H
 #define KEYPLE_SEPROXY_PCSC_READERS_PLUGIN_H
 
-#include <string>
+#include <cstring>
 #include <list>
 #include <thread>
 #include <atomic>
@@ -36,15 +36,14 @@ namespace keyple {
              *
              * \brief PCSC plugin class.
              */
-            class PcscPlugin : public AbstractThreadedObservablePlugin {
-              public:
+            class PcscPlugin : public virtual AbstractThreadedObservablePlugin {
+            public:
                 /**
                  * Gets the single instance of PcscPlugin.
                  *
                  * @return single instance of PcscPlugin
                  */
-                static PcscPlugin &getInstance()
-                {
+                static PcscPlugin &getInstance() {
                     /**
                      * Singleton instance of SeProxyService
                      */
@@ -54,18 +53,13 @@ namespace keyple {
                 }
 
                 /**
-                 * @return the �unique� name of the item
-                 */
-                const std::string &getName() final override;
-
-                /**
                  * Gets the parameters
                  *
                  * @return the configuration of the item
                  */
-                std::map<std::string, std::string> &getParameters()
+                std::map<std::string, std::string>* getParameters() override
                 {
-                    return parameters;
+                    return &parameters;
                 }
 
                 /**
@@ -77,7 +71,7 @@ namespace keyple {
                  * @throws IllegalArgumentException if the parameter or the value is not supported
                  * @throws KeypleBaseException if the parameter fails to be set up
                  */
-                void setParameter(std::string &key, std::string &value)
+                void setParameter(std::string &key, std::string &value) override
                 {
                 }
 
@@ -89,7 +83,7 @@ namespace keyple {
                  * @throws IllegalArgumentException if the parameters or the values is not supported
                  * @throws KeypleBaseException if the parameter fails to be set up
                  */
-                void setParameters(std::map<std::string, std::string> &parameters)
+                void setParameters(std::map<std::string, std::string> &parameters) override
                 {
                     this->parameters = parameters;
                 }
@@ -103,7 +97,7 @@ namespace keyple {
                  */
                 PcscPlugin &setLogging(bool logging);
 
-              private:
+            private:
                 /*
                  *
                  */
@@ -158,7 +152,7 @@ namespace keyple {
                 SCARDCONTEXT m_context;
             };
         } // namespace pcsc
-    }     // namespace plugin
+    } // namespace plugin
 } // namespace keyple
 
 #endif // KEYPLE_SEPROXY_PCSC_READERS_PLUGIN_H

@@ -162,7 +162,7 @@ namespace keyple {
                  *
                  *
                  */
-                void setParameter(std::string key, std::string value);
+                void setParameter(std::string &key, std::string &value) override;
 
                 //  /*!
                 //* \fn ExecutionStatus PcscReader::attachObserver(keyple::seproxy::ReaderObserver * callBack);
@@ -240,7 +240,7 @@ namespace keyple {
                  *
                  * @return ATR returned by the SE or reconstructed by the reader (contactless)
                  */
-                std::vector<uint8_t>& getATR() final override;
+                std::vector<uint8_t>* getATR() final override;
 
                 ///**
                 // * Tells if the physical channel is open or not

@@ -110,16 +110,26 @@ namespace keyple {
                  */
                 ~CardTerminal();
                 
-              private:
-                /*
+            private:
+                /**
                  *
                  */
                 SCARDCONTEXT context;
                 
-                /*
+                /**
                  *
                  */
                 Card card;
+
+                /**
+                 *
+                 */
+                std::string name;
+
+                /**
+                 *
+                 */
+                bool isPresent;
             };
         }
     }

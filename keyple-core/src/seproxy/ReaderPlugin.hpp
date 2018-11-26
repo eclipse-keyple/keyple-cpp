@@ -27,8 +27,8 @@ namespace keyple {
         /**
          *
          */
-        class ReaderPlugin : public NameableConfigurable {
-          public:
+        class ReaderPlugin : public virtual NameableConfigurable {
+        public:
             /**
              * Gets the readers.
              *
@@ -45,6 +45,12 @@ namespace keyple {
              * @throws KeypleReaderNotFoundException if the wanted reader is not found
              */
             virtual ProxyReader const& getReader(const std::string name) const = 0; // throws KeypleReaderNotFoundException;
+
+        protected:
+            /**
+             *
+             */
+             ReaderPlugin() {}
         };
     } // namespace seproxy
 } // namespace keyple

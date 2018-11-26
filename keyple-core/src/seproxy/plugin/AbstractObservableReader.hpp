@@ -10,14 +10,21 @@
 #include "ProxyReader.hpp"
 #include "ReaderEvent.hpp"
 
+using namespace keyple::seproxy;
 using namespace keyple::seproxy::event;
 
 namespace keyple {
     namespace seproxy {
         namespace plugin {
-            class AbstractObservableReader : public AbstractLoggedObservable<ReaderEvent>,
-                                             public ProxyReader {
-              public:
+            class AbstractObservableReader : public virtual AbstractLoggedObservable<ReaderEvent>,
+                                             public virtual ProxyReader {
+            public:
+                AbstractObservableReader()
+                : AbstractLoggedObservable("")
+                {
+
+                }
+
                 /**
                  * Reader constructor
                  *
@@ -26,22 +33,30 @@ namespace keyple {
                  * @param pluginName the name of the plugin that instantiated the reader
                  * @param readerName the name of the reader
                  */
-                AbstractObservableReader(const std::string &pluginName, std::string &readerName)
-                    : AbstractLoggedObservable(readerName), pluginName(pluginName)
+                AbstractObservableReader(const std::string pluginName, std::string readerName)
+                    : AbstractLoggedObservable(readerName),
+                      pluginName(pluginName)
                 {
                     this->before     = 0; //System.nanoTime();
                 }
 
-              private:
+            protected:
+                /**
+                 *
+                 * @param requestSet
+                 * @return
+                 */
+                virtual SeResponseSet* processSeRequestSet(SeRequestSet requestSet)
+                //throws KeypleIOReaderException, KeypleChannelStateException, KeypleReaderException;
+                {
+                    return nullptr;
+                }
+
+            private:
                 /**
                  * The name of the plugin handling the reader that produced the event
                  */
                 const std::string pluginName;
-                
-                /**
-                 *
-                 */
-                const std::string name;
               
                 /**
                  * Timestamp recorder

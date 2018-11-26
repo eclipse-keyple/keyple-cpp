@@ -17,7 +17,8 @@ namespace keyple {
             /**
              *
              */
-            class AbstractSelectionLocalReader : public AbstractLocalReader, public ObservableReader {
+            class AbstractSelectionLocalReader : public virtual AbstractLocalReader,
+                                                 public virtual ObservableReader {
               public:
                 AbstractSelectionLocalReader(const std::string &pluginName, std::string &readerName)
                    : AbstractLocalReader(pluginName, readerName)
@@ -30,14 +31,20 @@ namespace keyple {
                  *
                  * @return ATR returned by the SE or reconstructed by the reader (contactless)
                  */
-                virtual std::vector<uint8_t>& getATR();
+                virtual std::vector<uint8_t>* getATR()
+                {
+                    return nullptr;
+                }
 
                 /**
                  * Tells if the physical channel is open or not
                  *
                  * @return true is the channel is open
                  */
-                virtual bool isPhysicalChannelOpen();
+                virtual bool isPhysicalChannelOpen()
+                {
+                    return false;
+                }
             };
         } // namespace plugin
     } // namespace seproxy
