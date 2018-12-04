@@ -12,6 +12,8 @@
 #ifndef KEYPLE_PLUGIN_PCSC_TEST_SMC_IO
 #define KEYPLE_PLUGIN_PCSC_TEST_SMC_IO
 
+#include <string>
+
 #include "Card.hpp"
 #include "CardChannel.hpp"
 #include "CardTerminal.hpp"
@@ -22,37 +24,37 @@
 using namespace keyple::plugin::pcsc;
 
 class SmartCardIOReaderTest : public ::testing::Test {
-public:
+  public:
     /*
      *
      */
     void SetUp() // throws CardException, IllegalArgumentException, KeypleBaseException
     {
-        try {
+        try
+        {
             card = terminal.connect("*");
-        } catch (const std::exception& e) {
-            
-        }
-        
-        try {
-            channel = card.getBasicChannel();
-        } catch (const std::exception& e) {
-            
+        } catch (const std::exception &e)
+        {
         }
 
-        const uint8_t apdu[] = {0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12, 0x12, 0x00, 0x00,
-                                0x01, 0x03, 0x01, 0x01, 0x00, 0x7E, 0x7E, 0x7E, 0x00, 0x00, 0x00,
-                                0x00, 0x00, 0x00};
+        try
+        {
+            channel = card.getBasicChannel();
+        } catch (const std::exception &e)
+        {
+        }
+
+        const uint8_t apdu[] = {0x85, 0x17, 0x00, 0x01, 0x00, 0x00, 0x00, 0x12, 0x12, 0x00, 0x00, 0x01, 0x03,
+                                0x01, 0x01, 0x00, 0x7E, 0x7E, 0x7E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
         std::vector<uint8_t> responseApduByte(apdu, apdu + sizeof(apdu));
         res = new ResponseAPDU(responseApduByte);
 
         reader = new PcscReader("pcscPlugin", terminal);
-        reader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");
+        reader->setParameter(std::string(PcscReader::SETTING_KEY_LOGGING), std::string("true"));
     }
 
     void TearDown()
     {
-
     }
 
     //  @Before public
@@ -242,33 +244,33 @@ public:
      *
      */
     PcscReader *reader;
-    
+
   private:
     /*
      * 
      */
     CardTerminal terminal;
-    
+
     /*
      * 
      */
     Card card;
-    
+
     /*
      *
      */
     CardChannel channel;
-    
+
     /*
      *
      */
     std::vector<uint8_t> responseApduByte;
-    
+
     /*
      *
      */
     ResponseAPDU *res;
-    
+
     /*
      *
      */

@@ -10,6 +10,7 @@
 #define KEYPLE_PLUGIN_PCSC_CARD_H
 
 #include "CardChannel.hpp"
+#include "Export.hpp"
 
 namespace keyple {
     namespace plugin {
@@ -19,7 +20,7 @@ namespace keyple {
              * @class Card
              *
              */
-            class Card {
+            class EXPORT Card {
               public:
                 /**
                  * Returns the CardChannel for the basic logical channel. The basic logical

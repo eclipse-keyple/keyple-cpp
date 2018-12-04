@@ -21,6 +21,7 @@
 
 #include "AbstractThreadedLocalReader.hpp"
 #include "CardTerminal.hpp"
+#include "Export.hpp"
 
 using namespace keyple::plugin::pcsc;
 using namespace keyple::seproxy::plugin;
@@ -32,7 +33,7 @@ namespace keyple {
             /**
              *
              */
-            class PcscReader : public AbstractThreadedLocalReader {
+            class EXPORT PcscReader : public AbstractThreadedLocalReader {
               public:
                 static constexpr const char* const KEY = "TheKey";
                 static constexpr const char* const SETTING_KEY_PROTOCOL = "protocol";

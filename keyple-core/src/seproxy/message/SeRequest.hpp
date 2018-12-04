@@ -30,7 +30,7 @@ namespace keyple {
              * @see SeResponse
              */
             class SeRequest {
-            public:
+              public:
                 //
                 //    static final long serialVersionUID = 6018469841127325812L;
                 //
@@ -226,6 +226,16 @@ namespace keyple {
                 //Selector selector, List<ApduRequest> apduRequests, boolean keepChannelOpen,
                 //SeProtocol protocolFlag, Set<Integer> successfulSelectionStatusCodes)
 
+                /**
+                 * Copy constructor
+                 */
+                SeRequest(const SeRequest &seRequest);
+
+                /**
+                 * Assignment operator
+                 */
+                SeRequest &operator=(const SeRequest &seRequest);
+
                 //
                 //    /**
                 //     * Alternate constructor with no list of successful selection status codes set and a protocol
@@ -336,7 +346,7 @@ namespace keyple {
                 //        return String.format("SeRequest:{REQUESTS = %s, SELECTOR = %s, KEEPCHANNELOPEN = %s}",
                 //                             getApduRequests(), getSelector(), this.keepChannelOpen);
                 //    }
-/*
+                /*
                 template <>
                 struct std::hash<SeRequest> {
                     std::size_t operator()(const SeRequest& k) const {
@@ -344,7 +354,13 @@ namespace keyple {
                     };
                 };
 */
-            private:
+
+                bool operator==(const SeRequest& req) const
+                { 
+                    return 0;
+                }
+
+              private:
                 /**
                  * SE selector is either an AID or an ATR regular expression
                  */
@@ -364,7 +380,7 @@ namespace keyple {
                 /**
                  * the protocol flag is used to target specific SE technologies for a given request
                  */
-                SeProtocol* protocolFlag = nullptr;
+                SeProtocol *protocolFlag = nullptr;
 
                 /**
                  * the final logical channel status: if true, the SE reader keep active the logical channel of
@@ -373,20 +389,20 @@ namespace keyple {
                  * (i.e. after the receipt of the last APDU response).
                  */
                 bool keepChannelOpen;
-
             };
         } // namespace message
-    } // namespace seproxy
+    }     // namespace seproxy
 } // namespace keyple
 
 namespace std {
-    template<>
-    class hash<SeRequest> {
-        size_t operator()(const SeRequest &req) const
+    template <>
+    struct hash<keyple::seproxy::message::SeRequest> {
+        size_t operator()(const keyple::seproxy::message::SeRequest &req) const
         {
-            return 0;
+            return 0; //std::hash<std::list<ApduRequest>>()(*req.apduRequests) ^
+                   //std::hash<SeProtocol>()(*req.protocolFlag) ^ std::hash<bool>()(*req.keepChannelOpen);
         }
     };
-}
+} // namespace std
 
 #endif // KEYPLE_SEPROXY_SEREQUEST_H

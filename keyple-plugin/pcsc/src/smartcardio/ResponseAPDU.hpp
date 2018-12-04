@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <vector>
 
+#include "Export.hpp"
+
 namespace keyple {
     namespace plugin {
         namespace pcsc {
@@ -19,8 +21,8 @@ namespace keyple {
             /*
              *
              */
-            class ResponseAPDU {
-              public:
+            class EXPORT ResponseAPDU {
+            public:
                 /**
                  * Constructor
                  *
@@ -38,7 +40,7 @@ namespace keyple {
                  */
                 ~ResponseAPDU();
                 
-              private:
+            private:
                 /*
                  * Current APDU
                  */

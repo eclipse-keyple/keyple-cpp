@@ -14,6 +14,7 @@
 
 #include <list>
 
+#include "Export.hpp"
 #include "SeResponse.hpp"
 
 namespace keyple {
@@ -27,7 +28,7 @@ namespace keyple {
              *
              * @see SeRequestSet
              */
-            class SeResponseSet {
+            class EXPORT SeResponseSet {
             public:
                 //
                 //    static final long serialVersionUID = 125369841119873812L;

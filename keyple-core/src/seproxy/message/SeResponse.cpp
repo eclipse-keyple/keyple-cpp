@@ -11,7 +11,7 @@
 
 #include "SeResponse.hpp"
 
-using namespace keyple::seproxy;
+using namespace keyple::seproxy::message;
 
 ///**
 // * Group of SE responses received in response to a {@link SeRequest}.

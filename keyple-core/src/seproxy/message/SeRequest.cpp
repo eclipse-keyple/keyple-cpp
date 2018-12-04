@@ -235,7 +235,16 @@ SeRequest::SeRequest()
     this->successfulselectionstatuscodes = successfulselectionstatuscodes;*/
 }
 
-//
+SeRequest::SeRequest(const SeRequest &seRequest)
+{
+
+}
+
+SeRequest &SeRequest::operator=(const SeRequest &seRequest)
+{
+    return *this;
+}
+
 //    /**
 //     * Alternate constructor with no list of successful selection status codes set and a protocol
 //     * flag

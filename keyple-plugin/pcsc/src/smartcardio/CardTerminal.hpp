@@ -11,7 +11,7 @@
 
 #include <string>
 
-#if defined(WIN32)
+#if defined(WIN32) || defined(__MINGW32__) || defined (__MINGW64__)
 #  include <winscard.h>
 #else
 #  include <PCSC/winscard.h>
@@ -20,6 +20,7 @@
 
 #include "Card.hpp"
 #include "CardException.hpp"
+#include "Export.hpp"
 
 namespace keyple {
     namespace plugin {
@@ -28,7 +29,7 @@ namespace keyple {
             /**
              * \class CardTerminal
              */
-            class CardTerminal {
+            class EXPORT CardTerminal {
             public:
                 /**
                  * Establishes a connection to the card.

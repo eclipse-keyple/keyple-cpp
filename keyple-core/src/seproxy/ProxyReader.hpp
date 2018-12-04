@@ -13,10 +13,10 @@
 #define KEYPLE_SEPROXY_PROXY_READER_H
 
 #include "NameableConfigurable.hpp"
-#include "message/SeRequest.hpp"
-#include "message/SeRequestSet.hpp"
-#include "message/SeResponse.hpp"
-#include "message/SeResponseSet.hpp"
+#include "SeRequest.hpp"
+#include "SeRequestSet.hpp"
+#include "SeResponse.hpp"
+#include "SeResponseSet.hpp"
 
 using namespace keyple::util;
 using namespace keyple::seproxy::message;

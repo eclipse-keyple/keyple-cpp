@@ -10,6 +10,7 @@
 #define KEYPLE_PLUGIN_PCSC_CARD_CHANNEL_H
 
 #include "CommandAPDU.hpp"
+#include "Export.hpp"
 #include "ResponseAPDU.hpp"
 
 using namespace keyple::plugin::pcsc;
@@ -26,8 +27,8 @@ namespace keyple {
             /*
              *
              */
-            class CardChannel {
-              public:
+            class EXPORT CardChannel {
+            public:
                 /*
                  * Constructs a new CardChannel object.
                  *

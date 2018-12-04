@@ -16,7 +16,8 @@
 
 using namespace keyple::seproxy::message;
 
-SeRequestSet::SeRequestSet(std::set<SeRequest>& seRequests) : sortedRequests(seRequests)
+SeRequestSet::SeRequestSet(std::unordered_set<SeRequest> &seRequests)
+: sortedRequests(seRequests)
 {
 }
     //

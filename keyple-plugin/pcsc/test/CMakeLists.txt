@@ -56,10 +56,13 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/../src
 	${CMAKE_CURRENT_SOURCE_DIR}/../src/smartcardio
 
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/message
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/util
 
     /usr/include/PCSC
@@ -74,7 +77,7 @@ IF(UNIX)
 ENDIF(UNIX)
 
 IF(WIN32)
-	find_libray(PCSC pcsclite)
+	set(PCSC pcsclite)
 ENDIF(WIN32)
 
 if(NOT PCSC)
@@ -82,6 +85,6 @@ if(NOT PCSC)
 endif()
 
 add_executable(keyplepluginpcsctest ${SRCS})
-target_link_libraries(keyplepluginpcsctest keyplepluginpcsc gtest gmock ${PCSC})
+target_link_libraries(keyplepluginpcsctest keyplepluginpcsc gtest gmock)
 
 add_test(name PcscTest command testPcscPlugin)
