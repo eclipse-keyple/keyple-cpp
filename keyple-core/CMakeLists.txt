@@ -21,10 +21,9 @@ SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_CXX_STANDARD 11)
 
-# Common definitions
-ADD_DEFINITIONS(-DK_KPL_PLUGIN_PCSC_SUPPORT -DK_KPL_OS_MEMORY_DEBUG -D_CRT_SECURE_NO_WARNINGS)
-
-message(STATUS "base dir: ${CMAKE_CURRENT_SOURCE_DIR}")
+IF(WIN32)
+	add_compile_options(/wd4275 /wd4251)
+ENDIF(WIN32)
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -32,6 +31,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/util
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/plugin
@@ -47,10 +47,14 @@ endforeach()
 
 add_library(libkeyplecore SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/SeProxyService.cpp
-        src/seproxy/message/SeRequest.cpp
-        src/seproxy/message/SeRequestSet.cpp
-		src/seproxy/message/SeResponse.cpp
-		src/seproxy/message/SeResponseSet.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message/AnswerToReset.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message/ApduRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message/ApduResponse.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message/SelectionStatus.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message/SeRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message/SeRequestSet.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message/SeResponse.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/seproxy/message/SeResponseSet.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/util/Observable.cpp
 )
 

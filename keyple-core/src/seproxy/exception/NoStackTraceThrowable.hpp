@@ -6,31 +6,20 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
-#include "Card.hpp"
+#ifndef KEYPLE_SEPROXY_EXCEPTION_NO_STACK_TRACE_H
+#define KEYPLE_SEPROXY_EXCEPTION_NO_STACK_TRACE_H
 
-using namespace keyple::plugin::pcsc;
+#include <exception>
 
-Card::Card()
-{
+namespace keyple {
+    namespace seproxy {
+        namespace exception {
 
+            class NoStackTraceThrowable : public std::exception {
+
+            };
+        }
+    }
 }
 
-Card::~Card()
-{
-
-}
-
-CardChannel* Card::getBasicChannel()
-{
-    return channel;
-}
-
-std::vector<uint8_t>* Card::getATR()
-{
-    return &atr;
-}
-
-void Card::endExclusive()
-{
-
-}
+#endif /* KEYPLE_SEPROXY_EXCEPTION_NO_STACK_TRACE_H */

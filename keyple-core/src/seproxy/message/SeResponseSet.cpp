@@ -17,19 +17,23 @@
 using namespace keyple::seproxy;
 using namespace keyple::seproxy::message;
 
-SeResponseSet::SeResponseSet(std::list<SeResponse> &seResponses)
+SeResponseSet::SeResponseSet(SeResponse *response)
+: seResponses(seResponses)
+{
+    std::vector<SeResponse*> seResponses;
+    seResponses.push_back(response);
+}
+
+SeResponseSet::SeResponseSet(std::vector<SeResponse *> &seResponses)
 : seResponses(seResponses)
 {
 }
 
-SeResponseSet::~SeResponseSet()
-{
-}
-
-std::list<SeResponse> SeResponseSet::getResponses()
+std::vector<SeResponse*> SeResponseSet::getResponses()
 {
     return seResponses;
 }
+
 //
 //    /**
 //     * Create an {@link SeResponseSet} from a single {@link SeResponse}

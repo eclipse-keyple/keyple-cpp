@@ -24,15 +24,17 @@
 using namespace keyple::plugin::pcsc;
 
 class SmartCardIOReaderTest : public ::testing::Test {
-  public:
+public:
     /*
      *
      */
     void SetUp() // throws CardException, IllegalArgumentException, KeypleBaseException
     {
+        terminal = new CardTerminal();
+
         try
         {
-            card = terminal.connect("*");
+            card = terminal->connect("*");
         } catch (const std::exception &e)
         {
         }
@@ -239,18 +241,19 @@ class SmartCardIOReaderTest : public ::testing::Test {
     //      // assertNull(Whitebox.getInternalState(spiedReader, "card"));
     //      // assertNull(Whitebox.getInternalState(spiedReader, "channel"));
     //  }
-  protected:
+
+protected:
     /*
      *
      */
     PcscReader *reader;
 
-  private:
     /*
      * 
      */
-    CardTerminal terminal;
+    CardTerminal *terminal;
 
+protected:
     /*
      * 
      */

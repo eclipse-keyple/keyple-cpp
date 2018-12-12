@@ -5,32 +5,3 @@
  * terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
-
-#include "Card.hpp"
-
-using namespace keyple::plugin::pcsc;
-
-Card::Card()
-{
-
-}
-
-Card::~Card()
-{
-
-}
-
-CardChannel* Card::getBasicChannel()
-{
-    return channel;
-}
-
-std::vector<uint8_t>* Card::getATR()
-{
-    return &atr;
-}
-
-void Card::endExclusive()
-{
-
-}

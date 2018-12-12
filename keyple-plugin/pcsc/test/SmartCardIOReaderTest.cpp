@@ -11,7 +11,16 @@
 
 #include "SmartCardIOReaderTest.hpp"
 
-TEST_F(SmartCardIOReaderTest, assertNotNull)
+TEST_F(SmartCardIOReaderTest, assertEqual)
 {
     ASSERT_NE(reader, nullptr);
+}
+
+TEST_F(SmartCardIOReaderTest, testIsSEPresent) // throws CardException, NoStackTraceThrowable
+{
+    // this.reader = new PcscReader(terminal, readerName);
+    while(!terminal->isCardPresent());
+    ASSERT_TRUE(reader->isSePresent());
+    while(terminal->isCardPresent());
+    ASSERT_FALSE(reader->isSePresent());
 }

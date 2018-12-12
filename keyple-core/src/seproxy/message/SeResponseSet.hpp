@@ -12,7 +12,7 @@
 #ifndef KEYPLE_SEPROXY_MSG_SERESPONSE_SET
 #define KEYPLE_SEPROXY_MSG_SERESPONSE_SET
 
-#include <list>
+#include <vector>
 
 #include "Export.hpp"
 #include "SeResponse.hpp"
@@ -30,9 +30,12 @@ namespace keyple {
              */
             class EXPORT SeResponseSet {
             public:
-                //
-                //    static final long serialVersionUID = 125369841119873812L;
-                //
+                /**
+                 * Create an {@link SeResponseSet} from a single {@link SeResponse}
+                 *
+                 * @param response single {@link SeRequest}
+                 */
+                SeResponseSet(SeResponse *response);
 
                 //
                 //    /**
@@ -51,25 +54,14 @@ namespace keyple {
                  *
                  * @param seResponses List of seResponses
                  */
-                SeResponseSet(std::list<SeResponse> &seResponses);
+                SeResponseSet(std::vector<SeResponse*> &seResponses);
 
                 /**
                  *
                  */
                 ~SeResponseSet();
                 //
-                //    /**
-                //     * Create an {@link SeResponseSet} from a single {@link SeResponse}
-                //     *
-                //     * @param response single {@link SeRequest}
-                //     */
-                //  public
-                //    SeResponseSet(SeResponse response)
-                //    {
-                //        List<SeResponse> seResponses = new ArrayList<SeResponse>();
-                //        seResponses.add(response);
-                //        this.seResponses = seResponses;
-                //    }
+                //
                 //
                 //    /**
                 //     * Return the response when the list contains only one
@@ -96,13 +88,13 @@ namespace keyple {
                  *
                  * @return List of response seResponses
                  */
-                std::list<SeResponse> getResponses();
+                std::vector<SeResponse*> getResponses();
 
             private:
                 /**
                  * List of seResponses that were received following the transmission of the {@link SeRequest}.
                  */
-                const std::list<SeResponse> seResponses;
+                const std::vector<SeResponse*> seResponses;
             };
         } // namespace message
     } // namespace seproxy

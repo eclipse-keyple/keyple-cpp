@@ -34,36 +34,43 @@ namespace keyple {
              *
              */
             class EXPORT PcscReader : public AbstractThreadedLocalReader {
-              public:
-                static constexpr const char* const KEY = "TheKey";
-                static constexpr const char* const SETTING_KEY_PROTOCOL = "protocol";
-                static constexpr const char* const SETTING_PROTOCOL_T0 = "T0";
-                static constexpr const char* const SETTING_PROTOCOL_T1 = "T1";
-                static constexpr const char* const SETTING_PROTOCOL_TX = "Tx";
-                static constexpr const char* const SETTING_KEY_MODE = "mode";
-                static constexpr const char* const SETTING_MODE_EXCLUSIVE = "exclusive";
-                static constexpr const char* const SETTING_MODE_SHARED = "shared";
-                static constexpr const char* const SETTING_KEY_DISCONNECT = "disconnect";
-                static constexpr const char* const SETTING_DISCONNECT_RESET = "reset";
-                static constexpr const char* const SETTING_DISCONNECT_UNPOWER = "unpower";
-                static constexpr const char* const SETTING_DISCONNECT_LEAVE = "leave";
-                static constexpr const char* const SETTING_DISCONNECT_EJECT = "eject";
-                static constexpr const char* const SETTING_KEY_THREAD_TIMEOUT = "thread_wait_timeout";
-                static constexpr const char* const SETTING_KEY_LOGGING = "logging";
+            public:
+                const std::string SETTING_KEY_PROTOCOL = "protocol";
+                const std::string SETTING_PROTOCOL_T0 = "T0";
+                const std::string SETTING_PROTOCOL_T1 = "T1";
+                const std::string SETTING_PROTOCOL_TX = "Tx";
+                const std::string SETTING_KEY_MODE = "mode";
+                const std::string SETTING_MODE_EXCLUSIVE = "exclusive";
+                const std::string SETTING_MODE_SHARED = "shared";
+                const std::string SETTING_KEY_DISCONNECT = "disconnect";
+                const std::string SETTING_DISCONNECT_RESET = "reset";
+                const std::string SETTING_DISCONNECT_UNPOWER = "unpower";
+                const std::string SETTING_DISCONNECT_LEAVE = "leave";
+                const std::string SETTING_DISCONNECT_EJECT = "eject";
+                const std::string SETTING_KEY_THREAD_TIMEOUT = "thread_wait_timeout";
+                const std::string SETTING_KEY_LOGGING = "logging";
 
                 /*!
                   * \fn PcscReader::PcscReader();
                   *
                   * \brief Default constructor
                   */
-                PcscReader(const std::string &pluginName, CardTerminal &terminal);
+                PcscReader(const std::string &pluginName, CardTerminal *terminal);
 
-                /*!
-                 * \fn PcscReader::~PcscReader();
+                /**
+                 * This constructor should only be called by PcscPlugin PCSC reader parameters are initialized
+                 * with their default values as defined in setParameter. See
+                 * {@link #setParameter(String, String)} for more details
                  *
-                 * \brief Destructor
+                 * @param pluginName the name of the plugin
+                 * @param terminal the PC/SC terminal
                  */
-                ~PcscReader();
+                virtual ~PcscReader()
+                {
+                    delete terminal;
+                    delete card;
+                    delete channel;
+                }
 
                 //  ///
                 //  /// ProxyReader members
@@ -163,7 +170,7 @@ namespace keyple {
                  *
                  *
                  */
-                void setParameter(std::string &key, std::string &value) override;
+                void setParameter(const std::string &name, const std::string &value); //override;
 
                 //  /*!
                 //* \fn ExecutionStatus PcscReader::attachObserver(keyple::seproxy::ReaderObserver * callBack);
@@ -283,11 +290,21 @@ namespace keyple {
                 //    return false;
                 //}
 
-              private:
+            private:
                 /*
                  *
                  */
-                bool logging;
+                bool logging = false;
+
+                /*
+                 *
+                 */
+                bool cardReset = false;
+
+                /*
+                 *
+                 */
+                bool cardExclusiveMode = false;
                 
                 /*
                  *
@@ -297,37 +314,21 @@ namespace keyple {
                 /*
                  * 
                  */
-                CardTerminal terminal;
+                CardTerminal *const terminal;
+
+                /*
+                 *
+                 */
+                CardChannel *channel;
                 
                 /*
                  *
                  */
-                Card card;
+                Card *card;
 
-                //  std::vector<uint8_t> scardTransmit(std::vector<uint8_t> apdu);
-                //  std::vector<uint8_t> getFCI(std::vector<uint8_t> aid);
-                //  std::vector<uint8_t> getResponseCase4();
-
-                //  /// These properties are accessed by the card presence monitoring thread.
-                //  std::thread m_monitor;
-                //  std::atomic<bool> m_monitoring_is_running;
-                //  std::atomic<bool> m_card_presence;
-
-                //  char m_name[K_OS_KPL_DEV_NAME_MAX_LENGTH]; // TODO change type (string?)
-                //  SCARDCONTEXT m_context;
-                //  SCARDHANDLE m_card;
-                //  uint32_t m_share_mode;
-                //  uint32_t m_protocol;
-                //  uint32_t m_active_protocol;
-                //  uint32_t m_disposition;
-                //  bool m_channel_openned;
-                //  std::vector<uint8_t> m_fci;
-                //  std::vector<uint8_t> m_atr;
-                //  std::map<std::string, std::string> m_settings;
-                //  std::list<keyple::seproxy::ReaderObserver *> m_observers_list;
-            };
+               };
         } // namespace pcsc
-    }     // namespace plugin
+    } // namespace plugin
 } // namespace keyple
 
 #endif // KEYPLE_PLUGIN_PCSC_READER_H

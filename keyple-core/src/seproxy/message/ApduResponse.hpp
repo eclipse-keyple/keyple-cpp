@@ -6,31 +6,18 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
-#include "Card.hpp"
+#ifndef KEYPLE_SEPROXY_MSG_APDU_RESPONSE_H
+#define KEYPLE_SEPROXY_MSG_APDU_RESPONSE_H
 
-using namespace keyple::plugin::pcsc;
+namespace keyple {
+    namespace seproxy {
+        namespace message {
 
-Card::Card()
-{
+            class ApduResponse {
 
+            };
+        }
+    }
 }
 
-Card::~Card()
-{
-
-}
-
-CardChannel* Card::getBasicChannel()
-{
-    return channel;
-}
-
-std::vector<uint8_t>* Card::getATR()
-{
-    return &atr;
-}
-
-void Card::endExclusive()
-{
-
-}
+#endif /* KEYPLE_SEPROXY_MSG_APDU_RESPONSE_H */

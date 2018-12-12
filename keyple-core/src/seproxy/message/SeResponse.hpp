@@ -12,6 +12,8 @@
 #ifndef KEYPLE_SEPROXY_SERESPONSE_H
 #define KEYPLE_SEPROXY_SERESPONSE_H
 
+#include "Export.hpp"
+
 namespace keyple {
     namespace seproxy {
         namespace message {
@@ -21,7 +23,7 @@ namespace keyple {
              *
              * @see SeRequest
              */
-            class SeResponse {
+            class EXPORT SeResponse {
             public:
                 //
                 //    static final long serialVersionUID = 265369841119873812L;

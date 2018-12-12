@@ -6,31 +6,15 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
-#include "Card.hpp"
+#include "SelectionStatus.hpp"
 
-using namespace keyple::plugin::pcsc;
-
-Card::Card()
+SelectionStatus::SelectionStatus(AnswerToReset *atr, ApduResponse *fci, bool hasMatched)
+: atr(atr),
+  fci(fci),
+  hasMatched(hasMatched)
 {
-
-}
-
-Card::~Card()
-{
-
-}
-
-CardChannel* Card::getBasicChannel()
-{
-    return channel;
-}
-
-std::vector<uint8_t>* Card::getATR()
-{
-    return &atr;
-}
-
-void Card::endExclusive()
-{
-
+    if (atr == nullptr && fci == nullptr)
+    {
+        throw std::invalid_argument("Atr and Fci can't be null at the same time.");
+    }
 }

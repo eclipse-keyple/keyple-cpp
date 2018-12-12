@@ -6,13 +6,16 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
+#ifndef KEYPLE_SEPROXY_EXCEPTION_BASE
+#define KEYPLE_SEPROXY_EXCEPTION_BASE
+
 #include <exception>
 
 namespace keyple {
     namespace seproxy {
         namespace exception {
             class KeypleBaseException : public std::exception {
-              public:
+            public:
                 /**
                  * New exception to be thrown
                  * 
@@ -28,19 +31,12 @@ namespace keyple {
                  * @param message : message to identify the exception and the context
                  * @param cause : lower level exception
                  */
-                /*explicit KeypleBaseException(std::string &message, Throwable cause)
-                {
-                }*/
-
-                /**
-                 * Destructor.
-                 * 
-                 * Virtual to allow for subclassing.
-                 */
-                virtual ~KeypleBaseException() throw()
+                explicit KeypleBaseException(std::string &message, std::runtime_error cause)
                 {
                 }
             };
         } // namespace exception
     } // namespace seproxy
 } // namespace keyple
+
+#endif /* KEYPLE_SEPROXY_EXCEPTION_BASE */

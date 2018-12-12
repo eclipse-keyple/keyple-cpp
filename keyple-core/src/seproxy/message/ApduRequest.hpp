@@ -34,8 +34,7 @@ namespace keyple {
                  * @param successfulStatusCodes the list of status codes to be considered as successful although
                  *        different from 9000
                  */
-                ApduRequest(std::vector<uint8_t> buffer, bool case4,
-                            std::set<int> successfulStatusCodes);
+                ApduRequest(std::vector<uint8_t> &buffer, bool case4, std::set<int> *successfulStatusCodes);
 
                 /**
                  * Alternate constructor with name
@@ -46,8 +45,7 @@ namespace keyple {
                  * @param successfulStatusCodes the list of status codes to be considered as successful although
                  *        different from 9000
                  */
-                ApduRequest(std::string &name, std::vector<uint8_t> buffer, bool case4,
-                            std::set<int> successfulStatusCodes);
+                ApduRequest(std::string &name, std::vector<uint8_t> &buffer, bool case4, std::set<int> *successfulStatusCodes);
 
                 /**
                  * Alternate constructor without status codes list
@@ -55,7 +53,7 @@ namespace keyple {
                  * @param buffer data buffer
                  * @param case4 case 4 flag (true if case 4)
                  */
-                ApduRequest(std::vector<uint8_t> buffer, bool case4);
+                ApduRequest(std::vector<uint8_t> &buffer, bool case4);
 
                 /**
                  * Alternate constructor with name, without status codes list
@@ -64,7 +62,7 @@ namespace keyple {
                  * @param buffer data buffer
                  * @param case4 case 4 flag (true if case 4)
                  */
-                ApduRequest(std::string &name, std::vector<uint8_t> buffer, bool case4);
+                ApduRequest(std::string &name, std::vector<uint8_t> &buffer, bool case4);
 
                 /**
                  * Checks if is case 4.
@@ -78,7 +76,7 @@ namespace keyple {
                  *
                  * @param name Name of the APDU request
                  */
-                void setName(const std::string& name);
+                void setName(const std::string &name);
 
                 /**
                  * Get the list of successful status codes for the request
@@ -99,7 +97,7 @@ namespace keyple {
                  *
                  * @return Name of the APDU request
                  */
-                std::vector<uint8_t>& getBytes();
+                std::vector<uint8_t> getBytes();
 
                 /**
                  *
@@ -125,7 +123,7 @@ namespace keyple {
                  * List of status codes that should be considered successful although they are different from
                  * 9000
                  */
-                std::set<int> successfulStatusCodes;
+                std::set<int> *const successfulStatusCodes;
 
                 /**
                  * Name of the request being sent

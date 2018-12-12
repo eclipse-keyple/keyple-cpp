@@ -21,7 +21,23 @@ namespace keyple {
              *
              */
             class EXPORT Card {
-              public:
+            public:
+                /**
+                 * Constructor
+                 *
+                 * Constructs a new Card object.
+                 *
+                 * This constructor is called by subclasses only. Application should call list() or
+                 * getTerminal() to obtain a CardTerminal object.
+                 */
+                Card();
+
+                /**
+                 * Destructor
+                 *
+                 */
+                ~Card();
+
                 /**
                  * Returns the CardChannel for the basic logical channel. The basic logical
                  * channel has a channel number of 0.
@@ -41,33 +57,29 @@ namespace keyple {
                  */
                 std::vector<uint8_t>* getATR();
 
-//              protected:
-                /**
-                 * Constructor
-                 *
-                 * Constructs a new Card object.
-                 *
-                 * This constructor is called by subclasses only. Application should call list() or
-                 * getTerminal() to obtain a CardTerminal object.
-                 */
-                Card();
 
                 /**
-                 * Destructor
+                 * Releases the exclusive access previously established using beginExclusive.
                  *
+                 * @throws SecurityException if a SecurityManager exists and the caller does not have the required
+                 *                           permission
+                 * @throws llegalStateException if the active Thread does not currently have exclusive access to this
+                 *                              card or if this card object has been disposed of via the disconnect()
+                 *                              method
+                 * @throws CardException if the operation failed
                  */
-                ~Card();
-                
-              private:
+                 void endExclusive();
+
+            private:
                 /**
                  *
                  */
-                CardChannel channel;
+                CardChannel *channel;
                 
                 /**
                  *
                  */
-                std::vector<uint8_t> atr;
+                std::vector<uint8_t> *atr;
             };
         }
     }

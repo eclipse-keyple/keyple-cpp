@@ -27,34 +27,39 @@
 //#include "ReaderEvent.hpp"
 #include "CardTerminal.hpp"
 #include "CardException.hpp"
+#include "KeypleBaseException.hpp"
+#include "KeypleReaderException.hpp"
+#include "NoStackTraceThrowable.hpp"
 #include "PcscReader.hpp"
 
 using namespace keyple::plugin::pcsc;
+using namespace keyple::seproxy::exception;
 
 /*!
  * \fn PcscReader::PcscReader()
  *
  * \brief Default constructor
  */
-PcscReader::PcscReader(const std::string &pluginName, CardTerminal &terminal)
-: AbstractThreadedLocalReader(pluginName, terminal.getName())
+PcscReader::PcscReader(const std::string &pluginName, CardTerminal *terminal)
+: AbstractThreadedLocalReader(pluginName, terminal->getName()),
+  terminal(terminal)
 {
-    //DBG_TRACE_CALL();
-    //// initialize default value of private properties
-    //this->m_context = 0;
-    //this->m_card    = 0;
-    //strcpy(this->m_name, "Undefined");
-    //this->m_share_mode            = SCARD_SHARE_EXCLUSIVE;
-    //this->m_protocol              = SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1;
-    //this->m_disposition           = SCARD_RESET_CARD;
-    //this->m_card_presence         = false;
-    //this->m_channel_openned       = false;
-    //this->m_monitoring_is_running = false;
-}
+    this->card = nullptr;
+    this->channel = nullptr;
+    this->protocolsMap = std::unordered_map<SeProtocol *, std::string>();
 
-PcscReader::~PcscReader()
-{
-
+    // Using null values to use the standard method for defining default values
+    try
+    {
+        setParameter(SETTING_KEY_PROTOCOL, "");
+        setParameter(SETTING_KEY_MODE, "");
+        setParameter(SETTING_KEY_DISCONNECT, "");
+        setParameter(SETTING_KEY_LOGGING, "");
+    }
+    catch (const KeypleBaseException &e)
+    {
+        // can not fail with null value
+    }
 }
 
 ///*!
@@ -207,61 +212,16 @@ PcscReader::~PcscReader()
 //    return seResponse;
 //}
 
-bool PcscReader::isSePresent() /*throws NoStackTraceThrowable*/
+bool PcscReader::isSePresent()
 {
     try {
-        return terminal.isCardPresent();
+        return terminal->isCardPresent();
     } catch (CardException &e) {
         //logger.trace("[{}] Exception occured in isSePresent. Message: {}", this.getName(),
         //        e.getMessage());
-        //throw new NoStackTraceThrowable();
-        return false;
+        throw NoStackTraceThrowable();
     }
 }
-//{
-//    DBG_TRACE_CALL();
-//
-//    SCARDHANDLE hCardHandle;
-//    LONG lReturn;
-//    DWORD dwAP;
-//
-//    if (this->m_card_presence == false)
-//    {
-//        // try to connect
-//
-//        lReturn = SCardConnect((SCARDCONTEXT)this->m_context, this->m_name, this->m_share_mode,
-//                               this->m_protocol, &hCardHandle, &dwAP);
-//        if (SCARD_S_SUCCESS != lReturn)
-//        {
-//            DBG_ERROR_MSG("Failed SCardConnect");
-//        }
-//        else
-//        {
-//            // Use the connection.
-//            // Display the active protocol.
-//            switch (dwAP)
-//            {
-//            case SCARD_PROTOCOL_T0:
-//                DBG_INFO_MSG("Active protocol T0");
-//                break;
-//
-//            case SCARD_PROTOCOL_T1:
-//                DBG_INFO_MSG("Active protocol T1");
-//                break;
-//
-//            case SCARD_PROTOCOL_UNDEFINED:
-//            default:
-//                DBG_INFO_MSG("Active protocol unnegotiated or unknown");
-//                break;
-//            }
-//            this->m_card          = hCardHandle;
-//            this->m_card_presence = true;
-//        }
-//    }
-//
-//    return this->m_card_presence;
-//}
-//
 ///*!
 // * \fn std::map<std::string, std::string>* PcscReader::getParameters()
 // *
@@ -463,108 +423,107 @@ bool PcscReader::isSePresent() /*throws NoStackTraceThrowable*/
 //    return status;
 //}
 
-void PcscReader::setParameter(std::string &name, std::string &value)
+void PcscReader::setParameter(const std::string &name, const std::string &value)
 {
-    //if (logging)
-    //{
-    //    logger.trace("[{}] setParameter => PCSC: Set a parameter. NAME = {}, VALUE = {}", this.getName(),
-    //                 name, value);
-    //}
-    //if (name == null)
-    //{
-    //    throw new IllegalArgumentException("Parameter shouldn't be null");
-    //}
-    //if (name.equals(SETTING_KEY_PROTOCOL))
-    //{
-    //    if (value == null || value.equals(SETTING_PROTOCOL_TX))
-    //    {
-    //        parameterCardProtocol = "*";
-    //    }
-    //    else if (value.equals(SETTING_PROTOCOL_T0))
-    //    {
-    //        parameterCardProtocol = "T=0";
-    //    }
-    //    else if (value.equals(SETTING_PROTOCOL_T1))
-    //    {
-    //        parameterCardProtocol = "T=1";
-    //    }
-    //    else
-    //    {
-    //        throw new IllegalArgumentException("Bad protocol " + name + " : " + value);
-    //    }
-    //}
-    //else if (name.equals(SETTING_KEY_MODE))
-    //{
-    //    if (value == null || value.equals(SETTING_MODE_SHARED))
-    //    {
-    //        if (cardExclusiveMode && card != null)
-    //        {
-    //            try
-    //            {
-    //                card.endExclusive();
-    //            } catch (CardException e)
-    //            {
-    //                throw new KeypleReaderException("Couldn't disable exclusive mode", e);
-    //            }
-    //        }
-    //        cardExclusiveMode = false;
-    //    }
-    //    else if (value.equals(SETTING_MODE_EXCLUSIVE))
-    //    {
-    //        cardExclusiveMode = true;
-    //    }
-    //    else
-    //    {
-    //        throw new IllegalArgumentException("Parameter value not supported " + name + " : " + value);
-    //    }
-    //}
-    //else if (name.equals(SETTING_KEY_THREAD_TIMEOUT))
-    //{
-    //    // TODO use setter
-    //    if (value == null)
-    //    {
-    //        threadWaitTimeout = SETTING_THREAD_TIMEOUT_DEFAULT;
-    //    }
-    //    else
-    //    {
-    //        long timeout = Long.parseLong(value);
+    if (logging)
+    {
+    //    logger->trace("[{}] setParameter => PCSC: Set a parameter. NAME = {}, VALUE = {}", this->getName(), name, value);
+    }
+    if (name == "")
+    {
+        throw std::invalid_argument("Parameter shouldn't be null");
+    }
+    if (name == SETTING_KEY_PROTOCOL)
+    {
+        if (value == "" || value == SETTING_PROTOCOL_TX)
+        {
+            parameterCardProtocol = "*";
+        }
+        else if (value == SETTING_PROTOCOL_T0)
+        {
+            parameterCardProtocol = "T=0";
+        }
+        else if (value == SETTING_PROTOCOL_T1)
+        {
+            parameterCardProtocol = "T=1";
+        }
+        else
+        {
+            throw std::invalid_argument("Bad protocol " + name + " : " + value);
+        }
+    }
+    else if (name == SETTING_KEY_MODE)
+    {
+        if (value == "" || value == SETTING_MODE_SHARED)
+        {
+            if (cardExclusiveMode && card != nullptr)
+            {
+                try
+                {
+                    card->endExclusive();
+                }
+                catch (const CardException &e)
+                {
+                    throw KeypleReaderException("Couldn't disable exclusive mode", e);
+                }
+            }
+            cardExclusiveMode = false;
+        }
+        else if (value == SETTING_MODE_EXCLUSIVE)
+        {
+            cardExclusiveMode = true;
+        }
+        else
+        {
+            throw std::invalid_argument("Parameter value not supported " + name + " : " + value);
+        }
+    }
+    else if (name == SETTING_KEY_THREAD_TIMEOUT)
+    {
+        // TODO use setter
+        if (value == "")
+        {
+            threadWaitTimeout = SETTING_THREAD_TIMEOUT_DEFAULT;
+        }
+        else
+        {
+            long long timeout = StringHelper::fromString<long long>(value);
 
-    //        if (timeout <= 0)
-    //        {
-    //            throw new IllegalArgumentException("Timeout has to be of at least 1ms " + name + value);
-    //        }
+            if (timeout <= 0)
+            {
+                throw std::invalid_argument("Timeout has to be of at least 1ms " + name + value);
+            }
 
-    //        threadWaitTimeout = timeout;
-    //    }
-    //}
-    //else if (name.equals(SETTING_KEY_DISCONNECT))
-    //{
-    //    if (value == null || value.equals(SETTING_DISCONNECT_RESET))
-    //    {
-    //        cardReset = true;
-    //    }
-    //    else if (value.equals(SETTING_DISCONNECT_UNPOWER))
-    //    {
-    //        cardReset = false;
-    //    }
-    //    else if (value.equals(SETTING_DISCONNECT_EJECT) || value.equals(SETTING_DISCONNECT_LEAVE))
-    //    {
-    //        throw new IllegalArgumentException(
-    //            "This disconnection parameter is not supported by this plugin" + name + " : " + value);
-    //    }
-    //    else
-    //    {
-    //        throw new IllegalArgumentException("Parameters not supported : " + name + " : " + value);
-    //    }
-    //}
-    //else if (name.equals(SETTING_KEY_LOGGING))
-    //{
-    //    logging = Boolean.parseBoolean(value); // default is null and perfectly acceptable
-    //}
-    //else
-    //{
-    //    throw new IllegalArgumentException("This parameter is unknown !" + name + " : " + value);
-    //}
+            threadWaitTimeout = timeout;
+        }
+    }
+    else if (name == SETTING_KEY_DISCONNECT)
+    {
+        if (value == "" || value == SETTING_DISCONNECT_RESET)
+        {
+            cardReset = true;
+        }
+        else if (value == SETTING_DISCONNECT_UNPOWER)
+        {
+            cardReset = false;
+        }
+        else if (value == SETTING_DISCONNECT_EJECT || value == SETTING_DISCONNECT_LEAVE)
+        {
+            throw std::invalid_argument("This disconnection parameter is not supported by this plugin" + name + " : " + value);
+        }
+        else
+        {
+            throw std::invalid_argument("Parameters not supported : " + name + " : " + value);
+        }
+    }
+    else if (name == SETTING_KEY_LOGGING)
+    {
+        logging = StringHelper::fromString<bool>(value); // default is null and perfectly acceptable
+    }
+    else
+    {
+        throw std::invalid_argument("This parameter is unknown !" + name + " : " + value);
+    }
 }
 
 std::vector<uint8_t>* PcscReader::getATR()

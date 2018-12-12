@@ -44,7 +44,7 @@ namespace keyple {
                 /*
                  * Current APDU
                  */
-                std::vector<uint8_t> apdu;
+                std::vector<uint8_t> *apdu;
                 
             };
         }

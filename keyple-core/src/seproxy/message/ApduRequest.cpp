@@ -11,38 +11,28 @@
 
 #include "ApduRequest.hpp"
 
-ApduRequest::ApduRequest(std::vector<uint8_t> buffer, bool case4,
-                         std::set<int> successfulStatusCodes)
-: bytes(buffer),
-  case4(case4),
-  successfulStatusCodes(successfulStatusCodes)
+using namespace keyple::seproxy::message;
+
+ApduRequest::ApduRequest(std::vector<uint8_t> &buffer, bool case4, std::set<int> *successfulStatusCodes)
+: bytes(buffer), case4(case4), successfulStatusCodes(successfulStatusCodes)
 {
 
 }
 
-ApduRequest::ApduRequest(std::string &name, std::vector<uint8_t> buffer, bool case4,
-                         std::set<int> successfulStatusCodes)
-: bytes(buffer),
-  case4(case4),
-  successfulStatusCodes(successfulStatusCodes),
-  name(name)
+ApduRequest::ApduRequest(std::string &name, std::vector<uint8_t> &buffer, bool case4, std::set<int> *successfulStatusCodes)
+: bytes(buffer), case4(case4), successfulStatusCodes(successfulStatusCodes), name(name)
 {
 
 }
 
-ApduRequst::ApduRequest(std::vector<uint8_t> buffer, bool case4)
-: bytes(buffer),
-  case4(case4),
-  successfulStatusCodes(nullptr)
+ApduRequest::ApduRequest(std::vector<uint8_t> &buffer, bool case4)
+: bytes(buffer), case4(case4), successfulStatusCodes(nullptr)
 {
 
 }
 
-ApduRequest::ApduRequest(std::string &name, std::vector<uint8_t> buffer, bool case4)
-: bytes(buffer),
-  case4(case4),
-  successfulStatusCodes(nullptr),
-  name(name)
+ApduRequest::ApduRequest(std::string &name, std::vector<uint8_t> &buffer, bool case4)
+: bytes(buffer), case4(case4), successfulStatusCodes(nullptr), name(name)
 {
 
 }

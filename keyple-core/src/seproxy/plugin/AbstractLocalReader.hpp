@@ -9,7 +9,11 @@
 #ifndef KEYPLE_SEPROXY_ABSTRACT_LOCAL_READER_H
 #define KEYPLE_SEPROXY_ABSTRACT_LOCAL_READER_H
 
+#include <vector>
+#include <unordered_map>
+
 #include "AbstractObservableReader.hpp"
+#include "SelectionStatus.hpp"
 #include "SeResponse.hpp"
 #include "SeResponseSet.hpp"
 
@@ -24,7 +28,7 @@ namespace keyple {
              *
              */
             class AbstractLocalReader : public virtual AbstractObservableReader {
-              public:
+            public:
                 /**
                  *
                  */
@@ -42,7 +46,18 @@ namespace keyple {
                 {
                 }
 
-              protected:
+                virtual ~AbstractLocalReader()
+                {
+                    delete currentSelectionStatus;
+                }
+
+            protected:
+                /**
+                 * PO selection map associating seProtocols and selection strings (e.g. ATR regex for Pcsc
+                 * plugins)
+                 */
+                std::unordered_map<SeProtocol*, std::wstring> protocolsMap = std::unordered_map<SeProtocol*, std::wstring>();
+
                 /**
                  * Do the transmission of all needed requestSet requests contained in the provided requestSet
                  * according to the protocol flag selection logic. The responseSet responses are returned in the
@@ -54,7 +69,7 @@ namespace keyple {
                  * @return SeResponseSet the response set
                  * @throws KeypleIOReaderException if a reader error occurs
                  */
-                SeResponseSet *processSeRequestSet(SeRequestSet requestSet) override final
+                SeResponseSet *processSeRequestSet(SeRequestSet *requestSet) //override final
                 {
                     //                    boolean requestMatchesProtocol[] = new boolean[requestSet.getRequests().size()];
                     //                    int requestIndex = 0, lastRequestIndex;
@@ -82,7 +97,7 @@ namespace keyple {
                      *
                      * If keepChannelOpen is false, we close the physical channel for the last request.
                      */
-                    std::list<SeResponse> responses; //= new ArrayList<SeResponse>();
+                    std::vector<SeResponse*> responses; //= new ArrayList<SeResponse>();
                                                      //                    boolean stopProcess = false;
                     //                    for (SeRequest request : requestSet.getRequests()) {
                     //
@@ -148,9 +163,12 @@ namespace keyple {
                     //                    }
                     return new SeResponseSet(responses);
                 }
+
+            private:
+                SelectionStatus *currentSelectionStatus;
             };
         } // namespace plugin
-    }     // namespace seproxy
+    }   // namespace seproxy
 } // namespace keyple
 
 #endif // KEYPLE_SEPROXY_ABSTRACT_LOCAL_READER_H
