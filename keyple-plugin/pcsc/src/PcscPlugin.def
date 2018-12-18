@@ -1,9 +1,0 @@
-; DLL export definition file
-
-LIBRARY												PCSCPlugin
-;DESCRIPTION										"PCSC Plugin module library"
-
-VERSION												1.00
-
-EXPORTS
-	CreateClass										@1
