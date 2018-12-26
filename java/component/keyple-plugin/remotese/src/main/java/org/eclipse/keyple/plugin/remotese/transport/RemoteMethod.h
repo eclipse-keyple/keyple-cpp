@@ -29,6 +29,7 @@ public:
                             static RemoteMethod READER_CONNECT;
                             static RemoteMethod READER_DISCONNECT;
                             static RemoteMethod READER_EVENT;
+                            static RemoteMethod DEFAULT_SELECTION_REQUEST;
 
 private:
                             static std::vector<RemoteMethod> valueList;
@@ -38,7 +39,8 @@ public:
                                 READER_TRANSMIT,
                                 READER_CONNECT,
                                 READER_DISCONNECT,
-                                READER_EVENT
+                                READER_EVENT,
+                                DEFAULT_SELECTION_REQUEST
                             };
 
                             const InnerEnum innerEnumValue;
@@ -80,7 +82,7 @@ private:
 
                             // This method can be used for reverse lookup purpose
                         public:
-                            static RemoteMethod get(const std::string &url);
+                            static RemoteMethod get(const std::string &name);
 
 public:
                             bool operator == (const RemoteMethod &other);

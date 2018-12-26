@@ -3,14 +3,14 @@
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
 #include <unordered_map>
 #include <vector>
+#include <stdexcept>
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
 namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class FCI; } } } } } } }
+namespace opencard { namespace opt { namespace util { class Tag; } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class StartupInformation; } } } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -33,13 +33,18 @@ namespace org {
 
                             using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
                             using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
+                            using org::slf4j::Logger;
+                            using org::slf4j::LoggerFactory;
+                            using Tag = opencard::opt::util::Tag;
 
                             /**
-                             * This class provides status code properties and the getters to access to the structured fields of
-                             * data from response of a Get Data response.
+                             * Extracts information from the FCI data returned is response to the selection application command.
+                             * <p>
+                             * Provides getter methods for all relevant information.
                              */
                             class GetDataFciRespPars final : public AbstractApduResponseParser {
-
+                            protected:
+                                static const std::shared_ptr<Logger> logger;
 
                             private:
                                 static const std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
@@ -54,22 +59,83 @@ namespace org {
                                                             static GetDataFciRespPars::StaticConstructor staticConstructor;
 
 
-                                static std::vector<int> const bufferSizeIndicatorToBufferSize;
-
                             protected:
                                 std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
-                                /** The fci. */
+                                /* buffer indicator to buffer size lookup table */
                             private:
-                                const std::shared_ptr<FCI> fci;
+                                static std::vector<int> const BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE;
+
+                                /* BER-TLV tags definitions */
+                                /* FCI Template: application class, constructed, tag number Fh => tag field 6Fh */
+                                static const std::shared_ptr<Tag> TAG_FCI_TEMPLATE;
+                                /* DF Name: context-specific class, primitive, tag number 4h => tag field 84h */
+                                static const std::shared_ptr<Tag> TAG_DF_NAME;
+                                /*
+                                 * FCI Proprietary Template: context-specific class, constructed, tag number 5h => tag field A5h
+                                 */
+                                static const std::shared_ptr<Tag> TAG_FCI_PROPRIETARY_TEMPLATE;
+                                /*
+                                 * FCI Issuer Discretionary Data: context-specific class, constructed, tag number Ch => tag
+                                 * field BF0Ch
+                                 */
+                                static const std::shared_ptr<Tag> TAG_FCI_ISSUER_DISCRETIONARY_DATA;
+                                /* Application Serial Number: private class, primitive, tag number 7h => tag field C7h */
+                                static const std::shared_ptr<Tag> TAG_APPLICATION_SERIAL_NUMBER;
+                                /* Discretionary Data: application class, primitive, tag number 13h => tag field 53h */
+                                static const std::shared_ptr<Tag> TAG_DISCRETIONARY_DATA;
+
+                                /** attributes result of th FCI parsing */
+//JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
+                                bool isDfInvalidated_Renamed = false;
+
+//JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
+                                bool isValidCalypsoFCI_Renamed = false;
+                                std::vector<char> dfName;
+                                std::vector<char> applicationSN;
+                                std::vector<char> discretionaryData;
+                                char siBufferSizeIndicator = 0;
+                                char siPlatform = 0;
+                                char siApplicationType = 0;
+                                char siApplicationSubtype = 0;
+                                char siSoftwareIssuer = 0;
+                                char siSoftwareVersion = 0;
+                                char siSoftwareRevision = 0;
+
+                                /** Application type bitmasks features */
+                                static constexpr char APP_TYPE_WITH_CALYPSO_PIN = 0x01;
+                                static constexpr char APP_TYPE_WITH_CALYPSO_SV = 0x02;
+                                static constexpr char APP_TYPE_RATIFICATION_COMMAND_REQUIRED = 0x04;
+                                static constexpr char APP_TYPE_CALYPSO_REV_32_MODE = 0x08;
 
                                 /**
-                                 * Instantiates a new PoFciRespPars.
-                                 *
-                                 * @param response the response from Get Data APDU commmand
+                                 * Instantiates a new GetDataFciRespPars from the ApduResponse to a selection application
+                                 * command.
+                                 * <p>
+                                 * The expected FCI structure of a Calypso PO follows this scheme: <code>
+                                 * T=6F L=XX (C)                FCI Template
+                                 *      T=84 L=XX (P)           DF Name
+                                 *      T=A5 L=22 (C)           FCI Proprietary Template
+                                 *           T=BF0C L=19 (C)    FCI Issuer Discretionary Data
+                                 *                T=C7 L=8 (P)  Application Serial Number
+                                 *                T=53 L=7 (P)  Discretionary Data (Startup Information)
+                                 * </code>
+                                 * <p>
+                                 * The ApduResponse provided in argument is parsed according to the above expected structure.
+                                 * <p>
+                                 * DF Name, Application Serial Number and Startup Information are extracted.
+                                 * <p>
+                                 * The 7-byte startup information field is also split into 7 private field made available
+                                 * through dedicated getter methods.
+                                 * <p>
+                                 * All fields are pre-initialized to handle the case where the parsing fails.
+                                 * 
+                                 * @param selectApplicationResponse the selectApplicationResponse from Get Data APDU commmand
                                  */
                             public:
-                                GetDataFciRespPars(std::shared_ptr<ApduResponse> response);
+                                GetDataFciRespPars(std::shared_ptr<ApduResponse> selectApplicationResponse);
+
+                                bool isValidCalypsoFCI();
 
                                 std::vector<char> getDfName();
 
@@ -83,7 +149,6 @@ namespace org {
 
                                 char getApplicationTypeByte();
 
-                                bool isRev3Compliant();
 
                                 bool isRev3_2ModeAvailable();
 
@@ -102,197 +167,6 @@ namespace org {
                                 char getSoftwareRevisionByte();
 
                                 bool isDfInvalidated();
-
-                                /**
-                                 * The Class FCI. FCI: file control information
-                                 */
-                            public:
-                                class FCI : public std::enable_shared_from_this<FCI> {
-
-                                    /** The DF Name. */
-                                private:
-                                    std::vector<char> const dfName;
-
-                                    /** The fci proprietary template. */
-                                    std::vector<char> const fciProprietaryTemplate;
-
-                                    /** The fci issuer discretionary data. */
-                                    std::vector<char> const fciIssuerDiscretionaryData;
-
-                                    /** The application SN. */
-                                    std::vector<char> const applicationSN;
-
-                                    /** The startup information. */
-                                    const std::shared_ptr<StartupInformation> startupInformation;
-
-                                    /**
-                                     * Instantiates a new FCI.
-                                     *
-                                     * @param dfName the df name
-                                     * @param fciProprietaryTemplate the fci proprietary template
-                                     * @param fciIssuerDiscretionaryData the fci issuer discretionary data
-                                     * @param applicationSN the application SN
-                                     * @param startupInformation the startup information
-                                     */
-                                public:
-                                    FCI(std::vector<char> &dfName, std::vector<char> &fciProprietaryTemplate, std::vector<char> &fciIssuerDiscretionaryData, std::vector<char> &applicationSN, std::shared_ptr<StartupInformation> startupInformation);
-
-                                    /**
-                                     * Gets the fci proprietary template.
-                                     *
-                                     * @return the fci proprietary template
-                                     */
-                                    virtual std::vector<char> getFciProprietaryTemplate();
-
-                                    /**
-                                     * Gets the fci issuer discretionary data.
-                                     *
-                                     * @return the fci issuer discretionary data
-                                     */
-                                    virtual std::vector<char> getFciIssuerDiscretionaryData();
-
-                                    /**
-                                     * Gets the application SN.
-                                     *
-                                     * @return the application SN
-                                     */
-                                    virtual std::vector<char> getApplicationSN();
-
-                                    /**
-                                     * Gets the startup information.
-                                     *
-                                     * @return the startup information
-                                     */
-                                    virtual std::shared_ptr<StartupInformation> getStartupInformation();
-
-                                    /**
-                                     * Gets the DF Name.
-                                     *
-                                     * @return the DF name
-                                     */
-                                    virtual std::vector<char> getDfName();
-
-                                };
-
-                                /**
-                                 * The Class StartupInformation. The Calypso applications return the Startup Information in the
-                                 * answer to the Select Application command. The Startup Information contains several data
-                                 * fields (applicationType,software issuer...)
-                                 */
-                            public:
-                                class StartupInformation : public std::enable_shared_from_this<StartupInformation> {
-
-                                    /** The buffer size. */
-                                public:
-                                    const char bufferSizeIndicator;
-
-                                    /** The platform. */
-                                    const char platform;
-
-                                    /** The application type. */
-                                    const char applicationType;
-
-                                    /** The application subtype. */
-                                    const char applicationSubtype;
-
-                                    /** The software issuer. */
-                                    const char softwareIssuer;
-
-                                    /** The software version. */
-                                    const char softwareVersion;
-
-                                    /** The software revision. */
-                                    const char softwareRevision;
-
-                                    /**
-                                     * Instantiates a new StartupInformation.
-                                     *
-                                     * @param bufferSizeIndicator the buffer size indicator
-                                     * @param platform the platform
-                                     * @param applicationType the application type
-                                     * @param applicationSubtype the application subtype
-                                     * @param softwareIssuer the software issuer
-                                     * @param softwareVersion the software version
-                                     * @param softwareRevision the software revision
-                                     */
-                                    StartupInformation(char bufferSizeIndicator, char platform, char applicationType, char applicationSubtype, char softwareIssuer, char softwareVersion, char softwareRevision);
-
-                                    StartupInformation(std::vector<char> &buffer);
-
-                                    static std::shared_ptr<StartupInformation> empty();
-
-                                    int hashCode() override;
-
-                                    bool equals(std::shared_ptr<void> obj) override;
-
-                                    /**
-                                     * Gets the buffer size.
-                                     *
-                                     * @return the buffer size
-                                     */
-                                    virtual char getBufferSizeIndicator();
-
-                                    /**
-                                     * Gets the platform.
-                                     *
-                                     * @return the platform
-                                     */
-                                    virtual char getPlatform();
-
-                                    /**
-                                     * Gets the application type.
-                                     *
-                                     * @return the application type
-                                     */
-                                    virtual char getApplicationType();
-
-                                    /**
-                                     * Gets the application subtype.
-                                     *
-                                     * @return the application subtype
-                                     */
-                                    virtual char getApplicationSubtype();
-
-                                    /**
-                                     * Gets the software issuer.
-                                     *
-                                     * @return the software issuer
-                                     */
-                                    virtual char getSoftwareIssuer();
-
-                                    /**
-                                     * Gets the software version.
-                                     *
-                                     * @return the software version
-                                     */
-                                    virtual char getSoftwareVersion();
-
-                                    /**
-                                     * Gets the software revision.
-                                     *
-                                     * @return the software revision
-                                     */
-                                    virtual char getSoftwareRevision();
-
-                                    virtual bool hasCalypsoPin();
-
-                                    virtual bool hasCalypsoStoreValue();
-
-                                    virtual bool hasRatificationCommandRequired();
-
-                                    virtual bool hasCalypsoRev32modeAvailable();
-
-                                };
-
-                                /**
-                                 * Method to get the FCI from the response.
-                                 *
-                                 * @param apduResponse the apdu response
-                                 * @return the FCI template TODO we should check here if the provided FCI data matches an
-                                 *         Calypso PO FCI and return null if not
-                                 */
-                            public:
-                                static std::shared_ptr<FCI> toFCI(std::vector<char> &apduResponse);
 
 protected:
                                 std::shared_ptr<GetDataFciRespPars> shared_from_this() {

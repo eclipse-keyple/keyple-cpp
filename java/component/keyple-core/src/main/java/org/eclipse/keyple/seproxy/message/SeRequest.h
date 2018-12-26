@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include <memory>
 #include "stringhelper.h"
+#include "Serializable.h"
+#include "LinkedHashSet.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace transaction { class SeSelector; } } } }
@@ -38,13 +40,14 @@ namespace org {
 
                     /**
                      * List of APDU requests that will result in a {@link SeResponse}
-                     * 
+                     *
                      * @see SeResponse
                      */
                     class SeRequest final : public std::enable_shared_from_this<SeRequest>, public Serializable {
 
                     public:
                         static constexpr long long serialVersionUID = 6018469841127325812LL;
+
 
                         /**
                          * The Selector inner class is dedicated to handle the selection of the SE either through a
@@ -78,7 +81,7 @@ namespace org {
 
                             /**
                              * AID based selector
-                             * 
+                             *
                              * @param aidToSelect byte array
                              */
                         public:
@@ -92,7 +95,7 @@ namespace org {
                              * <li>false: first or only occurrence</li>
                              * <li>true: next occurrence</li>
                              * </ul>
-                             * 
+                             *
                              * @param aidToSelect byte array
                              * @param selectMode selection mode FIRST or NEXT
                              */
@@ -100,29 +103,29 @@ namespace org {
 
                             /**
                              * Getter for the AID provided at construction time
-                             * 
+                             *
                              * @return byte array containing the AID
                              */
                             std::vector<char> getAidToSelect();
 
                             /**
                              * Indicates whether the selection command is targeting the first or the next occurrence
-                             * 
+                             *
                              * @return true or false
                              */
                             bool isSelectNext();
 
                             /**
                              * Print out the AID in hex
-                             * 
+                             *
                              * @return a string
                              */
                             std::string toString();
 
-protected:
-                            std::shared_ptr<AidSelector> shared_from_this() {
-                                return std::static_pointer_cast<AidSelector>(SeRequest.Selector::shared_from_this());
-                            }
+//protected:
+//                            std::shared_ptr<AidSelector> shared_from_this() {
+//                                return std::static_pointer_cast<AidSelector>(SeRequest.Selector::shared_from_this());
+//                            }
                         };
 
                     public:
@@ -160,15 +163,15 @@ protected:
 
                             /**
                              * Print out the ATR regex
-                             * 
+                             *
                              * @return a string
                              */
                             std::string toString();
 
-protected:
-                            std::shared_ptr<AtrSelector> shared_from_this() {
-                                return std::static_pointer_cast<AtrSelector>(SeRequest.Selector::shared_from_this());
-                            }
+//protected:
+//                            std::shared_ptr<AtrSelector> shared_from_this() {
+//                                return std::static_pointer_cast<AtrSelector>(SeRequest.Selector::shared_from_this());
+//                            }
                         };
 
                         /**
@@ -181,7 +184,7 @@ protected:
                          * List of status codes in response to the select application command that should be considered
                          * successful although they are different from 9000
                          */
-                        std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes = std::make_shared<LinkedHashSet<Integer>>();
+                        std::shared_ptr<std::set<int>> successfulSelectionStatusCodes;
 
                         /**
                          * contains a group of APDUCommand to operate on the selected SE application by the SE reader.
@@ -192,7 +195,7 @@ protected:
                         /**
                          * the protocol flag is used to target specific SE technologies for a given request
                          */
-                        std::shared_ptr<SeProtocol> protocolFlag = Protocol::ANY;
+                        std::shared_ptr<SeProtocol> protocolFlag;
 
                         /**
                          * the final logical channel status: the SE reader may kept active the logical channel of the SE
@@ -223,11 +226,11 @@ protected:
                          *        application command
                          */
                     public:
-                        SeRequest(std::shared_ptr<Selector> selector, std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes);
+                        SeRequest(std::shared_ptr<Selector> selector, std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes);
 
                         /**
                          * Constructor to be used when the SE is already selected
-                         * 
+                         *
                          * @param apduRequests a list of ApudRequest
                          * @param channelState a flag to tell if the channel has to be closed at the end
                          */
@@ -259,17 +262,17 @@ protected:
 
                         /**
                          * Gets the protocol flag of the request
-                         * 
+                         *
                          * @return protocolFlag
                          */
                         std::shared_ptr<SeProtocol> getProtocolFlag();
 
                         /**
                          * Gets the list of successful selection status codes
-                         * 
+                         *
                          * @return the list of status codes
                          */
-                        std::shared_ptr<Set<Integer>> getSuccessfulSelectionStatusCodes();
+                        std::shared_ptr<std::set<int>> getSuccessfulSelectionStatusCodes();
 
                         std::string toString() override;
                     };

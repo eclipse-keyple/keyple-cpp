@@ -7,7 +7,6 @@ namespace org {
         namespace keyple {
             namespace seproxy {
                 namespace exception {
-                    using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
                     using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                     using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
 

@@ -7,15 +7,14 @@ namespace org {
             namespace seproxy {
                 namespace message {
 
-                    SeRequestSet::SeRequestSet(std::shared_ptr<Set<std::shared_ptr<SeRequest>>> seRequests) : sortedRequests(seRequests) {
+                    SeRequestSet::SeRequestSet(std::shared_ptr<std::set<std::shared_ptr<SeRequest>>> seRequests) : sortedRequests(seRequests) {
                     }
 
-                    SeRequestSet::SeRequestSet(std::shared_ptr<SeRequest> request) : sortedRequests(seRequests) {
-                        std::shared_ptr<Set<std::shared_ptr<SeRequest>>> seRequests = std::make_shared<LinkedHashSet<std::shared_ptr<SeRequest>>>();
-                        seRequests->add(request);
+                    SeRequestSet::SeRequestSet(std::shared_ptr<SeRequest> request) {
+                        sortedRequests->insert(request);
                     }
 
-                    std::shared_ptr<Set<std::shared_ptr<SeRequest>>> SeRequestSet::getRequests() {
+                    std::shared_ptr<std::set<std::shared_ptr<SeRequest>>> SeRequestSet::getRequests() {
                         return sortedRequests;
                     }
 
@@ -23,7 +22,7 @@ namespace org {
                         if (sortedRequests->size() != 1) {
                             throw std::make_shared<IllegalStateException>("This method only support ONE element");
                         }
-                        return sortedRequests->begin()->next();
+                        return *(sortedRequests->begin());
                     }
 
                     std::string SeRequestSet::toString() {

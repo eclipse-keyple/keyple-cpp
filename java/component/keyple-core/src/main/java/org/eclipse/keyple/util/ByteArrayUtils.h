@@ -4,6 +4,8 @@
 #include <vector>
 #include <stdexcept>
 #include <memory>
+#include "stringbuilder.h"
+#include "Pattern.h"
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -34,7 +36,7 @@ namespace org {
                     /**
                      * Chars we will ignore when loading a sample HEX string. It allows to copy/paste the specs APDU
                      */
-                    //static const std::shared_ptr<Pattern> HEX_IGNORED_CHARS;
+                    static const std::shared_ptr<Pattern> HEX_IGNORED_CHARS;
 
                     /**
                      * Create a byte array from an hexa string. This method allows spaces and "h".
@@ -51,7 +53,7 @@ namespace org {
                      * @param byteArray byte array to represent to hex
                      * @return Hex representation of the byte array
                      */
-                    static std::string toHex(std::vector<char> &byteArray);
+                    static std::string toHex(const std::vector<char> &byteArray);
                 };
 
             }

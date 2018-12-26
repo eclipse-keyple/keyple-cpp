@@ -31,6 +31,7 @@ namespace org {
                     namespace nativese {
 
 
+                        using namespace org::eclipse::keyple::plugin::remotese::nativese::method;
                         using namespace org::eclipse::keyple::plugin::remotese::transport;
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
                         using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;

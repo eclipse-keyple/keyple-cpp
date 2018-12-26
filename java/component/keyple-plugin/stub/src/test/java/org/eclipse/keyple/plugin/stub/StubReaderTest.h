@@ -116,9 +116,10 @@ namespace org {
                             std::shared_ptr<StubReaderTest> outerInstance;
 
                             std::shared_ptr<CountDownLatch> lock;
+                            std::string poAid;
 
                         public:
-                            ReaderObserverAnonymousInnerClass2(std::shared_ptr<StubReaderTest> outerInstance, std::shared_ptr<CountDownLatch> lock);
+                            ReaderObserverAnonymousInnerClass2(std::shared_ptr<StubReaderTest> outerInstance, std::shared_ptr<CountDownLatch> lock, const std::string &poAid);
 
                             void update(std::shared_ptr<ReaderEvent> event_Renamed);
                         };

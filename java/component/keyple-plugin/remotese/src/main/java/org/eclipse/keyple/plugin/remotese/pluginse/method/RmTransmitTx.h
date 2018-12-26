@@ -38,10 +38,7 @@ namespace org {
                                 static const std::shared_ptr<Logger> logger;
 
                                 const std::shared_ptr<SeRequestSet> seRequestSet;
-                                const std::string sessionId;
-                                const std::string nativeReaderName;
-                                const std::string virtualReaderName;
-                                const std::string clientNodeId;
+
 
 
                             public:

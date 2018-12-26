@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "stringbuilder.h"
+#include "Pattern.h"
+#include "Serializable.h"
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -27,7 +30,7 @@ namespace org {
                     /**
                      * Single APDU request wrapper
                      */
-                    class ApduRequest final : public std::enable_shared_from_this<ApduRequest> {
+                    class ApduRequest final : public std::enable_shared_from_this<ApduRequest>, public Serializable {
 
                     public:
                         static constexpr long long serialVersionUID = 877369841119873812LL;
@@ -136,7 +139,7 @@ namespace org {
                          */
                         std::vector<char> getBytes();
 
-                        std::string toString();
+                        std::string toString() override;
                     };
 
                 }

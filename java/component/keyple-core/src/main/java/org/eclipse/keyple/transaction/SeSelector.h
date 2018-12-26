@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include "MatchingSe.h"
 #include "../seproxy/ChannelState.h"
 #include <string>
@@ -33,23 +34,32 @@ namespace org {
                 using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
                 using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
                 using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                using org::slf4j::Logger;
-                using org::slf4j::LoggerFactory;
+//                using org::slf4j::Logger;
+//                using org::slf4j::LoggerFactory;
 
                 /**
                  * The SeSelector class groups the information and methods used to select a particular secure
                  * element
                  */
                 class SeSelector : public std::enable_shared_from_this<SeSelector> {
+                    /**
+                     * SelectMode indicates how to carry out the application selection in accordance with ISO7816-4
+                     */
+                public:
+                    enum class SelectMode {
+                        FIRST,
+                        NEXT
+                    };
+
                 private:
-                    static const std::shared_ptr<Logger> logger;
+//                    static const std::shared_ptr<Logger> logger;
 
                 protected:
-                    std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList = std::vector<std::shared_ptr<ApduRequest>>();
-                    std::shared_ptr<Set<Integer>> selectApplicationSuccessfulStatusCodes = std::unordered_set<Integer>();
+                    std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList;
+                    std::set<int> selectApplicationSuccessfulStatusCodes;
                 private:
-                    std::type_info matchingClass = MatchingSe::typeid;
-                    std::type_info selectorClass = SeSelector::typeid;
+                    std::type_info matchingClass;
+                    std::type_info selectorClass;
                     const ChannelState channelState;
                     const std::shared_ptr<SeProtocol> protocolFlag;
                     const std::string atrRegex;
@@ -66,15 +76,6 @@ namespace org {
                     virtual SelectMode getSelectMode();
 
                     virtual bool isSelectionByAid();
-
-                    /**
-                     * SelectMode indicates how to carry out the application selection in accordance with ISO7816-4
-                     */
-                public:
-                    enum class SelectMode {
-                        FIRST,
-                        NEXT
-                    };
 
                     /**
                      * Instantiate a SeSelector object with the selection data (atrRegex), dedicated to select a SE
@@ -114,7 +115,7 @@ namespace org {
 
                     /**
                      * Sets the list of ApduRequest to be executed following the selection operation at once
-                     * 
+                     *
                      * @param seSelectionApduRequestList the list of requests
                      */
                     void setSelectionApduRequestList(std::vector<std::shared_ptr<ApduRequest>> &seSelectionApduRequestList);
@@ -130,7 +131,7 @@ namespace org {
 
                     /**
                      * Gets the information string
-                     * 
+                     *
                      * @return a string to be printed in logs
                      */
                 public:
@@ -143,7 +144,7 @@ namespace org {
                      *
                      * This method must be called in the classes that extend SeSelector in order to specify the
                      * expected class derived from MatchingSe in return to the selection process.
-                     * 
+                     *
                      * @param matchingClass the expected class for this SeSelector
                      */
                 protected:
@@ -157,21 +158,21 @@ namespace org {
                      *
                      * This method must be called in the classes that extend SeSelector in order to specify the
                      * expected class derived from SeSelector used as an argument to derived form of MatchingSe.
-                     * 
+                     *
                      * @param selectorClass the argument for the constructor of the matchingClass
                      */
                     void setSelectorClass(std::type_info selectorClass);
 
                     /**
                      * The default value for the matchingClass (unless setMatchingClass is used) is MatchingSe.class
-                     * 
+                     *
                      * @return the current matchingClass
                      */
                     std::type_info getMatchingClass();
 
                     /**
                      * The default value for the selectorClass (unless setSelectorClass is used) is SeSelector.class
-                     * 
+                     *
                      * @return the current selectorClass
                      */
                     std::type_info getSelectorClass();

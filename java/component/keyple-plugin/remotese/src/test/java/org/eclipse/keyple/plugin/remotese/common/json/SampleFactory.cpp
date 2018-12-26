@@ -1,6 +1,7 @@
 #include "SampleFactory.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleBaseException.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
+#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SelectionRequest.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeRequest.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
@@ -16,11 +17,13 @@ namespace org {
                         namespace json {
                             using namespace org::eclipse::keyple::seproxy;
                             using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
+                            using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                             using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                             using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                             using namespace org::eclipse::keyple::seproxy::message;
                             using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
                             using ContactsProtocols = org::eclipse::keyple::seproxy::protocol::ContactsProtocols;
+                            using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
                             using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 
                             std::shared_ptr<KeypleBaseException> SampleFactory::getAStackedKeypleException() {
@@ -29,6 +32,14 @@ namespace org {
 
                             std::shared_ptr<KeypleBaseException> SampleFactory::getASimpleKeypleException() {
                                 return std::make_shared<KeypleReaderException>("Keyple Reader Exception");
+                            }
+
+                            std::shared_ptr<SelectionRequest> SampleFactory::getSelectionRequest() {
+                                return std::make_shared<SelectionRequest>(getASeRequestSet_ISO14443_4());
+                            }
+
+                            ObservableReader::NotificationMode SampleFactory::getNotificationMode() {
+                                return ObservableReader::NotificationMode::ALWAYS;
                             }
 
                             std::shared_ptr<SeRequestSet> SampleFactory::getASeRequestSet_ISO14443_4() {

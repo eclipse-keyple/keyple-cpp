@@ -4,6 +4,8 @@
 #include "../util/Nameable.h"
 #include "protocol/TransmissionMode.h"
 #include <memory>
+#include "NoStackTraceThrowable.h"
+#include "Comparable.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocolSetting; } } } } }
@@ -69,7 +71,7 @@ namespace org {
                      * <p>
                      * A reader plugin will handle a list of protocol settings in order to target multiple types of
                      * SE.
-                     * 
+                     *
                      * @param seProtocolSetting the protocol setting to be add to the plugin internal list
                      */
                     virtual void addSeProtocolSetting(std::shared_ptr<SeProtocolSetting> seProtocolSetting) = 0;

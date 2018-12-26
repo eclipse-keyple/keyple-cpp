@@ -94,8 +94,32 @@ const std::shared_ptr<org::slf4j::Logger> VirtualReaderService::logger = org::sl
                                             throw std::make_shared<IllegalStateException>("Readers list has not been initializated", e);
                                         }
                                     }
+
+                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::DEFAULT_SELECTION_REQUEST:
+                                    if (keypleDTO->isRequest()) {
+                                        throw std::make_shared<IllegalStateException>("a READER_TRANSMIT request has been received by VirtualReaderService");
+                                    }
+                                    else {
+                                        // dispatch dto to the appropriate reader
+                                        try {
+                                            // find reader by sessionId
+                                            std::shared_ptr<VirtualReader> reader = getReaderBySessionId(keypleDTO->getSessionId());
+
+                                            // process response with the reader rmtx engine
+                                            return reader->getRmTxEngine()->onDTO(transportDto);
+
+                                        }
+                                        catch (const KeypleReaderNotFoundException &e) {
+                                            // reader not found;
+                                            throw std::make_shared<IllegalStateException>("Virtual Reader was not found while receiving a transmitSet response", e);
+                                        }
+                                        catch (const KeypleReaderException &e) {
+                                            // reader not found;
+                                            throw std::make_shared<IllegalStateException>("Readers list has not been initializated", e);
+                                        }
+                                    }
                                 default:
-                                    logger->debug("Default case");
+                                    logger->error("Receive a KeypleDto with no recognised action");
                                     return transportDto->nextTransportDTO(KeypleDtoHelper::NoResponse());
                             }
                         }

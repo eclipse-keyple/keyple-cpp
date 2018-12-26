@@ -3,9 +3,10 @@
 #include "../ReaderPlugin.h"
 #include "../../util/Observable.h"
 #include <memory>
+#include "Observable.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class PluginEvent; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class PluginEvent; } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -22,10 +23,10 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
-                namespace event_Renamed {
+                namespace event {
 
                     using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
-                    using Observable = org::eclipse::keyple::util::Observable;
+                    using org::eclipse::keyple::util::Observable;
 
                     class ObservablePlugin : public ReaderPlugin {
                     private:

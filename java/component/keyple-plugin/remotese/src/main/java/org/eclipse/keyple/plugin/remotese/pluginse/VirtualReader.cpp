@@ -8,6 +8,7 @@
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/SeProtocolSetting.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SelectionRequest.h"
+#include "method/RmSetDefaultSelectionRequestTx.h"
 
 namespace org {
     namespace eclipse {
@@ -15,6 +16,7 @@ namespace org {
             namespace plugin {
                 namespace remotese {
                     namespace pluginse {
+                        using RmSetDefaultSelectionRequestTx = org::eclipse::keyple::plugin::remotese::pluginse::method::RmSetDefaultSelectionRequestTx;
                         using RmTransmitTx = org::eclipse::keyple::plugin::remotese::pluginse::method::RmTransmitTx;
                         using KeypleRemoteException = org::eclipse::keyple::plugin::remotese::transport::KeypleRemoteException;
                         using KeypleRemoteReaderException = org::eclipse::keyple::plugin::remotese::transport::KeypleRemoteReaderException;
@@ -118,7 +120,16 @@ const std::shared_ptr<org::slf4j::Logger> VirtualReader::logger = org::slf4j::Lo
                         }
 
                         void VirtualReader::setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> selectionRequest, NotificationMode notificationMode) {
-                            logger->error("setDefaultSelectionRequest is not implemented yet");
+
+                            std::shared_ptr<RmSetDefaultSelectionRequestTx> setDefaultSelectionRequest = std::make_shared<RmSetDefaultSelectionRequestTx>(selectionRequest, notificationMode, this->getNativeReaderName(), this->getName(), this->getSession()->getSessionId(), nullptr);
+
+                            try {
+                                rmTxEngine->register_Renamed(setDefaultSelectionRequest);
+                                setDefaultSelectionRequest->get();
+                            }
+                            catch (const KeypleRemoteException &e) {
+                                logger->error("setDefaultSelectionRequest encounters an exception while communicating with slave", e);
+                            }
                         }
                     }
                 }

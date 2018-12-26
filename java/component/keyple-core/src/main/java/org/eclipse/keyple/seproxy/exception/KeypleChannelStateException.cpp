@@ -5,8 +5,6 @@ namespace org {
         namespace keyple {
             namespace seproxy {
                 namespace exception {
-                    using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
-
                     KeypleChannelStateException::KeypleChannelStateException(const std::string &message) : KeypleReaderException(message) {
                     }
 

@@ -8,8 +8,6 @@
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReaderService; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class TransportNode; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace nativese { class NativeReaderServiceImpl; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ObservablePlugin; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class PluginObserver; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderNotFoundException; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace stub { class StubReader; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class TransportDto; } } } } } }
@@ -38,7 +36,6 @@ namespace org {
                         using TransportDto = org::eclipse::keyple::plugin::remotese::transport::TransportDto;
                         using TransportNode = org::eclipse::keyple::plugin::remotese::transport::TransportNode;
                         using StubReader = org::eclipse::keyple::plugin::stub::StubReader;
-                        using ObservablePlugin = org::eclipse::keyple::seproxy::event_Renamed::ObservablePlugin;
                         using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                         using org::mockito::stubbing::Answer;
                         using org::slf4j::Logger;
@@ -83,7 +80,7 @@ namespace org {
                              * @throws InterruptedException
                              * @throws KeypleReaderNotFoundException
                              */
-                            static std::shared_ptr<StubReader> createStubReader(const std::string &stubReaderName, std::shared_ptr<ObservablePlugin::PluginObserver> observer) throw(InterruptedException, KeypleReaderNotFoundException);
+                            static std::shared_ptr<StubReader> createStubReader(const std::string &stubReaderName) throw(InterruptedException, KeypleReaderNotFoundException);
 
                             /**
                              * Create a mock method for onDto() that checks that keypleDto contains an exception

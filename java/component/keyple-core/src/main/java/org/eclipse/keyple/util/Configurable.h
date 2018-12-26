@@ -2,6 +2,7 @@
 
 #include <string>
 #include <unordered_map>
+#include "KeypleBaseException.h"
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/

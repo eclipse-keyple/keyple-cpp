@@ -11,12 +11,13 @@ namespace org {
                     using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
                     using Protocol = org::eclipse::keyple::seproxy::protocol::Protocol;
                     using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                    using Selector = org::eclipse::keyple::seproxy::message::SeRequest::Selector;
                     using SeSelector = org::eclipse::keyple::transaction::SeSelector;
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 
                     SeRequest::AidSelector::AidSelector(std::vector<char> &aidToSelect) {
                         if (aidToSelect.size() < AID_MIN_LENGTH || aidToSelect.size() > AID_MAX_LENGTH) {
-                            throw std::invalid_argument(std::string::format("Bad AID length: %d", aidToSelect.size()));
+                            throw std::invalid_argument(StringHelper::formatSimple("Bad AID length: %d", aidToSelect.size()));
                         }
                         this->aidToSelect = aidToSelect;
                     }
@@ -48,9 +49,9 @@ namespace org {
                     bool SeRequest::AtrSelector::atrMatches(std::vector<char> &atr) {
                         bool m;
                         if (atrRegex.length() != 0) {
-                            std::shared_ptr<Pattern> p = Pattern::compile(atrRegex);
+                            Pattern p = Pattern::compile(atrRegex);
                             std::string atrString = ByteArrayUtils::toHex(atr);
-                            m = p->matcher(atrString).matches();
+                            m = p.matcher(atrString).matches();
                         }
                         else {
                             m = true;
@@ -62,7 +63,7 @@ namespace org {
                         return StringHelper::formatSimple("ATR regex:%s", atrRegex.length() != 0 ? atrRegex : "empty");
                     }
 
-                    SeRequest::SeRequest(std::shared_ptr<Selector> selector, std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes) : selector(selector) {
+                    SeRequest::SeRequest(std::shared_ptr<Selector> selector, std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes) : selector(selector) {
                         if (protocolFlag == nullptr) {
                             throw std::invalid_argument("¨protocolFlag can't be null");
                         }
@@ -72,7 +73,7 @@ namespace org {
                         this->successfulSelectionStatusCodes = successfulSelectionStatusCodes;
                     }
 
-                    SeRequest::SeRequest(std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState) : SeRequest(nullptr, apduRequests, channelState, Protocol::ANY, nullptr) {
+                    SeRequest::SeRequest(std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState) : SeRequest(nullptr, apduRequests, channelState, nullptr, nullptr) {
                     }
 
                     std::shared_ptr<Selector> SeRequest::getSelector() {
@@ -91,12 +92,12 @@ namespace org {
                         return protocolFlag;
                     }
 
-                    std::shared_ptr<Set<Integer>> SeRequest::getSuccessfulSelectionStatusCodes() {
+                    std::shared_ptr<std::set<int>> SeRequest::getSuccessfulSelectionStatusCodes() {
                         return successfulSelectionStatusCodes;
                     }
 
                     std::string SeRequest::toString() {
-                        return StringHelper::formatSimple("SeRequest:{REQUESTS = %s, SELECTOR = %s, KEEPCHANNELOPEN = %s}", getApduRequests(), getSelector(), channelState);
+                        return StringHelper::formatSimple("SeRequest:{REQUESTS = %s, SELECTOR = %s, KEEPCHANNELOPEN = %s}", "to fix!" /*etApduRequests()*/, getSelector(), "to fix!" /*channelState*/);
                     }
                 }
             }

@@ -4,7 +4,6 @@
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/ReaderPlugin.h"
 #include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/nativese/NativeReaderServiceImpl.h"
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ObservablePlugin.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderNotFoundException.h"
 #include "../../../../../../../../../../stub/src/main/java/org/eclipse/keyple/plugin/stub/StubReader.h"
 #include "../../../../../../../../../../stub/src/main/java/org/eclipse/keyple/plugin/stub/StubPlugin.h"
@@ -28,7 +27,6 @@ namespace org {
                         using StubReader = org::eclipse::keyple::plugin::stub::StubReader;
                         using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
-                        using ObservablePlugin = org::eclipse::keyple::seproxy::event_Renamed::ObservablePlugin;
                         using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                         using org::junit::Assert;
                         using org::mockito::Mockito;
@@ -73,14 +71,15 @@ const std::shared_ptr<org::slf4j::Logger> Integration::logger = org::slf4j::Logg
                             return spy;
                         }
 
-                        std::shared_ptr<StubReader> Integration::createStubReader(const std::string &stubReaderName, std::shared_ptr<ObservablePlugin::PluginObserver> observer) throw(InterruptedException, KeypleReaderNotFoundException) {
+                        std::shared_ptr<StubReader> Integration::createStubReader(const std::string &stubReaderName) throw(InterruptedException, KeypleReaderNotFoundException) {
                             std::shared_ptr<SeProxyService> seProxyService = SeProxyService::getInstance();
 
                             std::shared_ptr<StubPlugin> stubPlugin = StubPlugin::getInstance();
                             seProxyService->addPlugin(stubPlugin);
 
                             // add an stubPluginObserver to start the plugin monitoring thread
-                            stubPlugin->addObserver(observer);
+                            // stubPlugin.addObserver(observer); //do not observe so the monitoring thread is not
+                            // created
 
                             logger->debug("Stub plugin count observers : {}", stubPlugin->countObservers());
 

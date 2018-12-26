@@ -3,6 +3,7 @@
 #include <string>
 #include <stdexcept>
 #include <memory>
+#include "Exception.h"
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -26,13 +27,13 @@ namespace org {
                     /**
                      * Base Exception for all Keyple Checked Exception
                      */
-                    class KeypleBaseException : public std::runtime_error, public std::enable_shared_from_this<KeypleBaseException> {
+                    class KeypleBaseException : public std::enable_shared_from_this<KeypleBaseException>, public Exception {
                     private:
                         static constexpr long long serialVersionUID = -500856379312027085LL;
 
                         /**
                          * New exception to be thrown
-                         * 
+                         *
                          * @param message : message to identify the exception and the context
                          */
                     public:
@@ -40,7 +41,7 @@ namespace org {
 
                         /**
                          * Encapsulate a lower level exception (ie CardException, IOException, HostNotFoundException..)
-                         * 
+                         *
                          * @param message : message to identify the exception and the context
                          * @param cause : lower level exception
                          */

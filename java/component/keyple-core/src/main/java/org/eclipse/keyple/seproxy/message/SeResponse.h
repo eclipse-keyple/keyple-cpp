@@ -5,6 +5,9 @@
 #include <stdexcept>
 #include <memory>
 
+#include "Serializable.h"
+#include "Object.h"
+
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SelectionStatus; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
@@ -29,12 +32,12 @@ namespace org {
 
                     /**
                      * Group of SE responses received in response to a {@link SeRequest}.
-                     * 
+                     *
                      * @see SeRequest
                      */
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @SuppressWarnings("PMD.NPathComplexity") public final class SeResponse implements java.io.Serializable
-                    class SeResponse final : public std::enable_shared_from_this<SeResponse>, public Serializable {
+                    class SeResponse final : public std::enable_shared_from_this<SeResponse>, public Serializable, public Object {
 
                     public:
                         static constexpr long long serialVersionUID = 265369841119873812LL;

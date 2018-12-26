@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include "Object.h"
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -26,18 +27,18 @@ namespace org {
                      * <p>
                      * (May be enhanced to provide analysis methods)
                      */
-                    class AnswerToReset : public std::enable_shared_from_this<AnswerToReset> {
+                    class AnswerToReset : public std::enable_shared_from_this<AnswerToReset>, public Object{
                     private:
                         std::vector<char> atrBytes;
 
                     public:
                         AnswerToReset(std::vector<char> &atrBytes);
 
-                        virtual std::vector<char> getBytes();
+                        std::vector<char> getBytes();
 
-                        bool equals(std::shared_ptr<void> o);
+                        bool equals(std::shared_ptr<void> o) override;
 
-                        int hashCode();
+                        int hashCode() override;
                     };
 
                 }

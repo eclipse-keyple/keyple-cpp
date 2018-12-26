@@ -1,9 +1,13 @@
 #pragma once
 
+#include <set>
 #include "../util/Configurable.h"
 #include "../util/Nameable.h"
 #include <string>
 #include <memory>
+#include "KeypleReaderException.h"
+#include "KeypleReaderNotFoundException.h"
+#include "Comparable.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
@@ -43,11 +47,11 @@ namespace org {
                      * @throws KeypleReaderException if the list of readers has not been initialized
                      */
                 public:
-                    virtual std::shared_ptr<SortedSet<? extends SeReader>> getReaders() = 0;
+                    virtual std::shared_ptr<std::set<SeReader>> getReaders() = 0;
 
                     /**
                      * Gets the reader whose name is provided as an argument
-                     * 
+                     *
                      * @param name of the reader
                      * @return the SeReader object.
                      * @throws KeypleReaderNotFoundException if the wanted reader is not found

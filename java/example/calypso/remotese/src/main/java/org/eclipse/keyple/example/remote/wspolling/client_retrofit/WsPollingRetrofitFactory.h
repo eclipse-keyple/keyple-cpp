@@ -58,9 +58,9 @@ namespace org {
                             private:
                                 WsPollingRetrofitFactory(Integer port, const std::string &clientNodeId, const std::string &hostname, const std::string &protocol);
 
+                            public:
                                 WsPollingRetrofitFactory(std::shared_ptr<Properties> serverProp, const std::string &clientNodeId);
 
-                            public:
                                 std::shared_ptr<ClientNode> getClient() override;
 
 

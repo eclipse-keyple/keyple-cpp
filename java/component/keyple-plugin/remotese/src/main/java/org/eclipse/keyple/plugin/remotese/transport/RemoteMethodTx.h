@@ -4,6 +4,7 @@
 #include "RemoteMethodTxCallback.h"
 #include "DtoSender.h"
 #include "KeypleDto.h"
+#include <string>
 #include "exceptionhelper.h"
 #include <memory>
 
@@ -43,8 +44,14 @@ namespace org {
                         private:
 //JAVA TO C++ CONVERTER TODO TASK: Native C++ does not allow initialization of static non-const/integral fields in their declarations - choose the conversion option for separate .h and .cpp files:
                             static const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(RemoteMethodTx::typeid);
+                        protected:
+                            std::string sessionId;
+                            std::string nativeReaderName;
+                            std::string virtualReaderName;
+                            std::string clientNodeId;
 
                             // response
+                        private:
                             T response;
 
                             // exception thrown if any
@@ -55,6 +62,15 @@ namespace org {
                             std::shared_ptr<RemoteMethodTxCallback<T>> callback;
 
                             std::shared_ptr<DtoSender> sender;
+
+                        protected:
+                            RemoteMethodTx(const std::string &sessionId, const std::string &nativeReaderName, const std::string &virtualReaderName, const std::string &clientNodeId) {
+                                this->sessionId = sessionId;
+                                this->nativeReaderName = nativeReaderName;
+                                this->virtualReaderName = virtualReaderName;
+                                this->clientNodeId = clientNodeId;
+                            }
+
 
                         public:
                             virtual void setDto(std::shared_ptr<DtoSender> sender) {
@@ -143,7 +159,6 @@ protected:
                              */
                         public:
                             virtual void asyncSetResponse(std::shared_ptr<KeypleDto> keypleDto) {
-                                logger->debug("asyncSetResponse : {} - remoteException : {}", response, remoteException);
                                 try {
                                     this->response = parseResponse(keypleDto);
                                     this->callback->get(response, nullptr);

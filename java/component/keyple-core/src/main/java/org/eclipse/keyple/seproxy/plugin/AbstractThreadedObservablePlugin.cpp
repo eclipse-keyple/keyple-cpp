@@ -25,7 +25,9 @@ std::shared_ptr<java::util::SortedSet<std::string>> AbstractThreadedObservablePl
                     }
 
                     void AbstractThreadedObservablePlugin::stopObservation() {
-                        thread->end();
+                        if (thread != nullptr) {
+                            thread->end();
+                        }
                     }
 
                     AbstractThreadedObservablePlugin::EventThread::EventThread(std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance, const std::string &pluginName) : pluginName(pluginName), outerInstance(outerInstance) {

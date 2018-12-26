@@ -4,6 +4,7 @@
 #include <vector>
 #include "exceptionhelper.h"
 #include <memory>
+#include "Serializable.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
@@ -30,7 +31,7 @@ namespace org {
                      * Aggregates the seResponses of a response from a local or remote SE Reader, received through a
                      * ProxyReader, including a group of APDU responses and the previous status of the logical channel
                      * with the targeted SE application.
-                     * 
+                     *
                      * @see SeRequestSet
                      */
                     class SeResponseSet final : public std::enable_shared_from_this<SeResponseSet>, public Serializable {
@@ -55,7 +56,7 @@ namespace org {
 
                         /**
                          * Create an {@link SeResponseSet} from a list of {@link SeResponse}s.
-                         * 
+                         *
                          * @param seResponses List of seResponses
                          */
                         SeResponseSet(std::vector<std::shared_ptr<SeResponse>> &seResponses);

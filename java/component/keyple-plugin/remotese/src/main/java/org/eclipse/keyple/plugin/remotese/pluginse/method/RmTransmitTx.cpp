@@ -20,7 +20,7 @@ namespace org {
                             using org::slf4j::LoggerFactory;
 const std::shared_ptr<org::slf4j::Logger> RmTransmitTx::logger = org::slf4j::LoggerFactory::getLogger(RmTransmitTx::typeid);
 
-                            RmTransmitTx::RmTransmitTx(std::shared_ptr<SeRequestSet> seRequestSet, const std::string &sessionId, const std::string &nativeReaderName, const std::string &virtualReaderName, const std::string &clientNodeId) : seRequestSet(seRequestSet), sessionId(sessionId), nativeReaderName(nativeReaderName), virtualReaderName(virtualReaderName), clientNodeId(clientNodeId) {
+                            RmTransmitTx::RmTransmitTx(std::shared_ptr<SeRequestSet> seRequestSet, const std::string &sessionId, const std::string &nativeReaderName, const std::string &virtualReaderName, const std::string &clientNodeId) : RemoteMethodTx<org::eclipse::keyple::seproxy::message::SeResponseSet>(sessionId, nativeReaderName, virtualReaderName, clientNodeId), seRequestSet(seRequestSet) {
                             }
 
                             std::shared_ptr<KeypleDto> RmTransmitTx::dto() {

@@ -6,10 +6,10 @@ namespace org {
             namespace seproxy {
                 namespace exception {
 
-                    KeypleRuntimeException::KeypleRuntimeException(const std::string &message) : RuntimeException(message) {
+                    KeypleRuntimeException::KeypleRuntimeException(const std::string &message) : Exception(message) {
                     }
 
-                    KeypleRuntimeException::KeypleRuntimeException(const std::string &message, std::runtime_error cause) : RuntimeException(message, cause) {
+                    KeypleRuntimeException::KeypleRuntimeException(const std::string &message, std::runtime_error cause) : Exception(message, cause) {
                     }
                 }
             }

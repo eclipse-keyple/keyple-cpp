@@ -2,6 +2,7 @@
 
 #include "../SeReader.h"
 #include <memory>
+#include "KeypleReaderException.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequestSet; } } } } }
@@ -89,7 +90,7 @@ namespace org {
                          * This method could also fail in case of IO error or wrong card state &rarr; some reader’s
                          * exception (SE missing, IO error, wrong card state, timeout) have to be caught during the
                          * processing of the SE request transmission. *
-                         * 
+                         *
                          * @param seApplicationRequest the SeRequest to transmit
                          * @return SeResponse the response to the SeRequest
                          * @throws KeypleReaderException in case of a reader exception

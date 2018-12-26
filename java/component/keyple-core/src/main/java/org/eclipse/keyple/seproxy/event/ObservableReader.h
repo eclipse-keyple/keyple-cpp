@@ -2,6 +2,8 @@
 
 #include "../SeReader.h"
 #include "../../util/Observable.h"
+#include <string>
+#include <vector>
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
@@ -35,9 +37,72 @@ namespace org {
                         };
 
                     public:
-                        enum class NotificationMode {
-                            ALWAYS,
-                            MATCHED_ONLY
+                        class NotificationMode final {
+public:
+                            static NotificationMode ALWAYS;
+                            static NotificationMode MATCHED_ONLY;
+
+private:
+                            static std::vector<NotificationMode> valueList;
+
+public:
+                            enum class InnerEnum {
+                                ALWAYS,
+                                MATCHED_ONLY
+                            };
+
+                            const InnerEnum innerEnumValue;
+private:
+                            const std::string nameValue;
+                            const int ordinalValue;
+                            static int nextOrdinal;
+
+                        private:
+                            std::string name;
+
+                        public:
+                            NotificationMode(const std::string &name, InnerEnum innerEnum, const std::string &name);
+
+                            virtual std::string getName();
+
+                            // ****** Reverse Lookup Implementation************//
+
+                            // Lookup table
+                        private:
+                            static const std::unordered_map<std::string, NotificationMode> lookup;
+
+                            // Populate the lookup table on loading time
+//JAVA TO C++ CONVERTER TODO TASK: Java to C++ Converter does not convert types within enums:
+//                                                private class StaticConstructor
+                    //                            {
+                    //                                public StaticConstructor()
+                    //                                {
+                    //                for (NotificationMode env : NotificationMode.values())
+                    //                {
+                    //                    lookup.put(env.getName(), env);
+                    //                }
+                    //                                }
+                    //                            }
+
+                                                static NotificationMode::StaticConstructor staticConstructor;
+
+
+                            // This method can be used for reverse lookup purpose
+                        public:
+                            static NotificationMode get(const std::string &name);
+
+public:
+                            bool operator == (const NotificationMode &other);
+
+                            bool operator != (const NotificationMode &other);
+
+                            static std::vector<NotificationMode> values();
+
+                            int ordinal();
+
+                            std::string toString();
+
+                            static NotificationMode valueOf(const std::string &name);
                         };
 
                     public:

@@ -10,6 +10,7 @@
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
+#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleIOReaderException.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/MatchingSe.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/SeProtocolSetting.h"
 #include "../../../../../../../main/java/org/eclipse/keyple/plugin/stub/StubProtocolSetting.h"
@@ -17,7 +18,6 @@
 #include "../../../../../../../../../../keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/po/builder/ReadRecordsCmdBuild.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeRequest.h"
 #include "../../../../../../../../../../keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/po/builder/IncreaseCmdBuild.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleIOReaderException.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleChannelStateException.h"
 
 namespace org {
@@ -138,10 +138,10 @@ namespace org {
 
                         // CountDown lock
                         std::shared_ptr<CountDownLatch> * const lock = std::make_shared<CountDownLatch>(1);
+                        const std::string poAid = "A000000291A000000191";
 
                         // add observer
-                        reader->addObserver(std::make_shared<ReaderObserverAnonymousInnerClass2>(shared_from_this(), lock));
-                        std::string poAid = "A000000291A000000191";
+                        reader->addObserver(std::make_shared<ReaderObserverAnonymousInnerClass2>(shared_from_this(), lock, poAid));
 
                         std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(reader);
 
@@ -161,9 +161,10 @@ namespace org {
 
                     }
 
-                    StubReaderTest::ReaderObserverAnonymousInnerClass2::ReaderObserverAnonymousInnerClass2(std::shared_ptr<StubReaderTest> outerInstance, std::shared_ptr<CountDownLatch> lock) {
+                    StubReaderTest::ReaderObserverAnonymousInnerClass2::ReaderObserverAnonymousInnerClass2(std::shared_ptr<StubReaderTest> outerInstance, std::shared_ptr<CountDownLatch> lock, const std::string &poAid) {
                         this->outerInstance = outerInstance;
                         this->lock = lock;
+                        this->poAid = poAid;
                     }
 
                     void StubReaderTest::ReaderObserverAnonymousInnerClass2::update(std::shared_ptr<ReaderEvent> event_Renamed) {
@@ -173,11 +174,26 @@ namespace org {
                         Assert::assertTrue(event_Renamed->getDefaultSelectionResponse()->getSelectionSeResponseSet()->getSingleResponse()->getSelectionStatus()->hasMatched());
                         Assert::assertArrayEquals(event_Renamed->getDefaultSelectionResponse()->getSelectionSeResponseSet()->getSingleResponse()->getSelectionStatus()->getAtr()->getBytes(), hoplinkSE()->getATR());
 
-                        // TODO add FCI to StubSecureElement
-                        // Assert.assertArrayEquals(
-                        // event.getDefaultSelectionResponse().getSelectionSeResponseSet()
-                        // .getSingleResponse().getSelectionStatus().getFci().getBytes(),
-                        // hoplinkSE().getFci());
+                        // retrieve the expected FCI from the Stub SE running the select application command
+                        std::vector<char> aid = ByteArrayUtils::fromHex(poAid);
+                        std::vector<char> selectApplicationCommand(6 + aid.size());
+                        selectApplicationCommand[0] = static_cast<char>(0x00); // CLA
+                        selectApplicationCommand[1] = static_cast<char>(0xA4); // INS
+                        selectApplicationCommand[2] = static_cast<char>(0x04); // P1: select by name
+                        selectApplicationCommand[3] = static_cast<char>(0x00); // P2: requests the first
+                        selectApplicationCommand[4] = static_cast<char>(aid.size()); // Lc
+                        System::arraycopy(aid, 0, selectApplicationCommand, 5, aid.size()); // data
+
+                        selectApplicationCommand[5 + aid.size()] = static_cast<char>(0x00); // Le
+                        std::vector<char> fci;
+                        try {
+                            fci = hoplinkSE()->processApdu(selectApplicationCommand);
+                        }
+                        catch (const KeypleIOReaderException &e) {
+                            e->printStackTrace();
+                        }
+
+                        Assert::assertArrayEquals(event_Renamed->getDefaultSelectionResponse()->getSelectionSeResponseSet()->getSingleResponse()->getSelectionStatus()->getFci()->getBytes(), fci);
 
                         outerInstance->logger->debug("match event is correct");
                         // unlock thread

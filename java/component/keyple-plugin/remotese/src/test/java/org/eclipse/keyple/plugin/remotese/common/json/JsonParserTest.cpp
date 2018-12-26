@@ -2,6 +2,8 @@
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeRequestSet.h"
 #include "SampleFactory.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeResponseSet.h"
+#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SelectionRequest.h"
+#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ObservableReader.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleBaseException.h"
 #include "../../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/transport/json/JsonParser.h"
 
@@ -13,9 +15,11 @@ namespace org {
                     namespace common {
                         namespace json {
                             using JsonParser = org::eclipse::keyple::plugin::remotese::transport::json::JsonParser;
+                            using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                             using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                             using SeRequestSet = org::eclipse::keyple::seproxy::message::SeRequestSet;
                             using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
+                            using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
                             using org::junit::Test;
                             using org::junit::runner::RunWith;
                             using org::mockito::junit::MockitoJUnitRunner;
@@ -44,6 +48,21 @@ const std::shared_ptr<org::slf4j::Logger> JsonParserTest::logger = org::slf4j::L
                                 std::shared_ptr<SeResponseSet> responseSet = SampleFactory::getCompleteResponseSet();
                                 testSerializeDeserializeObj(responseSet, SeResponseSet::typeid);
 
+                            }
+
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Test public void testSelectionRequest()
+                            void JsonParserTest::testSelectionRequest() {
+                                std::shared_ptr<SelectionRequest> selectionRequest = SampleFactory::getSelectionRequest();
+                                testSerializeDeserializeObj(selectionRequest, SelectionRequest::typeid);
+
+                            }
+
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Test public void testNotificationMode()
+                            void JsonParserTest::testNotificationMode() {
+                                ObservableReader::NotificationMode notificationMode = SampleFactory::getNotificationMode();
+                                testSerializeDeserializeObj(notificationMode, ObservableReader::NotificationMode::typeid);
                             }
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:

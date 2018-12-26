@@ -27,7 +27,7 @@ namespace org {
                     class NoStackTraceThrowable : public std::runtime_error, public std::enable_shared_from_this<NoStackTraceThrowable> {
 
                     public:
-                        std::runtime_error fillInStackTrace() override;
+                        std::runtime_error fillInStackTrace();// override;
                     };
 
                 }

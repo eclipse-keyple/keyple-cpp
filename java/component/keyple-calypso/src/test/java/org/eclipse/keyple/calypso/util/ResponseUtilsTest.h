@@ -27,10 +27,6 @@ namespace org {
                     class ResponseUtilsTest : public std::enable_shared_from_this<ResponseUtilsTest> {
                     public:
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void TestToFCI()
-                        virtual void TestToFCI();
-
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @Test public void TestToSecureSession()
                         virtual void TestToSecureSession();
 

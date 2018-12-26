@@ -165,7 +165,7 @@ const std::string StubReader::pluginName = "StubPlugin";
                                 delay(10);
                             }
                             catch (const InterruptedException &e) {
-                                e->printStackTrace();
+                                logger->debug("Sleep was interrupted");
                             }
                         }
                         return sePresent;
@@ -180,7 +180,7 @@ const std::string StubReader::pluginName = "StubPlugin";
                                 delay(10);
                             }
                             catch (const InterruptedException &e) {
-                                e->printStackTrace();
+                                logger->debug("Sleep was interrupted");
                             }
                         }
                         return !sePresent;

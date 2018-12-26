@@ -1,7 +1,6 @@
-#include <sstream>
-
 #include "ApduRequest.h"
 #include "../../util/ByteArrayUtils.h"
+#include "stringhelper.h"
 
 namespace org {
     namespace eclipse {
@@ -46,23 +45,33 @@ namespace org {
                     }
 
                     std::string ApduRequest::toString() {
-                        std::stringstream string;
-                        string << "ApduRequest: NAME = " << this->getName() << ", RAWDATA = " << ByteArrayUtils::toHex(bytes);
+                        std::shared_ptr<StringBuilder> string;
+                        string = std::make_shared<StringBuilder>("ApduRequest: NAME = \"" + this->getName() + "\", RAWDATA = " + ByteArrayUtils::toHex(bytes));
                         if (isCase4()) {
-                            string << ", case4";
+                            string->append(", case4");
                         }
                         if (successfulStatusCodes != nullptr) {
-                            string << ", additional successful status codes = ";
+                            string->append(", additional successful status codes = ");
                             std::set<int>::const_iterator iterator = successfulStatusCodes->begin();
                             while (iterator != successfulStatusCodes->end()) {
-                                string << std::hex << *iterator;
+                                string->append(StringHelper::formatSimple("%04X", *iterator));
                                 if (iterator != successfulStatusCodes->end()) {
-                                    string << ", ";
+                                    string->append(", ");
                                 }
                                 iterator++;
                             }
                         }
-                        return string.str();
+                        return string->toString();
+                    }
+
+                    bool equals(std::shared_ptr<void> o) {
+                        /* To be implemented */
+                        return false;
+                    }
+
+                    int hashCode() {
+                        /* To be implemented */
+                        return 0;
                     }
                 }
             }

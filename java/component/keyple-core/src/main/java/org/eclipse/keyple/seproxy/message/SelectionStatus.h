@@ -3,8 +3,10 @@
 #include <stdexcept>
 #include <memory>
 
+#include "Object.h"
+#include "AnswerToReset.h"
+
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class AnswerToReset; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
 
 /********************************************************************************
@@ -25,7 +27,7 @@ namespace org {
                 namespace message {
 
 
-                    class SelectionStatus : public std::enable_shared_from_this<SelectionStatus> {
+                    class SelectionStatus : public std::enable_shared_from_this<SelectionStatus>, public Object {
                     private:
                         const std::shared_ptr<AnswerToReset> atr;
                         const std::shared_ptr<ApduResponse> fci;

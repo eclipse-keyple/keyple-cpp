@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <string>
 #include <memory>
 
 /********************************************************************************
@@ -23,13 +23,23 @@ namespace org {
                         namespace parser {
 
 
+
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @RunWith(MockitoJUnitRunner.class) public class GetDataRespParsTest
                             class GetDataRespParsTest : public std::enable_shared_from_this<GetDataRespParsTest> {
                             public:
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void digestInitRespPars()
-                                virtual void digestInitRespPars();
+//ORIGINAL LINE: @Test public void testFCIparser_FCI_OK()
+                                virtual void testFCIparser_FCI_OK();
+
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Test public void testFCIparser_FCI_Invalidated()
+                                virtual void testFCIparser_FCI_Invalidated();
+
+
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Test public void testFCIparser_FCI_BadTags()
+                                virtual void testFCIparser_FCI_BadTags();
                             };
 
                         }

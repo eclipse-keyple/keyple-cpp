@@ -41,6 +41,9 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/command
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction
+
+	/* Helpers */
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common
 )
 
 ADD_LIBRARY(${LIBRARY_NAME} SHARED

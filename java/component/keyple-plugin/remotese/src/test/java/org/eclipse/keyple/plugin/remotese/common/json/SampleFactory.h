@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ObservableReader.h"
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -8,6 +9,8 @@
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleBaseException; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionRequest; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ObservableReader; } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -30,8 +33,10 @@ namespace org {
 
 
                             using namespace org::eclipse::keyple::seproxy;
+                            using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                             using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                             using namespace org::eclipse::keyple::seproxy::message;
+                            using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
 
                             class SampleFactory : public std::enable_shared_from_this<SampleFactory> {
 
@@ -40,6 +45,9 @@ namespace org {
 
                                 static std::shared_ptr<KeypleBaseException> getASimpleKeypleException();
 
+                                static std::shared_ptr<SelectionRequest> getSelectionRequest();
+
+                                static ObservableReader::NotificationMode getNotificationMode();
 
                                 static std::shared_ptr<SeRequestSet> getASeRequestSet_ISO14443_4();
 

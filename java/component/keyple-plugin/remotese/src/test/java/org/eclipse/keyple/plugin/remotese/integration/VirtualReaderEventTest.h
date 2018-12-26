@@ -2,6 +2,8 @@
 
 #include "VirtualReaderBaseTest.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ObservableReader.h"
+#include <string>
+#include <vector>
 #include <stdexcept>
 #include <memory>
 
@@ -26,6 +28,8 @@ namespace org {
                 namespace remotese {
                     namespace integration {
 
+//JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
+//                        import static org.eclipse.keyple.plugin.stub.StubReaderTest.hoplinkSE;
                         using namespace org::junit;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
@@ -87,6 +91,81 @@ namespace org {
 
                             public:
                                 ReaderObserverAnonymousInnerClass2(std::shared_ptr<VirtualReaderEventTest> outerInstance, std::shared_ptr<CountDownLatch> lock);
+
+                                void update(std::shared_ptr<ReaderEvent> event_Renamed);
+                            };
+
+
+                        public:
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Test public void testInsertMatchingSe() throws InterruptedException
+                            virtual void testInsertMatchingSe() throw(InterruptedException);
+
+                        private:
+                            class ReaderObserverAnonymousInnerClass3 : public std::enable_shared_from_this<ReaderObserverAnonymousInnerClass3>, public ObservableReader::ReaderObserver {
+                            private:
+                                std::shared_ptr<VirtualReaderEventTest> outerInstance;
+
+                                std::shared_ptr<CountDownLatch> lock;
+                                std::string poAid;
+
+                            public:
+                                ReaderObserverAnonymousInnerClass3(std::shared_ptr<VirtualReaderEventTest> outerInstance, std::shared_ptr<CountDownLatch> lock, const std::string &poAid);
+
+                                void update(std::shared_ptr<ReaderEvent> event_Renamed);
+                            };
+
+
+                        public:
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Test public void testInsertNotMatching_MatchedOnly() throws InterruptedException
+                            virtual void testInsertNotMatching_MatchedOnly() throw(InterruptedException);
+
+                        private:
+                            class ReaderObserverAnonymousInnerClass4 : public std::enable_shared_from_this<ReaderObserverAnonymousInnerClass4>, public ObservableReader::ReaderObserver {
+                            private:
+                                std::shared_ptr<VirtualReaderEventTest> outerInstance;
+
+                                std::shared_ptr<CountDownLatch> lock;
+
+                            public:
+                                ReaderObserverAnonymousInnerClass4(std::shared_ptr<VirtualReaderEventTest> outerInstance, std::shared_ptr<CountDownLatch> lock);
+
+                                void update(std::shared_ptr<ReaderEvent> event_Renamed);
+                            };
+
+                        public:
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Test public void testInsertNotMatching_Always() throws InterruptedException
+                            virtual void testInsertNotMatching_Always() throw(InterruptedException);
+
+                        private:
+                            class ReaderObserverAnonymousInnerClass5 : public std::enable_shared_from_this<ReaderObserverAnonymousInnerClass5>, public ObservableReader::ReaderObserver {
+                            private:
+                                std::shared_ptr<VirtualReaderEventTest> outerInstance;
+
+                                std::shared_ptr<CountDownLatch> lock;
+
+                            public:
+                                ReaderObserverAnonymousInnerClass5(std::shared_ptr<VirtualReaderEventTest> outerInstance, std::shared_ptr<CountDownLatch> lock);
+
+                                void update(std::shared_ptr<ReaderEvent> event_Renamed);
+                            };
+
+                        public:
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Test public void testATR() throws InterruptedException
+                            virtual void testATR() throw(InterruptedException);
+
+                        private:
+                            class ReaderObserverAnonymousInnerClass6 : public std::enable_shared_from_this<ReaderObserverAnonymousInnerClass6>, public ObservableReader::ReaderObserver {
+                            private:
+                                std::shared_ptr<VirtualReaderEventTest> outerInstance;
+
+                                std::shared_ptr<CountDownLatch> lock;
+
+                            public:
+                                ReaderObserverAnonymousInnerClass6(std::shared_ptr<VirtualReaderEventTest> outerInstance, std::shared_ptr<CountDownLatch> lock);
 
                                 void update(std::shared_ptr<ReaderEvent> event_Renamed);
                             };

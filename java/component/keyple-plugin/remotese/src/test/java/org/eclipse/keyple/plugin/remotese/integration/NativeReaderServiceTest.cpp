@@ -1,5 +1,4 @@
 #include "NativeReaderServiceTest.h"
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/PluginEvent.h"
 #include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/pluginse/VirtualReaderService.h"
 #include "../../../../../../../../../../stub/src/main/java/org/eclipse/keyple/plugin/stub/StubReader.h"
 #include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/pluginse/VirtualReader.h"
@@ -24,8 +23,6 @@ namespace org {
                         using LocalTransportFactory = org::eclipse::keyple::plugin::remotese::transport::java::LocalTransportFactory;
                         using StubPlugin = org::eclipse::keyple::plugin::stub::StubPlugin;
                         using StubReader = org::eclipse::keyple::plugin::stub::StubReader;
-                        using ObservablePlugin = org::eclipse::keyple::seproxy::event_Renamed::ObservablePlugin;
-                        using PluginEvent = org::eclipse::keyple::seproxy::event_Renamed::PluginEvent;
                         using org::junit::After;
                         using org::junit::Assert;
                         using org::junit::Before;
@@ -46,8 +43,6 @@ const std::shared_ptr<org::slf4j::Logger> NativeReaderServiceTest::logger = org:
                             // only one client and one server
                             factory = std::make_shared<LocalTransportFactory>();
 
-                            stubPluginObserver = std::make_shared<PluginObserverAnonymousInnerClass>(shared_from_this());
-
                             logger->info("*** Bind Master Services");
                             // bind Master services to server
                             virtualReaderService = Integration::bindMaster(factory->getServer());
@@ -56,16 +51,8 @@ const std::shared_ptr<org::slf4j::Logger> NativeReaderServiceTest::logger = org:
                             // bind Slave services to client
                             nativeReaderSpy = Integration::bindSlaveSpy(factory->getClient());
 
-                            nativeReader = Integration::createStubReader(NATIVE_READER_NAME, stubPluginObserver);
+                            nativeReader = Integration::createStubReader(NATIVE_READER_NAME);
 
-                        }
-
-                        NativeReaderServiceTest::PluginObserverAnonymousInnerClass::PluginObserverAnonymousInnerClass(std::shared_ptr<NativeReaderServiceTest> outerInstance) {
-                            this->outerInstance = outerInstance;
-                        }
-
-                        void NativeReaderServiceTest::PluginObserverAnonymousInnerClass::update(std::shared_ptr<PluginEvent> pluginEvent) {
-                            logger->debug("Default Stub Plugin Observer : {}", pluginEvent);
                         }
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
@@ -76,18 +63,17 @@ const std::shared_ptr<org::slf4j::Logger> NativeReaderServiceTest::logger = org:
 
                             std::shared_ptr<StubPlugin> stubPlugin = StubPlugin::getInstance();
 
-
                             // delete stubReader
                             stubPlugin->unplugReader(nativeReader->getName());
 
-                            delay(500);
+                            // Thread.sleep(500);
 
                             // delete observer and monitor thread
-                            stubPlugin->removeObserver(stubPluginObserver);
+                            // stubPlugin.removeObserver(stubPluginObserver);
 
                             nativeReader->clearObservers();
 
-                            delay(500);
+                            // Thread.sleep(500);
                         }
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:

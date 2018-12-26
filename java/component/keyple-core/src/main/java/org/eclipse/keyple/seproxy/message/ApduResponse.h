@@ -7,6 +7,9 @@
 #include <stdexcept>
 #include <memory>
 
+#include "Serializable.h"
+#include "Object.h"
+
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -29,7 +32,7 @@ namespace org {
                     /**
                      * Single APDU response wrapper
                      */
-                    class ApduResponse final : public std::enable_shared_from_this<ApduResponse> {
+                    class ApduResponse final : public std::enable_shared_from_this<ApduResponse>, public Serializable, public Object {
 
                     public:
                         static constexpr long long serialVersionUID = 6418469841122636812LL;
@@ -81,11 +84,11 @@ namespace org {
                          */
                         std::vector<char> getDataOut();
 
-                        std::string toString();
+                        std::string toString() override;
 
-                        bool equals(std::shared_ptr<void> o);
+                        bool equals(std::shared_ptr<void> o) override;
 
-                        int hashCode();
+                        int hashCode() override;
                     };
 
                 }

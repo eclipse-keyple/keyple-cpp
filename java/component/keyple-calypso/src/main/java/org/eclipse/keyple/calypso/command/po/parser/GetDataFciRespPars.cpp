@@ -1,5 +1,8 @@
 #include "GetDataFciRespPars.h"
+#include "../../../../../../../opencard/opt/util/Tag.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduResponse.h"
+#include "../../../../../../../opencard/opt/util/TLV.h"
+#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
 
 namespace org {
     namespace eclipse {
@@ -10,6 +13,12 @@ namespace org {
                         namespace parser {
                             using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
                             using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
+                            using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+                            using org::slf4j::Logger;
+                            using org::slf4j::LoggerFactory;
+                            using TLV = opencard::opt::util::TLV;
+                            using Tag = opencard::opt::util::Tag;
+const std::shared_ptr<org::slf4j::Logger> GetDataFciRespPars::logger = org::slf4j::LoggerFactory::getLogger(GetDataFciRespPars::typeid);
 const std::unordered_map<Integer, std::shared_ptr<StatusProperties>> GetDataFciRespPars::STATUS_TABLE;
 
                             GetDataFciRespPars::StaticConstructor::StaticConstructor() {
@@ -21,246 +30,146 @@ const std::unordered_map<Integer, std::shared_ptr<StatusProperties>> GetDataFciR
                             }
 
 GetDataFciRespPars::StaticConstructor GetDataFciRespPars::staticConstructor;
-std::vector<int> const GetDataFciRespPars::bufferSizeIndicatorToBufferSize = std::vector<int> {0, 0, 0, 0, 0, 0, 215, 256, 304, 362, 430, 512, 608, 724, 861, 1024, 1217, 1448, 1722, 2048, 2435, 2896, 3444, 4096, 4870, 5792, 6888, 8192, 9741, 11585, 13777, 16384, 19483, 23170, 27554, 32768, 38967, 46340, 55108, 65536, 77935, 92681, 110217, 131072, 155871, 185363, 220435, 262144, 311743, 370727, 440871, 524288, 623487, 741455, 881743, 1048576};
 
                             std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> GetDataFciRespPars::getStatusTable() {
                                 return STATUS_TABLE;
                             }
 
-                            GetDataFciRespPars::GetDataFciRespPars(std::shared_ptr<ApduResponse> response) : org::eclipse::keyple::command::AbstractApduResponseParser(response), fci(isSuccessful() ? toFCI(response->getBytes()) : nullptr) {
+std::vector<int> const GetDataFciRespPars::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE = std::vector<int> {0, 0, 0, 0, 0, 0, 215, 256, 304, 362, 430, 512, 608, 724, 861, 1024, 1217, 1448, 1722, 2048, 2435, 2896, 3444, 4096, 4870, 5792, 6888, 8192, 9741, 11585, 13777, 16384, 19483, 23170, 27554, 32768, 38967, 46340, 55108, 65536, 77935, 92681, 110217, 131072, 155871, 185363, 220435, 262144, 311743, 370727, 440871, 524288, 623487, 741455, 881743, 1048576};
+const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_FCI_TEMPLATE = std::make_shared<opencard::opt::util::Tag>(0x0F, opencard::opt::util::Tag::APPLICATION, opencard::opt::util::Tag::CONSTRUCTED);
+const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_DF_NAME = std::make_shared<opencard::opt::util::Tag>(0x04, opencard::opt::util::Tag::CONTEXT, opencard::opt::util::Tag::PRIMITIVE);
+const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_FCI_PROPRIETARY_TEMPLATE = std::make_shared<opencard::opt::util::Tag>(0x05, opencard::opt::util::Tag::CONTEXT, opencard::opt::util::Tag::CONSTRUCTED);
+const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_FCI_ISSUER_DISCRETIONARY_DATA = std::make_shared<opencard::opt::util::Tag>(0x0C, opencard::opt::util::Tag::CONTEXT, opencard::opt::util::Tag::CONSTRUCTED);
+const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_APPLICATION_SERIAL_NUMBER = std::make_shared<opencard::opt::util::Tag>(0x07, opencard::opt::util::Tag::PRIVATE, opencard::opt::util::Tag::PRIMITIVE);
+const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_DISCRETIONARY_DATA = std::make_shared<opencard::opt::util::Tag>(0x13, opencard::opt::util::Tag::APPLICATION, opencard::opt::util::Tag::PRIMITIVE);
+
+                            GetDataFciRespPars::GetDataFciRespPars(std::shared_ptr<ApduResponse> selectApplicationResponse) {
+
+                                std::shared_ptr<TLV> cTag; // constructed tag
+                                std::shared_ptr<TLV> pTag; // primitive tag
+
+                                /* check the command status to determine if the DF has been invalidated */
+                                if (selectApplicationResponse->getStatusCode() == 0x6283) {
+                                    logger->debug("The response to the select application command status word indicates that the DF has been invalidated.");
+                                    isDfInvalidated_Renamed = true;
+                                }
+
+                                /* parse the raw data with the help of the TLV class */
+                                try {
+                                    /* init TLV object */
+                                    cTag = std::make_shared<TLV>(selectApplicationResponse->getDataOut());
+                                    if (cTag != nullptr && cTag->tag()->equals(TAG_FCI_TEMPLATE)) {
+                                        pTag = cTag->findTag(TAG_DF_NAME, nullptr);
+                                        if (pTag != nullptr) {
+                                            /* store dfName */
+                                            dfName = pTag->valueAsByteArray();
+                                            if (logger->isDebugEnabled()) {
+                                                logger->debug("DF Name = {}", ByteArrayUtils::toHex(dfName));
+                                            }
+                                            cTag = cTag->findTag(TAG_FCI_PROPRIETARY_TEMPLATE, nullptr);
+                                            if (cTag != nullptr) {
+                                                cTag = cTag->findTag(TAG_FCI_ISSUER_DISCRETIONARY_DATA, nullptr);
+                                                if (cTag != nullptr) {
+                                                    pTag = cTag->findTag(TAG_APPLICATION_SERIAL_NUMBER, nullptr);
+                                                    if (pTag != nullptr) {
+                                                        /* store Application Serial Number */
+                                                        applicationSN = pTag->valueAsByteArray();
+                                                        if (logger->isDebugEnabled()) {
+                                                            logger->debug("Application Serial Number = {}", ByteArrayUtils::toHex(applicationSN));
+                                                        }
+                                                        pTag = cTag->findTag(TAG_DISCRETIONARY_DATA, nullptr);
+                                                        if (cTag != nullptr) {
+                                                            discretionaryData = pTag->valueAsByteArray();
+                                                            if (logger->isDebugEnabled()) {
+                                                                logger->debug("Discretionary Data = {}", ByteArrayUtils::toHex(discretionaryData));
+                                                            }
+                                                            /*
+                                                             * split discretionary data in as many individual startup
+                                                             * information
+                                                             */
+                                                            siBufferSizeIndicator = discretionaryData[0];
+                                                            siPlatform = discretionaryData[1];
+                                                            siApplicationType = discretionaryData[2];
+                                                            siApplicationSubtype = discretionaryData[3];
+                                                            siSoftwareIssuer = discretionaryData[4];
+                                                            siSoftwareVersion = discretionaryData[5];
+                                                            siSoftwareRevision = discretionaryData[6];
+                                                            /* all 3 main fields were retrieved */
+                                                            isValidCalypsoFCI_Renamed = true;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                catch (const std::runtime_error &e) {
+                                    /* Silently ignore problems decoding TLV structure */
+                                }
+                            }
+
+                            bool GetDataFciRespPars::isValidCalypsoFCI() {
+                                return isValidCalypsoFCI_Renamed;
                             }
 
                             std::vector<char> GetDataFciRespPars::getDfName() {
-                                return fci != nullptr ? fci->getDfName() : nullptr;
-                            }
-
-                            std::vector<char> GetDataFciRespPars::getApplicationSerialNumber() {
-                                return fci != nullptr ? fci->getApplicationSN() : nullptr;
-                            }
-
-                            char GetDataFciRespPars::getBufferSizeIndicator() {
-                                return fci != nullptr ? fci->getStartupInformation()->getBufferSizeIndicator() : 0x00;
-                            }
-
-                            int GetDataFciRespPars::getBufferSizeValue() {
-                                return fci != nullptr ? bufferSizeIndicatorToBufferSize[static_cast<int>(fci->getStartupInformation()->getBufferSizeIndicator())] : 0;
-                            }
-
-                            char GetDataFciRespPars::getPlatformByte() {
-                                return fci != nullptr ? fci->getStartupInformation()->getPlatform() : 0x00;
-                            }
-
-                            char GetDataFciRespPars::getApplicationTypeByte() {
-                                return fci != nullptr ? fci->getStartupInformation()->getApplicationType() : 0x00;
-                            }
-
-                            bool GetDataFciRespPars::isRev3Compliant() {
-                                return fci != nullptr;
-                            }
-
-                            bool GetDataFciRespPars::isRev3_2ModeAvailable() {
-                                return fci != nullptr && fci->getStartupInformation()->hasCalypsoRev32modeAvailable();
-                            }
-
-                            bool GetDataFciRespPars::isRatificationCommandRequired() {
-                                return fci != nullptr && fci->getStartupInformation()->hasRatificationCommandRequired();
-                            }
-
-                            bool GetDataFciRespPars::hasCalypsoStoredValue() {
-                                return fci != nullptr && fci->getStartupInformation()->hasCalypsoStoreValue();
-                            }
-
-                            bool GetDataFciRespPars::hasCalypsoPin() {
-                                return fci != nullptr && fci->getStartupInformation()->hasCalypsoPin();
-                            }
-
-                            char GetDataFciRespPars::getApplicationSubtypeByte() {
-                                return fci != nullptr ? fci->getStartupInformation()->getApplicationSubtype() : 0x00;
-                            }
-
-                            char GetDataFciRespPars::getSoftwareIssuerByte() {
-                                return fci != nullptr ? fci->getStartupInformation()->getSoftwareIssuer() : 0x00;
-                            }
-
-                            char GetDataFciRespPars::getSoftwareVersionByte() {
-                                return fci != nullptr ? fci->getStartupInformation()->getSoftwareVersion() : 0x00;
-                            }
-
-                            char GetDataFciRespPars::getSoftwareRevisionByte() {
-                                return fci != nullptr ? fci->getStartupInformation()->getSoftwareRevision() : 0x00;
-                            }
-
-                            bool GetDataFciRespPars::isDfInvalidated() {
-                                return fci != nullptr;
-                            }
-
-                            GetDataFciRespPars::FCI::FCI(std::vector<char> &dfName, std::vector<char> &fciProprietaryTemplate, std::vector<char> &fciIssuerDiscretionaryData, std::vector<char> &applicationSN, std::shared_ptr<StartupInformation> startupInformation) : dfName(dfName), fciProprietaryTemplate(fciProprietaryTemplate), fciIssuerDiscretionaryData(fciIssuerDiscretionaryData), applicationSN(applicationSN), startupInformation(startupInformation) {
-                            }
-
-                            std::vector<char> GetDataFciRespPars::FCI::getFciProprietaryTemplate() {
-                                return fciProprietaryTemplate;
-                            }
-
-                            std::vector<char> GetDataFciRespPars::FCI::getFciIssuerDiscretionaryData() {
-                                return fciIssuerDiscretionaryData;
-                            }
-
-                            std::vector<char> GetDataFciRespPars::FCI::getApplicationSN() {
-                                return applicationSN;
-                            }
-
-                            std::shared_ptr<StartupInformation> GetDataFciRespPars::FCI::getStartupInformation() {
-                                return this->startupInformation;
-                            }
-
-                            std::vector<char> GetDataFciRespPars::FCI::getDfName() {
                                 return dfName;
                             }
 
-                            GetDataFciRespPars::StartupInformation::StartupInformation(char bufferSizeIndicator, char platform, char applicationType, char applicationSubtype, char softwareIssuer, char softwareVersion, char softwareRevision) : bufferSizeIndicator(bufferSizeIndicator), platform(platform), applicationType(applicationType), applicationSubtype(applicationSubtype), softwareIssuer(softwareIssuer), softwareVersion(softwareVersion), softwareRevision(softwareRevision) {
+                            std::vector<char> GetDataFciRespPars::getApplicationSerialNumber() {
+                                return applicationSN;
                             }
 
-                            GetDataFciRespPars::StartupInformation::StartupInformation(std::vector<char> &buffer) : bufferSizeIndicator(buffer[0]), platform(buffer[1]), applicationType(buffer[2]), applicationSubtype(buffer[3]), softwareIssuer(buffer[4]), softwareVersion(buffer[5]), softwareRevision(buffer[6]) {
+                            char GetDataFciRespPars::getBufferSizeIndicator() {
+                                return siBufferSizeIndicator;
                             }
 
-                            std::shared_ptr<StartupInformation> GetDataFciRespPars::StartupInformation::empty() {
-                                return std::make_shared<StartupInformation>(static_cast<char>(0), static_cast<char>(0), static_cast<char>(0), static_cast<char>(0), static_cast<char>(0), static_cast<char>(0), static_cast<char>(0));
+                            int GetDataFciRespPars::getBufferSizeValue() {
+                                return BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE[getBufferSizeIndicator()];
                             }
 
-                            int GetDataFciRespPars::StartupInformation::hashCode() {
-                                constexpr int prime = 31;
-                                int result = 1;
-                                result = prime * result + applicationSubtype;
-                                result = prime * result + applicationType;
-                                result = prime * result + bufferSizeIndicator;
-                                result = prime * result + platform;
-                                result = prime * result + softwareIssuer;
-                                result = prime * result + softwareRevision;
-                                result = prime * result + softwareVersion;
-                                return result;
+                            char GetDataFciRespPars::getPlatformByte() {
+                                return siPlatform;
                             }
 
-                            bool GetDataFciRespPars::StartupInformation::equals(std::shared_ptr<void> obj) {
-
-                                bool isEquals = false;
-
-                                if (shared_from_this() == obj) {
-                                    isEquals = true;
-                                }
-
-                                if (obj != nullptr) {
-                                    std::shared_ptr<StartupInformation> other;
-                                    if (getClass() == obj->type()) {
-                                        other = std::static_pointer_cast<StartupInformation>(obj);
-                                        if ((applicationSubtype != other->applicationSubtype) || (applicationType != other->applicationType) || (bufferSizeIndicator != other->bufferSizeIndicator) || (platform != other->platform) || (softwareIssuer != other->softwareIssuer) || (softwareRevision != other->softwareRevision) || (softwareVersion != other->softwareVersion)) {
-                                            isEquals = false;
-                                        }
-                                    }
-                                    else {
-                                        isEquals = false;
-                                    }
-
-                                }
-                                else {
-                                    isEquals = false;
-                                }
-
-                                return isEquals;
+                            char GetDataFciRespPars::getApplicationTypeByte() {
+                                return siApplicationType;
                             }
 
-                            char GetDataFciRespPars::StartupInformation::getBufferSizeIndicator() {
-                                return bufferSizeIndicator;
+                            bool GetDataFciRespPars::isRev3_2ModeAvailable() {
+                                return (siApplicationType & APP_TYPE_CALYPSO_REV_32_MODE) != 0;
                             }
 
-                            char GetDataFciRespPars::StartupInformation::getPlatform() {
-                                return platform;
+                            bool GetDataFciRespPars::isRatificationCommandRequired() {
+                                return (siApplicationSubtype & APP_TYPE_RATIFICATION_COMMAND_REQUIRED) != 0;
                             }
 
-                            char GetDataFciRespPars::StartupInformation::getApplicationType() {
-                                return applicationType;
+                            bool GetDataFciRespPars::hasCalypsoStoredValue() {
+                                return (siApplicationSubtype & APP_TYPE_WITH_CALYPSO_SV) != 0;
                             }
 
-                            char GetDataFciRespPars::StartupInformation::getApplicationSubtype() {
-                                return applicationSubtype;
+                            bool GetDataFciRespPars::hasCalypsoPin() {
+                                return (siApplicationSubtype & APP_TYPE_WITH_CALYPSO_PIN) != 0;
                             }
 
-                            char GetDataFciRespPars::StartupInformation::getSoftwareIssuer() {
-                                return softwareIssuer;
+                            char GetDataFciRespPars::getApplicationSubtypeByte() {
+                                return siApplicationSubtype;
                             }
 
-                            char GetDataFciRespPars::StartupInformation::getSoftwareVersion() {
-                                return softwareVersion;
+                            char GetDataFciRespPars::getSoftwareIssuerByte() {
+                                return siSoftwareIssuer;
                             }
 
-                            char GetDataFciRespPars::StartupInformation::getSoftwareRevision() {
-                                return softwareRevision;
+                            char GetDataFciRespPars::getSoftwareVersionByte() {
+                                return siSoftwareVersion;
                             }
 
-                            bool GetDataFciRespPars::StartupInformation::hasCalypsoPin() {
-                                return (this->applicationType & 0x01) != 0;
+                            char GetDataFciRespPars::getSoftwareRevisionByte() {
+                                return siSoftwareRevision;
                             }
 
-                            bool GetDataFciRespPars::StartupInformation::hasCalypsoStoreValue() {
-                                return (this->applicationType & 0x02) != 0;
-                            }
-
-                            bool GetDataFciRespPars::StartupInformation::hasRatificationCommandRequired() {
-                                return (this->applicationType & 0x04) != 0;
-                            }
-
-                            bool GetDataFciRespPars::StartupInformation::hasCalypsoRev32modeAvailable() {
-                                return (this->applicationType & 0x08) != 0;
-                            }
-
-                            std::shared_ptr<FCI> GetDataFciRespPars::toFCI(std::vector<char> &apduResponse) {
-                                std::shared_ptr<StartupInformation> startupInformation = StartupInformation::empty();
-                                char firstResponseApdubyte = apduResponse[0];
-                                std::vector<char> dfName;
-                                std::vector<char> fciProprietaryTemplate;
-                                std::vector<char> fciIssuerDiscretionaryData;
-                                std::vector<char> applicationSN;
-                                std::vector<char> discretionaryData;
-
-                                if (static_cast<char>(0x6F) == firstResponseApdubyte) {
-                                    int aidLength = apduResponse[3];
-                                    int fciTemplateLength = apduResponse[5 + aidLength];
-                                    int fixedPartOfFciTemplate = fciTemplateLength - 22;
-                                    int firstbyteAid = 6 + aidLength + fixedPartOfFciTemplate;
-                                    int fciIssuerDiscretionaryDataLength = apduResponse[8 + aidLength + fixedPartOfFciTemplate];
-                                    int firstbyteFciIssuerDiscretionaryData = 9 + aidLength + fixedPartOfFciTemplate;
-                                    int applicationSNLength = apduResponse[10 + aidLength + fixedPartOfFciTemplate];
-                                    int firstbyteApplicationSN = 11 + aidLength + fixedPartOfFciTemplate;
-                                    int discretionaryDataLength = apduResponse[20 + aidLength + fixedPartOfFciTemplate];
-                                    int firstbyteDiscretionaryData = 21 + aidLength + fixedPartOfFciTemplate;
-
-                                    if (static_cast<char>(0x84) == apduResponse[2]) {
-                                        dfName = Arrays::copyOfRange(apduResponse, 4, 4 + aidLength);
-                                    }
-
-                                    if (static_cast<char>(0xA5) == apduResponse[4 + aidLength]) {
-                                        fciProprietaryTemplate = Arrays::copyOfRange(apduResponse, firstbyteAid, firstbyteAid + fciTemplateLength);
-                                    }
-
-                                    if (static_cast<char>(0xBF) == apduResponse[6 + aidLength + fixedPartOfFciTemplate] && (static_cast<char>(0x0C) == apduResponse[7 + aidLength + fixedPartOfFciTemplate])) {
-                                        fciIssuerDiscretionaryData = Arrays::copyOfRange(apduResponse, firstbyteFciIssuerDiscretionaryData, firstbyteFciIssuerDiscretionaryData + fciIssuerDiscretionaryDataLength);
-                                    }
-
-                                    if (static_cast<char>(0xC7) == apduResponse[9 + aidLength + fixedPartOfFciTemplate]) {
-                                        applicationSN = Arrays::copyOfRange(apduResponse, firstbyteApplicationSN, firstbyteApplicationSN + applicationSNLength);
-                                    }
-
-                                    if (static_cast<char>(0x53) == apduResponse[19 + aidLength + fixedPartOfFciTemplate]) {
-                                        discretionaryData = Arrays::copyOfRange(apduResponse, firstbyteDiscretionaryData, firstbyteDiscretionaryData + discretionaryDataLength);
-                                        startupInformation = std::make_shared<StartupInformation>(discretionaryData);
-                                        /*
-                                         * startupInformation = new StartupInformation(discretionaryData.get(0),
-                                         * discretionaryData.get(1), discretionaryData.get(2), discretionaryData.get(3),
-                                         * discretionaryData.get(4), discretionaryData.get(5), discretionaryData.get(6));
-                                         */
-                                    }
-                                }
-
-                                return std::make_shared<FCI>(dfName, fciProprietaryTemplate, fciIssuerDiscretionaryData, applicationSN, startupInformation);
+                            bool GetDataFciRespPars::isDfInvalidated() {
+                                return isDfInvalidated_Renamed;
                             }
                         }
                     }

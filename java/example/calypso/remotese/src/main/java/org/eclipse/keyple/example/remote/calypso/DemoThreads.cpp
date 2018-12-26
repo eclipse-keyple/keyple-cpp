@@ -43,18 +43,23 @@ const std::shared_ptr<org::slf4j::Logger> DemoThreads::logger = org::slf4j::Logg
                                 }
                                 else {
                                     std::shared_ptr<DemoSlave> slave = std::make_shared<DemoSlave>(factory, true);
-                                    logger->info("Wait for 5 seconds, then connectAReader to master");
+                                    logger->info("Wait 5 seconds, then connectAReader to master");
                                     delay(5000);
                                     slave->connectAReader();
-                                    logger->info("Wait for 5 seconds, then insert SE");
+                                    logger->info("Wait 5 seconds, then insert SE");
                                     delay(5000);
                                     slave->insertSe();
-                                    logger->info("Wait for 5 seconds, then remove SE");
+                                    logger->info("Wait 5 seconds, then remove SE");
                                     delay(5000);
                                     slave->removeSe();
-                                    logger->info("Wait for 5 seconds, then disconnect reader");
+                                    logger->info("Wait 5 seconds, then disconnect reader");
                                     delay(5000);
                                     slave->disconnect();
+                                    delay(5000);
+
+                                    logger->info("Wait 5 seconds, then shutdown jvm");
+                                    std::shared_ptr<Runtime> runtime = Runtime::getRuntime();
+                                    runtime->exit(0);
                                 }
 
                             }
@@ -94,15 +99,21 @@ const std::shared_ptr<org::slf4j::Logger> DemoThreads::logger = org::slf4j::Logg
                                 else {
                                     std::shared_ptr<DemoSlave> slave = std::make_shared<DemoSlave>(factory, false);
                                     slave->connectAReader();
-                                    logger->info("Wait for 5 seconds, then insert SE");
+                                    logger->info("Wait 5 seconds, then insert SE");
                                     delay(5000);
                                     slave->insertSe();
-                                    logger->info("Wait for 5 seconds, then remove SE");
+                                    logger->info("Wait 5 seconds, then remove SE");
                                     delay(5000);
                                     slave->removeSe();
-                                    logger->info("Wait for 5 seconds, then disconnect reader");
+                                    logger->info("Wait 5 seconds, then disconnect reader");
                                     delay(5000);
                                     slave->disconnect();
+
+                                    logger->info("Wait 5 seconds, then shutdown jvm");
+                                    delay(5000);
+                                    std::shared_ptr<Runtime> runtime = Runtime::getRuntime();
+                                    runtime->exit(0);
+
                                 }
 
                             }

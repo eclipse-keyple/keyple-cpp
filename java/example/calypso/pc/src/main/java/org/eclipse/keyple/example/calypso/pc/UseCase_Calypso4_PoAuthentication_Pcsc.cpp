@@ -173,7 +173,7 @@ const std::shared_ptr<org::slf4j::Logger> UseCase_Calypso4_PoAuthentication_Pcsc
                                     /*
                                      * A ratification command will be sent (CONTACTLESS_MODE).
                                      */
-                                    poProcessStatus = poTransaction->processClosing(TransmissionMode::CONTACTLESS, ChannelState::KEEP_OPEN);
+                                    poProcessStatus = poTransaction->processClosing(TransmissionMode::CONTACTLESS, ChannelState::CLOSE_AFTER);
 
                                     if (!poProcessStatus) {
                                         throw std::make_shared<IllegalStateException>("processClosing failure.");

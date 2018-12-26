@@ -1,11 +1,7 @@
 #include "NativeReaderServiceImpl.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
 #include "../transport/RemoteMethod.h"
-#include "method/RmConnectReaderParser.h"
-#include "method/RmTransmitExecutor.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ProxyReader.h"
-#include "method/RmConnectReaderInvoker.h"
-#include "method/RmDisconnectReaderInvoker.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin/AbstractObservableReader.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderNotFoundException.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
@@ -17,10 +13,7 @@ namespace org {
             namespace plugin {
                 namespace remotese {
                     namespace nativese {
-                        using RmConnectReaderInvoker = org::eclipse::keyple::plugin::remotese::nativese::method::RmConnectReaderInvoker;
-                        using RmConnectReaderParser = org::eclipse::keyple::plugin::remotese::nativese::method::RmConnectReaderParser;
-                        using RmDisconnectReaderInvoker = org::eclipse::keyple::plugin::remotese::nativese::method::RmDisconnectReaderInvoker;
-                        using RmTransmitExecutor = org::eclipse::keyple::plugin::remotese::nativese::method::RmTransmitExecutor;
+                        using namespace org::eclipse::keyple::plugin::remotese::nativese::method;
                         using namespace org::eclipse::keyple::plugin::remotese::transport;
                         using JsonParser = org::eclipse::keyple::plugin::remotese::transport::json::JsonParser;
                         using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
@@ -94,9 +87,18 @@ const std::shared_ptr<org::slf4j::Logger> NativeReaderServiceImpl::logger = org:
                                     }
                                     break;
 
+                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::DEFAULT_SELECTION_REQUEST:
+                                    // must be a request
+                                    if (keypleDTO->isRequest()) {
+                                        std::shared_ptr<RmSetDefaultSelectionRequestExecutor> rmSetDefaultSelectionRequest = std::make_shared<RmSetDefaultSelectionRequestExecutor>(shared_from_this());
+                                        out = rmSetDefaultSelectionRequest->execute(transportDto);
+                                    }
+                                    else {
+                                        throw std::make_shared<IllegalStateException>("a READER_TRANSMIT response has been received by NativeReaderService");
+                                    }
+                                    break;
 
                                 default:
-
                                     logger->warn("**** ERROR - UNRECOGNIZED ****");
                                     logger->warn("Receive unrecognized message action : {} {} {} {}", keypleDTO->getAction(), keypleDTO->getSessionId(), keypleDTO->getBody(), keypleDTO->isRequest());
                                     throw std::make_shared<IllegalStateException>("a  ERROR - UNRECOGNIZED request has been received by NativeReaderService");
@@ -137,7 +139,7 @@ const std::shared_ptr<org::slf4j::Logger> NativeReaderServiceImpl::logger = org:
                         }
 
                         void NativeReaderServiceImpl::update(std::shared_ptr<ReaderEvent> event_Renamed) {
-                            logger->info("update Reader Event {}", event_Renamed->getEventType());
+                            logger->info("NativeReaderServiceImpl listens for event from native Reader - Received Event {}", event_Renamed->getEventType());
 
                             // retrieve last sessionId known for this reader
                             // String sessionId = nseSessionManager.getLastSession(event.getReaderName());

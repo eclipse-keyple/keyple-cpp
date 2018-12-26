@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <unordered_set>
 #include <memory>
 
@@ -30,12 +31,12 @@ namespace org {
                  */
 
                 template<typename T>
-                class Observable : public std::enable_shared_from_this<Observable> {
+                class Observable {
                 public:
-                    template<typename T>
+                    template<typename T1>
                     class Observer {
                     public:
-                        virtual void update(T event_Renamed) = 0;
+                        virtual void update(T1 event_Renamed) = 0;
                     };
 
                 private:
@@ -47,7 +48,7 @@ namespace org {
                      */
                     const std::shared_ptr<void> SYNC = nullptr;
 
-                    std::shared_ptr<Set<Observer<T>>> observers;
+                    std::shared_ptr<std::set<Observer<T>>> observers;
 
                 public:
                     virtual void addObserver(std::shared_ptr<Observer<T>> observer) {
@@ -56,12 +57,12 @@ namespace org {
                         }
 
 //JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
-                        synchronized(SYNC) {
-                            if (observers == nullptr) {
-                                observers = std::unordered_set<Observer<T>>(1);
-                            }
-                            observers->add(observer);
-                        }
+//                        synchronized(SYNC) {
+//                            if (observers == nullptr) {
+//                                observers = std::unordered_set<Observer<T>>(1);
+//                            }
+//                            observers->add(observer);
+//                        }
                     }
 
                     virtual void removeObserver(std::shared_ptr<Observer<T>> observer) {
@@ -70,11 +71,11 @@ namespace org {
                         }
 
 //JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
-                        synchronized(SYNC) {
-                            if (observers != nullptr) {
-                                observers->remove(observer);
-                            }
-                        }
+//                        synchronized(SYNC) {
+//                            if (observers != nullptr) {
+//                                observers->remove(observer);
+//                            }
+//                        }
                     }
 
                     virtual void clearObservers() {
@@ -104,15 +105,15 @@ namespace org {
                     }
 
                     virtual void notifyObservers(T const event_Renamed) {
-                        std::shared_ptr<Set<std::shared_ptr<Observer>>> observersCopy;
+                        std::shared_ptr<std::set<std::shared_ptr<Observer<T>>>> observersCopy;
 
 //JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
-                        synchronized(SYNC) {
-                            if (observers == nullptr) {
-                                return;
-                            }
-                            observersCopy = std::unordered_set<std::shared_ptr<Observer>>(observers);
-                        }
+//                        synchronized(SYNC) {
+//                            if (observers == nullptr) {
+//                                return;
+//                            }
+//                            observersCopy = std::unordered_set<std::shared_ptr<Observer<T>>>(observers);
+//                        }
 
                         for (auto observer : observersCopy) {
                             observer->update(event_Renamed);

@@ -1,6 +1,7 @@
 #include "SelectionStatus.h"
 #include "AnswerToReset.h"
 #include "ApduResponse.h"
+#include "Arrays.h"
 
 namespace org {
     namespace eclipse {
@@ -8,7 +9,7 @@ namespace org {
             namespace seproxy {
                 namespace message {
 
-                    SelectionStatus::SelectionStatus(std::shared_ptr<AnswerToReset> atr, std::shared_ptr<ApduResponse> fci, bool hasMatched) : atr(atr), fci(fci), hasMatched(hasMatched) {
+                    SelectionStatus::SelectionStatus(std::shared_ptr<AnswerToReset> atr, std::shared_ptr<ApduResponse> fci, bool hasMatched) : atr(atr), fci(fci), hasMatched_Renamed(hasMatched) {
                         if (atr == nullptr && fci == nullptr) {
                             throw std::invalid_argument("Atr and Fci can't be null at the same time.");
                         }
@@ -30,7 +31,7 @@ namespace org {
                         if (o == shared_from_this()) {
                             return true;
                         }
-                        if (!(std::dynamic_pointer_cast<SelectionStatus>(o) != nullptr)) {
+                        if (!(std::static_pointer_cast<SelectionStatus>(o) != nullptr)) {
                             return false;
                         }
                         std::shared_ptr<SelectionStatus> selectionStatus = std::static_pointer_cast<SelectionStatus>(o);

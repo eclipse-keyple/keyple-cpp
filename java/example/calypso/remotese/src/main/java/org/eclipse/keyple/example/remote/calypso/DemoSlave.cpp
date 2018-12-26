@@ -7,7 +7,8 @@
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/PluginEvent.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/SeProtocolSetting.h"
 #include "../../../../../../../../../../../../component/keyple-plugin/stub/src/main/java/org/eclipse/keyple/plugin/stub/StubProtocolSetting.h"
-#include "../../../../../../../../../../pc/src/main/java/org/eclipse/keyple/example/calypso/pc/stub/se/StubHoplink.h"
+#include "../../../../../../../../../../../../component/keyple-plugin/stub/src/main/java/org/eclipse/keyple/plugin/stub/StubSecureElement.h"
+#include "../../../../../../../../../../pc/src/main/java/org/eclipse/keyple/example/calypso/pc/stub/se/StubCalypsoClassic.h"
 
 namespace org {
     namespace eclipse {
@@ -15,12 +16,13 @@ namespace org {
             namespace example {
                 namespace remote {
                     namespace calypso {
-                        using StubHoplink = org::eclipse::keyple::example::calypso::pc::stub::se::StubHoplink;
+                        using StubCalypsoClassic = org::eclipse::keyple::example::calypso::pc::stub::se::StubCalypsoClassic;
                         using NativeReaderServiceImpl = org::eclipse::keyple::plugin::remotese::nativese::NativeReaderServiceImpl;
                         using namespace org::eclipse::keyple::plugin::remotese::transport;
                         using StubPlugin = org::eclipse::keyple::plugin::stub::StubPlugin;
                         using StubProtocolSetting = org::eclipse::keyple::plugin::stub::StubProtocolSetting;
                         using StubReader = org::eclipse::keyple::plugin::stub::StubReader;
+                        using StubSecureElement = org::eclipse::keyple::plugin::stub::StubSecureElement;
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
                         using ObservablePlugin = org::eclipse::keyple::seproxy::event_Renamed::ObservablePlugin;
                         using PluginEvent = org::eclipse::keyple::seproxy::event_Renamed::PluginEvent;
@@ -123,8 +125,11 @@ const std::shared_ptr<org::slf4j::Logger> DemoSlave::logger = org::slf4j::Logger
                             logger->info("************************");
 
                             logger->info("Insert HoplinkStubSE into Local StubReader");
-                            // insert SE
-                            localReader->insertSe(std::make_shared<StubHoplink>());
+
+                            /* Create 'virtual' Calypso PO */
+                            std::shared_ptr<StubSecureElement> calypsoStubSe = std::make_shared<StubCalypsoClassic>();
+
+                            localReader->insertSe(calypsoStubSe);
 
 
                         }

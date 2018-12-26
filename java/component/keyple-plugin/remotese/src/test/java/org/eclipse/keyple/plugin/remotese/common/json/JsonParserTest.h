@@ -51,6 +51,13 @@ namespace org {
 //ORIGINAL LINE: @Test public void testSeResponseSet()
                                 virtual void testSeResponseSet();
 
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Test public void testSelectionRequest()
+                                virtual void testSelectionRequest();
+
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Test public void testNotificationMode()
+                                virtual void testNotificationMode();
 
                                 /**
                                  * Test Serialization of Keyple Reader Exceptions

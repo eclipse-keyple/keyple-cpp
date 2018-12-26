@@ -1,13 +1,10 @@
 #pragma once
 
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ObservablePlugin.h"
 #include <string>
 #include <stdexcept>
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class PluginEvent; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class PluginObserver; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReaderService; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace stub { class StubReader; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReader; } } } } } }
@@ -38,7 +35,6 @@ namespace org {
                         using VirtualReaderService = org::eclipse::keyple::plugin::remotese::pluginse::VirtualReaderService;
                         using namespace org::eclipse::keyple::plugin::remotese::transport;
                         using StubReader = org::eclipse::keyple::plugin::stub::StubReader;
-                        using ObservablePlugin = org::eclipse::keyple::seproxy::event_Renamed::ObservablePlugin;
                         using namespace org::mockito;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
@@ -53,7 +49,6 @@ namespace org {
                             // Real objects
                         public:
                             std::shared_ptr<TransportFactory> factory;
-                            std::shared_ptr<ObservablePlugin::PluginObserver> stubPluginObserver;
                             std::shared_ptr<VirtualReaderService> virtualReaderService;
 
                             std::shared_ptr<StubReader> nativeReader;
@@ -72,20 +67,7 @@ namespace org {
 //ORIGINAL LINE: @Before public void setTup() throws Exception
                             virtual void setTup() throw(std::runtime_error);
 
-                        private:
-                            class PluginObserverAnonymousInnerClass : public std::enable_shared_from_this<PluginObserverAnonymousInnerClass>, public ObservablePlugin::PluginObserver {
-                            private:
-                                std::shared_ptr<NativeReaderServiceTest> outerInstance;
 
-                            public:
-                                PluginObserverAnonymousInnerClass(std::shared_ptr<NativeReaderServiceTest> outerInstance);
-
-                                void update(std::shared_ptr<PluginEvent> pluginEvent);
-
-                            };
-
-
-                        public:
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @After public void tearDown() throws Exception
                             virtual void tearDown() throw(std::runtime_error);

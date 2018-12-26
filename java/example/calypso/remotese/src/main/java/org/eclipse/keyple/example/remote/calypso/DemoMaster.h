@@ -1,10 +1,15 @@
 #pragma once
 
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util/Observable.h"
+#include <string>
+#include <vector>
 #include "exceptionhelper.h"
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace transaction { class SeSelection; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReader; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class ReadRecordsRespPars; } } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class TransportNode; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class TransportFactory; } } } } } }
 
@@ -26,8 +31,11 @@ namespace org {
                 namespace remote {
                     namespace calypso {
 
+                        using ReadRecordsRespPars = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
+                        using VirtualReader = org::eclipse::keyple::plugin::remotese::pluginse::VirtualReader;
                         using TransportFactory = org::eclipse::keyple::plugin::remotese::transport::TransportFactory;
                         using TransportNode = org::eclipse::keyple::plugin::remotese::transport::TransportNode;
+                        using SeSelection = org::eclipse::keyple::transaction::SeSelection;
                         using Observable = org::eclipse::keyple::util::Observable;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
@@ -41,6 +49,10 @@ namespace org {
 
                         private:
                             static const std::shared_ptr<Logger> logger;
+                            std::shared_ptr<SeSelection> seSelection;
+                            std::shared_ptr<VirtualReader> poReader;
+                            std::shared_ptr<ReadRecordsRespPars> readEnvironmentParser;
+
 
                             // TransportNode used as to send and receive KeypleDto to Slaves
                             std::shared_ptr<TransportNode> node;

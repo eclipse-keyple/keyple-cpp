@@ -3,6 +3,7 @@
 #include <string>
 #include <stdexcept>
 #include <memory>
+#include "Exception.h"
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -21,7 +22,7 @@ namespace org {
             namespace seproxy {
                 namespace exception {
 
-                    class KeypleRuntimeException : public std::runtime_error, public std::enable_shared_from_this<KeypleRuntimeException> {
+                    class KeypleRuntimeException : public Exception, public std::enable_shared_from_this<KeypleRuntimeException> {
 
                     public:
                         KeypleRuntimeException(const std::string &message);

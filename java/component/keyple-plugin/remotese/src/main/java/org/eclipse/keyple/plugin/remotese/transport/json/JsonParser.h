@@ -22,8 +22,8 @@ namespace org {
                         namespace json {
 
 
+
                             using com::google::gson::Gson;
-                            using com::google::gson::JsonObject;
 
                             /**
                              * Json Parser for Keyple DTO and Keyple DTO fields
@@ -32,8 +32,6 @@ namespace org {
 
                             public:
                                 static std::shared_ptr<Gson> getGson();
-
-                                static Boolean isSeRequestSet(std::shared_ptr<JsonObject> obj);
 
                             };
 

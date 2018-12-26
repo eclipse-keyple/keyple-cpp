@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include "ByteArrayUtils.h"
 
 namespace org {
@@ -25,11 +23,11 @@ const std::shared_ptr<java::util::regex::Pattern> ByteArrayUtils::HEX_IGNORED_CH
                     return byteArray;
                 }
 
-                std::string ByteArrayUtils::toHex(std::vector<char> &byteArray) {
+                std::string ByteArrayUtils::toHex(const std::vector<char> &byteArray) {
                     if (byteArray.empty()) {
                         return "";
                     }
-                    std::shared_ptr<std::stringstream> hexStringBuilder = std::make_shared<std::strngstream>();
+                    std::shared_ptr<StringBuilder> hexStringBuilder = std::make_shared<StringBuilder>();
                     for (int i = 0; i < byteArray.size(); i++) {
                         hexStringBuilder->append(byteToHex[byteArray[i] & 0xFF]);
                     }

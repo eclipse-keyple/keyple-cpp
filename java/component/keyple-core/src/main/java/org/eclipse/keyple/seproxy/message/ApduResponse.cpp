@@ -1,5 +1,6 @@
 #include "ApduResponse.h"
 #include "../../util/ByteArrayUtils.h"
+#include "Arrays.h"
 
 namespace org {
     namespace eclipse {
@@ -9,8 +10,6 @@ namespace org {
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 
                     ApduResponse::ApduResponse(std::vector<char> &buffer, std::shared_ptr<std::set<int>> successfulStatusCodes) : bytes(buffer) {
-
-                        this->successful = false;
 
                         if (buffer.empty()) {
                             this->successful = false;
@@ -25,7 +24,7 @@ namespace org {
                                 statusCode += -2 * std::numeric_limits<short>::min();
                             }
                             if (successfulStatusCodes != nullptr) {
-                                this->successful = statusCode == 0x9000 || successfulStatusCodes->contains(statusCode);
+                                this->successful = statusCode == 0x9000 || (successfulStatusCodes->find(statusCode) != successfulStatusCodes->end());
                             }
                             else {
                                 this->successful = statusCode == 0x9000;
@@ -56,7 +55,8 @@ namespace org {
                     }
 
                     std::string ApduResponse::toString() {
-                        return "ApduResponse: " + (isSuccessful() ? "SUCCESS" : "FAILURE") + ", RAWDATA = "
+                        std::string status = isSuccessful() ? "SUCCESS" : "FAILURE";
+                        return "ApduResponse: " + status + ", RAWDATA = "
                                 + ByteArrayUtils::toHex(this->bytes);
                     }
 
@@ -64,7 +64,7 @@ namespace org {
                         if (o == shared_from_this()) {
                             return true;
                         }
-                        if (!(std::dynamic_pointer_cast<ApduResponse>(o) != nullptr)) {
+                        if (!(std::static_pointer_cast<ApduResponse>(o) != nullptr)) {
                             return false;
                         }
 

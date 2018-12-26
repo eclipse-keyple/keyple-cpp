@@ -11,6 +11,7 @@ RemoteMethod RemoteMethod::READER_TRANSMIT("READER_TRANSMIT", InnerEnum::READER_
 RemoteMethod RemoteMethod::READER_CONNECT("READER_CONNECT", InnerEnum::READER_CONNECT, "reader_connect");
 RemoteMethod RemoteMethod::READER_DISCONNECT("READER_DISCONNECT", InnerEnum::READER_DISCONNECT, "reader_disconnect");
 RemoteMethod RemoteMethod::READER_EVENT("READER_EVENT", InnerEnum::READER_EVENT, "reader_event");
+RemoteMethod RemoteMethod::DEFAULT_SELECTION_REQUEST("DEFAULT_SELECTION_REQUEST", InnerEnum::DEFAULT_SELECTION_REQUEST, "default_selection_request");
 
 std::vector<RemoteMethod> RemoteMethod::valueList;
 int RemoteMethod::nextOrdinal = 0;
@@ -26,8 +27,8 @@ int RemoteMethod::nextOrdinal = 0;
 const std::unordered_map<std::string, RemoteMethod> RemoteMethod::lookup = std::unordered_map<std::string, RemoteMethod>();
 RemoteMethod::StaticConstructor RemoteMethod::staticConstructor;
 
-                        RemoteMethod RemoteMethod::get(const std::string &url) {
-                            return lookup->get(url);
+                        RemoteMethod RemoteMethod::get(const std::string &name) {
+                            return lookup->get(name);
                         }
 
 bool RemoteMethod::operator == (const RemoteMethod &other) {

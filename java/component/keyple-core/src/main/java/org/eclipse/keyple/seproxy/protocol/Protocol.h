@@ -54,7 +54,7 @@ private:
                         std::string name;
 
                     public:
-                        Protocol(const std::string &name, InnerEnum innerEnum, const std::string &name);
+                        Protocol(const std::string &name);
 
                         virtual std::string getName();
 
