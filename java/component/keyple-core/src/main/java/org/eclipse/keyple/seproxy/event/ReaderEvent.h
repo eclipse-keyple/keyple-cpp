@@ -22,7 +22,7 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
-                namespace event_Renamed {
+                namespace event {
 
 
                     using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
@@ -31,6 +31,76 @@ namespace org {
                      * ReaderEvent used to notify changes at reader level
                      */
                     class ReaderEvent final : public std::enable_shared_from_this<ReaderEvent> {
+                    public:
+                        class EventType final {
+                            /**
+                             * An io error occurred.
+                             */
+                         public:
+                            static EventType IO_ERROR;
+
+                            /**
+                             * A SE has been inserted.
+                             */
+                            static EventType SE_INSERTED;
+
+                            /**
+                             * A SE has been inserted and the default requests process has been operated.
+                             */
+                            static EventType SE_MATCHED;
+
+                            /**
+                             * The SE has been removed.
+                             */
+                            static EventType SE_REMOVAL;
+
+                        private:
+                            static std::vector<EventType> valueList;
+
+                            class StaticConstructor {
+                            public:
+                                StaticConstructor();
+                            };
+
+                            static StaticConstructor staticConstructor;
+
+                        public:
+                            enum class InnerEnum {
+                                IO_ERROR,
+                                SE_INSERTED,
+                                SE_MATCHED,
+                                SE_REMOVAL
+                            };
+
+                            const InnerEnum innerEnumValue;
+                        private:
+                            const std::string nameValue;
+                            const int ordinalValue;
+                            static int nextOrdinal;
+
+                            /** The event name. */
+                        private:
+                            std::string name;
+
+                        public:
+                            EventType(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
+
+                            virtual std::string getName();
+
+                        public:
+                            bool operator == (const EventType &other);
+
+                            bool operator != (const EventType &other);
+
+                            static std::vector<EventType> values();
+
+                            int ordinal();
+
+                            std::string toString();
+
+                            static EventType valueOf(const std::string &name);
+                        };
+
                         /**
                          * The name of the plugin handling the reader that produced the event
                          */
@@ -55,75 +125,6 @@ namespace org {
                         /**
                          * The different types of reader event
                          */
-                    public:
-                        class EventType final {
-                            /**
-                             * An io error occurred.
-                             */
-public:
-                            static EventType IO_ERROR;
-
-                            /**
-                             * A SE has been inserted.
-                             */
-                            static EventType SE_INSERTED;
-
-                            /**
-                             * A SE has been inserted and the default requests process has been operated.
-                             */
-                            static EventType SE_MATCHED;
-
-                            /**
-                             * The SE has been removed.
-                             */
-                            static EventType SE_REMOVAL;
-
-private:
-                            static std::vector<EventType> valueList;
-
-                            class StaticConstructor {
-                            public:
-                                StaticConstructor();
-                            };
-
-                            static StaticConstructor staticConstructor;
-
-public:
-                            enum class InnerEnum {
-                                IO_ERROR,
-                                SE_INSERTED,
-                                SE_MATCHED,
-                                SE_REMOVAL
-                            };
-
-                            const InnerEnum innerEnumValue;
-private:
-                            const std::string nameValue;
-                            const int ordinalValue;
-                            static int nextOrdinal;
-
-                            /** The event name. */
-                        private:
-                            std::string name;
-
-                        public:
-                            EventType(const std::string &name, InnerEnum innerEnum, std::shared_ptr<ReaderEvent> outerInstance, const std::string &name);
-
-                            virtual std::string getName();
-
-public:
-                            bool operator == (const EventType &other);
-
-                            bool operator != (const EventType &other);
-
-                            static std::vector<EventType> values();
-
-                            int ordinal();
-
-                            std::string toString();
-
-                            static EventType valueOf(const std::string &name);
-                        };
 
                         /**
                          * ReaderEvent constructor for simple insertion notification mode
