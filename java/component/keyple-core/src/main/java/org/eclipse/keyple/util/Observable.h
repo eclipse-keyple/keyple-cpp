@@ -20,8 +20,11 @@ namespace org {
         namespace keyple {
             namespace util {
 
-
-
+                template<typename T>
+                class Observer {
+                public:
+                    virtual void update(T event_Renamed) = 0;
+                };
 
                 /**
                  * Generic Observable class
@@ -33,11 +36,7 @@ namespace org {
                 template<typename T>
                 class Observable {
                 public:
-                    template<typename T1>
-                    class Observer {
-                    public:
-                        virtual void update(T1 event_Renamed) = 0;
-                    };
+
 
                 private:
                     bool changed = false;

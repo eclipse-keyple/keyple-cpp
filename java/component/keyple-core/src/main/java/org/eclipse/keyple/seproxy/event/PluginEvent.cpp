@@ -19,7 +19,7 @@ EventType::StaticConstructor::StaticConstructor() {
 EventType::StaticConstructor EventType::staticConstructor;
 int EventType::nextOrdinal = 0;
 
-                    PluginEvent::EventType::EventType(const std::string &name, InnerEnum innerEnum, std::shared_ptr<PluginEvent> outerInstance, const std::string &name) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
+                    PluginEvent::EventType::EventType(const std::string &nameValue, InnerEnum innerEnum, std::shared_ptr<PluginEvent> outerInstance, const std::string &name) : nameValue(nameValue), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
                                             this->outerInstance = outerInstance;
                         this->name = name;
                     }

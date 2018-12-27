@@ -26,11 +26,10 @@ namespace org {
                 namespace event {
 
                     using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
-                    using org::eclipse::keyple::util::Observable;
 
                     class ObservablePlugin : public ReaderPlugin {
                     private:
-                        class PluginObserver : public Observable::Observer<std::shared_ptr<PluginEvent>> {
+                        class PluginObserver : public org::eclipse::keyple::util::Observer<std::shared_ptr<PluginEvent>> {
                         public:
                             virtual void update(std::shared_ptr<PluginEvent> event_Renamed) = 0;
                         };

@@ -22,31 +22,17 @@ namespace org {
                 namespace event_Renamed {
 
                     class PluginEvent final : public std::enable_shared_from_this<PluginEvent> {
-                        /**
-                         * The name of the plugin handling the reader that produced the event
-                         */
-                    private:
-                        const std::string pluginName;
-
-                        /**
-                         * The name of the reader involved
-                         */
-                        const std::string readerName;
-
-                        /**
-                         * The type of event
-                         */
-                        const EventType eventType;
-
-                        /**
-                         * The different types of reader event
-                         */
                     public:
                         class EventType final {
+                        public:
+                            enum class InnerEnum {
+                                READER_CONNECTED,
+                                READER_DISCONNECTED
+                            };
+
                             /**
                              * A reader has been connected.
                              */
-public:
                             static EventType READER_CONNECTED;
 
                             /**
@@ -54,7 +40,7 @@ public:
                              */
                             static EventType READER_DISCONNECTED;
 
-private:
+                        private:
                             static std::vector<EventType> valueList;
 
                             class StaticConstructor {
@@ -64,14 +50,9 @@ private:
 
                             static StaticConstructor staticConstructor;
 
-public:
-                            enum class InnerEnum {
-                                READER_CONNECTED,
-                                READER_DISCONNECTED
-                            };
-
+                        public:
                             const InnerEnum innerEnumValue;
-private:
+                        private:
                             const std::string nameValue;
                             const int ordinalValue;
                             static int nextOrdinal;
@@ -81,11 +62,11 @@ private:
                             std::string name;
 
                         public:
-                            EventType(const std::string &name, InnerEnum innerEnum, std::shared_ptr<PluginEvent> outerInstance, const std::string &name);
+                            EventType(const std::string &nameValue, InnerEnum innerEnum, std::shared_ptr<PluginEvent> outerInstance, const std::string &name);
 
                             virtual std::string getName();
 
-public:
+                        public:
                             bool operator == (const EventType &other);
 
                             bool operator != (const EventType &other);
@@ -107,8 +88,27 @@ public:
                         std::string getReaderName();
 
                         EventType getEventType();
-                    };
 
+                        /**
+                         * The name of the plugin handling the reader that produced the event
+                         */
+                    private:
+                        const std::string pluginName;
+
+                        /**
+                         * The name of the reader involved
+                         */
+                        const std::string readerName;
+
+                        /**
+                         * The type of event
+                         */
+                        const EventType eventType;
+
+                        /**
+                         * The different types of reader event
+                         */
+                     };
                 }
             }
         }
