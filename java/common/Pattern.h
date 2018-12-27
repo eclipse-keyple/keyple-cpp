@@ -11,16 +11,21 @@ public:
 			/* To be implemented */
 			return false;
 		}
+
+		std::string replaceAll(std::string replacement) {
+			/* To be implemented */
+			return replacement;
+		}
 	};
 
 private:
 	static Matcher privateMatcher;
 
 public:
-	static Pattern &compile(std::string regex) {
+	static std::shared_ptr<Pattern> compile(std::string regex) {
 		/* To be implemented */
 		static Pattern p;
-    	return p;
+    	return std::shared_ptr<Pattern>(&p);
 	}
 
 	static Matcher &matcher(std::string input)
