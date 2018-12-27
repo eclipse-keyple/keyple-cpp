@@ -6,18 +6,20 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
-                namespace event_Renamed {
+                namespace event {
+
                     using SeReader = org::eclipse::keyple::seproxy::SeReader;
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
-                    using Observable = org::eclipse::keyple::util::Observable;
+                    //using Observable = org::eclipse::keyple::util::Observable;
+                    using NotificationMode = ObservableReader::NotificationMode;
 
-NotificationMode NotificationMode::ALWAYS("ALWAYS", InnerEnum::ALWAYS, "always");
-NotificationMode NotificationMode::MATCHED_ONLY("MATCHED_ONLY", InnerEnum::MATCHED_ONLY, "matched_only");
+                    NotificationMode NotificationMode::ALWAYS("ALWAYS", InnerEnum::ALWAYS, "always");
+                    NotificationMode NotificationMode::MATCHED_ONLY("MATCHED_ONLY", InnerEnum::MATCHED_ONLY, "matched_only");
 
-std::vector<NotificationMode> NotificationMode::valueList;
-int NotificationMode::nextOrdinal = 0;
+                    std::vector<NotificationMode> NotificationMode::valueList;
+                    int NotificationMode::nextOrdinal = 0;
 
-                    NotificationMode::NotificationMode(const std::string &name, InnerEnum innerEnum, const std::string &name) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
+                    NotificationMode::NotificationMode(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
                         this->name = name;
                     }
 
@@ -25,40 +27,43 @@ int NotificationMode::nextOrdinal = 0;
                         return this->name;
                     }
 
-const std::unordered_map<std::string, NotificationMode> ObservableReader::NotificationMode::lookup = std::unordered_map<std::string, NotificationMode>();
-NotificationMode::StaticConstructor ObservableReader::NotificationMode::staticConstructor;
+                    const std::unordered_map<std::string, NotificationMode> ObservableReader::NotificationMode::lookup = std::unordered_map<std::string, NotificationMode>();
+                    NotificationMode::StaticConstructor ObservableReader::NotificationMode::staticConstructor;
 
                     NotificationMode NotificationMode::get(const std::string &name) {
-                        return lookup->get(name);
+                        std::unordered_map<std::string, NotificationMode>::const_iterator it = lookup.find(name);
+                        return it->second;
                     }
 
-bool NotificationMode::operator == (const NotificationMode &other) {
-    return this->ordinalValue == other.ordinalValue;
-}
+                    bool NotificationMode::operator == (const NotificationMode &other) {
+                        return this->ordinalValue == other.ordinalValue;
+                    }
 
-bool NotificationMode::operator != (const NotificationMode &other) {
-    return this->ordinalValue != other.ordinalValue;
-}
+                    bool NotificationMode::operator != (const NotificationMode &other) {
+                        return this->ordinalValue != other.ordinalValue;
+                    }
 
-std::vector<NotificationMode> NotificationMode::values() {
-    return valueList;
-}
+                    std::vector<NotificationMode> NotificationMode::values() {
+                        return valueList;
+                    }
 
-int NotificationMode::ordinal() {
-    return ordinalValue;
-}
+                    int NotificationMode::ordinal() {
+                        return ordinalValue;
+                    }
 
-std::string NotificationMode::toString() {
-    return nameValue;
-}
+                    std::string NotificationMode::toString() {
+                        return nameValue;
+                    }
 
-NotificationMode NotificationMode::valueOf(const std::string &name) {
-    for (auto enumInstance : NotificationMode::valueList) {
-        if (enumInstance.nameValue == name) {
-            return enumInstance;
-        }
-    }
-}
+                    NotificationMode NotificationMode::valueOf(const std::string &name) {
+                        for (auto enumInstance : NotificationMode::valueList) {
+                            if (enumInstance.nameValue == name) {
+                                return enumInstance;
+                            }
+                        }
+
+                        return NotificationMode::ALWAYS;
+                    }
                 }
             }
         }

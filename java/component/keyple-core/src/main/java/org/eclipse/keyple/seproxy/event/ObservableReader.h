@@ -5,9 +5,10 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "ReaderEvent.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ReaderEvent; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class ReaderEvent; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionRequest; } } } }
 
 /********************************************************************************
@@ -25,34 +26,33 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
-                namespace event_Renamed {
+                namespace event {
 
                     using SeReader = org::eclipse::keyple::seproxy::SeReader;
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
-                    using Observable = org::eclipse::keyple::util::Observable;
 
                     class ObservableReader : public SeReader {
                     private:
-                        class ReaderObserver : public Observable::Observer<std::shared_ptr<ReaderEvent>> {
+                        class ReaderObserver : public org::eclipse::keyple::util::Observer<std::shared_ptr<ReaderEvent>> {
                         };
 
                     public:
                         class NotificationMode final {
-public:
+                        public:
                             static NotificationMode ALWAYS;
                             static NotificationMode MATCHED_ONLY;
 
-private:
+                        private:
                             static std::vector<NotificationMode> valueList;
 
-public:
+                        public:
                             enum class InnerEnum {
                                 ALWAYS,
                                 MATCHED_ONLY
                             };
 
                             const InnerEnum innerEnumValue;
-private:
+                        private:
                             const std::string nameValue;
                             const int ordinalValue;
                             static int nextOrdinal;
@@ -61,7 +61,7 @@ private:
                             std::string name;
 
                         public:
-                            NotificationMode(const std::string &name, InnerEnum innerEnum, const std::string &name);
+                            NotificationMode(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
 
                             virtual std::string getName();
 
@@ -72,26 +72,27 @@ private:
                             static const std::unordered_map<std::string, NotificationMode> lookup;
 
                             // Populate the lookup table on loading time
-//JAVA TO C++ CONVERTER TODO TASK: Java to C++ Converter does not convert types within enums:
-//                                                private class StaticConstructor
-                    //                            {
-                    //                                public StaticConstructor()
-                    //                                {
-                    //                for (NotificationMode env : NotificationMode.values())
-                    //                {
-                    //                    lookup.put(env.getName(), env);
-                    //                }
-                    //                                }
-                    //                            }
+                            //JAVA TO C++ CONVERTER TODO TASK: Java to C++ Converter does not convert types within enums:
+                        private:
+                            class StaticConstructor
+                            {
+                            public:
+                                 StaticConstructor() {
+//                                    for (NotificationMode env : NotificationMode.values())
+//                                    {
+//                                        lookup.put(env.getName(), env);
+//                                    }
+                                }
+                            };
 
-                                                static NotificationMode::StaticConstructor staticConstructor;
+                            static NotificationMode::StaticConstructor staticConstructor;
 
 
                             // This method can be used for reverse lookup purpose
                         public:
                             static NotificationMode get(const std::string &name);
 
-public:
+                        public:
                             bool operator == (const NotificationMode &other);
 
                             bool operator != (const NotificationMode &other);
@@ -114,7 +115,6 @@ public:
 
                         virtual void setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> defaultSelectionRequest, NotificationMode notificationMode) = 0;
                     };
-
                 }
             }
         }
