@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "ReaderEvent.h"
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -19,7 +20,7 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
-                namespace event_Renamed {
+                namespace event {
 
                     class PluginEvent final : public std::enable_shared_from_this<PluginEvent> {
                     public:
@@ -62,7 +63,7 @@ namespace org {
                             std::string name;
 
                         public:
-                            EventType(const std::string &nameValue, InnerEnum innerEnum, std::shared_ptr<PluginEvent> outerInstance, const std::string &name);
+                            EventType(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
 
                             virtual std::string getName();
 
