@@ -75,4 +75,11 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/ObservableReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/PluginEvent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/ReaderEvent.cpp
+
+	# util
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/ByteArrayUtils.cpp
+
+	# helpers
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/Arrays.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/Pattern.cpp
 )

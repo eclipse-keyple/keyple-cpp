@@ -2,6 +2,7 @@
 #include "../../util/ByteArrayUtils.h"
 #include "ApduRequest.h"
 #include "../protocol/SeProtocol.h"
+#include "Pattern.h"
 
 namespace org {
     namespace eclipse {
@@ -49,9 +50,9 @@ namespace org {
                     bool SeRequest::AtrSelector::atrMatches(std::vector<char> &atr) {
                         bool m;
                         if (atrRegex.length() != 0) {
-                            Pattern p = Pattern::compile(atrRegex);
+                            std::shared_ptr<Pattern> p = Pattern::compile(atrRegex);
                             std::string atrString = ByteArrayUtils::toHex(atr);
-                            m = p.matcher(atrString).matches();
+                            m = p->matcher(atrString).matches();
                         }
                         else {
                             m = true;
