@@ -13,4 +13,8 @@ public:
 	Exception(const std::string &message, std::runtime_error cause) {
 
 	}
+
+	void printStackTrace() const {
+
+	}
 };
