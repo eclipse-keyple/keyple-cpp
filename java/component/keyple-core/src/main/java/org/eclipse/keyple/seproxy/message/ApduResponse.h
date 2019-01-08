@@ -32,7 +32,7 @@ namespace org {
                     /**
                      * Single APDU response wrapper
                      */
-                    class ApduResponse final : public std::enable_shared_from_this<ApduResponse>, public Serializable, public Object {
+                    class ApduResponse : public std::enable_shared_from_this<ApduResponse>, public Serializable, public Object {
 
                     public:
                         static constexpr long long serialVersionUID = 6418469841122636812LL;

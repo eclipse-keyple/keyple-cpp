@@ -12,14 +12,14 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
                     using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
-                    using ObservablePlugin = org::eclipse::keyple::seproxy::event_Renamed::ObservablePlugin;
-                    using PluginEvent = org::eclipse::keyple::seproxy::event_Renamed::PluginEvent;
+                    using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
+                    using PluginEvent = org::eclipse::keyple::seproxy::event::PluginEvent;
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                     using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                     using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> AbstractObservablePlugin::logger = org::slf4j::LoggerFactory::getLogger(AbstractObservablePlugin::typeid);
+//                    using org::slf4j::Logger;
+//                    using org::slf4j::LoggerFactory;
+//                    const std::shared_ptr<org::slf4j::Logger> AbstractObservablePlugin::logger = org::slf4j::LoggerFactory::getLogger(AbstractObservablePlugin::typeid);
 
                     AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name) : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event_Renamed::PluginEvent>(name) {
                         if (readers == nullptr) {
@@ -48,7 +48,7 @@ const std::shared_ptr<org::slf4j::Logger> AbstractObservablePlugin::logger = org
                     void AbstractObservablePlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
                         AbstractLoggedObservable<PluginEvent>::addObserver(observer);
                         if (AbstractLoggedObservable<PluginEvent>::countObservers() == 1) {
-                            logger->debug("Start the plugin monitoring.");
+//                            logger->debug("Start the plugin monitoring.");
                             startObservation();
                         }
                     }
@@ -56,7 +56,7 @@ const std::shared_ptr<org::slf4j::Logger> AbstractObservablePlugin::logger = org
                     void AbstractObservablePlugin::removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
                         AbstractLoggedObservable<PluginEvent>::removeObserver(observer);
                         if (AbstractLoggedObservable<PluginEvent>::countObservers() == 0) {
-                            logger->debug("Stop the plugin monitoring.");
+//                            logger->debug("Stop the plugin monitoring.");
                             stopObservation();
                         }
                     }

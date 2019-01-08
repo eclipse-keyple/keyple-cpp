@@ -3,6 +3,7 @@
 #include "../SeReader.h"
 #include <memory>
 #include "KeypleReaderException.h"
+#include "SeRequest.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequestSet; } } } } }

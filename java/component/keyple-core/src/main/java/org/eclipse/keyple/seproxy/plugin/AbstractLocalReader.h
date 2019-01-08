@@ -7,11 +7,15 @@
 #include <vector>
 #include "exceptionhelper.h"
 #include <memory>
+#include "SelectionStatus.h"
+#include "ByteArrayUtils.h"
+#include "System.h"
+#include "KeypleApplicationSelectionException.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class Selector; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ObservableReader; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class ObservableReader; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionRequest; } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleIOReaderException; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
@@ -34,7 +38,7 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
 
-                    using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
+                    using ObservableReader = org::eclipse::keyple::seproxy::event::ObservableReader;
                     using KeypleApplicationSelectionException = org::eclipse::keyple::seproxy::exception::KeypleApplicationSelectionException;
                     using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
                     using KeypleIOReaderException = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
@@ -44,8 +48,9 @@ namespace org {
                     using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
+                    using SelectionStatus = org::eclipse::keyple::seproxy::message::SelectionStatus;
+//                    using org::slf4j::Logger;
+//                    using org::slf4j::LoggerFactory;
 
 
                     /**
@@ -57,13 +62,14 @@ namespace org {
                     class AbstractLocalReader : public AbstractObservableReader {
 
                     private:
-                        static const std::shared_ptr<Logger> logger;
-                        static std::vector<char> const getResponseHackRequestBytes;
+//                        static const std::shared_ptr<Logger> logger;
+                        static std::vector<char> getResponseHackRequestBytes;
                         bool logicalChannelIsOpen = false;
                         std::vector<char> aidCurrentlySelected;
                         std::shared_ptr<SelectionStatus> currentSelectionStatus;
                         bool presenceNotified = false;
                         long long before = 0; // timestamp recorder
+                        std::string name;
 
                     public:
                         AbstractLocalReader(const std::string &pluginName, const std::string &readerName);
@@ -82,7 +88,7 @@ namespace org {
                          * @throws KeypleApplicationSelectionException if the application selection fails
                          */
                     protected:
-                        virtual std::shared_ptr<SelectionStatus> openLogicalChannelAndSelect(std::shared_ptr<SeRequest::Selector> selector, std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes) = 0;
+                        virtual std::shared_ptr<SelectionStatus> openLogicalChannelAndSelect(std::shared_ptr<SeRequest::Selector> selector, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes) = 0;
 
                         /**
                          * Closes the current physical channel.
@@ -123,7 +129,7 @@ namespace org {
                          * @param notificationMode the notification mode enum (ALWAYS or MATCHED_ONLY)
                          */
                     public:
-                        virtual void setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> defaultSelectionRequest, ObservableReader::NotificationMode notificationMode);
+                        virtual void setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> defaultSelectionRequest, ObservableReader::NotificationMode notificationMode) override;
 
                         /**
                          * This method is invoked when a SE is removed
@@ -218,12 +224,14 @@ namespace org {
                         std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap = std::unordered_map<std::shared_ptr<SeProtocol>, std::string>();
 
                     public:
-                        virtual void addSeProtocolSetting(std::shared_ptr<SeProtocolSetting> seProtocolSetting);
+                        virtual void addSeProtocolSetting(std::shared_ptr<SeProtocolSetting> seProtocolSetting) override;
 
 protected:
+/*
                         std::shared_ptr<AbstractLocalReader> shared_from_this() {
                             return std::static_pointer_cast<AbstractLocalReader>(AbstractObservableReader::shared_from_this());
                         }
+*/
                     };
 
                 }

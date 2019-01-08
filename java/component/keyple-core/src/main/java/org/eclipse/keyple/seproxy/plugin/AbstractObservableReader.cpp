@@ -157,6 +157,10 @@ const std::shared_ptr<org::slf4j::Logger> AbstractObservableReader::logger = org
                     int AbstractObservableReader::compareTo(std::shared_ptr<SeReader> seReader) {
                         return this->getName().compare(seReader->getName());
                     }
+
+                    std::string getName() {
+                        return this->name;
+                    }
                 }
             }
         }

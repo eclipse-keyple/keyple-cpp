@@ -47,7 +47,7 @@ namespace org {
                      * @throws KeypleReaderException if the list of readers has not been initialized
                      */
                 public:
-                    virtual std::shared_ptr<std::set<SeReader>> getReaders() = 0;
+                    virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() = 0;
 
                     /**
                      * Gets the reader whose name is provided as an argument

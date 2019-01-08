@@ -1,6 +1,6 @@
 #pragma once
 
-#include <set>
+//#include <set>
 #include <unordered_set>
 #include <memory>
 
@@ -47,7 +47,7 @@ namespace org {
                      */
                     const std::shared_ptr<void> SYNC = nullptr;
 
-                    std::shared_ptr<std::set<Observer<T>>> observers;
+//                    std::shared_ptr<std::set<Observer<T>>> observers;
 
                 public:
                     virtual void addObserver(std::shared_ptr<Observer<T>> observer) {
@@ -78,9 +78,12 @@ namespace org {
                     }
 
                     virtual void clearObservers() {
+/*
+ * Alex: removed 'observers' related code
                         if (observers != nullptr) {
-                            this->observers->clear();
+                             this->observers->clear();
                         }
+ */
                     }
 
                     virtual void setChanged() {
@@ -96,7 +99,11 @@ namespace org {
                     }
 
                     virtual int countObservers() {
+/*
+ * Alex: removed 'observers' related code
                         return observers == nullptr ? 0 : observers->size();
+ */
+                        return 0;
                     }
 
                     virtual void notifyObservers() {
@@ -104,6 +111,8 @@ namespace org {
                     }
 
                     virtual void notifyObservers(T const event_Renamed) {
+/*
+ * Alex: <set> not supported in abstract class ?
                         std::shared_ptr<std::set<std::shared_ptr<Observer<T>>>> observersCopy;
 
 //JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
@@ -117,6 +126,7 @@ namespace org {
                         for (auto observer : observersCopy) {
                             observer->update(event_Renamed);
                         }
+ */
                     }
                 };
 

@@ -9,14 +9,25 @@
 #include "../../util/ByteArrayUtils.h"
 #include "../exception/KeypleApplicationSelectionException.h"
 #include "../protocol/SeProtocolSetting.h"
+#include "Logger.h"
+#include "LoggerFactory.h"
+#include <typeinfo>
+#include "SeResponse.h"
+#include "SeResponseSet.h"
+#include "ApduRequest.h"
+#include "ApduResponse.h"
+#include "SeRequestSet.h"
+#include "SeRequest.h"
+#include "Arrays.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
                 namespace plugin {
-                    using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
-                    using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
+
+                    using ObservableReader = org::eclipse::keyple::seproxy::event::ObservableReader;
+                    using ReaderEvent = org::eclipse::keyple::seproxy::event::ReaderEvent;
                     using KeypleApplicationSelectionException = org::eclipse::keyple::seproxy::exception::KeypleApplicationSelectionException;
                     using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
                     using KeypleIOReaderException = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
@@ -27,23 +38,24 @@ namespace org {
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
                     using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> AbstractLocalReader::logger = org::slf4j::LoggerFactory::getLogger(AbstractLocalReader::typeid);
-std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::eclipse::keyple::util::ByteArrayUtils::fromHex("00C0000000");
+//                    using org::slf4j::Logger;
+//                    using org::slf4j::LoggerFactory;
+
+                    std::shared_ptr<Logger> logger; //= LoggerFactory::getLogger(typeid(AbstractLocalReader)); // Alex: n'arrive pas à utiliser typeid ici
+                    std::vector<char> AbstractLocalReader::getResponseHackRequestBytes = org::eclipse::keyple::util::ByteArrayUtils::fromHex("00C0000000");
 
                     AbstractLocalReader::AbstractLocalReader(const std::string &pluginName, const std::string &readerName) : AbstractObservableReader(pluginName, readerName) {
                         this->before = System::nanoTime();
                     }
 
-                    void AbstractLocalReader::setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> defaultSelectionRequest, ObservableReader::NotificationMode notificationMode) {
+                    void AbstractLocalReader::setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> defaultSelectionRequest, ObservableReader::NotificationMode notificationMode)     {
                         this->defaultSelectionRequest = defaultSelectionRequest;
                         this->notificationMode = notificationMode;
                     };
 
                     void AbstractLocalReader::cardRemoved() {
                         if (presenceNotified) {
-                            notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_REMOVAL, nullptr));
+//                            notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_REMOVAL, nullptr));
                             presenceNotified = false;
                         }
                     }
@@ -51,7 +63,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                     void AbstractLocalReader::cardInserted() {
                         if (defaultSelectionRequest == nullptr) {
                             /* no default request is defined, just notify the SE insertion */
-                            notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED, nullptr));
+//                            notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED, nullptr));
                             presenceNotified = true;
                         }
                         else {
@@ -72,7 +84,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                                 if (notificationMode == ObservableReader::NotificationMode::MATCHED_ONLY) {
                                     /* notify only if a SE matched the selection, just ignore if not */
                                     if (aSeMatched) {
-                                        notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_MATCHED, std::make_shared<SelectionResponse>(seResponseSet)));
+//                                        notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_MATCHED, std::make_shared<SelectionResponse>(seResponseSet)));
                                         presenceNotified = true;
                                     }
                                     else {
@@ -82,14 +94,14 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                                 }
                                 else {
                                     /* notify an SE_INSERTED event with the received response */
-                                    notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED, std::make_shared<SelectionResponse>(seResponseSet)));
+//                                    notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED, std::make_shared<SelectionResponse>(seResponseSet)));
                                     presenceNotified = true;
                                 }
                             }
                             catch (const KeypleReaderException &e) {
                                 /* the last transmission failed, close the logical channel */
                                 closeLogicalChannel();
-                                e->printStackTrace();
+                                e.printStackTrace();
                                 // in this case the card has been removed or not read correctly, do not throw event
                             }
 
@@ -98,15 +110,17 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
 
                     std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(std::shared_ptr<ApduRequest> apduRequest) throw(KeypleIOReaderException) {
                         std::shared_ptr<ApduResponse> apduResponse;
-                        if (logger->isTraceEnabled()) {
-                            long long timeStamp = System::nanoTime();
-                            double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
-                            this->before = timeStamp;
-                            logger->trace("[{}] processApduRequest => {}, elapsed {} ms.", this->getName(), apduRequest, elapsedMs);
-                        }
+//                        if (logger->isTraceEnabled()) {
+//                            long long timeStamp = System::nanoTime();
+//                            double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
+//                            this->before = timeStamp;
+//                            logger->trace("[{}] processApduRequest => {}, elapsed {} ms.", this->getName(), apduRequest, elapsedMs);
+//                        }
 
                         std::vector<char> buffer = apduRequest->getBytes();
-                        apduResponse = std::make_shared<ApduResponse>(transmitApdu(buffer), apduRequest->getSuccessfulStatusCodes());
+                        std::vector<char> resp = transmitApdu(buffer);
+                        ApduResponse _apdu(resp, apduRequest->getSuccessfulStatusCodes());
+                        apduResponse = std::make_shared<ApduResponse>(_apdu);
 
                         if (apduRequest->isCase4() && apduResponse->getDataOut().empty() && apduResponse->isSuccessful()) {
                             // do the get response command but keep the original status code
@@ -117,7 +131,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
                             this->before = timeStamp;
-                            logger->trace("[{}] processApduRequest => {}, elapsed {} ms.", this->getName(), apduResponse, elapsedMs);
+//                            logger->trace("[{}] processApduRequest => {}, elapsed {} ms.", this->getName(), apduResponse, elapsedMs);
                         }
                         return apduResponse;
                     }
@@ -131,7 +145,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
-                            logger->trace("[{}] case4HackGetResponse => ApduRequest: NAME = \"Internal Get Response\", RAWDATA = {}, elapsed = {}", this->getName(), ByteArrayUtils::toHex(getResponseHackRequestBytes), elapsedMs);
+//                            logger->trace("[{}] case4HackGetResponse => ApduRequest: NAME = \"Internal Get Response\", RAWDATA = {}, elapsed = {}", this->getName(), ByteArrayUtils::toHex(getResponseHackRequestBytes), elapsedMs);
                         }
 
                         std::vector<char> getResponseHackResponseBytes = transmitApdu(getResponseHackRequestBytes);
@@ -143,7 +157,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
-                            logger->trace("[{}] case4HackGetResponse => Internal {}, elapsed {} ms.", this->getName(), getResponseHackResponseBytes, elapsedMs);
+//                            logger->trace("[{}] case4HackGetResponse => Internal {}, elapsed {} ms.", this->getName(), getResponseHackResponseBytes, elapsedMs);
                         }
 
                         if (getResponseHackResponse->isSuccessful()) {
@@ -160,7 +174,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                         int requestIndex = 0, lastRequestIndex;
 
                         // Determine which requests are matching the current ATR
-                        for (auto request : requestSet->getRequests()) {
+                        for (auto request : *(requestSet->getRequests())) {
                             requestMatchesProtocol[requestIndex] = protocolFlagMatches(request->getProtocolFlag());
                             requestIndex++;
                         }
@@ -184,28 +198,28 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                          */
                         std::vector<std::shared_ptr<SeResponse>> responses;
                         bool stopProcess = false;
-                        for (auto request : requestSet->getRequests()) {
+                        for (auto request : *(requestSet->getRequests())) {
 
                             if (!stopProcess) {
                                 if (requestMatchesProtocol[requestIndex]) {
-                                    logger->debug("[{}] processSeRequestSet => transmit {}", this->getName(), request);
+//                                    logger->debug("[{}] processSeRequestSet => transmit {}", this->getName(), request);
                                     std::shared_ptr<SeResponse> response = nullptr;
                                     try {
                                         response = processSeRequest(request);
                                     }
-                                    catch (const KeypleReaderException &ex) {
+                                    catch (KeypleReaderException &ex) {
                                         /*
                                          * The process has been interrupted. We launch a KeypleReaderException with
                                          * the responses collected so far.
                                          */
                                         /* Add the latest (and partial) SeResponse to the current list. */
-                                        responses.push_back(ex->getSeResponse());
+                                        responses.push_back(ex.getSeResponse());
                                         /* Build a SeResponseSet with the available data. */
-                                        ex->setSeResponseSet(std::make_shared<SeResponseSet>(responses));
+                                        ex.setSeResponseSet(std::make_shared<SeResponseSet>(responses));
                                         throw ex;
                                     }
                                     responses.push_back(response);
-                                    logger->debug("[{}] processSeRequestSet => receive {}", this->getName(), response);
+//                                    logger->debug("[{}] processSeRequestSet => receive {}", this->getName(), response);
                                 }
                                 else {
                                     /*
@@ -229,7 +243,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                                          */
                                         closePhysicalChannel();
 
-                                        logger->debug("[{}] processSeRequestSet => Closing of the physical channel.", this->getName());
+//                                        logger->debug("[{}] processSeRequestSet => Closing of the physical channel.", this->getName());
                                     }
                                 }
                                 else {
@@ -254,7 +268,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                     }
 
                     void AbstractLocalReader::closeLogicalChannel() {
-                        logger->trace("[{}] closeLogicalChannel => Closing of the logical channel.", this->getName());
+//                        logger->trace("[{}] closeLogicalChannel => Closing of the logical channel.", this->getName());
                         logicalChannelIsOpen = false;
                         aidCurrentlySelected.clear();
                         currentSelectionStatus.reset();
@@ -280,7 +294,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                          */
                         if (seRequest->getSelector() != nullptr) {
                             /* check if AID changed if the channel is already open */
-                            if (isLogicalChannelOpen() && std::dynamic_pointer_cast<SeRequest::AidSelector>(seRequest->getSelector()) != nullptr) {
+                            if (isLogicalChannelOpen() && std::static_pointer_cast<SeRequest::AidSelector>(seRequest->getSelector()) != nullptr) {
                                 /*
                                  * AID comparison hack: we check here if the initial selection AID matches the
                                  * beginning of the AID provided in the SeRequest (coming from FCI data and supposed
@@ -293,10 +307,11 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                                 if (aidCurrentlySelected.empty()) {
                                     throw std::make_shared<IllegalStateException>("AID currently selected shouldn't be null.");
                                 }
-                                if ((std::static_pointer_cast<SeRequest::AidSelector>(seRequest->getSelector()))->getAidToSelect().size() >= aidCurrentlySelected.size() && aidCurrentlySelected.equals(Arrays::copyOfRange((std::static_pointer_cast<SeRequest::AidSelector>(seRequest->getSelector()))->getAidToSelect(), 0, aidCurrentlySelected.size()))) {
+                                if ((std::static_pointer_cast<SeRequest::AidSelector>(seRequest->getSelector()))->getAidToSelect().size() >= aidCurrentlySelected.size() &&
+                                    aidCurrentlySelected == Arrays::copyOfRange((std::static_pointer_cast<SeRequest::AidSelector>(seRequest->getSelector()))->getAidToSelect(), 0, aidCurrentlySelected.size())) {
                                     // the AID changed, close the logical channel
                                     if (logger->isTraceEnabled()) {
-                                        logger->trace("[{}] processSeRequest => The AID changed, close the logical channel. AID = {}, EXPECTEDAID = {}", this->getName(), ByteArrayUtils::toHex(aidCurrentlySelected), seRequest->getSelector());
+//                                        logger->trace("[{}] processSeRequest => The AID changed, close the logical channel. AID = {}, EXPECTEDAID = {}", this->getName(), ByteArrayUtils::toHex(aidCurrentlySelected), seRequest->getSelector());
                                     }
                                     /* close the channel (will reset the current selection status) */
                                     closeLogicalChannel();
@@ -311,10 +326,10 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
 
                                 try {
                                     selectionStatus = openLogicalChannelAndSelect(seRequest->getSelector(), seRequest->getSuccessfulSelectionStatusCodes());
-                                    logger->trace("[{}] processSeRequest => Logical channel opening success.", this->getName());
+//                                    logger->trace("[{}] processSeRequest => Logical channel opening success.", this->getName());
                                 }
                                 catch (const KeypleApplicationSelectionException &e) {
-                                    logger->trace("[{}] processSeRequest => Logical channel opening failure", this->getName());
+//                                    logger->trace("[{}] processSeRequest => Logical channel opening failure", this->getName());
                                     closeLogicalChannel();
                                     /* return a null SeResponse when the opening of the logical channel failed */
                                     return nullptr;
@@ -338,7 +353,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                         else {
                             /* selector is null, we expect that the logical channel was previously opened */
                             if (!isLogicalChannelOpen()) {
-                                throw std::make_shared<IllegalStateException>("[" + this->getName() + "] processSeRequest => No logical channel opened!");
+//                                throw std::make_shared<IllegalStateException>("[" + this->getName() + "] processSeRequest => No logical channel opened!");
                             }
                             else {
                                 selectionStatus.reset();
@@ -351,13 +366,13 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                                 try {
                                     apduResponseList.push_back(processApduRequest(apduRequest));
                                 }
-                                catch (const KeypleIOReaderException &ex) {
+                                catch (KeypleIOReaderException &ex) {
                                     /*
                                      * The process has been interrupted. We close the logical channel and launch a
                                      * KeypleReaderException with the Apdu responses collected so far.
                                      */
                                     closeLogicalChannel();
-                                    ex->setSeResponse(std::make_shared<SeResponse>(previouslyOpen, selectionStatus, apduResponseList));
+                                    ex.setSeResponse(std::make_shared<SeResponse>(previouslyOpen, selectionStatus, apduResponseList));
                                     throw ex;
                                 }
                             }
@@ -372,7 +387,7 @@ std::vector<char> const AbstractLocalReader::getResponseHackRequestBytes = org::
                     }
 
                     void AbstractLocalReader::addSeProtocolSetting(std::shared_ptr<SeProtocolSetting> seProtocolSetting) {
-                        this->protocolsMap.putAll(seProtocolSetting->getProtocolsMap());
+                        this->protocolsMap = seProtocolSetting->getProtocolsMap();
                     }
                 }
             }

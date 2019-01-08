@@ -32,7 +32,7 @@ namespace org {
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
 
                     class ObservableReader : public SeReader {
-                    private:
+                    protected:
                         class ReaderObserver : public org::eclipse::keyple::util::Observer<std::shared_ptr<ReaderEvent>> {
                         };
 
@@ -51,10 +51,37 @@ namespace org {
                                 MATCHED_ONLY
                             };
 
-                            const InnerEnum innerEnumValue;
+                            /*
+                             * Alex: removed 'const'
+                             *
+                             * Rationale: error: object of type 'org::eclipse::keyple::seproxy::event::ObservableReader::NotificationMode'
+                             * cannot be assigned because its copy assignment operator is implicitly deleted
+                             *   this->notificationMode = notificationMode;
+                             *                          ^
+                             * note: copy assignment operator of 'NotificationMode' is implicitly deleted because field 'innerEnumValue'
+                             * is of const-qualified type 'const org::eclipse::keyple::seproxy::event::ObservableReader::NotificationMode::InnerEnum'
+                             */
+                            InnerEnum innerEnumValue;
+
                         private:
-                            const std::string nameValue;
-                            const int ordinalValue;
+                            /*
+                             * Alex: removed 'const'
+                             *
+                             * Rationale: error: object of type 'org::eclipse::keyple::seproxy::event::ObservableReader::NotificationMode'
+                             * cannot be assigned because its copy assignment operator is implicitly deleted
+                             *   this->notificationMode = notificationMode;
+                             *                          ^
+                             * note: copy assignment operator of 'NotificationMode' is implicitly deleted becaus field 'nameValue' has no
+                             * copy assignment operator
+                             *   const std::string nameValue;
+                             *                     ^
+                             */
+                            std::string nameValue;
+                            /*
+                             * Alex: removed 'const'
+                             * Rationale: same as above
+                             */
+                            int ordinalValue;
                             static int nextOrdinal;
 
                         private:
