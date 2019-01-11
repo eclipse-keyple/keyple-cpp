@@ -29,16 +29,17 @@ namespace org {
                         AbstractStaticPlugin(const std::string &name);
 
                     public:
-                        void addObserver(std::shared_ptr<Observer> observer);
+                        void addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
 
-                        void removeObserver(std::shared_ptr<Observer> observer);
+                        void removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
 
 protected:
+/*
                         std::shared_ptr<AbstractStaticPlugin> shared_from_this() {
                             return std::static_pointer_cast<AbstractStaticPlugin>(AbstractObservablePlugin::shared_from_this());
                         }
+*/
                     };
-
                 }
             }
         }
