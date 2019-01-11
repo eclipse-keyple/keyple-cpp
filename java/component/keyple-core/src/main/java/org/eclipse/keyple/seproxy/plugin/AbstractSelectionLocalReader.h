@@ -7,11 +7,8 @@
 #include <stdexcept>
 #include <memory>
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleApplicationSelectionException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleChannelStateException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleIOReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class Selector; } } } } }
+#include "Logger.h"
+#include "LoggerFactory.h"
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -30,18 +27,15 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
 
-                    using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                     using KeypleApplicationSelectionException = org::eclipse::keyple::seproxy::exception::KeypleApplicationSelectionException;
                     using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
                     using KeypleIOReaderException = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
                     using namespace org::eclipse::keyple::seproxy::message;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
 
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @SuppressWarnings({"PMD.ModifiedCyclomaticComplexity", "PMD.CyclomaticComplexity", "PMD.StdCyclomaticComplexity"}) public abstract class AbstractSelectionLocalReader extends AbstractLocalReader implements org.eclipse.keyple.seproxy.event.ObservableReader
-                    class AbstractSelectionLocalReader : public AbstractLocalReader, public ObservableReader {
+                    class AbstractSelectionLocalReader : public AbstractLocalReader {
                     private:
                         static const std::shared_ptr<Logger> logger;
 
@@ -71,7 +65,7 @@ namespace org {
 
                         /**
                          * Opens a logical channel
-                         * 
+                         *
                          * @param selector the SE Selector: AID of the application to select or ATR regex
                          * @param successfulSelectionStatusCodes the list of successful status code for the select
                          *        command
@@ -81,12 +75,19 @@ namespace org {
                          * @throws KeypleIOReaderException - if an IO exception occurred
                          * @throws KeypleApplicationSelectionException - if the application selection is not successful
                          */
-                        std::shared_ptr<SelectionStatus> openLogicalChannelAndSelect(std::shared_ptr<SeRequest::Selector> selector, std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes) throw(KeypleChannelStateException, KeypleApplicationSelectionException, KeypleIOReaderException);
+                        std::shared_ptr<SelectionStatus> openLogicalChannelAndSelect(std::shared_ptr<SeRequest::Selector> selector,
+                            std::shared_ptr<std::set<int>> successfulSelectionStatusCodes) throw(KeypleChannelStateException,
+                            KeypleApplicationSelectionException, KeypleIOReaderException) override;
 
 protected:
+/*
                         std::shared_ptr<AbstractSelectionLocalReader> shared_from_this() {
                             return std::static_pointer_cast<AbstractSelectionLocalReader>(AbstractLocalReader::shared_from_this());
                         }
+*/
+
+                    public:
+                        std::string getName() override;
                     };
 
                 }

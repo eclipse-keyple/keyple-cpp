@@ -69,7 +69,6 @@ namespace org {
                         std::shared_ptr<SelectionStatus> currentSelectionStatus;
                         bool presenceNotified = false;
                         long long before = 0; // timestamp recorder
-                        std::string name;
 
                     public:
                         AbstractLocalReader(const std::string &pluginName, const std::string &readerName);

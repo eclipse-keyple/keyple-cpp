@@ -9,8 +9,6 @@ namespace org {
         namespace keyple {
             namespace seproxy {
                 namespace message {
-                    using SeReader = org::eclipse::keyple::seproxy::SeReader;
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                 }
             }
         }
