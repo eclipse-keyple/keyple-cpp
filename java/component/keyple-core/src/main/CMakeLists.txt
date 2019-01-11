@@ -54,7 +54,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractObservableReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractSelectionLocalReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractStaticPlugin.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractStaticReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractStaticReader.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractThreadedLocalReader.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractThreadedObservablePlugin.cpp
 

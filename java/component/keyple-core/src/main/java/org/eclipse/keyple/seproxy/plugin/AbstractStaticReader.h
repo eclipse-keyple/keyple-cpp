@@ -32,16 +32,17 @@ namespace org {
                         AbstractStaticReader(const std::string &pluginName, const std::string &readerName);
 
                     public:
-                        void addObserver(std::shared_ptr<Observer> observer);
+                        void addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer);
 
-                        void removeObserver(std::shared_ptr<Observer> observer);
+                        void removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer);
 
 protected:
+/*
                         std::shared_ptr<AbstractStaticReader> shared_from_this() {
                             return std::static_pointer_cast<AbstractStaticReader>(AbstractLocalReader::shared_from_this());
                         }
+*/
                     };
-
                 }
             }
         }
