@@ -64,10 +64,11 @@ namespace org {
                      *
                      */
 
-                    class AbstractObservableReader : public AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>, public ObservableReader, public ProxyReader {
+                    class AbstractObservableReader : public AbstractLoggedObservable<ReaderEvent>, public ObservableReader, public ProxyReader {
 
                     protected:
                         static const std::shared_ptr<Logger> logger;
+                        using AbstractLoggedObservable<ReaderEvent>::name;
 
                         long long before = 0; // timestamp recorder
 
@@ -145,7 +146,7 @@ namespace org {
                          * @return responseSet the response set
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<SeResponseSet> transmitSet(std::shared_ptr<SeRequestSet> requestSet) override;
+                        std::shared_ptr<SeResponseSet> transmitSet(std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException) override;
 
                         /**
                          * Execute the transmission of a {@link SeRequest} and returns a {@link SeResponse}
@@ -154,7 +155,7 @@ namespace org {
                          * @return the received response
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<SeResponse> transmit(std::shared_ptr<SeRequest> seRequest) override;
+                        std::shared_ptr<SeResponse> transmit(std::shared_ptr<SeRequest> seRequest) throw(KeypleReaderException) override;
 
                         /**
                          * @return Plugin name

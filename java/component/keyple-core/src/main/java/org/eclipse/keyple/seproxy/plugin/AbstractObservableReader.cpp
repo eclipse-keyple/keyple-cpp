@@ -11,6 +11,7 @@
 #include "../SeReader.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
+#include "System.h"
 
 namespace org {
     namespace eclipse {
@@ -18,8 +19,8 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
                     using SeReader = org::eclipse::keyple::seproxy::SeReader;
-                    using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
-                    using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
+                    using ObservableReader = org::eclipse::keyple::seproxy::event::ObservableReader;
+                    using ReaderEvent = org::eclipse::keyple::seproxy::event::ReaderEvent;
                     using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
                     using KeypleIOReaderException = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
@@ -32,7 +33,7 @@ namespace org {
 
                     const std::shared_ptr<Logger> logger = nullptr; //LoggerFactory::getLogger(AbstractObservableReader::typeid);
 
-                    AbstractObservableReader::AbstractObservableReader(const std::string &pluginName, const std::string &readerName) : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent>(readerName), pluginName(pluginName) {
+                    AbstractObservableReader::AbstractObservableReader(const std::string &pluginName, const std::string &readerName) : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event::ReaderEvent>(readerName), pluginName(pluginName) {
                         this->before = System::nanoTime();
                     }
 
@@ -48,11 +49,17 @@ namespace org {
                             logger->debug("Start the reader monitoring.");
                             startObservation();
                         }
-                        AbstractLoggedObservable<ReaderEvent>::addObserver(observer);
+                        /*
+                         * Alex: call super class function.
+                         */
+                        AbstractLoggedObservable<ReaderEvent>::addObserver(std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<ReaderEvent>>(observer));
                     }
 
                     void AbstractObservableReader::removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
-                        AbstractLoggedObservable<ReaderEvent>::removeObserver(observer);
+                        /*
+                         * Alex: call super class function.
+                         */
+                        AbstractLoggedObservable<ReaderEvent>::removeObserver(std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<ReaderEvent>>(observer));
                         if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
                             logger->debug("Stop the reader monitoring.");
                             stopObservation();
@@ -71,7 +78,7 @@ namespace org {
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
 //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
-                            logger->debug("[{}] transmit => SEREQUESTSET = {}, elapsed {} ms.", this->getName(), requestSet->toString(), elapsedMs);
+                            logger->debug("[{}] transmit => SEREQUESTSET = {}, elapsed {} ms.", getName(), requestSet->toString(), elapsedMs);
                         }
 
                         try {
@@ -159,7 +166,7 @@ namespace org {
                         return this->getName().compare(seReader->getName());
                     }
 
-                    std::string getName() {
+                    std::string AbstractObservableReader::getName() {
                         return this->name;
                     }
                 }

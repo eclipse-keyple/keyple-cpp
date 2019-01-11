@@ -6,6 +6,7 @@
 class Logger {
 private:
 	bool traceEnabled;
+	bool debugEnabled;
 
 	void printf(const char* s)
 		{
@@ -20,10 +21,15 @@ private:
 public:
 	Logger() {
 		traceEnabled = 0;
+		debugEnabled = 0;
 	}
 
 	bool isTraceEnabled() {
 		return traceEnabled;
+	}
+
+	bool isDebugEnabled() {
+		return debugEnabled;
 	}
 
 	template<typename T, typename... Args>
@@ -31,4 +37,7 @@ public:
 
 	template<typename T, typename... Args>
 	void debug(const char* s, T value, Args... args);
+
+	template<typename T, typename... Args>
+	void debug(T value, Args... args);
 };

@@ -84,7 +84,7 @@ namespace org {
                             int ordinalValue;
                             static int nextOrdinal;
 
-                        private:
+                        protected:
                             std::string name;
 
                         public:
