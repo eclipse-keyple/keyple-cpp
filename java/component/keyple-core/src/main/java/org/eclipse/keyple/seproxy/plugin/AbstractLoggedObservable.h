@@ -114,7 +114,7 @@ namespace org {
                          * @param event the event
                          */
 
-                        void notifyObservers(T const event_Renamed) final override {
+                        void notifyObservers(std::shared_ptr<T> event) final override {
 /*
  * Alex: commented out, shared_from_this is not handled properly yet
                             if (std::dynamic_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
@@ -128,7 +128,7 @@ namespace org {
  * Alex: where does that function come from?
                             setChanged();
  */
-                            org::eclipse::keyple::util::Observable<T>::notifyObservers(event_Renamed);
+                            org::eclipse::keyple::util::Observable<T>::notifyObservers(event);
                         }
 
                         /**

@@ -3,6 +3,7 @@
 //#include <set>
 #include <unordered_set>
 #include <memory>
+#include "ReaderEvent.h"
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -23,7 +24,7 @@ namespace org {
                 template<typename T>
                 class Observer {
                 public:
-                    virtual void update(T event_Renamed) = 0;
+                    virtual void update(T event) = 0;
                 };
 
                 /**
@@ -110,7 +111,7 @@ namespace org {
                         notifyObservers(nullptr);
                     }
 
-                    virtual void notifyObservers(T const event_Renamed) {
+                    virtual void notifyObservers(std::shared_ptr<T> event) {
 /*
  * Alex: <set> not supported in abstract class ?
                         std::shared_ptr<std::set<std::shared_ptr<Observer<T>>>> observersCopy;

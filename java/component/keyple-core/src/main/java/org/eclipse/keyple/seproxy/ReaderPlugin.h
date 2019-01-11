@@ -38,7 +38,7 @@ namespace org {
                 /**
                  * Card readers plugin interface.
                  */
-                class ReaderPlugin : public Nameable, public Configurable, public Comparable<std::shared_ptr<ReaderPlugin>> {
+                class ReaderPlugin : public Nameable, public Configurable, public Comparable<ReaderPlugin> {
 
                     /**
                      * Gets the readers.

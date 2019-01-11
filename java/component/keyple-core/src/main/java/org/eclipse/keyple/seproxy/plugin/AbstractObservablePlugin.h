@@ -46,7 +46,7 @@ namespace org {
                     /**
                      * Observable plugin. These plugin can report when a reader is added or removed.
                      */
-                    class AbstractObservablePlugin : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<std::shared_ptr<PluginEvent>>, public ReaderPlugin {
+                    class AbstractObservablePlugin : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<PluginEvent>, public ReaderPlugin {
 
                     private:
 //                        static const std::shared_ptr<Logger> logger;
@@ -55,7 +55,7 @@ namespace org {
                          * The list of readers
                          */
                     protected:
-                        std::shared_ptr<std::set<std::shared_ptr<AbstractObservableReader>>> readers = nullptr;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> readers = nullptr;
 
 
                         /**
@@ -76,7 +76,7 @@ namespace org {
                          * @return the current reader list, can be null if the
                          */
                     public:
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() override;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() throw(KeypleReaderException) override;
 
                         /**
                          * Gets a list of native readers from the native methods
@@ -85,7 +85,7 @@ namespace org {
                          * @throws KeypleReaderException if a reader error occurs
                          */
                     protected:
-                        virtual std::shared_ptr<std::set<std::shared_ptr<AbstractObservableReader>>> getNativeReaders() = 0;
+                        virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getNativeReaders() = 0;
 
                         /**
                          * Gets the specific reader whose is provided as an argument.
@@ -94,7 +94,7 @@ namespace org {
                          * @return the AbstractObservableReader object (null if not found)
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        virtual std::shared_ptr<AbstractObservableReader> getNativeReader(const std::string &name) = 0;
+                        virtual std::shared_ptr<SeReader> getNativeReader(const std::string &name) = 0;
 
                         /**
                          * Starts the monitoring thread
@@ -151,8 +151,10 @@ namespace org {
                          * @param name of the reader
                          * @return the reader
                          * @throws KeypleReaderNotFoundException if the wanted reader is not found
+                         *
+                         * /!\ Covariant return type (prototype is SeReader but ProxyReader actually returned)
                          */
-                        std::shared_ptr<SeReader> getReader(const std::string &name) throw(KeypleReaderNotFoundException) override;
+                        std::shared_ptr<SeReader> getReader(const std::string &name) override;
 
 protected:
 /*

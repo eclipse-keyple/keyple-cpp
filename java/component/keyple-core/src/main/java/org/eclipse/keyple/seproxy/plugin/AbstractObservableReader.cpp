@@ -9,6 +9,8 @@
 #include "../exception/KeypleChannelStateException.h"
 #include "../exception/KeypleIOReaderException.h"
 #include "../SeReader.h"
+#include "Logger.h"
+#include "LoggerFactory.h"
 
 namespace org {
     namespace eclipse {
@@ -27,9 +29,8 @@ namespace org {
                     using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                     using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> AbstractObservableReader::logger = org::slf4j::LoggerFactory::getLogger(AbstractObservableReader::typeid);
+
+                    const std::shared_ptr<Logger> logger = nullptr; //LoggerFactory::getLogger(AbstractObservableReader::typeid);
 
                     AbstractObservableReader::AbstractObservableReader(const std::string &pluginName, const std::string &readerName) : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent>(readerName), pluginName(pluginName) {
                         this->before = System::nanoTime();

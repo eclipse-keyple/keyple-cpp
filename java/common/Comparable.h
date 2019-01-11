@@ -3,6 +3,10 @@
 template <class T> class Comparable {
 
 public:
+	Comparable() {
+
+	}
+	
 	Comparable(T *t) {
 
 	}

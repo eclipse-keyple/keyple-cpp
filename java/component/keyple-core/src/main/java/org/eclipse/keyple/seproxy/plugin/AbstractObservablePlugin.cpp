@@ -21,18 +21,18 @@ namespace org {
 //                    using org::slf4j::LoggerFactory;
 //                    const std::shared_ptr<org::slf4j::Logger> AbstractObservablePlugin::logger = org::slf4j::LoggerFactory::getLogger(AbstractObservablePlugin::typeid);
 
-                    AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name) : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event_Renamed::PluginEvent>(name) {
+                    AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name) : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event::PluginEvent>(name) {
                         if (readers == nullptr) {
                             try {
                                 readers = getNativeReaders();
                             }
-                            catch (const KeypleReaderException &e) {
-                                e->printStackTrace();
+                            catch (KeypleReaderException &e) {
+                                e.printStackTrace();
                             }
                         }
                     }
 
-                    std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> AbstractObservablePlugin::getReaders() throw(KeypleReaderException) {
+                    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> AbstractObservablePlugin::getReaders() throw(KeypleReaderException) {
                         if (readers == nullptr) {
                             throw std::make_shared<KeypleReaderException>("List of readers has not been initialized");
                         }
@@ -46,7 +46,10 @@ namespace org {
                     };
 
                     void AbstractObservablePlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
-                        AbstractLoggedObservable<PluginEvent>::addObserver(observer);
+                        /*
+                         * Alex: call super class function.
+                         */
+                        AbstractLoggedObservable<PluginEvent>::addObserver(std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<PluginEvent>>(observer));
                         if (AbstractLoggedObservable<PluginEvent>::countObservers() == 1) {
 //                            logger->debug("Start the plugin monitoring.");
                             startObservation();
@@ -54,7 +57,10 @@ namespace org {
                     }
 
                     void AbstractObservablePlugin::removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
-                        AbstractLoggedObservable<PluginEvent>::removeObserver(observer);
+                        /*
+                         * Alex: call super class function.
+                         */
+                        AbstractLoggedObservable<PluginEvent>::removeObserver(std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<PluginEvent>>(observer));
                         if (AbstractLoggedObservable<PluginEvent>::countObservers() == 0) {
 //                            logger->debug("Stop the plugin monitoring.");
                             stopObservation();
@@ -62,13 +68,13 @@ namespace org {
                     }
 
                     int AbstractObservablePlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin) {
-                        return this->getName().compare(plugin->getName());
+                        return this->AbstractLoggedObservable::getName().compare(plugin->getName());
                     }
 
-                    std::shared_ptr<ProxyReader> AbstractObservablePlugin::getReader(const std::string &name) throw(KeypleReaderNotFoundException) {
-                        for (auto reader : readers) {
+                    std::shared_ptr<SeReader> AbstractObservablePlugin::getReader(const std::string &name) {
+                        for (auto reader : *readers) {
                             if (reader->getName() == name) {
-                                return reader;
+                                return std::shared_ptr<ProxyReader>(std::dynamic_pointer_cast<ProxyReader>(reader));
                             }
                         }
                         throw std::make_shared<KeypleReaderNotFoundException>(name);
