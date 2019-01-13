@@ -88,6 +88,15 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractThreadedLocalReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractThreadedObservablePlugin.cpp
 
+	# seproxy - protocol
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/ContactlessProtocols.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/ContactsProtocols.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/Protocol.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/SeProtocol.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/SeProtocolSetting.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/SeProtocolSettingList.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/TransmissionMode.cpp
+
 	# seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/ChannelState.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/ReaderPlugin.cpp

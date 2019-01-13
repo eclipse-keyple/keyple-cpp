@@ -9,7 +9,7 @@ namespace org {
                 namespace protocol {
 
                     SeProtocolSetting::SeProtocolSetting(std::unordered_map<std::shared_ptr<SeProtocol>, std::string> &seProtocolSettingList) {
-                        this->protocolsMap.putAll(seProtocolSettingList);
+                        this->protocolsMap = (seProtocolSettingList);
                     }
 
                     SeProtocolSetting::SeProtocolSetting(std::shared_ptr<SeProtocolSettingList> seProtocolSetting) {

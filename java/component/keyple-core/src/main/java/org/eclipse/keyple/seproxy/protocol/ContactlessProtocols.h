@@ -77,7 +77,7 @@ private:
                         std::string name;
 
                     public:
-                        ContactlessProtocols(const std::string &name, InnerEnum innerEnum, const std::string &name);
+                        ContactlessProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
 
                         virtual std::string getName();
 

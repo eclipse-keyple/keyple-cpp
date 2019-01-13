@@ -17,8 +17,8 @@ ContactsProtocols::StaticConstructor::StaticConstructor() {
 ContactsProtocols::StaticConstructor ContactsProtocols::staticConstructor;
 int ContactsProtocols::nextOrdinal = 0;
 
-                    ContactsProtocols::ContactsProtocols(const std::string &name, InnerEnum innerEnum, const std::string &name) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
-                        this->name = name;
+                    ContactsProtocols::ContactsProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum), name(name) {
+                        
                     }
 
                     std::string ContactsProtocols::getName() {
