@@ -3,6 +3,9 @@
 #include <string>
 #include "exceptionhelper.h"
 #include <memory>
+#include <set>
+
+#include "KeyplePluginNotFoundException.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { class ReaderPlugin; } } } }
@@ -38,7 +41,7 @@ namespace org {
                     static std::shared_ptr<SeProxyService> uniqueInstance;
 
                     /** the list of readers’ plugins interfaced with the SE Proxy Service */
-                    std::shared_ptr<SortedSet<std::shared_ptr<ReaderPlugin>>> plugins = std::make_shared<ConcurrentSkipListSet<std::shared_ptr<ReaderPlugin>>>();
+                    std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> plugins = std::make_shared<std::set<std::shared_ptr<ReaderPlugin>>>();
 
                     /**
                      * Instantiates a new SeProxyService.
@@ -58,11 +61,11 @@ namespace org {
                      *
                      * @param plugins the new plugins
                      */
-                    void setPlugins(std::shared_ptr<SortedSet<std::shared_ptr<ReaderPlugin>>> plugins);
+                    void setPlugins(std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> plugins);
 
                     /**
                      * Adds a single plugin to the plugin list.
-                     * 
+                     *
                      * @param plugin the plugin to add.
                      */
                     void addPlugin(std::shared_ptr<ReaderPlugin> plugin);
@@ -72,7 +75,7 @@ namespace org {
                      *
                      * @return the plugins the list of interfaced reader’s plugins.
                      */
-                    std::shared_ptr<SortedSet<std::shared_ptr<ReaderPlugin>>> getPlugins();
+                    std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> getPlugins();
 
                     /**
                      * Gets the plugin whose name is provided as an argument.

@@ -7,7 +7,8 @@ namespace org {
         namespace keyple {
             namespace seproxy {
                 using KeyplePluginNotFoundException = org::eclipse::keyple::seproxy::exception::KeyplePluginNotFoundException;
-std::shared_ptr<SeProxyService> SeProxyService::uniqueInstance = std::make_shared<SeProxyService>();
+
+                std::shared_ptr<SeProxyService> SeProxyService::uniqueInstance = std::shared_ptr<SeProxyService>();
 
                 SeProxyService::SeProxyService() {
                 }
@@ -16,20 +17,20 @@ std::shared_ptr<SeProxyService> SeProxyService::uniqueInstance = std::make_share
                     return uniqueInstance;
                 }
 
-                void SeProxyService::setPlugins(std::shared_ptr<SortedSet<std::shared_ptr<ReaderPlugin>>> plugins) {
+                void SeProxyService::setPlugins(std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> plugins) {
                     this->plugins = plugins;
                 }
 
                 void SeProxyService::addPlugin(std::shared_ptr<ReaderPlugin> plugin) {
-                    this->plugins->add(plugin);
+                    this->plugins->insert(plugin);
                 }
 
-                std::shared_ptr<SortedSet<std::shared_ptr<ReaderPlugin>>> SeProxyService::getPlugins() {
+                std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> SeProxyService::getPlugins() {
                     return plugins;
                 }
 
                 std::shared_ptr<ReaderPlugin> SeProxyService::getPlugin(const std::string &name) throw(KeyplePluginNotFoundException) {
-                    for (auto plugin : plugins) {
+                    for (auto plugin : *plugins) {
                         if (plugin->getName() == name) {
                             return plugin;
                         }
@@ -38,6 +39,9 @@ std::shared_ptr<SeProxyService> SeProxyService::uniqueInstance = std::make_share
                 }
 
                 std::string SeProxyService::getVersion() {
+                    /*
+                     * Alex
+                     *
                     try {
                         // load keyple core property file
                         std::shared_ptr<InputStream> propertiesIs = this->getClass().getClassLoader().getResourceAsStream("META-INF/keyple-core.properties");
@@ -51,6 +55,7 @@ std::shared_ptr<SeProxyService> SeProxyService::uniqueInstance = std::make_share
                     catch (const IOException &e) {
                         e->printStackTrace();
                     }
+                    */
 
                     return "no-version-found";
                 }
