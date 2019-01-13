@@ -46,7 +46,7 @@ namespace org {
                      * </ul>
                      * This interface should be implemented by any specific reader plugin.
                      */
-                    class ProxyReader : public SeReader {
+                    class ProxyReader : public virtual SeReader {
 
                         /**
                          * Transmits a {@link SeRequestSet} (list of {@link SeRequest}) to a SE application and get back

@@ -111,7 +111,12 @@ namespace org {
                             selectionHasMatched = true;
                         }
 
-                        return std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr), std::make_shared<ApduResponse>(fci, nullptr), selectionHasMatched);
+                        AnswerToReset *_atr = new AnswerToReset(atr);
+                        ApduResponse *_ar = new ApduResponse(fci, nullptr);
+                        SelectionStatus *_ss = new SelectionStatus(std::shared_ptr<AnswerToReset>(_atr),
+                                                                   std::shared_ptr<ApduResponse>(_ar),
+                                                                   selectionHasMatched);
+                        return std::shared_ptr<SelectionStatus>(_ss);
                     }
 
                     std::string AbstractSelectionLocalReader::getName()

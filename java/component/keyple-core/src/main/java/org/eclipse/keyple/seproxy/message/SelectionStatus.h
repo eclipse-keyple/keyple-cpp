@@ -46,6 +46,9 @@ namespace org {
                         bool equals(std::shared_ptr<void> o) override;
 
                         int hashCode() override;
+
+                    protected:
+                        void finalize() throw(std::runtime_error) override;
                     };
 
                 }

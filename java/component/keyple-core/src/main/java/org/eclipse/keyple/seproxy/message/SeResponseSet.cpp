@@ -14,7 +14,7 @@ namespace org {
                     SeResponseSet::SeResponseSet(std::vector<std::shared_ptr<SeResponse>> &seResponses) : seResponses(seResponses) {
                     }
 
-                    SeResponseSet::SeResponseSet(std::shared_ptr<SeResponse> response) : seResponses(seResponses) {
+                    SeResponseSet::SeResponseSet(std::shared_ptr<SeResponse> response){
                         std::vector<std::shared_ptr<SeResponse>> seResponses;
                         seResponses.push_back(response);
                     }

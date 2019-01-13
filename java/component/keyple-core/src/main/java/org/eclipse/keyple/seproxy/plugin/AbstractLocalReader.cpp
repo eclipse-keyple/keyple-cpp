@@ -372,7 +372,7 @@ namespace org {
                                      * KeypleReaderException with the Apdu responses collected so far.
                                      */
                                     closeLogicalChannel();
-                                    ex.setSeResponse(std::make_shared<SeResponse>(previouslyOpen, selectionStatus, apduResponseList));
+                                    ex.setSeResponse(std::shared_ptr<SeResponse>(new SeResponse(previouslyOpen, selectionStatus, apduResponseList)));
                                     throw ex;
                                 }
                             }
@@ -383,7 +383,7 @@ namespace org {
                             closeLogicalChannel();
                         }
 
-                        return std::make_shared<SeResponse>(previouslyOpen, selectionStatus, apduResponseList);
+                        return std::shared_ptr<SeResponse>(new SeResponse(previouslyOpen, selectionStatus, apduResponseList));
                     }
 
                     void AbstractLocalReader::addSeProtocolSetting(std::shared_ptr<SeProtocolSetting> seProtocolSetting) {

@@ -37,7 +37,7 @@ namespace org {
                      */
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @SuppressWarnings("PMD.NPathComplexity") public final class SeResponse implements java.io.Serializable
-                    class SeResponse final : public std::enable_shared_from_this<SeResponse>, public Serializable, public Object {
+                    class SeResponse : public std::enable_shared_from_this<SeResponse>, public Serializable, public Object {
 
                     public:
                         static constexpr long long serialVersionUID = 265369841119873812LL;
@@ -95,6 +95,9 @@ namespace org {
                         bool equals(std::shared_ptr<void> o) override;
 
                         int hashCode() override;
+
+protected:
+                        void finalize() throw(std::runtime_error) override;
                     };
 
                 }

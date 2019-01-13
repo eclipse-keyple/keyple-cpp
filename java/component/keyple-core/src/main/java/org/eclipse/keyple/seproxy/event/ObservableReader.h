@@ -31,7 +31,7 @@ namespace org {
                     using SeReader = org::eclipse::keyple::seproxy::SeReader;
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
 
-                    class ObservableReader : public SeReader {
+                    class ObservableReader : public virtual SeReader {
                     protected:
                         class ReaderObserver : public org::eclipse::keyple::util::Observer<std::shared_ptr<ReaderEvent>> {
                         };
