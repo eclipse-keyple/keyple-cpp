@@ -7,6 +7,9 @@
 #include "exceptionhelper.h"
 #include <memory>
 
+#include "Logger.h"
+#include "Thread.h"
+
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class EventThread; } } } } }
 
@@ -27,12 +30,49 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
 
-                    using ObservablePlugin = org::eclipse::keyple::seproxy::event_Renamed::ObservablePlugin;
+                    using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
 
-                    class AbstractThreadedObservablePlugin : public AbstractObservablePlugin, public ObservablePlugin {
+                    class AbstractThreadedObservablePlugin : public AbstractObservablePlugin, public ObservablePlugin, public Object {
+
+                    private:
+                        class EventThread : public Thread {
+                        private:
+                            /**
+                             *
+                             */
+                            std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance;
+
+                            /**
+                             *
+                             */
+                            const std::string pluginName;
+
+                            /**
+                             *
+                             */
+                            bool running = true;
+
+                            /**
+                             * Constructor
+                             */
+                        public:
+                            EventThread(std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance, const std::string &pluginName);
+
+                            /**
+                             * Marks the thread as one that should end when the last cardWaitTimeout occurs
+                             */
+                            virtual void end();
+
+                            virtual void run();
+
+                        protected:
+/*
+                            std::shared_ptr<EventThread> shared_from_this() {
+                                return std::static_pointer_cast<EventThread>(Thread::shared_from_this());
+                            }
+*/
+                        };
 
                     private:
                         static const std::shared_ptr<Logger> logger;
@@ -56,7 +96,7 @@ namespace org {
                          * List of names of the connected readers
                          */
                     private:
-                        static std::shared_ptr<SortedSet<std::string>> nativeReadersNames;
+                        static std::shared_ptr<std::set<std::string>> nativeReadersNames;
 
                         /**
                          * Returns the list of names of all connected readers
@@ -65,7 +105,7 @@ namespace org {
                          * @throws KeypleReaderException if a reader error occurs
                          */
                     protected:
-                        virtual std::shared_ptr<SortedSet<std::string>> getNativeReadersNames() = 0;
+                        virtual std::shared_ptr<std::set<std::string>> getNativeReadersNames() = 0;
 
                         /**
                          * Constructor
@@ -91,29 +131,7 @@ namespace org {
                         /**
                          * Thread in charge of reporting live events
                          */
-                    private:
-                        class EventThread : public Thread {
-                                        private:
-                                            std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance;
 
-                            const std::string pluginName;
-                            bool running = true;
-
-                            EventThread(std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance, const std::string &pluginName);
-
-                            /**
-                             * Marks the thread as one that should end when the last cardWaitTimeout occurs
-                             */
-                        public:
-                            virtual void end();
-
-                            virtual void run();
-
-protected:
-                            std::shared_ptr<EventThread> shared_from_this() {
-                                return std::static_pointer_cast<EventThread>(Thread::shared_from_this());
-                            }
-                        };
 
                         /**
                          * Called when the class is unloaded. Attempt to do a clean exit.
@@ -121,13 +139,14 @@ protected:
                          * @throws Throwable a generic exception
                          */
                     protected:
-//JAVA TO C++ CONVERTER WARNING: Unlike Java, there is no automatic call to this finalizer method in native C++:
                         void finalize() throw(std::runtime_error) override;
 
 protected:
+/*
                         std::shared_ptr<AbstractThreadedObservablePlugin> shared_from_this() {
                             return std::static_pointer_cast<AbstractThreadedObservablePlugin>(AbstractObservablePlugin::shared_from_this());
                         }
+*/
                     };
 
                 }

@@ -40,4 +40,7 @@ public:
 
 	template<typename T, typename... Args>
 	void debug(T value, Args... args);
+
+	template<typename T, typename... Args>
+	void warn(const char *s, T value, Args... args);
 };

@@ -45,7 +45,7 @@ namespace org {
                      *
                      */
                     template<typename T>
-                    class AbstractLoggedObservable : public org::eclipse::keyple::util::Observable<T>, public Nameable, public Configurable {
+                    class AbstractLoggedObservable : public org::eclipse::keyple::util::Observable<T>, public virtual Nameable, public Configurable {
                     private:
 //JAVA TO C++ CONVERTER TODO TASK: Native C++ does not allow initialization of static non-const/integral fields in their declarations - choose the conversion option for separate .h and .cpp files:
                         static const std::shared_ptr<Logger> logger; // = LoggerFactory::getLogger(AbstractLoggedObservable::typeid);

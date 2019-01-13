@@ -2,25 +2,26 @@
 #include "../event/PluginEvent.h"
 #include "AbstractObservableReader.h"
 #include "../exception/KeypleReaderException.h"
+#include "InterruptedException.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
                 namespace plugin {
-                    using ObservablePlugin = org::eclipse::keyple::seproxy::event_Renamed::ObservablePlugin;
-                    using PluginEvent = org::eclipse::keyple::seproxy::event_Renamed::PluginEvent;
+                    using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
+                    using PluginEvent = org::eclipse::keyple::seproxy::event::PluginEvent;
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> AbstractThreadedObservablePlugin::logger = org::slf4j::LoggerFactory::getLogger(AbstractThreadedObservablePlugin::typeid);
-std::shared_ptr<java::util::SortedSet<std::string>> AbstractThreadedObservablePlugin::nativeReadersNames = std::make_shared<java::util::concurrent::ConcurrentSkipListSet<std::string>>();
+
+                    const std::shared_ptr<Logger> logger = nullptr; //org::slf4j::LoggerFactory::getLogger(AbstractThreadedObservablePlugin::typeid);
+                    std::set<std::string> _set;
+                    std::shared_ptr<std::set<std::string>> nativeReadersNames = std::make_shared<std::set<std::string>>(_set);
 
                     AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(const std::string &name) : AbstractObservablePlugin(name) {
                     }
 
                     void AbstractThreadedObservablePlugin::startObservation() {
-                        thread = std::make_shared<AbstractThreadedObservablePlugin::EventThread>(shared_from_this(), this->getName());
+                        thread = std::shared_ptr<EventThread>(new EventThread(std::shared_ptr<AbstractThreadedObservablePlugin>(this), this->getName()));
                         thread->start();
                     }
 
@@ -42,22 +43,22 @@ std::shared_ptr<java::util::SortedSet<std::string>> AbstractThreadedObservablePl
                         try {
                             while (running) {
                                 /* retrieves the current readers names list */
-                                std::shared_ptr<SortedSet<std::string>> actualNativeReadersNames = outerInstance->getNativeReadersNames();
+                                std::shared_ptr<std::set<std::string>> actualNativeReadersNames = outerInstance->getNativeReadersNames();
                                 /*
                                  * checks if it has changed this algorithm favors cases where nothing change
                                  */
-                                if (!nativeReadersNames->equals(actualNativeReadersNames)) {
+                                if (nativeReadersNames != actualNativeReadersNames) {
                                     /*
                                      * parse the current readers list, notify for disappeared readers, update
                                      * readers list
                                      */
-                                    for (auto reader : outerInstance->readers) {
-                                        if (!actualNativeReadersNames->contains(reader->getName())) {
-                                            outerInstance->notifyObservers(std::make_shared<PluginEvent>(this->pluginName, reader->getName(), PluginEvent::EventType::READER_DISCONNECTED));
-                                            outerInstance->readers->remove(reader);
+                                    for (auto reader : *outerInstance->readers) {
+                                        if (actualNativeReadersNames->find(reader->getName()) == actualNativeReadersNames->end()) {
+                                            outerInstance->AbstractLoggedObservable::notifyObservers(std::make_shared<PluginEvent>(this->pluginName, reader->getName(), PluginEvent::EventType::READER_DISCONNECTED));
+                                            outerInstance->readers->erase(reader);
                                             logger->trace("[{}][{}] Plugin thread => Remove unplugged reader from readers list.", this->pluginName, reader->getName());
                                             /* remove reader name from the current list */
-                                            nativeReadersNames->remove(reader->getName());
+                                            nativeReadersNames->erase(reader->getName());
                                             reader.reset();
                                         }
                                     }
@@ -65,28 +66,28 @@ std::shared_ptr<java::util::SortedSet<std::string>> AbstractThreadedObservablePl
                                      * parse the new readers list, notify for readers appearance, update readers
                                      * list
                                      */
-                                    for (auto readerName : actualNativeReadersNames) {
-                                        if (!nativeReadersNames->contains(readerName)) {
-                                            std::shared_ptr<AbstractObservableReader> reader = outerInstance->getNativeReader(readerName);
-                                            outerInstance->readers->add(reader);
-                                            outerInstance->notifyObservers(std::make_shared<PluginEvent>(this->pluginName, reader->getName(), PluginEvent::EventType::READER_CONNECTED));
+                                    for (auto readerName : *actualNativeReadersNames) {
+                                        if (nativeReadersNames->find(readerName) == nativeReadersNames->end()) {
+                                            std::shared_ptr<SeReader> reader = outerInstance->getNativeReader(readerName);
+                                            outerInstance->readers->insert(reader);
+                                            outerInstance->AbstractLoggedObservable::notifyObservers(std::make_shared<PluginEvent>(this->pluginName, reader->getName(), PluginEvent::EventType::READER_CONNECTED));
                                             logger->trace("[{}][{}] Plugin thread => Add plugged reader to readers list.", this->pluginName, reader->getName());
                                             /* add reader name to the current list */
-                                            nativeReadersNames->add(readerName);
+                                            nativeReadersNames->insert(readerName);
                                         }
                                     }
                                 }
                                 /* sleep for a while. */
-                                delay(outerInstance->threadWaitTimeout);
+                                Thread::sleep(outerInstance->threadWaitTimeout);
                             }
                         }
-                        catch (const InterruptedException &e) {
-                            e->printStackTrace();
-                            logger->warn("[{}] An exception occurred while monitoring plugin: {}, cause {}", this->pluginName, e->getMessage(), e->getCause());
+                        catch (InterruptedException &e) {
+                            e.printStackTrace();
+                            logger->warn("[{}] An exception occurred while monitoring plugin: {}, cause {}", this->pluginName, e.getMessage(), e.getCause());
                         }
-                        catch (const KeypleReaderException &e) {
-                            e->printStackTrace();
-                            logger->warn("[{}] An exception occurred while monitoring plugin: {}, cause {}", this->pluginName, e->what(), e->getCause());
+                        catch (KeypleReaderException &e) {
+                            e.printStackTrace();
+                            logger->warn("[{}] An exception occurred while monitoring plugin: {}, cause {}", this->pluginName, e.what(), e.getCause());
                         }
                     }
 
@@ -95,7 +96,10 @@ std::shared_ptr<java::util::SortedSet<std::string>> AbstractThreadedObservablePl
                         thread->end();
                         thread.reset();
                         logger->trace("[{}] Observable Plugin thread ended.", this->getName());
-                        AbstractObservablePlugin::finalize();
+                        /*
+                         * Alex...
+                         */
+                        //AbstractObservablePlugin::finalize();
                     }
                 }
             }

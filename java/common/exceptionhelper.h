@@ -146,6 +146,7 @@ public:
     }
 };
 
+/*
 class InterruptedException : public std::exception
 {
 private:
@@ -161,6 +162,7 @@ public:
         return msg.c_str();
     }
 };
+*/
 
 class InstantiationException : public std::exception
 {

@@ -38,7 +38,7 @@ namespace org {
                 /**
                  * Card readers plugin interface.
                  */
-                class ReaderPlugin : public Nameable, public Configurable, public Comparable<ReaderPlugin> {
+                class ReaderPlugin : public virtual Nameable, public Configurable, public Comparable<ReaderPlugin> {
 
                     /**
                      * Gets the readers.
