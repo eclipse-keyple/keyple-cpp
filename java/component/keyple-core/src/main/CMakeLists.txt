@@ -105,6 +105,9 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
 	# util
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/ByteArrayUtils.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Configurable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Nameable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Observable.cpp
 
 	# helpers
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/Arrays.cpp
