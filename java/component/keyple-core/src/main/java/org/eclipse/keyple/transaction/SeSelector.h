@@ -126,7 +126,6 @@ namespace org {
                      *
                      * @return the selection SeRequest
                      */
-                protected:
                     std::shared_ptr<SeRequest> getSelectorRequest();
 
                     /**
@@ -170,6 +169,7 @@ namespace org {
                      */
                     std::type_info getMatchingClass();
 
+                public:
                     /**
                      * The default value for the selectorClass (unless setSelectorClass is used) is SeSelector.class
                      *

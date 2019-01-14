@@ -1,6 +1,8 @@
 #include "MatchingSe.h"
 #include "../seproxy/message/SeResponse.h"
 #include "SeSelector.h"
+#include "SeRequest.h"
+#include "SelectionStatus.h"
 
 namespace org {
     namespace eclipse {
