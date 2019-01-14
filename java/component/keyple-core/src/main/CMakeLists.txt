@@ -43,7 +43,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction
 
 	/* Helpers */
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/java/org/eclipse/keyple/common
 )
 
 ADD_LIBRARY(${LIBRARY_NAME} SHARED
@@ -115,9 +115,4 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Configurable.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Nameable.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Observable.cpp
-
-	# helpers
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/Arrays.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/Pattern.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/Logger.cpp
 )

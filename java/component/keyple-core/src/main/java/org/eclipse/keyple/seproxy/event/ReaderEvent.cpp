@@ -63,6 +63,9 @@ namespace org {
                                 return enumInstance;
                             }
                         }
+
+                        /* Should not end up here */
+                        return EventType::IO_ERROR;
                     }
 
                     ReaderEvent::ReaderEvent(const std::string &pluginName, const std::string &readerName, EventType eventType, std::shared_ptr<SelectionResponse> selectionResponse) : pluginName(pluginName), readerName(readerName), eventType(eventType), defaultResponseSet(selectionResponse) {

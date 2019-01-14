@@ -4,7 +4,7 @@
 
 class Arrays {
 private:
-	static std::vector<char> privateArray;
+	std::vector<char> privateArray;
 
 public:
 	static bool equals(const std::vector<char> &a1, const std::vector<char> &a2) {
@@ -29,6 +29,7 @@ public:
 	}
 
 	static std::vector<char> &copyOfRange(const std::vector<char> &original, int from, int to) {
+		static std::vector<char> privateArray;
 		privateArray.reserve(to - from);
 		std::copy(&original[from], &original[to], privateArray.begin());
 		return privateArray;
