@@ -1,14 +1,16 @@
-#include "SeSelection.h"
-#include "../seproxy/message/ProxyReader.h"
+#include "KeypleReaderException.h"
 #include "MatchingSe.h"
-#include "../seproxy/message/SeRequest.h"
-#include "../seproxy/SeReader.h"
-#include "SeSelector.h"
+#include "ProxyReader.h"
+#include "SeRequest.h"
+#include "SeReader.h"
 #include "SelectionResponse.h"
-#include "../seproxy/exception/KeypleReaderException.h"
-#include "../seproxy/message/SeRequestSet.h"
-#include "../seproxy/message/SeResponseSet.h"
 #include "SelectionRequest.h"
+#include "SelectionStatus.h"
+#include "SeResponse.h"
+#include "SeResponseSet.h"
+#include "SeRequestSet.h"
+#include "SeSelection.h"
+#include "SeSelector.h"
 
 namespace org {
     namespace eclipse {
@@ -21,36 +23,38 @@ namespace org {
                 using SeRequestSet = org::eclipse::keyple::seproxy::message::SeRequestSet;
                 using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                 using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
-                using org::slf4j::Logger;
-                using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> SeSelection::logger = org::slf4j::LoggerFactory::getLogger(SeSelection::typeid);
 
-                SeSelection::SeSelection(std::shared_ptr<SeReader> seReader) : proxyReader(std::static_pointer_cast<ProxyReader>(seReader)) {
+                const std::shared_ptr<Logger> logger = nullptr; //org::slf4j::LoggerFactory::getLogger(SeSelection::typeid);
+
+                SeSelection::SeSelection(std::shared_ptr<SeReader> seReader) : proxyReader(std::dynamic_pointer_cast<ProxyReader>(seReader)) {
                 }
 
                 std::shared_ptr<MatchingSe> SeSelection::prepareSelection(std::shared_ptr<SeSelector> seSelector) {
                     if (logger->isTraceEnabled()) {
                         logger->trace("SELECTORREQUEST = {}, EXTRAINFO = {}", seSelector->getSelectorRequest(), seSelector->getExtraInfo());
                     }
-                    selectionRequestSet->add(seSelector->getSelectorRequest());
+                    selectionRequestSet->insert(seSelector->getSelectorRequest());
                     std::shared_ptr<MatchingSe> matchingSe = nullptr;
+/*
+ * Alex: problem!
                     try {
                         std::shared_ptr<Constructor> constructor = seSelector->getMatchingClass().getConstructor(seSelector->getSelectorClass());
                         matchingSe = std::static_pointer_cast<MatchingSe>(constructor->newInstance(seSelector));
                         matchingSeList.push_back(matchingSe);
                     }
-                    catch (const NoSuchMethodException &e) {
-                        e->printStackTrace();
+                    catch (NoSuchMethodException &e) {
+                        e.printStackTrace();
                     }
-                    catch (const InstantiationException &e) {
-                        e->printStackTrace();
+                    catch (InstantiationException &e) {
+                        e.printStackTrace();
                     }
-                    catch (const IllegalAccessException &e) {
-                        e->printStackTrace();
+                    catch (IllegalAccessException &e) {
+                        e.printStackTrace();
                     }
-                    catch (const InvocationTargetException &e) {
-                        e->printStackTrace();
+                    catch (InvocationTargetException &e) {
+                        e.printStackTrace();
                     }
+*/
                     return matchingSe;
                 }
 
@@ -66,9 +70,9 @@ const std::shared_ptr<org::slf4j::Logger> SeSelection::logger = org::slf4j::Logg
                                 selectionSuccessful = true;
                                 /* update the matchingSe list */
 //JAVA TO C++ CONVERTER TODO TASK: Java iterators are only converted within the context of 'while' and 'for' loops:
-                                if (matchingSeIterator.hasNext()) {
+                                if (matchingSeIterator != matchingSeList.end()) {
 //JAVA TO C++ CONVERTER TODO TASK: Java iterators are only converted within the context of 'while' and 'for' loops:
-                                    std::shared_ptr<MatchingSe> matchingSe = matchingSeIterator.next();
+                                    std::shared_ptr<MatchingSe> matchingSe = *(++matchingSeIterator);
                                     matchingSe->setSelectionResponse(seResponse);
                                     if (matchingSe->isSelectable()) {
                                         selectedSe = matchingSe;
@@ -81,20 +85,20 @@ const std::shared_ptr<org::slf4j::Logger> SeSelection::logger = org::slf4j::Logg
                             else {
 
 //JAVA TO C++ CONVERTER TODO TASK: Java iterators are only converted within the context of 'while' and 'for' loops:
-                                if (!matchingSeIterator.hasNext()) {
+                                if (matchingSeIterator == matchingSeList.end()) {
                                     throw std::make_shared<IllegalStateException>("The number of selection responses exceeds the number of prepared selectors.");
                                 }
 
 //JAVA TO C++ CONVERTER TODO TASK: Java iterators are only converted within the context of 'while' and 'for' loops:
-                                matchingSeIterator.next();
+                                matchingSeIterator++;
                             }
                         }
                         else {
 //JAVA TO C++ CONVERTER TODO TASK: Java iterators are only converted within the context of 'while' and 'for' loops:
-                            if (matchingSeIterator.hasNext()) {
+                            if (matchingSeIterator != matchingSeList.end()) {
                                 /* skip not matching response */
 //JAVA TO C++ CONVERTER TODO TASK: Java iterators are only converted within the context of 'while' and 'for' loops:
-                                matchingSeIterator.next();
+                                matchingSeIterator++;
                             }
                             else {
                                 throw std::make_shared<IllegalStateException>("The number of selection responses exceeds the number of prepared selectors.");

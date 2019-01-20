@@ -105,10 +105,10 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
 	# transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/MatchingSe.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SelectionRequest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SelectionResponse.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SeSelection.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SeSelector.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SelectionRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SelectionResponse.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SeSelection.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SeSelector.cpp
 
 	# util
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/ByteArrayUtils.cpp

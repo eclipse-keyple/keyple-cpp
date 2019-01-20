@@ -1,6 +1,9 @@
 #pragma once
 
 #include <exception>
+#include <string>
+#include <sstream>
+#include <iostream>
 
 class IOException : public std::exception
 {

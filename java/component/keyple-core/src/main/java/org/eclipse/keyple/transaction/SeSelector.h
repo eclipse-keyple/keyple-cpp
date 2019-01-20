@@ -6,8 +6,10 @@
 #include <string>
 #include <unordered_set>
 #include <vector>
-#include <typeinfo>
+#include <typeindex>
 #include <memory>
+
+#include "Logger.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
@@ -52,18 +54,18 @@ namespace org {
                     };
 
                 private:
-//                    static const std::shared_ptr<Logger> logger;
+                    static const std::shared_ptr<Logger> logger;
 
                 protected:
                     std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList;
-                    std::set<int> selectApplicationSuccessfulStatusCodes;
+                    std::shared_ptr<std::set<int>> selectApplicationSuccessfulStatusCodes;
                 private:
-                    std::type_info matchingClass;
-                    std::type_info selectorClass;
+                    std::type_index matchingClass;
+                    std::type_index selectorClass;
                     const ChannelState channelState;
                     const std::shared_ptr<SeProtocol> protocolFlag;
                     const std::string atrRegex;
-                    std::vector<char> const aid;
+                    std::vector<char> aid;
                     const SelectMode selectMode;
                     const bool selectionByAid;
                     std::string extraInfo;
@@ -71,7 +73,7 @@ namespace org {
                 public:
                     virtual std::string getAtrRegex();
 
-                    virtual std::vector<char> getAid();
+                    virtual std::vector<char> &getAid();
 
                     virtual SelectMode getSelectMode();
 
@@ -167,7 +169,7 @@ namespace org {
                      *
                      * @return the current matchingClass
                      */
-                    std::type_info getMatchingClass();
+                    std::type_index &getMatchingClass();
 
                 public:
                     /**
@@ -175,7 +177,7 @@ namespace org {
                      *
                      * @return the current selectorClass
                      */
-                    std::type_info getSelectorClass();
+                    std::type_index &getSelectorClass();
                 };
 
             }

@@ -38,7 +38,7 @@ namespace org {
                     /**
                      * Constructor taking a SeSelector as an argument. Keeps the isKeepChannelOpen flag and the
                      * extraInfo for later usage.
-                     * 
+                     *
                      * @param seSelector the seSelector
                      */
                 public:
@@ -46,14 +46,14 @@ namespace org {
 
                     /**
                      * Sets the SeResponse obtained in return from the selection process
-                     * 
+                     *
                      * @param selectionResponse the selection SeResponse
                      */
                     virtual void setSelectionResponse(std::shared_ptr<SeResponse> selectionResponse);
 
                     /**
                      * Gets the SeResponse obtained in return from the selection process
-                     * 
+                     *
                      * @return the selection SeResponse
                      */
                     std::shared_ptr<SeResponse> getSelectionSeResponse();
@@ -64,16 +64,16 @@ namespace org {
                      * <p>
                      * The SE will only be eligible if the logical channel is required to be kept open after the
                      * selection process.
-                     * 
+                     *
                      * @return true or false
                      */
-                protected:
+                public:
                     bool isSelectable();
 
                     /**
                      * Indicates whether the current SE has been identified as selected: the logical channel is open
                      * and the selection process returned either a FCI or an ATR
-                     * 
+                     *
                      * @return true or false
                      */
                 public:
@@ -81,7 +81,7 @@ namespace org {
 
                     /**
                      * Gets back the information string provided in the constructor for information purposes (logs)
-                     * 
+                     *
                      * @return a string
                      */
                     std::string getExtraInfo();

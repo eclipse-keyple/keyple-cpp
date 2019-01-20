@@ -21,7 +21,7 @@ namespace org {
                     return atrRegex;
                 }
 
-                std::vector<char> SeSelector::getAid() {
+                std::vector<char> &SeSelector::getAid() {
                     return aid;
                 }
 
@@ -33,10 +33,8 @@ namespace org {
                     return selectionByAid;
                 }
 
-                SeSelector::SeSelector(const std::string &atrRegex, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, const std::string &extraInfo) : channelState(channelState), protocolFlag(protocolFlag), atrRegex(atrRegex), aid(aid.clear()), selectMode(SelectMode::FIRST), selectionByAid(false) {
-
-                    matchingClass = MatchingSe::typeid;
-                    selectorClass = SeSelector::typeid;
+                SeSelector::SeSelector(const std::string &atrRegex, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, const std::string &extraInfo)
+                : channelState(channelState), protocolFlag(protocolFlag), atrRegex(atrRegex), aid(aid), selectMode(SelectMode::FIRST), selectionByAid(false), matchingClass(std::type_index(typeid(MatchingSe))), selectorClass(std::type_index(typeid(SeSelector))) {
 
                     if (extraInfo != "") {
                         this->extraInfo = extraInfo;
@@ -44,14 +42,15 @@ namespace org {
                     else {
                         this->extraInfo = "";
                     }
-//                    if (logger->isTraceEnabled()) {
-//                        logger->trace("ATR based selection: ATRREGEX = {}, KEEPCHANNELOPEN = {}, PROTOCOLFLAG = {}", atrRegex, channelState, protocolFlag);
-//                    }
+                    if (logger->isTraceEnabled()) {
+                        logger->trace("ATR based selection: ATRREGEX = {}, KEEPCHANNELOPEN = {}, PROTOCOLFLAG = {}", atrRegex, "channelState", protocolFlag);
+                    }
+
+                    this->aid.clear();
                 }
 
-                SeSelector::SeSelector(std::vector<char> &aid, SelectMode selectMode, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, const std::string &extraInfo) : channelState(channelState), protocolFlag(protocolFlag), atrRegex(""), aid(aid), selectMode(selectMode), selectionByAid(true) {
-                    matchingClass = MatchingSe::typeid;
-                    selectorClass = SeSelector::typeid;
+                SeSelector::SeSelector(std::vector<char> &aid, SelectMode selectMode, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, const std::string &extraInfo)
+                : channelState(channelState), protocolFlag(protocolFlag), atrRegex(""), aid(aid), selectMode(selectMode), selectionByAid(true), matchingClass(std::type_index(typeid(MatchingSe))), selectorClass(std::type_index(typeid(SeSelector))) {
 
                     if (extraInfo != "") {
                         this->extraInfo = extraInfo;
@@ -59,9 +58,9 @@ namespace org {
                     else {
                         this->extraInfo = "";
                     }
-//                    if (logger->isTraceEnabled()) {
-//                        logger->trace("AID based selection: AID = {}, KEEPCHANNELOPEN = {}, PROTOCOLFLAG = {}", ByteArrayUtils::toHex(aid), channelState, protocolFlag);
-//                    }
+                    if (logger->isTraceEnabled()) {
+                        logger->trace("AID based selection: AID = {}, KEEPCHANNELOPEN = {}, PROTOCOLFLAG = {}", ByteArrayUtils::toHex(aid), "channelState", protocolFlag);
+                    }
                 }
 
                 std::shared_ptr<SeProtocol> SeSelector::getProtocolFlag() {
@@ -75,10 +74,12 @@ namespace org {
                 std::shared_ptr<SeRequest> SeSelector::getSelectorRequest() {
                     std::shared_ptr<SeRequest> seSelectionRequest;
                     if (!isSelectionByAid()) {
-                        seSelectionRequest = std::make_shared<SeRequest>(std::make_shared<SeRequest::AtrSelector>(getAtrRegex()), seSelectionApduRequestList, channelState, protocolFlag, nullptr);
+                        seSelectionRequest = std::shared_ptr<SeRequest>(new SeRequest(std::shared_ptr<SeRequest::AtrSelector>(new SeRequest::AtrSelector(getAtrRegex())), seSelectionApduRequestList, channelState, protocolFlag, nullptr));
                     }
                     else {
-                        seSelectionRequest = std::make_shared<SeRequest>(std::make_shared<SeRequest::AidSelector>(getAid(), getSelectMode()), seSelectionApduRequestList, channelState, protocolFlag, selectApplicationSuccessfulStatusCodes);
+                        SeRequest::AidSelector *_aid = new SeRequest::AidSelector(getAid(), getSelectMode());
+                        std::shared_ptr<SeRequest::AidSelector> __aid = std::shared_ptr<SeRequest::AidSelector>(_aid);
+                        seSelectionRequest = std::shared_ptr<SeRequest>(new SeRequest(__aid, seSelectionApduRequestList, channelState, protocolFlag, selectApplicationSuccessfulStatusCodes));
                     }
                     return seSelectionRequest;
                 }
@@ -95,11 +96,11 @@ namespace org {
                     this->selectorClass = selectorClass;
                 }
 
-                std::type_info SeSelector::getMatchingClass() {
+                std::type_index &SeSelector::getMatchingClass() {
                     return matchingClass;
                 }
 
-                std::type_info SeSelector::getSelectorClass() {
+                std::type_index &SeSelector::getSelectorClass() {
                     return selectorClass;
                 }
             }

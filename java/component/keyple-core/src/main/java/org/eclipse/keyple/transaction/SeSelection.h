@@ -1,8 +1,12 @@
 #pragma once
 
+#include <set>
 #include <vector>
 #include "exceptionhelper.h"
 #include <memory>
+
+#include "KeypleReaderException.h"
+#include "Logger.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
@@ -34,8 +38,6 @@ namespace org {
                 using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                 using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
                 using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
-                using org::slf4j::Logger;
-                using org::slf4j::LoggerFactory;
 
                 /**
                  * The SeSelection class handles the SE selection process
@@ -46,12 +48,12 @@ namespace org {
 
                     const std::shared_ptr<ProxyReader> proxyReader;
                     std::vector<std::shared_ptr<MatchingSe>> matchingSeList = std::vector<std::shared_ptr<MatchingSe>>();
-                    std::shared_ptr<Set<std::shared_ptr<SeRequest>>> selectionRequestSet = std::make_shared<LinkedHashSet<std::shared_ptr<SeRequest>>>();
+                    std::shared_ptr<std::set<std::shared_ptr<SeRequest>>> selectionRequestSet = std::make_shared<std::set<std::shared_ptr<SeRequest>>>();
                     std::shared_ptr<MatchingSe> selectedSe;
 
                     /**
                      * Initializes the SeSelection
-                     * 
+                     *
                      * @param seReader the reader to use to make the selection
                      */
                 public:
@@ -63,7 +65,7 @@ namespace org {
                      * <p>
                      * Create a MatchingSe, retain it in a list and return it. The MatchingSe may be an extended
                      * class
-                     * 
+                     *
                      * @param seSelector the selector to prepare
                      * @return a MatchingSe for further information request about this selector
                      */
@@ -105,7 +107,7 @@ namespace org {
                      * be kept open, then it is retained as a selection answer.
                      * <p>
                      * Responses that have not matched the current PO are set to null.
-                     * 
+                     *
                      * @return boolean true if a SE was selected
                      * @throws KeypleReaderException if the requests transmission failed
                      */
@@ -113,7 +115,7 @@ namespace org {
 
                     /**
                      * Returns the {@link MatchingSe} if there is one, null if not
-                     * 
+                     *
                      * @return a {@link MatchingSe} or null
                      */
                     std::shared_ptr<MatchingSe> getSelectedSe();
@@ -121,7 +123,7 @@ namespace org {
                     /**
                      * Returns the updated list of prepared {@link MatchingSe} updated with the responses to the
                      * selection requests sent.
-                     * 
+                     *
                      * @return a list of {@link MatchingSe}
                      */
                     std::vector<std::shared_ptr<MatchingSe>> getMatchingSeList();
@@ -130,7 +132,7 @@ namespace org {
                      * The SelectionOperation is the SelectionRequest to process in ordered to select a SE among
                      * others through the selection process. This method is useful to build the prepared selection
                      * to be executed by a reader just after a SE insertion.
-                     * 
+                     *
                      * @return the {@link SelectionRequest} previously prepared with prepareSelection
                      */
                     std::shared_ptr<SelectionRequest> getSelectionOperation();
