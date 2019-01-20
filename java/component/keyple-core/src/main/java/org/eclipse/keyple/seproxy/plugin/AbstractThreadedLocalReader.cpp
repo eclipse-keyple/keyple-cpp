@@ -27,7 +27,7 @@ namespace org {
                         this->threadWaitTimeout = timeout;
                     }
 
-                    AbstractThreadedLocalReader::EventThread::EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName) : Thread("observable-reader-events-" + std::to_string(++threadCount)), pluginName(pluginName), readerName(readerName), outerInstance(outerInstance) {
+                    AbstractThreadedLocalReader::EventThread::EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName) : Thread("observable-reader-events-" + std::to_string(++(outerInstance->threadCount))), pluginName(pluginName), readerName(readerName), outerInstance(outerInstance) {
                         setDaemon(true);
                     }
 

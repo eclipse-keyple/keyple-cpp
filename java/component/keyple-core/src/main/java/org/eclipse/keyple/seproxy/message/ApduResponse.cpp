@@ -78,6 +78,11 @@ namespace org {
                         hash = 31 * hash + (bytes.empty() ? 0 : Arrays::hashCode(bytes));
                         return hash;
                     }
+
+                    void ApduResponse::finalize() throw(std::runtime_error)
+                    {
+
+                    }
                 }
             }
         }

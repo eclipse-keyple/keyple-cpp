@@ -75,7 +75,7 @@ namespace org {
                         };
 
                     private:
-                        static const std::shared_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger;
 
                         static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 1000;
 
@@ -96,7 +96,7 @@ namespace org {
                          * List of names of the connected readers
                          */
                     private:
-                        static std::shared_ptr<std::set<std::string>> nativeReadersNames;
+                        std::shared_ptr<std::set<std::string>> nativeReadersNames;
 
                         /**
                          * Returns the list of names of all connected readers

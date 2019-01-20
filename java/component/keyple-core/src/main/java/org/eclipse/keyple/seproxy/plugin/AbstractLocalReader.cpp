@@ -38,10 +38,8 @@ namespace org {
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
                     using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-//                    using org::slf4j::Logger;
-//                    using org::slf4j::LoggerFactory;
 
-                    std::shared_ptr<Logger> logger; //= LoggerFactory::getLogger(typeid(AbstractLocalReader)); // Alex: n'arrive pas à utiliser typeid ici
+                    std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractLocalReader));
                     std::vector<char> AbstractLocalReader::getResponseHackRequestBytes = org::eclipse::keyple::util::ByteArrayUtils::fromHex("00C0000000");
 
                     AbstractLocalReader::AbstractLocalReader(const std::string &pluginName, const std::string &readerName) : AbstractObservableReader(pluginName, readerName) {

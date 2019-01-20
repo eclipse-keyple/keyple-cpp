@@ -18,10 +18,6 @@ public:
 		}
 	};
 
-private:
-	static Matcher privateMatcher;
-
-public:
 	static std::shared_ptr<Pattern> compile(std::string regex) {
 		/* To be implemented */
 		static Pattern p;
@@ -30,6 +26,7 @@ public:
 
 	static Matcher &matcher(std::string input)
 	{
+		static Matcher privateMatcher;
 		return privateMatcher;
 	}
 };

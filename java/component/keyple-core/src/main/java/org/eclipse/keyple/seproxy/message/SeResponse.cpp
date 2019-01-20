@@ -65,6 +65,11 @@ namespace org {
                         hash = 29 * hash + (this->channelPreviouslyOpen ? 1 : 0);
                         return hash;
                     }
+
+                    void SeResponse::finalize() throw(std::runtime_error)
+                    {
+
+                    }
                 }
             }
         }

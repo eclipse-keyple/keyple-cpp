@@ -12,6 +12,8 @@
 #include "SeSelection.h"
 #include "SeSelector.h"
 
+#include "LoggerFactory.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -24,7 +26,7 @@ namespace org {
                 using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                 using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
 
-                const std::shared_ptr<Logger> logger = nullptr; //org::slf4j::LoggerFactory::getLogger(SeSelection::typeid);
+                const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelection));
 
                 SeSelection::SeSelection(std::shared_ptr<SeReader> seReader) : proxyReader(std::dynamic_pointer_cast<ProxyReader>(seReader)) {
                 }

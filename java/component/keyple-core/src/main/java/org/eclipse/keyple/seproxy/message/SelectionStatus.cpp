@@ -45,6 +45,12 @@ namespace org {
                         hash = 7 * hash + (fci == nullptr ? 0 : Arrays::hashCode(fci->getBytes()));
                         return hash;
                     }
+
+
+                    void SelectionStatus::finalize() throw(std::runtime_error)
+                    {
+
+                    }
                 }
             }
         }

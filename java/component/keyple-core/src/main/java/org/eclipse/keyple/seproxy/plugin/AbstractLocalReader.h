@@ -62,7 +62,7 @@ namespace org {
                     class AbstractLocalReader : public AbstractObservableReader {
 
                     private:
-//                        static const std::shared_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger;
                         static std::vector<char> getResponseHackRequestBytes;
                         bool logicalChannelIsOpen = false;
                         std::vector<char> aidCurrentlySelected;

@@ -32,6 +32,11 @@ namespace org {
                         hash = 19 * hash + (atrBytes.empty() ? 0 : Arrays::hashCode(atrBytes));
                         return hash;
                     }
+
+                    void AnswerToReset::finalize() throw(std::runtime_error)
+                    {
+
+                    }
                 }
             }
         }

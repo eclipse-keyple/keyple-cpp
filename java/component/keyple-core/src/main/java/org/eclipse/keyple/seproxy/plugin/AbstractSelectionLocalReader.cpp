@@ -20,7 +20,7 @@ namespace org {
                     using namespace org::eclipse::keyple::seproxy::message;
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 
-                    const std::shared_ptr<Logger> logger = nullptr; //LoggerFactory::getLogger(AbstractSelectionLocalReader::typeid);
+                    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractSelectionLocalReader));
 
                     AbstractSelectionLocalReader::AbstractSelectionLocalReader(const std::string &pluginName, const std::string &readerName) : AbstractLocalReader(pluginName, readerName) {
                     }

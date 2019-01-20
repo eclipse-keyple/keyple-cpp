@@ -44,7 +44,7 @@ namespace org {
                  */
                 class SeSelection final : public std::enable_shared_from_this<SeSelection> {
                 private:
-                    static const std::shared_ptr<Logger> logger;
+                    const std::shared_ptr<Logger> logger;
 
                     const std::shared_ptr<ProxyReader> proxyReader;
                     std::vector<std::shared_ptr<MatchingSe>> matchingSeList = std::vector<std::shared_ptr<MatchingSe>>();

@@ -31,7 +31,7 @@ namespace org {
                     using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
 
-                    const std::shared_ptr<Logger> logger = nullptr; //LoggerFactory::getLogger(AbstractObservableReader::typeid);
+                    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservableReader));
 
                     AbstractObservableReader::AbstractObservableReader(const std::string &pluginName, const std::string &readerName) : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event::ReaderEvent>(readerName), pluginName(pluginName) {
                         this->before = System::nanoTime();

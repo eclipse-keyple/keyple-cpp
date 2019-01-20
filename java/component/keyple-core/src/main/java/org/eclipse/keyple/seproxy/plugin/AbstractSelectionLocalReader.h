@@ -37,7 +37,7 @@ namespace org {
 //ORIGINAL LINE: @SuppressWarnings({"PMD.ModifiedCyclomaticComplexity", "PMD.CyclomaticComplexity", "PMD.StdCyclomaticComplexity"}) public abstract class AbstractSelectionLocalReader extends AbstractLocalReader implements org.eclipse.keyple.seproxy.event.ObservableReader
                     class AbstractSelectionLocalReader : public AbstractLocalReader {
                     private:
-                        static const std::shared_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger;
 
                     protected:
                         AbstractSelectionLocalReader(const std::string &pluginName, const std::string &readerName);

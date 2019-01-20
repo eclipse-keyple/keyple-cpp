@@ -83,7 +83,7 @@ protected:
                     private:
                         static const std::shared_ptr<Logger> logger;
                         std::shared_ptr<EventThread> thread;
-                        static std::atomic<int> threadCount;
+                        std::atomic<int> threadCount;
                         /**
                          * Thread wait timeout in ms
                          */

@@ -6,12 +6,12 @@
 class LoggerFactory
 {
 private:
-	static Logger privateLogger;
+	//static Logger privateLogger;
 
 public:
-	static std::shared_ptr<Logger> getLogger(std::type_info type)
+	static std::shared_ptr<Logger> getLogger(const std::type_info &type)
 	{
 
-		return std::shared_ptr<Logger>(&privateLogger);
+		return std::shared_ptr<Logger>(nullptr);
 	}
 };

@@ -4,6 +4,8 @@
 #include "../util/ByteArrayUtils.h"
 #include "../seproxy/message/SeRequest.h"
 
+#include "LoggerFactory.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -13,9 +15,8 @@ namespace org {
                 using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
                 using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
                 using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-                //using org::slf4j::Logger;
-                //using org::slf4j::LoggerFactory;
-//const std::shared_ptr<org::slf4j::Logger> SeSelector::logger = org::slf4j::LoggerFactory::getLogger(SeSelector::typeid);
+
+                const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelector));
 
                 std::string SeSelector::getAtrRegex() {
                     return atrRegex;

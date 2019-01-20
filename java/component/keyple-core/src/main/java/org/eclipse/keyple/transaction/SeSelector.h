@@ -54,7 +54,7 @@ namespace org {
                     };
 
                 private:
-                    static const std::shared_ptr<Logger> logger;
+                    const std::shared_ptr<Logger> logger;
 
                 protected:
                     std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList;

@@ -13,7 +13,7 @@ namespace org {
                     using PluginEvent = org::eclipse::keyple::seproxy::event::PluginEvent;
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
 
-                    const std::shared_ptr<Logger> logger = nullptr; //org::slf4j::LoggerFactory::getLogger(AbstractThreadedObservablePlugin::typeid);
+                    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractThreadedObservablePlugin));
                     std::set<std::string> _set;
                     std::shared_ptr<std::set<std::string>> nativeReadersNames = std::make_shared<std::set<std::string>>(_set);
 
@@ -47,7 +47,7 @@ namespace org {
                                 /*
                                  * checks if it has changed this algorithm favors cases where nothing change
                                  */
-                                if (nativeReadersNames != actualNativeReadersNames) {
+                                if (outerInstance->nativeReadersNames != actualNativeReadersNames) {
                                     /*
                                      * parse the current readers list, notify for disappeared readers, update
                                      * readers list
@@ -56,9 +56,9 @@ namespace org {
                                         if (actualNativeReadersNames->find(reader->getName()) == actualNativeReadersNames->end()) {
                                             outerInstance->AbstractLoggedObservable::notifyObservers(std::make_shared<PluginEvent>(this->pluginName, reader->getName(), PluginEvent::EventType::READER_DISCONNECTED));
                                             outerInstance->readers->erase(reader);
-                                            logger->trace("[{}][{}] Plugin thread => Remove unplugged reader from readers list.", this->pluginName, reader->getName());
+                                            outerInstance->logger->trace("[{}][{}] Plugin thread => Remove unplugged reader from readers list.", this->pluginName, reader->getName());
                                             /* remove reader name from the current list */
-                                            nativeReadersNames->erase(reader->getName());
+                                            outerInstance->nativeReadersNames->erase(reader->getName());
                                             reader.reset();
                                         }
                                     }
@@ -67,13 +67,13 @@ namespace org {
                                      * list
                                      */
                                     for (auto readerName : *actualNativeReadersNames) {
-                                        if (nativeReadersNames->find(readerName) == nativeReadersNames->end()) {
+                                        if (outerInstance->nativeReadersNames->find(readerName) == outerInstance->nativeReadersNames->end()) {
                                             std::shared_ptr<SeReader> reader = outerInstance->getNativeReader(readerName);
                                             outerInstance->readers->insert(reader);
                                             outerInstance->AbstractLoggedObservable::notifyObservers(std::make_shared<PluginEvent>(this->pluginName, reader->getName(), PluginEvent::EventType::READER_CONNECTED));
-                                            logger->trace("[{}][{}] Plugin thread => Add plugged reader to readers list.", this->pluginName, reader->getName());
+                                            outerInstance->logger->trace("[{}][{}] Plugin thread => Add plugged reader to readers list.", this->pluginName, reader->getName());
                                             /* add reader name to the current list */
-                                            nativeReadersNames->insert(readerName);
+                                            outerInstance->nativeReadersNames->insert(readerName);
                                         }
                                     }
                                 }
@@ -83,11 +83,11 @@ namespace org {
                         }
                         catch (InterruptedException &e) {
                             e.printStackTrace();
-                            logger->warn("[{}] An exception occurred while monitoring plugin: {}, cause {}", this->pluginName, e.getMessage(), e.getCause());
+                            outerInstance->logger->warn("[{}] An exception occurred while monitoring plugin: {}, cause {}", this->pluginName, e.getMessage(), e.getCause());
                         }
                         catch (KeypleReaderException &e) {
                             e.printStackTrace();
-                            logger->warn("[{}] An exception occurred while monitoring plugin: {}, cause {}", this->pluginName, e.what(), e.getCause());
+                            outerInstance->logger->warn("[{}] An exception occurred while monitoring plugin: {}, cause {}", this->pluginName, e.what(), e.getCause());
                         }
                     }
 

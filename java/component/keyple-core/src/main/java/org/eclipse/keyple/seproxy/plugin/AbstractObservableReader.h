@@ -53,9 +53,6 @@ namespace org {
                     using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                     using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
-//                    using org::slf4j::Logger;
-//                    using org::slf4j::LoggerFactory;
-
 
                     /**
                      *
@@ -67,7 +64,7 @@ namespace org {
                     class AbstractObservableReader : public AbstractLoggedObservable<ReaderEvent>, public ObservableReader, public ProxyReader {
 
                     protected:
-                        static const std::shared_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger;
                         using AbstractLoggedObservable<ReaderEvent>::name;
 
                         long long before = 0; // timestamp recorder
