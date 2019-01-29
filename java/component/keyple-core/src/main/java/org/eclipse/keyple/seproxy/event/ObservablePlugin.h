@@ -39,7 +39,7 @@ namespace org {
 
                         virtual void removeObserver(std::shared_ptr<PluginObserver> observer) = 0;
 
-                        virtual void notifyObservers(std::shared_ptr<PluginEvent> event_Renamed) = 0;
+                        virtual void notifyObservers(std::shared_ptr<PluginEvent> event) = 0;
                     };
 
                 }

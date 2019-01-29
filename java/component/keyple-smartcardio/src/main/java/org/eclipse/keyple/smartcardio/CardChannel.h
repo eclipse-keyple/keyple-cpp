@@ -9,9 +9,8 @@
 #ifndef KEYPLE_PLUGIN_PCSC_CARD_CHANNEL_H
 #define KEYPLE_PLUGIN_PCSC_CARD_CHANNEL_H
 
-#include "CommandAPDU.hpp"
-#include "Export.hpp"
-#include "ResponseAPDU.hpp"
+#include "CommandAPDU.h"
+#include "ResponseAPDU.h"
 
 using namespace keyple::plugin::pcsc;
 
@@ -27,7 +26,7 @@ namespace keyple {
             /*
              *
              */
-            class EXPORT CardChannel {
+            class CardChannel {
             public:
                 /*
                  * Constructs a new CardChannel object.
@@ -46,7 +45,7 @@ namespace keyple {
                  */
                 ~CardChannel()
                 {
-                    
+
                 }
 
                 /*
@@ -101,7 +100,11 @@ namespace keyple {
                  * @throws NullPointerException if command is null
                  * @throws CardException if the card operation failed
                  */
-                ResponseAPDU transmit(CommandAPDU command);
+                std::shared_ptr<ResponseAPDU> transmit(std::shared_ptr<CommandAPDU> command)
+                {
+                    std::vector<char> rapdu = {};
+                    return std::shared_ptr<ResponseAPDU>(new ResponseAPDU(rapdu));
+                }
 
                 /*
                  * Transmits the command APDU stored in the command ByteBuffer and receives

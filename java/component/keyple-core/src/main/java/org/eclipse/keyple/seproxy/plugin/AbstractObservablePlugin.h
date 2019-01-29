@@ -157,11 +157,11 @@ namespace org {
                         std::shared_ptr<SeReader> getReader(const std::string &name) override;
 
 protected:
-/*
+
                         std::shared_ptr<AbstractObservablePlugin> shared_from_this() {
-                            return std::static_pointer_cast<AbstractObservablePlugin>(AbstractLoggedObservable<org.eclipse.keyple.seproxy.event_Renamed.PluginEvent>::shared_from_this());
+                            return std::static_pointer_cast<AbstractObservablePlugin>(AbstractLoggedObservable<PluginEvent>::shared_from_this());
                         }
-*/
+
                     };
 
                 }

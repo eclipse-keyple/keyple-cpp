@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "SeProtocolSettingList.h"
+
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -20,26 +22,24 @@ namespace org {
             namespace plugin {
                 namespace pcsc {
 
+                    using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
+                    using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                    using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
 
                     /**
                      * These objects are used by the application to build the SeProtocolsMap
                      */
                     class PcscProtocolSetting final : public SeProtocolSettingList {
 
-public:
+                    public:
                         static PcscProtocolSetting SETTING_PROTOCOL_ISO14443_4;
-
                         static PcscProtocolSetting SETTING_PROTOCOL_B_PRIME;
-
                         static PcscProtocolSetting SETTING_PROTOCOL_MIFARE_UL;
-
                         static PcscProtocolSetting SETTING_PROTOCOL_MIFARE_CLASSIC;
-
                         static PcscProtocolSetting SETTING_PROTOCOL_MIFARE_DESFIRE;
-
                         static PcscProtocolSetting SETTING_PROTOCOL_MEMORY_ST25;
 
-private:
+                    private:
                         static std::vector<PcscProtocolSetting> valueList;
 
                         class StaticConstructor {
@@ -49,7 +49,7 @@ private:
 
                         static StaticConstructor staticConstructor;
 
-public:
+                    public:
                         enum class InnerEnum {
                             SETTING_PROTOCOL_ISO14443_4,
                             SETTING_PROTOCOL_B_PRIME,
@@ -60,7 +60,7 @@ public:
                         };
 
                         const InnerEnum innerEnumValue;
-private:
+                    private:
                         const std::string nameValue;
                         const int ordinalValue;
                         static int nextOrdinal;
@@ -69,29 +69,25 @@ private:
                          * Regular expressions to match ATRs produced by PcSc readers
                          */
 //JAVA TO C++ CONVERTER TODO TASK: Java to C++ Converter does not convert types within enums:
-//                        public interface ProtocolSetting
-                    //    {
-                    //        public static String REGEX_PROTOCOL_ISO14443_4 = "3B8880010000000000718100F9|3B8C800150........00000000007181..";
-                    //
-                    //        public static String REGEX_PROTOCOL_B_PRIME = "3B8F8001805A0A0103200311........829000..";
-                    //
-                    //        public static String REGEX_PROTOCOL_MIFARE_UL = "3B8F8001804F0CA0000003060300030000000068";
-                    //
-                    //        public static String REGEX_PROTOCOL_MIFARE_CLASSIC = "3B8F8001804F0CA000000306030001000000006A";
-                    //
-                    //        public static String REGEX_PROTOCOL_MIFARE_DESFIRE = "3B8180018080";
-                    //
-                    //        public static String REGEX_PROTOCOL_MEMORY_ST25 = "3B8F8001804F0CA000000306070007D0020C00B6";
-                    //    }
+                    public:
+                        class ProtocolSetting {
+                        public:
+                            static const std::string REGEX_PROTOCOL_ISO14443_4;
+                            static const std::string REGEX_PROTOCOL_B_PRIME;
+                            static const std::string REGEX_PROTOCOL_MIFARE_UL;
+                            static const std::string REGEX_PROTOCOL_MIFARE_CLASSIC;
+                            static const std::string REGEX_PROTOCOL_MIFARE_DESFIRE;
+                            static const std::string REGEX_PROTOCOL_MEMORY_ST25;
+                        };
 
                         /* the protocol flag */
                     public:
-                        std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> flag;
+                        ContactlessProtocols flag;
 
                         /* the protocol setting value */
                         std::string value;
 
-                        PcscProtocolSetting(const std::string &name, InnerEnum innerEnum, std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> flag, const std::string &value);
+                        PcscProtocolSetting(const std::string &name, InnerEnum innerEnum, ContactlessProtocols &flag, const std::string &value);
 
                         std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> getFlag() override;
 

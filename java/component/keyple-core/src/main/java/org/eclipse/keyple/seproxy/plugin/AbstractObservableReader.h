@@ -172,11 +172,11 @@ namespace org {
                         std::string getName() override;
 
                     protected:
-                        /*
+
                         std::shared_ptr<AbstractObservableReader> shared_from_this() {
                             return std::static_pointer_cast<AbstractObservableReader>(AbstractLoggedObservable<ReaderEvent>::shared_from_this());
                         }
-                        */
+                        
                     };
 
                 }

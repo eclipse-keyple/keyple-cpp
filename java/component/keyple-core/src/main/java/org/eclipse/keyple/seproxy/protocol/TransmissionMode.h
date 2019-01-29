@@ -18,6 +18,7 @@ namespace org {
                 namespace protocol {
 
                     enum class TransmissionMode {
+                        NO_MODE = 0,
                         CONTACTS,
                         CONTACTLESS
                     };

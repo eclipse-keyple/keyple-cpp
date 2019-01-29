@@ -113,8 +113,8 @@ namespace org {
                          *
                          * @param event the event
                          */
-
-                        void notifyObservers(std::shared_ptr<T> event) final override {
+                        // Alex: function was final in Java (problem in PcscPlugin.cpp)
+                        void notifyObservers(std::shared_ptr<T> event) override {
 /*
  * Alex: commented out, shared_from_this is not handled properly yet
                             if (std::dynamic_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
@@ -147,11 +147,11 @@ namespace org {
                         }
 
                     protected:
-/*
+
                         std::shared_ptr<AbstractLoggedObservable> shared_from_this() {
-                            return std::static_pointer_cast<AbstractLoggedObservable>(Observable<T>::shared_from_this());
+                            return std::static_pointer_cast<AbstractLoggedObservable>(util::Observable<T>::shared_from_this());
                         }
-*/
+
                     };
                 }
             }

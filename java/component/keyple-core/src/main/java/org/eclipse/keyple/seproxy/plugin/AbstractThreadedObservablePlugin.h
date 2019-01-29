@@ -142,11 +142,11 @@ namespace org {
                         void finalize() throw(std::runtime_error) override;
 
 protected:
-/*
+
                         std::shared_ptr<AbstractThreadedObservablePlugin> shared_from_this() {
                             return std::static_pointer_cast<AbstractThreadedObservablePlugin>(AbstractObservablePlugin::shared_from_this());
                         }
-*/
+
                     };
 
                 }

@@ -18,9 +18,8 @@
 #  include <PCSC/wintypes.h>
 #endif
 
-#include "Card.hpp"
-#include "CardException.hpp"
-#include "Export.hpp"
+#include "Card.h"
+#include "CardException.h"
 
 namespace keyple {
     namespace plugin {
@@ -29,7 +28,7 @@ namespace keyple {
             /**
              * \class CardTerminal
              */
-            class EXPORT CardTerminal {
+            class CardTerminal {
             public:
                 /**
                  * Establishes a connection to the card.
@@ -46,14 +45,24 @@ namespace keyple {
                  * @throws SecurityException if a SecurityManager exists and the caller does not
                  *                           have the required permission
                  */
-                Card& connect(std::string protocol);
+                std::shared_ptr<Card> connect(std::string protocol)
+                {
+                    LONG status = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &context);
+                    if( status != SCARD_S_SUCCESS )
+                        throw CardException("could not establish context");
+
+                    return card;
+                }
 
                 /**
                  * Returns the unique name of this terminal.
                  *
                  * @return the unique name of this terminal
                  */
-                std::string &getName();
+                std::string &getName()
+                {
+                    return name;
+                }
 
                 /**
                  * Returns whether a card is present in this terminal.
@@ -61,7 +70,10 @@ namespace keyple {
                  * @return whether a card is present in this terminal.
                  * @throws CardException if the status could not be determined
                  */
-                bool isCardPresent();
+                bool isCardPresent()
+                {
+                    return isPresent;
+                }
 
                 /**
                  * Waits until a card is absent in this terminal or the timeout expires. If the
@@ -77,7 +89,10 @@ namespace keyple {
                  * @throws IllegalArgumentException if timeout is negative
                  * @throws CardException if the operation failed
                  */
-                bool waitForCardAbsent(long timeout);
+                bool waitForCardAbsent(long timeout)
+                {
+                    return false;
+                }
 
                 /**
                  * Waits until a card is present in this terminal or the timeout expires.
@@ -94,8 +109,11 @@ namespace keyple {
                  * @throws IllegalArgumentException if timeout is negative
                  * @throws CardException if the operation failed
                  */
-                bool waitForCardPresent(long timeout);
-              
+                bool waitForCardPresent(long timeout)
+                {
+                    return false;
+                }
+
 //              protected:
                 /**
                  * Constructor
@@ -103,24 +121,30 @@ namespace keyple {
                  * Constructs a new CardTerminal object.
                  *
                  */
-                CardTerminal();
+                CardTerminal()
+                {
+
+                }
 
                 /**
                  * Destructor
                  *
                  */
-                ~CardTerminal();
-                
+                ~CardTerminal()
+                {
+
+                }
+
             private:
                 /**
                  *
                  */
                 SCARDCONTEXT context;
-                
+
                 /**
                  *
                  */
-                Card card;
+                std::shared_ptr<Card> card;
 
                 /**
                  *

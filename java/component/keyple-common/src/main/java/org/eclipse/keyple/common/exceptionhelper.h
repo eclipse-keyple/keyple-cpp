@@ -183,6 +183,7 @@ public:
     }
 };
 
+/*
 class CardException : public std::exception
 {
 private:
@@ -198,6 +199,7 @@ public:
         return msg.c_str();
     }
 };
+*/
 
 class JsonParseException : public std::exception
 {

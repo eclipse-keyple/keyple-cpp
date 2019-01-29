@@ -34,9 +34,9 @@ namespace keyple {
                  * @throws NullPointerException if apdu is null
                  * @throws IllegalArgumentException if apdu does not contain a valid command APDU
                  */
-                CommandAPDU(std::vector<uint8_t> &apdu) : apdu(apdu)
+                CommandAPDU(std::vector<char> &apdu) : apdu(apdu)
                 {
-                    
+
                 }
 
                 /**
@@ -51,7 +51,7 @@ namespace keyple {
                 /*
                  * Current APDU
                  */
-                std::vector<uint8_t> apdu;
+                std::vector<char> apdu;
 
             };
         }

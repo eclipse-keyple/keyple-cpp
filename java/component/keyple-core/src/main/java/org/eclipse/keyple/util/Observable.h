@@ -35,7 +35,7 @@ namespace org {
                  */
 
                 template<typename T>
-                class Observable {
+                class Observable : public std::enable_shared_from_this<Observable<T>> {
                 public:
 
 

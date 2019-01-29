@@ -149,11 +149,11 @@ protected:
                         void finalize() throw(std::runtime_error) override;
 
 protected:
-/*
+
                         std::shared_ptr<AbstractThreadedLocalReader> shared_from_this() {
                             return std::static_pointer_cast<AbstractThreadedLocalReader>(AbstractSelectionLocalReader::shared_from_this());
                         }
-*/
+
                     };
 
                 }

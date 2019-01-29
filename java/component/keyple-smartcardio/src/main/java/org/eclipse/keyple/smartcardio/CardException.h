@@ -9,29 +9,29 @@
 #ifndef KEYPLE_PLUGIN_PCSC_CARD_EXCEPTION_H
 #define KEYPLE_PLUGIN_PCSC_CARD_EXCEPTION_H
 
-#include <exception>
+#include <Exception.h>
 
 namespace keyple {
     namespace plugin {
         namespace pcsc {
-            
+
             /*
              *
              */
-            class CardException : public std::exception {
+            class CardException : public Exception {
               public:
                 /**
                  * New exception to be thrown
-                 * 
+                 *
                  * @param message : message to identify the exception and the context
                  */
-                explicit CardException(const std::string &message)
+                CardException(const std::string &message) : Exception(message)
                 {
                 }
 
                 /**
                  * Destructor.
-                 * 
+                 *
                  * Virtual to allow for subclassing.
                  */
                 virtual ~CardException() throw()
@@ -43,4 +43,3 @@ namespace keyple {
 } // namespace keyple
 
 #endif /* KEYPLE_PLUGIN_PCSC_CARD_EXCEPTION_H*/
-

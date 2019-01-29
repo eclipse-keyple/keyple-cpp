@@ -12,8 +12,6 @@
 #include <cstdint>
 #include <vector>
 
-#include "Export.hpp"
-
 namespace keyple {
     namespace plugin {
         namespace pcsc {
@@ -21,7 +19,7 @@ namespace keyple {
             /*
              *
              */
-            class EXPORT ResponseAPDU {
+            class ResponseAPDU {
             public:
                 /**
                  * Constructor
@@ -33,7 +31,7 @@ namespace keyple {
                  * @throws NullPointerException if apdu is null
                  * @throws IllegalArgumentException if apdu.length is less than 2
                  */
-                ResponseAPDU(std::vector<uint8_t> &apdu) : apdu(apdu)
+                ResponseAPDU(std::vector<char> &apdu) : apdu(apdu)
                 {
 
                 }
@@ -43,14 +41,24 @@ namespace keyple {
                  */
                 ~ResponseAPDU()
                 {
-                    
+
+                }
+
+                /**
+                 * Returns a copy of the bytes in this APDU.
+                 *
+                 * &return a copy of the bytes in this APDU.
+                 */
+                std::vector<char> &getBytes()
+                {
+                    return apdu;
                 }
 
             private:
                 /*
                  * Current APDU
                  */
-                std::vector<uint8_t> *apdu;
+                std::vector<char> apdu;
 
             };
         }

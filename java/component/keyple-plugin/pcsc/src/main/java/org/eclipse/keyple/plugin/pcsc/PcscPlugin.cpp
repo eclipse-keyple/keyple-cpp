@@ -4,6 +4,9 @@
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin/AbstractObservableReader.h"
 #include "PcscReader.h"
 
+/* Common */
+#include "LoggerFactory.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -13,11 +16,10 @@ namespace org {
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                     using AbstractObservableReader = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
                     using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> PcscPlugin::logger = org::slf4j::LoggerFactory::getLogger(PcscPlugin::typeid);
-const std::shared_ptr<PcscPlugin> PcscPlugin::uniqueInstance = std::make_shared<PcscPlugin>();
-std::shared_ptr<javax::smartcardio::TerminalFactory> PcscPlugin::factory;
+
+                    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PcscPlugin));
+                    const std::shared_ptr<PcscPlugin> PcscPlugin::uniqueInstance = std::shared_ptr<PcscPlugin>(new PcscPlugin());
+                    std::shared_ptr<TerminalFactory> PcscPlugin::factory;
 
                     PcscPlugin::PcscPlugin() : org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin("PcscPlugin") {
                     }
@@ -27,7 +29,7 @@ std::shared_ptr<javax::smartcardio::TerminalFactory> PcscPlugin::factory;
                     }
 
                     std::unordered_map<std::string, std::string> PcscPlugin::getParameters() {
-                        return nullptr;
+                        return this->getParameters();
                     }
 
                     void PcscPlugin::setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument, KeypleBaseException) {
@@ -36,57 +38,57 @@ std::shared_ptr<javax::smartcardio::TerminalFactory> PcscPlugin::factory;
 
                     std::shared_ptr<PcscPlugin> PcscPlugin::setLogging(bool logging) {
                         this->logging = logging;
-                        return shared_from_this();
+                        return std::dynamic_pointer_cast<PcscPlugin>(shared_from_this());
                     }
 
-                    std::shared_ptr<SortedSet<std::string>> PcscPlugin::getNativeReadersNames() throw(KeypleReaderException) {
-                        std::shared_ptr<SortedSet<std::string>> nativeReadersNames = std::make_shared<ConcurrentSkipListSet<std::string>>();
+                    std::shared_ptr<std::set<std::string>> PcscPlugin::getNativeReadersNames() throw(KeypleReaderException) {
+                        std::shared_ptr<std::set<std::string>> nativeReadersNames = std::shared_ptr<std::set<std::string>>(new std::set<std::string>());
                         std::shared_ptr<CardTerminals> terminals = getCardTerminals();
                         try {
-                            for (std::shared_ptr<CardTerminal> term : terminals->list()) {
-                                nativeReadersNames->add(term->getName());
+                            for (auto &term : terminals->list()) {
+                                nativeReadersNames->insert(term.getName());
                             }
                         }
-                        catch (const CardException &e) {
+                        catch (CardException &e) {
 //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
-                            if (e->getCause()->toString()->contains("SCARD_E_NO_READERS_AVAILABLE")) {
+                            if (e.getCause().find("SCARD_E_NO_READERS_AVAILABLE") != std::string::npos) {
                                 logger->trace("No reader available.");
                             }
                             else {
-                                logger->trace("[{}] getNativeReadersNames => Terminal list is not accessible. Exception: {}", this->getName(), e->getMessage());
-                                throw std::make_shared<KeypleReaderException>("Could not access terminals list", e);
+                                logger->trace("[{}] getNativeReadersNames => Terminal list is not accessible. Exception: {}", this->getName(), e.getMessage());
+                                throw std::shared_ptr<KeypleReaderException>(new KeypleReaderException("Could not access terminals list")); // Alex: 'e' should be in exception constructor but...
                             }
                         }
                         return nativeReadersNames;
                     }
 
-                    std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> PcscPlugin::getNativeReaders() throw(KeypleReaderException) {
-                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> nativeReaders = std::make_shared<ConcurrentSkipListSet<std::shared_ptr<AbstractObservableReader>>>();
+                    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> PcscPlugin::getNativeReaders() throw(KeypleReaderException) {
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> nativeReaders = std::shared_ptr<std::set<std::shared_ptr<SeReader>>>(new std::set<std::shared_ptr<SeReader>>());
 
                         // parse the current readers list to create the ProxyReader(s) associated with new reader(s)
                         std::shared_ptr<CardTerminals> terminals = getCardTerminals();
                         try {
-                            for (std::shared_ptr<CardTerminal> term : terminals->list()) {
-                                nativeReaders->add(std::make_shared<PcscReader>(this->getName(), term));
+                            for (auto &term : terminals->list()) {
+                                nativeReaders->insert(std::shared_ptr<PcscReader>(new PcscReader(this->getName(), std::shared_ptr<CardTerminal>(&term))));
                             }
                         }
-                        catch (const CardException &e) {
+                        catch (CardException &e) {
 //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
-                            if (e->getCause()->toString()->contains("SCARD_E_NO_READERS_AVAILABLE")) {
+                            if (e.getCause().find("SCARD_E_NO_READERS_AVAILABLE") != std::string::npos) {
                                 logger->trace("No reader available.");
                             }
                             else {
-                                logger->trace("[{}] Terminal list is not accessible. Exception: {}", this->getName(), e->getMessage());
-                                throw std::make_shared<KeypleReaderException>("Could not access terminals list", e);
+                                logger->trace("[{}] Terminal list is not accessible. Exception: {}", this->getName(), e.getMessage());
+                                throw std::shared_ptr<KeypleReaderException>(new KeypleReaderException("Could not access terminals list")); //, e));
 
                             }
                         }
                         return nativeReaders;
                     }
 
-                    std::shared_ptr<AbstractObservableReader> PcscPlugin::getNativeReader(const std::string &name) throw(KeypleReaderException) {
+                    std::shared_ptr<SeReader> PcscPlugin::getNativeReader(const std::string &name) throw(KeypleReaderException) {
                         // return the current reader if it is already listed
-                        for (auto reader : readers) {
+                        for (auto reader : *readers) {
                             if (reader->getName() == name) {
                                 return reader;
                             }
@@ -99,18 +101,18 @@ std::shared_ptr<javax::smartcardio::TerminalFactory> PcscPlugin::factory;
                         std::shared_ptr<CardTerminals> terminals = getCardTerminals();
                         std::vector<std::string> terminalList;
                         try {
-                            for (std::shared_ptr<CardTerminal> term : terminals->list()) {
-                                if (term->getName().equals(name)) {
-                                    reader = std::make_shared<PcscReader>(this->getName(), term);
+                            for (auto &term : terminals->list()) {
+                                if (!term.getName().compare(name)) {
+                                    reader = std::shared_ptr<PcscReader>(new PcscReader(this->getName(), std::make_shared<CardTerminal>(term)));
                                 }
                             }
                         }
-                        catch (const CardException &e) {
-                            logger->trace("[{}] Terminal list is not accessible. Exception: {}", this->getName(), e->getMessage());
-                            throw std::make_shared<KeypleReaderException>("Could not access terminals list", e);
+                        catch (CardException &e) {
+                            logger->trace("[{}] Terminal list is not accessible. Exception: {}", this->getName(), e.getMessage());
+                            throw std::shared_ptr<KeypleReaderException>(new KeypleReaderException("Could not access terminals list")); //, e));
                         }
                         if (reader == nullptr) {
-                            throw std::make_shared<KeypleReaderException>("Reader " + name + " not found!");
+                            throw std::shared_ptr<KeypleReaderException>(new KeypleReaderException("Reader " + name + " not found!"));
                         }
                         return reader;
                     }

@@ -1,14 +1,24 @@
 #pragma once
 
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin/AbstractThreadedLocalReader.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/TransmissionMode.h"
+#include <memory>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <stdexcept>
+
 #include "exceptionhelper.h"
-#include <memory>
 #include "stringhelper.h"
+
+/* Common */
+#include "Logger.h"
+
+/* Core */
+#include "AbstractThreadedLocalReader.h"
+#include "ReaderEvent.h"
+#include "TransmissionMode.h"
+
+/* Smartcard I/O */
+#include "CardTerminal.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
@@ -34,13 +44,12 @@ namespace org {
                     using AbstractThreadedLocalReader = org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader;
                     using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
                     using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
+                    using ReaderEvent = org::eclipse::keyple::seproxy::event::ReaderEvent;
 
-                    class PcscReader final : public AbstractThreadedLocalReader {
+                    class PcscReader : public AbstractThreadedLocalReader {
 
                     private:
-                        static const std::shared_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger;
                     public:
                         static const std::string SETTING_KEY_TRANSMISSION_MODE;
                         static const std::string SETTING_TRANSMISSION_MODE_CONTACTS;
@@ -90,7 +99,7 @@ namespace org {
                          * @param pluginName the name of the plugin
                          * @param terminal the PC/SC terminal
                          */
-                    protected:
+                    public:
                         PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal);
 
                         void closePhysicalChannel() throw(KeypleChannelStateException) override;
@@ -170,7 +179,7 @@ namespace org {
 
                         /**
                          * Tells if a physical channel is open
-                         * 
+                         *
                          * @return true if the physical channel is open
                          */
                         bool isPhysicalChannelOpen() override;
@@ -182,7 +191,7 @@ namespace org {
                          *
                          * In this case be aware that on some platforms (ex. Windows 8+), the exclusivity is granted for
                          * a limited time (ex. 5 seconds). After this delay, the card is automatically resetted.
-                         * 
+                         *
                          * @throws KeypleChannelStateException if a reader error occurs
                          */
                         void openPhysicalChannel() throw(KeypleChannelStateException) override;
@@ -195,7 +204,7 @@ namespace org {
                          * <li>T=0: contacts mode</li>
                          * <li>T=1: contactless mode</li>
                          * </ul>
-                         * 
+                         *
                          * @return the current transmission mode
                          */
                     public:
@@ -203,8 +212,17 @@ namespace org {
 
 protected:
                         std::shared_ptr<PcscReader> shared_from_this() {
-                            return std::static_pointer_cast<PcscReader>(org.eclipse.keyple.seproxy.plugin.AbstractThreadedLocalReader::shared_from_this());
+                            return std::static_pointer_cast<PcscReader>(AbstractThreadedLocalReader::shared_from_this());
                         }
+
+                    public:
+                        bool equals(std::shared_ptr<void> o) override;
+
+                        int hashCode() override;
+
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override;
+
+                        void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
                     };
 
                 }

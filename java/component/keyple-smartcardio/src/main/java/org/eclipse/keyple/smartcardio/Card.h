@@ -9,8 +9,8 @@
 #ifndef KEYPLE_PLUGIN_PCSC_CARD_H
 #define KEYPLE_PLUGIN_PCSC_CARD_H
 
-#include "CardChannel.hpp"
-#include "Export.hpp"
+#include "CardChannel.h"
+#include "CardException.h"
 
 namespace keyple {
     namespace plugin {
@@ -20,7 +20,7 @@ namespace keyple {
              * @class Card
              *
              */
-            class EXPORT Card {
+            class Card {
             public:
                 /**
                  * Constructor
@@ -53,7 +53,7 @@ namespace keyple {
                  * @throws IllegalStateException if this card object has been disposed of via
                  *                               the disconnect() method
                  */
-                CardChannel* getBasicChannel()
+                std::shared_ptr<CardChannel> getBasicChannel()
                 {
                     return channel;
                 }
@@ -64,11 +64,35 @@ namespace keyple {
                  *
                  * @return the ATR of this card.
                  */
-                std::vector<uint8_t>* getATR()
+                std::vector<char> getATR()
                 {
-                    return &atr;
+                    return atr;
                 }
 
+                /**
+                 * Requests exclusive access to this card.
+                 *
+                 * Once a thread has invoked beginExclusive, only this thread is
+                 * allowed to communicate with this card until it calls
+                 * endExclusive. Other threads attempting communication will
+                 * receive a CardException.
+                 *
+                 * Applications have to ensure that exclusive access is
+                 * correctly released. This can be achieved by executing the
+                 * beginExclusive() and endExclusive calls in a try ... finally
+                 * block.
+                 *
+                 * @throw SecurityException if a SecurityManager exists and the
+                 *        caller does not have the required permission
+                 * @throw CardException if exclusive access has already been set
+                 *        or if exclusive access could not be established
+                 * @throw IllegalStateException if this card object has been
+                 *        disposed of via the disconnect() method
+                 */
+                void beginExclusive() throw(CardException)
+                {
+
+                }
 
                 /**
                  * Releases the exclusive access previously established using beginExclusive.
@@ -82,23 +106,39 @@ namespace keyple {
                  */
                  void endExclusive()
                  {
-                     
+
                  }
+
+                /**
+                 * Disconnects the connection with this card. After this method
+                 * returns, calling methods on this object or in CardChannels
+                 * associated with this object that require interaction with
+                 * the card will raise an IllegalStateException.
+                 *
+                 * @param reset whether to reset the card after disconnecting.
+                 *
+                 * @throw CardException if the card operation failed
+                 * @throw SecurityException if a SecurityManager exists and the
+                 *        caller does not have the required permission
+                 */
+                void disconnect(bool reset) throw(CardException)
+                {
+
+                }
 
             private:
                 /**
                  *
                  */
-                CardChannel *channel;
+                std::shared_ptr<CardChannel> channel;
 
                 /**
                  *
                  */
-                std::vector<uint8_t> *atr;
+                std::vector<char> atr;
             };
         }
     }
 }
 
-
- #endif /* KEYPLE_PLUGIN_PCSC_CARD_H */
+#endif /* KEYPLE_PLUGIN_PCSC_CARD_H */

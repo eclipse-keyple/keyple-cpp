@@ -22,7 +22,7 @@ SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 SET(CMAKE_MACOSX_RPATH 1)
 SET(CMAKE_CXX_STANDARD 11)
 
-SET(LIBRARY_NAME libkeyplepluginpcsc)
+SET(LIBRARY_NAME keyplepluginpcsc)
 
 IF(WIN32)
 	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
@@ -32,15 +32,47 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
 
-	/* Helpers */
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/java/org/eclipse/keyple/common
+	# Core
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/util
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol
+
+	# Helpers
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main/java/org/eclipse/keyple/common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-smartcardio/src/main/java/org/eclipse/keyple/smartcardio
 )
 
 ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
-	# seproxy - event
-	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/package-info.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/PcscProtocolSetting.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/PcscReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/package-info.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/PcscProtocolSetting.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/PcscReader.cpp
 )
+
+IF(WIN32)
+	SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+	SET(CMAKE_BUILD_DIRECTORY "C:/Users/Alex/Documents/GitHub/keyple-cpp/build")
+	SET(WINSCARD winscard.lib)
+ENDIF(WIN32)
+
+IF(APPLE)
+	SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
+	SET(CMAKE_BUILD_DIRECTORY "/Users/amunsch/Documents/GitHub/keyple-cpp/build")
+	SET(WINSCARD "-framework PCSC")
+ENDIF(APPLE)
+
+FIND_LIBRARY(KEYPLECORE
+	NAMES keyplecore
+	PATHS ${CMAKE_BUILD_DIRECTORY}
+	PATH_SUFFIXES bin)
+
+SET(LINK_LIBS ${WINSCARD} ${KEYPLECORE})
+
+TARGET_LINK_LIBRARIES(keyplepluginpcsc ${LINK_LIBS})

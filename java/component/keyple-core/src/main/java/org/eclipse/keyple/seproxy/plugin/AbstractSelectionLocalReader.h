@@ -80,11 +80,11 @@ namespace org {
                             KeypleApplicationSelectionException, KeypleIOReaderException) override;
 
 protected:
-/*
+
                         std::shared_ptr<AbstractSelectionLocalReader> shared_from_this() {
                             return std::static_pointer_cast<AbstractSelectionLocalReader>(AbstractLocalReader::shared_from_this());
                         }
-*/
+
 
                     public:
                         std::string getName() override;
