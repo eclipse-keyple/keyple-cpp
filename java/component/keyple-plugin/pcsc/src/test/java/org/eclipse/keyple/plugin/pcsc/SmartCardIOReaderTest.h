@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association
+ * https://www.calypsonet-asso.org/
+ *
+ * See the NOTICE file(s) distributed with this work for additional information
+ * regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
+
 #pragma once
 
 #include <string>
@@ -6,99 +20,70 @@
 #include <stdexcept>
 #include <memory>
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace pcsc { class PcscReader; } } } } }
+#include "gtest/gtest.h"
 
-/********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace plugin {
-                namespace pcsc {
+/* Smartcard I/O */
+#include "Card.h"
+#include "CardChannel.h"
+#include "CardTerminal.h"
 
-//JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
-//                    import static org.junit.Assert.*;
-//JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
-//                    import static org.mockito.Matchers.any;
-//JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
-//                    import static org.mockito.Mockito.*;
-                    using namespace org::eclipse::keyple::seproxy::exception;
-                    using namespace org::eclipse::keyple::seproxy::message;
+/* Core */
+#include "ResponseAPDU.h"
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @RunWith(MockitoJUnitRunner.class) public class SmartCardIOReaderTest
-                    class SmartCardIOReaderTest : public std::enable_shared_from_this<SmartCardIOReaderTest> {
+/* PC/SC plugin */
+#include "PcscReader.h"
 
-                    private:
-                        std::shared_ptr<PcscReader> reader;
+using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+using PcscReader = org::eclipse::keyple::plugin::pcsc::PcscReader;
 
-                        std::string readerName;
+class SmartCardIOReaderTest : public ::testing::Test {
 
-                    public:
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Mock CardTerminal terminal;
-                        std::shared_ptr<CardTerminal> terminal;
+public:
+    std::shared_ptr<PcscReader> reader;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Mock Card card;
-                        std::shared_ptr<Card> card;
+    std::string readerName;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Mock CardChannel channel;
-                        std::shared_ptr<CardChannel> channel;
+    std::vector<char> responseApduByte;
 
-                        std::shared_ptr<ATR> atr;
+    std::shared_ptr<CardTerminal> terminal;
 
-                        std::shared_ptr<ResponseAPDU> res;
+    std::shared_ptr<Card> card;
 
-                    private:
-                        std::vector<char> responseApduByte;
+    std::shared_ptr<CardChannel> channel;
 
-                    public:
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Before public void setUp() throws CardException, IllegalArgumentException, KeypleBaseException
-                        virtual void setUp() throw(CardException, std::invalid_argument, KeypleBaseException);
+    std::vector<char> atr;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testSmartCardIOReader()
-                        virtual void testSmartCardIOReader();
+    std::shared_ptr<ResponseAPDU> res;
 
-                        // TODO redesign @Test
-                        virtual void testGettersSetters() throw(std::invalid_argument, KeypleBaseException);
+    void SetUp() //throw(CardException, std::invalid_argument, KeypleBaseException);
+    {
+        terminal = std::shared_ptr<CardTerminal>(new CardTerminal());
+        if (terminal == nullptr)
+            return;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testIsSEPresent() throws CardException, NoStackTraceThrowable
-                        virtual void testIsSEPresent() throw(CardException, NoStackTraceThrowable);
+        card = terminal->connect("");
+        if (card == nullptr)
+            return;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test(expected = KeypleReaderException.class) public void testIsSEPresentWithException() throws CardException, NoStackTraceThrowable
-                        virtual void testIsSEPresentWithException() throw(CardException, NoStackTraceThrowable);
+        channel = card->getBasicChannel();
+        if (channel == nullptr)
+            return;
 
-                        // TODO redesign @Test
-                        virtual void testTransmitCardNotPresent() throw(CardException, KeypleReaderException, KeypleReaderException);
+        responseApduByte = ByteArrayUtils::fromHex("851700010000001212000001030101007E7E7E000000000000");
+        res = std::shared_ptr<ResponseAPDU>(new ResponseAPDU(responseApduByte));
+        if (res == nullptr)
+            return;
 
-                        // TODO redesign @Test
-                        virtual void testTransmitToCardWithoutAidToSelect() throw(CardException, KeypleReaderException, KeypleReaderException);
+        readerName = "reader";
+        reader = std::shared_ptr<PcscReader>(new PcscReader("pcscPlugin", terminal));
+        if (reader == nullptr)
+            return;
 
-                        // TODO redesign @Test
-                        virtual void testTransmitToCardWithAidToSelect() throw(CardException, KeypleReaderException, KeypleReaderException);
-
-                        // TODO redesign @Test
-                        virtual void testTransmitToCardAndDisconnect() throw(CardException, KeypleReaderException, KeypleReaderException);
-                    };
-
-                }
-            }
-        }
+        reader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");
     }
-}
+
+    void TearDown()
+    {
+
+    }
+};

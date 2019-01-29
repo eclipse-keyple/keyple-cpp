@@ -18,8 +18,12 @@
 #  include <PCSC/wintypes.h>
 #endif
 
+/* Smartcard I/O */
 #include "Card.h"
 #include "CardException.h"
+
+/* Common */
+#include "Logger.h"
 
 namespace keyple {
     namespace plugin {
@@ -47,11 +51,14 @@ namespace keyple {
                  */
                 std::shared_ptr<Card> connect(std::string protocol)
                 {
+                    logger->debug("CardTerminal::connect connecting to protocol %s\n", protocol);
                     LONG status = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &context);
-                    if( status != SCARD_S_SUCCESS )
+                    if (status != SCARD_S_SUCCESS) {
+                        logger->debug("CardTerminal::CardTerminal error establishing context (%x)\n", status);
                         throw CardException("could not establish context");
+                    }
 
-                    return card;
+                    return std::make_shared<Card>(card);
                 }
 
                 /**
@@ -123,7 +130,8 @@ namespace keyple {
                  */
                 CardTerminal()
                 {
-
+                    logger = new Logger();
+                    logger->debug("CardTerminal::CardTerminal\n");
                 }
 
                 /**
@@ -144,7 +152,7 @@ namespace keyple {
                 /**
                  *
                  */
-                std::shared_ptr<Card> card;
+                Card card;
 
                 /**
                  *
@@ -155,6 +163,11 @@ namespace keyple {
                  *
                  */
                 bool isPresent;
+
+                /**
+                 *
+                 */
+                Logger *logger;
             };
         }
     }

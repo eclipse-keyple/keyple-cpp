@@ -9,8 +9,12 @@
 #ifndef KEYPLE_PLUGIN_PCSC_CARD_H
 #define KEYPLE_PLUGIN_PCSC_CARD_H
 
+/* Smartcard I/O */
 #include "CardChannel.h"
 #include "CardException.h"
+
+/* Common */
+#include "Logger.h"
 
 namespace keyple {
     namespace plugin {
@@ -32,7 +36,9 @@ namespace keyple {
                  */
                 Card()
                 {
+                    logger = new Logger();
 
+                    logger->debug("Card::Card\n");
                 }
 
                 /**
@@ -55,7 +61,9 @@ namespace keyple {
                  */
                 std::shared_ptr<CardChannel> getBasicChannel()
                 {
-                    return channel;
+                    logger->debug("Card::getBasicChannel\n");
+
+                    return std::make_shared<CardChannel>(channel);
                 }
 
 
@@ -130,12 +138,17 @@ namespace keyple {
                 /**
                  *
                  */
-                std::shared_ptr<CardChannel> channel;
+                CardChannel channel;
 
                 /**
                  *
                  */
                 std::vector<char> atr;
+
+                /**
+                 *
+                 */
+                Logger *logger;
             };
         }
     }
