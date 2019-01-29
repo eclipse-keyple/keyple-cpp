@@ -85,7 +85,10 @@ namespace org {
                          * @throws KeypleReaderException if a reader error occurs
                          */
                     protected:
-                        virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getNativeReaders() = 0;
+                        virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getNativeReaders()
+                        {
+                            return nullptr;
+                        }
 
                         /**
                          * Gets the specific reader whose is provided as an argument.

@@ -1,10 +1,10 @@
 #include "ContactlessProtocols.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace protocol {
+namespace eclipse {
+namespace keyple {
+namespace seproxy {
+namespace protocol {
 
 ContactlessProtocols ContactlessProtocols::PROTOCOL_ISO14443_4("PROTOCOL_ISO14443_4", InnerEnum::PROTOCOL_ISO14443_4, "ISO 14443-4");
 ContactlessProtocols ContactlessProtocols::PROTOCOL_ISO14443_3A("PROTOCOL_ISO14443_3A", InnerEnum::PROTOCOL_ISO14443_3A, "ISO 14443-3 Type A");
@@ -16,8 +16,11 @@ ContactlessProtocols ContactlessProtocols::PROTOCOL_MIFARE_DESFIRE("PROTOCOL_MIF
 ContactlessProtocols ContactlessProtocols::PROTOCOL_MEMORY_ST25("PROTOCOL_MEMORY_ST25", InnerEnum::PROTOCOL_MEMORY_ST25, "Memory ST25");
 
 std::vector<ContactlessProtocols> ContactlessProtocols::valueList;
+ContactlessProtocols::StaticConstructor ContactlessProtocols::staticConstructor;
+int ContactlessProtocols::nextOrdinal = 0;
 
-ContactlessProtocols::StaticConstructor::StaticConstructor() {
+ContactlessProtocols::StaticConstructor::StaticConstructor()
+{
     valueList.push_back(PROTOCOL_ISO14443_4);
     valueList.push_back(PROTOCOL_ISO14443_3A);
     valueList.push_back(PROTOCOL_ISO14443_3B);
@@ -28,46 +31,56 @@ ContactlessProtocols::StaticConstructor::StaticConstructor() {
     valueList.push_back(PROTOCOL_MEMORY_ST25);
 }
 
-ContactlessProtocols::StaticConstructor ContactlessProtocols::staticConstructor;
-int ContactlessProtocols::nextOrdinal = 0;
+ContactlessProtocols::ContactlessProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name)
+: nameValue(nameValue), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum), name(name)
+{
+    this->name = name;
+}
 
-                    ContactlessProtocols::ContactlessProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : nameValue(nameValue), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum), name(name) {
-                        this->name = name;
-                    }
+std::string ContactlessProtocols::getName()
+{
+    return name;
+}
 
-                    std::string ContactlessProtocols::getName() {
-                        return name;
-                    }
-
-bool ContactlessProtocols::operator == (const ContactlessProtocols &other) {
+bool ContactlessProtocols::operator == (const ContactlessProtocols &other)
+{
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool ContactlessProtocols::operator != (const ContactlessProtocols &other) {
+bool ContactlessProtocols::operator != (const ContactlessProtocols &other)
+{
     return this->ordinalValue != other.ordinalValue;
 }
 
-std::vector<ContactlessProtocols> ContactlessProtocols::values() {
+std::vector<ContactlessProtocols> ContactlessProtocols::values()
+{
     return valueList;
 }
 
-int ContactlessProtocols::ordinal() {
+int ContactlessProtocols::ordinal()
+{
     return ordinalValue;
 }
 
-std::string ContactlessProtocols::toString() {
+std::string ContactlessProtocols::toString()
+{
     return nameValue;
 }
 
-ContactlessProtocols ContactlessProtocols::valueOf(const std::string &name) {
+ContactlessProtocols ContactlessProtocols::valueOf(const std::string &name)
+{
     for (auto enumInstance : ContactlessProtocols::valueList) {
         if (enumInstance.nameValue == name) {
             return enumInstance;
         }
     }
+
+    /* Warning fix, should not happen */
+    return ContactlessProtocols::valueList.front();
 }
-                }
-            }
-        }
-    }
+
+}
+}
+}
+}
 }

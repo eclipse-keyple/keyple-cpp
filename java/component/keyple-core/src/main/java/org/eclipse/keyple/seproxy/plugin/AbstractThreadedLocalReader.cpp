@@ -1,5 +1,6 @@
+/* Core */
 #include "AbstractThreadedLocalReader.h"
-#include "../exception/NoStackTraceThrowable.h"
+#include "NoStackTraceThrowable.h"
 
 namespace org {
     namespace eclipse {
@@ -14,7 +15,7 @@ namespace org {
                     }
 
                     void AbstractThreadedLocalReader::startObservation() {
-                        EventThread *_et = new EventThread(std::shared_ptr<AbstractThreadedLocalReader>(this), this->getPluginName(), this->getName());
+                        EventThread *_et = new EventThread(shared_from_this(), this->getPluginName(), this->getName());
                         thread = std::shared_ptr<EventThread>(_et);
                         thread->start();
                     }

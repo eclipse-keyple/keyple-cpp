@@ -1,12 +1,16 @@
 #pragma once
 
-#include "../event/ObservablePlugin.h"
-#include "AbstractObservablePlugin.h"
 #include <string>
 #include <stdexcept>
-#include "exceptionhelper.h"
 #include <memory>
 
+#include "exceptionhelper.h"
+
+/* Core */
+#include "ObservablePlugin.h"
+#include "AbstractObservablePlugin.h"
+
+/* Common */
 #include "Logger.h"
 #include "Thread.h"
 
@@ -65,13 +69,6 @@ namespace org {
                             virtual void end();
 
                             virtual void run();
-
-                        protected:
-/*
-                            std::shared_ptr<EventThread> shared_from_this() {
-                                return std::static_pointer_cast<EventThread>(Thread::shared_from_this());
-                            }
-*/
                         };
 
                     private:
