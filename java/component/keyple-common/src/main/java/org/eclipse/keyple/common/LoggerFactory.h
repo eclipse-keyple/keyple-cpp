@@ -8,7 +8,7 @@ class LoggerFactory
 public:
 	static std::shared_ptr<Logger> getLogger(const std::type_info &type)
 	{
-		Logger *logger = new Logger();
+		static Logger *logger = new Logger(type.name());
 		return std::shared_ptr<Logger>(logger);
 	}
 };

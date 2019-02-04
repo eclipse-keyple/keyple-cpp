@@ -43,7 +43,10 @@ namespace org {
                     void AbstractObservableReader::stopObservation() {
                     };
 
-                    void AbstractObservableReader::addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
+                    void AbstractObservableReader::addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer)
+                    {
+                        logger->debug("[AbstractObservableReader::addObserver] start the reader monitoring.");
+
                         // if an observer is added to an empty list, start the observation
                         if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
                             logger->debug("Start the reader monitoring.");

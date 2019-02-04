@@ -6,6 +6,8 @@
 #include "../exception/KeypleReaderNotFoundException.h"
 #include "../message/ProxyReader.h"
 
+#include "LoggerFactory.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -17,9 +19,8 @@ namespace org {
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                     using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                     using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
-//                    using org::slf4j::Logger;
-//                    using org::slf4j::LoggerFactory;
-//                    const std::shared_ptr<org::slf4j::Logger> AbstractObservablePlugin::logger = org::slf4j::LoggerFactory::getLogger(AbstractObservablePlugin::typeid);
+
+                    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservablePlugin));
 
                     AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name) : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event::PluginEvent>(name) {
                         if (readers == nullptr) {
@@ -45,7 +46,10 @@ namespace org {
                     void AbstractObservablePlugin::stopObservation() {
                     };
 
-                    void AbstractObservablePlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
+                    void AbstractObservablePlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+                    {
+                        logger->debug("[AbstractObservablePlugin::addObserver]\n");
+
                         /*
                          * Alex: call super class function.
                          */

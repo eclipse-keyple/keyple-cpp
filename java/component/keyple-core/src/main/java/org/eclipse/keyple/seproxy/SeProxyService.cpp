@@ -8,13 +8,7 @@ namespace org {
             namespace seproxy {
                 using KeyplePluginNotFoundException = org::eclipse::keyple::seproxy::exception::KeyplePluginNotFoundException;
 
-                std::shared_ptr<SeProxyService> SeProxyService::uniqueInstance = std::shared_ptr<SeProxyService>();
-
                 SeProxyService::SeProxyService() {
-                }
-
-                std::shared_ptr<SeProxyService> SeProxyService::getInstance() {
-                    return uniqueInstance;
                 }
 
                 void SeProxyService::setPlugins(std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> plugins) {

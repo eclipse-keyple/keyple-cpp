@@ -8,8 +8,8 @@ namespace org {
 
                     using EventType = org::eclipse::keyple::seproxy::event::PluginEvent::EventType;
 
-                    EventType EventType::READER_CONNECTED("READER_CONNECTED", InnerEnum::READER_CONNECTED, "Reader connected");
-                    EventType EventType::READER_DISCONNECTED("READER_DISCONNECTED", InnerEnum::READER_DISCONNECTED, "Reader disconnected");
+                    const EventType EventType::READER_CONNECTED("READER_CONNECTED", InnerEnum::READER_CONNECTED, "Reader connected");
+                    const EventType EventType::READER_DISCONNECTED("READER_DISCONNECTED", InnerEnum::READER_DISCONNECTED, "Reader disconnected");
 
                     std::vector<EventType> EventType::valueList;
 

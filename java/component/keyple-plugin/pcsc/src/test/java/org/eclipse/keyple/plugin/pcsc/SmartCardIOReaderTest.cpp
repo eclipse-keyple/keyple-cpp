@@ -1,39 +1,47 @@
+#include "gmock/gmock.h"
+
+/* Core */
+#include "NoStackTraceThrowable.h"
+
+/* Smartcard I/O */
 #include "SmartCardIOReaderTest.h"
+
+using testing::Return;
+using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
 
 TEST_F(SmartCardIOReaderTest, testSmartCardIOReader)
 {
     ASSERT_NE(reader, nullptr);
 }
-/*
-void SmartCardIOReaderTest::testGettersSetters() throw(std::invalid_argument, KeypleBaseException) {
+
+/* TODO redesign
+TEST_F(SmartCardIOReaderTest, testGettersSetters) //throw(std::invalid_argument, KeypleBaseException)
+{
     // this.reader = new PcscReader(terminal, readerName);
     reader->setParameter("TOTO", "TOTO");
-    assertEquals(reader->getParameters().size(), 1);
+    ASSERT_EQ(reader->getParameters().size(), 1);
 
     std::unordered_map<std::string, std::string> test;
     test.emplace("TITI", "TITI");
     test.emplace("TATA", "TATA");
     reader->setParameters(test);
-    assertEquals(reader->getParameters().size(), 3);
+    ASSERT_EQ(reader->getParameters().size(), 3);
 
-    assertTrue(readerName == reader->getName());
+    ASSERT_TRUE(readerName == reader->getName());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testIsSEPresent() throws CardException, NoStackTraceThrowable
-void SmartCardIOReaderTest::testIsSEPresent() throw(CardException, NoStackTraceThrowable) {
-
-    // this.reader = new PcscReader(terminal, readerName);
+void SmartCardIOReaderTest::testIsSEPresent()
+throw(CardException, NoStackTraceThrowable)
+{
     when(terminal->isCardPresent()).thenReturn(true);
     assertTrue(reader->isSePresent());
     when(terminal->isCardPresent()).thenReturn(false);
     assertFalse(reader->isSePresent());
-
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test(expected = KeypleReaderException.class) public void testIsSEPresentWithException() throws CardException, NoStackTraceThrowable
-void SmartCardIOReaderTest::testIsSEPresentWithException() throw(CardException, NoStackTraceThrowable) {
+void SmartCardIOReaderTest::testIsSEPresentWithException()
+throw(CardException, NoStackTraceThrowable)
+{
 
     when(terminal->waitForCardAbsent(0)).thenReturn(false);
 //JAVA TO C++ CONVERTER TODO TASK: This exception's constructor requires an argument:
@@ -44,6 +52,7 @@ void SmartCardIOReaderTest::testIsSEPresentWithException() throw(CardException, 
 
 }
 
+TODO redisign
 void SmartCardIOReaderTest::testTransmitCardNotPresent() throw(CardException, KeypleReaderException, KeypleReaderException) {
 
     when(terminal->isCardPresent()).thenReturn(false);

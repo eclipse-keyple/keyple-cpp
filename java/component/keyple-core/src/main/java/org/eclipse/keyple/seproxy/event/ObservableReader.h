@@ -32,11 +32,10 @@ namespace org {
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
 
                     class ObservableReader : public virtual SeReader {
-                    protected:
+                    public:
                         class ReaderObserver : public org::eclipse::keyple::util::Observer<std::shared_ptr<ReaderEvent>> {
                         };
 
-                    public:
                         class NotificationMode final {
                         public:
                             static NotificationMode ALWAYS;

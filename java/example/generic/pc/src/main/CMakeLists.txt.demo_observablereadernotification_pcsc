@@ -1,0 +1,61 @@
+#
+# Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+#
+# All rights reserved. This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
+# available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
+#
+
+SET(CMAKE_MACOSX_RPATH 1)
+SET(CMAKE_CXX_STANDARD 11)
+
+IF(WIN32)
+	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
+ENDIF(WIN32)
+
+INCLUDE_DIRECTORIES(
+	${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
+
+	# Example generic common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common
+
+	# Core
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main/java/org/eclipse/keyple/common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util
+
+	# Plugin - PC/SC
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc
+
+	# Smartcard I/O
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main/java/org/eclipse/keyple/smartcardio
+)
+
+IF(WIN32)
+	SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+	SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
+	SET(WINSCARD winscard.lib)
+ENDIF(WIN32)
+
+IF(APPLE)
+	SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
+	SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
+	SET(WINSCARD "-framework PCSC")
+ENDIF(APPLE)
+
+ADD_EXECUTABLE(demo_observablereadernotification_pcsc
+
+	# Example - Common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/ObservableReaderNotificationEngine.cpp
+
+	# Example - PC
+    ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/Demo_ObservableReaderNotification_Pcsc.cpp
+)
+
+TARGET_LINK_LIBRARIES(demo_observablereadernotification_pcsc keyplepluginpcsc)

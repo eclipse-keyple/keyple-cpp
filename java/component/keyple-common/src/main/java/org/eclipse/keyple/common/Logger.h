@@ -8,6 +8,8 @@ private:
 	bool traceEnabled;
 	bool debugEnabled;
 
+	std::string className;
+
 	void log(const char *s)
 	{
 		while (s && *s) {
@@ -19,7 +21,12 @@ private:
 	}
 
 public:
-	Logger() {
+	/**
+	 * Constructor
+	 */
+	Logger(const char *className)
+	: className(className)
+	{
 		traceEnabled = 0;
 		debugEnabled = 0;
 	}
@@ -77,6 +84,23 @@ public:
 			if (*s=='%' && *++s!='%') {	// a format specifier (ignore which one it is)
 				std::cout << value;		// use first non-format argument
 				return warn(++s, args...); 	// ``peel off'' first argument
+			}
+			std::cout << *s++;
+		}
+		throw std::runtime_error("extra arguments provided to printf");
+	}
+
+	void info(const char* s)
+	{
+		log(s);
+	}
+
+	template<typename T, typename... Args>
+	void info(const char *s, T value, Args... args) {
+		while (s && *s) {
+			if (*s=='%' && *++s!='%') {	// a format specifier (ignore which one it is)
+				std::cout << value;		// use first non-format argument
+				return info(++s, args...); 	// ``peel off'' first argument
 			}
 			std::cout << *s++;
 		}

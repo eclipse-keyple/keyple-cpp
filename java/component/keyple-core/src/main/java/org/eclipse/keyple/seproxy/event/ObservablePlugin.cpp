@@ -5,7 +5,7 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
-                namespace event_Renamed {                
+                namespace event {                
                 }
             }
         }

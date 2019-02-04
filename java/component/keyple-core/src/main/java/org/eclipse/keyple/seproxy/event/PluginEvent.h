@@ -34,12 +34,12 @@ namespace org {
                             /**
                              * A reader has been connected.
                              */
-                            static EventType READER_CONNECTED;
+                            static const EventType READER_CONNECTED;
 
                             /**
                              * A reader has been disconnected.
                              */
-                            static EventType READER_DISCONNECTED;
+                            static const EventType READER_DISCONNECTED;
 
                         private:
                             static std::vector<EventType> valueList;

@@ -1,3 +1,15 @@
+/********************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+ *
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
+
 #pragma once
 
 #include "../../util/Configurable.h"
@@ -15,17 +27,6 @@
 
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; } } } } }
 
-/********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -36,8 +37,6 @@ namespace org {
                     using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                     using Configurable = org::eclipse::keyple::util::Configurable;
                     using Nameable = org::eclipse::keyple::util::Nameable;
-//                    using org::slf4j::Logger;
-//                    using org::slf4j::LoggerFactory;
 
                     /**
                      * Intermediate observable class to handle the logging of AbstractObservableReader and
@@ -48,7 +47,8 @@ namespace org {
                     class AbstractLoggedObservable : public org::eclipse::keyple::util::Observable<T>, public virtual Nameable, public Configurable {
                     private:
 //JAVA TO C++ CONVERTER TODO TASK: Native C++ does not allow initialization of static non-const/integral fields in their declarations - choose the conversion option for separate .h and .cpp files:
-                        static const std::shared_ptr<Logger> logger; // = LoggerFactory::getLogger(AbstractLoggedObservable::typeid);
+
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractLoggedObservable));
 
                         /**
                          * The item name (must be unique)
@@ -81,7 +81,7 @@ namespace org {
                          */
                         virtual void addObserver(std::shared_ptr<org::eclipse::keyple::util::Observer<T>> observer) override {
 
-//                            logger->trace("[{}][{}] addObserver => Adding an observer.", this->getClass(), this->getName());
+                            logger->trace("[AbstractLoggedObservable::addObserver][%s][%s] adding an observer.", typeid(this).name(), this->getName());
 
                             org::eclipse::keyple::util::Observable<T>::addObserver(observer);
                         }

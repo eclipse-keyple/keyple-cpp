@@ -185,37 +185,28 @@ throw(std::invalid_argument, KeypleBaseException)
     }
 
     if (name == SETTING_KEY_TRANSMISSION_MODE) {
-        if (value == "") {
+        if (value == "")
             transmissionMode = static_cast<TransmissionMode>(0);
-        }
-        else if (value == SETTING_TRANSMISSION_MODE_CONTACTS) {
+        else if (value == SETTING_TRANSMISSION_MODE_CONTACTS)
             transmissionMode = TransmissionMode::CONTACTS;
-        }
-        else if (value == SETTING_TRANSMISSION_MODE_CONTACTLESS) {
+        else if (value == SETTING_TRANSMISSION_MODE_CONTACTLESS)
             transmissionMode = TransmissionMode::CONTACTLESS;
-        }
-        else {
+        else
             throw std::invalid_argument("Bad tranmission mode " + name + " : " + value);
-        }
-    }
-    else if (name == SETTING_KEY_PROTOCOL) {
-        if (value == "" || value == SETTING_PROTOCOL_TX) {
+
+    } else if (name == SETTING_KEY_PROTOCOL) {
+        if (value == "" || value == SETTING_PROTOCOL_TX)
             parameterCardProtocol = "*";
-        }
-        else if (value == SETTING_PROTOCOL_T0) {
+        else if (value == SETTING_PROTOCOL_T0)
             parameterCardProtocol = "T=0";
-        }
-        else if (value == SETTING_PROTOCOL_T1) {
+        else if (value == SETTING_PROTOCOL_T1)
             parameterCardProtocol = "T=1";
-        }
-        else if (value == SETTING_PROTOCOL_T_CL) {
+        else if (value == SETTING_PROTOCOL_T_CL)
             parameterCardProtocol = "T=CL";
-        }
-        else {
-            throw std::invalid_argument("Bad protocol " + name + " : " + value);
-        }
-    }
-    else if (name == SETTING_KEY_MODE) {
+        else
+           throw std::invalid_argument("Bad protocol " + name + " : " + value);
+
+    } else if (name == SETTING_KEY_MODE) {
         if (value == "" || value == SETTING_MODE_SHARED) {
             if (cardExclusiveMode && card != nullptr) {
                 try {

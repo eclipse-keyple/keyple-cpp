@@ -8,6 +8,8 @@
 #include "PluginEvent.h"
 #include "ObservablePlugin.h"
 
+#include "Logger.h"
+
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class PluginEvent; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; } } } } }
@@ -40,8 +42,6 @@ namespace org {
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                     using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                     using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
-//                    using org::slf4j::Logger;
-//                    using org::slf4j::LoggerFactory;
 
                     /**
                      * Observable plugin. These plugin can report when a reader is added or removed.
@@ -49,7 +49,7 @@ namespace org {
                     class AbstractObservablePlugin : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<PluginEvent>, public ReaderPlugin {
 
                     private:
-//                        static const std::shared_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger;
 
                         /**
                          * The list of readers

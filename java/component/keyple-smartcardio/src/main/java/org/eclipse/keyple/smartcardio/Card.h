@@ -15,6 +15,7 @@
 
 /* Common */
 #include "Logger.h"
+#include "LoggerFactory.h"
 
 namespace keyple {
     namespace plugin {
@@ -36,7 +37,7 @@ namespace keyple {
                  */
                 Card()
                 {
-                    logger = new Logger();
+                    logger = LoggerFactory::getLogger(typeid(this));
 
                     logger->debug("Card::Card\n");
                 }
@@ -148,7 +149,7 @@ namespace keyple {
                 /**
                  *
                  */
-                Logger *logger;
+                std::shared_ptr<Logger> logger;
             };
         }
     }

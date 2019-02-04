@@ -38,7 +38,6 @@ namespace org {
 
                     /** singleton instance of SeProxyService */
                 private:
-                    static std::shared_ptr<SeProxyService> uniqueInstance;
 
                     /** the list of readers’ plugins interfaced with the SE Proxy Service */
                     std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> plugins = std::make_shared<std::set<std::shared_ptr<ReaderPlugin>>>();
@@ -54,7 +53,11 @@ namespace org {
                      * @return single instance of SeProxyService
                      */
                 public:
-                    static std::shared_ptr<SeProxyService> getInstance();
+                    static SeProxyService &getInstance()
+                    {
+                        static SeProxyService uniqueInstance;
+                        return uniqueInstance;
+                    }
 
                     /**
                      * Sets the plugins.
