@@ -1,15 +1,3 @@
-#pragma once
-
-#include "AbstractSelectionLocalReader.h"
-#include <string>
-#include <stdexcept>
-#include <memory>
-#include <atomic>
-
-#include "Logger.h"
-#include "LoggerFactory.h"
-#include "Thread.h"
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -21,6 +9,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <stdexcept>
+#include <memory>
+#include <atomic>
+
+/* Common */
+#include "Export.H"
+#include "Logger.h"
+#include "LoggerFactory.h"
+#include "Thread.h"
+
+/* Core */
+#include "AbstractSelectionLocalReader.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -33,7 +38,7 @@ namespace org {
                      * Abstract definition of an threader local reader. Factorizes the observation mechanism through the
                      * implementation of a monitoring thread.
                      */
-                    class AbstractThreadedLocalReader : public AbstractSelectionLocalReader, public Object {
+                    class EXPORT AbstractThreadedLocalReader : public AbstractSelectionLocalReader, public Object {
                     private:
                         class EventThread : public Thread {
                         private:

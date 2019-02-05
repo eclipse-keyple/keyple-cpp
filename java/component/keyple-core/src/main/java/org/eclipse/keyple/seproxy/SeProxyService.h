@@ -1,16 +1,3 @@
-#pragma once
-
-#include <string>
-#include "exceptionhelper.h"
-#include <memory>
-#include <set>
-
-#include "KeyplePluginNotFoundException.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class ReaderPlugin; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeyplePluginNotFoundException; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -22,6 +9,25 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <memory>
+#include <set>
+
+#include "exceptionhelper.h"
+
+/* Common */
+#include "Export.h"
+
+/* Core */
+#include "KeyplePluginNotFoundException.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { class ReaderPlugin; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeyplePluginNotFoundException; } } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -34,7 +40,7 @@ namespace org {
                  * has to be called by a ticketing application in order to establish a link with a SE’s application.
                  *
                  */
-                class SeProxyService final : public std::enable_shared_from_this<SeProxyService> {
+                class EXPORT SeProxyService final : public std::enable_shared_from_this<SeProxyService> {
 
                     /** singleton instance of SeProxyService */
                 private:

@@ -1,9 +1,3 @@
-#pragma once
-
-#include "SeProtocol.h"
-#include <string>
-#include <vector>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -15,66 +9,140 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#ifndef KEYPLE_SEPROXY_PROTOCOL
+#define KEYPLE_SEPROXY_PROTOCOL
+
+#include <string>
+#include <vector>
+
+/* Common */
+#include "Export.h"
+
+/* Core */
+#include "SeProtocol.h"
+
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace protocol {
+namespace eclipse {
+namespace keyple {
+namespace seproxy {
+namespace protocol {
 
 
-                    class Protocol final : public SeProtocol {
+class EXPORT Protocol final : public SeProtocol {
 
-                        // Unspecified protocol
 public:
-                        static Protocol ANY;
+    /**
+     * Unspecified protocol
+     */
+    static Protocol ANY;
+
+    /**
+     * Constructor
+     */
+    Protocol(const std::string &name);
+
+    /**
+     *
+     */
+    enum class InnerEnum {
+        ANY
+    };
+
+    /**
+     *
+     */
+    const InnerEnum innerEnumValue;
+
+    /**
+     * Constructor
+     */
+    Protocol(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
+
+    /**
+     *
+     */
+    virtual std::string getName();
+
+    /**
+     *
+     */
+    bool operator==(const Protocol &other);
+
+    /**
+     *
+     */
+    bool operator!=(const Protocol &other);
+
+    /**
+     *
+     */
+    static std::vector<Protocol> values();
+
+    /**
+     *
+     */
+    int ordinal();
+
+    /**
+     *
+     */
+    std::string toString();
+
+    /**
+     *
+     */
+    static Protocol valueOf(const std::string &name);
 
 private:
-                        static std::vector<Protocol> valueList;
+    /**
+     *
+     */
+    static std::vector<Protocol> valueList;
 
-                        class StaticConstructor {
-                        public:
-                            StaticConstructor();
-                        };
+    /**
+     *
+     */
+    class StaticConstructor {
+    public:
+        /**
+         *
+         */
+        StaticConstructor();
+    };
 
-                        static StaticConstructor staticConstructor;
+    /**
+     *
+     */
+    static StaticConstructor staticConstructor;
 
-public:
-                        enum class InnerEnum {
-                            ANY
-                        };
+    /**
+     *
+     */
+    const std::string nameValue;
+    
+    /**
+     *
+     */
+    const int ordinalValue;
 
-                        const InnerEnum innerEnumValue;
-private:
-                        const std::string nameValue;
-                        const int ordinalValue;
-                        static int nextOrdinal;
+    /**
+     *
+     */
+    static int nextOrdinal;
+   
+    /**
+     * The protocol name
+     */
+    std::string name;
+};
 
-                        /** The protocol name. */
-                    private:
-                        std::string name;
-
-                    public:
-                        Protocol(const std::string &name);
-                        Protocol(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
-
-                        virtual std::string getName();
-
-public:
-                        bool operator == (const Protocol &other);
-
-                        bool operator != (const Protocol &other);
-
-                        static std::vector<Protocol> values();
-
-                        int ordinal();
-
-                        std::string toString();
-
-                        static Protocol valueOf(const std::string &name);
-                    };
-
-                }
-            }
-        }
-    }
 }
+}
+}
+}
+}
+
+#endif /* KEYPLE_SEPROXY_PROTOCOL */

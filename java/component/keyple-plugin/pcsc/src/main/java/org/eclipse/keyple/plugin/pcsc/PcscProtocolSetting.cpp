@@ -1,5 +1,5 @@
 
-#include "ContactlessProtocols.h"
+#include "ContactlessProtocols_Import.h"
 #include "PcscProtocolSetting.h"
 
 namespace org {

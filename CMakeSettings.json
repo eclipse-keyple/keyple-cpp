@@ -2,7 +2,8 @@
   "configurations": [
     {
       "name": "build",
-      "generator": "Unix Makefiles",
+      /*"generator": "Linux Makefile", */
+		  "codeAnalysisRuleset": "","generator": "Visual Studio 15 2017",
       "configurationType" : "Debug",
       "buildRoot":  "${projectDir}/${name}",
       "cmakeCommandArgs":  "",

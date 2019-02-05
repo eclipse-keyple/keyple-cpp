@@ -1,12 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionResponse; } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -18,6 +9,19 @@ namespace org { namespace eclipse { namespace keyple { namespace transaction { c
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionResponse; } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -30,9 +34,9 @@ namespace org {
                     /**
                      * ReaderEvent used to notify changes at reader level
                      */
-                    class ReaderEvent final : public std::enable_shared_from_this<ReaderEvent> {
+                    class EXPORT ReaderEvent final : public std::enable_shared_from_this<ReaderEvent> {
                     public:
-                        class EventType final {
+                        class EXPORT EventType final {
                             /**
                              * An io error occurred.
                              */

@@ -1,9 +1,3 @@
-#pragma once
-
-#include "SeProtocol.h"
-#include <string>
-#include <vector>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -15,13 +9,25 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+
+/* Common */
+#include "Export.h"
+
+/* Core*/
+#include "SeProtocol.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
                 namespace protocol {
 
-                    class ContactlessProtocols final : public SeProtocol {
+                    class EXPORT ContactlessProtocols final : public SeProtocol {
 
                         /** Contactless standard */
 public:
@@ -29,9 +35,7 @@ public:
 
                         /** Contactless proprietary solutions */
                         static ContactlessProtocols PROTOCOL_ISO14443_3A;
-
                         static ContactlessProtocols PROTOCOL_ISO14443_3B;
-
                         static ContactlessProtocols PROTOCOL_B_PRIME;
 
                         /** Mifare Ultralight and Ultralight C */
@@ -39,9 +43,7 @@ public:
 
                         /** Mifare mini, 1K, 2K, 4K */
                         static ContactlessProtocols PROTOCOL_MIFARE_CLASSIC;
-
                         static ContactlessProtocols PROTOCOL_MIFARE_DESFIRE;
-
                         static ContactlessProtocols PROTOCOL_MEMORY_ST25;
 
 private:

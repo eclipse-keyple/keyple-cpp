@@ -1,12 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-#include <stdexcept>
-#include <memory>
-#include "stringbuilder.h"
-#include "Pattern.h"
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -18,6 +9,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <stdexcept>
+#include <memory>
+
+#include "stringbuilder.h"
+
+/* Common */
+#include "Export.h"
+#include "Pattern.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -28,7 +33,7 @@ namespace org {
                 /**
                  * Utils around byte arrays
                  */
-                class ByteArrayUtils : public std::enable_shared_from_this<ByteArrayUtils> {
+                class EXPORT ByteArrayUtils : public std::enable_shared_from_this<ByteArrayUtils> {
                     /* byte to hex string conversion table */
                 private:
                     static std::vector<std::string> const byteToHex;

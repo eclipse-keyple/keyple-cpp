@@ -31,7 +31,7 @@
 #include "ResponseAPDU.h"
 
 /* PC/SC plugin */
-#include "PcscReader.h"
+#include "PcscReader_Import.h"
 
 using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 using PcscReader = org::eclipse::keyple::plugin::pcsc::PcscReader;

@@ -1,13 +1,18 @@
 #pragma once
 
-#include <set>
-#include "../util/Configurable.h"
-#include "../util/Nameable.h"
-#include <string>
 #include <memory>
+#include <set>
+#include <string>
+
+/* Common */
+#include "Export.h"
+
+/* Core */
+#include "Comparable.h"
+#include "Configurable.h"
 #include "KeypleReaderException.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Comparable.h"
+#include "Nameable.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
@@ -38,7 +43,7 @@ namespace org {
                 /**
                  * Card readers plugin interface.
                  */
-                class ReaderPlugin : public virtual Nameable, public Configurable, public Comparable<ReaderPlugin> {
+                class EXPORT ReaderPlugin : public virtual Nameable, public Configurable, public Comparable<ReaderPlugin> {
 
                     /**
                      * Gets the readers.

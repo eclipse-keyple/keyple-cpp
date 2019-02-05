@@ -1,6 +1,10 @@
 #pragma once
 
-#include <unistd.h>
+#if defined(_WIN32)
+	#include <windows.h>
+#else
+	#include <unistd.h>
+#endif
 
 #include "Object.h"
 
@@ -68,7 +72,11 @@ public:
 	 */
 	static void sleep(long millis)
 	{
+#if defined(_WIN32)
+		Sleep(millis);
+#else
 		usleep(millis * 1000);
+#endif
 	}
 
 	/**

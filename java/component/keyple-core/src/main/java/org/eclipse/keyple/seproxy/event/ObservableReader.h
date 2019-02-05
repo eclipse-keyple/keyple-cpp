@@ -1,16 +1,3 @@
-#pragma once
-
-#include "../SeReader.h"
-#include "../../util/Observable.h"
-#include <string>
-#include <vector>
-#include <memory>
-#include "ReaderEvent.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class ReaderEvent; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionRequest; } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -22,6 +9,26 @@ namespace org { namespace eclipse { namespace keyple { namespace transaction { c
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+
+/* Core */
+#include "Observable.h"
+#include "ReaderEvent.h"
+#include "SeReader.h"
+
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class ReaderEvent; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionRequest; } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -31,12 +38,12 @@ namespace org {
                     using SeReader = org::eclipse::keyple::seproxy::SeReader;
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
 
-                    class ObservableReader : public virtual SeReader {
+                    class EXPORT ObservableReader : public virtual SeReader {
                     public:
                         class ReaderObserver : public org::eclipse::keyple::util::Observer<std::shared_ptr<ReaderEvent>> {
                         };
 
-                        class NotificationMode final {
+                        class EXPORT NotificationMode final {
                         public:
                             static NotificationMode ALWAYS;
                             static NotificationMode MATCHED_ONLY;

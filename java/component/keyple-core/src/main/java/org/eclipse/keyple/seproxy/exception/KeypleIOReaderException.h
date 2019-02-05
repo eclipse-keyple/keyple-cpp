@@ -1,10 +1,3 @@
-#pragma once
-
-#include "KeypleReaderException.h"
-#include <string>
-#include <stdexcept>
-#include <memory>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -16,42 +9,59 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <stdexcept>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+
+/* Core */
+#include "KeypleReaderException.h"
+
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
+namespace eclipse {
+namespace keyple {
+namespace seproxy {
+namespace exception {
 
 
-                    /**
-                     * Exception thrown when IO operations failed in a {@link ProxyReader}
-                     */
-                    class KeypleIOReaderException : public KeypleReaderException {
+    /**
+     * Exception thrown when IO operations failed in a {@link ProxyReader}
+     */
+class EXPORT KeypleIOReaderException : public KeypleReaderException {
 
-                        /**
-                         * New exception to be thrown
-                         *
-                         * @param message : message to identify the exception and the context
-                         */
-                    public:
-                        KeypleIOReaderException(const std::string &message);
+public:
+    /**
+     * New exception to be thrown
+     *
+     * @param message : message to identify the exception and the context
+     */
+    KeypleIOReaderException(const std::string &message);
 
-                        /**
-                         * Encapsulate a lower level reader exception
-                         *
-                         * @param message : message to add some context to the exception
-                         * @param cause : lower level exception
-                         */
-                        KeypleIOReaderException(const std::string &message, std::runtime_error cause);
+    /**
+        * Encapsulate a lower level reader exception
+        *
+        * @param message : message to add some context to the exception
+        * @param cause : lower level exception
+        */
+    KeypleIOReaderException(const std::string &message, std::runtime_error cause);
 
 protected:
-                        std::shared_ptr<KeypleIOReaderException> shared_from_this() {
-                            return std::static_pointer_cast<KeypleIOReaderException>(KeypleReaderException::shared_from_this());
-                        }
-                    };
-
-                }
-            }
-        }
+    /**
+     *
+     */
+    std::shared_ptr<KeypleIOReaderException> shared_from_this()
+    {
+        return std::static_pointer_cast<KeypleIOReaderException>(KeypleReaderException::shared_from_this());
     }
+};
+
+}
+}
+}
+}
 }

@@ -1,24 +1,3 @@
-#pragma once
-
-#include <set>
-#include "../ReaderPlugin.h"
-#include "AbstractLoggedObservable.h"
-#include <string>
-#include <memory>
-#include "PluginEvent.h"
-#include "ObservablePlugin.h"
-
-#include "Logger.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class PluginEvent; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class PluginObserver; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class ReaderPlugin; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderNotFoundException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -30,6 +9,32 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <memory>
+#include <set>
+#include <string>
+
+/* Common*/
+#include "Export.h"
+#include "Logger.h"
+
+/* Core*/
+#include "AbstractLoggedObservable.h"
+#include "ReaderPlugin.h"
+#include "ObservablePlugin.h"
+#include "PluginEvent.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class PluginEvent; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class PluginObserver; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { class ReaderPlugin; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderNotFoundException; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -46,7 +51,7 @@ namespace org {
                     /**
                      * Observable plugin. These plugin can report when a reader is added or removed.
                      */
-                    class AbstractObservablePlugin : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<PluginEvent>, public ReaderPlugin {
+                    class EXPORT AbstractObservablePlugin : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<PluginEvent>, public ReaderPlugin {
 
                     private:
                         const std::shared_ptr<Logger> logger;

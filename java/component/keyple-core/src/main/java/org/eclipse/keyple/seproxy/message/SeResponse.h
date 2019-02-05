@@ -1,17 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-#include <stdexcept>
-#include <memory>
-
-#include "Serializable.h"
-#include "Object.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SelectionStatus; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -23,6 +9,24 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <stdexcept>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+#include "Serializable.h"
+#include "Object.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SelectionStatus; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
+
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -37,7 +41,7 @@ namespace org {
                      */
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @SuppressWarnings("PMD.NPathComplexity") public final class SeResponse implements java.io.Serializable
-                    class SeResponse : public std::enable_shared_from_this<SeResponse>, public Serializable, public Object {
+                    class EXPORT SeResponse : public std::enable_shared_from_this<SeResponse>, public Serializable, public Object {
 
                     public:
                         static constexpr long long serialVersionUID = 265369841119873812LL;

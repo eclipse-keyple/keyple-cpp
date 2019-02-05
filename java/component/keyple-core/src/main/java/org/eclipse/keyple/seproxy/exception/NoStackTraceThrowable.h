@@ -1,8 +1,3 @@
-#pragma once
-
-#include <stdexcept>
-#include <memory>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -14,6 +9,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <stdexcept>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -24,7 +28,7 @@ namespace org {
                      * Exception that do not print stack trace Useful when the exceptions are expected and managed.
                      */
                     // TODO workaround for no stackstrace; should we keep it?
-                    class NoStackTraceThrowable : public std::runtime_error, public std::enable_shared_from_this<NoStackTraceThrowable> {
+                    class EXPORT NoStackTraceThrowable : public std::runtime_error, public std::enable_shared_from_this<NoStackTraceThrowable> {
 
                     public:
                         NoStackTraceThrowable();

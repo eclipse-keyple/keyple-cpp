@@ -11,6 +11,7 @@
 #include "AbstractObservablePlugin.h"
 
 /* Common */
+#include "Export.h"
 #include "Logger.h"
 #include "Thread.h"
 
@@ -37,7 +38,7 @@ namespace org {
                     using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
 
-                    class AbstractThreadedObservablePlugin : public AbstractObservablePlugin, public ObservablePlugin, public Object {
+                    class EXPORT AbstractThreadedObservablePlugin : public AbstractObservablePlugin, public ObservablePlugin, public Object {
 
                     private:
                         class EventThread : public Thread {

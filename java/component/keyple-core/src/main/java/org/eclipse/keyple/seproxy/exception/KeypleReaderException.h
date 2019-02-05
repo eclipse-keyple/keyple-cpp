@@ -1,9 +1,14 @@
 #pragma once
 
-#include "KeypleBaseException.h"
 #include <string>
 #include <stdexcept>
 #include <memory>
+
+/* Common */
+#include "Export.h"
+
+/* Core */
+#include "KeypleBaseException.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponseSet; } } } } }
@@ -33,7 +38,7 @@ namespace org {
                     /**
                      * Base Exceptions thrown in a {@link ProxyReader} context
                      */
-                    class KeypleReaderException : public KeypleBaseException {
+                    class EXPORT KeypleReaderException : public KeypleBaseException {
                         /*
                          * SeResponseSet and SeResponse objects to carry partial responses in the event of a breakdown
                          * in communication with the SE.

@@ -1,10 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-#include <memory>
-#include "ReaderEvent.h"
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -16,15 +9,28 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+
+/* Core */
+#include "ReaderEvent.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
                 namespace event {
 
-                    class PluginEvent final : public std::enable_shared_from_this<PluginEvent> {
+                    class EXPORT PluginEvent final : public std::enable_shared_from_this<PluginEvent> {
                     public:
-                        class EventType final {
+                        class EXPORT EventType final {
                         public:
                             enum class InnerEnum {
                                 READER_CONNECTED,
