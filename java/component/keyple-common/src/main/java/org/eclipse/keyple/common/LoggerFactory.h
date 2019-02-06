@@ -1,6 +1,9 @@
 #pragma once
 
+#include <memory>
 #include <typeinfo>
+
+/* Common */
 #include "Logger.h"
 
 class LoggerFactory
