@@ -30,7 +30,7 @@ ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
 
 	# Core
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/util
@@ -44,6 +44,9 @@ INCLUDE_DIRECTORIES(
 	# Helpers
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main/java/org/eclipse/keyple/common
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-smartcardio/src/main/java/org/eclipse/keyple/smartcardio
+
+	# pcsc (Linux / macOS) 
+	/usr/include/PCSC	
 )
 
 ADD_LIBRARY(${LIBRARY_NAME} SHARED

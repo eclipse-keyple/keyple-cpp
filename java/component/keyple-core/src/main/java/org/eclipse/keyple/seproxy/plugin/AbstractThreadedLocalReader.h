@@ -18,7 +18,7 @@
 #include <atomic>
 
 /* Common */
-#include "Export.H"
+#include "Export.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
 #include "Thread.h"

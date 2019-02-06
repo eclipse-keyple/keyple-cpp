@@ -98,6 +98,6 @@ ADD_EXECUTABLE(keyplepluginpcsctest
     ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/SmartCardIOReaderTest.cpp
 )
 
-TARGET_LINK_LIBRARIES(keyplepluginpcsctest keyplepluginpcsc gtest gmock)
+TARGET_LINK_LIBRARIES(keyplepluginpcsctest keyplepluginpcsc gtest gmock ${PCSC})
 
 #ADD_TEST(name PcscTest command testPcscPlugin)

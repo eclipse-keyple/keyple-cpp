@@ -33,6 +33,9 @@ INCLUDE_DIRECTORIES(
 
 	# Smartcard I/O
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main/java/org/eclipse/keyple/smartcardio
+
+	# pcsc (Linux / macOS)
+	/usr/include/PCSC
 )
 
 IF(WIN32)
@@ -49,13 +52,17 @@ IF(APPLE)
 	SET(WINSCARD "-framework PCSC")
 ENDIF(APPLE)
 
+IF(UNIX)
+	FIND_LIBRARY(PCSC pcsclite)
+ENDIF(UNIX)
+
 ADD_EXECUTABLE(demo_observablereadernotification_pcsc
 
 	# Example - Common
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/ObservableReaderNotificationEngine.cpp
 
 	# Example - PC
-    ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/Demo_ObservableReaderNotification_Pcsc.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/Demo_ObservableReaderNotification_Pcsc.cpp
 )
 
-TARGET_LINK_LIBRARIES(demo_observablereadernotification_pcsc keyplepluginpcsc)
+TARGET_LINK_LIBRARIES(demo_observablereadernotification_pcsc keyplepluginpcsc ${PCSC})
