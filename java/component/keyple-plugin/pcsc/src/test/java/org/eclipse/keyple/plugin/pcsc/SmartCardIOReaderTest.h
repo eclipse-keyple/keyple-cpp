@@ -57,7 +57,8 @@ public:
 
     void SetUp() //throw(CardException, std::invalid_argument, KeypleBaseException);
     {
-        terminal = std::shared_ptr<CardTerminal>(new CardTerminal());
+        std::string s("dummy");
+        terminal = std::shared_ptr<CardTerminal>(new CardTerminal(s));
         if (terminal == nullptr)
             return;
 

@@ -35,13 +35,15 @@ throw(std::runtime_error)
     * Forcing conversion to ObservablePlugin for now but should be fixed or at
     * least validated.
     */
-    std::shared_ptr<ObservablePlugin> plugin = std::dynamic_pointer_cast<ObservablePlugin>(PcscPlugin::getInstance());
+    std::shared_ptr<PcscPlugin> pcscplugin = PcscPlugin::getInstance();
+    pcscplugin->initReaders();
+    std::shared_ptr<ObservablePlugin> plugin = std::dynamic_pointer_cast<ObservablePlugin>(pcscplugin);
     seProxyService.addPlugin(std::dynamic_pointer_cast<ReaderPlugin>(plugin));
 
     /* Set observers */
     demoEngine->setPluginObserver();
 
-    std::cout << "Wait for reader or SE insertion/removal" << std::endl;
+    std::cout << "[Demo_ObservableReaderNotification_Pcsc:main] Wait for reader or SE insertion/removal" << std::endl;
 
     /* Wait indefinitely. CTRL-C to exit. */
 //JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:

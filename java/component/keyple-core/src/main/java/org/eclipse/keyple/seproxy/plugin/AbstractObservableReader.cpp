@@ -37,7 +37,9 @@ namespace org {
                         this->before = System::nanoTime();
                     }
 
-                    void AbstractObservableReader::startObservation() {
+                    void AbstractObservableReader::startObservation()
+                    {
+                        logger->debug("[AbstractObservableReader::startObservation]\n");
                     };
 
                     void AbstractObservableReader::stopObservation() {

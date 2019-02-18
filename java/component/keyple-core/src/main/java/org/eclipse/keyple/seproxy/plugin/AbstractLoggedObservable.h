@@ -81,7 +81,7 @@ namespace org {
                          */
                         virtual void addObserver(std::shared_ptr<org::eclipse::keyple::util::Observer<T>> observer) override {
 
-                            logger->trace("[AbstractLoggedObservable::addObserver][%s][%s] adding an observer.", typeid(this).name(), this->getName());
+                            logger->trace("[AbstractLoggedObservable::addObserver] observer: %p\n", observer.get());
 
                             org::eclipse::keyple::util::Observable<T>::addObserver(observer);
                         }

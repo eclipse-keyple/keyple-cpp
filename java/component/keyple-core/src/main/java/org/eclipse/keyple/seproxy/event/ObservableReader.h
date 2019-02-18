@@ -40,7 +40,7 @@ namespace org {
 
                     class EXPORT ObservableReader : public virtual SeReader {
                     public:
-                        class ReaderObserver : public org::eclipse::keyple::util::Observer<std::shared_ptr<ReaderEvent>> {
+                        class ReaderObserver : public org::eclipse::keyple::util::Observer<ReaderEvent> {
                         };
 
                         class EXPORT NotificationMode final {

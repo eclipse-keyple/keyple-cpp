@@ -72,6 +72,12 @@ namespace org {
                          */
                         AbstractObservablePlugin(const std::string &name);
 
+                    public:
+                        /**
+                         *
+                         */
+                        void initReaders();
+
                         /**
                          * Returns the current readers list.
                          *
@@ -83,17 +89,16 @@ namespace org {
                     public:
                         std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() throw(KeypleReaderException) override;
 
+                    protected:
                         /**
-                         * Gets a list of native readers from the native methods
+                         * Fetch connected native readers (from third party library) and returns a list of corresponding
+                         * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader}
+                         * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader} are new instances.
                          *
                          * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                    protected:
-                        virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getNativeReaders()
-                        {
-                            return nullptr;
-                        }
+                        virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() = 0; // throws KeypleReaderException
 
                         /**
                          * Gets the specific reader whose is provided as an argument.

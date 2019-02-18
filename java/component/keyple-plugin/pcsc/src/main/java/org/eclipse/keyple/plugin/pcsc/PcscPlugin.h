@@ -96,14 +96,14 @@ namespace org {
                         std::shared_ptr<std::set<std::string>> getNativeReadersNames() throw(KeypleReaderException) override;
 
                         /**
-                         * Gets the list of all native readers
+                         * Fetch connected native readers (from smartcard.io) and returns a list of corresponding
+                         * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader}
+                         * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader} are new instances.
                          *
-                         * New reader objects are created.
-                         *
-                         * @return the list of new readers.
+                         * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getNativeReaders() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() throw(KeypleReaderException) override;
 
                         /**
                          * Gets the reader whose name is provided as an argument.
@@ -132,42 +132,46 @@ namespace org {
                     public:
                         void setParameters(std::unordered_map<std::string, std::string> &parameters) override
                         {
-                            return this->setParameters(parameters);
+                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::setParameters(parameters);
                         }
 
                         std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() throw(KeypleReaderException) override
                         {
-                            return this->getReaders();
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReaders();
                         }
 
                         std::shared_ptr<SeReader> getReader(const std::string &name) override
                         {
-                            return this->getReader(name);
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReader(name);
                         }
 
                         void addObserver(std::shared_ptr<PluginObserver> observer) override
                         {
-                            return this->addObserver(observer);
+                            logger->debug("[PcscPlugin::addObserver] observer: %p\n", observer);
+
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::addObserver(observer);
                         }
 
                         void removeObserver(std::shared_ptr<PluginObserver> observer) override
                         {
-                            return this->removeObserver(observer);
+                            logger->debug("[PcscPlugin::removeObserver]\n");
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::removeObserver(observer);
                         }
 
                         void notifyObservers(std::shared_ptr<PluginEvent> event) override
                         {
-                            return this->notifyObservers(event);
+                            logger->debug("[PcscPlugin::notifyObservers]\n");
+                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::notifyObservers(event);
                         }
 
                         bool equals(std::shared_ptr<void> o) override
                         {
-                            return this->equals(o);
+                            return true; //AbstractThreadedObservablePlugin::equals(o);
                         }
 
                         int hashCode() override
                         {
-                            return this->hashCode();
+                            return 0; //AbstractThreadedObservablePlugin::hashCode();
                         }
 
                     };

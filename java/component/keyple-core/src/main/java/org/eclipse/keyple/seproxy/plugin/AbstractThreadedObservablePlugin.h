@@ -69,7 +69,7 @@ namespace org {
                              */
                             virtual void end();
 
-                            virtual void run();
+                            virtual void *run();
                         };
 
                     private:
@@ -94,7 +94,7 @@ namespace org {
                          * List of names of the connected readers
                          */
                     private:
-                        std::shared_ptr<std::set<std::string>> nativeReadersNames;
+                        std::shared_ptr<std::set<std::string>> nativeReadersNames = std::make_shared<std::set<std::string>>(std::set<std::string>());
 
                         /**
                          * Returns the list of names of all connected readers

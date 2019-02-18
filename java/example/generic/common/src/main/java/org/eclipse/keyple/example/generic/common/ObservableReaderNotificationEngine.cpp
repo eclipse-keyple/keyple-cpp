@@ -69,9 +69,11 @@ ObservableReaderNotificationEngine::SpecificReaderObserver::SpecificReaderObserv
 void ObservableReaderNotificationEngine::SpecificReaderObserver::update(std::shared_ptr<ReaderEvent> event)
 {
     /* just log the event */
-    outerInstance->logger->info("Event: PLUGINNAME = {}, READERNAME = {}, EVENT = {}",
-                 event->getPluginName(), event->getReaderName(),
-                 event->getEventType().getName());
+    outerInstance->logger->info("[SpecificReaderObserver::update] event -> " \
+                                "pluginname: %s, readername: %s, eventname: " \
+                                "%s\n", event->getPluginName(),
+                                event->getReaderName(),
+                                event->getEventType().getName());
 }
 
 ObservableReaderNotificationEngine::SpecificPluginObserver::SpecificPluginObserver(ObservableReaderNotificationEngine *outerInstance, std::shared_ptr<SpecificReaderObserver> readerObserver)

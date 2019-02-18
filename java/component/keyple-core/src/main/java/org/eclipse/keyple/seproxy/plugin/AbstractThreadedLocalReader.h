@@ -75,7 +75,7 @@ namespace org {
                              */
                             virtual void end();
 
-                            virtual void run();
+                            virtual void *run();
 
 protected:
 /*

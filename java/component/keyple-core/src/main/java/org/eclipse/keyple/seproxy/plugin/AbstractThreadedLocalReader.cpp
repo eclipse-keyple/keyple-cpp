@@ -14,13 +14,19 @@ namespace org {
                     AbstractThreadedLocalReader::AbstractThreadedLocalReader(const std::string &pluginName, const std::string &readerName) : AbstractSelectionLocalReader(pluginName, readerName) {
                     }
 
-                    void AbstractThreadedLocalReader::startObservation() {
+                    void AbstractThreadedLocalReader::startObservation()
+                    {
+                        logger->debug("[AbstractThreadedLocalReader::startObservation]\n");
+
                         EventThread *_et = new EventThread(shared_from_this(), this->getPluginName(), this->getName());
                         thread = std::shared_ptr<EventThread>(_et);
                         thread->start();
                     }
 
-                    void AbstractThreadedLocalReader::stopObservation() {
+                    void AbstractThreadedLocalReader::stopObservation()
+                    {
+                        logger->debug("[AbstractThreadedLocalReader::stopObservation]\n");
+
                         thread->end();
                     }
 
@@ -28,7 +34,11 @@ namespace org {
                         this->threadWaitTimeout = timeout;
                     }
 
-                    AbstractThreadedLocalReader::EventThread::EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName) : Thread("observable-reader-events-" + std::to_string(++(outerInstance->threadCount))), pluginName(pluginName), readerName(readerName), outerInstance(outerInstance) {
+                    AbstractThreadedLocalReader::EventThread::EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName)
+                    : Thread("observable-reader-events-" + std::to_string(++(outerInstance->threadCount))), pluginName(pluginName), readerName(readerName), outerInstance(outerInstance)
+                    {
+                        outerInstance->logger->debug("[AbstractThreadedLocalReader::EventThread]\n");
+
                         setDaemon(true);
                     }
 
@@ -37,7 +47,10 @@ namespace org {
                         this->interrupt(); // exit io wait if needed
                     }
 
-                    void AbstractThreadedLocalReader::EventThread::run() {
+                    void *AbstractThreadedLocalReader::EventThread::run()
+                    {
+                        outerInstance->logger->debug("[AbstractThreadedLocalReader::EventThread::run]\n");
+
                         try {
                             // First thing we'll do is to notify that a card was inserted if one is already
                             // present.
@@ -68,6 +81,8 @@ namespace org {
                         catch (NoStackTraceThrowable &e) {
                             logger->trace("[{}] Exception occurred in monitoring thread: {}", readerName, e.what());
                         }
+
+                        return NULL;
                     }
 
 //JAVA TO C++ CONVERTER WARNING: Unlike Java, there is no automatic call to this finalizer method in native C++:

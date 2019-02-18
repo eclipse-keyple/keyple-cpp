@@ -29,9 +29,9 @@ namespace org {
 
                     class ObservablePlugin : public ReaderPlugin {
                     public:
-                        class PluginObserver : public org::eclipse::keyple::util::Observer<std::shared_ptr<PluginEvent>> {
+                        class PluginObserver : public org::eclipse::keyple::util::Observer<PluginEvent> {
                         public:
-                            virtual void update(std::shared_ptr<PluginEvent> event_Renamed) = 0;
+                            virtual void update(std::shared_ptr<PluginEvent> event) = 0;
                         };
 
                     public:

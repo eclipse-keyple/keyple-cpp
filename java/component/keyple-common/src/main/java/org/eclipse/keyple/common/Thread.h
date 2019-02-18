@@ -3,6 +3,7 @@
 #if defined(_WIN32)
 	#include <windows.h>
 #else
+	#include <pthread.h>
 	#include <unistd.h>
 #endif
 
@@ -18,7 +19,7 @@ public:
 	 * Automatically generated names are of the form "Thread-"+n, where n is an
 	 * integer.
 	 */
-	Thread() : name("Thread-x"), interrupted(false)
+	Thread() : name("Thread-x"), interrupted(false), tid(0), running(0), detached(0)
 	{
 	}
 
@@ -35,6 +36,19 @@ public:
 	}
 
 	/**
+	 * Destructor
+	 */
+	~Thread()
+	{
+		if (running == 1 && detached == 0) {
+	        pthread_detach(tid);
+	    }
+	    if (running == 1) {
+	        pthread_cancel(tid);
+	    }
+	}
+
+	/**
 	 * Causes this thread to begin execution.
 	 *
 	 * The result is that two threads are running concurrently: the current
@@ -48,7 +62,76 @@ public:
 	 */
 	void start()
 	{
+		int result;
+
 		interrupted = false;
+
+		result = pthread_create(&tid, NULL, runThread, this);
+    	if (result == 0)
+        	running = 1;
+	}
+
+	/**
+	 * In the call to pthread_create() the last argument is a void pointer to a
+	 * data structure which will be passed to the runThread() function when it
+	 * is called. Since the input argument to the runThread() is the Thread
+	 * class this pointer, we can cast it to a Thread pointer then use it to
+	 * call the Thread::run() method. Due to polymorphism, the Thread subclass
+	 * run() method will be called to carry out the thread’s action.
+	 */
+	static void* runThread(void* arg)
+	{
+    	return ((Thread*)arg)->run();
+	}
+
+	/**
+	 * By default Pthreads are joinable. meaning you can wait for them to
+	 * complete with a call to pthread_join(). The Thread class join method
+	 * checks to see if the thread is running, then calls this function to wait
+	 * for the thread to complete. If the call is successful the thread is
+	 * marked as detached since pthread_join() automatically detatches a thread.
+	 */
+	int join()
+	{
+	    int result = -1;
+
+	    if (running == 1) {
+	        result = pthread_join(tid, NULL);
+	        if (result == 0) {
+	            detached = 1;
+	        }
+	    }
+
+	    return result;
+	}
+
+	/**
+	 * This is a utility method that detaches a thread when the caller doesn’t
+	 * want to wait for the thread to complete. If the thread is running and not
+	 * detached, pthread_detach() is called and the thread is flagged as
+	 * detached if the call is successful.
+	 */
+	int detach()
+	{
+		int result = -1;
+
+		if (running == 1 && detached == 0) {
+		    result = pthread_detach(tid);
+		    if (result == 0) {
+		        detached = 1;
+		    }
+		}
+
+		return result;
+	}
+
+	/**
+	 * This is another utility method that returns the thread ID for display or
+	 * logging purposes.
+	 */
+	pthread_t self()
+	{
+    	return tid;
 	}
 
 	void setDaemon(bool on)
@@ -113,6 +196,8 @@ public:
 		interrupted = true;
 	}
 
+	virtual void *run() = 0;
+
 private:
 	/**
 	 *
@@ -123,4 +208,19 @@ private:
 	 *
 	 */
 	bool interrupted;
+
+	/**
+	 *
+	 */
+	pthread_t tid;
+
+	/**
+	 *
+	 */
+	int running;
+
+	/**
+	 *
+	 */
+	int detached;
 };

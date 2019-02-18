@@ -67,7 +67,10 @@ public:
          */
         SpecificReaderObserver(ObservableReaderNotificationEngine *outerInstance); //super();
 
-        virtual void update(std::shared_ptr<ReaderEvent> event_Renamed);
+        /**
+         *
+         */
+        void update(std::shared_ptr<ReaderEvent> event) override;
     };
 
     /**
