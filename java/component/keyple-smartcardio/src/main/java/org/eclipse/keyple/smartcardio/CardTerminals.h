@@ -40,7 +40,7 @@ public:
 	#ifdef SCARD_AUTOALLOCATE
 		len = SCARD_AUTOALLOCATE;
 
-		ret = SCardListReaders(ctx, NULL, (LPWSTR)&pszReaderList, &len);
+		ret = SCardListReaders(ctx, NULL, (LPTSTR)&pszReaderList, &len);
  		if (ret != SCARD_S_SUCCESS) {
  			logger->debug("[CardTerminal::list] error listing readers\n");
  			return {};
