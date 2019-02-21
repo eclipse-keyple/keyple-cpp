@@ -16,7 +16,17 @@
 #include "Thread.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class EventThread; } } } } }
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace plugin {
+                    class EventThread;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -36,13 +46,16 @@ namespace org {
                 namespace plugin {
 
                     using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using KeypleReaderException =
+                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
 
-                    class EXPORT AbstractThreadedObservablePlugin : public AbstractObservablePlugin, public ObservablePlugin, public Object {
+                    class EXPORT AbstractThreadedObservablePlugin : public AbstractObservablePlugin,
+                                                                    public ObservablePlugin,
+                                                                    public Object {
 
-                    private:
+                      private:
                         class EventThread : public Thread {
-                        private:
+                          private:
                             /**
                              *
                              */
@@ -61,8 +74,9 @@ namespace org {
                             /**
                              * Constructor
                              */
-                        public:
-                            EventThread(std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance, const std::string &pluginName);
+                          public:
+                            EventThread(std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance,
+                                        const std::string &pluginName);
 
                             /**
                              * Marks the thread as one that should end when the last cardWaitTimeout occurs
@@ -72,9 +86,15 @@ namespace org {
                             virtual void *run();
                         };
 
-                    private:
-                        const std::shared_ptr<Logger> logger;
+                      private:
+                        /**
+                         *
+                         */
+                        const std::unique_ptr<Logger> logger;
 
+                        /**
+                         *
+                         */
                         static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 1000;
 
                         /**
@@ -87,14 +107,15 @@ namespace org {
                          *
                          * This timeout value will determined the latency to detect changes
                          */
-                    protected:
+                      protected:
                         long long threadWaitTimeout = SETTING_THREAD_TIMEOUT_DEFAULT;
 
                         /**
                          * List of names of the connected readers
                          */
-                    private:
-                        std::shared_ptr<std::set<std::string>> nativeReadersNames = std::make_shared<std::set<std::string>>(std::set<std::string>());
+                      private:
+                        std::shared_ptr<std::set<std::string>> nativeReadersNames =
+                            std::make_shared<std::set<std::string>>(std::set<std::string>());
 
                         /**
                          * Returns the list of names of all connected readers
@@ -102,7 +123,7 @@ namespace org {
                          * @return readers names list
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                    protected:
+                      protected:
                         virtual std::shared_ptr<std::set<std::string>> getNativeReadersNames() = 0;
 
                         /**
@@ -110,7 +131,7 @@ namespace org {
                          *
                          * @param name name of the plugin
                          */
-                    public:
+                      public:
                         AbstractThreadedObservablePlugin(const std::string &name);
 
                         /**
@@ -118,7 +139,7 @@ namespace org {
                          * <p>
                          * The thread is created if it does not already exist
                          */
-                    protected:
+                      protected:
                         void startObservation() override;
 
                         /**
@@ -130,25 +151,24 @@ namespace org {
                          * Thread in charge of reporting live events
                          */
 
-
                         /**
                          * Called when the class is unloaded. Attempt to do a clean exit.
                          *
                          * @throws Throwable a generic exception
                          */
-                    protected:
+                      protected:
                         void finalize() throw(std::runtime_error) override;
 
-protected:
-
-                        std::shared_ptr<AbstractThreadedObservablePlugin> shared_from_this() {
-                            return std::static_pointer_cast<AbstractThreadedObservablePlugin>(AbstractObservablePlugin::shared_from_this());
+                      protected:
+                        std::shared_ptr<AbstractThreadedObservablePlugin> shared_from_this()
+                        {
+                            return std::static_pointer_cast<AbstractThreadedObservablePlugin>(
+                                AbstractObservablePlugin::shared_from_this());
                         }
-
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace plugin
+            }     // namespace seproxy
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

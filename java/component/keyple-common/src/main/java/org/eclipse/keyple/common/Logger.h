@@ -2,108 +2,140 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 class Logger {
-private:
-	bool traceEnabled;
-	bool debugEnabled;
 
-	std::string className;
+  private:
+    /**
+     *
+     */
+    bool traceEnabled;
 
-	void log(const char *s)
-	{
-		while (s && *s) {
-			if (*s=='%' && *++s!='%')	// make sure that there wasn't meant to be more arguments
-							// %% represents plain % in a format string
-				 throw std::runtime_error("invalid format: missing arguments");
-			std::cout << *s++;
-		}
-	}
+    /**
+     *
+     */
+    bool debugEnabled;
 
-public:
-	/**
+    /**
+     *
+     */
+    //const std::string className;
+
+    void log(const char *s)
+    {
+        while (s && *s)
+        {
+            if (*s == '%' && *++s != '%') // make sure that there wasn't meant to be more arguments
+                                          // %% represents plain % in a format string
+                throw std::runtime_error("invalid format: missing arguments");
+            std::cout << *s++;
+        }
+    }
+
+  public:
+    /**
 	 * Constructor
 	 */
-	Logger(const char *className)
-	: className(className)
-	{
-		traceEnabled = 0;
-		debugEnabled = 0;
-	}
+    Logger(const std::string &className)// : className(className)
+    {
+        std::cout << "[Logger::Logger] creating logger for class " << std::endl;
 
-	bool isTraceEnabled() {
-		return traceEnabled;
-	}
+        traceEnabled = 0;
+        debugEnabled = 0;
+    }
 
-	bool isDebugEnabled() {
-		return debugEnabled;
-	}
+    /**
+     * Destructor
+     */
+    ~Logger()
+    {
+        std::cout << "[Logger::~Logger] destroying logger" << std::endl;
+    }
 
-	void trace(const char* s)
-	{
-		log(s);
-	}
+    bool isTraceEnabled()
+    {
+        return traceEnabled;
+    }
 
-	template<typename T, typename... Args>
-	void trace(const char* s, T value, Args... args) {
-		while (s && *s) {
-			if (*s=='%' && *++s!='%') {	// a format specifier (ignore which one it is)
-				std::cout << value;		// use first non-format argument
-				return trace(++s, args...); 	// ``peel off'' first argument
-			}
-			std::cout << *s++;
-		}
-		throw std::runtime_error("extra arguments provided to printf");
-	}
+    bool isDebugEnabled()
+    {
+        return debugEnabled;
+    }
 
-	void debug(const char* s)
-	{
-		log(s);
-	}
+    void trace(const char *s)
+    {
+        log(s);
+    }
 
-	template<typename T, typename... Args>
-	void debug(const char* s, T value, Args... args) {
-		while (s && *s) {
-			if (*s=='%' && *++s!='%') {	// a format specifier (ignore which one it is)
-				std::cout << value;		// use first non-format argument
-				return debug(++s, args...); 	// ``peel off'' first argument
-			}
-			std::cout << *s++;
-		}
-		throw std::runtime_error("extra arguments provided to printf");
-	}
+    template <typename T, typename... Args> void trace(const char *s, T value, Args... args)
+    {
+        while (s && *s)
+        {
+            if (*s == '%' && *++s != '%')
+            {                               // a format specifier (ignore which one it is)
+                std::cout << value;         // use first non-format argument
+                return trace(++s, args...); // ``peel off'' first argument
+            }
+            std::cout << *s++;
+        }
+        throw std::runtime_error("extra arguments provided to printf");
+    }
 
-	void warn(const char* s)
-	{
-		log(s);
-	}
+    void debug(const char *s)
+    {
+        log(s);
+    }
 
-	template<typename T, typename... Args>
-	void warn(const char *s, T value, Args... args) {
-		while (s && *s) {
-			if (*s=='%' && *++s!='%') {	// a format specifier (ignore which one it is)
-				std::cout << value;		// use first non-format argument
-				return warn(++s, args...); 	// ``peel off'' first argument
-			}
-			std::cout << *s++;
-		}
-		throw std::runtime_error("extra arguments provided to printf");
-	}
+    template <typename T, typename... Args> void debug(const char *s, T value, Args... args)
+    {
+        while (s && *s)
+        {
+            if (*s == '%' && *++s != '%')
+            {                               // a format specifier (ignore which one it is)
+                std::cout << value;         // use first non-format argument
+                return debug(++s, args...); // ``peel off'' first argument
+            }
+            std::cout << *s++;
+        }
+        throw std::runtime_error("extra arguments provided to printf");
+    }
 
-	void info(const char* s)
-	{
-		log(s);
-	}
+    void warn(const char *s)
+    {
+        log(s);
+    }
 
-	template<typename T, typename... Args>
-	void info(const char *s, T value, Args... args) {
-		while (s && *s) {
-			if (*s=='%' && *++s!='%') {	// a format specifier (ignore which one it is)
-				std::cout << value;		// use first non-format argument
-				return info(++s, args...); 	// ``peel off'' first argument
-			}
-			std::cout << *s++;
-		}
-		throw std::runtime_error("extra arguments provided to printf");
-	}
+    template <typename T, typename... Args> void warn(const char *s, T value, Args... args)
+    {
+        while (s && *s)
+        {
+            if (*s == '%' && *++s != '%')
+            {                              // a format specifier (ignore which one it is)
+                std::cout << value;        // use first non-format argument
+                return warn(++s, args...); // ``peel off'' first argument
+            }
+            std::cout << *s++;
+        }
+        throw std::runtime_error("extra arguments provided to printf");
+    }
+
+    void info(const char *s)
+    {
+        log(s);
+    }
+
+    template <typename T, typename... Args> void info(const char *s, T value, Args... args)
+    {
+        while (s && *s)
+        {
+            if (*s == '%' && *++s != '%')
+            {                              // a format specifier (ignore which one it is)
+                std::cout << value;        // use first non-format argument
+                return info(++s, args...); // ``peel off'' first argument
+            }
+            std::cout << *s++;
+        }
+        throw std::runtime_error("extra arguments provided to printf");
+    }
 };

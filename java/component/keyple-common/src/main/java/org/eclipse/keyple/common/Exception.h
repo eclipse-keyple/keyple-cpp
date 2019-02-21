@@ -2,15 +2,18 @@
 
 #include <exception>
 #include <stdexcept>
+#include <iostream>
 
 class Exception : public std::exception
 {
 public:
-	Exception(const std::string &message) {
+    Exception(const std::string &message) : message(message), cause("no cause")
+    {
 
 	}
 
-	Exception(const std::string &message, std::runtime_error cause) {
+	Exception(const std::string &message, const std::runtime_error cause) : message(message), cause(cause)
+    {
 
 	}
 
@@ -24,7 +27,7 @@ public:
 	 * @return the detail message string of this Throwable instance (which may
 	 * be null).
 	 */
-	std::string getMessage()
+	std::string getMessage() const
 	{
 		return message;
 	}
@@ -47,19 +50,28 @@ public:
 	 * @return the cause of this throwable or null if the cause is nonexistent
 	 *         or unknown.
 	 */
-	std::string getCause()
+	const std::runtime_error getCause() const
 	{
 		return cause;
 	}
+
+    /**
+     *
+     */
+    friend std::ostream& operator<<(std::ostream &os, const Exception &e)
+    {
+        os << "message: " << e.getMessage() << ", cause: " << e.getCause().what();
+        return os;
+    }
 
 private:
 	/**
 	 * Part of Jave Throwable class.
 	 */
-	std::string message;
+	const std::string message;
 
 	/**
 	 *
 	 */
-	std::string cause;
+	const std::runtime_error cause;
 };

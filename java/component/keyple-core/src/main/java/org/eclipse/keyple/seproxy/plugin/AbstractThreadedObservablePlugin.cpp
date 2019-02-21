@@ -15,7 +15,7 @@ using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
 using PluginEvent = org::eclipse::keyple::seproxy::event::PluginEvent;
 using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
 
-const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractThreadedObservablePlugin));
+const std::unique_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractThreadedObservablePlugin));
 std::set<std::string> _set;
 std::shared_ptr<std::set<std::string>> nativeReadersNames = std::make_shared<std::set<std::string>>(_set);
 
@@ -106,7 +106,7 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                         std::shared_ptr<SeReader> reader = outerInstance->getNativeReader(readerName);
                         outerInstance->readers->insert(reader);
                         outerInstance->AbstractLoggedObservable::notifyObservers(std::make_shared<PluginEvent>(this->pluginName, reader->getName(), PluginEvent::EventType::READER_CONNECTED));
-                        outerInstance->logger->trace("[{}][{}] Plugin thread => Add plugged reader to readers list.", this->pluginName, reader->getName());
+                        outerInstance->logger->trace("[%s] Plugin thread => Add plugged reader to readers list.", f_name, this->pluginName, reader->getName());
                         /* add reader name to the current list */
                         outerInstance->nativeReadersNames->insert(readerName);
                     }
@@ -120,11 +120,13 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
     }
     catch (InterruptedException &e) {
         e.printStackTrace();
-        outerInstance->logger->warn("[{}] An exception occurred while monitoring plugin: {}, cause {}", this->pluginName, e.getMessage(), e.getCause());
+        outerInstance->logger->warn("[%s] An exception occurred while monitoring plugin: %s, message: %scause %s", f_name, this->pluginName, e.getMessage(), e.getCause().what());
     }
     catch (KeypleReaderException &e) {
         e.printStackTrace();
-        outerInstance->logger->warn("[{}] An exception occurred while monitoring plugin: {}, cause {}", this->pluginName, e.what(), e.getCause());
+        outerInstance->logger->warn(
+            "[%s] An exception occurred while monitoring plugin: %s, message: %scause %s", f_name,
+            this->pluginName, e.getMessage(), e.getCause().what());
     }
 
     return NULL;

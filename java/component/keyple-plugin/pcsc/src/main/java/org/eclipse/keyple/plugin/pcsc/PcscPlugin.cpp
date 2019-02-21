@@ -39,46 +39,43 @@ std::unordered_map<std::string, std::string> PcscPlugin::getParameters() {
     return this->getParameters();
 }
 
-void PcscPlugin::setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument, KeypleBaseException) {
+void PcscPlugin::setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument, KeypleBaseException)
+{
 
 }
 
-std::shared_ptr<PcscPlugin> PcscPlugin::setLogging(bool logging) {
+std::shared_ptr<PcscPlugin> PcscPlugin::setLogging(bool logging)
+{
     this->logging = logging;
+
     return std::dynamic_pointer_cast<PcscPlugin>(shared_from_this());
 }
 
-std::shared_ptr<std::set<std::string>> PcscPlugin::getNativeReadersNames()
-throw(KeypleReaderException)
+std::shared_ptr<std::set<std::string>> PcscPlugin::getNativeReadersNames() throw(KeypleReaderException)
 {
     static const char *f_name = "PcscPlugin::getNativeReadersNames";
 
-    logger->debug("[%s] creating new native readers names list\n", f_name);
-    std::shared_ptr<std::set<std::string>> nativeReadersNames =
-            std::make_shared<std::set<std::string>>(std::set<std::string>());
-
-    logger->debug("[%s] retrieving card terminals\n", f_name);
+    nativeReadersNames.clear();
     std::shared_ptr<CardTerminals> terminals = getCardTerminals();
 
     logger->debug("[%s] filling native readers name list with card terminal items\n", f_name);
     try {
         for (auto &term : terminals->list()) {
-            nativeReadersNames->insert(term.getName());
+            logger->debug("[%s] reader: %s\n", f_name, term.getName());
+            nativeReadersNames.insert(term.getName());
         }
-    }
-    catch (CardException &e) {
-        if (e.getCause().find("SCARD_E_NO_READERS_AVAILABLE") != std::string::npos) {
+    } catch (CardException &e) {
+        std::string cause = e.getCause().what();
+        if (!cause.compare("SCARD_E_NO_READERS_AVAILABLE")) {
             logger->trace("[%s] no reader available\n", f_name);
-        }
-        else {
+        } else {
             logger->trace("[%s] terminal list is not accessible, name: %s, exception: %s\n",
                           f_name, this->getName(), e.getMessage());
             throw std::shared_ptr<KeypleReaderException>(new KeypleReaderException("Could not access terminals list")); // Alex: 'e' should be in exception constructor but...
         }
     }
 
-    logger->debug("[%s] done \n", f_name);
-    return nativeReadersNames;
+    return std::make_shared<std::set<std::string>>(nativeReadersNames);
 }
 
 std::shared_ptr<std::set<std::shared_ptr<SeReader>>> PcscPlugin::initNativeReaders() throw(KeypleReaderException)
@@ -97,7 +94,8 @@ std::shared_ptr<std::set<std::shared_ptr<SeReader>>> PcscPlugin::initNativeReade
     }
     catch (CardException &e) {
         logger->debug("[PcscPlugin::initNativeReaders] CardException\n");
-        if (e.getCause().find("SCARD_E_NO_READERS_AVAILABLE") != std::string::npos) {
+        std::string cause = e.getCause().what();
+        if (!cause.compare("SCARD_E_NO_READERS_AVAILABLE")) {
             logger->trace("No reader available.");
         }
         else {
