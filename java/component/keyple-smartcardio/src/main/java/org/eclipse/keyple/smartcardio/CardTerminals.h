@@ -83,7 +83,7 @@ class CardTerminals {
     }
 
     /**
-	 * constructor
+	 * Constructor
 	 *
 	 * Constructs a new CardTerminals object.
 	 *
@@ -94,6 +94,13 @@ class CardTerminals {
     CardTerminals()
     {
         logger->debug("[CardTerminal::CardTerminal]\n");
+    }
+
+    /**
+     * Destructor
+     */
+    ~CardTerminals()
+    {
     }
 
   protected:
@@ -111,5 +118,5 @@ class CardTerminals {
     /**
 	 *
 	 */
-    std::unique_ptr<Logger> logger = LoggerFactory::getLogger(typeid(this));
+    std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(this));
 };

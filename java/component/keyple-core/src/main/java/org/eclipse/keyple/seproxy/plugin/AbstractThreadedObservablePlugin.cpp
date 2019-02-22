@@ -15,7 +15,7 @@ using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
 using PluginEvent = org::eclipse::keyple::seproxy::event::PluginEvent;
 using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
 
-const std::unique_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractThreadedObservablePlugin));
+const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractThreadedObservablePlugin));
 std::set<std::string> _set;
 std::shared_ptr<std::set<std::string>> nativeReadersNames = std::make_shared<std::set<std::string>>(_set);
 

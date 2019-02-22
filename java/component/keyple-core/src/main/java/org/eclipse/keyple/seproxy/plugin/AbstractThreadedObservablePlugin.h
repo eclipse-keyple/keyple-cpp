@@ -90,7 +90,7 @@ namespace org {
                         /**
                          *
                          */
-                        const std::unique_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger;
 
                         /**
                          *

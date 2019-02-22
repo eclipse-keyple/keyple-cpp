@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <memory>
 #include <typeinfo>
 
@@ -8,9 +9,12 @@
 class LoggerFactory
 {
 public:
-    static std::unique_ptr<Logger> getLogger(const std::type_info &type)
+    static std::shared_ptr<Logger> getLogger(const std::type_info &type)
 	{
-		static Logger *logger = new Logger(type.name());
-		return std::unique_ptr<Logger>(logger);
+        static std::shared_ptr<Logger> logger;
+        if (!logger.get())
+            logger.reset(new Logger(type.name()));
+
+        return logger;
 	}
 };
