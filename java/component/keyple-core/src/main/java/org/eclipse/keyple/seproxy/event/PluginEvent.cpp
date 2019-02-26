@@ -45,10 +45,6 @@ namespace org {
                         return ordinalValue;
                     }
 
-                    std::string EventType::toString() {
-                        return nameValue;
-                    }
-
                     EventType EventType::valueOf(const std::string &name) {
                         for (auto enumInstance : EventType::valueList) {
                             if (enumInstance.nameValue == name) {

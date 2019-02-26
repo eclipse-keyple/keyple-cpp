@@ -22,6 +22,7 @@
 /* Common */
 #include "Export.h"
 #include "Logger.h"
+#include "LoggerFactory.h"
 #include "System.h"
 
 /* Core */
@@ -57,6 +58,8 @@ using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSet
 using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
 using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 using SelectionStatus = org::eclipse::keyple::seproxy::message::SelectionStatus;
+using Logger = org::eclipse::keyple::common::Logger;
+using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
 /**
     * Manage the loop processing for SeRequest transmission in a set and for SeResponse reception in a
@@ -222,7 +225,7 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger;
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractLocalReader));
 
     /**
      *

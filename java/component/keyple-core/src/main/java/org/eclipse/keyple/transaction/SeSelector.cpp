@@ -6,9 +6,6 @@
 #include "ByteArrayUtils.h"
 #include "SeRequest.h"
 
-/* Common */
-#include "LoggerFactory.h"
-
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -19,8 +16,6 @@ using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
 using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
 using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
 using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-
-const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelector));
 
 std::string SeSelector::getAtrRegex() {
     return atrRegex;

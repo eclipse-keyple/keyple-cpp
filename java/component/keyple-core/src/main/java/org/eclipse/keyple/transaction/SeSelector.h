@@ -1,21 +1,3 @@
-#pragma once
-
-#include <set>
-#include "MatchingSe.h"
-#include "../seproxy/ChannelState.h"
-#include <string>
-#include <unordered_set>
-#include <vector>
-#include <typeindex>
-#include <memory>
-
-#include "Logger.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequest; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -27,17 +9,68 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <set>
+#include "MatchingSe.h"
+#include "../seproxy/ChannelState.h"
+#include <string>
+#include <unordered_set>
+#include <vector>
+#include <typeindex>
+#include <memory>
+
+/* Common */
+#include "Logger.h"
+#include "LoggerFactory.h"
+
+/* Forward class declarations */
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace message {
+                    class ApduRequest;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace protocol {
+                    class SeProtocol;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace message {
+                    class SeRequest;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace transaction {
 
-                using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
-                using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
-                using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-//                using org::slf4j::Logger;
-//                using org::slf4j::LoggerFactory;
+                using ChannelState  = org::eclipse::keyple::seproxy::ChannelState;
+                using ApduRequest   = org::eclipse::keyple::seproxy::message::ApduRequest;
+                using SeRequest     = org::eclipse::keyple::seproxy::message::SeRequest;
+                using SeProtocol    = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                using Logger        = org::eclipse::keyple::common::Logger;
+                using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
                 /**
                  * The SeSelector class groups the information and methods used to select a particular secure
@@ -47,19 +80,21 @@ namespace org {
                     /**
                      * SelectMode indicates how to carry out the application selection in accordance with ISO7816-4
                      */
-                public:
-                    enum class SelectMode {
+                  public:
+                    enum class SelectMode
+                    {
                         FIRST,
                         NEXT
                     };
 
-                private:
-                    const std::shared_ptr<Logger> logger;
+                  private:
+                    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelector));
 
-                protected:
+                  protected:
                     std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList;
                     std::shared_ptr<std::set<int>> selectApplicationSuccessfulStatusCodes;
-                private:
+
+                  private:
                     std::type_index matchingClass;
                     std::type_index selectorClass;
                     const ChannelState channelState;
@@ -70,7 +105,7 @@ namespace org {
                     const bool selectionByAid;
                     std::string extraInfo;
 
-                public:
+                  public:
                     virtual std::string getAtrRegex();
 
                     virtual std::vector<char> &getAid();
@@ -91,8 +126,9 @@ namespace org {
                      *        SE
                      * @param extraInfo information string (to be printed in logs)
                      */
-                public:
-                    SeSelector(const std::string &atrRegex, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, const std::string &extraInfo);
+                  public:
+                    SeSelector(const std::string &atrRegex, ChannelState channelState,
+                               std::shared_ptr<SeProtocol> protocolFlag, const std::string &extraInfo);
 
                     /**
                      * Instantiate a SeSelector object with the selection data (AID), dedicated to select a SE that
@@ -108,7 +144,8 @@ namespace org {
                      *        SE
                      * @param extraInfo information string (to be printed in logs)
                      */
-                    SeSelector(std::vector<char> &aid, SelectMode selectMode, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, const std::string &extraInfo);
+                    SeSelector(std::vector<char> &aid, SelectMode selectMode, ChannelState channelState,
+                               std::shared_ptr<SeProtocol> protocolFlag, const std::string &extraInfo);
 
                     /**
                      * @return the protocolFlag defined by the constructor
@@ -120,7 +157,8 @@ namespace org {
                      *
                      * @param seSelectionApduRequestList the list of requests
                      */
-                    void setSelectionApduRequestList(std::vector<std::shared_ptr<ApduRequest>> &seSelectionApduRequestList);
+                    void setSelectionApduRequestList(
+                        std::vector<std::shared_ptr<ApduRequest>> &seSelectionApduRequestList);
 
                     /**
                      * Returns a selection SeRequest built from the information provided in the constructor and
@@ -135,7 +173,7 @@ namespace org {
                      *
                      * @return a string to be printed in logs
                      */
-                public:
+                  public:
                     std::string getExtraInfo();
 
                     /**
@@ -148,7 +186,7 @@ namespace org {
                      *
                      * @param matchingClass the expected class for this SeSelector
                      */
-                protected:
+                  protected:
                     void setMatchingClass(std::type_info matchingClass);
 
                     /**
@@ -171,7 +209,7 @@ namespace org {
                      */
                     std::type_index &getMatchingClass();
 
-                public:
+                  public:
                     /**
                      * The default value for the selectorClass (unless setSelectorClass is used) is SeSelector.class
                      *
@@ -180,7 +218,7 @@ namespace org {
                     std::type_index &getSelectorClass();
                 };
 
-            }
-        }
-    }
-}
+            } // namespace transaction
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org

@@ -23,6 +23,7 @@
 /* Common */
 #include "Export.h"
 #include "Logger.h"
+#include "LoggerFactory.h"
 
 /* Core */
 #include "AbstractThreadedObservablePlugin.h"
@@ -84,24 +85,30 @@ namespace org {
                     using AbstractThreadedObservablePlugin =
                         org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
                     using PluginEvent = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+                    using Logger        = org::eclipse::keyple::common::Logger;
 
                     class EXPORT PcscPlugin : public AbstractThreadedObservablePlugin {
 
                       private:
-                        const std::shared_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PcscPlugin));
 
                         static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 1000;
-
-                        /**
-                         * singleton instance of SeProxyService
-                         */
-                        static const std::shared_ptr<PcscPlugin> uniqueInstance;
 
                         static std::shared_ptr<TerminalFactory> factory;
 
                         bool logging = false;
 
+                      public:
+                        /**
+                         * Constructor
+                         */
                         PcscPlugin();
+
+                        /**
+                         * Destructor
+                         */
+                        ~PcscPlugin();
 
                         /**
                          * Gets the single instance of PcscPlugin.

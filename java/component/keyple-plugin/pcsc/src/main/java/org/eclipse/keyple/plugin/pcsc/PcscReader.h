@@ -24,6 +24,7 @@
 /* Common */
 #include "Export.h"
 #include "Logger.h"
+#include "LoggerFactory.h"
 
 /* Core */
 #include "AbstractThreadedLocalReader.h"
@@ -34,7 +35,17 @@
 #include "CardTerminal.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace protocol {
+                    class SeProtocol;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
 
 namespace org {
     namespace eclipse {
@@ -43,16 +54,20 @@ namespace org {
                 namespace pcsc {
 
                     using namespace org::eclipse::keyple::seproxy::exception;
-                    using AbstractThreadedLocalReader = org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader;
-                    using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                    using AbstractThreadedLocalReader =
+                        org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader;
+                    using SeProtocol       = org::eclipse::keyple::seproxy::protocol::SeProtocol;
                     using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-                    using ReaderEvent = org::eclipse::keyple::seproxy::event::ReaderEvent;
+                    using ReaderEvent      = org::eclipse::keyple::seproxy::event::ReaderEvent;
+                    using LoggerFactory    = org::eclipse::keyple::common::LoggerFactory;
+                    using Logger           = org::eclipse::keyple::common::Logger;
 
                     class EXPORT PcscReader : public AbstractThreadedLocalReader {
 
-                    private:
-                        const std::shared_ptr<Logger> logger;
-                    public:
+                      private:
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PcscReader));
+
+                      public:
                         static const std::string SETTING_KEY_TRANSMISSION_MODE;
                         static const std::string SETTING_TRANSMISSION_MODE_CONTACTS;
                         static const std::string SETTING_TRANSMISSION_MODE_CONTACTLESS;
@@ -72,7 +87,7 @@ namespace org {
                         static const std::string SETTING_KEY_THREAD_TIMEOUT;
                         static const std::string SETTING_KEY_LOGGING;
 
-                    private:
+                      private:
                         static const std::string PROTOCOL_T0;
                         static const std::string PROTOCOL_T1;
                         static const std::string PROTOCOL_T_CL;
@@ -83,15 +98,14 @@ namespace org {
                         const std::shared_ptr<CardTerminal> terminal;
 
                         std::string parameterCardProtocol;
-                        bool cardExclusiveMode = false;
-                        bool cardReset = false;
+                        bool cardExclusiveMode            = false;
+                        bool cardReset                    = false;
                         TransmissionMode transmissionMode = static_cast<TransmissionMode>(0);
 
                         std::shared_ptr<Card> card;
                         std::shared_ptr<CardChannel> channel;
 
                         bool logging = false;
-
 
                         /**
                          * This constructor should only be called by PcscPlugin PCSC reader parameters are initialized
@@ -101,15 +115,15 @@ namespace org {
                          * @param pluginName the name of the plugin
                          * @param terminal the PC/SC terminal
                          */
-                    public:
+                      public:
                         PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal);
 
                         void closePhysicalChannel() throw(KeypleChannelStateException) override;
 
-                    public:
+                      public:
                         bool isSePresent() throw(NoStackTraceThrowable) override;
 
-                    protected:
+                      protected:
                         bool waitForCardPresent(long long timeout) throw(NoStackTraceThrowable) override;
 
                         bool waitForCardAbsent(long long timeout) throw(NoStackTraceThrowable) override;
@@ -121,7 +135,8 @@ namespace org {
                          * @return apduOut buffer
                          * @throws KeypleIOReaderException if the transmission failed
                          */
-                        std::vector<char> transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
+                        std::vector<char>
+                        transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
 
                         /**
                          * Tells if the current SE protocol matches the provided protocol flag. If the protocol flag is
@@ -132,7 +147,8 @@ namespace org {
                          * @return true if the current SE matches the protocol flag
                          * @throws KeypleReaderException if the protocol mask is not found
                          */
-                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(KeypleReaderException) override;
+                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(
+                            KeypleReaderException) override;
 
                         /**
                          * Set a parameter.
@@ -171,12 +187,14 @@ namespace org {
                          *
                          *
                          */
-                    public:
-                        void setParameter(const std::string &name, const std::string &value) throw(std::invalid_argument, KeypleBaseException) override;
+                      public:
+                        void setParameter(const std::string &name,
+                                          const std::string &value) throw(std::invalid_argument,
+                                                                          KeypleBaseException) override;
 
                         std::unordered_map<std::string, std::string> getParameters() override;
 
-                    protected:
+                      protected:
                         std::vector<char> getATR() override;
 
                         /**
@@ -209,15 +227,17 @@ namespace org {
                          *
                          * @return the current transmission mode
                          */
-                    public:
+                      public:
                         TransmissionMode getTransmissionMode() override;
 
-protected:
-                        std::shared_ptr<PcscReader> shared_from_this() {
-                            return std::static_pointer_cast<PcscReader>(AbstractThreadedLocalReader::shared_from_this());
+                      protected:
+                        std::shared_ptr<PcscReader> shared_from_this()
+                        {
+                            return std::static_pointer_cast<PcscReader>(
+                                AbstractThreadedLocalReader::shared_from_this());
                         }
 
-                    public:
+                      public:
                         bool equals(std::shared_ptr<void> o) override;
 
                         int hashCode() override;
@@ -227,8 +247,8 @@ protected:
                         void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace pcsc
+            }     // namespace plugin
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

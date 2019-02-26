@@ -9,8 +9,7 @@
 #include "../../util/ByteArrayUtils.h"
 #include "../exception/KeypleApplicationSelectionException.h"
 #include "../protocol/SeProtocolSetting.h"
-#include "Logger.h"
-#include "LoggerFactory.h"
+
 #include <typeinfo>
 #include "SeResponse.h"
 #include "SeResponseSet.h"
@@ -38,8 +37,7 @@ namespace org {
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
                     using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-
-                    std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractLocalReader));
+               
                     std::vector<char> AbstractLocalReader::getResponseHackRequestBytes = org::eclipse::keyple::util::ByteArrayUtils::fromHex("00C0000000");
 
                     AbstractLocalReader::AbstractLocalReader(const std::string &pluginName, const std::string &readerName) : AbstractObservableReader(pluginName, readerName) {
@@ -53,7 +51,7 @@ namespace org {
 
                     void AbstractLocalReader::cardRemoved() {
                         if (presenceNotified) {
-//                            notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_REMOVAL, nullptr));
+                            //notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_REMOVAL, nullptr));
                             presenceNotified = false;
                         }
                     }
@@ -108,12 +106,12 @@ namespace org {
 
                     std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(std::shared_ptr<ApduRequest> apduRequest) throw(KeypleIOReaderException) {
                         std::shared_ptr<ApduResponse> apduResponse;
-//                        if (logger->isTraceEnabled()) {
-//                            long long timeStamp = System::nanoTime();
-//                            double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
-//                            this->before = timeStamp;
-//                            logger->trace("[{}] processApduRequest => {}, elapsed {} ms.", this->getName(), apduRequest, elapsedMs);
-//                        }
+                        if (logger->isTraceEnabled()) {
+                            long long timeStamp = System::nanoTime();
+                            double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
+                            this->before = timeStamp;
+                            logger->trace("reader: %s, processApduRequest => %s, elapsed %llu ms", this->getName(), apduRequest, elapsedMs);
+                        }
 
                         std::vector<char> buffer = apduRequest->getBytes();
                         std::vector<char> resp = transmitApdu(buffer);
@@ -129,7 +127,7 @@ namespace org {
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
                             this->before = timeStamp;
-//                            logger->trace("[{}] processApduRequest => {}, elapsed {} ms.", this->getName(), apduResponse, elapsedMs);
+                            logger->trace("reader: %s, processApduRequest: %s, elapsed: %llu ms.", this->getName(), apduResponse, elapsedMs);
                         }
                         return apduResponse;
                     }
@@ -284,7 +282,7 @@ namespace org {
 
                         std::vector<std::shared_ptr<ApduResponse>> apduResponseList;
 
-                        logger->trace("[{}] processSeRequest => Logical channel open = {}", isLogicalChannelOpen());
+                        logger->trace("processSeRequest => logical channel open = %d", isLogicalChannelOpen());
                         /*
                          * unless the selector is null, we try to open a logical channel; if the channel was open
                          * and the PO is still matching we won't redo the selection and just use the current

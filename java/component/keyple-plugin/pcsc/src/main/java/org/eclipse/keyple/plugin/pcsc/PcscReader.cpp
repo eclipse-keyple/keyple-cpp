@@ -1,7 +1,3 @@
-/* Common */
-#include "Logger.h"
-#include "LoggerFactory.h"
-
 /* Core */
 #include "ByteArrayUtils.h"
 #include "Protocol_Import.h"

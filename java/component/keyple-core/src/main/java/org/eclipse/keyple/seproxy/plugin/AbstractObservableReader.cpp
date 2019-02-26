@@ -39,7 +39,7 @@ namespace org {
 
                     void AbstractObservableReader::startObservation()
                     {
-                        logger->debug("[AbstractObservableReader::startObservation]\n");
+                        logger->debug("\n");
                     };
 
                     void AbstractObservableReader::stopObservation() {
@@ -47,11 +47,11 @@ namespace org {
 
                     void AbstractObservableReader::addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer)
                     {
-                        logger->debug("[AbstractObservableReader::addObserver] start the reader monitoring.");
+                        logger->debug("add observer\n");
 
                         // if an observer is added to an empty list, start the observation
                         if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
-                            logger->debug("Start the reader monitoring.");
+                            logger->debug("start the reader monitoring\n");
                             startObservation();
                         }
                         /*
@@ -60,20 +60,22 @@ namespace org {
                         AbstractLoggedObservable<ReaderEvent>::addObserver(std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<ReaderEvent>>(observer));
                     }
 
-                    void AbstractObservableReader::removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
+                    void AbstractObservableReader::removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer)
+                    {
+                        logger->debug("remove observer\n");
                         /*
                          * Alex: call super class function.
                          */
                         AbstractLoggedObservable<ReaderEvent>::removeObserver(std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<ReaderEvent>>(observer));
                         if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
-                            logger->debug("Stop the reader monitoring.");
+                            logger->debug("stop the reader monitoring\n");
                             stopObservation();
                         }
                     }
 
                     std::shared_ptr<SeResponseSet> AbstractObservableReader::transmitSet(std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException) {
                         if (requestSet == nullptr) {
-                            throw std::invalid_argument("seRequestSet must not be null");
+                            throw std::invalid_argument("seRequestSet must not be null\n");
                         }
 
                         std::shared_ptr<SeResponseSet> responseSet;
@@ -82,8 +84,7 @@ namespace org {
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
-//JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
-                            logger->debug("[{}] transmit => SEREQUESTSET = {}, elapsed {} ms.", getName(), requestSet->toString(), elapsedMs);
+                            logger->debug("[%s] transmit => SEREQUESTSET = %s, elapsed %d ms\n", getName(), requestSet->toString(), elapsedMs);
                         }
 
                         try {
@@ -93,7 +94,7 @@ namespace org {
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
-                            logger->debug("[{}] transmit => SEREQUESTSET channel failure. elapsed {}", elapsedMs);
+                            logger->debug("transmit => SEREQUESTSET channel failure. elapsed %d\n", elapsedMs);
                             /* Throw an exception with the responses collected so far. */
                             throw ex;
                         }
@@ -101,7 +102,7 @@ namespace org {
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
-                            logger->debug("[{}] transmit => SEREQUESTSET IO failure. elapsed {}", elapsedMs);
+                            logger->debug("transmit => SEREQUESTSET IO failure. elapsed %d\n", elapsedMs);
                             /* Throw an exception with the responses collected so far. */
                             throw ex;
                         }
@@ -110,8 +111,7 @@ namespace org {
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
                             this->before = timeStamp;
-//JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
-                            logger->debug("[{}] transmit => SERESPONSESET = {}, elapsed {} ms.", this->getName(), responseSet->toString(), elapsedMs);
+                            logger->debug("[%s] transmit => SERESPONSESET = %s, elapsed %d ms\n", this->getName(), responseSet->toString(), elapsedMs);
                         }
 
                         return responseSet;
@@ -119,7 +119,7 @@ namespace org {
 
                     std::shared_ptr<SeResponse> AbstractObservableReader::transmit(std::shared_ptr<SeRequest> seRequest) throw(KeypleReaderException) {
                         if (seRequest == nullptr) {
-                            throw std::invalid_argument("seRequest must not be null");
+                            throw std::invalid_argument("seRequest must not be null\n");
                         }
 
                         std::shared_ptr<SeResponse> seResponse = nullptr;
@@ -128,8 +128,7 @@ namespace org {
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
-//JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
-                            logger->debug("[{}] transmit => SEREQUEST = {}, elapsed {} ms.", this->getName(), seRequest->toString(), elapsedMs);
+                            logger->debug("[%s] transmit => SEREQUEST = %s, elapsed %d ms\n", this->getName(), seRequest->toString(), elapsedMs);
                         }
 
                         try {
@@ -139,7 +138,7 @@ namespace org {
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
-                            logger->debug("[{}] transmit => SEREQUEST channel failure. elapsed {}", this->getName(), elapsedMs);
+                            logger->debug("[%s] transmit => SEREQUEST channel failure. elapsed %d\n", this->getName(), elapsedMs);
                             /* Throw an exception with the responses collected so far (ex.getSeResponse()). */
                             throw ex;
                         }
@@ -147,7 +146,7 @@ namespace org {
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
-                            logger->debug("[{}] transmit => SEREQUEST IO failure. elapsed {}", this->getName(), elapsedMs);
+                            logger->debug("[%s] transmit => SEREQUEST IO failure. elapsed %d\n", this->getName(), elapsedMs);
                             /* Throw an exception with the responses collected so far (ex.getSeResponse()). */
                             throw ex;
                         }
@@ -156,8 +155,7 @@ namespace org {
                             long long timeStamp = System::nanoTime();
                             double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
                             this->before = timeStamp;
-//JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
-                            logger->debug("[{}] transmit => SERESPONSE = {}, elapsed {} ms.", this->getName(), seResponse->toString(), elapsedMs);
+                            logger->debug("[%s] transmit => SERESPONSE = %s, elapsed %d ms\n", this->getName(), seResponse->toString(), elapsedMs);
                         }
 
                         return seResponse;

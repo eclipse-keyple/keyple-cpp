@@ -13,7 +13,7 @@ public:
 #if defined(WIN32)
 		SYSTEMTIME time;
 		GetSystemTime(&time);
-		return ((time.wSecond * 1000) + time.wMilliseconds) * pow(10, 6);
+		return (long)((time.wSecond * 1000) + time.wMilliseconds) * pow(10, 6);
 #else
 		timespec ts;
    		// clock_gettime(CLOCK_MONOTONIC, &ts); // Works on FreeBSD

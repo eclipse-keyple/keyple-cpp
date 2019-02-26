@@ -82,7 +82,15 @@ namespace org {
 
                             int ordinal();
 
-                            std::string toString();
+                            /**
+                             *
+                             */
+                            friend std::ostream &operator<<(std::ostream &os, const EventType &e)
+                            {
+                                os << "name: " << e.name;
+
+                                return os;
+                            }
 
                             static EventType valueOf(const std::string &name);
                         };

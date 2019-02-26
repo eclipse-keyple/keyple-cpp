@@ -136,7 +136,7 @@ public:
 
 				int formatEnd = -1;
 				std::string index;
-				for (int i = percent + 1; i < input.length(); i++)
+				for (int i = percent + 1; i < (int)input.length(); i++)
 				{
 					if (input[i] == 's')
 					{
@@ -144,7 +144,7 @@ public:
 						formatEnd = i;
 						break;
 					}
-					else if (input[i] == '$' && i + 1 < input.length() && input[i + 1] == 's')
+					else if (input[i] == '$' && i + 1 < (int)input.length() && input[i + 1] == 's')
 					{
 						index = input.substr(percent + 1, i - percent - 1);
 						formatEnd = i + 1;
@@ -167,7 +167,7 @@ public:
 			}
 		}
 
-		if (lastFormatChar + 1 < input.length())
+		if (lastFormatChar + 1 < (int)input.length())
 			ss << input.substr(lastFormatChar + 1);
 
 		return ss.str();
@@ -248,7 +248,7 @@ public:
 
 				int formatEnd = -1;
 				std::string index;
-				for (int i = percent + 1; i < input.length(); i++)
+				for (int i = percent + 1; i < (int)input.length(); i++)
 				{
 					if (input[i] == 's')
 					{

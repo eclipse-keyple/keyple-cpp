@@ -90,6 +90,12 @@ namespace org {
 
                         int hashCode() override;
 
+                        friend std::ostream &operator<<(std::ostream &os, const ApduResponse &r)
+                        {
+                            os << r;
+                            return os;
+                        }
+
 protected:
                         void finalize() throw(std::runtime_error) override;
                     };

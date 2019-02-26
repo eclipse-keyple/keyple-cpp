@@ -19,6 +19,7 @@
 /* Common*/
 #include "Export.h"
 #include "Logger.h"
+#include "LoggerFactory.h"
 
 /* Core*/
 #include "AbstractLoggedObservable.h"
@@ -27,13 +28,81 @@
 #include "PluginEvent.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class PluginEvent; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class PluginObserver; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class ReaderPlugin; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderNotFoundException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace event {
+                    class PluginEvent;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace plugin {
+                    class AbstractObservableReader;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace exception {
+                    class KeypleReaderException;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace event {
+                    class PluginObserver;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                class ReaderPlugin;
+            }
+        } // namespace keyple
+    }     // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace exception {
+                    class KeypleReaderNotFoundException;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace message {
+                    class ProxyReader;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
 
 namespace org {
     namespace eclipse {
@@ -41,27 +110,32 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
 
-                    using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
+                    using ReaderPlugin     = org::eclipse::keyple::seproxy::ReaderPlugin;
                     using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
-                    using PluginEvent = org::eclipse::keyple::seproxy::event::PluginEvent;
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
-                    using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
+                    using PluginEvent      = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    using KeypleReaderException =
+                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using KeypleReaderNotFoundException =
+                        org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
+                    using ProxyReader   = org::eclipse::keyple::seproxy::message::ProxyReader;
+                    using Logger        = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
                     /**
                      * Observable plugin. These plugin can report when a reader is added or removed.
                      */
-                    class EXPORT AbstractObservablePlugin : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<PluginEvent>, public ReaderPlugin {
+                    class EXPORT AbstractObservablePlugin
+                        : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<PluginEvent>,
+                          public ReaderPlugin {
 
-                    private:
-                        const std::shared_ptr<Logger> logger;
+                      private:
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservablePlugin));
 
                         /**
                          * The list of readers
                          */
-                    protected:
+                      protected:
                         std::shared_ptr<std::set<std::shared_ptr<SeReader>>> readers = nullptr;
-
 
                         /**
                          * Instanciates a new ReaderPlugin. Retrieve the current readers list.
@@ -72,7 +146,12 @@ namespace org {
                          */
                         AbstractObservablePlugin(const std::string &name);
 
-                    public:
+                        /**
+                         *
+                         */
+                        ~AbstractObservablePlugin();
+
+                      public:
                         /**
                          *
                          */
@@ -86,10 +165,11 @@ namespace org {
                          *
                          * @return the current reader list, can be null if the
                          */
-                    public:
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() throw(KeypleReaderException) override;
+                      public:
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
+                        getReaders() throw(KeypleReaderException) override;
 
-                    protected:
+                      protected:
                         /**
                          * Fetch connected native readers (from third party library) and returns a list of corresponding
                          * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader}
@@ -98,7 +178,8 @@ namespace org {
                          * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() = 0; // throws KeypleReaderException
+                        virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
+                        initNativeReaders() = 0; // throws KeypleReaderException
 
                         /**
                          * Gets the specific reader whose is provided as an argument.
@@ -135,7 +216,7 @@ namespace org {
                          *
                          * @param observer the observer object
                          */
-                    public:
+                      public:
                         void addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
 
                         /**
@@ -169,16 +250,16 @@ namespace org {
                          */
                         std::shared_ptr<SeReader> getReader(const std::string &name) override;
 
-protected:
-
-                        std::shared_ptr<AbstractObservablePlugin> shared_from_this() {
-                            return std::static_pointer_cast<AbstractObservablePlugin>(AbstractLoggedObservable<PluginEvent>::shared_from_this());
+                      protected:
+                        std::shared_ptr<AbstractObservablePlugin> shared_from_this()
+                        {
+                            return std::static_pointer_cast<AbstractObservablePlugin>(
+                                AbstractLoggedObservable<PluginEvent>::shared_from_this());
                         }
-
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace plugin
+            }     // namespace seproxy
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

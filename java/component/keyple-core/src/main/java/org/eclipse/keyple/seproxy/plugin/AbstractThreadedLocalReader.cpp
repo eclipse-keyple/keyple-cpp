@@ -9,8 +9,6 @@ namespace org {
                 namespace plugin {
                     using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
 
-                    const std::shared_ptr<Logger> AbstractThreadedLocalReader::logger = nullptr; //LoggerFactory::getLogger(AbstractThreadedLocalReader::typeid);
-
                     AbstractThreadedLocalReader::AbstractThreadedLocalReader(const std::string &pluginName, const std::string &readerName) : AbstractSelectionLocalReader(pluginName, readerName) {
                     }
 
@@ -78,8 +76,8 @@ namespace org {
                                 }
                             }
                         }
-                        catch (NoStackTraceThrowable &e) {
-                            logger->trace("[{}] Exception occurred in monitoring thread: {}", readerName, e.what());
+                        catch (const NoStackTraceThrowable &e) {
+                            outerInstance->logger->trace("exception occurred in monitoring thread (readername: %s, what: %s)", readerName, e.what());
                         }
 
                         return NULL;

@@ -35,6 +35,9 @@ namespace pcsc {
  */
 class CardTerminal {
 
+    using Logger = org::eclipse::keyple::common::Logger;
+    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+
 public:
     /**
      * Establishes a connection to the card.
@@ -132,8 +135,6 @@ public:
     CardTerminal(std::string &name)
     : name(name)
     {
-        logger = LoggerFactory::getLogger(typeid(this));
-
         logger->debug("[CardTerminal::CardTerminal]\n");
     }
 
@@ -170,7 +171,7 @@ private:
     /**
      *
      */
-    std::shared_ptr<Logger> logger;
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardTerminal));
 };
 }
 }

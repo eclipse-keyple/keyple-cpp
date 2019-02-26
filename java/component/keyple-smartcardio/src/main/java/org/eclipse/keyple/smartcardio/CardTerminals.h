@@ -9,9 +9,19 @@
 #include <PCSC/wintypes.h>
 #endif
 
+/* Common */
+#include "Logger.h"
+#include "LoggerFactory.h"
+
+/* Smartcard I/O */
 #include "CardException.h"
 
+
+    using Logger        = org::eclipse::keyple::common::Logger;
+    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+
 class CardTerminals {
+    
 
   public:
     /**
@@ -28,11 +38,11 @@ class CardTerminals {
         DWORD len;
         char *pszReader;
 
-        logger->debug("[CardTerminal::list] listing current readers\n");
+        logger->debug("listing current readers\n");
         ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &ctx);
         if (ret != SCARD_S_SUCCESS)
         {
-            logger->debug("[CardTerminal::list] error establishing context\n");
+            logger->debug("error establishing context\n");
             return {};
         }
 
@@ -44,14 +54,14 @@ class CardTerminals {
         ret = SCardListReaders(ctx, NULL, (LPTSTR)&pszReaderList, &len);
         if (ret != SCARD_S_SUCCESS)
         {
-            logger->debug("[CardTerminal::list] error listing readers (%x)\n", ret);
+            logger->debug("error listing readers (%x)\n", ret);
             throw(CardException("error listing readers", std::runtime_error("SCARD_E_NO_READERS_AVAILABLE")));
         }
 #else
         ret = SCardListReaders(ctx, NULL, NULL, &len);
         if (ret != SCARD_S_SUCCESS)
         {
-            logger->debug("[CardTerminal::list] error listing readers\n");
+            logger->debug("error listing readers\n");
             return {};
         }
 
@@ -59,7 +69,7 @@ class CardTerminals {
         ret           = SCardListReaders(ctx, NULL, pszReaderList, &len);
         if (ret != SCARD_S_SUCCESS)
         {
-            logger->debug("[CardTerminal::list] error listing readers (2)\n");
+            logger->debug("error listing readers (2)\n");
             return {};
         }
 #endif
@@ -68,7 +78,7 @@ class CardTerminals {
         while (*pszReader)
         {
             std::string s(pszReader);
-            logger->debug("[CardTerminal::list] adding reader '%s' to list\n", s);
+            logger->debug("adding reader '%s' to list\n", s);
             terminals.push_back(CardTerminal(s));
             pszReader += strlen(pszReader) + 1;
         }
@@ -93,7 +103,7 @@ class CardTerminals {
      */
     CardTerminals()
     {
-        logger->debug("[CardTerminal::CardTerminal]\n");
+        logger->debug("constructor\n");
     }
 
     /**
@@ -101,6 +111,7 @@ class CardTerminals {
      */
     ~CardTerminals()
     {
+        logger->debug("destructor\n");
     }
 
   protected:
@@ -118,5 +129,5 @@ class CardTerminals {
     /**
 	 *
 	 */
-    std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(this));
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardTerminals));
 };

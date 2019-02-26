@@ -1,23 +1,6 @@
 #pragma once
 
 #include <set>
-#include <vector>
-#include "exceptionhelper.h"
-#include <memory>
-
-#include "KeypleReaderException.h"
-#include "Logger.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class MatchingSe; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SeSelector; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionResponse; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionRequest; } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -29,37 +12,132 @@ namespace org { namespace eclipse { namespace keyple { namespace transaction { c
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#include <vector>
+#include "exceptionhelper.h"
+#include <memory>
+
+/* Common */
+#include "Logger.h"
+#include "LoggerFactory.h"
+
+/* Core */
+#include "KeypleReaderException.h"
+
+/* Forward class declarations */
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace message {
+                    class ProxyReader;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace transaction {
+                class MatchingSe;
+            }
+        } // namespace keyple
+    }     // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace message {
+                    class SeRequest;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                class SeReader;
+            }
+        } // namespace keyple
+    }     // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace transaction {
+                class SeSelector;
+            }
+        } // namespace keyple
+    }     // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace transaction {
+                class SelectionResponse;
+            }
+        } // namespace keyple
+    }     // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace exception {
+                    class KeypleReaderException;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace transaction {
+                class SelectionRequest;
+            }
+        } // namespace keyple
+    }     // namespace eclipse
+} // namespace org
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace transaction {
 
-                using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                using SeReader              = org::eclipse::keyple::seproxy::SeReader;
                 using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
-                using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
+                using ProxyReader           = org::eclipse::keyple::seproxy::message::ProxyReader;
+                using SeRequest             = org::eclipse::keyple::seproxy::message::SeRequest;
+                using LoggerFactory         = org::eclipse::keyple::common::LoggerFactory;
+                using Logger                = org::eclipse::keyple::common::Logger;
 
                 /**
                  * The SeSelection class handles the SE selection process
                  */
-                class SeSelection final : public std::enable_shared_from_this<SeSelection> {
-                private:
-                    const std::shared_ptr<Logger> logger;
+class SeSelection final : public std::enable_shared_from_this<SeSelection> {
+  private:
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelection));
 
-                    const std::shared_ptr<ProxyReader> proxyReader;
-                    std::vector<std::shared_ptr<MatchingSe>> matchingSeList = std::vector<std::shared_ptr<MatchingSe>>();
-                    std::shared_ptr<std::set<std::shared_ptr<SeRequest>>> selectionRequestSet = std::make_shared<std::set<std::shared_ptr<SeRequest>>>();
-                    std::shared_ptr<MatchingSe> selectedSe;
+    const std::shared_ptr<ProxyReader> proxyReader;
+    std::vector<std::shared_ptr<MatchingSe>> matchingSeList = std::vector<std::shared_ptr<MatchingSe>>();
+    std::shared_ptr<std::set<std::shared_ptr<SeRequest>>> selectionRequestSet =
+        std::make_shared<std::set<std::shared_ptr<SeRequest>>>();
+    std::shared_ptr<MatchingSe> selectedSe;
 
-                    /**
+    /**
                      * Initializes the SeSelection
                      *
                      * @param seReader the reader to use to make the selection
                      */
-                public:
-                    SeSelection(std::shared_ptr<SeReader> seReader);
+  public:
+    SeSelection(std::shared_ptr<SeReader> seReader);
 
-                    /**
+    /**
                      * Prepare a selection: add the selection request from the provided selector to the selection
                      * request set.
                      * <p>
@@ -69,12 +147,12 @@ namespace org {
                      * @param seSelector the selector to prepare
                      * @return a MatchingSe for further information request about this selector
                      */
-                    std::shared_ptr<MatchingSe> prepareSelection(std::shared_ptr<SeSelector> seSelector);
+    std::shared_ptr<MatchingSe> prepareSelection(std::shared_ptr<SeSelector> seSelector);
 
-                private:
-                    bool processSelection(std::shared_ptr<SelectionResponse> selectionResponse);
+  private:
+    bool processSelection(std::shared_ptr<SelectionResponse> selectionResponse);
 
-                    /**
+    /**
                      * Parses the response to a selection operation sent to a SE and sets the selectedSe if any
                      * <p>
                      * The returned boolean indicates if at least one response was successful.
@@ -87,10 +165,10 @@ namespace org {
                      * @param selectionResponse the response from the reader to the {@link SelectionRequest}
                      * @return boolean true if a SE was selected
                      */
-                public:
-                    bool processDefaultSelection(std::shared_ptr<SelectionResponse> selectionResponse);
+  public:
+    bool processDefaultSelection(std::shared_ptr<SelectionResponse> selectionResponse);
 
-                    /**
+    /**
                      * Execute the selection process.
                      * <p>
                      * The selection requests are transmitted to the SE.
@@ -111,34 +189,34 @@ namespace org {
                      * @return boolean true if a SE was selected
                      * @throws KeypleReaderException if the requests transmission failed
                      */
-                    bool processExplicitSelection() throw(KeypleReaderException);
+    bool processExplicitSelection() throw(KeypleReaderException);
 
-                    /**
+    /**
                      * Returns the {@link MatchingSe} if there is one, null if not
                      *
                      * @return a {@link MatchingSe} or null
                      */
-                    std::shared_ptr<MatchingSe> getSelectedSe();
+    std::shared_ptr<MatchingSe> getSelectedSe();
 
-                    /**
+    /**
                      * Returns the updated list of prepared {@link MatchingSe} updated with the responses to the
                      * selection requests sent.
                      *
                      * @return a list of {@link MatchingSe}
                      */
-                    std::vector<std::shared_ptr<MatchingSe>> getMatchingSeList();
+    std::vector<std::shared_ptr<MatchingSe>> getMatchingSeList();
 
-                    /**
+    /**
                      * The SelectionOperation is the SelectionRequest to process in ordered to select a SE among
                      * others through the selection process. This method is useful to build the prepared selection
                      * to be executed by a reader just after a SE insertion.
                      *
                      * @return the {@link SelectionRequest} previously prepared with prepareSelection
                      */
-                    std::shared_ptr<SelectionRequest> getSelectionOperation();
-                };
+    std::shared_ptr<SelectionRequest> getSelectionOperation();
+};
 
-            }
-        }
-    }
-}
+} // namespace transaction
+} // namespace keyple
+} // namespace eclipse
+} // namespace org

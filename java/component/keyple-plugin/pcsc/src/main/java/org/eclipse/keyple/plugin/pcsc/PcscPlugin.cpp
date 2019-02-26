@@ -7,9 +7,6 @@
 #include "PcscReader.h"
 #include "PcscPlugin.h"
 
-/* Common */
-#include "LoggerFactory.h"
-
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -21,21 +18,26 @@ using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleRe
 using AbstractObservableReader = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
 using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
 
-const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PcscPlugin));
-const std::shared_ptr<PcscPlugin> PcscPlugin::uniqueInstance = std::shared_ptr<PcscPlugin>(new PcscPlugin());
 std::shared_ptr<TerminalFactory> PcscPlugin::factory;
 
-PcscPlugin::PcscPlugin()
-: org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin("PcscPlugin")
+PcscPlugin::PcscPlugin() : org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin("PcscPlugin")
 {
     logger->debug("[PcscPlugin::PcscPlugin]\n");
 }
 
-std::shared_ptr<PcscPlugin> PcscPlugin::getInstance() {
-    return uniqueInstance;
+PcscPlugin::~PcscPlugin()
+{
 }
 
-std::unordered_map<std::string, std::string> PcscPlugin::getParameters() {
+std::shared_ptr<PcscPlugin> PcscPlugin::getInstance()
+{
+    static PcscPlugin uniqueInstance;
+
+    return std::shared_ptr<PcscPlugin>(&uniqueInstance);
+}
+
+std::unordered_map<std::string, std::string> PcscPlugin::getParameters()
+{
     return this->getParameters();
 }
 
@@ -80,32 +82,31 @@ std::shared_ptr<std::set<std::string>> PcscPlugin::getNativeReadersNames() throw
 
 std::shared_ptr<std::set<std::shared_ptr<SeReader>>> PcscPlugin::initNativeReaders() throw(KeypleReaderException)
 {
-    logger->debug("[PcscPlugin::initNativeReaders] creating new list\n");
+    logger->debug("creating new list\n");
     std::shared_ptr<std::set<std::shared_ptr<SeReader>>> nativeReaders = std::shared_ptr<std::set<std::shared_ptr<SeReader>>>(new std::set<std::shared_ptr<SeReader>>());
 
     // parse the current readers list to create the ProxyReader(s) associated with new reader(s)
-    logger->debug("[PcscPlugin::initNativeReaders] getting card terminals\n");
+    logger->debug("getting card terminals\n");
     std::shared_ptr<CardTerminals> terminals = getCardTerminals();
     try {
         for (auto &term : terminals->list()) {
-            logger->debug("[PcscPlugin::initNativeReaders] inserting card terminals into list\n");
+            logger->debug("inserting card terminals into list\n");
             nativeReaders->insert(std::shared_ptr<PcscReader>(new PcscReader(this->getName(), std::shared_ptr<CardTerminal>(&term))));
         }
     }
     catch (CardException &e) {
-        logger->debug("[PcscPlugin::initNativeReaders] CardException\n");
+        logger->debug("CardException\n");
         std::string cause = e.getCause().what();
         if (!cause.compare("SCARD_E_NO_READERS_AVAILABLE")) {
             logger->trace("No reader available.");
         }
         else {
-            logger->trace("[{}] Terminal list is not accessible. Exception: {}", this->getName(), e.getMessage());
+            logger->trace("[%s] terminal list is not accessible, exception: %s", this->getName(), e.getMessage());
             throw std::shared_ptr<KeypleReaderException>(new KeypleReaderException("Could not access terminals list")); //, e));
 
         }
     }
 
-    logger->debug("[PcscPlugin::initNativeReaders] complete\n");
     return nativeReaders;
 }
 
