@@ -1,141 +1,185 @@
 #pragma once
 
+#include <iomanip>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 
-class Logger {
+/* Common*/
+#include "Export.h"
 
-  private:
-    /**
-     *
-     */
-    bool traceEnabled;
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace common {
 
-    /**
-     *
-     */
-    bool debugEnabled;
+                class EXPORT Logger {
+                  private:
+                    /**
+                     *
+                     */
+                    bool traceEnabled;
 
-    /**
-     *
-     */
-    //const std::string className;
+                    /**
 
-    void log(const char *s)
-    {
-        while (s && *s)
-        {
-            if (*s == '%' && *++s != '%') // make sure that there wasn't meant to be more arguments
-                                          // %% represents plain % in a format string
-                throw std::runtime_error("invalid format: missing arguments");
-            std::cout << *s++;
+                     *
+                     */
+                    bool debugEnabled;
+
+                    /**
+                     *
+                     */
+                    bool warnEnabled;
+
+                    /**
+                     *
+                     */
+                    bool infoEnabled;
+
+                    /**
+                     *
+                     */
+                    const std::string className;
+
+                    /**
+                     *
+                     */
+                    void log(const char *s)
+                    {
+                        while (s && *s)
+                        {
+                            if (*s == '%' &&
+                                *++s != '%') // make sure that there wasn't meant to be more arguments
+                                             // %% represents plain % in a format string
+                                throw std::runtime_error("invalid format: missing arguments");
+                            std::cout << *s++;
+                        }
+                    }
+
+                    /**
+                     * Actual printing function
+                     */
+                    template <typename T, typename... Args>
+                    void log(const char *s, T value, Args... args)
+                    {
+                        while (s && *s)
+                        {
+                            if (*s == '%' && *++s != '%')
+                            {                             // a format specifier (ignore which one it is)
+                                std::cout << value;       // use first non-format argument
+                                return log(++s, args...); // ``peel off'' first argument
+                            }
+                            std::cout << *s++;
+                        }
+                        throw std::runtime_error("extra arguments provided to log");
+                    }
+
+                  public:
+                    /**
+	                 * Constructor
+	                 */
+                    Logger(const std::string &className);
+
+                    /**
+                     * Destructor
+                     */
+                    ~Logger();
+
+                    bool isTraceEnabled();
+
+                    bool isDebugEnabled();
+
+                    bool isWarnEnabled();
+
+                    bool isInfoEnabled();
+
+                    std::string getClassName();
+
+                    void setTraceEnabled(bool enabled);
+
+                    void setDebugEnabled(bool enabled);
+
+                    void setWarnEnabled(bool enabled);
+
+                    void setInfoEnabled(bool enabled);
+
+                    void trace(const char *s)
+                    {
+                        if (traceEnabled)
+                        {
+                            std::cout << "[TRACE] [" << className << "] ";
+                            log(s);
+                        }
+                    }
+
+                    template <typename T, typename... Args>
+                    void trace(const char *s, T value, Args... args)
+                    {
+                        if (traceEnabled)
+                        {
+                            std::cout << "[TRACE] [" << className << "] ";
+                            log(s, value, std::forward<Args>(args)...);
+                        }
+                    }
+
+                    void debug(const char *s)
+                    {
+                        if (debugEnabled)
+                        {
+                            std::cout << "[DEBUG] [" << className << "] ";
+                            log(s);
+                        }
+                    }
+
+                    template <typename T, typename... Args>
+                    void debug(const char *s, T value, Args... args)
+                    {
+                        if (debugEnabled)
+                        {
+                            std::cout << "[DEBUG] [" << className << "] ";
+                            log(s, value, std::forward<Args>(args)...);
+                        }
+                    }
+
+                    void warn(const char *s)
+                    {
+                        if (warnEnabled)
+                        {
+                            std::cout << "[ WARN] [" << className << "] ";
+                            log(s);
+                        }
+                    }
+
+                    template <typename T, typename... Args>
+                    void warn(const char *s, T value, Args... args)
+                    {
+                        if (warnEnabled)
+                        {
+                            std::cout << "[ WARN] [" << className << "] ";
+                        }
+                    }
+
+                    void info(const char *s)
+                    {
+                        if (infoEnabled)
+                        {
+                            std::cout << "[ INFO] [" << className << "] ";
+                            log(s);
+                        }
+                    }
+
+                    template <typename T, typename... Args>
+                    void info(const char *s, T value, Args... args)
+                    {
+                        if (infoEnabled)
+                        {
+                            std::cout << "[ INFO] [" << className << "] ";
+                            log(s, value, std::forward<Args>(args)...);
+                        }
+                    }
+                };
+            } // namespace common
         }
     }
+}
 
-  public:
-    /**
-	 * Constructor
-	 */
-    Logger(const std::string &className)// : className(className)
-    {
-        std::cout << "[Logger::Logger] creating logger for class " << std::endl;
-
-        traceEnabled = 0;
-        debugEnabled = 0;
-    }
-
-    /**
-     * Destructor
-     */
-    ~Logger()
-    {
-        std::cout << "[Logger::~Logger] destroying logger" << std::endl;
-    }
-
-    bool isTraceEnabled()
-    {
-        return traceEnabled;
-    }
-
-    bool isDebugEnabled()
-    {
-        return debugEnabled;
-    }
-
-    void trace(const char *s)
-    {
-        log(s);
-    }
-
-    template <typename T, typename... Args> void trace(const char *s, T value, Args... args)
-    {
-        while (s && *s)
-        {
-            if (*s == '%' && *++s != '%')
-            {                               // a format specifier (ignore which one it is)
-                std::cout << value;         // use first non-format argument
-                return trace(++s, args...); // ``peel off'' first argument
-            }
-            std::cout << *s++;
-        }
-        throw std::runtime_error("extra arguments provided to printf");
-    }
-
-    void debug(const char *s)
-    {
-        log(s);
-    }
-
-    template <typename T, typename... Args> void debug(const char *s, T value, Args... args)
-    {
-        while (s && *s)
-        {
-            if (*s == '%' && *++s != '%')
-            {                               // a format specifier (ignore which one it is)
-                std::cout << value;         // use first non-format argument
-                return debug(++s, args...); // ``peel off'' first argument
-            }
-            std::cout << *s++;
-        }
-        throw std::runtime_error("extra arguments provided to printf");
-    }
-
-    void warn(const char *s)
-    {
-        log(s);
-    }
-
-    template <typename T, typename... Args> void warn(const char *s, T value, Args... args)
-    {
-        while (s && *s)
-        {
-            if (*s == '%' && *++s != '%')
-            {                              // a format specifier (ignore which one it is)
-                std::cout << value;        // use first non-format argument
-                return warn(++s, args...); // ``peel off'' first argument
-            }
-            std::cout << *s++;
-        }
-        throw std::runtime_error("extra arguments provided to printf");
-    }
-
-    void info(const char *s)
-    {
-        log(s);
-    }
-
-    template <typename T, typename... Args> void info(const char *s, T value, Args... args)
-    {
-        while (s && *s)
-        {
-            if (*s == '%' && *++s != '%')
-            {                              // a format specifier (ignore which one it is)
-                std::cout << value;        // use first non-format argument
-                return info(++s, args...); // ``peel off'' first argument
-            }
-            std::cout << *s++;
-        }
-        throw std::runtime_error("extra arguments provided to printf");
-    }
-};

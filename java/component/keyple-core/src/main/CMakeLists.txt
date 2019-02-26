@@ -116,3 +116,5 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Nameable.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Observable.cpp
 )
+
+TARGET_LINK_LIBRARIES(${LIBRARY_NAME} keyplecommon)
