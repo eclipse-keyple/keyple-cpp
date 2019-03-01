@@ -21,6 +21,7 @@
 #include "AbstractThreadedObservablePlugin.h"
 
 /* Common */
+#include "Export.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
 
@@ -60,16 +61,14 @@ namespace org {
                         org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
                     using AbstractThreadedObservablePlugin =
                         org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
-                    using Logger = org::eclipse::keyple::common::Logger;
+                    using Logger        = org::eclipse::keyple::common::Logger;
                     using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
                     using SeReader      = org::eclipse::keyple::seproxy::SeReader;
                     using PluginEvent   = org::eclipse::keyple::seproxy::event::PluginEvent;
-                    
 
-                    class StubPlugin : public AbstractThreadedObservablePlugin {
+                    class EXPORT StubPlugin : public AbstractThreadedObservablePlugin {
 
                       private:
-
                         /**
                          *
                          */
@@ -119,8 +118,7 @@ namespace org {
                         /**
                          *
                          */
-                        std::shared_ptr<SeReader>
-                        getNativeReader(const std::string &name) override;
+                        std::shared_ptr<SeReader> getNativeReader(const std::string &name) override;
 
                         /**
                          * Plug a Stub Reader
@@ -206,7 +204,6 @@ namespace org {
                             return AbstractThreadedObservablePlugin::AbstractLoggedObservable::setParameters(
                                 parameters);
                         }
-
                     };
 
                 } // namespace stub

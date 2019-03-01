@@ -24,17 +24,17 @@ throw(std::runtime_error)
     SeProxyService seProxyService = SeProxyService::getInstance();
 
     /*
-    * Alex: diamond issue, casting PcscPlugin into ReaderPlugin can take two
-    * routes:
-    * - PcscPlugin -> AbstractThreadedObservablePlugin ->
-    *   AbstractObservablePlugin -> ReaderPlugin
-    * or
-    * - PcscPlugin -> AbstractThreadedObservablePlugin -> ObservablePlugin ->
-    *   ReaderPlugin
-    *
-    * Forcing conversion to ObservablePlugin for now but should be fixed or at
-    * least validated.
-    */
+     * Alex: diamond issue, casting PcscPlugin into ReaderPlugin can take two
+     * routes:
+     * - PcscPlugin -> AbstractThreadedObservablePlugin ->
+     *   AbstractObservablePlugin -> ReaderPlugin
+     * or
+     * - PcscPlugin -> AbstractThreadedObservablePlugin -> ObservablePlugin ->
+     *   ReaderPlugin
+     *
+     * Forcing conversion to ObservablePlugin for now but should be fixed or at
+     * least validated.
+     */
     std::shared_ptr<PcscPlugin> pcscplugin = PcscPlugin::getInstance();
     pcscplugin->initReaders();
     std::shared_ptr<ObservablePlugin> plugin = std::dynamic_pointer_cast<ObservablePlugin>(pcscplugin);
