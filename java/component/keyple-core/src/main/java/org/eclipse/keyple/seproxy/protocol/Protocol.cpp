@@ -7,6 +7,7 @@ namespace seproxy {
 namespace protocol {
 
 Protocol Protocol::ANY("ANY", InnerEnum::ANY, "Any protocol");
+
 std::vector<Protocol> Protocol::valueList;
 Protocol::StaticConstructor Protocol::staticConstructor;
 int Protocol::nextOrdinal = 0;

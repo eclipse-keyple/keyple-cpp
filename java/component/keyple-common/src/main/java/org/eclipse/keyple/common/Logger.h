@@ -39,6 +39,11 @@ namespace org {
                     /**
                      *
                      */
+                    bool errorEnabled;
+
+                    /**
+                     *
+                     */
                     const std::string className;
 
                     /**
@@ -93,6 +98,8 @@ namespace org {
 
                     bool isInfoEnabled();
 
+                    bool isErrorEnabled();
+
                     std::string getClassName();
 
                     void setTraceEnabled(bool enabled);
@@ -102,6 +109,8 @@ namespace org {
                     void setWarnEnabled(bool enabled);
 
                     void setInfoEnabled(bool enabled);
+
+                    void setErrorEnabled(bool enabled);
 
                     void trace(const char *s)
                     {
@@ -174,6 +183,25 @@ namespace org {
                         if (infoEnabled)
                         {
                             std::cout << "[ INFO] [" << className << "] ";
+                            log(s, value, std::forward<Args>(args)...);
+                        }
+                    }
+
+                    void error(const char *s)
+                    {
+                        if (errorEnabled)
+                        {
+                            std::cout << "[ERROR] [" << className << "] ";
+                            log(s);
+                        }
+                    }
+
+                    template <typename T, typename... Args>
+                    void error(const char *s, T value, Args... args)
+                    {
+                        if (errorEnabled)
+                        {
+                            std::cout << "[ERROR] [" << className << "] ";
                             log(s, value, std::forward<Args>(args)...);
                         }
                     }

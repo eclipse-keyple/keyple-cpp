@@ -7,5 +7,5 @@
 #
 
 # Add projects
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/pcsc/)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/stub/)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/main/)
+	#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test/)

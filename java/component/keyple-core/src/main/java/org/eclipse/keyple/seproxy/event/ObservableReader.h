@@ -144,7 +144,7 @@ namespace org {
 
                         virtual void removeObserver(std::shared_ptr<ReaderObserver> observer) = 0;
 
-                        virtual void notifyObservers(std::shared_ptr<ReaderEvent> event_Renamed) = 0;
+                        virtual void notifyObservers(std::shared_ptr<ReaderEvent> event) = 0;
 
                         virtual void setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> defaultSelectionRequest, NotificationMode notificationMode) = 0;
                     };

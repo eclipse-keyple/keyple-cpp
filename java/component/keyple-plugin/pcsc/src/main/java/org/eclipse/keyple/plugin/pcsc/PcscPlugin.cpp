@@ -22,11 +22,12 @@ std::shared_ptr<TerminalFactory> PcscPlugin::factory;
 
 PcscPlugin::PcscPlugin() : org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin("PcscPlugin")
 {
-    logger->debug("[PcscPlugin::PcscPlugin]\n");
+    logger->debug("constructor\n");
 }
 
 PcscPlugin::~PcscPlugin()
 {
+    logger->debug("destructor\n");
 }
 
 std::shared_ptr<PcscPlugin> PcscPlugin::getInstance()

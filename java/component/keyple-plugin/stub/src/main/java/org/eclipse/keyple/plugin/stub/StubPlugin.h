@@ -1,14 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin/AbstractThreadedObservablePlugin.h"
-#include <string>
-#include <unordered_map>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -20,29 +9,86 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <set>
+#include <string>
+#include <unordered_map>
+#include <memory>
+
+/* Core */
+#include "AbstractThreadedObservablePlugin.h"
+
+/* Common */
+#include "Logger.h"
+#include "LoggerFactory.h"
+
+/* Forward class declarations */
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace exception {
+                    class KeypleReaderException;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace plugin {
+                    class AbstractObservableReader;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace plugin {
                 namespace stub {
 
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using AbstractObservableReader = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
-                    using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
+                    using KeypleReaderException =
+                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using AbstractObservableReader =
+                        org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
+                    using AbstractThreadedObservablePlugin =
+                        org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
+                    using Logger = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+                    using SeReader      = org::eclipse::keyple::seproxy::SeReader;
+                    using PluginEvent   = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    
 
-                    class StubPlugin final : public AbstractThreadedObservablePlugin {
+                    class StubPlugin : public AbstractThreadedObservablePlugin {
 
-                    private:
-                        static const std::shared_ptr<StubPlugin> uniqueInstance;
+                      private:
 
-                        static const std::shared_ptr<Logger> logger;
+                        /**
+                         *
+                         */
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(StubPlugin));
 
-                        const std::unordered_map<std::string, std::string> parameters = std::unordered_map<std::string, std::string>();
+                        /**
+                         *
+                         */
+                        std::unordered_map<std::string, std::string> parameters =
+                            std::unordered_map<std::string, std::string>();
 
-                        static std::shared_ptr<SortedSet<std::string>> nativeStubReadersNames;
+                        /**
+                         *
+                         */
+                        static std::shared_ptr<std::set<std::string>> nativeStubReadersNames;
 
+                        /**
+                         * Constructor 
+                         */
                         StubPlugin();
 
                         /**
@@ -50,24 +96,38 @@ namespace org {
                          *
                          * @return single instance of StubPlugin
                          */
-                    public:
+                      public:
                         static std::shared_ptr<StubPlugin> getInstance();
 
+                        /**
+                         *
+                         */
                         std::unordered_map<std::string, std::string> getParameters() override;
 
+                        /**
+                         *
+                         */
                         void setParameter(const std::string &key, const std::string &value) override;
 
-                    protected:
-                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> getNativeReaders() throw(KeypleReaderException) override;
+                      protected:
+                        /**
+                         *
+                         */
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
+                        initNativeReaders() throw(KeypleReaderException) override;
 
-                        std::shared_ptr<AbstractObservableReader> getNativeReader(const std::string &name) override;
+                        /**
+                         *
+                         */
+                        std::shared_ptr<SeReader>
+                        getNativeReader(const std::string &name) override;
 
                         /**
                          * Plug a Stub Reader
                          * 
                          * @param name : name of the reader
                          */
-                    public:
+                      public:
                         void plugStubReader(const std::string &name);
 
                         /**
@@ -83,17 +143,74 @@ namespace org {
                          * 
                          * @return String list
                          */
-                    protected:
-                        std::shared_ptr<SortedSet<std::string>> getNativeReadersNames() override;
+                      protected:
+                        std::shared_ptr<std::set<std::string>> getNativeReadersNames() override;
 
-protected:
-                        std::shared_ptr<StubPlugin> shared_from_this() {
-                            return std::static_pointer_cast<StubPlugin>(org.eclipse.keyple.seproxy.plugin.AbstractThreadedObservablePlugin::shared_from_this());
+                      protected:
+                        /**
+                         *
+                         */
+                        std::shared_ptr<StubPlugin> shared_from_this()
+                        {
+                            return std::static_pointer_cast<StubPlugin>(
+                                AbstractThreadedObservablePlugin::shared_from_this());
                         }
+
+                      public:
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
+                        getReaders() throw(KeypleReaderException) override
+                        {
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReaders();
+                        }
+
+                        std::shared_ptr<SeReader> getReader(const std::string &name) override
+                        {
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReader(
+                                name);
+                        }
+
+                        void addObserver(std::shared_ptr<PluginObserver> observer) override
+                        {
+                            logger->debug(" observer: %p\n", observer);
+
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::addObserver(
+                                observer);
+                        }
+
+                        void removeObserver(std::shared_ptr<PluginObserver> observer) override
+                        {
+                            logger->debug("\n");
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::removeObserver(
+                                observer);
+                        }
+
+                        void notifyObservers(std::shared_ptr<PluginEvent> event) override
+                        {
+                            logger->debug("\n");
+                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::
+                                notifyObservers(event);
+                        }
+
+                        bool equals(std::shared_ptr<void> o) override
+                        {
+                            return true; //AbstractThreadedObservablePlugin::equals(o);
+                        }
+
+                        int hashCode() override
+                        {
+                            return 0; //AbstractThreadedObservablePlugin::hashCode();
+                        }
+
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override
+                        {
+                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::setParameters(
+                                parameters);
+                        }
+
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace stub
+            }     // namespace plugin
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

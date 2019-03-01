@@ -21,6 +21,7 @@ namespace org {
                     debugEnabled = 1;
                     warnEnabled  = 1;
                     infoEnabled  = 1;
+                    errorEnabled = 1;
                 }
 
                 /**
@@ -55,6 +56,11 @@ namespace org {
                     return infoEnabled;
                 }
 
+                bool Logger::isErrorEnabled()
+                {
+                    return errorEnabled;
+                }
+
                 std::string Logger::getClassName()
                 {
                     return className;
@@ -78,6 +84,11 @@ namespace org {
                 void Logger::setInfoEnabled(bool enabled)
                 {
                     infoEnabled = enabled;
+                }
+
+                void Logger::setErrorEnabled(bool enabled)
+                {
+                    errorEnabled = enabled;
                 }
 
             } // namespace common

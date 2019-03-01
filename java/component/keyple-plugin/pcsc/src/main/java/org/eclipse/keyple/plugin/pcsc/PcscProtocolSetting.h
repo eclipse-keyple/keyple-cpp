@@ -1,10 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-
-#include "SeProtocolSettingList.h"
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -16,6 +9,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+
+#include "SeProtocolSettingList.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -68,7 +69,6 @@ namespace org {
                         /**
                          * Regular expressions to match ATRs produced by PcSc readers
                          */
-//JAVA TO C++ CONVERTER TODO TASK: Java to C++ Converter does not convert types within enums:
                     public:
                         class ProtocolSetting {
                         public:
