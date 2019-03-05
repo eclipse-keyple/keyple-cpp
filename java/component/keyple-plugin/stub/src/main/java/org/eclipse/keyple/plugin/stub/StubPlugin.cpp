@@ -75,7 +75,7 @@ namespace org {
                         std::shared_ptr<AbstractObservableReader> reader = nullptr;
                         if (nativeStubReadersNames->find(name) != nativeStubReadersNames->end())
                         {
-                            reader = std::make_shared<StubReader>(name);
+                            reader = std::shared_ptr<StubReader>(new StubReader(name));
                         }
                         return reader;
                     }
@@ -87,7 +87,7 @@ namespace org {
                             /* add the native reader to the native readers list */
                             nativeStubReadersNames->insert(name);
                             /* add the reader as a new reader to the readers list */
-                            std::shared_ptr<StubReader> stubReader = std::make_shared<StubReader>(name);
+                            std::shared_ptr<StubReader> stubReader = std::shared_ptr<StubReader>(new StubReader(name));
                             readers->insert(std::static_pointer_cast<AbstractObservableReader>(stubReader));
                         }
                         else {

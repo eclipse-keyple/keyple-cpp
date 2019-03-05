@@ -49,6 +49,7 @@
 
                             
                             std::shared_ptr<StubPlugin> stubPlugin = std::shared_ptr<StubPlugin>(StubPlugin::getInstance());
+                            stubPlugin->initReaders();
                             pluginsSet->insert(std::dynamic_pointer_cast<ReaderPlugin>(
                                 std::dynamic_pointer_cast<ObservablePlugin>(stubPlugin)));
                             seProxyService->setPlugins(pluginsSet);
@@ -124,6 +125,6 @@
 
                             std::cout << "END." << std::endl;
 
-                            exit(0);
+                            return 0;
                         }
 
