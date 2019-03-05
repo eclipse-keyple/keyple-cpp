@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "PluginEvent.h"
 
 namespace org {

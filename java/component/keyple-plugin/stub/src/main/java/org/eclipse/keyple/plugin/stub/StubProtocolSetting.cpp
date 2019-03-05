@@ -117,6 +117,9 @@ namespace org {
                                 return enumInstance;
                             }
                         }
+
+			/* Avoid C++ compiler warning */
+			return StubProtocolSetting::valueList.front();
                     }
                 } // namespace stub
             }     // namespace plugin

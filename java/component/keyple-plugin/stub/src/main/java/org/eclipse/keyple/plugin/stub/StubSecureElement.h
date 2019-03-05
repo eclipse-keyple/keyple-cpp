@@ -21,6 +21,10 @@
 #include "stringhelper.h"
 #include "Export.h"
 
+/* Core - Seproxy - Exception */
+#include "KeypleChannelStateException.h"
+#include "KeypleIOReaderException.h"
+
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org {
     namespace eclipse {

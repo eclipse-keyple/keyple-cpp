@@ -15,7 +15,7 @@
 #include "StubSecureElement.h"
 
 /* Common */
-#include "thread.h"
+#include "Thread.h"
 #include "InterruptedException.h"
 
 namespace org {
