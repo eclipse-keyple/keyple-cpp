@@ -8,15 +8,8 @@ namespace org {
 
                 class LoggerFactory;
 
-                /**
-	             * Constructor
-	             */
                 Logger::Logger(const std::string &className) : className(className)
                 {
-                    //std::cout
-                    //    << "[DEBUG] [class org::eclipse::keyple::common::Logger] logger constructor for "
-                    //    << className << std::endl;
-
                     traceEnabled = 1;
                     debugEnabled = 1;
                     warnEnabled  = 1;
@@ -24,16 +17,9 @@ namespace org {
                     errorEnabled = 1;
                 }
 
-                /**
-                 * Destructor
-                 */
                 Logger::~Logger()
                 {
-                    //std::cout << "[DEBUG] [class org::eclipse::keyple::common::Logger] logger destructor of "
-                    //          << className << std::endl;
 
-                    /* Remove itself from factory list */
-                    LoggerFactory::removeLogger(this);
                 }
 
                 bool Logger::isTraceEnabled()

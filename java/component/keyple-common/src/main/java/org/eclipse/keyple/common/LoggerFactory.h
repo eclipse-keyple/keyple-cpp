@@ -19,17 +19,6 @@ namespace org {
                      *
                      */
                     static std::shared_ptr<Logger> getLogger(const std::type_info &type);
-
-                    /**
-                     *
-                     */
-                    static void removeLogger(Logger *logger);
-
-                  private:
-                    /**
-                     *
-                     */
-                    static std::vector<Logger *> factory;
                 };
             } // namespace common
         }     // namespace keyple
