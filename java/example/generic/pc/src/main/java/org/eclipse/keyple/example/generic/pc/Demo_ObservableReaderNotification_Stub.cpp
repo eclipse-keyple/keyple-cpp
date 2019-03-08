@@ -115,13 +115,13 @@
 
                             Thread::sleep(100);
 
-                            std::cout << "Unplug reader 2." << std::endl;
-                            stubPlugin->unplugReader("Reader2");
+                            std::cout << "Unplug reader 1." << std::endl;
+                            stubPlugin->unplugReader("Reader1");
 
                             Thread::sleep(100);
 
                             std::cout << "Unplug reader 2." << std::endl;
-                            stubPlugin->unplugReader("Reader1");
+                            stubPlugin->unplugReader("Reader2");
 
                             std::cout << "END." << std::endl;
 
