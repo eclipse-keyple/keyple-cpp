@@ -41,7 +41,7 @@ namespace org {
                     /**
                      * Chars we will ignore when loading a sample HEX string. It allows to copy/paste the specs APDU
                      */
-                    static const std::shared_ptr<Pattern> HEX_IGNORED_CHARS;
+                    static const Pattern HEX_IGNORED_CHARS;
 
                     /**
                      * Create a byte array from an hexa string. This method allows spaces and "h".

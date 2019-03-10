@@ -43,16 +43,15 @@
                              * Forcing conversion to ObservablePlugin for now but should be fixed or at
                              * least validated.
                              */
-                            std::shared_ptr<SeProxyService> seProxyService = std::make_shared<SeProxyService>(SeProxyService::getInstance());
-                            std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> pluginsSet =
-                                std::make_shared<std::set<std::shared_ptr<ReaderPlugin>>>();
+                            SeProxyService seProxyService = SeProxyService::getInstance();
+                            std::set<std::shared_ptr<ReaderPlugin>> pluginsSet = std::set<std::shared_ptr<ReaderPlugin>>();
 
                             
-                            std::shared_ptr<StubPlugin> stubPlugin = std::shared_ptr<StubPlugin>(StubPlugin::getInstance());
-                            stubPlugin->initReaders();
-                            pluginsSet->insert(std::dynamic_pointer_cast<ReaderPlugin>(
-                                std::dynamic_pointer_cast<ObservablePlugin>(stubPlugin)));
-                            seProxyService->setPlugins(pluginsSet);
+                            StubPlugin stubPlugin = StubPlugin::getInstance();
+                            stubPlugin.initReaders();
+                            pluginsSet.insert(std::dynamic_pointer_cast<ReaderPlugin>(
+                                std::dynamic_pointer_cast<ObservablePlugin>(std::make_shared<StubPlugin>(stubPlugin))));
+                            seProxyService.setPlugins(pluginsSet);
 
                             // Set observers
                             std::cout << "Set plugin observer." << std::endl;
@@ -63,20 +62,20 @@
                             Thread::sleep(200);
 
                             std::cout << "Plug reader 1." << std::endl;
-                            stubPlugin->plugStubReader("Reader1");
+                            stubPlugin.plugStubReader("Reader1");
 
                             Thread::sleep(100);
 
                             std::cout << "Plug reader 2." << std::endl;
-                            stubPlugin->plugStubReader("Reader2");
+                            stubPlugin.plugStubReader("Reader2");
 
                             Thread::sleep(1000);
 
                             std::shared_ptr<StubReader> reader1 =
-                                std::dynamic_pointer_cast<StubReader>(stubPlugin->getReader("Reader1"));
+                                std::dynamic_pointer_cast<StubReader>(stubPlugin.getReader("Reader1"));
 
                             std::shared_ptr<StubReader> reader2 =
-                                std::dynamic_pointer_cast<StubReader>(stubPlugin->getReader("Reader2"));
+                                std::dynamic_pointer_cast<StubReader>(stubPlugin.getReader("Reader2"));
 
                             /* Create 'virtual' Hoplink and SAM SE */
                             std::shared_ptr<StubSecureElement> se1 = std::make_shared<StubSe1>();
@@ -103,25 +102,25 @@
                             Thread::sleep(100);
 
                             std::cout << "Plug reader 1 again (twice)." << std::endl;
-                            stubPlugin->plugStubReader("Reader1");
+                            stubPlugin.plugStubReader("Reader1");
 
                             std::cout << "Unplug reader 1." << std::endl;
-                            stubPlugin->unplugReader("Reader1");
+                            stubPlugin.unplugReader("Reader1");
 
                             Thread::sleep(100);
 
                             std::cout << "Plug reader 1 again." << std::endl;
-                            stubPlugin->plugStubReader("Reader1");
+                            stubPlugin.plugStubReader("Reader1");
 
                             Thread::sleep(100);
 
                             std::cout << "Unplug reader 1." << std::endl;
-                            stubPlugin->unplugReader("Reader1");
+                            stubPlugin.unplugReader("Reader1");
 
                             Thread::sleep(100);
 
                             std::cout << "Unplug reader 2." << std::endl;
-                            stubPlugin->unplugReader("Reader2");
+                            stubPlugin.unplugReader("Reader2");
 
                             std::cout << "END." << std::endl;
 

@@ -25,15 +25,34 @@
 #include "KeyplePluginNotFoundException.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class ReaderPlugin; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeyplePluginNotFoundException; } } } } }
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                class ReaderPlugin;
+            }
+        } // namespace keyple
+    }     // namespace eclipse
+} // namespace org
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace exception {
+                    class KeyplePluginNotFoundException;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
 
-                using KeyplePluginNotFoundException = org::eclipse::keyple::seproxy::exception::KeyplePluginNotFoundException;
+                using KeyplePluginNotFoundException =
+                    org::eclipse::keyple::seproxy::exception::KeyplePluginNotFoundException;
 
                 /**
                  * The Class SeProxyService. This singleton is the entry point of the SE Proxy Service, its instance
@@ -43,23 +62,28 @@ namespace org {
                 class EXPORT SeProxyService final : public std::enable_shared_from_this<SeProxyService> {
 
                     /** singleton instance of SeProxyService */
-                private:
-
+                  private:
                     /** the list of readers’ plugins interfaced with the SE Proxy Service */
-                    std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> plugins = std::make_shared<std::set<std::shared_ptr<ReaderPlugin>>>();
+                    std::set<std::shared_ptr<ReaderPlugin>> plugins = std::set<std::shared_ptr<ReaderPlugin>>();
 
                     /**
                      * Instantiates a new SeProxyService.
                      */
                     SeProxyService();
 
+                    public:
+                    /**
+                     * Destructor
+                     */
+                    ~SeProxyService();
+
                     /**
                      * Gets the single instance of SeProxyService.
                      *
                      * @return single instance of SeProxyService
                      */
-                public:
-                    static SeProxyService &getInstance()
+                  public:
+                    static SeProxyService& getInstance()
                     {
                         static SeProxyService uniqueInstance;
                         return uniqueInstance;
@@ -70,7 +94,7 @@ namespace org {
                      *
                      * @param plugins the new plugins
                      */
-                    void setPlugins(std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> plugins);
+                    void setPlugins(std::set<std::shared_ptr<ReaderPlugin>>& plugins);
 
                     /**
                      * Adds a single plugin to the plugin list.
@@ -84,7 +108,7 @@ namespace org {
                      *
                      * @return the plugins the list of interfaced reader’s plugins.
                      */
-                    std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> getPlugins();
+                    std::set<std::shared_ptr<ReaderPlugin>>& getPlugins();
 
                     /**
                      * Gets the plugin whose name is provided as an argument.
@@ -93,7 +117,8 @@ namespace org {
                      * @return the plugin
                      * @throws KeyplePluginNotFoundException if the wanted plugin is not found
                      */
-                    std::shared_ptr<ReaderPlugin> getPlugin(const std::string &name) throw(KeyplePluginNotFoundException);
+                    std::shared_ptr<ReaderPlugin>
+                    getPlugin(const std::string &name) throw(KeyplePluginNotFoundException);
 
                     /**
                      * Gets the version API, (the version of the sdk).
@@ -103,7 +128,7 @@ namespace org {
                     std::string getVersion();
                 };
 
-            }
-        }
-    }
-}
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org

@@ -6,8 +6,10 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
 
-                }
-            }
-        }
-    }
-}
+                    
+
+                } // namespace plugin
+            }     // namespace seproxy
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

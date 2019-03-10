@@ -6,33 +6,48 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
-                using KeyplePluginNotFoundException = org::eclipse::keyple::seproxy::exception::KeyplePluginNotFoundException;
+                using KeyplePluginNotFoundException =
+                    org::eclipse::keyple::seproxy::exception::KeyplePluginNotFoundException;
 
-                SeProxyService::SeProxyService() {
+                SeProxyService::SeProxyService()
+                {
                 }
 
-                void SeProxyService::setPlugins(std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> plugins) {
+                SeProxyService::~SeProxyService()
+                {
+                
+                }
+
+                void SeProxyService::setPlugins(std::set<std::shared_ptr<ReaderPlugin>> &plugins)
+                {
                     this->plugins = plugins;
                 }
 
-                void SeProxyService::addPlugin(std::shared_ptr<ReaderPlugin> plugin) {
-                    this->plugins->insert(plugin);
+                void SeProxyService::addPlugin(std::shared_ptr<ReaderPlugin> plugin)
+                {
+                    this->plugins.insert(plugin);
                 }
 
-                std::shared_ptr<std::set<std::shared_ptr<ReaderPlugin>>> SeProxyService::getPlugins() {
+                std::set<std::shared_ptr<ReaderPlugin>>& SeProxyService::getPlugins()
+                {
                     return plugins;
                 }
 
-                std::shared_ptr<ReaderPlugin> SeProxyService::getPlugin(const std::string &name) throw(KeyplePluginNotFoundException) {
-                    for (auto plugin : *plugins) {
-                        if (plugin->getName() == name) {
+                std::shared_ptr<ReaderPlugin>
+                SeProxyService::getPlugin(const std::string &name) throw(KeyplePluginNotFoundException)
+                {
+                    for (auto plugin : plugins)
+                    {
+                        if (plugin->getName() == name)
+                        {
                             return plugin;
                         }
                     }
                     throw std::make_shared<KeyplePluginNotFoundException>(name);
                 }
 
-                std::string SeProxyService::getVersion() {
+                std::string SeProxyService::getVersion()
+                {
                     /*
                      * Alex
                      *
@@ -53,7 +68,7 @@ namespace org {
 
                     return "no-version-found";
                 }
-            }
-        }
-    }
-}
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org

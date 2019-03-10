@@ -24,11 +24,12 @@ namespace org {
                         const std::string &name)
                         : AbstractObservablePlugin(name)
                     {
-                        logger->debug("name: %s\n", name);
+                        logger->debug("constructor (name: %s)\n", name);
                     }
 
                     AbstractThreadedObservablePlugin::~AbstractThreadedObservablePlugin()
                     {
+                        logger->debug("destructor (name: %s)\n", name);
                     }
 
                     void AbstractThreadedObservablePlugin::startObservation()

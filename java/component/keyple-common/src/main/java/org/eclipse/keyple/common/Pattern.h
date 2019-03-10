@@ -18,10 +18,10 @@ public:
 		}
 	};
 
-	static std::shared_ptr<Pattern> compile(std::string regex) {
+	static Pattern& compile(std::string regex) {
 		/* To be implemented */
 		static Pattern p;
-    	return std::shared_ptr<Pattern>(&p);
+    	return p;
 	}
 
 	static Matcher &matcher(std::string input)

@@ -42,6 +42,7 @@ namespace org {
 
                         ObservableReaderNotificationEngine::~ObservableReaderNotificationEngine()
                         {
+                            logger->debug("destructor\n");
                         }
 
                         void ObservableReaderNotificationEngine::setPluginObserver()
@@ -52,14 +53,15 @@ namespace org {
                              * We add an observer to each plugin (only one in this example) the readers observers will
                              * be added dynamically upon plugin notification (see SpecificPluginObserver.update)
                              */
-                            for (auto plugin : *SeProxyService::getInstance().getPlugins())
+                            for (auto plugin : SeProxyService::getInstance().getPlugins())
                             {
 
                                 if (std::dynamic_pointer_cast<ObservablePlugin>(plugin) != nullptr)
                                 {
                                     logger->info("add observer PLUGINNAME = %s\n", plugin->getName());
                                     logger->info("this->pluginObserver: %p\n", this->pluginObserver);
-                                    (std::static_pointer_cast<ObservablePlugin>(plugin))->addObserver(this->pluginObserver);
+                                    (std::static_pointer_cast<ObservablePlugin>(plugin))
+                                        ->addObserver(this->pluginObserver);
                                 }
                                 else
                                 {
@@ -79,9 +81,10 @@ namespace org {
                             std::shared_ptr<ReaderEvent> event)
                         {
                             /* just log the event */
-                            outerInstance->logger->info("event -> pluginname: %s, readername: %s, eventname: %s\n",
-                                                        event->getPluginName(), event->getReaderName(),
-                                                        event->getEventType().getName());
+                            outerInstance->logger->info(
+                                "event -> pluginname: %s, readername: %s, eventname: %s\n",
+                                event->getPluginName(), event->getReaderName(),
+                                event->getEventType().getName());
                         }
 
                         ObservableReaderNotificationEngine::SpecificPluginObserver::SpecificPluginObserver(
@@ -117,7 +120,8 @@ namespace org {
                             switch (event->getEventType().innerEnumValue)
                             {
                             case PluginEvent::EventType::InnerEnum::READER_CONNECTED:
-                                outerInstance->logger->info("new reader! READERNAME = %s\n", reader->getName());
+                                outerInstance->logger->info("new reader! READERNAME = %s\n",
+                                                            reader->getName());
 
                                 /*
                                  * We are informed here of a disconnection of a reader.

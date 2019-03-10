@@ -116,7 +116,7 @@ namespace org {
                     {
                         if (traceEnabled)
                         {
-                            std::cout << "[TRACE] [" << className << "] ";
+                            std::cout << "[TRACE]   [" << className << "]   ";
                             log(s);
                         }
                     }
@@ -126,7 +126,7 @@ namespace org {
                     {
                         if (traceEnabled)
                         {
-                            std::cout << "[TRACE] [" << className << "] ";
+                            std::cout << "[TRACE]   [" << className << "]   ";
                             log(s, value, std::forward<Args>(args)...);
                         }
                     }
@@ -135,7 +135,7 @@ namespace org {
                     {
                         if (debugEnabled)
                         {
-                            std::cout << "[DEBUG] [" << className << "] ";
+                            std::cout << "[DEBUG]   [" << className << "]   ";
                             log(s);
                         }
                     }
@@ -145,7 +145,7 @@ namespace org {
                     {
                         if (debugEnabled)
                         {
-                            std::cout << "[DEBUG] [" << className << "] ";
+                            std::cout << "[DEBUG]   [" << className << "]   ";
                             log(s, value, std::forward<Args>(args)...);
                         }
                     }
@@ -154,7 +154,7 @@ namespace org {
                     {
                         if (warnEnabled)
                         {
-                            std::cout << "[ WARN] [" << className << "] ";
+                            std::cout << "[ WARN]   [" << className << "    ";
                             log(s);
                         }
                     }
@@ -164,7 +164,7 @@ namespace org {
                     {
                         if (warnEnabled)
                         {
-                            std::cout << "[ WARN] [" << className << "] ";
+                            std::cout << "[ WARN]   [" << className << "]   ";
                         }
                     }
 
@@ -172,7 +172,7 @@ namespace org {
                     {
                         if (infoEnabled)
                         {
-                            std::cout << "[ INFO] [" << className << "] ";
+                            std::cout << "[ INFO]   [" << className << "]   ";
                             log(s);
                         }
                     }
@@ -182,7 +182,7 @@ namespace org {
                     {
                         if (infoEnabled)
                         {
-                            std::cout << "[ INFO] [" << className << "] ";
+                            std::cout << "[ INFO]   [" << className << "]   ";
                             log(s, value, std::forward<Args>(args)...);
                         }
                     }
@@ -191,7 +191,7 @@ namespace org {
                     {
                         if (errorEnabled)
                         {
-                            std::cout << "[ERROR] [" << className << "] ";
+                            std::cout << "[ERROR]   [" << className << "]   ";
                             log(s);
                         }
                     }
@@ -201,7 +201,7 @@ namespace org {
                     {
                         if (errorEnabled)
                         {
-                            std::cout << "[ERROR] [" << className << "] ";
+                            std::cout << "[ERROR]   [" << className << "]   ";
                             log(s, value, std::forward<Args>(args)...);
                         }
                     }

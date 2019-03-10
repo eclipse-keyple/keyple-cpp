@@ -82,8 +82,15 @@ namespace org {
                          * @param name name of the observed object
                          */
                       public:
-                        AbstractLoggedObservable(const std::string &name) : name(name)
+                        AbstractLoggedObservable(const std::string &name)
+                            : name(name)
                         {
+                            logger->debug("constructor (name: %s)\n", name);
+                        }
+
+                        ~AbstractLoggedObservable()
+                        {
+                            logger->debug("destructor (name: %s)\n", name);
                         }
 
                         /**

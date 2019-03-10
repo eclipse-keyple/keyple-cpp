@@ -26,11 +26,12 @@ namespace org {
                     AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name)
                         : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event::PluginEvent>(name)
                     {
-                        logger->debug("constructor for %s\n", name);
+                        logger->debug("constructor (name: %s)\n", name);
                     }
 
                     AbstractObservablePlugin::~AbstractObservablePlugin()
                     {
+                        logger->debug("destructor (name: %s)\n", name);
                     }
 
                     void AbstractObservablePlugin::initReaders()
@@ -74,8 +75,7 @@ namespace org {
                         std::shared_ptr<org::eclipse::keyple::util::Observer<PluginEvent>> _observer =
                             std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<PluginEvent>>(
                                 observer);
-                        logger->debug("casted observer: %p\n",
-                                      _observer);
+                        logger->debug("casted observer: %p\n", _observer);
 
                         AbstractLoggedObservable<PluginEvent>::addObserver(_observer);
                         if (AbstractLoggedObservable<PluginEvent>::countObservers() == 1)

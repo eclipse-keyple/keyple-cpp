@@ -50,9 +50,9 @@ namespace org {
                     bool SeRequest::AtrSelector::atrMatches(std::vector<char> &atr) {
                         bool m;
                         if (atrRegex.length() != 0) {
-                            std::shared_ptr<Pattern> p = Pattern::compile(atrRegex);
+                            Pattern p = Pattern::compile(atrRegex);
                             std::string atrString = ByteArrayUtils::toHex(atr);
-                            m = p->matcher(atrString).matches();
+                            m = p.matcher(atrString).matches();
                         }
                         else {
                             m = true;
