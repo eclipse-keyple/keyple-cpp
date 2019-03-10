@@ -96,7 +96,12 @@ namespace org {
                          * @return single instance of StubPlugin
                          */
                       public:
-                        static std::shared_ptr<StubPlugin> getInstance();
+                        static StubPlugin& getInstance();
+
+                        /**
+                         *
+                         */
+                        ~StubPlugin();
 
                         /**
                          *

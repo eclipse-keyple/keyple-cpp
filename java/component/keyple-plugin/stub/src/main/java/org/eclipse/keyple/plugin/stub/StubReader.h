@@ -200,6 +200,8 @@ namespace org {
 
                         StubReader(const std::string &name);
 
+                        ~StubReader();
+
                       protected:
                         std::vector<char> getATR() override;
 

@@ -51,9 +51,15 @@ namespace org {
                     StubReader::StubReader(const std::string &name)
                         : org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader(pluginName, name)
                     {
-                        readerName        = name;
-                        sePresent         = false;
-                        threadWaitTimeout = 5000;
+                        logger->debug("constructor (pluginName: %s, name: %s)\n", pluginName, name);
+                        readerName                   = name;
+                        sePresent                    = false;
+                        threadWaitTimeout            = 5000;
+                    }
+
+                    StubReader::~StubReader()
+                    {
+                        logger->debug("destructor (name: %s)\n", name);
                     }
 
                     std::vector<char> StubReader::getATR()
@@ -106,9 +112,9 @@ namespace org {
                                 throw std::make_shared<KeypleReaderException>(
                                     "Target selector mask not found!"); //, nullptr);
                             }
-                            std::shared_ptr<Pattern> p = Pattern::compile(selectionMask);
+                            Pattern p = Pattern::compile(selectionMask);
                             std::string protocol       = se->getSeProcotol();
-                            if (!p->matcher(protocol).matches())
+                            if (!p.matcher(protocol).matches())
                             {
                                 logger->trace("[%s] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %s",
                                               this->getName(), protocolFlag);
