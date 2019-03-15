@@ -1,8 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -14,13 +9,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+
+/* Core */
+#include "SeProtocol.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace common {
 
+                        using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
 
                         /**
                          * Custom protocol definitions to illustrate the extension of the Keyple SDK definitions
@@ -58,7 +63,7 @@ private:
                             std::string name;
 
                         public:
-                            CustomProtocols(const std::string &name, InnerEnum innerEnum, const std::string &name);
+                            CustomProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
 
                             std::string getName() override;
 

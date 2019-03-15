@@ -22,12 +22,8 @@
 /* Core */
 #include "Observable.h"
 #include "ReaderEvent.h"
+#include "SelectionRequest.h"
 #include "SeReader.h"
-
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class ReaderEvent; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionRequest; } } } }
 
 namespace org {
     namespace eclipse {
@@ -35,24 +31,25 @@ namespace org {
             namespace seproxy {
                 namespace event {
 
-                    using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                    using SeReader         = org::eclipse::keyple::seproxy::SeReader;
                     using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
 
                     class EXPORT ObservableReader : public virtual SeReader {
-                    public:
+                      public:
                         class ReaderObserver : public org::eclipse::keyple::util::Observer<ReaderEvent> {
                         };
 
                         class EXPORT NotificationMode final {
-                        public:
+                          public:
                             static NotificationMode ALWAYS;
                             static NotificationMode MATCHED_ONLY;
 
-                        private:
+                          private:
                             static std::vector<NotificationMode> valueList;
 
-                        public:
-                            enum class InnerEnum {
+                          public:
+                            enum class InnerEnum
+                            {
                                 ALWAYS,
                                 MATCHED_ONLY
                             };
@@ -69,7 +66,7 @@ namespace org {
                              */
                             InnerEnum innerEnumValue;
 
-                        private:
+                          private:
                             /*
                              * Alex: removed 'const'
                              *
@@ -90,45 +87,45 @@ namespace org {
                             int ordinalValue;
                             static int nextOrdinal;
 
-                        protected:
+                          protected:
                             std::string name;
 
-                        public:
-                            NotificationMode(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
+                          public:
+                            NotificationMode(const std::string &nameValue, InnerEnum innerEnum,
+                                             const std::string &name);
 
                             virtual std::string getName();
 
                             // ****** Reverse Lookup Implementation************//
 
                             // Lookup table
-                        private:
+                          private:
                             static const std::unordered_map<std::string, NotificationMode> lookup;
 
                             // Populate the lookup table on loading time
                             //JAVA TO C++ CONVERTER TODO TASK: Java to C++ Converter does not convert types within enums:
-                        private:
-                            class StaticConstructor
-                            {
-                            public:
-                                 StaticConstructor() {
-//                                    for (NotificationMode env : NotificationMode.values())
-//                                    {
-//                                        lookup.put(env.getName(), env);
-//                                    }
+                          private:
+                            class StaticConstructor {
+                              public:
+                                StaticConstructor()
+                                {
+                                    //                                    for (NotificationMode env : NotificationMode.values())
+                                    //                                    {
+                                    //                                        lookup.put(env.getName(), env);
+                                    //                                    }
                                 }
                             };
 
                             static NotificationMode::StaticConstructor staticConstructor;
 
-
                             // This method can be used for reverse lookup purpose
-                        public:
+                          public:
                             static NotificationMode get(const std::string &name);
 
-                        public:
-                            bool operator == (const NotificationMode &other);
+                          public:
+                            bool operator==(const NotificationMode &other);
 
-                            bool operator != (const NotificationMode &other);
+                            bool operator!=(const NotificationMode &other);
 
                             static std::vector<NotificationMode> values();
 
@@ -139,17 +136,19 @@ namespace org {
                             static NotificationMode valueOf(const std::string &name);
                         };
 
-                    public:
+                      public:
                         virtual void addObserver(std::shared_ptr<ReaderObserver> observer) = 0;
 
                         virtual void removeObserver(std::shared_ptr<ReaderObserver> observer) = 0;
 
                         virtual void notifyObservers(std::shared_ptr<ReaderEvent> event) = 0;
 
-                        virtual void setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> defaultSelectionRequest, NotificationMode notificationMode) = 0;
+                        virtual void
+                        setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> defaultSelectionRequest,
+                                                   NotificationMode notificationMode) = 0;
                     };
-                }
-            }
-        }
-    }
-}
+                } // namespace event
+            }     // namespace seproxy
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

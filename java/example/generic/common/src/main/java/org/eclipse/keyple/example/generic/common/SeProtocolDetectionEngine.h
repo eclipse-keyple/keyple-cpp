@@ -1,13 +1,3 @@
-#pragma once
-
-#include "AbstractReaderObserverEngine.h"
-#include <string>
-#include <iostream>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -19,16 +9,32 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { class
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <iostream>
+#include <memory>
+
+/* Example - Generic - Common */
+#include "AbstractReaderObserverEngine.h"
+
+/* Core - Seproxy - Transaction */
+#include "SeSelection.h"
+
+/* Forward class declarations */
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace common {
-
 
                         using SeReader = org::eclipse::keyple::seproxy::SeReader;
                         using namespace org::eclipse::keyple::transaction;
+                        using SeSelection = org::eclipse::keyple::transaction::SeSelection;
 
                         /**
                          * This code demonstrates the multi-protocols capability of the Keyple SeProxy

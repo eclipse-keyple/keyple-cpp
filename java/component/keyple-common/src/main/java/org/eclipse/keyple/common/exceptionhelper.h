@@ -1,149 +1,142 @@
 #pragma once
 
-#include <exception>
 #include <string>
 #include <sstream>
 #include <iostream>
 
-class IOException : public std::exception
-{
-private:
+/* Common */
+#include "Exception.h"
+
+class IOException : public Exception {
+  private:
     std::string msg;
 
-public:
-    IOException(const std::string& message = "") : msg(message)
+  public:
+    IOException(const std::string &message = "") : Exception(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
 };
 
-class SecurityException : public std::exception
-{
-private:
+class SecurityException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    SecurityException(const std::string& message = "") : msg(message)
+  public:
+    SecurityException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
 };
 
-class NoSuchElementException : public std::exception
-{
-private:
+class NoSuchElementException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    NoSuchElementException(const std::string& message = "") : msg(message)
+  public:
+    NoSuchElementException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
 };
 
-class IllegalAccessException : public std::exception
-{
-private:
+class IllegalAccessException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    IllegalAccessException(const std::string& message = "") : msg(message)
+  public:
+    IllegalAccessException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
 };
 
-class InvocationTargetException : public std::exception
-{
-private:
+class InvocationTargetException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    InvocationTargetException(const std::string& message = "") : msg(message)
+  public:
+    InvocationTargetException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
 };
 
-class NoSuchMethodException : public std::exception
-{
-private:
+class NoSuchMethodException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    NoSuchMethodException(const std::string& message = "") : msg(message)
+  public:
+    NoSuchMethodException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
 };
 
-class ClassNotFoundException : public std::exception
-{
-private:
+class ClassNotFoundException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    ClassNotFoundException(const std::string& message = "") : msg(message)
+  public:
+    ClassNotFoundException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
 };
 
-class NameNotFoundException : public std::exception
-{
-private:
+class NameNotFoundException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    NameNotFoundException(const std::string& message = "") : msg(message)
+  public:
+    NameNotFoundException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
 };
 
-class IllegalStateException : public std::exception
-{
-private:
+class IllegalStateException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    IllegalStateException(const std::string& message = "") : msg(message)
+  public:
+    IllegalStateException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
@@ -167,17 +160,16 @@ public:
 };
 */
 
-class InstantiationException : public std::exception
-{
-private:
+class InstantiationException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    InstantiationException(const std::string& message = "") : msg(message)
+  public:
+    InstantiationException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
@@ -201,49 +193,46 @@ public:
 };
 */
 
-class JsonParseException : public std::exception
-{
-private:
+class JsonParseException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    JsonParseException(const std::string& message = "") : msg(message)
+  public:
+    JsonParseException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
 };
 
-class FileNotFoundException : public std::exception
-{
-private:
+class FileNotFoundException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    FileNotFoundException(const std::string& message = "") : msg(message)
+  public:
+    FileNotFoundException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }
 };
 
-class URISyntaxException : public std::exception
-{
-private:
+class URISyntaxException : public std::exception {
+  private:
     std::string msg;
 
-public:
-    URISyntaxException(const std::string& message = "") : msg(message)
+  public:
+    URISyntaxException(const std::string &message = "") : msg(message)
     {
     }
 
-    const char * what() const throw()
+    const char *what() const throw()
     {
         return msg.c_str();
     }

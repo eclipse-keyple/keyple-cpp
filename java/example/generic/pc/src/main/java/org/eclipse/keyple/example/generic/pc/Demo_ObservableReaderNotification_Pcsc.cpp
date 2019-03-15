@@ -20,9 +20,6 @@ throw(std::runtime_error)
 {
     ObservableReaderNotificationEngine *demoEngine = new ObservableReaderNotificationEngine();
 
-    /* Instantiate SeProxyService and add PC/SC plugin */
-    SeProxyService seProxyService = SeProxyService::getInstance();
-
     /*
      * Alex: diamond issue, casting PcscPlugin into ReaderPlugin can take two
      * routes:
@@ -35,10 +32,12 @@ throw(std::runtime_error)
      * Forcing conversion to ObservablePlugin for now but should be fixed or at
      * least validated.
      */
-    std::shared_ptr<PcscPlugin> pcscplugin = PcscPlugin::getInstance();
-    pcscplugin->initReaders();
-    std::shared_ptr<ObservablePlugin> plugin = std::dynamic_pointer_cast<ObservablePlugin>(pcscplugin);
-    seProxyService.addPlugin(std::dynamic_pointer_cast<ReaderPlugin>(plugin));
+    PcscPlugin pcscplugin = PcscPlugin::getInstance();
+    pcscplugin.initReaders();
+
+    /* Instantiate SeProxyService and add PC/SC plugin */
+    SeProxyService seProxyService = SeProxyService::getInstance();
+    seProxyService.addPlugin(std::dynamic_cast<ObservablePlugin::ReaderPlugin>(pcscplugin));
 
     /* Set observers */
     demoEngine->setPluginObserver();

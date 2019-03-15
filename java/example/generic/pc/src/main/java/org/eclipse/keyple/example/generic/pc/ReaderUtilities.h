@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+/* Forward class declarations */
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeProxyService; } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
@@ -24,7 +24,7 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace pc {
 
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;

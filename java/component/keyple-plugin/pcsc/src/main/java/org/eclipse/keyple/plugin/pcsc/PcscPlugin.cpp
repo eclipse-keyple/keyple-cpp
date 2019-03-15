@@ -30,11 +30,11 @@ PcscPlugin::~PcscPlugin()
     logger->debug("destructor\n");
 }
 
-std::shared_ptr<PcscPlugin> PcscPlugin::getInstance()
+PcscPlugin PcscPlugin::getInstance()
 {
     static PcscPlugin uniqueInstance;
 
-    return std::shared_ptr<PcscPlugin>(&uniqueInstance);
+    return uniqueInstance;
 }
 
 std::unordered_map<std::string, std::string> PcscPlugin::getParameters()

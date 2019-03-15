@@ -1,0 +1,52 @@
+#
+# Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+#
+# All rights reserved. This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
+# available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
+#
+
+SET(CMAKE_MACOSX_RPATH 1)
+SET(CMAKE_CXX_STANDARD 11)
+
+IF(WIN32)
+	ADD_COMPILE_OPTIONS(/wd4275 /wd4251 /wd4290)
+ENDIF(WIN32)
+
+INCLUDE_DIRECTORIES(
+	${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/stub/se
+
+	# Example generic common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common
+
+	# Core
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main/java/org/eclipse/keyple/common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/message
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util
+
+	# Plugin - Pcsc
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/stub/src/main/java/org/eclipse/keyple/plugin/pcsc
+)
+
+ADD_EXECUTABLE(demo_seprotocoldetection_pcsc
+
+	# Example - Common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/AbstractReaderObserverEngine.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/CustomProtocols.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/CustomProtocolSetting.cpp
+
+	# Example - PC
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/Demo_SeProtocolDetection_Pcsc.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/PcscReadersSettings.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/ReaderUtilities.cpp
+)
+
+TARGET_LINK_LIBRARIES(demo_seprotocoldetection_pcsc keyplepluginpcsc)

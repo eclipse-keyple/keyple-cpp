@@ -25,7 +25,7 @@ SET(CMAKE_CXX_STANDARD 11)
 SET(LIBRARY_NAME keyplepluginpcsc)
 
 IF(WIN32)
-	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
+	ADD_COMPILE_OPTIONS(/wd4275 /wd4251 /wd4290)
 ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
@@ -40,6 +40,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction
 
 	# Helpers
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main/java/org/eclipse/keyple/common

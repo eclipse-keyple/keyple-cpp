@@ -1,18 +1,22 @@
 #include "SeProtocolDetectionEngine.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/ContactlessProtocols.h"
-#include "../../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/PoSelector.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduRequest.h"
-#include "../../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/po/parser/ReadDataStructure.h"
+
+/* Core */
+#include "ChannelState.h"
+#include "ContactlessProtocols_Import.h"
+#include "SeReader.h"
+#include "SeSelector.h"
+#include "ByteArrayUtils.h"
+#include "ApduRequest.h"
+
+/* Calypso */
+#include "PoSelector.h"
+#include "ReadDataStructure.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace common {
                         using ReadDataStructure = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
                         using PoSelector = org::eclipse::keyple::calypso::transaction::PoSelector;

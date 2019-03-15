@@ -1,12 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ObservableReader.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionResponse; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ReaderEvent; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -18,32 +9,47 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <memory>
+
+/* Core */
+#include "ObservableReader.h"
+#include "ReaderEvent_Import.h"
+
+/* Common */
+#include "Logger.h"
+#include "LoggerFactory.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace common {
 
-
-                        using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
-                        using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
+                        using ObservableReader  = org::eclipse::keyple::seproxy::event::ObservableReader;
+                        using ReaderEvent       = org::eclipse::keyple::seproxy::event::ReaderEvent;
                         using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
-                        using org::slf4j::Logger;
-                        using org::slf4j::LoggerFactory;
+                        using Logger            = org::eclipse::keyple::common::Logger;
+                        using LoggerFactory     = org::eclipse::keyple::common::LoggerFactory;
 
                         /**
                          * This abstract class is intended to be extended by the applications classes in which the SE
                          * insertion, selection, removal is factorized here.
                          */
-                        class AbstractReaderObserverEngine : public std::enable_shared_from_this<AbstractReaderObserverEngine>, public ObservableReader::ReaderObserver {
+                        class AbstractReaderObserverEngine
+                            : public std::enable_shared_from_this<AbstractReaderObserverEngine>,
+                              public ObservableReader::ReaderObserver {
 
-                        private:
-                            static std::shared_ptr<Logger> logger;
+                          private:
+                            const std::shared_ptr<Logger> logger =
+                                LoggerFactory::getLogger(typeid(AbstractReaderObserverEngine));
 
-
-                        protected:
-                            virtual void processSeMatch(std::shared_ptr<SelectionResponse> selectionResponse) = 0;
+                          protected:
+                            virtual void
+                            processSeMatch(std::shared_ptr<SelectionResponse> selectionResponse) = 0;
 
                             virtual void processSeInsertion() = 0; // alternative AID selection
 
@@ -51,17 +57,15 @@ namespace org {
 
                             virtual void processUnexpectedSeRemoval() = 0;
 
-
-                        public:
+                          public:
                             bool currentlyProcessingSe = false;
-
 
                             virtual void update(std::shared_ptr<ReaderEvent> event_Renamed);
                         };
 
-                    }
-                }
-            }
-        }
-    }
-}
+                    } // namespace common
+                }     // namespace generic
+            }         // namespace example
+        }             // namespace keyple
+    }                 // namespace eclipse
+} // namespace org

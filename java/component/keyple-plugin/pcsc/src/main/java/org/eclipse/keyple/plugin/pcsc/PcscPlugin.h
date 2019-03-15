@@ -116,7 +116,7 @@ namespace org {
                          * @return single instance of PcscPlugin
                          */
                       public:
-                        static std::shared_ptr<PcscPlugin> getInstance();
+                        static PcscPlugin getInstance();
 
                         std::unordered_map<std::string, std::string> getParameters() override;
 

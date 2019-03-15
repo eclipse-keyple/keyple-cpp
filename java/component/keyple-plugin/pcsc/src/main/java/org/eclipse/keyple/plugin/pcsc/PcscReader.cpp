@@ -148,9 +148,9 @@ if (*(std::dynamic_pointer_cast<Protocol>(protocolFlag)) != Protocol::ANY) {
     if (selectionMask == "") {
         throw KeypleReaderException("Target selector mask not found!");// nullptr));
     }
-    std::shared_ptr<Pattern> p = Pattern::compile(selectionMask);
+    Pattern p = Pattern::compile(selectionMask);
     std::string atr = ByteArrayUtils::toHex(card->getATR()); //.getBytes());
-    if (!p->matcher(atr).matches()) {
+    if (!p.matcher(atr).matches()) {
         if (logging) {
             logger->trace("[%s] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %s\n", this->getName(), protocolFlag);
         }

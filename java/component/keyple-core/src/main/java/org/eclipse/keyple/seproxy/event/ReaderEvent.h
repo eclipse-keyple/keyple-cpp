@@ -10,7 +10,8 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-#pragma once
+#ifndef KEYPLE_SEPROXY_READER_EVENT_H
+#define KEYPLE_SEPROXY_READER_EVENT_H
 
 #include <string>
 #include <vector>
@@ -19,8 +20,8 @@
 /* Common */
 #include "Export.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionResponse; } } } }
+/* Core */
+#include "SelectionResponse.h"
 
 namespace org {
     namespace eclipse {
@@ -156,3 +157,5 @@ namespace org {
         }
     }
 }
+
+#endif

@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+/* Core */
+#include "ContactlessProtocols_Import.h"
 #include "SeProtocolSettingList.h"
 
 namespace org {
@@ -23,16 +25,18 @@ namespace org {
             namespace plugin {
                 namespace pcsc {
 
-                    using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
+                    using SeProtocolSettingList =
+                        org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
                     using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                    using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
+                    using ContactlessProtocols =
+                        org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
 
                     /**
                      * These objects are used by the application to build the SeProtocolsMap
                      */
                     class PcscProtocolSetting final : public SeProtocolSettingList {
 
-                    public:
+                      public:
                         static PcscProtocolSetting SETTING_PROTOCOL_ISO14443_4;
                         static PcscProtocolSetting SETTING_PROTOCOL_B_PRIME;
                         static PcscProtocolSetting SETTING_PROTOCOL_MIFARE_UL;
@@ -40,18 +44,19 @@ namespace org {
                         static PcscProtocolSetting SETTING_PROTOCOL_MIFARE_DESFIRE;
                         static PcscProtocolSetting SETTING_PROTOCOL_MEMORY_ST25;
 
-                    private:
+                      private:
                         static std::vector<PcscProtocolSetting> valueList;
 
                         class StaticConstructor {
-                        public:
+                          public:
                             StaticConstructor();
                         };
 
                         static StaticConstructor staticConstructor;
 
-                    public:
-                        enum class InnerEnum {
+                      public:
+                        enum class InnerEnum
+                        {
                             SETTING_PROTOCOL_ISO14443_4,
                             SETTING_PROTOCOL_B_PRIME,
                             SETTING_PROTOCOL_MIFARE_UL,
@@ -61,7 +66,8 @@ namespace org {
                         };
 
                         const InnerEnum innerEnumValue;
-                    private:
+
+                      private:
                         const std::string nameValue;
                         const int ordinalValue;
                         static int nextOrdinal;
@@ -69,9 +75,9 @@ namespace org {
                         /**
                          * Regular expressions to match ATRs produced by PcSc readers
                          */
-                    public:
+                      public:
                         class ProtocolSetting {
-                        public:
+                          public:
                             static const std::string REGEX_PROTOCOL_ISO14443_4;
                             static const std::string REGEX_PROTOCOL_B_PRIME;
                             static const std::string REGEX_PROTOCOL_MIFARE_UL;
@@ -81,22 +87,24 @@ namespace org {
                         };
 
                         /* the protocol flag */
-                    public:
+                      public:
                         ContactlessProtocols flag;
 
                         /* the protocol setting value */
                         std::string value;
 
-                        PcscProtocolSetting(const std::string &name, InnerEnum innerEnum, ContactlessProtocols &flag, const std::string &value);
+                        PcscProtocolSetting(const std::string &name, InnerEnum innerEnum,
+                                            ContactlessProtocols &flag, const std::string &value);
 
-                        std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> getFlag() override;
+                        std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol>
+                        getFlag() override;
 
                         std::string getValue() override;
 
-public:
-                        bool operator == (const PcscProtocolSetting &other);
+                      public:
+                        bool operator==(const PcscProtocolSetting &other);
 
-                        bool operator != (const PcscProtocolSetting &other);
+                        bool operator!=(const PcscProtocolSetting &other);
 
                         static std::vector<PcscProtocolSetting> values();
 
@@ -107,8 +115,8 @@ public:
                         static PcscProtocolSetting valueOf(const std::string &name);
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace pcsc
+            }     // namespace plugin
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

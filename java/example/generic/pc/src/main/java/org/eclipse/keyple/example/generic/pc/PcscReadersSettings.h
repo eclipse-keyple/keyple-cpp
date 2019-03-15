@@ -1,5 +1,3 @@
-#pragma once
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -11,22 +9,27 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace pc {
 
                         class PcscReadersSettings {
                             // This is where you should add patterns of readers you want to use for tests
-                        public:
+                          public:
                             static const std::string PO_READER_NAME_REGEX;
                         };
 
-                    }
-                }
-            }
-        }
-    }
-}
+                    } // namespace pc
+                }     // namespace generic
+            }         // namespace example
+        }             // namespace keyple
+    }                 // namespace eclipse
+} // namespace org

@@ -12,12 +12,7 @@
 
 #pragma once
 
-#include "../../util/Configurable.h"
-#include "../../util/Nameable.h"
-#include "../../util/Observable.h"
-#include "../event/ReaderEvent.h"
-#include "../event/PluginEvent.h"
-#include "../exception/KeypleBaseException.h"
+/* Core */
 #include <string>
 #include <unordered_map>
 #include <stdexcept>
@@ -29,6 +24,12 @@
 
 /* Core */
 #include "Observable.h"
+#include "Configurable.h"
+#include "Nameable.h"
+#include "Observable.h"
+#include "ReaderEvent.h"
+#include "PluginEvent.h"
+#include "KeypleBaseException.h"
 
 namespace org {
     namespace eclipse {

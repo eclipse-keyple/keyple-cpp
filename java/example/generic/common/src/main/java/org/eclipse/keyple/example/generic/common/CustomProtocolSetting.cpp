@@ -1,16 +1,21 @@
+/* EXample */
+#include "CustomProtocols.h"
 #include "CustomProtocolSetting.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace common {
+
+                        using CustomProtocols =
+                            org::eclipse::keyple::example::generic::common::CustomProtocols;
                         using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
                         using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
 
-CustomProtocolSetting CustomProtocolSetting::CUSTOM_SETTING_PROTOCOL_B_PRIME("CUSTOM_SETTING_PROTOCOL_B_PRIME", InnerEnum::CUSTOM_SETTING_PROTOCOL_B_PRIME, CustomProtocols::CUSTOM_PROTOCOL_B_PRIME, "3B8F8001805A0A0103200311........829000..");
-CustomProtocolSetting CustomProtocolSetting::CUSTOM_SETTING_PROTOCOL_ISO14443_4("CUSTOM_SETTING_PROTOCOL_ISO14443_4", InnerEnum::CUSTOM_SETTING_PROTOCOL_ISO14443_4, CustomProtocols::CUSTOM_PROTOCOL_MIFARE_DESFIRE, "3B8180018080");
+CustomProtocolSetting CustomProtocolSetting::CUSTOM_SETTING_PROTOCOL_B_PRIME("CUSTOM_SETTING_PROTOCOL_B_PRIME", InnerEnum::CUSTOM_SETTING_PROTOCOL_B_PRIME, std::make_shared<SeProtocol>(CustomProtocols::CUSTOM_PROTOCOL_B_PRIME), "3B8F8001805A0A0103200311........829000..");
+CustomProtocolSetting CustomProtocolSetting::CUSTOM_SETTING_PROTOCOL_ISO14443_4("CUSTOM_SETTING_PROTOCOL_ISO14443_4", InnerEnum::CUSTOM_SETTING_PROTOCOL_ISO14443_4, std::make_shared<SeProtocol>(CustomProtocols::CUSTOM_PROTOCOL_MIFARE_DESFIRE), "3B8180018080");
 
 std::vector<CustomProtocolSetting> CustomProtocolSetting::valueList;
 

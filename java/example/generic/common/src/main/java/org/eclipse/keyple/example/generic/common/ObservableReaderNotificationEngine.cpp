@@ -2,7 +2,7 @@
 #include "KeyplePluginNotFoundException.h"
 #include "KeypleReaderNotFoundException.h"
 #include "PluginEvent.h"
-#include "ReaderEvent.h"
+#include "ReaderEvent_Import.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 

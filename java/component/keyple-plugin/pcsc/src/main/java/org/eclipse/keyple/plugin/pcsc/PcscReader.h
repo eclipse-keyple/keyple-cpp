@@ -28,24 +28,11 @@
 
 /* Core */
 #include "AbstractThreadedLocalReader.h"
-#include "ReaderEvent.h"
+#include "ReaderEvent_Import.h"
 #include "TransmissionMode.h"
 
 /* Smartcard I/O */
 #include "CardTerminal.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace protocol {
-                    class SeProtocol;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
 
 namespace org {
     namespace eclipse {
