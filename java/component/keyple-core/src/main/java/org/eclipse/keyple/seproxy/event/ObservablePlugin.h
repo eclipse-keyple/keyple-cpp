@@ -27,7 +27,7 @@ namespace org {
 
                     using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
 
-                    class ObservablePlugin : public ReaderPlugin {
+                    class ObservablePlugin : public virtual ReaderPlugin {
                     public:
                         class PluginObserver : public org::eclipse::keyple::util::Observer<PluginEvent> {
                         public:

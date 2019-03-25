@@ -1,14 +1,3 @@
-#pragma once
-
-#include <string>
-#include <unordered_map>
-#include "exceptionhelper.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -20,6 +9,19 @@ namespace org { namespace eclipse { namespace keyple { namespace command { class
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <unordered_map>
+#include <memory>
+
+/* Common */
+#include "exceptionhelper.h"
+
+/* Core */
+#include "ApduResponse.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -32,11 +34,49 @@ namespace org {
                  */
                 class AbstractApduResponseParser : public std::enable_shared_from_this<AbstractApduResponseParser> {
 
+                    /**
+                     * Status code properties
+                     */
+                protected:
+                    class StatusProperties : public std::enable_shared_from_this<StatusProperties> {
+
+                        /** The successful. */
+                    private:
+                        const bool successful;
+
+                        /** The information. */
+                        const std::string information;
+
+                        /**
+                         * A map with the double byte of a status as key, and the successful property and ASCII text
+                         * information as data.
+                         *
+                         * @param successful set successful status
+                         * @param information additional information
+                         */
+                    public:
+                        StatusProperties(bool successful, const std::string &information);
+
+                        /**
+                         * Gets the successful.
+                         *
+                         * @return the successful
+                         */
+                        virtual bool isSuccessful();
+
+                        /**
+                         * Gets the information.
+                         *
+                         * @return the information
+                         */
+                        virtual std::string getInformation();
+
+                    };
                     /** the byte array APDU response. */
                 protected:
                     std::shared_ptr<ApduResponse> response;
 
-                    static const std::unordered_map<Integer, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+                    static const std::unordered_map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
                                 private:
                                     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
                                     public:
@@ -60,7 +100,7 @@ namespace org {
                      * @return Status table
                      */
                 protected:
-                    virtual std::unordered_map<Integer, std::shared_ptr<StatusProperties>> getStatusTable();
+                    virtual std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable();
 
                     /**
                      * the generic abstract constructor to build a parser of the APDU response.
@@ -115,44 +155,6 @@ namespace org {
                     std::string getStatusInformation();
 
 
-                    /**
-                     * Status code properties
-                     */
-                protected:
-                    class StatusProperties : public std::enable_shared_from_this<StatusProperties> {
-
-                        /** The successful. */
-                    private:
-                        const bool successful;
-
-                        /** The information. */
-                        const std::string information;
-
-                        /**
-                         * A map with the double byte of a status as key, and the successful property and ASCII text
-                         * information as data.
-                         *
-                         * @param successful set successful status
-                         * @param information additional information
-                         */
-                    public:
-                        StatusProperties(bool successful, const std::string &information);
-
-                        /**
-                         * Gets the successful.
-                         *
-                         * @return the successful
-                         */
-                        virtual bool isSuccessful();
-
-                        /**
-                         * Gets the information.
-                         *
-                         * @return the information
-                         */
-                        virtual std::string getInformation();
-
-                    };
                 };
 
             }

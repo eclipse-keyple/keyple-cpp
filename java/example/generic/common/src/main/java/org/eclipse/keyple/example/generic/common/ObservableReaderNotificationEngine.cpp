@@ -60,8 +60,7 @@ namespace org {
                                 {
                                     logger->info("add observer PLUGINNAME = %s\n", plugin->getName());
                                     logger->info("this->pluginObserver: %p\n", this->pluginObserver);
-                                    (std::static_pointer_cast<ObservablePlugin>(plugin))
-                                        ->addObserver(this->pluginObserver);
+                                    (std::dynamic_pointer_cast<ObservablePlugin>(plugin))->addObserver(this->pluginObserver);
                                 }
                                 else
                                 {

@@ -37,7 +37,7 @@ namespace org {
                             static CustomProtocolSetting CUSTOM_SETTING_PROTOCOL_ISO14443_4;
 
                           private:
-                            static std::vector<CustomProtocolSetting> valueList;
+                            static std::vector<std::shared_ptr<SeProtocolSettingList>> valueList;
 
                             class StaticConstructor {
                               public:
@@ -90,7 +90,7 @@ namespace org {
 
                             bool operator!=(const CustomProtocolSetting &other);
 
-                            static std::vector<CustomProtocolSetting> values();
+                            static std::vector<std::shared_ptr<SeProtocolSettingList>> values();
 
                             int ordinal();
 

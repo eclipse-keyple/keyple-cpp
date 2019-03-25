@@ -126,7 +126,7 @@ namespace org {
                      */
                     class EXPORT AbstractObservablePlugin
                         : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<PluginEvent>,
-                          public ReaderPlugin {
+                          public virtual ReaderPlugin {
 
                       private:
                         const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservablePlugin));

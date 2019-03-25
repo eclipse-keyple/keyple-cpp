@@ -46,10 +46,16 @@ namespace org {
                                         std::string HoplinkAID = "A000000291A000000191";
                                         char SFI_T2Usage = static_cast<char>(0x1A);
                                         char SFI_T2Environment = static_cast<char>(0x14);
-
-                                        std::shared_ptr<PoSelector> poSelector = std::make_shared<PoSelector>(ByteArrayUtils::fromHex(HoplinkAID), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4, "Hoplink selector");
-
-                                        poSelector->preparePoCustomReadCmd("Standard Get Data", std::make_shared<ApduRequest>(ByteArrayUtils::fromHex("FFCA000000"), false));
+					std::vector<char> aid = ByteArrayUtils::fromHex(HoplinkAID);
+                                        std::shared_ptr<PoSelector> poSelector = std::make_shared<PoSelector>(
+						aid,
+						SeSelector::SelectMode::FIRST,
+						ChannelState::KEEP_OPEN,
+						std::dynamic_pointer_cast<SeProtocol>(std::make_shared<ContactlessProtocols>(ContactlessProtocols::PROTOCOL_ISO14443_4)),
+						"Hoplink selector");
+					
+					std::vector<char> apdu = ByteArrayUtils::fromHex("FFCA000000");
+                                        poSelector->preparePoCustomReadCmd("Standard Get Data", std::make_shared<ApduRequest>(apdu, false));
 
                                         poSelector->prepareReadRecordsCmd(SFI_T2Environment, ReadDataStructure::SINGLE_RECORD_DATA, static_cast<char>(0x01), "Hoplink T2 Environment");
 
@@ -67,7 +73,7 @@ namespace org {
                                         break;
                                     default:
                                         /* Add a generic selector */
-                                        seSelection->prepareSelection(std::make_shared<SeSelector>(".*", ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4, "Default selector"));
+                                        seSelection->prepareSelection(std::make_shared<SeSelector>(".*", ChannelState::KEEP_OPEN, std::make_shared<ContactlessProtocols>(ContactlessProtocols::PROTOCOL_ISO14443_4), "Default selector"));
                                         break;
                                 }
                             }

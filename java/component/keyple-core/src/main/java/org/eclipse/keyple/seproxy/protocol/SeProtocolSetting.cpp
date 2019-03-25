@@ -16,7 +16,7 @@ namespace org {
                         this->protocolsMap.emplace(seProtocolSetting->getFlag(), seProtocolSetting->getValue());
                     }
 
-                    SeProtocolSetting::SeProtocolSetting(std::vector<std::shared_ptr<SeProtocolSettingList>> &seProtocolSettingList) {
+                    SeProtocolSetting::SeProtocolSetting(std::vector<std::shared_ptr<SeProtocolSettingList>> seProtocolSettingList) {
                         for (auto seProtocolSetting : seProtocolSettingList) {
                             this->protocolsMap.emplace(seProtocolSetting->getFlag(), seProtocolSetting->getValue());
                         }

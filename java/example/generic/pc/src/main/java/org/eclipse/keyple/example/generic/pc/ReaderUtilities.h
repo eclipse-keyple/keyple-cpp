@@ -1,14 +1,3 @@
-#pragma once
-
-#include <string>
-#include <memory>
-
-/* Forward class declarations */
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeProxyService; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleBaseException; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -20,6 +9,17 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <memory>
+
+/* Core */
+#include "KeypleReaderException.h"
+#include "SeProxyService.h"
+#include "SeReader.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {

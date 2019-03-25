@@ -1,19 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
-#include "ReadDataStructure.h"
-#include <string>
-#include <map>
-#include <unordered_map>
-#include <vector>
-#include "exceptionhelper.h"
-#include <memory>
-#include "stringbuilder.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -25,6 +9,25 @@ namespace org { namespace eclipse { namespace keyple { namespace command { class
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <memory>
+#include <string>
+#include <map>
+#include <unordered_map>
+#include <vector>
+
+/* Core */
+#include "AbstractApduResponseParser.h"
+
+/* Calypso */
+#include "ReadDataStructure.h"
+
+/* Common */
+#include "exceptionhelper.h"
+#include "stringbuilder.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -41,7 +44,7 @@ namespace org {
                             class ReadRecordsRespPars final : public AbstractApduResponseParser {
 
                             private:
-                                static const std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                static const std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
                                                         private:
                                                             class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
@@ -54,7 +57,7 @@ namespace org {
 
 
                             protected:
-                                std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
+                                std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
                                 /** Type of data to parse: record data or counter, single or multiple */
                             private:
@@ -87,7 +90,7 @@ namespace org {
                                  * @return a map of records
                                  * @exception IllegalStateException if the parser has not been initialized
                                  */
-                                std::shared_ptr<SortedMap<Integer, std::vector<char>>> getRecords();
+                                std::shared_ptr<std::unordered_map<int, std::vector<char>>> getRecords();
 
                                 /**
                                  * Parses the Apdu response as a counter record (single or multiple), retrieves the counters
@@ -98,13 +101,13 @@ namespace org {
                                  * @return a map of counters
                                  * @exception IllegalStateException if the parser has not been initialized
                                  */
-                                std::shared_ptr<SortedMap<Integer, Integer>> getCounters();
+                                std::shared_ptr<std::unordered_map<int, int>> getCounters();
 
-                                std::string toString() override;
+                                std::string toString();
 
 protected:
                                 std::shared_ptr<ReadRecordsRespPars> shared_from_this() {
-                                    return std::static_pointer_cast<ReadRecordsRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                    return std::static_pointer_cast<ReadRecordsRespPars>(AbstractApduResponseParser::shared_from_this());
                                 }
                             };
 

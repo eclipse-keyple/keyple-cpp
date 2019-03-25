@@ -37,7 +37,7 @@ throw(std::runtime_error)
 
     /* Instantiate SeProxyService and add PC/SC plugin */
     SeProxyService seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(std::dynamic_cast<ObservablePlugin::ReaderPlugin>(pcscplugin));
+    seProxyService.addPlugin(std::dynamic_pointer_cast<ObservablePlugin::ReaderPlugin>(std::make_shared<PcscPlugin>(pcscplugin)));
 
     /* Set observers */
     demoEngine->setPluginObserver();

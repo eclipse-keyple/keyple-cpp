@@ -6,6 +6,7 @@
 #include "SeProtocol.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
+#include "SeProtocolSettingList.h"
 
 /* Plugin */
 #include "PcscPlugin.h"
@@ -18,12 +19,6 @@
 #include "SeProtocolDetectionEngine.h"
 #include "PcscReadersSettings.h"
 
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace example {
-                namespace generic {
-                    namespace pc {
 
                         using CustomProtocolSetting =
                             org::eclipse::keyple::example::generic::common::CustomProtocolSetting;
@@ -45,6 +40,7 @@ namespace org {
                         using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
                         using ReaderUtilities   = org::eclipse::keyple::example::generic::pc::ReaderUtilities;
                         using ReaderPlugin      = org::eclipse::keyple::seproxy::ReaderPlugin;
+			using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
 
                         int main(int argc, char **argv) throw(std::invalid_argument, KeypleBaseException)
                         {
@@ -53,7 +49,7 @@ namespace org {
 
                             /* add the PcscPlugin to the SeProxyService */
                             PcscPlugin pcscPlugin = PcscPlugin::getInstance();
-                            seProxyService.addPlugin(std::make_shared<ReaderPlugin>(pcscPlugin));
+                            seProxyService.addPlugin(std::dynamic_pointer_cast<ReaderPlugin>(std::make_shared<PcscPlugin>(pcscPlugin)));
 
                             /* attempt to get the SeReader (the right reader should be ready here) */
                             std::shared_ptr<SeReader> poReader = ReaderUtilities::getReaderByName(
@@ -87,34 +83,33 @@ namespace org {
 
                             // Method 1
                             // add protocols individually
-                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(
-                                PcscProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25));
+                            poReader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(
+                                PcscProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25)));
 
-                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(
-                                PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4));
+                            poReader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(
+                                PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4)));
 
                             // Method 2
                             // add all settings at once with setting enum
-                            poReader->addSeProtocolSetting(
-                                std::make_shared<SeProtocolSetting>(CustomProtocolSetting::values()));
+                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(SeProtocolSetting(CustomProtocolSetting::values())));
 
                             // Method 3
                             // create and fill a protocol map
                             std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap;
 
                             protocolsMap.emplace(
-                                ContactlessProtocols::PROTOCOL_MIFARE_CLASSIC,
+                                std::dynamic_pointer_cast<SeProtocol>(std::make_shared<ContactlessProtocols>(ContactlessProtocols::PROTOCOL_MIFARE_CLASSIC)),
                                 PcscProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_CLASSIC);
 
                             protocolsMap.emplace(
-                                ContactlessProtocols::PROTOCOL_MIFARE_UL,
+                                std::dynamic_pointer_cast<SeProtocol>(std::make_shared<ContactlessProtocols>(ContactlessProtocols::PROTOCOL_MIFARE_UL)),
                                 PcscProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_UL);
 
                             // provide the reader with the map
                             poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(protocolsMap));
 
                             // Set terminal as Observer of the first reader
-                            (std::static_pointer_cast<ObservableReader>(poReader))->addObserver(observer);
+                            (std::dynamic_pointer_cast<ObservableReader>(poReader))->addObserver(observer);
 
                             // wait for Enter key to exit.
                             std::cout << "Press Enter to exit" << std::endl;
@@ -140,9 +135,4 @@ namespace org {
                                 }
                             }
                         }
-                    } // namespace pc
-                }     // namespace generic
-            }         // namespace example
-        }             // namespace keyple
-    }                 // namespace eclipse
-} // namespace org
+

@@ -92,8 +92,8 @@ namespace org {
                                                  PcscReader::SETTING_MODE_SHARED);
 
                             /* Set the PO reader protocol flag */
-                            reader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(
-                                PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4));
+                            reader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(
+                                PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4)));
                         }
 
                         void ReaderUtilities::setContactsSettings(std::shared_ptr<SeReader> reader) throw(

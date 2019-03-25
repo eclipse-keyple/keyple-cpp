@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string.h>
 #include <vector>
 
 #if defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)

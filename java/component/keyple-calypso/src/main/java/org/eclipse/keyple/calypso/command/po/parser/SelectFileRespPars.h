@@ -1,14 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
-#include <unordered_map>
-#include <vector>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -20,6 +9,16 @@ namespace org { namespace eclipse { namespace keyple { namespace command { class
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <unordered_map>
+#include <vector>
+#include <memory>
+
+/* Calypso */
+#include "AbstractApduResponseParser.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -37,7 +36,7 @@ namespace org {
                             class SelectFileRespPars final : public AbstractApduResponseParser {
 
                             private:
-                                static const std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                static const std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
                                                         private:
                                                             class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
@@ -60,7 +59,7 @@ namespace org {
 
 protected:
                                 std::shared_ptr<SelectFileRespPars> shared_from_this() {
-                                    return std::static_pointer_cast<SelectFileRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                    return std::static_pointer_cast<SelectFileRespPars>(AbstractApduResponseParser::shared_from_this());
                                 }
                             };
 

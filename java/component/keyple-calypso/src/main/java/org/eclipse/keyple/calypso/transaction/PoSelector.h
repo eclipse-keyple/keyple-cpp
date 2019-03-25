@@ -1,23 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
-#include "../command/PoClass.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
-#include "../command/po/parser/ReadDataStructure.h"
-#include <string>
-#include <vector>
-#include <stdexcept>
-#include "exceptionhelper.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class ReadRecordsRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class SelectFileRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -29,6 +9,28 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <memory>
+#include <string>
+#include <vector>
+#include <stdexcept>
+
+/* Core */
+#include "SeSelector.h"
+#include "ChannelState.h"
+#include "AbstractApduResponseParser.h"
+
+/* Calypso */
+#include "PoClass.h"
+#include "ReadDataStructure.h"
+#include "ReadRecordsRespPars.h"
+#include "SelectFileRespPars.h"
+
+/* Common */
+#include "exceptionhelper.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -47,8 +49,8 @@ namespace org {
                     using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                     using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
                     using SeSelector = org::eclipse::keyple::transaction::SeSelector;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
+                    using org::eclipse::keyple::common::Logger;
+                    using org::eclipse::keyple::common::LoggerFactory;
 
                     /**
                      * Specialized selector to manage the specific characteristics of Calypso POs
@@ -177,7 +179,7 @@ namespace org {
 
 protected:
                         std::shared_ptr<PoSelector> shared_from_this() {
-                            return std::static_pointer_cast<PoSelector>(org.eclipse.keyple.transaction.SeSelector::shared_from_this());
+                            return std::static_pointer_cast<PoSelector>(SeSelector::shared_from_this());
                         }
                     };
 
