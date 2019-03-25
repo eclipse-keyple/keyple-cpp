@@ -76,6 +76,7 @@ int CalypsoPoCommands::nextOrdinal = 0;
                                 case org::eclipse::keyple::calypso::command::po::PoRevision::REV2_4:
                                     return OPEN_SESSION_24;
                                 case org::eclipse::keyple::calypso::command::po::PoRevision::REV3_1:
+                                case org::eclipse::keyple::calypso::command::po::PoRevision::REV3_1_CLAP:
                                     return OPEN_SESSION_31;
                                 case org::eclipse::keyple::calypso::command::po::PoRevision::REV3_2:
                                     return OPEN_SESSION_32;

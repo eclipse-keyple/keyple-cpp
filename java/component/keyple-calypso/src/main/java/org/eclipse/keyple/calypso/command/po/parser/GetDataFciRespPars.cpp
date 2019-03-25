@@ -1,7 +1,5 @@
 #include "GetDataFciRespPars.h"
-#include "../../../../../../../opencard/opt/util/Tag.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduResponse.h"
-#include "../../../../../../../opencard/opt/util/TLV.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
 
 namespace org {
@@ -16,8 +14,7 @@ namespace org {
                             using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
                             using org::slf4j::Logger;
                             using org::slf4j::LoggerFactory;
-                            using TLV = opencard::opt::util::TLV;
-                            using Tag = opencard::opt::util::Tag;
+                            using com::sun::jndi::ldap::BerDecoder;
 const std::shared_ptr<org::slf4j::Logger> GetDataFciRespPars::logger = org::slf4j::LoggerFactory::getLogger(GetDataFciRespPars::typeid);
 const std::unordered_map<Integer, std::shared_ptr<StatusProperties>> GetDataFciRespPars::STATUS_TABLE;
 
@@ -36,17 +33,12 @@ GetDataFciRespPars::StaticConstructor GetDataFciRespPars::staticConstructor;
                             }
 
 std::vector<int> const GetDataFciRespPars::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE = std::vector<int> {0, 0, 0, 0, 0, 0, 215, 256, 304, 362, 430, 512, 608, 724, 861, 1024, 1217, 1448, 1722, 2048, 2435, 2896, 3444, 4096, 4870, 5792, 6888, 8192, 9741, 11585, 13777, 16384, 19483, 23170, 27554, 32768, 38967, 46340, 55108, 65536, 77935, 92681, 110217, 131072, 155871, 185363, 220435, 262144, 311743, 370727, 440871, 524288, 623487, 741455, 881743, 1048576};
-const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_FCI_TEMPLATE = std::make_shared<opencard::opt::util::Tag>(0x0F, opencard::opt::util::Tag::APPLICATION, opencard::opt::util::Tag::CONSTRUCTED);
-const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_DF_NAME = std::make_shared<opencard::opt::util::Tag>(0x04, opencard::opt::util::Tag::CONTEXT, opencard::opt::util::Tag::PRIMITIVE);
-const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_FCI_PROPRIETARY_TEMPLATE = std::make_shared<opencard::opt::util::Tag>(0x05, opencard::opt::util::Tag::CONTEXT, opencard::opt::util::Tag::CONSTRUCTED);
-const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_FCI_ISSUER_DISCRETIONARY_DATA = std::make_shared<opencard::opt::util::Tag>(0x0C, opencard::opt::util::Tag::CONTEXT, opencard::opt::util::Tag::CONSTRUCTED);
-const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_APPLICATION_SERIAL_NUMBER = std::make_shared<opencard::opt::util::Tag>(0x07, opencard::opt::util::Tag::PRIVATE, opencard::opt::util::Tag::PRIMITIVE);
-const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_DISCRETIONARY_DATA = std::make_shared<opencard::opt::util::Tag>(0x13, opencard::opt::util::Tag::APPLICATION, opencard::opt::util::Tag::PRIMITIVE);
 
                             GetDataFciRespPars::GetDataFciRespPars(std::shared_ptr<ApduResponse> selectApplicationResponse) {
-
-                                std::shared_ptr<TLV> cTag; // constructed tag
-                                std::shared_ptr<TLV> pTag; // primitive tag
+                                const std::vector<char> response = selectApplicationResponse->getBytes();
+                                std::vector<char> octetString;
+                                std::vector<int> rlen(1);
+                                std::shared_ptr<BerDecoder> ber;
 
                                 /* check the command status to determine if the DF has been invalidated */
                                 if (selectApplicationResponse->getStatusCode() == 0x6283) {
@@ -54,57 +46,76 @@ const std::shared_ptr<opencard::opt::util::Tag> GetDataFciRespPars::TAG_DISCRETI
                                     isDfInvalidated_Renamed = true;
                                 }
 
-                                /* parse the raw data with the help of the TLV class */
+                                /* parse the raw data with the help of the BerDecoder class */
                                 try {
-                                    /* init TLV object */
-                                    cTag = std::make_shared<TLV>(selectApplicationResponse->getDataOut());
-                                    if (cTag != nullptr && cTag->tag()->equals(TAG_FCI_TEMPLATE)) {
-                                        pTag = cTag->findTag(TAG_DF_NAME, nullptr);
-                                        if (pTag != nullptr) {
-                                            /* store dfName */
-                                            dfName = pTag->valueAsByteArray();
-                                            if (logger->isDebugEnabled()) {
-                                                logger->debug("DF Name = {}", ByteArrayUtils::toHex(dfName));
-                                            }
-                                            cTag = cTag->findTag(TAG_FCI_PROPRIETARY_TEMPLATE, nullptr);
-                                            if (cTag != nullptr) {
-                                                cTag = cTag->findTag(TAG_FCI_ISSUER_DISCRETIONARY_DATA, nullptr);
-                                                if (cTag != nullptr) {
-                                                    pTag = cTag->findTag(TAG_APPLICATION_SERIAL_NUMBER, nullptr);
-                                                    if (pTag != nullptr) {
-                                                        /* store Application Serial Number */
-                                                        applicationSN = pTag->valueAsByteArray();
-                                                        if (logger->isDebugEnabled()) {
-                                                            logger->debug("Application Serial Number = {}", ByteArrayUtils::toHex(applicationSN));
-                                                        }
-                                                        pTag = cTag->findTag(TAG_DISCRETIONARY_DATA, nullptr);
-                                                        if (cTag != nullptr) {
-                                                            discretionaryData = pTag->valueAsByteArray();
-                                                            if (logger->isDebugEnabled()) {
-                                                                logger->debug("Discretionary Data = {}", ByteArrayUtils::toHex(discretionaryData));
-                                                            }
-                                                            /*
-                                                             * split discretionary data in as many individual startup
-                                                             * information
-                                                             */
-                                                            siBufferSizeIndicator = discretionaryData[0];
-                                                            siPlatform = discretionaryData[1];
-                                                            siApplicationType = discretionaryData[2];
-                                                            siApplicationSubtype = discretionaryData[3];
-                                                            siSoftwareIssuer = discretionaryData[4];
-                                                            siSoftwareVersion = discretionaryData[5];
-                                                            siSoftwareRevision = discretionaryData[6];
-                                                            /* all 3 main fields were retrieved */
-                                                            isValidCalypsoFCI_Renamed = true;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
+                                    /* init BerDecoder object */
+                                    ber = std::make_shared<BerDecoder>(response, 0, response.size());
+
+                                    /* Extract the FCI Template */
+                                    octetString = ber->parseOctetString(TAG_FCI_TEMPLATE, nullptr);
+
+                                    ber = std::make_shared<BerDecoder>(octetString, 0, octetString.size());
+
+                                    /* Get the DF Name */
+                                    dfName = ber->parseOctetString(TAG_DF_NAME, rlen);
+
+                                    /* Get the FCI Proprietary Template */
+                                    ber = std::make_shared<BerDecoder>(octetString, rlen[0], octetString.size());
+
+                                    octetString = ber->parseOctetString(TAG_FCI_PROPRIETARY_TEMPLATE, rlen);
+
+                                    /* Get the FCI Issuer Discretionary Data */
+                                    ber = std::make_shared<BerDecoder>(octetString, 0, octetString.size());
+
+                                    /*
+                                     * We process the TAG_FCI_ISSUER_DISCRETIONARY_DATA tag here in a particular way since
+                                     * the BerDecoder we use does not support 2-byte tags. We first check the two bytes of
+                                     * the TAG field and then skip the LENGTH field using an offset value of 3 to obtain the
+                                     * following data.
+                                     */
+                                    char b = static_cast<char>(ber->parseByte());
+                                    if (b != static_cast<char>(TAG_FCI_ISSUER_DISCRETIONARY_DATA >> 8)) {
+                                        throw std::make_shared<IllegalStateException>(std::string::format("Encountered ASN.1 tag %d (expected tag %d)", b, TAG_FCI_ISSUER_DISCRETIONARY_DATA >> 8));
                                     }
+
+                                    b = static_cast<char>(ber->parseByte());
+                                    if (b != static_cast<char>(TAG_FCI_ISSUER_DISCRETIONARY_DATA & 0xFF)) {
+                                        throw std::make_shared<IllegalStateException>(std::string::format("Encountered ASN.1 tag %d (expected tag %d)", b, TAG_FCI_ISSUER_DISCRETIONARY_DATA & 0xFF));
+                                    }
+
+                                    ber = std::make_shared<BerDecoder>(octetString, 3, octetString.size());
+
+                                    /* Get the Application Serial Number */
+                                    applicationSN = ber->parseOctetString(TAG_APPLICATION_SERIAL_NUMBER, rlen);
+
+                                    if (logger->isDebugEnabled()) {
+                                        logger->debug("Application Serial Number = {}", ByteArrayUtils::toHex(applicationSN));
+                                    }
+
+                                    /* Get the Discretionary Data */
+                                    discretionaryData = ber->parseOctetString(TAG_DISCRETIONARY_DATA, nullptr);
+
+                                    if (logger->isDebugEnabled()) {
+                                        logger->debug("Discretionary Data = {}", ByteArrayUtils::toHex(discretionaryData));
+                                    }
+
+                                    /*
+                                     * split discretionary data in as many individual startup information
+                                     */
+                                    siBufferSizeIndicator = discretionaryData[0];
+                                    siPlatform = discretionaryData[1];
+                                    siApplicationType = discretionaryData[2];
+                                    siApplicationSubtype = discretionaryData[3];
+                                    siSoftwareIssuer = discretionaryData[4];
+                                    siSoftwareVersion = discretionaryData[5];
+                                    siSoftwareRevision = discretionaryData[6];
+                                    /* all 3 main fields were retrieved */
+                                    isValidCalypsoFCI_Renamed = true;
+
                                 }
                                 catch (const std::runtime_error &e) {
-                                    /* Silently ignore problems decoding TLV structure */
+                                    /* Silently ignore problems decoding TLV structure. Just log. */
+                                    logger->debug("Error while parsing the FCI BER-TLV data structure ({})", e.what());
                                 }
                             }
 

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -19,16 +22,80 @@ namespace org {
                     namespace sam {
 
                         /**
-                         * This enumeration registers all revisions of SAM.
+                         * This enumeration registers all supported revisions of SAM.
                          *
                          */
-                        enum class SamRevision {
+                        class SamRevision final {
 
-                            /** The revision of C1 and S1E SAM. 0x00, 0x80 */
-                            C1,
+                            /** The revision of C1 and S1E SAM. CLA 0x00 or 0x80 */
+public:
+                            static SamRevision C1;
 
-                            /** The revision of S1D SAM SAM. 0x94 */
-                            S1D
+                            /** The revision of S1E SAM. CLA 0x00 or 0x80 */
+                            static SamRevision S1E;
+
+                            /** The revision of S1D SAM SAM. CLA 0x94 */
+                            static SamRevision S1D;
+
+                            /**
+                             * Joker value matching any application type.
+                             * <p>
+                             * Used as an argument in SamSelector.
+                             * <p>
+                             * The actual revision will be retrieved from the ATR historical bytes.
+                             */
+                            static SamRevision AUTO;
+
+private:
+                            static std::vector<SamRevision> valueList;
+
+                            class StaticConstructor {
+                            public:
+                                StaticConstructor();
+                            };
+
+                            static StaticConstructor staticConstructor;
+
+public:
+                            enum class InnerEnum {
+                                C1,
+                                S1E,
+                                S1D,
+                                AUTO
+                            };
+
+                            const InnerEnum innerEnumValue;
+private:
+                            const std::string nameValue;
+                            const int ordinalValue;
+                            static int nextOrdinal;
+
+                        private:
+                            const std::string name;
+                            const std::string applicationTypeMask;
+                            const char classByte;
+
+                        public:
+                            SamRevision(const std::string &name, InnerEnum innerEnum, const std::string &name, const std::string &applicationTypeMask, char classByte);
+
+                            virtual std::string getName();
+
+                            virtual std::string getApplicationTypeMask();
+
+                            virtual char getClassByte();
+
+public:
+                            bool operator == (const SamRevision &other);
+
+                            bool operator != (const SamRevision &other);
+
+                            static std::vector<SamRevision> values();
+
+                            int ordinal();
+
+                            std::string toString();
+
+                            static SamRevision valueOf(const std::string &name);
                         };
 
                     }

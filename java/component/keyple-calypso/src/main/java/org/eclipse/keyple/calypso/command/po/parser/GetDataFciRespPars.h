@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
+#include <string>
 #include <unordered_map>
 #include <vector>
 #include <stdexcept>
@@ -9,7 +10,6 @@
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
 namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-namespace opencard { namespace opt { namespace util { class Tag; } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
 
 /********************************************************************************
@@ -35,7 +35,7 @@ namespace org {
                             using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
                             using org::slf4j::Logger;
                             using org::slf4j::LoggerFactory;
-                            using Tag = opencard::opt::util::Tag;
+
 
                             /**
                              * Extracts information from the FCI data returned is response to the selection application command.
@@ -68,22 +68,23 @@ namespace org {
 
                                 /* BER-TLV tags definitions */
                                 /* FCI Template: application class, constructed, tag number Fh => tag field 6Fh */
-                                static const std::shared_ptr<Tag> TAG_FCI_TEMPLATE;
+                                static constexpr int TAG_FCI_TEMPLATE = 0x6F;
+
                                 /* DF Name: context-specific class, primitive, tag number 4h => tag field 84h */
-                                static const std::shared_ptr<Tag> TAG_DF_NAME;
+                                static constexpr int TAG_DF_NAME = 0x84;
                                 /*
                                  * FCI Proprietary Template: context-specific class, constructed, tag number 5h => tag field A5h
                                  */
-                                static const std::shared_ptr<Tag> TAG_FCI_PROPRIETARY_TEMPLATE;
+                                static constexpr int TAG_FCI_PROPRIETARY_TEMPLATE = 0xA5;
                                 /*
                                  * FCI Issuer Discretionary Data: context-specific class, constructed, tag number Ch => tag
                                  * field BF0Ch
                                  */
-                                static const std::shared_ptr<Tag> TAG_FCI_ISSUER_DISCRETIONARY_DATA;
+                                static constexpr int TAG_FCI_ISSUER_DISCRETIONARY_DATA = 0xBF0C;
                                 /* Application Serial Number: private class, primitive, tag number 7h => tag field C7h */
-                                static const std::shared_ptr<Tag> TAG_APPLICATION_SERIAL_NUMBER;
+                                static constexpr int TAG_APPLICATION_SERIAL_NUMBER = 0xC7;
                                 /* Discretionary Data: application class, primitive, tag number 13h => tag field 53h */
-                                static const std::shared_ptr<Tag> TAG_DISCRETIONARY_DATA;
+                                static constexpr int TAG_DISCRETIONARY_DATA = 0x53;
 
                                 /** attributes result of th FCI parsing */
 //JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
@@ -129,6 +130,8 @@ namespace org {
                                  * through dedicated getter methods.
                                  * <p>
                                  * All fields are pre-initialized to handle the case where the parsing fails.
+                                 * <p>
+                                 * The TLV processing is done with a standard ASN.1 BerDecoder.
                                  * 
                                  * @param selectApplicationResponse the selectApplicationResponse from Get Data APDU commmand
                                  */

@@ -1,25 +1,17 @@
 #pragma once
 
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
-#include "../command/PoClass.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
-#include "../command/po/parser/ReadDataStructure.h"
+#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
 #include <string>
+#include <unordered_set>
 #include <vector>
-#include <stdexcept>
-#include "exceptionhelper.h"
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class ReadRecordsRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class SelectFileRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class PoAidSelector; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class PoAtrFilter; } } } } }
 
 /********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+ * Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
  *
  * See the NOTICE file(s) distributed with this work for additional information regarding copyright
  * ownership.
@@ -35,149 +27,107 @@ namespace org {
             namespace calypso {
                 namespace transaction {
 
-
-
-                    using PoClass = org::eclipse::keyple::calypso::command::PoClass;
-                    using ReadDataStructure = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
-                    using ReadRecordsRespPars = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
-                    using SelectFileRespPars = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
-                    using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                    using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                    using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
-                    using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
-                    using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                    using SeSelector = org::eclipse::keyple::transaction::SeSelector;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
+                    using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
 
                     /**
-                     * Specialized selector to manage the specific characteristics of Calypso POs
+                     * The {@link PoSelector} class extends {@link SeSelector} to handle specific PO features such as
+                     * the additional successful status codes list (in response to a select application command)
                      */
                     class PoSelector final : public SeSelector {
-                    private:
-                        static const std::shared_ptr<Logger> logger;
-
-                        const PoClass poClass;
-                        const std::shared_ptr<SeProtocol> protocolFlag;
-
-                        /** The list to contain the parsers associated to the prepared commands */
-                        std::vector<std::shared_ptr<AbstractApduResponseParser>> poResponseParserList = std::vector<std::shared_ptr<AbstractApduResponseParser>>();
-
                         /**
-                         * Calypso PO revision 1 selector
+                         * Indicates if an invalidated PO should be selected or not.
                          * <p>
-                         * The PO class is set to LEGACY in order to produce Apdus with legacy class byte
-                         * 
-                         * @param atrRegex a regular expression to compare with the ATR of the targeted Rev1 PO
-                         * @param channelState indicates whether the logical channel should remain open
-                         * @param protocolFlag the protocol flag to filter POs according to their communication protocol
-                         * @param extraInfo information string
+                         * The acceptance of an invalid PO is determined with the additional successful status codes
+                         * specified in the {@link org.eclipse.keyple.seproxy.SeSelector.AidSelector}
                          */
                     public:
-                        PoSelector(const std::string &atrRegex, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, const std::string &extraInfo);
+                        enum class InvalidatedPo {
+                            REJECT,
+                            ACCEPT
+                        };
 
                         /**
-                         * Calypso PO revision 2+ selector
-                         * <p>
-                         * The PO class is set to ISO in order to produce Apdus with ISO class byte
-                         *
-                         * @param aid a regular expression to compare with the ATR of the targeted Rev1 PO
-                         * @param selectMode a flag to indicate if the first or the next occurrence is requested
-                         * @param channelState indicates whether the logical channel should remain open
-                         * @param protocolFlag the protocol flag to filter POs according to their communication protocol
-                         * @param extraInfo information string
-                         */
-                        PoSelector(std::vector<char> &aid, SelectMode selectMode, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag, const std::string &extraInfo);
-
-                        /**
-                         * Prepare one or more read record ApduRequest based on the target revision to be executed
-                         * following the selection.
-                         * <p>
-                         * In the case of a mixed target (rev2 or rev3) two commands are prepared. The first one in rev3
-                         * format, the second one in rev2 format (mainly class byte)
+                         * Create a PoSelector to perform the PO selection. See {@link SeSelector}
                          * 
-                         * @param sfi the sfi top select
-                         * @param readDataStructureEnum read mode enum to indicate a SINGLE, MULTIPLE or COUNTER read
-                         * @param firstRecordNumber the record number to read (or first record to read in case of
-                         *        several records)
-                         * @param expectedLength the expected length of the record(s)
-                         * @param extraInfo extra information included in the logs (can be null or empty)
-                         */
-                    private:
-                        std::shared_ptr<ReadRecordsRespPars> prepareReadRecordsCmdInternal(char sfi, ReadDataStructure readDataStructureEnum, char firstRecordNumber, int expectedLength, const std::string &extraInfo);
-
-                        /**
-                         * Prepare one or more read record ApduRequest based on the target revision to be executed
-                         * following the selection.
-                         * <p>
-                         * The expected length is provided and its value is checked between 1 and 250.
-                         * <p>
-                         * In the case of a mixed target (rev2 or rev3) two commands are prepared. The first one in rev3
-                         * format, the second one in rev2 format (mainly class byte)
-                         *
-                         * @param sfi the sfi top select
-                         * @param readDataStructureEnum read mode enum to indicate a SINGLE, MULTIPLE or COUNTER read
-                         * @param firstRecordNumber the record number to read (or first record to read in case of
-                         *        several records)
-                         * @param expectedLength the expected length of the record(s)
-                         * @param extraInfo extra information included in the logs (can be null or empty)
+                         * @param poAidSelector the AID selection data
+                         * @param poAtrFilter the ATR filter
+                         * @param extraInfo information string (to be printed in logs)
                          */
                     public:
-                        std::shared_ptr<ReadRecordsRespPars> prepareReadRecordsCmd(char sfi, ReadDataStructure readDataStructureEnum, char firstRecordNumber, int expectedLength, const std::string &extraInfo);
+                        PoSelector(std::shared_ptr<PoAidSelector> poAidSelector, std::shared_ptr<PoAtrFilter> poAtrFilter, const std::string &extraInfo);
 
                         /**
-                         * Prepare one or more read record ApduRequest based on the target revision to be executed
-                         * following the selection. No expected length is specified, the record output length is handled
-                         * automatically.
+                         * PoAidSelector embedding the Calypo PO additional successful codes list
+                         */
+                    public:
+                        class PoAidSelector : public SeSelector::AidSelector {
+
+                        private:
+                            static const std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes;
+
+                        private:
+                            class HashSetAnonymousInnerClass : public std::unordered_set<Integer>, public std::enable_shared_from_this<HashSetAnonymousInnerClass> {
+                    //            {
+                    //                add(0x6283);
+                    //            }
+                            };
+
+                            /**
+                             * Create a {@link PoAidSelector} to select a Calypso PO with an AID through a select
+                             * application command.
+                             * 
+                             * @param aidToSelect the application identifier
+                             * @param invalidatedPo an enum value to indicate if an invalidated PO should be accepted or
+                             *        not
+                             * @param fileOccurrence the ISO7816-4 file occurrence parameter (see
+                             *        {@link org.eclipse.keyple.seproxy.SeSelector.AidSelector.FileOccurrence})
+                             * @param fileControlInformation the ISO7816-4 file control information parameter (see
+                             *        {@link org.eclipse.keyple.seproxy.SeSelector.AidSelector.FileControlInformation})
+                             */
+                        public:
+                            PoAidSelector(std::vector<char> &aidToSelect, InvalidatedPo invalidatedPo, FileOccurrence fileOccurrence, FileControlInformation fileControlInformation);
+
+                            /**
+                             * Simplified constructor with default values for the FileOccurrence and
+                             * FileControlInformation (see {@link org.eclipse.keyple.seproxy.SeSelector.AidSelector})
+                             * 
+                             * @param aidToSelect the application identifier
+                             * @param invalidatedPo an enum value to indicate if an invalidated PO should be accepted or
+                             *        not
+                             */
+                            PoAidSelector(std::vector<char> &aidToSelect, InvalidatedPo invalidatedPo);
+
+protected:
+                            std::shared_ptr<PoAidSelector> shared_from_this() {
+                                return std::static_pointer_cast<PoAidSelector>(org.eclipse.keyple.seproxy.SeSelector.AidSelector::shared_from_this());
+                            }
+                        };
+
+                        /**
+                         * PoAtrFilter to perform a PO selection based on its ATR
                          * <p>
-                         * In the case of a mixed target (rev2 or rev3) two commands are prepared. The first one in rev3
-                         * format, the second one in rev2 format (mainly class byte)
-                         *
-                         * @param sfi the sfi top select
-                         * @param readDataStructureEnum read mode enum to indicate a SINGLE, MULTIPLE or COUNTER read
-                         * @param firstRecordNumber the record number to read (or first record to read in case of
-                         *        several records)
-                         * @param extraInfo extra information included in the logs (can be null or empty)
+                         * Could be completed to handle Calypso specific ATR filtering process.
                          */
-                        std::shared_ptr<ReadRecordsRespPars> prepareReadRecordsCmd(char sfi, ReadDataStructure readDataStructureEnum, char firstRecordNumber, const std::string &extraInfo);
+                    public:
+                        class PoAtrFilter : public SeSelector::AtrFilter {
 
-                        /**
-                         * Prepare a select file ApduRequest to be executed following the selection.
-                         * <p>
-                         * 
-                         * @param path path from the MF (MF identifier excluded)
-                         * @param extraInfo extra information included in the logs (can be null or empty)
-                         */
-                        std::shared_ptr<SelectFileRespPars> prepareSelectFileDfCmd(std::vector<char> &path, const std::string &extraInfo);
+                            /**
+                             * Regular expression based filter
+                             *
+                             * @param atrRegex String hex regular expression
+                             */
+                        public:
+                            PoAtrFilter(const std::string &atrRegex);
 
-                        /**
-                         * Prepare a custom read ApduRequest to be executed following the selection.
-                         * 
-                         * @param name the name of the command (will appear in the ApduRequest log)
-                         * @param apduRequest the ApduRequest (the correct instruction byte must be provided)
-                         */
-                        void preparePoCustomReadCmd(const std::string &name, std::shared_ptr<ApduRequest> apduRequest);
-
-                        /**
-                         * Prepare a custom modification ApduRequest to be executed following the selection.
-                         *
-                         * @param name the name of the command (will appear in the ApduRequest log)
-                         * @param apduRequest the ApduRequest (the correct instruction byte must be provided)
-                         */
-                        void preparePoCustomModificationCmd(const std::string &name, std::shared_ptr<ApduRequest> apduRequest);
-
-
-                        /**
-                         * Loops on the SeResponse and updates the list of parsers previously memorized
-                         *
-                         * @param seResponse the seResponse from the PO
-                         */
-                    protected:
-                        void updateParsersWithResponses(std::shared_ptr<SeResponse> seResponse);
+protected:
+                            std::shared_ptr<PoAtrFilter> shared_from_this() {
+                                return std::static_pointer_cast<PoAtrFilter>(org.eclipse.keyple.seproxy.SeSelector.AtrFilter::shared_from_this());
+                            }
+                        };
 
 protected:
                         std::shared_ptr<PoSelector> shared_from_this() {
-                            return std::static_pointer_cast<PoSelector>(org.eclipse.keyple.transaction.SeSelector::shared_from_this());
+                            return std::static_pointer_cast<PoSelector>(org.eclipse.keyple.seproxy.SeSelector::shared_from_this());
                         }
                     };
 

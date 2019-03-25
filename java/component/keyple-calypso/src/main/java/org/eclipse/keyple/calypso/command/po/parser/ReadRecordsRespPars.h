@@ -36,7 +36,10 @@ namespace org {
                             using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
 
                             /**
-                             * Read Records (00B2) response parser. See specs: Calypso / page 89 / 9.4.7 Read Records
+                             * Read Records (00B2) response parser. See specs: Calypso / page 89 / 9.4.7 Read Records The
+                             * {@link ReadRecordsRespPars} class holds the data resulting from a Read Records command. It
+                             * provides methods to retrieve these data according to the file structure profile specified in the
+                             * command preparation step: SINGLE or MULTIPLE RECORD or COUNTER.
                              */
                             class ReadRecordsRespPars final : public AbstractApduResponseParser {
 
@@ -82,6 +85,8 @@ namespace org {
                                  * Parses the Apdu response as a data record (single or multiple), retrieves the records and
                                  * place it in an map.
                                  * <p>
+                                 * The map index follows the PO specification, i.e. starts at 1 for the first record.
+                                 * <p>
                                  * An empty map is returned if no data is available.
                                  * 
                                  * @return a map of records
@@ -92,6 +97,8 @@ namespace org {
                                 /**
                                  * Parses the Apdu response as a counter record (single or multiple), retrieves the counters
                                  * values and place it in an map indexed with the counter number.
+                                 * <p>
+                                 * The map index follows the PO specification, i.e. starts at 1 for the first counter.
                                  * <p>
                                  * An empty map is returned if no data is available.
                                  *

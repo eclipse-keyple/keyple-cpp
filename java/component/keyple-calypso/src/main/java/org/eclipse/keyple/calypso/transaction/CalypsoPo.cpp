@@ -1,5 +1,5 @@
 #include "CalypsoPo.h"
-#include "PoSelector.h"
+#include "PoSelectionRequest.h"
 #include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeResponse.h"
 #include "../command/po/parser/GetDataFciRespPars.h"
 #include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
@@ -19,14 +19,13 @@ namespace org {
                     using org::slf4j::LoggerFactory;
 const std::shared_ptr<org::slf4j::Logger> CalypsoPo::logger = org::slf4j::LoggerFactory::getLogger(CalypsoPo::typeid);
 
-                    CalypsoPo::CalypsoPo(std::shared_ptr<PoSelector> poSelector) : org::eclipse::keyple::transaction::MatchingSe(poSelector), poSelector(poSelector) {
+                    CalypsoPo::CalypsoPo(std::shared_ptr<PoSelectionRequest> poSelectionRequest) : org::eclipse::keyple::transaction::MatchingSe(poSelectionRequest), poSelectionRequest(poSelectionRequest) {
                     }
 
                     void CalypsoPo::setSelectionResponse(std::shared_ptr<SeResponse> selectionResponse) {
                         MatchingSe::setSelectionResponse(selectionResponse);
-
                         /* Update the parser objects with the responses obtained */
-                        poSelector->updateParsersWithResponses(selectionResponse);
+                        poSelectionRequest->updateParsersWithResponses(selectionResponse);
 
                         /* The selectionSeResponse may not include a FCI field (e.g. old PO Calypso Rev 1) */
                         if (selectionResponse->getSelectionStatus()->getFci()->isSuccessful()) {
@@ -47,7 +46,7 @@ const std::shared_ptr<org::slf4j::Logger> CalypsoPo::logger = org::slf4j::Logger
                             char applicationTypeByte = poFciRespPars->getApplicationTypeByte();
                             if ((applicationTypeByte & (1 << 7)) != 0) {
                                 /* CLAP */
-                                this->revision = PoRevision::REV3_1;
+                                this->revision = PoRevision::REV3_1_CLAP;
                             }
                             else if ((applicationTypeByte >> 3) == static_cast<char>(0x05)) {
                                 this->revision = PoRevision::REV3_2;
@@ -139,6 +138,13 @@ const std::shared_ptr<org::slf4j::Logger> CalypsoPo::logger = org::slf4j::Logger
                             }
                             return PoClass::ISO;
                         }
+                    }
+
+                    void CalypsoPo::reset() {
+                        MatchingSe::reset();
+                        applicationSerialNumber.clear();
+                        poAtr.clear();
+                        dfName.clear();
                     }
                 }
             }

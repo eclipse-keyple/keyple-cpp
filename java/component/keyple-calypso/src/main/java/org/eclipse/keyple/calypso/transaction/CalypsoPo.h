@@ -8,7 +8,7 @@
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class PoSelector; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class PoSelectionRequest; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
 
 /********************************************************************************
@@ -50,7 +50,7 @@ namespace org {
                     private:
                         static const std::shared_ptr<Logger> logger;
 
-                        const std::shared_ptr<PoSelector> poSelector;
+                        const std::shared_ptr<PoSelectionRequest> poSelectionRequest;
                         std::vector<char> applicationSerialNumber;
                         PoRevision revision = static_cast<PoRevision>(0);
                         std::vector<char> dfName;
@@ -62,14 +62,13 @@ namespace org {
                         bool modificationCounterIsInBytes = true;
 
                     public:
-                        CalypsoPo(std::shared_ptr<PoSelector> poSelector);
+                        CalypsoPo(std::shared_ptr<PoSelectionRequest> poSelectionRequest);
 
                         /**
                          * Retains the selection response and analyses its relevant information to determine the
                          * characteristics of the PO required to process it correctly.
                          * 
-                         * @param selectionResponse the received response to the selection request TODO the parsing of
-                         *        the FCI should be done using a true BER-TLV library
+                         * @param selectionResponse the received response to the selection request
                          */
                         void setSelectionResponse(std::shared_ptr<SeResponse> selectionResponse) override;
 
@@ -89,6 +88,9 @@ namespace org {
                          * @return the PO class determined from the PO revision
                          */
                         PoClass getPoClass();
+
+                    protected:
+                        void reset() override final;
 
 protected:
                         std::shared_ptr<CalypsoPo> shared_from_this() {

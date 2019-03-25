@@ -637,12 +637,10 @@ namespace org {
                         bool processOpening(ModificationMode modificationMode, SessionAccessLevel accessLevel, char openingSfiToSelect, char openingRecordNumberToRead) throw(KeypleReaderException);
 
                         /**
-                         * Process all prepared PO commands in a Secure Session.
+                         * Process all prepared PO commands (outside a Secure Session).
                          * <ul>
-                         * <li>On the PO reader, generates a SeRequest for the current selected AID, with channelState
-                         * set to KEEP_OPEN, and ApduRequests with the PO commands.</li>
-                         * <li>In case the secure session is active, the "cache" of SAM commands is completed with the
-                         * corresponding Digest Update commands.</li>
+                         * <li>On the PO reader, generates a SeRequest with channelState set to the provided value and
+                         * ApduRequests containing the PO commands.</li>
                          * <li>All parsers returned by the prepare command methods are updated with the Apdu responses
                          * from the PO.</li>
                          * </ul>
@@ -656,6 +654,23 @@ namespace org {
                         bool processPoCommands(ChannelState channelState) throw(KeypleReaderException);
 
                         /**
+                         * Process all prepared PO commands in a Secure Session.
+                         * <ul>
+                         * <li>On the PO reader, generates a SeRequest with channelState set to KEEP_OPEN, and
+                         * ApduRequests containing the PO commands.</li>
+                         * <li>In case the secure session is active, the "cache" of SAM commands is completed with the
+                         * corresponding Digest Update commands.</li>
+                         * <li>All parsers returned by the prepare command methods are updated with the Apdu responses
+                         * from the PO.</li>
+                         * </ul>
+                         *
+                         * @return true if all commands are successful
+                         *
+                         * @throws KeypleReaderException IO Reader exception
+                         */
+                        bool processPoCommandsInSession() throw(KeypleReaderException);
+
+                        /**
                          * Sends the currently prepared commands list (may be empty) and closes the Secure Session.
                          * <ul>
                          * <li>The ratification is handled according to the communication mode.</li>
@@ -663,7 +678,7 @@ namespace org {
                          * <li>All parsers returned by the prepare command methods are updated with the Apdu responses
                          * from the PO.</li>
                          * </ul>
-                         * 
+                         *
                          * @param transmissionMode the communication mode. If the communication mode is CONTACTLESS, a
                          *        ratification command will be generated and sent to the PO after the Close Session
                          *        command; the ratification will not be requested in the Close Session command. On the
@@ -679,6 +694,19 @@ namespace org {
                          *         </ul>
                          */
                         bool processClosing(TransmissionMode transmissionMode, ChannelState channelState) throw(KeypleReaderException);
+
+                        /**
+                         * Abort a Secure Session.
+                         * <p>
+                         * Send the appropriate command to the PO
+                         * <p>
+                         * Clean up internal data and status.
+                         * 
+                         * @param channelState indicates if the SE channel of the PO reader must be closed after the
+                         *        abort session command
+                         * @return true if the abort command received a successful response from the PO
+                         */
+                        bool processCancel(ChannelState channelState);
 
                         /**
                          * Loops on the SeResponse and updates the list of parsers pointed out by the provided iterator

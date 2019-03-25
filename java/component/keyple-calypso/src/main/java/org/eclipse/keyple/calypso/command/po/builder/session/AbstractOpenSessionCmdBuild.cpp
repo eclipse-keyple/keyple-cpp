@@ -26,6 +26,7 @@ namespace org {
                                         case PoRevision::REV2_4:
                                             return std::make_shared<OpenSession24CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo);
                                         case PoRevision::REV3_1:
+                                        case PoRevision::REV3_1_CLAP:
                                             return std::make_shared<OpenSession31CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo);
                                         case PoRevision::REV3_2:
                                             return std::make_shared<OpenSession32CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo);
