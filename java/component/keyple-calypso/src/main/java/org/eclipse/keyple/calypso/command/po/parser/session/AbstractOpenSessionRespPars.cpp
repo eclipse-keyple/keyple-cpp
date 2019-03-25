@@ -51,6 +51,7 @@ AbstractOpenSessionRespPars::StaticConstructor AbstractOpenSessionRespPars::stat
                                         case PoRevision::REV2_4:
                                             return std::make_shared<OpenSession24RespPars>(response);
                                         case PoRevision::REV3_1:
+                                        case PoRevision::REV3_1_CLAP:
                                             return std::make_shared<OpenSession31RespPars>(response);
                                         case PoRevision::REV3_2:
                                             return std::make_shared<OpenSession32RespPars>(response);

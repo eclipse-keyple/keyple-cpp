@@ -86,7 +86,7 @@ ReadRecordsRespPars::StaticConstructor ReadRecordsRespPars::staticConstructor;
                                     std::vector<char> apdu = response->getDataOut();
                                     int numberOfCounters = apdu.size() / 3;
                                     int index = 0;
-                                    int key = 0;
+                                    int key = 1; // the first counter is indexed 1
                                     for (int i = 0; i < numberOfCounters; i++) {
                                         /*
                                          * convert the 3-byte unsigned value of the counter into an integer (up to 2^24 -1)

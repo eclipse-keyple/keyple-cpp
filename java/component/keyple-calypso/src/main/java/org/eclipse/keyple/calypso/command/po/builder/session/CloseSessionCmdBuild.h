@@ -54,6 +54,15 @@ namespace org {
                                 public:
                                     CloseSessionCmdBuild(PoClass poClass, bool ratificationAsked, std::vector<char> &terminalSessionSignature) throw(std::invalid_argument);
 
+                                    /**
+                                     * Instantiates a new CloseSessionCmdBuild based on the revision of the PO to generate an abort
+                                     * session command (Close Secure Session with p1 = p2 = lc = 0).
+                                     *
+                                     * @param poClass indicates which CLA byte should be used for the Apdu
+                                     */
+                                    CloseSessionCmdBuild(PoClass poClass);
+
+
 protected:
                                     std::shared_ptr<CloseSessionCmdBuild> shared_from_this() {
                                         return std::static_pointer_cast<CloseSessionCmdBuild>(org.eclipse.keyple.calypso.command.po.PoCommandBuilder::shared_from_this());

@@ -19,7 +19,7 @@ namespace org {
                                     if (expectedResponseLength != 0x04 && expectedResponseLength != 0x08) {
                                         throw std::invalid_argument(StringHelper::formatSimple("Bad challenge length! Expected 4 or 8, got %s", expectedResponseLength));
                                     }
-                                    char cla = SamRevision::S1D.equals(this->defaultRevision) ? static_cast<char>(0x94) : static_cast<char>(0x00);
+                                    char cla = this->defaultRevision.getClassByte();
                                     char p1 = 0x00;
                                     char p2 = 0x00;
 

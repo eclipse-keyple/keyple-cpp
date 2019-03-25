@@ -16,7 +16,7 @@ namespace org {
                                     if (revision != nullptr) {
                                         this->defaultRevision = revision;
                                     }
-                                    char cla = SamRevision::S1D.equals(this->defaultRevision) ? static_cast<char>(0x94) : static_cast<char>(0x80);
+                                    char cla = this->defaultRevision.getClassByte();
                                     char p1 = static_cast<char>(0x80);
                                     char p2 = static_cast<char>(0x00);
 

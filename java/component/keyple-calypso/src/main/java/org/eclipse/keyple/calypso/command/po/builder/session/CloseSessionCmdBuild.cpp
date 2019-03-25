@@ -30,6 +30,12 @@ namespace org {
 
                                     request = setApduRequest(poClass.getValue(), command, p1, static_cast<char>(0x00), terminalSessionSignature, le);
                                 }
+
+                                CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass) : org::eclipse::keyple::calypso::command::po::PoCommandBuilder(command, nullptr) {
+                                    request = setApduRequest(poClass.getValue(), command, static_cast<char>(0x00), static_cast<char>(0x00), nullptr, static_cast<char>(0));
+                                    /* Add "Abort session" to command name for logging purposes */
+                                    this->addSubName("Abort session");
+                                }
                             }
                         }
                     }

@@ -19,7 +19,7 @@ namespace org {
                                     if (diversifier.empty() || (diversifier.size() != 4 && diversifier.size() != 8)) {
                                         throw std::invalid_argument("Bad diversifier value!");
                                     }
-                                    char cla = SamRevision::S1D.equals(this->defaultRevision) ? static_cast<char>(0x94) : static_cast<char>(0x80);
+                                    char cla = this->defaultRevision.getClassByte();
                                     char p1 = 0x00;
                                     char p2 = 0x00;
 

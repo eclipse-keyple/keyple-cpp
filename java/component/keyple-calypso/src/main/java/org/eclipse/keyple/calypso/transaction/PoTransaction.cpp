@@ -808,9 +808,9 @@ std::unordered_map<Byte, std::shared_ptr<CommandResponse>> PoTransaction::Antici
                                          * number. Convert the 3-byte block indexed by the counter number to an
                                          * int.
                                          */
-                                        int currentCounterValue = ByteBuffer::wrap(commandResponse->getApduResponse()->getBytes()).order(ByteOrder::BIG_ENDIAN).getInt((counterNumber - 1) * 3) >> 8;
+                                        int currentCounterValue = ByteArrayUtils::threeBytesToInt(commandResponse->getApduResponse()->getBytes(), (counterNumber - 1) * 3);
                                         /* Extract the add or subtract value from the modification request */
-                                        int addSubtractValue = ByteBuffer::wrap(modCounterApduRequest).order(ByteOrder::BIG_ENDIAN).getInt(OFFSET_DATA) >> 8;
+                                        int addSubtractValue = ByteArrayUtils::threeBytesToInt(modCounterApduRequest, OFFSET_DATA);
                                         /* Build the response */
                                         std::vector<char> response(5);
                                         int newCounterValue;
@@ -912,85 +912,102 @@ std::unordered_map<Byte, std::shared_ptr<CommandResponse>> PoTransaction::Antici
                     }
 
                     bool PoTransaction::processPoCommands(ChannelState channelState) throw(KeypleReaderException) {
+
+                        /** This method should be called only if no session was previously open */
+                        if (currentState == SessionState::SESSION_OPEN) {
+                            throw std::make_shared<IllegalStateException>("A session is open");
+                        }
+
                         bool poProcessSuccess = true;
                         /*
                          * Iterator to keep the progress in updating the parsers from the list of prepared commands
                          */
                         std::vector<std::shared_ptr<AbstractApduResponseParser>>::const_iterator abstractApduResponseParserIterator = poResponseParserList.begin();
-                        if (currentState == SessionState::SESSION_CLOSED) {
-                            /* PO commands sent outside a Secure Session. No modifications buffer limitation. */
-                            std::shared_ptr<SeResponse> seResponsePoCommands = processAtomicPoCommands(poCommandBuilderList, channelState);
+                        /* PO commands sent outside a Secure Session. No modifications buffer limitation. */
+                        std::shared_ptr<SeResponse> seResponsePoCommands = processAtomicPoCommands(poCommandBuilderList, channelState);
 
+                        if (!updateParsersWithResponses(seResponsePoCommands, abstractApduResponseParserIterator)) {
+                            poProcessSuccess = false;
+                        }
+
+                        /* clean up global lists */
+                        poCommandBuilderList.clear();
+                        poResponseParserList.clear();
+                        return poProcessSuccess;
+                    }
+
+                    bool PoTransaction::processPoCommandsInSession() throw(KeypleReaderException) {
+
+                        /** This method should be called only if a session was previously open */
+                        if (currentState == SessionState::SESSION_CLOSED) {
+                            throw std::make_shared<IllegalStateException>("No open session");
+                        }
+
+                        bool poProcessSuccess = true;
+                        /*
+                         * Iterator to keep the progress in updating the parsers from the list of prepared commands
+                         */
+                        std::vector<std::shared_ptr<AbstractApduResponseParser>>::const_iterator abstractApduResponseParserIterator = poResponseParserList.begin();
+
+                        /* A session is open, we have to care about the PO modifications buffer */
+                        std::vector<std::shared_ptr<PoSendableInSession>> poAtomicCommandBuilderList;
+
+                        for (auto poCommandBuilderElement : poCommandBuilderList) {
+                            if (!(std::dynamic_pointer_cast<PoModificationCommand>(poCommandBuilderElement) != nullptr)) {
+                                /* This command does not affect the PO modifications buffer */
+                                poAtomicCommandBuilderList.push_back(poCommandBuilderElement);
+                            }
+                            else {
+                                /* This command affects the PO modifications buffer */
+                                if (willOverflowBuffer((std::static_pointer_cast<PoModificationCommand>(poCommandBuilderElement)))) {
+                                    if (currentModificationMode == ModificationMode::ATOMIC) {
+//JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
+                                        throw std::make_shared<IllegalStateException>("ATOMIC mode error! This command would overflow the PO modifications buffer: " + poCommandBuilderElement->toString());
+                                    }
+                                    /*
+                                     * The current command would overflow the modifications buffer in the PO. We
+                                     * send the current commands and update the parsers. The parsers Iterator is
+                                     * kept all along the process.
+                                     */
+                                    std::shared_ptr<SeResponse> seResponsePoCommands = processAtomicPoCommands(poAtomicCommandBuilderList, ChannelState::KEEP_OPEN);
+                                    if (!updateParsersWithResponses(seResponsePoCommands, abstractApduResponseParserIterator)) {
+                                        poProcessSuccess = false;
+                                    }
+                                    /*
+                                     * Close the session and reset the modifications buffer counters for the next
+                                     * round (set the contact mode to avoid the transmission of the ratification)
+                                     */
+                                    processAtomicClosing(nullptr, TransmissionMode::CONTACTS, ChannelState::KEEP_OPEN);
+                                    resetModificationsBufferCounter();
+                                    /* We reopen a new session for the remaining commands to be sent */
+                                    std::shared_ptr<SeResponse> seResponseOpening = processAtomicOpening(currentAccessLevel, static_cast<char>(0x00), static_cast<char>(0x00), nullptr);
+                                    /*
+                                     * Clear the list and add the command that did not fit in the PO modifications
+                                     * buffer. We also update the usage counter without checking the result.
+                                     */
+                                    poAtomicCommandBuilderList.clear();
+                                    poAtomicCommandBuilderList.push_back(poCommandBuilderElement);
+                                    /*
+                                     * just update modifications buffer usage counter, ignore result (always false)
+                                     */
+                                    willOverflowBuffer(std::static_pointer_cast<PoModificationCommand>(poCommandBuilderElement));
+                                }
+                                else {
+                                    /*
+                                     * The command fits in the PO modifications buffer, just add it to the list
+                                     */
+                                    poAtomicCommandBuilderList.push_back(poCommandBuilderElement);
+                                }
+                            }
+                        }
+
+                        if (!poAtomicCommandBuilderList.empty()) {
+                            std::shared_ptr<SeResponse> seResponsePoCommands = processAtomicPoCommands(poAtomicCommandBuilderList, ChannelState::KEEP_OPEN);
                             if (!updateParsersWithResponses(seResponsePoCommands, abstractApduResponseParserIterator)) {
                                 poProcessSuccess = false;
                             }
                         }
-                        else {
-                            /* A session is open, we have to care about the PO modifications buffer */
-                            std::vector<std::shared_ptr<PoSendableInSession>> poAtomicCommandBuilderList;
 
-                            for (auto poCommandBuilderElement : poCommandBuilderList) {
-                                if (!(std::dynamic_pointer_cast<PoModificationCommand>(poCommandBuilderElement) != nullptr)) {
-                                    /* This command does not affect the PO modifications buffer */
-                                    poAtomicCommandBuilderList.push_back(poCommandBuilderElement);
-                                }
-                                else {
-                                    /* This command affects the PO modifications buffer */
-                                    if (willOverflowBuffer((std::static_pointer_cast<PoModificationCommand>(poCommandBuilderElement)))) {
-                                        if (currentModificationMode == ModificationMode::ATOMIC) {
-//JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
-                                            throw std::make_shared<IllegalStateException>("ATOMIC mode error! This command would overflow the PO modifications buffer: " + poCommandBuilderElement->toString());
-                                        }
-                                        /*
-                                         * The current command would overflow the modifications buffer in the PO. We
-                                         * send the current commands and update the parsers. The parsers Iterator is
-                                         * kept all along the process.
-                                         */
-                                        std::shared_ptr<SeResponse> seResponsePoCommands = processAtomicPoCommands(poAtomicCommandBuilderList, ChannelState::KEEP_OPEN);
-                                        if (!updateParsersWithResponses(seResponsePoCommands, abstractApduResponseParserIterator)) {
-                                            poProcessSuccess = false;
-                                        }
-                                        /*
-                                         * Close the session and reset the modifications buffer counters for the
-                                         * next round (set the contact mode to avoid the transmission of the
-                                         * ratification)
-                                         */
-                                        processAtomicClosing(nullptr, TransmissionMode::CONTACTS, ChannelState::KEEP_OPEN);
-                                        resetModificationsBufferCounter();
-                                        /* We reopen a new session for the remaining commands to be sent */
-                                        std::shared_ptr<SeResponse> seResponseOpening = processAtomicOpening(currentAccessLevel, static_cast<char>(0x00), static_cast<char>(0x00), nullptr);
-                                        /*
-                                         * Clear the list and add the command that did not fit in the PO
-                                         * modifications buffer. We also update the usage counter without checking
-                                         * the result.
-                                         */
-                                        poAtomicCommandBuilderList.clear();
-                                        poAtomicCommandBuilderList.push_back(poCommandBuilderElement);
-                                        /*
-                                         * just update modifications buffer usage counter, ignore result (always
-                                         * false)
-                                         */
-                                        willOverflowBuffer(std::static_pointer_cast<PoModificationCommand>(poCommandBuilderElement));
-                                    }
-                                    else {
-                                        /*
-                                         * The command fits in the PO modifications buffer, just add it to the list
-                                         */
-                                        poAtomicCommandBuilderList.push_back(poCommandBuilderElement);
-                                    }
-                                }
-                            }
-                            if (!poAtomicCommandBuilderList.empty()) {
-                                std::shared_ptr<SeResponse> seResponsePoCommands = processAtomicPoCommands(poAtomicCommandBuilderList, ChannelState::KEEP_OPEN);
-                                if (!updateParsersWithResponses(seResponsePoCommands, abstractApduResponseParserIterator)) {
-                                    poProcessSuccess = false;
-                                }
-                            }
-                            // TODO add session abort command if channel closing is requested
-                            // if(channelState) {
-                            // /* abort the PO session session */
-                            // }
-                        }
                         /* clean up global lists */
                         poCommandBuilderList.clear();
                         poResponseParserList.clear();
@@ -1091,6 +1108,46 @@ std::unordered_map<Byte, std::shared_ptr<CommandResponse>> PoTransaction::Antici
                         poCommandBuilderList.clear();
                         poResponseParserList.clear();
                         return poProcessSuccess;
+                    }
+
+                    bool PoTransaction::processCancel(ChannelState channelState) {
+                        /* PO ApduRequest List to hold Close Secure Session command */
+                        std::vector<std::shared_ptr<ApduRequest>> poApduRequestList;
+
+                        /* Build the PO Close Session command (in "abort" mode since no signature is provided). */
+                        std::shared_ptr<CloseSessionCmdBuild> closeCommand = std::make_shared<CloseSessionCmdBuild>(calypsoPo->getPoClass());
+
+                        poApduRequestList.push_back(closeCommand->getApduRequest());
+
+                        /*
+                         * Transfer PO commands
+                         */
+                        std::shared_ptr<SeRequest> poSeRequest = std::make_shared<SeRequest>(poApduRequestList, channelState);
+
+                        logger->debug("processCancel => POSEREQUEST = {}", poSeRequest);
+
+                        std::shared_ptr<SeResponse> poSeResponse;
+                        try {
+                            poSeResponse = poReader->transmit(poSeRequest);
+                        }
+                        catch (const KeypleReaderException &ex) {
+                            poSeResponse = ex->getSeResponse();
+                        }
+
+                        logger->debug("processCancel => POSERESPONSE = {}", poSeResponse);
+
+                        /* clean up global lists */
+                        poCommandBuilderList.clear();
+                        poResponseParserList.clear();
+
+                        /*
+                         * session is now considered closed regardless the previous state or the result of the abort
+                         * session command sent to the PO.
+                         */
+                        currentState = SessionState::SESSION_CLOSED;
+
+                        /* return the successful status of the abort session command */
+                        return poSeResponse->getApduResponses()[0]->isSuccessful();
                     }
 
                     bool PoTransaction::updateParsersWithResponses(std::shared_ptr<SeResponse> seResponse, std::shared_ptr<Iterator<std::shared_ptr<AbstractApduResponseParser>>> parserIterator) {
