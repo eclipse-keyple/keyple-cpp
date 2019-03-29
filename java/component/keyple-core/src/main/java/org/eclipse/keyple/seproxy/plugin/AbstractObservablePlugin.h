@@ -135,7 +135,8 @@ namespace org {
                          * The list of readers
                          */
                       protected:
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> readers = nullptr;
+                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> readers = nullptr;
+
 
                         /**
                          * Instanciates a new ReaderPlugin. Retrieve the current readers list.
@@ -166,10 +167,17 @@ namespace org {
                          * @return the current reader list, can be null if the
                          */
                       public:
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
-                        getReaders() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::shared_ptr<AbstractObservableReader>>> getReaders() throw(KeypleReaderException) override;
 
-                      protected:
+                        /**
+                         * Returns the current list of reader names.
+                         *
+                         * The list of names is built from the current readers list
+                         *
+                         * @return a list of String
+                         */
+                        std::shared_ptr<SortedSet<std::string>> getReaderNames() override;
+
                         /**
                          * Fetch connected native readers (from third party library) and returns a list of corresponding
                          * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader}
@@ -178,33 +186,35 @@ namespace org {
                          * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
-                        initNativeReaders() = 0; // throws KeypleReaderException
+                    protected:
+                        virtual std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> initNativeReaders() = 0;
 
                         /**
-                         * Gets the specific reader whose is provided as an argument.
+                         * Fetch connected native reader (from third party library) by its name Returns the current
+                         * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader} if it is already listed.
+                         * Creates and returns a new {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader}
+                         * if not.
                          *
-                         * @param name the of the reader
-                         * @return the AbstractObservableReader object (null if not found)
+                         * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        virtual std::shared_ptr<SeReader> getNativeReader(const std::string &name) = 0;
+                        virtual std::shared_ptr<AbstractObservableReader> fetchNativeReader(const std::string &name) = 0;
 
                         /**
                          * Starts the monitoring thread
                          * <p>
-                         * This method has to be overloaded by the class that handle the monitoring thread. It will be
-                         * called when a first observer is added.
+                         * This abstract method has to be implemented by the class that handle the monitoring thread. It
+                         * will be called when a first observer is added.
                          */
-                        virtual void startObservation();
+                        virtual void startObservation() = 0;
 
                         /**
                          * Ends the monitoring thread
                          * <p>
-                         * This method has to be overloaded by the class that handle the monitoring thread. It will be
-                         * called when the observer is removed.
+                         * This abstract method has to be implemented by the class that handle the monitoring thread. It
+                         * will be called when the observer is removed.
                          */
-                        virtual void stopObservation();
+                        virtual void stopObservation() = 0;
 
                         /**
                          * Add a plugin observer.
@@ -245,16 +255,12 @@ namespace org {
                          * @param name of the reader
                          * @return the reader
                          * @throws KeypleReaderNotFoundException if the wanted reader is not found
-                         *
-                         * /!\ Covariant return type (prototype is SeReader but ProxyReader actually returned)
                          */
-                        std::shared_ptr<SeReader> getReader(const std::string &name) override;
+                        std::shared_ptr<ProxyReader> getReader(const std::string &name) throw(KeypleReaderNotFoundException);
 
                       protected:
-                        std::shared_ptr<AbstractObservablePlugin> shared_from_this()
-                        {
-                            return std::static_pointer_cast<AbstractObservablePlugin>(
-                                AbstractLoggedObservable<PluginEvent>::shared_from_this());
+                        std::shared_ptr<AbstractObservablePlugin> shared_from_this() {
+                            return std::static_pointer_cast<AbstractObservablePlugin>(AbstractLoggedObservable<org.eclipse.keyple.seproxy.event_Renamed.PluginEvent>::shared_from_this());
                         }
                     };
 

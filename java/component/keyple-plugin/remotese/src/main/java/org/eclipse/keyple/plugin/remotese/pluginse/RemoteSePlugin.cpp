@@ -1,14 +1,12 @@
 #include "RemoteSePlugin.h"
 #include "VirtualReaderSessionFactory.h"
 #include "../transport/DtoSender.h"
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderNotFoundException.h"
 #include "VirtualReader.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ProxyReader.h"
 #include "VirtualReaderSession.h"
-#include "VirtualReaderSessionImpl.h"
-#include "../transport/RemoteMethodTxEngine.h"
+#include "../rm/RemoteMethodTxEngine.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/PluginEvent.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin/AbstractObservableReader.h"
@@ -19,9 +17,8 @@ namespace org {
             namespace plugin {
                 namespace remotese {
                     namespace pluginse {
+                        using RemoteMethodTxEngine = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodTxEngine;
                         using DtoSender = org::eclipse::keyple::plugin::remotese::transport::DtoSender;
-                        using RemoteMethodTxEngine = org::eclipse::keyple::plugin::remotese::transport::RemoteMethodTxEngine;
-                        using SeReader = org::eclipse::keyple::seproxy::SeReader;
                         using PluginEvent = org::eclipse::keyple::seproxy::event_Renamed::PluginEvent;
                         using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
                         using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
@@ -34,21 +31,14 @@ namespace org {
 const std::shared_ptr<org::slf4j::Logger> RemoteSePlugin::logger = org::slf4j::LoggerFactory::getLogger(RemoteSePlugin::typeid);
 const std::string RemoteSePlugin::PLUGIN_NAME = "RemoteSePlugin";
 
-                        RemoteSePlugin::RemoteSePlugin(std::shared_ptr<VirtualReaderSessionFactory> sessionManager, std::shared_ptr<DtoSender> sender) : org::eclipse::keyple::seproxy::plugin::AbstractObservablePlugin(PLUGIN_NAME), sessionManager(sessionManager), sender(sender) {
+                        RemoteSePlugin::RemoteSePlugin(std::shared_ptr<VirtualReaderSessionFactory> sessionManager, std::shared_ptr<DtoSender> sender) : org::eclipse::keyple::seproxy::plugin::AbstractObservablePlugin(PLUGIN_NAME), sessionManager(sessionManager), sender(sender), parameters(std::unordered_map<std::string, std::string>()) {
                             logger->info("Init RemoteSePlugin");
                         }
 
-                        std::unordered_map<std::string, std::string> RemoteSePlugin::getParameters() {
-                            return nullptr;
-                        }
-
-                        void RemoteSePlugin::setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument) {
-                        }
-
-                        std::shared_ptr<SeReader> RemoteSePlugin::getReaderByRemoteName(const std::string &remoteName) throw(KeypleReaderNotFoundException) {
+                        std::shared_ptr<VirtualReader> RemoteSePlugin::getReaderByRemoteName(const std::string &remoteName) throw(KeypleReaderNotFoundException) {
                             for (auto virtualReader : readers) {
                                 if ((std::static_pointer_cast<VirtualReader>(virtualReader))->getNativeReaderName() == remoteName) {
-                                    return virtualReader;
+                                    return std::static_pointer_cast<VirtualReader>(virtualReader);
                                 }
                             }
                             throw std::make_shared<KeypleReaderNotFoundException>(remoteName);
@@ -60,74 +50,61 @@ const std::string RemoteSePlugin::PLUGIN_NAME = "RemoteSePlugin";
                             // create a new session for the new reader
                             std::shared_ptr<VirtualReaderSession> session = sessionManager->createSession(nativeReaderName, clientNodeId);
 
-                            // DtoSender sends Dto when the session requires to
-                            (std::static_pointer_cast<VirtualReaderSessionImpl>(session))->addObserver(dtoSender);
+                            try {
+                                if (getReaderByRemoteName(nativeReaderName) != nullptr) {
+                                    throw std::make_shared<KeypleReaderException>("Virtual Reader already exists for reader " + nativeReaderName);
+                                };
+                            }
+                            catch (const KeypleReaderNotFoundException &e) {
+                                // no reader found, continue
+                            }
+
 
                             // check if reader is not already connected (by localReaderName)
-                            if (!isReaderConnected(nativeReaderName)) {
-                                logger->info("Create a new Virtual Reader with localReaderName {} with session {}", nativeReaderName, session->getSessionId());
+                            logger->info("Create a new Virtual Reader with localReaderName {} with session {}", nativeReaderName, session->getSessionId());
 
-                                std::shared_ptr<RemoteMethodTxEngine> rmTxEngine = std::make_shared<RemoteMethodTxEngine>(sender);
+                            // Create virtual reader with a remote method engine so the reader can send dto
+                            // with a session
+                            // and the provided name
+                            std::shared_ptr<VirtualReader> * const virtualReader = std::make_shared<VirtualReader>(session, nativeReaderName, std::make_shared<RemoteMethodTxEngine>(sender));
+                            readers->add(virtualReader);
 
-                                std::shared_ptr<VirtualReader> * const virtualReader = std::make_shared<VirtualReader>(session, nativeReaderName, rmTxEngine);
-                                readers->add(virtualReader);
+                            // notify that a new reader is connected in a separated thread
+                            /*
+                             * new Thread() { public void run() { } }.start();
+                             */
+                            notifyObservers(std::make_shared<PluginEvent>(getName(), virtualReader->getName(), PluginEvent::EventType::READER_CONNECTED));
 
-                                // notify that a new reader is connected in a separated thread
-                                std::make_shared<ThreadAnonymousInnerClass>(shared_from_this(), virtualReader)
-                                .start();
+                            return virtualReader;
 
-                                return virtualReader;
-                            }
-                            else {
-                                throw std::make_shared<KeypleReaderException>("Virtual Reader already exists");
-                            }
-                        }
-
-                        RemoteSePlugin::ThreadAnonymousInnerClass::ThreadAnonymousInnerClass(std::shared_ptr<RemoteSePlugin> outerInstance, std::shared_ptr<org::eclipse::keyple::plugin::remotese::pluginse::VirtualReader> virtualReader) {
-                            this->outerInstance = outerInstance;
-                            this->virtualReader = virtualReader;
-                        }
-
-                        void RemoteSePlugin::ThreadAnonymousInnerClass::run() {
-                            outerInstance->notifyObservers(std::make_shared<PluginEvent>(outerInstance->getName(), virtualReader->getName(), PluginEvent::EventType::READER_CONNECTED));
                         }
 
                         void RemoteSePlugin::disconnectRemoteReader(const std::string &nativeReaderName) throw(KeypleReaderNotFoundException) {
-                            logger->debug("Disconnect Virtual reader {}", nativeReaderName);
 
+                            logger->debug("Disconnect Virtual reader {}", nativeReaderName);
 
                             // retrieve virtual reader to delete
                             std::shared_ptr<VirtualReader> * const virtualReader = std::static_pointer_cast<VirtualReader>(this->getReaderByRemoteName(nativeReaderName));
 
                             logger->info("Disconnect VirtualReader with name {} with session {}", nativeReaderName);
 
-                            // remove observers
-                            (std::static_pointer_cast<VirtualReaderSessionImpl>(virtualReader->getSession()))->clearObservers();
+                            // remove observers of reader
+                            virtualReader->clearObservers();
 
                             // remove reader
                             readers->remove(virtualReader);
 
                             // send event READER_DISCONNECTED in a separate thread
-                            std::make_shared<ThreadAnonymousInnerClass2>(shared_from_this(), virtualReader)
-                            .start();
+                            // new Thread() {public void run() { }}.start();
 
-                        }
+                            notifyObservers(std::make_shared<PluginEvent>(getName(), virtualReader->getName(), PluginEvent::EventType::READER_DISCONNECTED));
 
-                        RemoteSePlugin::ThreadAnonymousInnerClass2::ThreadAnonymousInnerClass2(std::shared_ptr<RemoteSePlugin> outerInstance, std::shared_ptr<org::eclipse::keyple::plugin::remotese::pluginse::VirtualReader> virtualReader) {
-                            this->outerInstance = outerInstance;
-                            this->virtualReader = virtualReader;
-                        }
-
-                        void RemoteSePlugin::ThreadAnonymousInnerClass2::run() {
-                            outerInstance->notifyObservers(std::make_shared<PluginEvent>(outerInstance->getName(), virtualReader->getName(), PluginEvent::EventType::READER_DISCONNECTED));
                         }
 
                         void RemoteSePlugin::onReaderEvent(std::shared_ptr<ReaderEvent> event_Renamed, const std::string &sessionId) {
                             logger->debug("OnReaderEvent {}", event_Renamed);
                             logger->debug("Dispatch ReaderEvent to the appropriate Reader : {} sessionId : {}", event_Renamed->getReaderName(), sessionId);
                             try {
-                                // TODO : dispatch events is only managed by remote reader name, should take sessionId
-                                // also
                                 std::shared_ptr<VirtualReader> virtualReader = std::static_pointer_cast<VirtualReader>(getReaderByRemoteName(event_Renamed->getReaderName()));
                                 virtualReader->onRemoteReaderEvent(event_Renamed);
 
@@ -138,23 +115,29 @@ const std::string RemoteSePlugin::PLUGIN_NAME = "RemoteSePlugin";
 
                         }
 
-                        Boolean RemoteSePlugin::isReaderConnected(const std::string &name) {
-                            for (auto virtualReader : readers) {
-                                if ((std::static_pointer_cast<VirtualReader>(virtualReader))->getNativeReaderName() == name) {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }
-
-                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> RemoteSePlugin::getNativeReaders() throw(KeypleReaderException) {
-                            // not necessary
+                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> RemoteSePlugin::initNativeReaders() throw(KeypleReaderException) {
                             return std::set<std::shared_ptr<AbstractObservableReader>>();
                         }
 
-                        std::shared_ptr<AbstractObservableReader> RemoteSePlugin::getNativeReader(const std::string &s) throw(KeypleReaderException) {
+                        std::shared_ptr<AbstractObservableReader> RemoteSePlugin::fetchNativeReader(const std::string &name) throw(KeypleReaderException) {
                             // should not be call
-                            throw std::invalid_argument("Use getReader method instead of getNativeReader");
+                            throw std::invalid_argument("fetchNativeReader is not used in this plugin, did you meant to use getReader?");
+                        }
+
+                        void RemoteSePlugin::startObservation() {
+
+                        }
+
+                        void RemoteSePlugin::stopObservation() {
+
+                        }
+
+                        std::unordered_map<std::string, std::string> RemoteSePlugin::getParameters() {
+                            return parameters;
+                        }
+
+                        void RemoteSePlugin::setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument) {
+                            parameters.emplace(key, value);
                         }
                     }
                 }

@@ -1,57 +1,51 @@
 #include "TestEngine.h"
-#include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
 #include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
 #include "PoFileStructureInfo.h"
 #include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelection.h"
-#include "../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/PoSelector.h"
-#include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
+#include "../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/PoSelectionRequest.h"
+#include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
 #include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/Protocol.h"
-#include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
 #include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
-#include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
 #include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleBaseException.h"
-#include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/ReaderPlugin.h"
 #include "../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.h"
 #include "../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscReader.h"
 #include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/SeProtocolSetting.h"
 #include "../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscProtocolSetting.h"
 #include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/NoStackTraceThrowable.h"
+#include "../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelectionRequest.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace integration {
                 namespace calypso {
-                    using PoSelector = org::eclipse::keyple::calypso::transaction::PoSelector;
+                    using PoSelectionRequest = org::eclipse::keyple::calypso::transaction::PoSelectionRequest;
                     using PcscPlugin = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
                     using PcscProtocolSetting = org::eclipse::keyple::plugin::pcsc::PcscProtocolSetting;
                     using PcscReader = org::eclipse::keyple::plugin::pcsc::PcscReader;
-                    using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                    using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
-                    using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
-                    using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                    using namespace org::eclipse::keyple::seproxy;
                     using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                     using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
                     using Protocol = org::eclipse::keyple::seproxy::protocol::Protocol;
                     using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
                     using SeSelection = org::eclipse::keyple::transaction::SeSelection;
-                    using SeSelector = org::eclipse::keyple::transaction::SeSelector;
+                    using SeSelectionRequest = org::eclipse::keyple::transaction::SeSelectionRequest;
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-std::shared_ptr<org::eclipse::keyple::seproxy::SeReader> poReader, TestEngine::samReader;
+std::shared_ptr<SeReader> poReader, TestEngine::samReader;
 
                     std::shared_ptr<PoFileStructureInfo> TestEngine::selectPO() throw(std::invalid_argument, KeypleReaderException) {
 
                         std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(poReader);
 
                         // Add Audit C0 AID to the list
-                        seSelection->prepareSelection(std::make_shared<PoSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::poAuditC0Aid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "Audit C0"));
+                        seSelection->prepareSelection(std::make_shared<PoSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::poAuditC0Aid), nullptr), nullptr, "Audit C0"), ChannelState::KEEP_OPEN, Protocol::ANY));
 
                         // Add CLAP AID to the list
-                        seSelection->prepareSelection(std::make_shared<PoSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::clapAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "CLAP"));
+                        seSelection->prepareSelection(std::make_shared<PoSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::clapAid), nullptr), nullptr, "CLAP"), ChannelState::KEEP_OPEN, Protocol::ANY));
 
                         // Add cdLight AID to the list
-                        seSelection->prepareSelection(std::make_shared<PoSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::cdLightAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "CDLight"));
+                        seSelection->prepareSelection(std::make_shared<PoSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::cdLightAid), nullptr), nullptr, "CDLight"), ChannelState::KEEP_OPEN, Protocol::ANY));
 
                         if (seSelection->processExplicitSelection()) {
                             return std::make_shared<PoFileStructureInfo>(seSelection->getSelectedSe());
@@ -80,8 +74,8 @@ std::shared_ptr<org::eclipse::keyple::seproxy::SeReader> poReader, TestEngine::s
                         pluginsSet->add(PcscPlugin::getInstance());
                         seProxyService->setPlugins(pluginsSet);
 
-                        std::string PO_READER_NAME_REGEX = ".*(ASK|ACS).*";
-                        std::string SAM_READER_NAME_REGEX = ".*(Cherry TC|SCM Microsystems|Identive|HID).*";
+                        const std::string PO_READER_NAME_REGEX = ".*(ASK|ACS).*";
+                        const std::string SAM_READER_NAME_REGEX = ".*(Cherry TC|SCM Microsystems|Identive|HID).*";
 
                         poReader = getReader(seProxyService, PO_READER_NAME_REGEX);
                         samReader = getReader(seProxyService, SAM_READER_NAME_REGEX);
@@ -112,16 +106,16 @@ std::shared_ptr<org::eclipse::keyple::seproxy::SeReader> poReader, TestEngine::s
                         }
 
                         // operate PO multiselection
-                        std::string SAM_ATR_REGEX = "3B3F9600805A[0-9a-fA-F]{2}80[0-9a-fA-F]{16}829000";
+                        const std::string SAM_ATR_REGEX = "3B3F9600805A[0-9a-fA-F]{2}80[0-9a-fA-F]{16}829000";
 
                         // check the availability of the SAM, open its physical and logical channels and keep it
                         // open
                         std::shared_ptr<SeSelection> samSelection = std::make_shared<SeSelection>(samReader);
 
-                        std::shared_ptr<SeSelector> samSelector = std::make_shared<SeSelector>(SAM_ATR_REGEX, ChannelState::KEEP_OPEN, Protocol::ANY, "SAM Selection");
+                        std::shared_ptr<SeSelectionRequest> samSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(nullptr, std::make_shared<SeSelector::AtrFilter>(SAM_ATR_REGEX), "SAM Selection"), ChannelState::KEEP_OPEN, Protocol::ANY);
 
                         /* Prepare selector, ignore MatchingSe here */
-                        samSelection->prepareSelection(samSelector);
+                        samSelection->prepareSelection(samSelectionRequest);
 
                         try {
                             if (!samSelection->processExplicitSelection()) {

@@ -8,6 +8,10 @@
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeProxyService; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace rm { class RemoteMethodTxEngine; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace factory { class TransportNode; } } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace model { class TransportDto; } } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderNotFoundException; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ReaderEvent; } } } } }
@@ -32,10 +36,14 @@ namespace org {
 
 
                         using namespace org::eclipse::keyple::plugin::remotese::nativese::method;
+                        using RemoteMethodTxEngine = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodTxEngine;
                         using namespace org::eclipse::keyple::plugin::remotese::transport;
+                        using TransportNode = org::eclipse::keyple::plugin::remotese::transport::factory::TransportNode;
+                        using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
                         using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                         using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
+                        using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                         using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                         using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
                         using org::slf4j::Logger;
@@ -53,6 +61,8 @@ namespace org {
 
                             const std::shared_ptr<DtoSender> dtoSender;
                             const std::shared_ptr<SeProxyService> seProxyService;
+                            const std::shared_ptr<RemoteMethodTxEngine> rmTxEngine;
+
                             // private final NseSessionManager nseSessionManager;
 
                             /**
@@ -86,9 +96,9 @@ namespace org {
                              * @param clientNodeId : a chosen but unique terminal id (i.e AndroidDevice2)
                              * @param localReader : native reader to be connected
                              */
-                            void connectReader(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId) throw(KeypleRemoteException) override;
+                            std::string connectReader(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId) throw(KeypleReaderException) override;
 
-                            void disconnectReader(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId) throw(KeypleRemoteException) override;
+                            void disconnectReader(const std::string &sessionId, const std::string &nativeReaderName, const std::string &clientNodeId) throw(KeypleReaderException) override;
 
                             /**
                              * Internal method to find a local reader by its name across multiple plugins
@@ -102,7 +112,8 @@ namespace org {
                             // NativeReaderService
 
                             /**
-                             * Do not call this method directly This method is called by a Observable<{@link ReaderEvent}>
+                             * Do not call this method directly This method is called by a
+                             * Observable&lt;{@link ReaderEvent}&gt;
                              * 
                              * @param event event to be propagated to master device
                              */

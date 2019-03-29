@@ -6,8 +6,9 @@
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelection.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
+#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/Protocol.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
+#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelectionRequest.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleIOReaderException.h"
@@ -16,7 +17,6 @@
 #include "../../../../../../../main/java/org/eclipse/keyple/plugin/stub/StubProtocolSetting.h"
 #include "../../../../../../../../../../keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/PoClass.h"
 #include "../../../../../../../../../../keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/po/builder/ReadRecordsCmdBuild.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeRequest.h"
 #include "../../../../../../../../../../keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/po/builder/IncreaseCmdBuild.h"
 #include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleChannelStateException.h"
 
@@ -30,6 +30,7 @@ namespace org {
                     using ReadRecordsCmdBuild = org::eclipse::keyple::calypso::command::po::builder::ReadRecordsCmdBuild;
                     using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
                     using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                    using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
                     using ObservablePlugin = org::eclipse::keyple::seproxy::event_Renamed::ObservablePlugin;
                     using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                     using PluginEvent = org::eclipse::keyple::seproxy::event_Renamed::PluginEvent;
@@ -42,7 +43,7 @@ namespace org {
                     using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
                     using MatchingSe = org::eclipse::keyple::transaction::MatchingSe;
                     using SeSelection = org::eclipse::keyple::transaction::SeSelection;
-                    using SeSelector = org::eclipse::keyple::transaction::SeSelector;
+                    using SeSelectionRequest = org::eclipse::keyple::transaction::SeSelectionRequest;
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
                     using namespace org::junit;
                     using org::junit::runner::RunWith;
@@ -67,7 +68,7 @@ namespace org {
                         logger->info("Stubplugin observers size {}", stubPlugin->countObservers());
                         Assert::assertEquals(1, stubPlugin->countObservers());
 
-                        stubPlugin->plugStubReader("StubReaderTest");
+                        stubPlugin->plugStubReader("StubReaderTest", true);
 
                         reader = std::static_pointer_cast<StubReader>(stubPlugin->getReader("StubReaderTest"));
                     }
@@ -85,15 +86,15 @@ namespace org {
                         std::shared_ptr<StubPlugin> stubPlugin = StubPlugin::getInstance();
                         stubPlugin->clearObservers();
                         reader->clearObservers();
-                        stubPlugin->getInstance().unplugReader("StubReaderTest");
+                        stubPlugin->getInstance().unplugStubReader("StubReaderTest", true);
                     }
 
                     void StubReaderTest::selectSe(std::shared_ptr<SeReader> reader) throw(KeypleReaderException) {
                         std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(reader);
-                        std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>("3B.*", ChannelState::KEEP_OPEN, Protocol::ANY, "ATR selection");
+                        std::shared_ptr<SeSelectionRequest> seSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(nullptr, std::make_shared<SeSelector::AtrFilter>("3B.*"), "ATR selection"), ChannelState::KEEP_OPEN, Protocol::ANY);
 
                         /* Prepare selector, ignore MatchingSe here */
-                        seSelection->prepareSelection(seSelector);
+                        seSelection->prepareSelection(seSelectionRequest);
 
                         seSelection->processExplicitSelection();
                     }
@@ -145,9 +146,9 @@ namespace org {
 
                         std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(reader);
 
-                        std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>(ByteArrayUtils::fromHex(poAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "AID: " + poAid);
+                        std::shared_ptr<SeSelectionRequest> seSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(poAid), nullptr), nullptr, "AID: " + poAid), ChannelState::KEEP_OPEN, Protocol::ANY);
 
-                        seSelection->prepareSelection(seSelector);
+                        seSelection->prepareSelection(seSelectionRequest);
 
                         (std::static_pointer_cast<ObservableReader>(reader))->setDefaultSelectionRequest(seSelection->getSelectionOperation(), ObservableReader::NotificationMode::MATCHED_ONLY);
 
@@ -213,9 +214,9 @@ namespace org {
 
                         std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(reader);
 
-                        std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>(ByteArrayUtils::fromHex(poAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "AID: " + poAid);
+                        std::shared_ptr<SeSelectionRequest> seSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(poAid), nullptr), nullptr, "AID: " + poAid), ChannelState::KEEP_OPEN, Protocol::ANY);
 
-                        seSelection->prepareSelection(seSelector);
+                        seSelection->prepareSelection(seSelectionRequest);
 
                         (std::static_pointer_cast<ObservableReader>(reader))->setDefaultSelectionRequest(seSelection->getSelectionOperation(), ObservableReader::NotificationMode::MATCHED_ONLY);
 
@@ -251,9 +252,9 @@ namespace org {
 
                         std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(reader);
 
-                        std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>(ByteArrayUtils::fromHex(poAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "AID: " + poAid);
+                        std::shared_ptr<SeSelectionRequest> seSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(poAid), nullptr), nullptr, "AID: " + poAid), ChannelState::KEEP_OPEN, Protocol::ANY);
 
-                        seSelection->prepareSelection(seSelector);
+                        seSelection->prepareSelection(seSelectionRequest);
 
                         (std::static_pointer_cast<ObservableReader>(reader))->setDefaultSelectionRequest(seSelection->getSelectionOperation(), ObservableReader::NotificationMode::ALWAYS);
 
@@ -312,10 +313,10 @@ namespace org {
                         Assert::assertEquals(ReaderEvent::EventType::SE_INSERTED, event_Renamed->getEventType());
 
                         std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(outerInstance->reader);
-                        std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>("3B.*", ChannelState::KEEP_OPEN, Protocol::ANY, "Test ATR");
+                        std::shared_ptr<SeSelectionRequest> seSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(nullptr, std::make_shared<SeSelector::AtrFilter>("3B.*"), "Test ATR"), ChannelState::KEEP_OPEN, Protocol::ANY);
 
                         /* Prepare selector, ignore MatchingSe here */
-                        seSelection->prepareSelection(seSelector);
+                        seSelection->prepareSelection(seSelectionRequest);
 
                         try {
                             seSelection->processExplicitSelection();
@@ -633,8 +634,6 @@ namespace org {
 
                         poApduRequestList = std::vector<ApduRequest> {poReadRecordCmd_T2Env->getApduRequest()};
 
-                        std::shared_ptr<SeRequest::Selector> selector = std::make_shared<SeRequest::AidSelector>(ByteArrayUtils::fromHex(poAid));
-
                         std::shared_ptr<SeRequest> seRequest = std::make_shared<SeRequest>(poApduRequestList, ChannelState::CLOSE_AFTER);
 
                         return std::make_shared<SeRequestSet>(seRequest);
@@ -680,8 +679,6 @@ namespace org {
                         poApduRequestList3.push_back(poReadRecord1CmdBuild->getApduRequest());
                         poApduRequestList3.push_back(poReadRecord2CmdBuild->getApduRequest());
                         poApduRequestList3.push_back(poReadRecord1CmdBuild->getApduRequest());
-
-                        std::shared_ptr<SeRequest::Selector> selector = std::make_shared<SeRequest::AidSelector>(ByteArrayUtils::fromHex(poAid));
 
                         std::shared_ptr<SeRequest> seRequest1 = std::make_shared<SeRequest>(poApduRequestList1, ChannelState::KEEP_OPEN);
 
@@ -760,7 +757,7 @@ namespace org {
                                 break;
                         }
 
-                        std::shared_ptr<SeRequest::Selector> selector = std::make_shared<SeRequest::AidSelector>(ByteArrayUtils::fromHex(poAid));
+                        std::shared_ptr<SeSelector> selector = std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(poAid), nullptr), nullptr, nullptr);
 
                         return std::make_shared<SeRequest>(poApduRequestList, ChannelState::CLOSE_AFTER);
                     }
@@ -842,7 +839,7 @@ namespace org {
                     }
 
                     std::vector<char> StubReaderTest::StubSecureElementAnonymousInnerClass4::getATR() {
-                        return nullptr;
+                        return std::vector<char>(0);
                     }
 
                     bool StubReaderTest::StubSecureElementAnonymousInnerClass4::isPhysicalChannelOpen() {

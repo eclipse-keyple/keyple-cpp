@@ -28,18 +28,28 @@ namespace org {
                     protected:
                         AbstractStaticPlugin(const std::string &name);
 
-                    public:
-                        void addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
+                        /**
+                         * Empty start and stopObservation implementations to avoid implementation at the plugin level
+                         * and remain in compliance with {@link AbstractObservablePlugin}.
+                         */
 
-                        void removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
+                        void startObservation() override final;
+
+                        void stopObservation() override final;
+
+                        /** Prevents the use of observers that are not available in a static reader context */
+
+                    public:
+                        void addObserver(std::shared_ptr<Observer> observer);
+
+                        void removeObserver(std::shared_ptr<Observer> observer);
 
 protected:
-/*
                         std::shared_ptr<AbstractStaticPlugin> shared_from_this() {
                             return std::static_pointer_cast<AbstractStaticPlugin>(AbstractObservablePlugin::shared_from_this());
                         }
-*/
                     };
+
                 }
             }
         }

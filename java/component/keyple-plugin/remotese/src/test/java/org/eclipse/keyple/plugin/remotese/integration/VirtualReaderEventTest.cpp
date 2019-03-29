@@ -4,8 +4,9 @@
 #include "../../../../../../../../../../stub/src/main/java/org/eclipse/keyple/plugin/stub/StubPlugin.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelection.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
+#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/Protocol.h"
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
+#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelectionRequest.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleIOReaderException.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/MatchingSe.h"
@@ -21,6 +22,7 @@ namespace org {
                         using StubPlugin = org::eclipse::keyple::plugin::stub::StubPlugin;
                         using StubReaderTest = org::eclipse::keyple::plugin::stub::StubReaderTest;
                         using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
+                        using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
                         using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                         using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
                         using KeypleIOReaderException = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
@@ -28,12 +30,34 @@ namespace org {
                         using Protocol = org::eclipse::keyple::seproxy::protocol::Protocol;
                         using MatchingSe = org::eclipse::keyple::transaction::MatchingSe;
                         using SeSelection = org::eclipse::keyple::transaction::SeSelection;
-                        using SeSelector = org::eclipse::keyple::transaction::SeSelector;
+                        using SeSelectionRequest = org::eclipse::keyple::transaction::SeSelectionRequest;
                         using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
                         using namespace org::junit;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
 const std::shared_ptr<org::slf4j::Logger> VirtualReaderEventTest::logger = org::slf4j::LoggerFactory::getLogger(VirtualReaderEventTest::typeid);
+
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Before public void setUp() throws Exception
+                        void VirtualReaderEventTest::setUp() throw(std::runtime_error) {
+                            // restore plugin state
+                            clearStubpluginReaders();
+
+                            initKeypleServices();
+
+                            // configure and connect a Stub Native reader
+                            nativeReader = this->connectStubReader(NATIVE_READER_NAME, CLIENT_NODE_ID);
+
+                            // test virtual reader
+                            virtualReader = getVirtualReader();
+
+                        }
+
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @After public void tearDown() throws Exception
+                        void VirtualReaderEventTest::tearDown() throw(std::runtime_error) {
+                            clearStubpluginReaders();
+                        }
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @Test public void testInsert() throws Exception
@@ -48,10 +72,9 @@ const std::shared_ptr<org::slf4j::Logger> VirtualReaderEventTest::logger = org::
 
                             logger->info("Insert a Hoplink SE and wait 5 seconds for a SE event to be thrown");
 
-                            delay(500);
-
                             // insert SE
                             nativeReader->insertSe(StubReaderTest::hoplinkSE());
+
                             // wait 5 seconds
                             lock->await(5, TimeUnit::SECONDS);
 
@@ -86,7 +109,7 @@ const std::shared_ptr<org::slf4j::Logger> VirtualReaderEventTest::logger = org::
                             // insert SE
                             nativeReader->insertSe(StubReaderTest::hoplinkSE());
 
-                            // wait 1 second
+                            // wait 0,5 second
                             delay(500);
 
                             // remove SE
@@ -137,9 +160,9 @@ const std::shared_ptr<org::slf4j::Logger> VirtualReaderEventTest::logger = org::
 
                             std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(virtualReader);
 
-                            std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>(ByteArrayUtils::fromHex(poAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "AID: " + poAid);
+                            std::shared_ptr<SeSelectionRequest> seSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(poAid), nullptr), nullptr, "AID: " + poAid), ChannelState::KEEP_OPEN, Protocol::ANY);
 
-                            seSelection->prepareSelection(seSelector);
+                            seSelection->prepareSelection(seSelectionRequest);
 
                             (std::static_pointer_cast<ObservableReader>(virtualReader))->setDefaultSelectionRequest(seSelection->getSelectionOperation(), ObservableReader::NotificationMode::MATCHED_ONLY);
 
@@ -209,9 +232,9 @@ const std::shared_ptr<org::slf4j::Logger> VirtualReaderEventTest::logger = org::
 
                             std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(virtualReader);
 
-                            std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>(ByteArrayUtils::fromHex(poAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "AID: " + poAid);
+                            std::shared_ptr<SeSelectionRequest> seSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(poAid), nullptr), nullptr, "AID: " + poAid), ChannelState::KEEP_OPEN, Protocol::ANY);
 
-                            seSelection->prepareSelection(seSelector);
+                            seSelection->prepareSelection(seSelectionRequest);
 
                             (std::static_pointer_cast<ObservableReader>(virtualReader))->setDefaultSelectionRequest(seSelection->getSelectionOperation(), ObservableReader::NotificationMode::MATCHED_ONLY);
 
@@ -252,9 +275,9 @@ const std::shared_ptr<org::slf4j::Logger> VirtualReaderEventTest::logger = org::
 
                             std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(virtualReader);
 
-                            std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>(ByteArrayUtils::fromHex(poAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "AID: " + poAid);
+                            std::shared_ptr<SeSelectionRequest> seSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(poAid), nullptr), nullptr, "AID: " + poAid), ChannelState::KEEP_OPEN, Protocol::ANY);
 
-                            seSelection->prepareSelection(seSelector);
+                            seSelection->prepareSelection(seSelectionRequest);
 
                             (std::static_pointer_cast<ObservableReader>(virtualReader))->setDefaultSelectionRequest(seSelection->getSelectionOperation(), ObservableReader::NotificationMode::ALWAYS);
 
@@ -321,10 +344,10 @@ const std::shared_ptr<org::slf4j::Logger> VirtualReaderEventTest::logger = org::
                             Assert::assertEquals(ReaderEvent::EventType::SE_INSERTED, event_Renamed->getEventType());
 
                             std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(outerInstance->virtualReader);
-                            std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>("3B.*", ChannelState::KEEP_OPEN, Protocol::ANY, "Test ATR");
+                            std::shared_ptr<SeSelectionRequest> seSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(nullptr, std::make_shared<SeSelector::AtrFilter>("3B.*"), "Test ATR"), ChannelState::KEEP_OPEN, Protocol::ANY);
 
                             /* Prepare selector, ignore MatchingSe here */
-                            seSelection->prepareSelection(seSelector);
+                            seSelection->prepareSelection(seSelectionRequest);
 
                             try {
                                 seSelection->processExplicitSelection();

@@ -32,6 +32,8 @@ namespace org {
                         public:
                             virtual std::string getSessionId() = 0;
 
+                            virtual std::string getSlaveNodeId() = 0;
+
 
 
                         };

@@ -10,11 +10,10 @@
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReaderSessionFactory; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class DtoSender; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderNotFoundException; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReader; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReader; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ReaderEvent; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; } } } } }
 
@@ -37,7 +36,6 @@ namespace org {
                     namespace pluginse {
 
                         using DtoSender = org::eclipse::keyple::plugin::remotese::transport::DtoSender;
-                        using SeReader = org::eclipse::keyple::seproxy::SeReader;
                         using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
                         using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                         using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
@@ -64,6 +62,7 @@ namespace org {
                         private:
                             const std::shared_ptr<VirtualReaderSessionFactory> sessionManager;
                             const std::shared_ptr<DtoSender> sender;
+                            const std::unordered_map<std::string, std::string> parameters;
 
                             /**
                              * Only {@link VirtualReaderService} can instanciate a RemoteSePlugin
@@ -71,13 +70,14 @@ namespace org {
                         public:
                             RemoteSePlugin(std::shared_ptr<VirtualReaderSessionFactory> sessionManager, std::shared_ptr<DtoSender> sender);
 
-                            std::unordered_map<std::string, std::string> getParameters() override;
-
-                            void setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument) override;
-
-
-
-                            std::shared_ptr<SeReader> getReaderByRemoteName(const std::string &remoteName) throw(KeypleReaderNotFoundException);
+                            /**
+                             * Retrieve a reader by its native reader name
+                             *
+                             * @param remoteName : name of the reader on its native device
+                             * @return corresponding Virtual reader if exists
+                             * @throws KeypleReaderNotFoundException if no virtual reader match the native reader name
+                             */
+                            std::shared_ptr<VirtualReader> getReaderByRemoteName(const std::string &remoteName) throw(KeypleReaderNotFoundException);
 
                             /**
                              * Create a virtual reader
@@ -85,49 +85,12 @@ namespace org {
                              */
                             std::shared_ptr<ProxyReader> createVirtualReader(const std::string &clientNodeId, const std::string &nativeReaderName, std::shared_ptr<DtoSender> dtoSender) throw(KeypleReaderException);
 
-                        private:
-                            class ThreadAnonymousInnerClass : public Thread {
-                            private:
-                                std::shared_ptr<RemoteSePlugin> outerInstance;
-
-                                std::shared_ptr<org::eclipse::keyple::plugin::remotese::pluginse::VirtualReader> virtualReader;
-
-                            public:
-                                ThreadAnonymousInnerClass(std::shared_ptr<RemoteSePlugin> outerInstance, std::shared_ptr<org::eclipse::keyple::plugin::remotese::pluginse::VirtualReader> virtualReader);
-
-                                void run();
-
-protected:
-                                std::shared_ptr<ThreadAnonymousInnerClass> shared_from_this() {
-                                    return std::static_pointer_cast<ThreadAnonymousInnerClass>(Thread::shared_from_this());
-                                }
-                            };
-
                             /**
                              * Delete a virtual reader
                              * 
                              * @param nativeReaderName name of the virtual reader to be deleted
                              */
-                        public:
                             void disconnectRemoteReader(const std::string &nativeReaderName) throw(KeypleReaderNotFoundException);
-
-                        private:
-                            class ThreadAnonymousInnerClass2 : public Thread {
-                            private:
-                                std::shared_ptr<RemoteSePlugin> outerInstance;
-
-                                std::shared_ptr<org::eclipse::keyple::plugin::remotese::pluginse::VirtualReader> virtualReader;
-
-                            public:
-                                ThreadAnonymousInnerClass2(std::shared_ptr<RemoteSePlugin> outerInstance, std::shared_ptr<org::eclipse::keyple::plugin::remotese::pluginse::VirtualReader> virtualReader);
-
-                                void run();
-
-protected:
-                                std::shared_ptr<ThreadAnonymousInnerClass2> shared_from_this() {
-                                    return std::static_pointer_cast<ThreadAnonymousInnerClass2>(Thread::shared_from_this());
-                                }
-                            };
 
                             /**
                              * Propagate a received event from slave device
@@ -135,17 +98,29 @@ protected:
                              * @param event
                              * @param sessionId : not used yet
                              */
-                        public:
                             void onReaderEvent(std::shared_ptr<ReaderEvent> event_Renamed, const std::string &sessionId);
 
 
-                        private:
-                            Boolean isReaderConnected(const std::string &name);
-
+                            /**
+                             * Init Native Readers to empty Set
+                             */
                         protected:
-                            std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> getNativeReaders() throw(KeypleReaderException) override;
+                            std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> initNativeReaders() throw(KeypleReaderException) override;
 
-                            std::shared_ptr<AbstractObservableReader> getNativeReader(const std::string &s) throw(KeypleReaderException) override;
+                            /**
+                             * Not used
+                             */
+                            std::shared_ptr<AbstractObservableReader> fetchNativeReader(const std::string &name) throw(KeypleReaderException) override;
+
+                            void startObservation() override;
+
+                            void stopObservation() override;
+
+                        public:
+                            std::unordered_map<std::string, std::string> getParameters() override;
+
+                            void setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument) override;
+
 
 protected:
                             std::shared_ptr<RemoteSePlugin> shared_from_this() {

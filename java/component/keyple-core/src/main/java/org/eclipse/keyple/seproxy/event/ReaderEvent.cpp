@@ -34,7 +34,7 @@ namespace org {
                     }
 
                     std::string ReaderEvent::EventType::getName() {
-                        return this->name;
+                        return outerInstance->name;
                     }
 
                     bool EventType::operator == (const EventType &other) {

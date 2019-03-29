@@ -14,10 +14,9 @@
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ReaderEvent; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ReaderObserver; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SelectionStatus; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class Selector; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeSelector; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SelectionStatus; } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -106,18 +105,29 @@ namespace org {
                         public:
                             AbstractLocalReaderAnonymousInnerClass(std::shared_ptr<AbstractObservableReaderTest> outerInstance, const std::string &pluginName, const std::string &readerName);
 
+
                         protected:
-                            std::shared_ptr<SelectionStatus> openLogicalChannelAndSelect(std::shared_ptr<SeRequest::Selector> selector, std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes) throw(KeypleApplicationSelectionException, KeypleReaderException) override;
+                            void startObservation() override;
+
+                            void stopObservation() override;
 
                             void closePhysicalChannel() throw(KeypleChannelStateException) override;
+
+                            bool isPhysicalChannelOpen() override;
 
                             std::vector<char> transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
 
                             bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(KeypleReaderException) override;
 
-                        public:
-                            bool isSePresent() throw(NoStackTraceThrowable) override;
+                            bool checkSePresence() throw(NoStackTraceThrowable) override;
 
+                            std::vector<char> getATR() override;
+
+                            std::shared_ptr<SelectionStatus> openLogicalChannel(std::shared_ptr<SeSelector> selector) override;
+
+                            void openPhysicalChannel() throw(KeypleChannelStateException) override;
+
+                        public:
                             TransmissionMode getTransmissionMode() override;
 
                             std::unordered_map<std::string, std::string> getParameters() override;

@@ -1,7 +1,7 @@
 #include "RmConnectReaderParser.h"
 #include "../NativeReaderServiceImpl.h"
-#include "../../transport/KeypleDto.h"
-#include "../../transport/KeypleRemoteReaderException.h"
+#include "../../exception/KeypleRemoteReaderException.h"
+#include "../../transport/model/KeypleDto.h"
 #include "../../transport/KeypleDtoHelper.h"
 #include "../../transport/json/JsonParser.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ProxyReader.h"
@@ -15,12 +15,12 @@ namespace org {
                 namespace remotese {
                     namespace nativese {
                         namespace method {
+                            using KeypleRemoteReaderException = org::eclipse::keyple::plugin::remotese::exception::KeypleRemoteReaderException;
                             using NativeReaderServiceImpl = org::eclipse::keyple::plugin::remotese::nativese::NativeReaderServiceImpl;
-                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::KeypleDto;
+                            using RemoteMethodParser = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodParser;
                             using KeypleDtoHelper = org::eclipse::keyple::plugin::remotese::transport::KeypleDtoHelper;
-                            using KeypleRemoteReaderException = org::eclipse::keyple::plugin::remotese::transport::KeypleRemoteReaderException;
-                            using RemoteMethodParser = org::eclipse::keyple::plugin::remotese::transport::RemoteMethodParser;
                             using JsonParser = org::eclipse::keyple::plugin::remotese::transport::json::JsonParser;
+                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
                             using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                             using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
                             using AbstractSelectionLocalReader = org::eclipse::keyple::seproxy::plugin::AbstractSelectionLocalReader;

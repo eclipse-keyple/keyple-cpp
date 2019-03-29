@@ -85,7 +85,7 @@ namespace org {
                         poTransaction->processOpening(PoTransaction::ModificationMode::ATOMIC, PoTransaction::SessionAccessLevel::SESSION_LVL_LOAD, static_cast<char>(0x00), static_cast<char>(0x00));
 
                         poTransaction->prepareUpdateRecordCmd(sfi, recordNumber, dataToWrite, std::string::format("SFI=%02X, recnbr=%d", sfi, recordNumber));
-                        poTransaction->processPoCommands(ChannelState::KEEP_OPEN);
+                        poTransaction->processPoCommandsInSession();
 
                         poTransaction->processClosing(TransmissionMode::CONTACTLESS, ChannelState::KEEP_OPEN);
                     }
@@ -98,7 +98,7 @@ namespace org {
 
                         poTransaction->prepareDecreaseCmd(countersSfi, counterIndex, valueToDecrement, std::string::format("SFI=%02X, index=%d, decvalue=%d", countersSfi, counterIndex, valueToDecrement));
 
-                        poTransaction->processPoCommands(ChannelState::KEEP_OPEN);
+                        poTransaction->processPoCommandsInSession();
 
                         poTransaction->processClosing(TransmissionMode::CONTACTLESS, ChannelState::KEEP_OPEN);
                     }
@@ -111,7 +111,7 @@ namespace org {
 
                         poTransaction->prepareIncreaseCmd(countersSfi, counterIndex, valueToIncrement, std::string::format("SFI=%02X, index=%d, decvalue=%d", countersSfi, counterIndex, valueToIncrement));
 
-                        poTransaction->processPoCommands(ChannelState::KEEP_OPEN);
+                        poTransaction->processPoCommandsInSession();
 
                         poTransaction->processClosing(TransmissionMode::CONTACTLESS, ChannelState::KEEP_OPEN);
                     }
@@ -124,7 +124,7 @@ namespace org {
 
                         poTransaction->prepareAppendRecordCmd(sfi, dataToWrite, std::string::format("SFI=%02X", sfi));
 
-                        poTransaction->processPoCommands(ChannelState::KEEP_OPEN);
+                        poTransaction->processPoCommandsInSession();
 
                         poTransaction->processClosing(TransmissionMode::CONTACTLESS, ChannelState::KEEP_OPEN);
                     }
@@ -507,7 +507,7 @@ namespace org {
 
                             poTransaction->prepareUpdateRecordCmd(poData->getContractFileData()->getSfi(), static_cast<char>(poData->getContractFileData()->getRecNumb()), recordData, std::string::format("SFI=%02X, recnbr=%02X", poData->getContractFileData()->getSfi(), poData->getContractFileData()->getRecNumb()));
 
-                            poTransaction->processPoCommands(ChannelState::KEEP_OPEN);
+                            poTransaction->processPoCommandsInSession();
 
                             poTransaction->processClosing(TransmissionMode::CONTACTLESS, ChannelState::KEEP_OPEN);
 

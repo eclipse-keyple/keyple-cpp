@@ -1,9 +1,12 @@
 #include "RmTransmitExecutor.h"
 #include "../NativeReaderServiceImpl.h"
+#include "../../transport/model/TransportDto.h"
+#include "../../transport/model/KeypleDto.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeResponseSet.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeRequestSet.h"
 #include "../../transport/json/JsonParser.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ProxyReader.h"
+#include "../../rm/RemoteMethod.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
 
 namespace org {
@@ -14,8 +17,12 @@ namespace org {
                     namespace nativese {
                         namespace method {
                             using NativeReaderServiceImpl = org::eclipse::keyple::plugin::remotese::nativese::NativeReaderServiceImpl;
+                            using RemoteMethod = org::eclipse::keyple::plugin::remotese::rm::RemoteMethod;
+                            using RemoteMethodExecutor = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodExecutor;
                             using namespace org::eclipse::keyple::plugin::remotese::transport;
                             using JsonParser = org::eclipse::keyple::plugin::remotese::transport::json::JsonParser;
+                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
+                            using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
                             using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                             using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
                             using SeRequestSet = org::eclipse::keyple::seproxy::message::SeRequestSet;

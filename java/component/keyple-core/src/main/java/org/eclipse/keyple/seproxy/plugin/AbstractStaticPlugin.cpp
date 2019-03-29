@@ -9,12 +9,18 @@ namespace org {
                     AbstractStaticPlugin::AbstractStaticPlugin(const std::string &name) : AbstractObservablePlugin(name) {
                     }
 
-                    void AbstractStaticPlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
-                        AbstractObservablePlugin::addObserver(observer);
+                    void AbstractStaticPlugin::startObservation() {
                     }
 
-                    void AbstractStaticPlugin::removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
-                        AbstractObservablePlugin::removeObserver(observer);
+                    void AbstractStaticPlugin::stopObservation() {
+                    }
+
+                    void AbstractStaticPlugin::addObserver(std::shared_ptr<Observer> observer) {
+                        throw std::make_shared<IllegalAccessError>("Abstract Static Plugin does not support Observers, do not use this function");
+                    }
+
+                    void AbstractStaticPlugin::removeObserver(std::shared_ptr<Observer> observer) {
+                        throw std::make_shared<IllegalAccessError>("Abstract Static Plugin does not support Observers, do not use this function");
                     }
                 }
             }

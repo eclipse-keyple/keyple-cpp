@@ -115,20 +115,24 @@ namespace org {
                         long long threadWaitTimeout = SETTING_THREAD_TIMEOUT_DEFAULT;
 
                         /**
-                         * List of names of the connected readers
+                         * List of names of the physical (native) connected readers This list helps synchronizing
+                         * physical readers managed by third-party library such as smardcard.io and the list of keyple
+                         * {@link org.eclipse.keyple.seproxy.SeReader} Insertion, removal, and access operations safely
+                         * execute concurrently by multiple threads.
                          */
                       private:
                         std::shared_ptr<std::set<std::string>> nativeReadersNames =
                             std::make_shared<std::set<std::string>>(std::set<std::string>());
 
                         /**
-                         * Returns the list of names of all connected readers
+                         * Fetch the list of connected native reader (usually from third party library) and returns
+                         * their names (or id)
                          *
-                         * @return readers names list
+                         * @return connected readers' name list
                          * @throws KeypleReaderException if a reader error occurs
                          */
                       protected:
-                        virtual std::shared_ptr<std::set<std::string>> getNativeReadersNames() = 0;
+                        virtual std::shared_ptr<SortedSet<std::string>> fetchNativeReadersNames() = 0;
 
                         /**
                          * Constructor

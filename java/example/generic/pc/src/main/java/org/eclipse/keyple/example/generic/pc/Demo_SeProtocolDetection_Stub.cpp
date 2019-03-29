@@ -57,7 +57,7 @@ namespace org {
                             /*
                              * Plug PO reader.
                              */
-                            stubPlugin->plugStubReader("poReader");
+                            stubPlugin->plugStubReader("poReader", true);
 
                             delay(200);
 

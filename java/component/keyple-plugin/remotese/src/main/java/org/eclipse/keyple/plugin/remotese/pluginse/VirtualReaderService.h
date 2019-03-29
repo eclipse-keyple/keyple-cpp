@@ -7,6 +7,8 @@
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class RemoteSePlugin; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeProxyService; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace factory { class TransportNode; } } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace model { class TransportDto; } } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderNotFoundException; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReader; } } } } } }
@@ -30,6 +32,8 @@ namespace org {
                     namespace pluginse {
 
                         using namespace org::eclipse::keyple::plugin::remotese::transport;
+                        using TransportNode = org::eclipse::keyple::plugin::remotese::transport::factory::TransportNode;
+                        using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
                         using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                         using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;

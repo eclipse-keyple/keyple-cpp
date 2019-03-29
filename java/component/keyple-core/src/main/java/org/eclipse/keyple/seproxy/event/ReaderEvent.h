@@ -137,7 +137,8 @@ namespace org {
                          * @param pluginName the name of the current plugin
                          * @param readerName the name of the current reader
                          * @param eventType the type of event
-                         * @param selectionResponse the response to the default {@link SelectionRequest} (may be null)
+                         * @param selectionResponse the response to the default {@link DefaultSelectionRequest} (may be
+                         *        null)
                          */
                     public:
                         ReaderEvent(const std::string &pluginName, const std::string &readerName, EventType eventType, std::shared_ptr<SelectionResponse> selectionResponse);

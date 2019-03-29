@@ -19,9 +19,10 @@ namespace org {
                 namespace generic {
                     namespace common {
                         using ReadDataStructure = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
-                        using PoSelector = org::eclipse::keyple::calypso::transaction::PoSelector;
-                        using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                        using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                        using PoSelectionRequest = org::eclipse::keyple::calypso::transaction::PoSelectionRequest;
+                        using namespace org::eclipse::keyple::seproxy;
+                        using DefaultSelectionRequest = org::eclipse::keyple::seproxy::event::DefaultSelectionRequest;
+                        using SelectionResponse = org::eclipse::keyple::seproxy::event_Renamed::SelectionResponse;
                         using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
                         using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
                         using namespace org::eclipse::keyple::transaction;
@@ -34,7 +35,7 @@ namespace org {
                             this->poReader = poReader;
                         }
 
-                        std::shared_ptr<SelectionRequest> SeProtocolDetectionEngine::prepareSeSelection() {
+                        std::shared_ptr<DefaultSelectionRequest> SeProtocolDetectionEngine::prepareSeSelection() {
 
                             seSelection = std::make_shared<SeSelection>(poReader);
 
@@ -46,20 +47,14 @@ namespace org {
                                         std::string HoplinkAID = "A000000291A000000191";
                                         char SFI_T2Usage = static_cast<char>(0x1A);
                                         char SFI_T2Environment = static_cast<char>(0x14);
-					std::vector<char> aid = ByteArrayUtils::fromHex(HoplinkAID);
-                                        std::shared_ptr<PoSelector> poSelector = std::make_shared<PoSelector>(
-						aid,
-						SeSelector::SelectMode::FIRST,
-						ChannelState::KEEP_OPEN,
-						std::dynamic_pointer_cast<SeProtocol>(std::make_shared<ContactlessProtocols>(ContactlessProtocols::PROTOCOL_ISO14443_4)),
-						"Hoplink selector");
 					
-					std::vector<char> apdu = ByteArrayUtils::fromHex("FFCA000000");
-                                        poSelector->preparePoCustomReadCmd("Standard Get Data", std::make_shared<ApduRequest>(apdu, false));
+                                        std::shared_ptr<PoSelectionRequest> poSelectionRequest = std::make_shared<PoSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(HoplinkAID), nullptr), nullptr, "Hoplink selector"), ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4);
 
-                                        poSelector->prepareReadRecordsCmd(SFI_T2Environment, ReadDataStructure::SINGLE_RECORD_DATA, static_cast<char>(0x01), "Hoplink T2 Environment");
+                                        poSelectionRequest->preparePoCustomReadCmd("Standard Get Data", std::make_shared<ApduRequest>(ByteArrayUtils::fromHex("FFCA000000"), false));
 
-                                        seSelection->prepareSelection(poSelector);
+                                        poSelectionRequest->prepareReadRecordsCmd(SFI_T2Environment, ReadDataStructure::SINGLE_RECORD_DATA, static_cast<char>(0x01), "Hoplink T2 Environment");
+
+                                        seSelection->prepareSelection(poSelectionRequest);
 
                                         break;
                                     }
@@ -73,7 +68,7 @@ namespace org {
                                         break;
                                     default:
                                         /* Add a generic selector */
-                                        seSelection->prepareSelection(std::make_shared<SeSelector>(".*", ChannelState::KEEP_OPEN, std::make_shared<ContactlessProtocols>(ContactlessProtocols::PROTOCOL_ISO14443_4), "Default selector"));
+                                        seSelection->prepareSelection(std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(nullptr, std::make_shared<SeSelector::AtrFilter>(".*"), "Default selector"), ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4));
                                         break;
                                 }
                             }

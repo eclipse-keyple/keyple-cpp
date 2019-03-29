@@ -1,7 +1,10 @@
 #include "RmTransmitTx.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeResponseSet.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeRequestSet.h"
+#include "../../transport/model/KeypleDto.h"
+#include "../../rm/RemoteMethod.h"
 #include "../../transport/json/JsonParser.h"
+#include "../../exception/KeypleRemoteException.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
 
 namespace org {
@@ -11,8 +14,12 @@ namespace org {
                 namespace remotese {
                     namespace pluginse {
                         namespace method {
+                            using KeypleRemoteException = org::eclipse::keyple::plugin::remotese::exception::KeypleRemoteException;
+                            using RemoteMethod = org::eclipse::keyple::plugin::remotese::rm::RemoteMethod;
+                            using RemoteMethodTx = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodTx;
                             using namespace org::eclipse::keyple::plugin::remotese::transport;
                             using JsonParser = org::eclipse::keyple::plugin::remotese::transport::json::JsonParser;
+                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
                             using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                             using SeRequestSet = org::eclipse::keyple::seproxy::message::SeRequestSet;
                             using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
@@ -20,7 +27,7 @@ namespace org {
                             using org::slf4j::LoggerFactory;
 const std::shared_ptr<org::slf4j::Logger> RmTransmitTx::logger = org::slf4j::LoggerFactory::getLogger(RmTransmitTx::typeid);
 
-                            RmTransmitTx::RmTransmitTx(std::shared_ptr<SeRequestSet> seRequestSet, const std::string &sessionId, const std::string &nativeReaderName, const std::string &virtualReaderName, const std::string &clientNodeId) : RemoteMethodTx<org::eclipse::keyple::seproxy::message::SeResponseSet>(sessionId, nativeReaderName, virtualReaderName, clientNodeId), seRequestSet(seRequestSet) {
+                            RmTransmitTx::RmTransmitTx(std::shared_ptr<SeRequestSet> seRequestSet, const std::string &sessionId, const std::string &nativeReaderName, const std::string &virtualReaderName, const std::string &clientNodeId) : org::eclipse::keyple::plugin::remotese::rm::RemoteMethodTx<org::eclipse::keyple::seproxy::message::SeResponseSet>(sessionId, nativeReaderName, virtualReaderName, clientNodeId), seRequestSet(seRequestSet) {
                             }
 
                             std::shared_ptr<KeypleDto> RmTransmitTx::dto() {

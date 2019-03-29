@@ -7,10 +7,8 @@
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace integration { namespace calypso { class PoFileStructureInfo; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeProxyService; } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleBaseException; } } } } }
 
 /********************************************************************************
@@ -30,8 +28,7 @@ namespace org {
             namespace integration {
                 namespace calypso {
 
-                    using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
-                    using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                    using namespace org::eclipse::keyple::seproxy;
                     using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                     using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
 

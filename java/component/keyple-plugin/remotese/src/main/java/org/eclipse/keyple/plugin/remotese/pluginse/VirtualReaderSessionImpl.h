@@ -1,12 +1,9 @@
 #pragma once
 
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/Observable.h"
 #include "VirtualReaderSession.h"
 #include <string>
+#include <stdexcept>
 #include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class KeypleDto; } } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -27,35 +24,32 @@ namespace org {
                     namespace pluginse {
 
 
-                        using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::KeypleDto;
-                        using Observable = org::eclipse::keyple::util::Observable;
+
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
 
                         /**
                          * Manage RSE Reader Session
                          */
-                        class VirtualReaderSessionImpl : public Observable<std::shared_ptr<KeypleDto>>, public VirtualReaderSession {
+                        class VirtualReaderSessionImpl : public std::enable_shared_from_this<VirtualReaderSessionImpl>, public VirtualReaderSession {
 
                         private:
                             static const std::shared_ptr<Logger> logger;
 
                             const std::string sessionId;
-
+                            const std::string slaveNodeId;
 
                             // constructor
                         public:
-                            VirtualReaderSessionImpl(const std::string &sessionId);
+                            VirtualReaderSessionImpl(const std::string &sessionId, const std::string &slaveNodeId);
 
 
                             std::string getSessionId() override;
 
+                            std::string getSlaveNodeId() override;
 
 
-protected:
-                            std::shared_ptr<VirtualReaderSessionImpl> shared_from_this() {
-                                return std::static_pointer_cast<VirtualReaderSessionImpl>(org.eclipse.keyple.util.Observable<org.eclipse.keyple.plugin.remotese.transport.KeypleDto>::shared_from_this());
-                            }
+                            std::string toString() override;
                         };
 
                     }

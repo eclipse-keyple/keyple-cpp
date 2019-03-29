@@ -24,25 +24,37 @@ namespace org {
 
 
                     /**
-                     * Abstract Observable Reader class dedicated to static reader configurations
+                     * Abstract Observable Reader class dedicated to static reader configurations.
+                     * <p>
+                     * A static reader doesn't offer card insertion/removal mechanism (e.g. AndroidOmapiReader)
                      */
                     class AbstractStaticReader : public AbstractLocalReader {
 
                     protected:
                         AbstractStaticReader(const std::string &pluginName, const std::string &readerName);
 
-                    public:
-                        void addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer);
+                        /**
+                         * Empty start and stopObservation implementations to avoid implementation at the plugin level
+                         * and remain in compliance with {@link AbstractLocalReader}.
+                         */
 
-                        void removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer);
+                        void startObservation() override final;
+
+                        void stopObservation() override final;
+
+                        /** Prevents the use of observers that are not available in a static reader context */
+
+                    public:
+                        void addObserver(std::shared_ptr<Observer> observer);
+
+                        void removeObserver(std::shared_ptr<Observer> observer);
 
 protected:
-/*
                         std::shared_ptr<AbstractStaticReader> shared_from_this() {
                             return std::static_pointer_cast<AbstractStaticReader>(AbstractLocalReader::shared_from_this());
                         }
-*/
                     };
+
                 }
             }
         }

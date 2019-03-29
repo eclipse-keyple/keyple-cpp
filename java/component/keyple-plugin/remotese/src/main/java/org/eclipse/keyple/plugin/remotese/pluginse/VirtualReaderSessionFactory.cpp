@@ -10,7 +10,7 @@ namespace org {
                     namespace pluginse {
 
                         std::shared_ptr<VirtualReaderSession> VirtualReaderSessionFactory::createSession(const std::string &nativeReaderName, const std::string &nodeId) {
-                            return std::make_shared<VirtualReaderSessionImpl>(generateSessionId(nativeReaderName, nodeId));
+                            return std::make_shared<VirtualReaderSessionImpl>(generateSessionId(nativeReaderName, nodeId), nodeId);
                         }
 
                         std::string VirtualReaderSessionFactory::generateSessionId(const std::string &nativeReaderName, const std::string &nodeId) {

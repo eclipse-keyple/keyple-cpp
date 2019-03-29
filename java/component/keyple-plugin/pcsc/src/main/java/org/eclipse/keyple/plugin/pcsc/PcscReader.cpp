@@ -88,7 +88,7 @@ bool PcscReader::isSePresent() throw(NoStackTraceThrowable) {
 try {
     return terminal->isCardPresent();
 }
-catch (CardException &e) {
+catch (const CardException &e) {
     logger->trace("[%s] Exception occured in isSePresent. Message: %s\n", this->getName(), e.getMessage());
     throw NoStackTraceThrowable();
 }
@@ -98,7 +98,7 @@ bool PcscReader::waitForCardPresent(long long timeout) throw(NoStackTraceThrowab
 try {
     return terminal->waitForCardPresent(timeout);
 }
-catch (CardException &e) {
+catch (const CardException &e) {
     logger->trace("[%s] Exception occured in waitForCardPresent. Message: %s\n", this->getName(), e.getMessage());
     throw NoStackTraceThrowable();
 }
@@ -117,11 +117,11 @@ try {
 }
 catch (KeypleChannelStateException &e) {
     logger->trace("[%s] Exception occured in waitForCardAbsent. Message: %s\n", this->getName(), e.what());
-    throw std::shared_ptr<NoStackTraceThrowable>(new NoStackTraceThrowable());
+    throw NoStackTraceThrowable();
 }
 catch (CardException &e) {
     logger->trace("[%s] Exception occured in waitForCardAbsent. Message: %s\n", this->getName(), e.getMessage());
-    throw std::shared_ptr<NoStackTraceThrowable>(new NoStackTraceThrowable());
+    throw NoStackTraceThrowable();
 }
 }
 
@@ -131,7 +131,7 @@ try {
     apduResponseData = channel->transmit(std::shared_ptr<CommandAPDU>(new CommandAPDU(apduIn)));
 }
 catch (CardException &e) {
-    throw std::shared_ptr<KeypleIOReaderException>(new KeypleIOReaderException(this->getName() + ":" + e.getMessage()));
+    throw KeypleIOReaderException(this->getName() + ":" + e.getMessage());
 }
 return apduResponseData->getBytes();
 }
@@ -316,9 +316,6 @@ void PcscReader::openPhysicalChannel() throw(KeypleChannelStateException)
     // channel
     try {
         if (card == nullptr) {
-            if (isLogicalChannelOpen()) {
-                throw std::make_shared<KeypleChannelStateException>("Logical channel found open while physical channel is not!");
-            }
             this->card = this->terminal->connect(parameterCardProtocol);
             if (cardExclusiveMode) {
                 card->beginExclusive();
@@ -335,7 +332,7 @@ void PcscReader::openPhysicalChannel() throw(KeypleChannelStateException)
         this->channel = card->getBasicChannel();
     }
     catch (const CardException &e) {
-        throw KeypleChannelStateException("Error while opening Physical Channel\n"); //, e));
+        throw KeypleChannelStateException("Error while opening Physical Channel\n", e));
     }
 }
 

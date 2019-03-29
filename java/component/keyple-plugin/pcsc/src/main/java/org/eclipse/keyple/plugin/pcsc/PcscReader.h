@@ -94,6 +94,7 @@ namespace org {
 
                         bool logging = false;
 
+
                         /**
                          * This constructor should only be called by PcscPlugin PCSC reader parameters are initialized
                          * with their default values as defined in setParameter. See
@@ -102,15 +103,13 @@ namespace org {
                          * @param pluginName the name of the plugin
                          * @param terminal the PC/SC terminal
                          */
-                      public:
+                    protected:
                         PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal);
 
                         void closePhysicalChannel() throw(KeypleChannelStateException) override;
 
-                      public:
-                        bool isSePresent() throw(NoStackTraceThrowable) override;
+                        bool checkSePresence() throw(NoStackTraceThrowable) override;
 
-                      protected:
                         bool waitForCardPresent(long long timeout) throw(NoStackTraceThrowable) override;
 
                         bool waitForCardAbsent(long long timeout) throw(NoStackTraceThrowable) override;
@@ -122,8 +121,7 @@ namespace org {
                          * @return apduOut buffer
                          * @throws KeypleIOReaderException if the transmission failed
                          */
-                        std::vector<char>
-                        transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
+                        std::vector<char> transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
 
                         /**
                          * Tells if the current SE protocol matches the provided protocol flag. If the protocol flag is
@@ -134,8 +132,7 @@ namespace org {
                          * @return true if the current SE matches the protocol flag
                          * @throws KeypleReaderException if the protocol mask is not found
                          */
-                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(
-                            KeypleReaderException) override;
+                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(KeypleReaderException) override;
 
                         /**
                          * Set a parameter.
@@ -175,9 +172,7 @@ namespace org {
                          *
                          */
                       public:
-                        void setParameter(const std::string &name,
-                                          const std::string &value) throw(std::invalid_argument,
-                                                                          KeypleBaseException) override;
+                        void setParameter(const std::string &name, const std::string &value) throw(std::invalid_argument, KeypleBaseException) override;
 
                         std::unordered_map<std::string, std::string> getParameters() override;
 
@@ -186,6 +181,10 @@ namespace org {
 
                         /**
                          * Tells if a physical channel is open
+                         * <p>
+                         * This status may be wrong if the card has been removed.
+                         * <p>
+                         * The caller should test the card presence with isSePresent before calling this method.
                          *
                          * @return true if the physical channel is open
                          */
@@ -218,10 +217,8 @@ namespace org {
                         TransmissionMode getTransmissionMode() override;
 
                       protected:
-                        std::shared_ptr<PcscReader> shared_from_this()
-                        {
-                            return std::static_pointer_cast<PcscReader>(
-                                AbstractThreadedLocalReader::shared_from_this());
+                        std::shared_ptr<PcscReader> shared_from_this() {
+                            return std::static_pointer_cast<PcscReader>(org.eclipse.keyple.seproxy.plugin.AbstractThreadedLocalReader::shared_from_this());
                         }
 
                       public:

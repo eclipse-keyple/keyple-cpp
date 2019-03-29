@@ -79,13 +79,14 @@ namespace org {
 
                         virtual void closePhysicalChannel() throw(KeypleChannelStateException);
 
+
                         /**
                          * @return SE protocol supported by the SE
                          */
                         virtual std::string getSeProcotol() = 0;
 
-                        std::unordered_map<std::string, std::string> hexCommands =
-                            std::unordered_map<std::string, std::string>();
+
+                        std::unordered_map<std::string, std::string> hexCommands = std::unordered_map<std::string, std::string>();
 
                         /**
                          * Add more simulated commands to the Stub SE
@@ -109,8 +110,7 @@ namespace org {
                          * @return APDU response
                          * @throws KeypleIOReaderException if the transmission fails
                          */
-                        virtual std::vector<char>
-                        processApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException);
+                        virtual std::vector<char> processApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException);
                     };
 
                 } // namespace stub

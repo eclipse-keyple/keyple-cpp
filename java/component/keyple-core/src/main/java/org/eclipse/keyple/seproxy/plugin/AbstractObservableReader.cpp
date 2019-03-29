@@ -34,7 +34,10 @@ namespace org {
                     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservableReader));
 
                     AbstractObservableReader::AbstractObservableReader(const std::string &pluginName, const std::string &readerName) : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event::ReaderEvent>(readerName), pluginName(pluginName) {
-                        this->before = System::nanoTime();
+                        this->before = System::nanoTime(); /*
+                                                                                  * provides an initial value for measuring the
+                                                                                  * inter-exchange time. The first measurement gives the
+                                                                                  * time elapsed since the plugin was loaded.
                     }
 
                     void AbstractObservableReader::startObservation()
@@ -57,20 +60,15 @@ namespace org {
                         /*
                          * Alex: call super class function.
                          */
-                        AbstractLoggedObservable<ReaderEvent>::addObserver(std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<ReaderEvent>>(observer));
-                    }
-
-                    void AbstractObservableReader::removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer)
-                    {
-                        logger->debug("remove observer\n");
-                        /*
-                         * Alex: call super class function.
-                         */
-                        AbstractLoggedObservable<ReaderEvent>::removeObserver(std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<ReaderEvent>>(observer));
+                    std::string AbstractObservableReader::getPluginName() {
+                        return pluginName;
                         if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
                             logger->debug("stop the reader monitoring\n");
                             stopObservation();
                         }
+
+                    int AbstractObservableReader::compareTo(std::shared_ptr<SeReader> seReader) {
+                        return this->getName().compare(seReader->getName());
                     }
 
                     std::shared_ptr<SeResponseSet> AbstractObservableReader::transmitSet(std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException) {
@@ -161,16 +159,21 @@ namespace org {
                         return seResponse;
                     }
 
-                    std::string AbstractObservableReader::getPluginName() {
-                        return pluginName;
+                    void AbstractObservableReader::addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
+                        // if an observer is added to an empty list, start the observation
+                        if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
+                            logger->debug("Start the reader monitoring.");
+                            startObservation();
+                    }
+                        AbstractLoggedObservable<ReaderEvent>::addObserver(observer);
                     }
 
-                    int AbstractObservableReader::compareTo(std::shared_ptr<SeReader> seReader) {
-                        return this->getName().compare(seReader->getName());
-                    }
-
-                    std::string AbstractObservableReader::getName() {
-                        return this->name;
+                    void AbstractObservableReader::removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
+                        AbstractLoggedObservable<ReaderEvent>::removeObserver(observer);
+                        if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
+                            logger->debug("Stop the reader monitoring.");
+                            stopObservation();
+                        }
                     }
                 }
             }

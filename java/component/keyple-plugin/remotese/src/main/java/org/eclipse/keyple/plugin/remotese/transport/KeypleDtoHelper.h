@@ -5,7 +5,7 @@
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class KeypleDto; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace model { class KeypleDto; } } } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -25,6 +25,7 @@ namespace org {
                 namespace remotese {
                     namespace transport {
 
+                        using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
                         using com::google::gson::JsonObject;
 
                         /**

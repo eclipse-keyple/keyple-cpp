@@ -212,16 +212,15 @@ namespace org {
                       public:
                         void closePhysicalChannel() throw(KeypleChannelStateException) override;
 
-                        std::vector<char>
-                        transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
+                        std::vector<char> transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
 
                       protected:
-                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(
-                            KeypleReaderException) override;
+                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(KeypleReaderException) override;
+
+                      
+                         bool checkSePresence() override;
 
                       public:
-                        bool isSePresent() override;
-
                         void setParameter(const std::string &name,
                                           const std::string &value) throw(KeypleReaderException) override;
 
@@ -235,13 +234,13 @@ namespace org {
                         /*
                          * HELPERS TO TEST INTERNAL METHOD TODO : is this necessary?
                          */
-                        std::shared_ptr<ApduResponse> processApduRequestTestProxy(
-                            std::shared_ptr<ApduRequest> apduRequest) throw(KeypleReaderException);
+                        std::shared_ptr<ApduResponse> processApduRequestTestProxy(std::shared_ptr<ApduRequest> apduRequest) throw(KeypleReaderException);
 
-                        std::shared_ptr<SeResponseSet> processSeRequestSetTestProxy(
-                            std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException);
+                        std::shared_ptr<SeResponseSet> processSeRequestSetTestProxy(std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException);
 
                         bool isLogicalChannelOpenTestProxy();
+
+
 
                         /*
                          * STATE CONTROLLERS FOR INSERTING AND REMOVING SECURE ELEMENT
@@ -270,10 +269,8 @@ namespace org {
                         bool waitForCardAbsent(long long timeout) throw(NoStackTraceThrowable) override;
 
                       protected:
-                        std::shared_ptr<StubReader> shared_from_this()
-                        {
-                            return std::static_pointer_cast<StubReader>(
-                                AbstractThreadedLocalReader::shared_from_this());
+                        std::shared_ptr<StubReader> shared_from_this() {
+                            return std::static_pointer_cast<StubReader>(org.eclipse.keyple.seproxy.plugin.AbstractThreadedLocalReader::shared_from_this());
                         }
 
                       public:

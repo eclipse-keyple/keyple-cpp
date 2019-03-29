@@ -12,19 +12,12 @@ namespace org {
                     AbstractThreadedLocalReader::AbstractThreadedLocalReader(const std::string &pluginName, const std::string &readerName) : AbstractSelectionLocalReader(pluginName, readerName) {
                     }
 
-                    void AbstractThreadedLocalReader::startObservation()
-                    {
-                        logger->debug("[AbstractThreadedLocalReader::startObservation]\n");
-
-                        EventThread *_et = new EventThread(shared_from_this(), this->getPluginName(), this->getName());
-                        thread = std::shared_ptr<EventThread>(_et);
+                    void AbstractThreadedLocalReader::startObservation() {
+                        thread = std::make_shared<EventThread>(shared_from_this(), this->getPluginName(), this->getName());
                         thread->start();
                     }
 
-                    void AbstractThreadedLocalReader::stopObservation()
-                    {
-                        logger->debug("[AbstractThreadedLocalReader::stopObservation]\n");
-
+                    void AbstractThreadedLocalReader::stopObservation() {
                         thread->end();
                     }
 
@@ -35,7 +28,7 @@ namespace org {
                     AbstractThreadedLocalReader::EventThread::EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName)
                     : Thread("observable-reader-events-" + std::to_string(++(outerInstance->threadCount))), pluginName(pluginName), readerName(readerName), outerInstance(outerInstance)
                     {
-                        outerInstance->logger->debug("[AbstractThreadedLocalReader::EventThread]\n");
+                        outerInstance->logger->debug("constructor\n");
 
                         setDaemon(true);
                     }
@@ -47,7 +40,7 @@ namespace org {
 
                     void *AbstractThreadedLocalReader::EventThread::run()
                     {
-                        outerInstance->logger->debug("[AbstractThreadedLocalReader::EventThread::run]\n");
+                        outerInstance->logger->debug("run\n");
 
                         try {
                             // First thing we'll do is to notify that a card was inserted if one is already
@@ -77,7 +70,7 @@ namespace org {
                             }
                         }
                         catch (const NoStackTraceThrowable &e) {
-                            outerInstance->logger->trace("exception occurred in monitoring thread (readername: %s, what: %s)", readerName, e.what());
+                            outerInstance->logger->trace("[%s] exception occurred in monitoring thread: %s)", readerName, e.what());
                         }
 
                         return NULL;
@@ -88,13 +81,7 @@ namespace org {
                         thread->end();
                         thread.reset();
                         logger->trace("[{}] Observable Reader thread ended.", this->getName());
-
-                        /*
-                         * Alex: Not sure which super class is supposed to be
-                         * called here. Object class has only the virtual
-                         * method.
-                         */
-                        //finalize();
+                        AbstractSelectionLocalReader::finalize();
                     }
                 }
             }

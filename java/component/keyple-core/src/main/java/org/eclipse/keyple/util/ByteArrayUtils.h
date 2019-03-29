@@ -58,7 +58,21 @@ namespace org {
                      * @param byteArray byte array to represent to hex
                      * @return Hex representation of the byte array
                      */
-                    static std::string toHex(const std::vector<char> &byteArray);
+                    static std::string toHex(std::vector<char> &byteArray);
+
+                    /**
+                     * Convert three bytes from a byte array into an integer.
+                     * <p>
+                     * The three bytes are expected to be in the MSB first order (aka network order).
+                     * <p>
+                     * Throw an exception if the buffer is null or not long enough to contain all 3 bytes.
+                     * 
+                     * @param bytes byte array
+                     * @param offset offset from which the 3 bytes are
+                     * @return the resulting int
+                     * @throws IllegalArgumentException if the buffer has a bad length
+                     */
+                    static int threeBytesToInt(std::vector<char> &bytes, int offset);
                 };
 
             }

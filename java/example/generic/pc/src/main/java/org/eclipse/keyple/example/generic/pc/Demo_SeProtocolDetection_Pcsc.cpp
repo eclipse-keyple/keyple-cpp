@@ -65,14 +65,12 @@
                             poReader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");
 
                             /* create an observer class to handle the SE operations */
-                            std::shared_ptr<SeProtocolDetectionEngine> observer =
-                                std::make_shared<SeProtocolDetectionEngine>();
+                            std::shared_ptr<SeProtocolDetectionEngine> observer = std::make_shared<SeProtocolDetectionEngine>();
 
                             observer->setReader(poReader);
 
                             /* configure reader */
-                            poReader->setParameter(PcscReader::SETTING_KEY_PROTOCOL,
-                                                   PcscReader::SETTING_PROTOCOL_T1);
+                            poReader->setParameter(PcscReader::SETTING_KEY_PROTOCOL, PcscReader::SETTING_PROTOCOL_T1);
 
                             // Protocol detection settings.
                             // add 8 expected protocols with three different methods:
@@ -83,33 +81,29 @@
 
                             // Method 1
                             // add protocols individually
-                            poReader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(
-                                PcscProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25)));
+                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25));
 
-                            poReader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(
-                                PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4)));
+
+                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4));
+
 
                             // Method 2
                             // add all settings at once with setting enum
-                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(SeProtocolSetting(CustomProtocolSetting::values())));
+                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(CustomProtocolSetting::values()));
 
                             // Method 3
                             // create and fill a protocol map
                             std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap;
 
-                            protocolsMap.emplace(
-                                std::dynamic_pointer_cast<SeProtocol>(std::make_shared<ContactlessProtocols>(ContactlessProtocols::PROTOCOL_MIFARE_CLASSIC)),
-                                PcscProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_CLASSIC);
+                            protocolsMap.emplace(ContactlessProtocols::PROTOCOL_MIFARE_CLASSIC, PcscProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_CLASSIC);
 
-                            protocolsMap.emplace(
-                                std::dynamic_pointer_cast<SeProtocol>(std::make_shared<ContactlessProtocols>(ContactlessProtocols::PROTOCOL_MIFARE_UL)),
-                                PcscProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_UL);
+                            protocolsMap.emplace(ContactlessProtocols::PROTOCOL_MIFARE_UL, PcscProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_UL);
 
                             // provide the reader with the map
                             poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(protocolsMap));
 
                             // Set terminal as Observer of the first reader
-                            (std::dynamic_pointer_cast<ObservableReader>(poReader))->addObserver(observer);
+                            (std::static_pointer_cast<ObservableReader>(poReader))->addObserver(observer);
 
                             // wait for Enter key to exit.
                             std::cout << "Press Enter to exit" << std::endl;

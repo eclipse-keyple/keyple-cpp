@@ -28,6 +28,19 @@ namespace org {
             namespace seproxy {
                 namespace event {
 
+                    /**
+                     * A {@link PluginEvent} is used to propagate a change of reader state in reader plugin.
+                     * <p>
+                     * The getReaderNames and getEventType methods allow the event recipient to retrieve the names of
+                     * the readers involved and the type of the event.
+                     * <p>
+                     * At the moment, two types of events are supported: a connection or disconnection of the reader.
+                     * <p>
+                     * Since the event provides a list of reader names, a single event can be used to notify a change
+                     * for one or more readers.
+                     * <p>
+                     * However, only one type of event is notified at a time.
+                     */
                     class EXPORT PluginEvent final : public std::enable_shared_from_this<PluginEvent> {
                     public:
                         class EXPORT EventType final {
@@ -96,11 +109,27 @@ namespace org {
                         };
 
                     public:
+                        /**
+                         * Create a PluginEvent for a single reader
+                         *
+                         * @param pluginName name of the plugin
+                         * @param readerName name of the reader
+                         * @param eventType type of the event, connection or disconnection
+                         */
                         PluginEvent(const std::string &pluginName, const std::string &readerName, EventType eventType);
+
+                        /**
+                         * Create a PluginEvent for multiple readers
+                         *
+                         * @param pluginName name of the plugin
+                         * @param readerNames list of reader names
+                         * @param eventType type of the event, connection or disconnection
+                         */
+                        PluginEvent(const std::string &pluginName, std::shared_ptr<std::set<std::string>> readerNames, EventType eventType);
 
                         std::string getPluginName();
 
-                        std::string getReaderName();
+                        std::shared_ptr<std::set<std::string>> getReaderNames();
 
                         EventType getEventType();
 

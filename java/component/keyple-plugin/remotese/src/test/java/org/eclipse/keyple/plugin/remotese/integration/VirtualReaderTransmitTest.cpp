@@ -1,6 +1,6 @@
 #include "VirtualReaderTransmitTest.h"
 #include "../../../../../../../../../../stub/src/test/java/org/eclipse/keyple/plugin/stub/StubReaderTest.h"
-#include "../common/json/SampleFactory.h"
+#include "../rm/json/SampleFactory.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
 #include "../../../../../../../../../../../keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/PoClass.h"
 #include "../../../../../../../../../../../keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/po/builder/ReadRecordsCmdBuild.h"
@@ -14,16 +14,40 @@ namespace org {
                     namespace integration {
                         using PoClass = org::eclipse::keyple::calypso::command::PoClass;
                         using ReadRecordsCmdBuild = org::eclipse::keyple::calypso::command::po::builder::ReadRecordsCmdBuild;
-                        using SampleFactory = org::eclipse::keyple::plugin::remotese::common::json::SampleFactory;
+                        using SampleFactory = org::eclipse::keyple::plugin::remotese::rm::json::SampleFactory;
                         using StubReaderTest = org::eclipse::keyple::plugin::stub::StubReaderTest;
                         using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
                         using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                         using namespace org::eclipse::keyple::seproxy::message;
+                        using org::junit::After;
                         using org::junit::Assert;
+                        using org::junit::Before;
                         using org::junit::Test;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
 const std::shared_ptr<org::slf4j::Logger> VirtualReaderTransmitTest::logger = org::slf4j::LoggerFactory::getLogger(VirtualReaderTransmitTest::typeid);
+
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Before public void setUp() throws Exception
+                        void VirtualReaderTransmitTest::setUp() throw(std::runtime_error) {
+                            // restore plugin state
+                            clearStubpluginReaders();
+
+                            initKeypleServices();
+
+                            // configure and connect a Stub Native reader
+                            nativeReader = this->connectStubReader(NATIVE_READER_NAME, CLIENT_NODE_ID);
+
+                            // test virtual reader
+                            virtualReader = getVirtualReader();
+
+                        }
+
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @After public void tearDown() throws Exception
+                        void VirtualReaderTransmitTest::tearDown() throw(std::runtime_error) {
+                            clearStubpluginReaders();
+                        }
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @Test public void testKOTransmitSet_NoSE()

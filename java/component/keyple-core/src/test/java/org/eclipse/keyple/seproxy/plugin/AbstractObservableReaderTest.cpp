@@ -1,9 +1,9 @@
 #include "AbstractObservableReaderTest.h"
 #include "../../../../../../../main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
 #include "../../../../../../../main/java/org/eclipse/keyple/seproxy/plugin/AbstractObservableReader.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/message/SelectionStatus.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/message/SeRequest.h"
 #include "../../../../../../../main/java/org/eclipse/keyple/seproxy/protocol/SeProtocol.h"
+#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/SeSelector.h"
+#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/message/SelectionStatus.h"
 
 namespace org {
     namespace eclipse {
@@ -12,10 +12,10 @@ namespace org {
                 namespace plugin {
 //                    import static org.mockito.Mockito.doAnswer;
                     using CoreBaseTest = org::eclipse::keyple::CoreBaseTest;
+                    using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
                     using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                     using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
                     using namespace org::eclipse::keyple::seproxy::exception;
-                    using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
                     using SelectionStatus = org::eclipse::keyple::seproxy::message::SelectionStatus;
                     using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
                     using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
@@ -88,12 +88,20 @@ const std::shared_ptr<org::slf4j::Logger> AbstractObservableReaderTest::logger =
                         this->outerInstance = outerInstance;
                     }
 
-                    std::shared_ptr<SelectionStatus> AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::openLogicalChannelAndSelect(std::shared_ptr<SeRequest::Selector> selector, std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes) throw(KeypleApplicationSelectionException, KeypleReaderException) {
-                        return nullptr;
+                    void AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::startObservation() {
+
+                    }
+
+                    void AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::stopObservation() {
+
                     }
 
                     void AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::closePhysicalChannel() throw(KeypleChannelStateException) {
 
+                    }
+
+                    bool AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::isPhysicalChannelOpen() {
+                        return false;
                     }
 
                     std::vector<char> AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) {
@@ -104,8 +112,20 @@ const std::shared_ptr<org::slf4j::Logger> AbstractObservableReaderTest::logger =
                         return false;
                     }
 
-                    bool AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::isSePresent() throw(NoStackTraceThrowable) {
+                    bool AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::checkSePresence() throw(NoStackTraceThrowable) {
                         return false;
+                    }
+
+                    std::vector<char> AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::getATR() {
+                        return std::vector<char>(0);
+                    }
+
+                    std::shared_ptr<SelectionStatus> AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::openLogicalChannel(std::shared_ptr<SeSelector> selector) {
+                        return nullptr;
+                    }
+
+                    void AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::openPhysicalChannel() throw(KeypleChannelStateException) {
+
                     }
 
                     TransmissionMode AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::getTransmissionMode() {

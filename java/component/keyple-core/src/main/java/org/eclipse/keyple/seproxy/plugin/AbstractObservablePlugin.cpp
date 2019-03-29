@@ -52,48 +52,33 @@ namespace org {
                         }
                     }
 
-                    std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
-                    AbstractObservablePlugin::getReaders() throw(KeypleReaderException)
-                    {
-                        if (readers == nullptr)
-                        {
-                            throw std::make_shared<KeypleReaderException>(
-                                "List of readers has not been initialized");
+                    std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> AbstractObservablePlugin::getReaders() throw(KeypleReaderException) {
+                        if (readers == nullptr) {
+                            throw std::make_shared<KeypleReaderException>("List of readers has not been initialized");
                         }
                         return readers;
                     }
 
-                    void AbstractObservablePlugin::startObservation(){};
+                    std::shared_ptr<SortedSet<std::string>> AbstractObservablePlugin::getReaderNames() {
+                        std::shared_ptr<SortedSet<std::string>> readerNames = std::make_shared<ConcurrentSkipListSet<std::string>>();
+                        for (auto reader : readers) {
+                            readerNames->add(reader->getName());
+                        }
+                        return readerNames;
+                    }
 
-                    void AbstractObservablePlugin::stopObservation(){};
-
-                    void AbstractObservablePlugin::addObserver(
-                        std::shared_ptr<ObservablePlugin::PluginObserver> observer)
-                    {
-                        logger->debug("observer: %p\n", observer);
-
-                        std::shared_ptr<org::eclipse::keyple::util::Observer<PluginEvent>> _observer =
-                            std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<PluginEvent>>(
-                                observer);
-                        logger->debug("casted observer: %p\n", _observer);
-
-                        AbstractLoggedObservable<PluginEvent>::addObserver(_observer);
-                        if (AbstractLoggedObservable<PluginEvent>::countObservers() == 1)
-                        {
-                            logger->debug("start the plugin monitoring\n");
+                    void AbstractObservablePlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
+                        AbstractLoggedObservable<PluginEvent>::addObserver(observer);
+                        if (AbstractLoggedObservable<PluginEvent>::countObservers() == 1) {
+                            logger->debug("Start the plugin monitoring.");
                             startObservation();
                         }
                     }
 
-                    void AbstractObservablePlugin::removeObserver(
-                        std::shared_ptr<ObservablePlugin::PluginObserver> observer)
-                    {
-                        AbstractLoggedObservable<PluginEvent>::removeObserver(
-                            std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<PluginEvent>>(
-                                observer));
-                        if (AbstractLoggedObservable<PluginEvent>::countObservers() == 0)
-                        {
-                            logger->debug("remove the plugin monitor");
+                    void AbstractObservablePlugin::removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
+                        AbstractLoggedObservable<PluginEvent>::removeObserver(observer);
+                        if (AbstractLoggedObservable<PluginEvent>::countObservers() == 0) {
+                            logger->debug("Stop the plugin monitoring.");
                             stopObservation();
                         }
                     }
@@ -103,7 +88,7 @@ namespace org {
                         return this->AbstractLoggedObservable::getName().compare(plugin->getName());
                     }
 
-                    std::shared_ptr<SeReader> AbstractObservablePlugin::getReader(const std::string &name)
+                    std::shared_ptr<ProxyReader> AbstractObservablePlugin::getReader(const std::string &name)throw(KeypleReaderNotFoundException)
                     {
                         for (auto reader : *readers)
                         {

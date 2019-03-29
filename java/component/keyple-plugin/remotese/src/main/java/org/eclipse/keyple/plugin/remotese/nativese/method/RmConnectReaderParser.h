@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../../transport/RemoteMethodParser.h"
+#include "../../rm/RemoteMethodParser.h"
 #include <string>
 #include <stdexcept>
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace nativese { class NativeReaderServiceImpl; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class KeypleDto; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class KeypleRemoteReaderException; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace exception { class KeypleRemoteReaderException; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace model { class KeypleDto; } } } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -29,14 +29,15 @@ namespace org {
                     namespace nativese {
                         namespace method {
 
+                            using KeypleRemoteReaderException = org::eclipse::keyple::plugin::remotese::exception::KeypleRemoteReaderException;
                             using NativeReaderServiceImpl = org::eclipse::keyple::plugin::remotese::nativese::NativeReaderServiceImpl;
-                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::KeypleDto;
-                            using KeypleRemoteReaderException = org::eclipse::keyple::plugin::remotese::transport::KeypleRemoteReaderException;
-                            using RemoteMethodParser = org::eclipse::keyple::plugin::remotese::transport::RemoteMethodParser;
+                            using RemoteMethodParser = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodParser;
+                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
                             using org::slf4j::Logger;
                             using org::slf4j::LoggerFactory;
 
-
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Deprecated public class RmConnectReaderParser implements org.eclipse.keyple.plugin.remotese.rm.RemoteMethodParser<String>
                             class RmConnectReaderParser : public std::enable_shared_from_this<RmConnectReaderParser>, public RemoteMethodParser<std::string> {
 
                             private:

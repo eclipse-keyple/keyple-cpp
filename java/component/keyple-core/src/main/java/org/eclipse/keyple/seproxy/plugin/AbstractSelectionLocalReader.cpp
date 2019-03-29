@@ -25,103 +25,81 @@ namespace org {
                     AbstractSelectionLocalReader::AbstractSelectionLocalReader(const std::string &pluginName, const std::string &readerName) : AbstractLocalReader(pluginName, readerName) {
                     }
 
-                    std::shared_ptr<SelectionStatus> AbstractSelectionLocalReader::openLogicalChannelAndSelect(std::shared_ptr<SeRequest::Selector> selector, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes) throw(KeypleChannelStateException, KeypleApplicationSelectionException, KeypleIOReaderException) {
-                        std::vector<char> atr, fci;
-                        bool selectionHasMatched;
+                    std::shared_ptr<SelectionStatus> AbstractSelectionLocalReader::openLogicalChannel(std::shared_ptr<SeSelector> seSelector) throw(KeypleIOReaderException) {
+                        std::shared_ptr<ApduResponse> fciResponse;
+                        std::vector<char> atr = getATR();
+                        bool selectionHasMatched = true;
+                        std::shared_ptr<SelectionStatus> selectionStatus;
 
-                        if (!isLogicalChannelOpen()) {
-                            /*
-                             * init of the physical SE channel: if not yet established, opening of a new physical
-                             * channel
-                             */
-                            if (!isPhysicalChannelOpen()) {
-                                openPhysicalChannel();
+                        /** Perform ATR filtering if requested */
+                        if (seSelector->getAtrFilter() != nullptr) {
+                            if (atr.empty()) {
+                                throw std::make_shared<KeypleIOReaderException>("Didn't get an ATR from the SE.");
                             }
-                            if (!isPhysicalChannelOpen()) {
-                                throw std::make_shared<KeypleChannelStateException>("Fail to open physical channel.");
+
+                            if (logger->isTraceEnabled()) {
+                                logger->trace("[{}] openLogicalChannel => ATR = {}", this->getName(), ByteArrayUtils::toHex(atr));
+                            }
+                            if (!seSelector->getAtrFilter()->atrMatches(atr)) {
+                                logger->info("[{}] openLogicalChannel => ATR didn't match. SELECTOR = {}, ATR = {}", this->getName(), seSelector, ByteArrayUtils::toHex(atr));
+                                selectionHasMatched = false;
                             }
                         }
 
-                        /* get the ATR bytes */
-                        atr = getATR();
-                        if (logger->isTraceEnabled()) {
-                            logger->trace("[{}] openLogicalChannelAndSelect => ATR: {}", this->getName(), ByteArrayUtils::toHex(atr));
+                        /**
+                         * Perform application selection if requested and if ATR filtering matched or was not
+                         * requested
+                         */
+                        if (selectionHasMatched && seSelector->getAidSelector() != nullptr) {
+                            std::shared_ptr<SeSelector::AidSelector> * const aidSelector = seSelector->getAidSelector();
+                            const std::vector<char> aid = aidSelector->getAidToSelect();
+                            if (aid.empty()) {
+                                throw std::invalid_argument("AID must not be null for an AidSelector.");
                         }
-
-                        /* selector may be null, in this case we consider the logical channel open */
-                        if (selector != nullptr) {
-                            if (selector != nullptr) {
-                                std::vector<char> aid = (std::static_pointer_cast<SeRequest::AidSelector>(selector))->getAidToSelect();
-                                if (aid.size() > 0) {
                                     if (logger->isTraceEnabled()) {
-                                        logger->trace("[{}] openLogicalChannelAndSelect => Select Application with AID = {}", this->getName(), ByteArrayUtils::toHex(aid));
+                                logger->trace("[{}] openLogicalChannel => Select Application with AID = {}", this->getName(), ByteArrayUtils::toHex(aid));
                                     }
                                     /*
-                                     * build a get response command the actual length expected by the SE in the get
-                                     * response command is handled in transmitApdu
+                             * build a get response command the actual length expected by the SE in the get response
+                             * command is handled in transmitApdu
                                      */
                                     std::vector<char> selectApplicationCommand(6 + aid.size());
                                     selectApplicationCommand[0] = static_cast<char>(0x00); // CLA
                                     selectApplicationCommand[1] = static_cast<char>(0xA4); // INS
                                     selectApplicationCommand[2] = static_cast<char>(0x04); // P1: select by name
-                                    if (!(std::static_pointer_cast<SeRequest::AidSelector>(selector))->isSelectNext()) {
-                                        selectApplicationCommand[3] = static_cast<char>(0x00); // P2: requests the first
-                                                                                   // occurrence
+                            if (!aidSelector->isSelectNext()) {
+                                selectApplicationCommand[3] = static_cast<char>(0x00); // P2: requests the first occurrence
                                     }
                                     else {
-                                        selectApplicationCommand[3] = static_cast<char>(0x02); // P2: requests the next
-                                                                                   // occurrence
+                                selectApplicationCommand[3] = static_cast<char>(0x02); // P2: requests the next occurrence
                                     }
                                     selectApplicationCommand[4] = static_cast<char>(aid.size()); // Lc
                                     System::arraycopy(aid, 0, selectApplicationCommand, 5, aid.size()); // data
                                     selectApplicationCommand[5 + aid.size()] = static_cast<char>(0x00); // Le
 
                                     /*
-                                     * we use here processApduRequest to manage case 4 hack. The successful status
-                                     * codes list for this command is provided.
+                             * we use here processApduRequest to manage case 4 hack. The successful status codes
+                             * list for this command is provided.
                                      */
-                                    std::shared_ptr<ApduResponse> fciResponse = processApduRequest(std::shared_ptr<ApduRequest>(new ApduRequest("Internal Select Application", selectApplicationCommand, true, successfulSelectionStatusCodes)));
+                            fciResponse = processApduRequest(std::make_shared<ApduRequest>("Internal Select Application", selectApplicationCommand, true, aidSelector->getSuccessfulSelectionStatusCodes()));
 
-                                    /* get the FCI bytes */
-                                    fci = fciResponse->getBytes();
-
-                                    if (fciResponse->isSuccessful()) {
-                                        selectionHasMatched = true;
-                                    }
-                                    else {
-                                        logger->trace("[{}] openLogicalChannelAndSelect => Application Selection failed. SELECTOR = {}", this->getName(), selector);
-                                        selectionHasMatched = false;
-                                    }
-                                }
-                                else {
-                                    throw std::invalid_argument("AID must not be null for an AidSelector.");
-                                }
+                            if (!fciResponse->isSuccessful()) {
+                                logger->trace("[{}] openLogicalChannel => Application Selection failed. SELECTOR = {}", this->getName(), aidSelector);
                             }
-                            else {
-                                if ((std::static_pointer_cast<SeRequest::AtrSelector>(selector))->atrMatches(atr)) {
-                                    selectionHasMatched = true;
-                                }
-                                else {
-                                    logger->trace("[{}] openLogicalChannelAndSelect => ATR Selection failed. SELECTOR = {}", this->getName(), selector);
-                                    selectionHasMatched = false;
-                                }
-                            }
+                            /*
+                             * The ATR filtering matched or was not requested. The selection status is determined by
+                             * the answer to the select application command.
+                             */
+                            selectionStatus = std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr), fciResponse, fciResponse->isSuccessful());
                         }
                         else {
-                            selectionHasMatched = true;
-                        }
-
-                        AnswerToReset *_atr = new AnswerToReset(atr);
-                        ApduResponse *_ar = new ApduResponse(fci, nullptr);
-                        SelectionStatus *_ss = new SelectionStatus(std::shared_ptr<AnswerToReset>(_atr),
-                                                                   std::shared_ptr<ApduResponse>(_ar),
-                                                                   selectionHasMatched);
-                        return std::shared_ptr<SelectionStatus>(_ss);
+                            /*
+                             * The ATR filtering didn't match or no AidSelector was provided. The selection status
+                             * is determined by the ATR filtering.
+                             */
+                            selectionStatus = std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr), std::make_shared<ApduResponse>(nullptr, nullptr), selectionHasMatched);
                     }
-
-                    std::string AbstractSelectionLocalReader::getName()
-                    {
-                        return name;
+                        return selectionStatus;
                     }
                 }
             }

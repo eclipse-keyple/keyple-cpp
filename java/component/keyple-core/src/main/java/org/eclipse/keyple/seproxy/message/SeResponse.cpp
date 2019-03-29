@@ -11,7 +11,7 @@ namespace org {
                 namespace message {
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 
-                    SeResponse::SeResponse(bool channelPreviouslyOpen, std::shared_ptr<SelectionStatus> selectionStatus, std::vector<std::shared_ptr<ApduResponse>> &apduResponses) throw(std::invalid_argument) : selectionStatus(selectionStatus) {
+                    SeResponse::SeResponse(bool channelPreviouslyOpen, std::shared_ptr<SelectionStatus> selectionStatus, std::vector<std::shared_ptr<ApduResponse>> &apduResponses) : selectionStatus(selectionStatus) {
                         this->channelPreviouslyOpen = channelPreviouslyOpen;
                         this->apduResponses = apduResponses;
                     }
@@ -53,15 +53,15 @@ namespace org {
                         }
 
                         std::shared_ptr<SeResponse> seResponse = std::static_pointer_cast<SeResponse>(o);
-                        return false; /* seResponse->getSelectionStatus()->equals(selectionStatus) &&
+                        return seResponse->getSelectionStatus()->equals(selectionStatus) &&
                                (seResponse->getApduResponses().empty() ? apduResponses.empty() : seResponse->getApduResponses().equals(apduResponses)) &&
-                               seResponse->wasChannelPreviouslyOpen() == channelPreviouslyOpen; */
+                               seResponse->wasChannelPreviouslyOpen() == channelPreviouslyOpen;
                     }
 
                     int SeResponse::hashCode() {
                         int hash = 17;
                         hash = 31 * hash + (selectionStatus->getAtr() == nullptr ? 0 : selectionStatus->getAtr()->hashCode());
-                        //hash = 7 * hash + (apduResponses.empty() ? 0 : this->apduResponses.hashCode());
+                        hash = 7 * hash + (apduResponses.empty() ? 0 : this->apduResponses.hashCode());
                         hash = 29 * hash + (this->channelPreviouslyOpen ? 1 : 0);
                         return hash;
                     }

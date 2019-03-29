@@ -1,12 +1,11 @@
 #pragma once
 
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/Observable.h"
 #include <string>
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class KeypleDto; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class TransportDto; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace model { class TransportDto; } } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace model { class KeypleDto; } } } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -26,13 +25,15 @@ namespace org {
                 namespace remotese {
                     namespace transport {
 
-                        using Observable = org::eclipse::keyple::util::Observable;
+                        using KeypleRemoteException = org::eclipse::keyple::plugin::remotese::exception::KeypleRemoteException;
+                        using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
+                        using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
 
                         /**
                          * Components that sends a DTO over the network to the other end. (slave or master) It can be an
                          * observer for KeypleDto to propagate them through the network
                          */
-                        class DtoSender : public Observable::Observer<std::shared_ptr<KeypleDto>> {
+                        class DtoSender {
 
                             /**
                              * Send DTO with common information

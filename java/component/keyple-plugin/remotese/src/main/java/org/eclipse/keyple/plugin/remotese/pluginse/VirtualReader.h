@@ -9,11 +9,15 @@
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReaderSession; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class RemoteMethodTxEngine; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace rm { class RemoteMethodTxEngine; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequestSet; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponseSet; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequest; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocolSetting; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ReaderEvent; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionRequest; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class DefaultSelectionRequest; } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -33,14 +37,17 @@ namespace org {
                 namespace remotese {
                     namespace pluginse {
 
-                        using RemoteMethodTxEngine = org::eclipse::keyple::plugin::remotese::transport::RemoteMethodTxEngine;
+                        using RemoteMethodTxEngine = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodTxEngine;
+                        using DefaultSelectionRequest = org::eclipse::keyple::seproxy::event_Renamed::DefaultSelectionRequest;
                         using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
                         using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                        using namespace org::eclipse::keyple::seproxy::message;
+                        using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
+                        using SeRequestSet = org::eclipse::keyple::seproxy::message::SeRequestSet;
+                        using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
+                        using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
                         using AbstractObservableReader = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
                         using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
                         using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-                        using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
 
@@ -51,7 +58,7 @@ namespace org {
 
                         private:
                             const std::shared_ptr<VirtualReaderSession> session;
-                            const std::string remoteName;
+                            const std::string nativeReaderName;
                             const std::shared_ptr<RemoteMethodTxEngine> rmTxEngine;
 
                             static const std::shared_ptr<Logger> logger;
@@ -59,8 +66,7 @@ namespace org {
                             /**
                              * Called by {@link RemoteSePlugin} Creates a new virtual reader
                              * 
-                             * @param session Reader Session that helps communicate with
-                             *        {@link org.eclipse.keyple.plugin.remotese.transport.TransportNode}
+                             * @param session Reader Session that helps communicate with {@link TransportNode}
                              * @param nativeReaderName local name of the native reader on slave side
                              */
                         public:
@@ -95,6 +101,7 @@ namespace org {
                              * @throws IllegalArgumentException
                              * @throws KeypleReaderException
                              */
+                        protected:
                             std::shared_ptr<SeResponseSet> processSeRequestSet(std::shared_ptr<SeRequestSet> seRequestSet) throw(std::invalid_argument, KeypleReaderException) override;
 
                             /**
@@ -107,7 +114,12 @@ namespace org {
                              */
                             std::shared_ptr<SeResponse> processSeRequest(std::shared_ptr<SeRequest> seRequest) throw(std::invalid_argument, KeypleReaderException) override;
 
+                            void startObservation() override;
 
+                            void stopObservation() override;
+
+
+                        public:
                             void addSeProtocolSetting(std::shared_ptr<SeProtocolSetting> seProtocolSetting) override;
 
                             /*
@@ -121,25 +133,6 @@ namespace org {
                              */
                             void onRemoteReaderEvent(std::shared_ptr<ReaderEvent> event_Renamed);
 
-                        private:
-                            class ThreadAnonymousInnerClass : public Thread {
-                            private:
-                                std::shared_ptr<VirtualReader> outerInstance;
-
-                                std::shared_ptr<ReaderEvent> event_Renamed;
-                                std::shared_ptr<org::eclipse::keyple::plugin::remotese::pluginse::VirtualReader> thisReader;
-
-                            public:
-                                ThreadAnonymousInnerClass(std::shared_ptr<VirtualReader> outerInstance, std::shared_ptr<ReaderEvent> event_Renamed, std::shared_ptr<org::eclipse::keyple::plugin::remotese::pluginse::VirtualReader> thisReader);
-
-                                void run();
-
-protected:
-                                std::shared_ptr<ThreadAnonymousInnerClass> shared_from_this() {
-                                    return std::static_pointer_cast<ThreadAnonymousInnerClass>(Thread::shared_from_this());
-                                }
-                            };
-
 
                             /**
                              *
@@ -147,12 +140,11 @@ protected:
                              */
 
 
-                        public:
                             std::unordered_map<std::string, std::string> getParameters() override;
 
                             void setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument) override;
 
-                            void setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> selectionRequest, NotificationMode notificationMode) override;
+                            void setDefaultSelectionRequest(std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest, NotificationMode notificationMode) override;
 
 
 

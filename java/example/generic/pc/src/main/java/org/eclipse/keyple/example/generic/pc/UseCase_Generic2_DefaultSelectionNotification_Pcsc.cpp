@@ -1,16 +1,14 @@
 #include "UseCase_Generic2_DefaultSelectionNotification_Pcsc.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelection.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleBaseException.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
 #include "../../../../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.h"
 #include "ReaderUtilities.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
+#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/ContactlessProtocols.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/MatchingSe.h"
 
 namespace org {
     namespace eclipse {
@@ -22,14 +20,13 @@ namespace org {
                         using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
                         using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                        using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
                         using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                         using ReaderObserver = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader::ReaderObserver;
                         using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
                         using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                         using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
-                        using MatchingSe = org::eclipse::keyple::transaction::MatchingSe;
-                        using SeSelection = org::eclipse::keyple::transaction::SeSelection;
-                        using SeSelector = org::eclipse::keyple::transaction::SeSelector;
+                        using namespace org::eclipse::keyple::transaction;
                         using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
@@ -76,7 +73,7 @@ const std::shared_ptr<void> UseCase_Generic2_DefaultSelectionNotification_Pcsc::
                              * Generic selection: configures a SeSelector with all the desired attributes to make the
                              * selection
                              */
-                            std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>(ByteArrayUtils::fromHex(seAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4, "AID: " + seAid);
+                            std::shared_ptr<SeSelectionRequest> seSelector = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(seAid), nullptr), nullptr, "AID: " + seAid), ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4);
 
                             /*
                              * Add the selection case to the current selection (we could have added other cases here)

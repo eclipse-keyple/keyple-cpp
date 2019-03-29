@@ -5,6 +5,7 @@
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -25,7 +26,9 @@ namespace org {
                     namespace nativese {
 
 
-                        using KeypleRemoteException = org::eclipse::keyple::plugin::remotese::transport::KeypleRemoteException;
+                        using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                        using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                        using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                         using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
 
                         class NativeReaderService {
@@ -36,10 +39,21 @@ namespace org {
                              * Reader with an option to duplex connection
                              */
                         public:
-                            virtual void connectReader(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId) = 0;
+                            virtual std::string connectReader(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId) = 0;
 
-                            virtual void disconnectReader(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId) = 0;
+                            /**
+                             * Disconnect Physical Local Reader from Remote Se Master Server
+                             */
+                            virtual void disconnectReader(const std::string &sessionId, const std::string &nativeReaderName, const std::string &clientNodeId) = 0;
 
+                            /**
+                             * Find a local reader accross plugins
+                             * 
+                             * @param nativeReaderName
+                             * @return
+                             * @throws KeypleReaderNotFoundException
+                             */
+                            virtual std::shared_ptr<SeReader> findLocalReader(const std::string &nativeReaderName) = 0;
 
                         };
 

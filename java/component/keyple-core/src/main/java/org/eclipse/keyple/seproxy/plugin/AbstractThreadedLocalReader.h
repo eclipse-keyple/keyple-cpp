@@ -41,62 +41,10 @@ namespace org {
                      * Abstract definition of an threader local reader. Factorizes the observation mechanism through the
                      * implementation of a monitoring thread.
                      */
-                        class EXPORT AbstractThreadedLocalReader : public AbstractSelectionLocalReader,
-                          public Object {
-                      private:
-                        class EventThread : public Thread {
-                          private:
-                            std::shared_ptr<AbstractThreadedLocalReader> outerInstance;
-
-                            /**
-                             * Plugin name
-                             */
-                            const std::string pluginName;
-
-                            /**
-                             * Reader that we'll report about
-                             */
-                            const std::string readerName;
-
-                            /**
-                             * If the thread should be kept a alive
-                             */
-                            //JAVA TO C++ CONVERTER TODO TASK: 'volatile' has a different meaning in C++:
-                            //ORIGINAL LINE: private volatile boolean running = true;
-                            bool running = true;
-
-                            /**
-                             * Constructor
-                             *
-                             * @param pluginName name of the plugin that instantiated the reader
-                             * @param readerName name of the reader who owns this thread
-                             */
-                          public:
-                            EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance,
-                                        const std::string &pluginName, const std::string &readerName);
-
-                            /**
-                             * Marks the thread as one that should end when the last cardWaitTimeout occurs
-                             */
-                            virtual void end();
-
-                            virtual void *run();
-
-                          protected:
-                            /*
-                            std::shared_ptr<EventThread> shared_from_this() {
-                                return std::static_pointer_cast<EventThread>(Thread::shared_from_this());
-                            }
-*/
-                        };
+                    class AbstractThreadedLocalReader : public AbstractSelectionLocalReader, public Object {
 
                       private:
-                        /**
-                         *
-                         */
-                        const std::shared_ptr<Logger> logger =
-                            LoggerFactory::getLogger(typeid(AbstractThreadedLocalReader));
-
+                        static const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractThreadedLocalReader));
                         std::shared_ptr<EventThread> thread;
                         std::atomic<int> threadCount;
                         /**
@@ -105,8 +53,7 @@ namespace org {
                       protected:
                         long long threadWaitTimeout = 0;
 
-                        AbstractThreadedLocalReader(const std::string &pluginName,
-                                                    const std::string &readerName);
+                        AbstractThreadedLocalReader(const std::string &pluginName, const std::string &readerName);
 
                         /**
                          * Start the monitoring thread.
@@ -153,6 +100,47 @@ namespace org {
                         /**
                          * Thread in charge of reporting live events
                          */
+                    private:
+                        class EventThread : public Thread {
+                                        private:
+                                            std::shared_ptr<AbstractThreadedLocalReader> outerInstance;
+
+                            /**
+                             * Plugin name
+                             */
+                            const std::string pluginName;
+
+                            /**
+                             * Reader that we'll report about
+                             */
+                            const std::string readerName;
+
+                            /**
+                             * If the thread should be kept a alive
+                             */
+                            bool running = true;
+
+                            /**
+                             * Constructor
+                             * 
+                             * @param pluginName name of the plugin that instantiated the reader
+                             * @param readerName name of the reader who owns this thread
+                             */
+                        public:
+                            EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName);
+
+                            /**
+                             * Marks the thread as one that should end when the last cardWaitTimeout occurs
+                             */
+                            virtual void end();
+
+                            virtual void run();
+
+protected:
+                            std::shared_ptr<EventThread> shared_from_this() {
+                                return std::static_pointer_cast<EventThread>(Thread::shared_from_this());
+                            }
+                        };
 
                         /**
                          * Called when the class is unloaded. Attempt to do a clean exit.
@@ -164,10 +152,8 @@ namespace org {
                         void finalize() throw(std::runtime_error) override;
 
                       protected:
-                        std::shared_ptr<AbstractThreadedLocalReader> shared_from_this()
-                        {
-                            return std::static_pointer_cast<AbstractThreadedLocalReader>(
-                                AbstractSelectionLocalReader::shared_from_this());
+                        std::shared_ptr<AbstractThreadedLocalReader> shared_from_this() {
+                            return std::static_pointer_cast<AbstractThreadedLocalReader>(AbstractSelectionLocalReader::shared_from_this());
                         }
                     };
 

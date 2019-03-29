@@ -1,15 +1,15 @@
 #include "Integration.h"
 #include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/pluginse/VirtualReaderService.h"
-#include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/transport/TransportNode.h"
+#include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/transport/factory/TransportNode.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/ReaderPlugin.h"
 #include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/nativese/NativeReaderServiceImpl.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderNotFoundException.h"
 #include "../../../../../../../../../../stub/src/main/java/org/eclipse/keyple/plugin/stub/StubReader.h"
 #include "../../../../../../../../../../stub/src/main/java/org/eclipse/keyple/plugin/stub/StubPlugin.h"
-#include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/transport/TransportDto.h"
+#include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/transport/model/TransportDto.h"
 #include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/transport/KeypleDtoHelper.h"
-#include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/transport/java/LocalTransportDto.h"
+#include "../../../../../../../../main/java/org/eclipse/keyple/plugin/remotese/transport/impl/java/LocalTransportDto.h"
 
 namespace org {
     namespace eclipse {
@@ -20,9 +20,9 @@ namespace org {
                         using NativeReaderServiceImpl = org::eclipse::keyple::plugin::remotese::nativese::NativeReaderServiceImpl;
                         using VirtualReaderService = org::eclipse::keyple::plugin::remotese::pluginse::VirtualReaderService;
                         using KeypleDtoHelper = org::eclipse::keyple::plugin::remotese::transport::KeypleDtoHelper;
-                        using TransportDto = org::eclipse::keyple::plugin::remotese::transport::TransportDto;
-                        using TransportNode = org::eclipse::keyple::plugin::remotese::transport::TransportNode;
-                        using LocalTransportDto = org::eclipse::keyple::plugin::remotese::transport::java::LocalTransportDto;
+                        using TransportNode = org::eclipse::keyple::plugin::remotese::transport::factory::TransportNode;
+                        using LocalTransportDto = org::eclipse::keyple::plugin::remotese::transport::impl::java::LocalTransportDto;
+                        using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
                         using StubPlugin = org::eclipse::keyple::plugin::stub::StubPlugin;
                         using StubReader = org::eclipse::keyple::plugin::stub::StubReader;
                         using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
@@ -84,7 +84,7 @@ const std::shared_ptr<org::slf4j::Logger> Integration::logger = org::slf4j::Logg
                             logger->debug("Stub plugin count observers : {}", stubPlugin->countObservers());
 
                             logger->debug("Create a new StubReader : {}", stubReaderName);
-                            stubPlugin->plugStubReader(stubReaderName);
+                            stubPlugin->plugStubReader(stubReaderName, true);
 
                             delay(100);
 

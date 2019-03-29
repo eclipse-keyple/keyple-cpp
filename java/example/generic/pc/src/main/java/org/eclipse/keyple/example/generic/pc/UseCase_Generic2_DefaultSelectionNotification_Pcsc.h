@@ -8,7 +8,6 @@
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SeSelection; } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleBaseException; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ReaderEvent; } } } } }
 
@@ -36,7 +35,7 @@ namespace org {
                         using ReaderObserver = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader::ReaderObserver;
                         using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
                         using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-                        using SeSelection = org::eclipse::keyple::transaction::SeSelection;
+                        using namespace org::eclipse::keyple::transaction;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
 

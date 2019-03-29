@@ -134,8 +134,7 @@ namespace org {
                         std::shared_ptr<PcscPlugin> setLogging(bool logging);
 
                       protected:
-                        std::shared_ptr<std::set<std::string>>
-                        getNativeReadersNames() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() throw(KeypleReaderException) override;
 
                         /**
                          * Fetch connected native readers (from smartcard.io) and returns a list of corresponding
@@ -145,15 +144,11 @@ namespace org {
                          * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
-                        initNativeReaders() throw(KeypleReaderException) override;
+                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> initNativeReaders() throw(KeypleReaderException) override;
 
                         /**
-                         * Gets the reader whose name is provided as an argument.
-                         *
-                         * Returns the current reader if it is already listed.
-                         *
-                         * Creates and returns a new reader if not.
+                         * Fetch the reader whose name is provided as an argument. Returns the current reader if it is
+                         * already listed. Creates and returns a new reader if not.
                          *
                          * Throws an exception if the wanted reader is not found.
                          *
@@ -161,8 +156,7 @@ namespace org {
                          * @return the reader object
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<SeReader>
-                        getNativeReader(const std::string &name) throw(KeypleReaderException) override;
+                        std::shared_ptr<AbstractObservableReader> fetchNativeReader(const std::string &name) throw(KeypleReaderException) override;
 
                       private:
                         /**

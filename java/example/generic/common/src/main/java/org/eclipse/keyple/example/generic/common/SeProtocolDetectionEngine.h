@@ -60,12 +60,12 @@ namespace org {
                             /* Assign reader to the transaction engine */
                             virtual void setReader(std::shared_ptr<SeReader> poReader);
 
-                            virtual std::shared_ptr<SelectionRequest> prepareSeSelection();
+                            virtual std::shared_ptr<DefaultSelectionRequest> prepareSeSelection();
 
                             /**
                              * This method is called when a SE is inserted (or presented to the reader's antenna). It
-                             * executes a {@link SelectionRequest} and processes the {@link SelectionResponse} showing the
-                             * APDUs exchanges
+                             * executes a {@link DefaultSelectionRequest} and processes the {@link SelectionResponse}
+                             * showing the APDUs exchanges
                              */
                             void processSeMatch(std::shared_ptr<SelectionResponse> selectionResponse) override;
 

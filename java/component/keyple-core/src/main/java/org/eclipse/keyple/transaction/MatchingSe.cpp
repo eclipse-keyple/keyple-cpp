@@ -26,11 +26,15 @@ namespace org {
                 }
 
                 bool MatchingSe::isSelected() {
-                    return channelIsKeptOpen && selectionSeResponse != nullptr && selectionSeResponse->getSelectionStatus()->hasMatched();
+                    return channelIsKeptOpen && selectionSeResponse != nullptr && selectionSeResponse->getSelectionStatus() != nullptr && selectionSeResponse->getSelectionStatus()->hasMatched();
                 }
 
                 std::string MatchingSe::getExtraInfo() {
                     return extraInfo;
+                }
+
+                void MatchingSe::reset() {
+                    selectionSeResponse.reset();
                 }
             }
         }

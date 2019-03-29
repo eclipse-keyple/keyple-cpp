@@ -6,11 +6,11 @@
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReaderService; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class TransportNode; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace factory { class TransportNode; } } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace nativese { class NativeReaderServiceImpl; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderNotFoundException; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace stub { class StubReader; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class TransportDto; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace model { class TransportDto; } } } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -33,8 +33,8 @@ namespace org {
 
                         using NativeReaderServiceImpl = org::eclipse::keyple::plugin::remotese::nativese::NativeReaderServiceImpl;
                         using VirtualReaderService = org::eclipse::keyple::plugin::remotese::pluginse::VirtualReaderService;
-                        using TransportDto = org::eclipse::keyple::plugin::remotese::transport::TransportDto;
-                        using TransportNode = org::eclipse::keyple::plugin::remotese::transport::TransportNode;
+                        using TransportNode = org::eclipse::keyple::plugin::remotese::transport::factory::TransportNode;
+                        using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
                         using StubReader = org::eclipse::keyple::plugin::stub::StubReader;
                         using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                         using org::mockito::stubbing::Answer;
@@ -96,7 +96,7 @@ namespace org {
 
 protected:
                                 std::shared_ptr<AnswerAnonymousInnerClass> shared_from_this() {
-                                    return std::static_pointer_cast<AnswerAnonymousInnerClass>(org.mockito.stubbing.Answer<org.eclipse.keyple.plugin.remotese.transport.TransportDto>::shared_from_this());
+                                    return std::static_pointer_cast<AnswerAnonymousInnerClass>(org.mockito.stubbing.Answer<org.eclipse.keyple.plugin.remotese.transport.model.TransportDto>::shared_from_this());
                                 }
                             };
 

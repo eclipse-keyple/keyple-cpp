@@ -77,8 +77,12 @@ namespace org {
                         /**
                          *
                          */
-                        std::unordered_map<std::string, std::string> parameters =
-                            std::unordered_map<std::string, std::string>();
+                        const std::unordered_map<std::string, std::string> parameters = std::unordered_map<std::string, std::string>();
+
+			/*
+                         * simulated list of real-time connected stubReader
+                         */
+                        static std::shared_ptr<SortedSet<std::string>> connectedStubNames;
 
                         /**
                          *
@@ -121,17 +125,21 @@ namespace org {
                         initNativeReaders() throw(KeypleReaderException) override;
 
                         /**
+                         * Plug a Stub Reader
                          *
+                         * @param name : name of the created reader
+                         * @param synchronous : should the stubreader added synchronously (without waiting for the
+                         *        observation thread)
                          */
-                        std::shared_ptr<SeReader> getNativeReader(const std::string &name) override;
+                        void plugStubReader(const std::string &name, bool synchronous);
 
                         /**
-                         * Plug a Stub Reader
+                         * Plug a list of stub Reader at once
                          * 
-                         * @param name : name of the reader
+                         * @param names : names of readers to be connected
                          */
-                      public:
-                        void plugStubReader(const std::string &name);
+                        void plugStubReaders(std::shared_ptr<Set<std::string>> names, Boolean synchronous);
+
 
                         /**
                          * Unplug a Stub Reader
@@ -139,46 +147,45 @@ namespace org {
                          * @param name the name of the reader
                          * @throws KeypleReaderException in case of a reader exception
                          */
-                        void unplugReader(const std::string &name) throw(KeypleReaderException);
+                        void unplugStubReader(const std::string &name, Boolean synchronous) throw(KeypleReaderException, InterruptedException);
+
+
+                        void unplugStubReaders(std::shared_ptr<Set<std::string>> names, Boolean synchronous);
+
 
                         /**
-                         * Get a list of available reader names
+                         * Fetch the list of connected native reader (from a simulated list) and returns their names (or
+                         * id)
                          * 
-                         * @return String list
+                         * @return connected readers' name list
                          */
                       protected:
-                        std::shared_ptr<std::set<std::string>> getNativeReadersNames() override;
+                        std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() override;
 
-                      protected:
                         /**
+                         * Init native Readers to empty Set
                          *
+                         * @return the list of AbstractObservableReader objects.
+                         * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<StubPlugin> shared_from_this()
-                        {
-                            return std::static_pointer_cast<StubPlugin>(
-                                AbstractThreadedObservablePlugin::shared_from_this());
-                        }
+                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> initNativeReaders() throw(KeypleReaderException) override;
 
-                      public:
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
-                        getReaders() throw(KeypleReaderException) override
-                        {
-                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReaders();
-                        }
+                        /**
+                         * Fetch the reader whose name is provided as an argument. Returns the current reader if it is
+                         * already listed. Creates and returns a new reader if not.
+                         *
+                         * Throws an exception if the wanted reader is not found.
+                         *
+                         * @param name name of the reader
+                         * @return the reader object
+                         */
+                        std::shared_ptr<AbstractObservableReader> fetchNativeReader(const std::string &name) override;
 
-                        std::shared_ptr<SeReader> getReader(const std::string &name) override
-                        {
-                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReader(
-                                name);
+protected:
+                        std::shared_ptr<StubPlugin> shared_from_this() {
+                            return std::static_pointer_cast<StubPlugin>(org.eclipse.keyple.seproxy.plugin.AbstractThreadedObservablePlugin::shared_from_this());
                         }
-
-                        void addObserver(std::shared_ptr<PluginObserver> observer) override
-                        {
-                            logger->debug(" observer: %p\n", observer);
-
-                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::addObserver(
-                                observer);
-                        }
+                    };
 
                         void removeObserver(std::shared_ptr<PluginObserver> observer) override
                         {

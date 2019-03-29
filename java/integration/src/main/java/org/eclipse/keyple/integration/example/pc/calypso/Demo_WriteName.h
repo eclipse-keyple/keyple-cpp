@@ -34,9 +34,12 @@ namespace org {
 
                             using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                             using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
+                            using namespace org::eclipse::keyple::transaction;
                             using org::slf4j::Logger;
                             using org::slf4j::LoggerFactory;
 
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @SuppressWarnings("PMD.VariableNamingConventions") public class Demo_WriteName
                             class Demo_WriteName : public std::enable_shared_from_this<Demo_WriteName> {
 
                             private:

@@ -107,14 +107,13 @@ namespace org {
                         /**
                          * Add an observer. This will allow to be notified about all readers or plugins events.
                          *
-                         * @param observer Observer to notify
+                         * @param observer Observer to notiy
                          */
                         virtual void addObserver(
                             std::shared_ptr<org::eclipse::keyple::util::Observer<T>> observer) override
                         {
 
-                            logger->trace("[AbstractLoggedObservable::addObserver] observer: %p\n",
-                                          observer.get());
+                            logger->trace("[%s][%s] addObserver => Adding an observer.", this->getClass(), this->getName());
 
                             org::eclipse::keyple::util::Observable<T>::addObserver(observer);
                         }
@@ -127,15 +126,13 @@ namespace org {
                         virtual void removeObserver(
                             std::shared_ptr<org::eclipse::keyple::util::Observer<T>> observer) override
                         {
-                            /*
- * Alex: commented out, shared_from_this is not handled properly yet
                             if (std::dynamic_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
                                 logger->trace("[{}] removeObserver => Deleting a reader observer", this->getName());
                             }
                             else if (std::dynamic_pointer_cast<AbstractObservablePlugin>(shared_from_this()) != nullptr) {
                                 logger->trace("[{}] removeObserver => Deleting a plugin observer", this->getName());
                             }
- */
+
                             org::eclipse::keyple::util::Observable<T>::removeObserver(observer);
                         }
 
@@ -149,19 +146,15 @@ namespace org {
                         // Alex: function was final in Java (problem in PcscPlugin.cpp)
                         void notifyObservers(std::shared_ptr<T> event) override
                         {
-                            /*
- * Alex: commented out, shared_from_this is not handled properly yet
                             if (std::dynamic_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
                                 logger->trace("[{}] AbstractObservableReader => Notifying a reader event. EVENTNAME = {}", this->getName(), (std::static_pointer_cast<ReaderEvent>(event_Renamed))->getEventType().getName());
                             }
                             else if (std::dynamic_pointer_cast<AbstractObservablePlugin>(shared_from_this()) != nullptr) {
                                 logger->trace("[{}] AbstractObservableReader => Notifying a plugin event. EVENTNAME = {} ", this->getName(), (std::static_pointer_cast<PluginEvent>(event_Renamed))->getEventType().getName());
                             }
- */
-                            /*
- * Alex: where does that function come from?
+ 
                             setChanged();
- */
+ 
                             org::eclipse::keyple::util::Observable<T>::notifyObservers(event);
                         }
 
@@ -174,19 +167,15 @@ namespace org {
                          * @throws KeypleBaseException This method can fail when disabling the exclusive mode as it's
                          *         executed instantly
                          */
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override
-                        {
-                            for (auto en : parameters)
-                            {
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override {
+                            for (auto en : parameters) {
                                 setParameter(en.first, en.second);
                             }
                         }
 
                       protected:
-                        std::shared_ptr<AbstractLoggedObservable> shared_from_this()
-                        {
-                            return std::static_pointer_cast<AbstractLoggedObservable>(
-                                util::Observable<T>::shared_from_this());
+                        std::shared_ptr<AbstractLoggedObservable> shared_from_this() {
+                            return std::static_pointer_cast<AbstractLoggedObservable>(org.eclipse.keyple.util.Observable<T>::shared_from_this());
                         }
                     };
                 } // namespace plugin

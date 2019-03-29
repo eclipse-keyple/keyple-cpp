@@ -30,6 +30,7 @@ namespace org {
 
                         using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                         using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
+                        using namespace org::eclipse::keyple::transaction;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
 

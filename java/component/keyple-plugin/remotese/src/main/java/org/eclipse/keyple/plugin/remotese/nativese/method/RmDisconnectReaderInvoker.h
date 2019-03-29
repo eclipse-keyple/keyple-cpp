@@ -1,12 +1,11 @@
 #pragma once
 
-#include "../../transport/RemoteMethodInvoker.h"
+#include "../../rm/RemoteMethodInvoker.h"
 #include <string>
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class KeypleDto; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace model { class KeypleDto; } } } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -27,18 +26,20 @@ namespace org {
                     namespace nativese {
                         namespace method {
 
-                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::KeypleDto;
-                            using RemoteMethodInvoker = org::eclipse::keyple::plugin::remotese::transport::RemoteMethodInvoker;
-                            using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
+                            using RemoteMethodInvoker = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodInvoker;
+                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
 
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Deprecated public class RmDisconnectReaderInvoker implements org.eclipse.keyple.plugin.remotese.rm.RemoteMethodInvoker
                             class RmDisconnectReaderInvoker : public std::enable_shared_from_this<RmDisconnectReaderInvoker>, public RemoteMethodInvoker {
 
                             private:
-                                const std::shared_ptr<ProxyReader> localReader;
-                                const std::string clientNodeId;
+                                const std::string sessionId;
+                                const std::string nativeReaderName;
+                                const std::string slaveNodeId;
 
                             public:
-                                RmDisconnectReaderInvoker(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId);
+                                RmDisconnectReaderInvoker(const std::string &sessionId, const std::string &nativeReaderName, const std::string &slaveNodeId);
 
                                 std::shared_ptr<KeypleDto> dto() override;
                             };

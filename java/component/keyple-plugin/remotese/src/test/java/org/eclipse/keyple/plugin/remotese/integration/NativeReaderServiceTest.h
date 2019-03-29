@@ -5,6 +5,7 @@
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace factory { class TransportFactory; } } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReaderService; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace stub { class StubReader; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace pluginse { class VirtualReader; } } } } } }
@@ -28,17 +29,20 @@ namespace org {
                 namespace remotese {
                     namespace integration {
 
-//JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
-//                        import static org.mockito.Mockito.doAnswer;
+
                         using NativeReaderServiceImpl = org::eclipse::keyple::plugin::remotese::nativese::NativeReaderServiceImpl;
                         using VirtualReader = org::eclipse::keyple::plugin::remotese::pluginse::VirtualReader;
                         using VirtualReaderService = org::eclipse::keyple::plugin::remotese::pluginse::VirtualReaderService;
-                        using namespace org::eclipse::keyple::plugin::remotese::transport;
+                        using TransportFactory = org::eclipse::keyple::plugin::remotese::transport::factory::TransportFactory;
                         using StubReader = org::eclipse::keyple::plugin::stub::StubReader;
-                        using namespace org::mockito;
+                        using namespace org::junit;
+                        using org::junit::rules::TestName;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
 
+                        /**
+                         * Test NativeReaderService API methods : connectReader and DisconnectReader
+                         */
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @RunWith(MockitoJUnitRunner.class) public class NativeReaderServiceTest
                         class NativeReaderServiceTest : public std::enable_shared_from_this<NativeReaderServiceTest> {
@@ -46,8 +50,12 @@ namespace org {
                         private:
                             static const std::shared_ptr<Logger> logger;
 
-                            // Real objects
                         public:
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Rule public org.junit.rules.TestName name = new org.junit.rules.TestName();
+                            std::shared_ptr<TestName> name = std::make_shared<TestName>();
+
+                            // Real objects
                             std::shared_ptr<TransportFactory> factory;
                             std::shared_ptr<VirtualReaderService> virtualReaderService;
 
@@ -94,7 +102,7 @@ namespace org {
                              * @throws Exception
                              */
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testKOConnectError() throws Exception
+//ORIGINAL LINE: @Test(expected = org.eclipse.keyple.seproxy.exception.KeypleReaderException.class) public void testKOConnectError() throws Exception
                             virtual void testKOConnectError() throw(std::runtime_error);
 
                             /**
@@ -103,7 +111,7 @@ namespace org {
                              * @throws Exception
                              */
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test(expected = KeypleRemoteException.class) public void testKOConnectServerError() throws Exception
+//ORIGINAL LINE: @Test(expected = org.eclipse.keyple.seproxy.exception.KeypleReaderException.class) public void testKOConnectServerError() throws Exception
                             virtual void testKOConnectServerError() throw(std::runtime_error);
 
                             /*
@@ -145,7 +153,7 @@ namespace org {
                              * @throws Exception
                              */
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test(expected = KeypleRemoteException.class) public void testKODisconnectServerError() throws Exception
+//ORIGINAL LINE: @Test(expected = org.eclipse.keyple.seproxy.exception.KeypleReaderException.class) public void testKODisconnectServerError() throws Exception
                             virtual void testKODisconnectServerError() throw(std::runtime_error);
 
 

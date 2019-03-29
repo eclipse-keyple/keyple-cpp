@@ -26,7 +26,7 @@ const Pattern ByteArrayUtils::HEX_IGNORED_CHARS = Pattern::compile(" |h");
                     return byteArray;
                 }
 
-                std::string ByteArrayUtils::toHex(const std::vector<char> &byteArray) {
+                std::string ByteArrayUtils::toHex(std::vector<char> &byteArray) {
                     if (byteArray.empty()) {
                         return "";
                     }
@@ -35,6 +35,13 @@ const Pattern ByteArrayUtils::HEX_IGNORED_CHARS = Pattern::compile(" |h");
                         hexStringBuilder->append(byteToHex[byteArray[i] & 0xFF]);
                     }
                     return hexStringBuilder->toString();
+                }
+
+                int ByteArrayUtils::threeBytesToInt(std::vector<char> &bytes, int offset) {
+                    if (bytes.empty() || bytes.size() < offset + 3 || offset < 0) {
+                        throw std::invalid_argument("Bad data for converting 3-byte integers.");
+                    }
+                    return ((static_cast<int>(bytes[offset])) << 16) + ((static_cast<int>(bytes[offset + 1])) << 8) + (static_cast<int>(bytes[offset + 2]));
                 }
             }
         }

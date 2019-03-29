@@ -37,27 +37,22 @@ PcscPlugin PcscPlugin::getInstance()
     return uniqueInstance;
 }
 
-std::unordered_map<std::string, std::string> PcscPlugin::getParameters()
-{
-    return this->getParameters();
+                    std::unordered_map<std::string, std::string> PcscPlugin::getParameters() {
+                        return nullptr;
 }
 
-void PcscPlugin::setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument, KeypleBaseException)
-{
+                    void PcscPlugin::setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument, KeypleBaseException) {
 
 }
 
 std::shared_ptr<PcscPlugin> PcscPlugin::setLogging(bool logging)
 {
     this->logging = logging;
-
-    return std::dynamic_pointer_cast<PcscPlugin>(shared_from_this());
+                        return shared_from_this();
 }
 
 std::shared_ptr<std::set<std::string>> PcscPlugin::getNativeReadersNames() throw(KeypleReaderException)
 {
-    static const char *f_name = "PcscPlugin::getNativeReadersNames";
-
     nativeReadersNames.clear();
     std::shared_ptr<CardTerminals> terminals = getCardTerminals();
 
@@ -74,7 +69,7 @@ std::shared_ptr<std::set<std::string>> PcscPlugin::getNativeReadersNames() throw
         } else {
             logger->trace("[%s] terminal list is not accessible, name: %s, exception: %s\n",
                           f_name, this->getName(), e.getMessage());
-            throw std::shared_ptr<KeypleReaderException>(new KeypleReaderException("Could not access terminals list")); // Alex: 'e' should be in exception constructor but...
+            throw std::shared_ptr<KeypleReaderException>("Could not access terminals list", e);
         }
     }
 
@@ -103,7 +98,7 @@ std::shared_ptr<std::set<std::shared_ptr<SeReader>>> PcscPlugin::initNativeReade
         }
         else {
             logger->trace("[%s] terminal list is not accessible, exception: %s", this->getName(), e.getMessage());
-            throw std::shared_ptr<KeypleReaderException>(new KeypleReaderException("Could not access terminals list")); //, e));
+            throw std::shared_ptr<KeypleReaderException>(KeypleReaderException("Could not access terminals list", e));
 
         }
     }
@@ -128,16 +123,16 @@ std::shared_ptr<SeReader> PcscPlugin::getNativeReader(const std::string &name) t
     try {
         for (auto &term : terminals->list()) {
             if (!term.getName().compare(name)) {
-                reader = std::shared_ptr<PcscReader>(new PcscReader(this->getName(), std::make_shared<CardTerminal>(term)));
+                reader = std::shared_ptr<PcscReader>(this->getName(), std::make_shared<CardTerminal>(term));
             }
         }
     }
     catch (CardException &e) {
         logger->trace("[{}] Terminal list is not accessible. Exception: {}", this->getName(), e.getMessage());
-        throw std::shared_ptr<KeypleReaderException>(new KeypleReaderException("Could not access terminals list")); //, e));
+        throw std::shared_ptr<KeypleReaderException>("Could not access terminals list", e));
     }
     if (reader == nullptr) {
-        throw std::shared_ptr<KeypleReaderException>(new KeypleReaderException("Reader " + name + " not found!"));
+        throw std::shared_ptr<KeypleReaderException>("Reader " + name + " not found!");
     }
     return reader;
 }
