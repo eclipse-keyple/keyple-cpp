@@ -94,7 +94,7 @@ namespace org {
                      * This method should be overloaded by the objects derived from MatchingSe in order to reset
                      * their additional attributes.
                      */
-                protected:
+                public:
                     virtual void reset();
                 };
 

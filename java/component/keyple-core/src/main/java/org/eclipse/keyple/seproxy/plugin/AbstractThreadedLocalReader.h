@@ -43,8 +43,54 @@ namespace org {
                      */
                     class AbstractThreadedLocalReader : public AbstractSelectionLocalReader, public Object {
 
+                        /**
+                         * Thread in charge of reporting live events
+                         */
+                    private:
+                        class EventThread : public Thread {
+                                        private:
+                                            std::shared_ptr<AbstractThreadedLocalReader> outerInstance;
+
+                            /**
+                             * Plugin name
+                             */
+                            const std::string pluginName;
+
+                            /**
+                             * Reader that we'll report about
+                             */
+                            const std::string readerName;
+
+                            /**
+                             * If the thread should be kept a alive
+                             */
+                            bool running = true;
+
+                            /**
+                             * Constructor
+                             * 
+                             * @param pluginName name of the plugin that instantiated the reader
+                             * @param readerName name of the reader who owns this thread
+                             */
+                        public:
+                            EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName);
+
+                            /**
+                             * Marks the thread as one that should end when the last cardWaitTimeout occurs
+                             */
+                            virtual void end();
+
+                            virtual void *run();
+
+protected:
+/*
+                            std::shared_ptr<EventThread> shared_from_this() {
+                                return std::static_pointer_cast<EventThread>(Thread::shared_from_this());
+                            }
+ */
+                       };
                       private:
-                        static const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractThreadedLocalReader));
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractThreadedLocalReader));
                         std::shared_ptr<EventThread> thread;
                         std::atomic<int> threadCount;
                         /**
@@ -97,50 +143,6 @@ namespace org {
                          */
                         virtual bool waitForCardAbsent(long long timeout) = 0;
 
-                        /**
-                         * Thread in charge of reporting live events
-                         */
-                    private:
-                        class EventThread : public Thread {
-                                        private:
-                                            std::shared_ptr<AbstractThreadedLocalReader> outerInstance;
-
-                            /**
-                             * Plugin name
-                             */
-                            const std::string pluginName;
-
-                            /**
-                             * Reader that we'll report about
-                             */
-                            const std::string readerName;
-
-                            /**
-                             * If the thread should be kept a alive
-                             */
-                            bool running = true;
-
-                            /**
-                             * Constructor
-                             * 
-                             * @param pluginName name of the plugin that instantiated the reader
-                             * @param readerName name of the reader who owns this thread
-                             */
-                        public:
-                            EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName);
-
-                            /**
-                             * Marks the thread as one that should end when the last cardWaitTimeout occurs
-                             */
-                            virtual void end();
-
-                            virtual void run();
-
-protected:
-                            std::shared_ptr<EventThread> shared_from_this() {
-                                return std::static_pointer_cast<EventThread>(Thread::shared_from_this());
-                            }
-                        };
 
                         /**
                          * Called when the class is unloaded. Attempt to do a clean exit.

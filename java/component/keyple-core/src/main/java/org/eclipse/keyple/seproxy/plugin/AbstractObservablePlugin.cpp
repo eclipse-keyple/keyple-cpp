@@ -24,7 +24,7 @@ namespace org {
                     using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
 
                     AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name)
-                        : AbstractLoggedObservable<org::eclipse::keyple::seproxy::event::PluginEvent>(name)
+                        : AbstractLoggedObservable<std::shared_ptr<PluginEvent>>(name)
                     {
                         logger->debug("constructor (name: %s)\n", name);
                     }
@@ -52,32 +52,34 @@ namespace org {
                         }
                     }
 
-                    std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> AbstractObservablePlugin::getReaders() throw(KeypleReaderException) {
+                    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> AbstractObservablePlugin::getReaders() throw(KeypleReaderException) {
                         if (readers == nullptr) {
                             throw std::make_shared<KeypleReaderException>("List of readers has not been initialized");
                         }
                         return readers;
                     }
 
-                    std::shared_ptr<SortedSet<std::string>> AbstractObservablePlugin::getReaderNames() {
-                        std::shared_ptr<SortedSet<std::string>> readerNames = std::make_shared<ConcurrentSkipListSet<std::string>>();
-                        for (auto reader : readers) {
-                            readerNames->add(reader->getName());
+                    std::shared_ptr<std::set<std::string>> AbstractObservablePlugin::getReaderNames() {
+                        std::shared_ptr<std::set<std::string>> readerNames = std::make_shared<std::set<std::string>>();
+                        for (auto reader : *readers) {
+                            readerNames->insert(reader->getName());
                         }
                         return readerNames;
                     }
 
                     void AbstractObservablePlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
-                        AbstractLoggedObservable<PluginEvent>::addObserver(observer);
-                        if (AbstractLoggedObservable<PluginEvent>::countObservers() == 1) {
+                        AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::addObserver(
+                            std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<std::shared_ptr<PluginEvent>>>(observer));
+                        if (AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::countObservers() == 1) {
                             logger->debug("Start the plugin monitoring.");
                             startObservation();
                         }
                     }
 
                     void AbstractObservablePlugin::removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
-                        AbstractLoggedObservable<PluginEvent>::removeObserver(observer);
-                        if (AbstractLoggedObservable<PluginEvent>::countObservers() == 0) {
+                        AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::removeObserver(
+                            std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<std::shared_ptr<PluginEvent>>>(observer));
+                        if (AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::countObservers() == 0) {
                             logger->debug("Stop the plugin monitoring.");
                             stopObservation();
                         }
@@ -88,14 +90,17 @@ namespace org {
                         return this->AbstractLoggedObservable::getName().compare(plugin->getName());
                     }
 
-                    std::shared_ptr<ProxyReader> AbstractObservablePlugin::getReader(const std::string &name)throw(KeypleReaderNotFoundException)
+                    /*
+                     * Alex: consider note in header comment (covariant return type).
+                     */
+                    std::shared_ptr<SeReader> AbstractObservablePlugin::getReader(const std::string &name)throw(KeypleReaderNotFoundException)
                     {
                         for (auto reader : *readers)
                         {
                             if (reader->getName() == name)
                             {
-                                return std::shared_ptr<ProxyReader>(
-                                    std::dynamic_pointer_cast<ProxyReader>(reader));
+                                return std::shared_ptr<SeReader>(
+                                    std::dynamic_pointer_cast<SeReader>(reader));
                             }
                         }
                         throw std::make_shared<KeypleReaderNotFoundException>(name);

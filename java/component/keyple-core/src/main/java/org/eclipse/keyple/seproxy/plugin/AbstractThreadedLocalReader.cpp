@@ -13,7 +13,7 @@ namespace org {
                     }
 
                     void AbstractThreadedLocalReader::startObservation() {
-                        thread = std::make_shared<EventThread>(shared_from_this(), this->getPluginName(), this->getName());
+                        thread = std::make_shared<EventThread>(shared_from_this(), this->getPluginName(), AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
                         thread->start();
                     }
 
@@ -80,8 +80,8 @@ namespace org {
                     void AbstractThreadedLocalReader::finalize() throw(std::runtime_error) {
                         thread->end();
                         thread.reset();
-                        logger->trace("[{}] Observable Reader thread ended.", this->getName());
-                        AbstractSelectionLocalReader::finalize();
+                        logger->trace("[{}] Observable Reader thread ended.", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
+                        //AbstractSelectionLocalReader::finalize();
                     }
                 }
             }

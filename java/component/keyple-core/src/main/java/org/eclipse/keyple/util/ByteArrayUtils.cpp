@@ -26,7 +26,7 @@ const Pattern ByteArrayUtils::HEX_IGNORED_CHARS = Pattern::compile(" |h");
                     return byteArray;
                 }
 
-                std::string ByteArrayUtils::toHex(std::vector<char> &byteArray) {
+                std::string ByteArrayUtils::toHex(const std::vector<char> &byteArray) {
                     if (byteArray.empty()) {
                         return "";
                     }

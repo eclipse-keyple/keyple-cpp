@@ -20,10 +20,11 @@ namespace org {
                         this->protocolFlag = protocolFlag;
                     }
 
-                    SeRequest::SeRequest(std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState) : seSelector(this->seSelector.reset()) {
+                    SeRequest::SeRequest(std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState) {
+                        this->seSelector = nullptr;
                         this->apduRequests = apduRequests;
                         this->channelState = channelState;
-                        this->protocolFlag = Protocol::ANY;
+                        this->protocolFlag = std::dynamic_pointer_cast<SeProtocol>(std::make_shared<Protocol>(Protocol::ANY));
                     }
 
                     std::shared_ptr<SeSelector> SeRequest::getSeSelector() {
@@ -43,7 +44,7 @@ namespace org {
                     }
 
                     std::string SeRequest::toString() {
-                        return StringHelper::formatSimple("SeRequest:{REQUESTS = %s, SELECTOR = %s, KEEPCHANNELOPEN = %s}", "to fix!" /*etApduRequests()*/, getSelector(), "to fix!" /*channelState*/);
+                        return StringHelper::formatSimple("SeRequest:{REQUESTS = %s, SELECTOR = %s, KEEPCHANNELOPEN = %s}", "to fix!" /*etApduRequests()*/, getSeSelector(), "to fix!" /*channelState*/);
                     }
                 }
             }

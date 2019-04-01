@@ -46,26 +46,23 @@ using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleRe
 using namespace org::eclipse::keyple::seproxy::message;
 using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
 using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
-using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
 using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 using SelectionStatus = org::eclipse::keyple::seproxy::message::SelectionStatus;
 using Logger = org::eclipse::keyple::common::Logger;
 using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
-/**
-    * Manage the loop processing for SeRequest transmission in a set and for SeResponse reception in a
-    * set
-    */
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @SuppressWarnings({"PMD.TooManyMethods", "PMD.CyclomaticComplexity"}) public abstract class AbstractLocalReader extends AbstractObservableReader
-class EXPORT AbstractLocalReader : public AbstractObservableReader {
+                    /**
+                     * Manage the loop processing for SeRequest transmission in a set and for SeResponse reception in a
+                     * set
+                     */
+                    class EXPORT AbstractLocalReader : public AbstractObservableReader {
 
                         /** logger */
                     private:
-                        static const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractLocalReader));
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractLocalReader));
 
                         /** predefined "get response" byte array */
-                        static std::vector<char> const getResponseHackRequestBytes;
+                        std::vector<char> getResponseHackRequestBytes;
 
                         /** logical channel status flag */
                         bool logicalChannelIsOpen = false;
@@ -207,34 +204,34 @@ class EXPORT AbstractLocalReader : public AbstractObservableReader {
      */
                         std::shared_ptr<SelectionStatus> openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector) throw(KeypleChannelStateException, KeypleIOReaderException, KeypleApplicationSelectionException);
 
-    /**
+                        /**
                          * Attempts to open the physical channel
-     *
+                         *
                          * @throws KeypleChannelStateException if the channel opening fails
-     */
+                         */
                         virtual void openPhysicalChannel() = 0;
 
-    /**
+                        /**
                          * Closes the current physical channel.
                          * <p>
                          * This method must be implemented by the ProxyReader plugin (e.g. Pcsc/Nfc/Omapi Reader).
                          *
                          * @throws KeypleChannelStateException if a reader error occurs
-     */
+                         */
                         virtual void closePhysicalChannel() = 0;
  
-    /**
+                        /**
                          * Tells if the physical channel is open or not
                          * <p>
                          * This method must be implemented by the ProxyReader plugin (e.g. Pcsc/Nfc/Omapi Reader).
-     *
+                         *
                          * @return true is the channel is open
-     */
+                         */
                         virtual bool isPhysicalChannelOpen() = 0;
 
-    /**
+                        /**
                          * Tells if a logical channel is open
-     *
+                         *
                          * @return true if the logical channel is open
                          */
                     public:

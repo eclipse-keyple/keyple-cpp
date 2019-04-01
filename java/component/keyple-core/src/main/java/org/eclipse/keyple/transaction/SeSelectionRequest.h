@@ -1,18 +1,3 @@
-#pragma once
-
-#include "MatchingSe.h"
-#include "../seproxy/ChannelState.h"
-#include <string>
-#include <vector>
-#include <typeinfo>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeSelector; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequest; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -24,6 +9,27 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include "MatchingSe.h"
+#include "../seproxy/ChannelState.h"
+#include <string>
+#include <vector>
+#include <typeinfo>
+#include <memory>
+#include <typeindex>
+
+/* Common */
+#include "Logger.h"
+#include "LoggerFactory.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeSelector; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequest; } } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -34,8 +40,8 @@ namespace org {
                 using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
                 using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
                 using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                using org::slf4j::Logger;
-                using org::slf4j::LoggerFactory;
+                using Logger = org::eclipse::keyple::common::Logger;
+                using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
                 /**
                  * The SeSelectionRequest class combines a SeSelector with additional helper methods useful to the
@@ -45,13 +51,13 @@ namespace org {
                  */
                 class SeSelectionRequest : public std::enable_shared_from_this<SeSelectionRequest> {
                 private:
-                    static const std::shared_ptr<Logger> logger;
+                    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelectionRequest));
 
                     std::shared_ptr<SeSelector> seSelector;
-                    std::type_info matchingClass = MatchingSe::typeid;
-                    std::type_info selectionClass = SeSelectionRequest::typeid;
+                    std::type_index matchingClass;
+                    std::type_index selectionClass;
                     /** optional apdu requests list to be executed following the selection process */
-                    const std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList = std::vector<std::shared_ptr<ApduRequest>>();
+                    std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList = std::vector<std::shared_ptr<ApduRequest>>();
                     /**
                      * the channelState and protocolFlag may be accessed from derived classes. Let them with the
                      * protected access level.
@@ -69,7 +75,7 @@ namespace org {
                      *
                      * @return the selection SeRequest
                      */
-                protected:
+                public:
                     std::shared_ptr<SeRequest> getSelectionRequest();
 
                 public:
@@ -107,14 +113,14 @@ namespace org {
                      * 
                      * @return the current selectionClass
                      */
-                    std::type_info getSelectionClass();
+                    std::type_index& getSelectionClass();
 
                     /**
                      * The default value for the matchingClass (unless setMatchingClass is used) is MatchingSe.class
                      *
                      * @return the current matchingClass
                      */
-                    std::type_info getMatchingClass();
+                    std::type_index& getMatchingClass();
 
                     /**
                      * Add an additional {@link ApduRequest} to be executed after the selection process if it
@@ -128,7 +134,7 @@ namespace org {
                     void addApduRequest(std::shared_ptr<ApduRequest> apduRequest);
 
                 public:
-                    std::string toString() override;
+                    std::string toString();
                 };
 
             }

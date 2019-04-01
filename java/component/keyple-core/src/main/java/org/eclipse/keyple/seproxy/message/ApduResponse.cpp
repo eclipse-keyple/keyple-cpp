@@ -56,8 +56,7 @@ namespace org {
 
                     std::string ApduResponse::toString() {
                         std::string status = isSuccessful() ? "SUCCESS" : "FAILURE";
-                        return "ApduResponse: " + status + ", RAWDATA = "
-                                + ByteArrayUtils::toHex(this->bytes);
+                        return "ApduResponse: " + status + ", RAWDATA = " + ByteArrayUtils::toHex(this->bytes);
                     }
 
                     bool ApduResponse::equals(std::shared_ptr<void> o) {

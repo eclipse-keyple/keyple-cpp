@@ -23,86 +23,14 @@
 
 /* Core*/
 #include "AbstractLoggedObservable.h"
+#include "AbstractObservableReader.h"
 #include "ReaderPlugin.h"
 #include "ObservablePlugin.h"
 #include "PluginEvent.h"
+#include "ProxyReader.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace event {
-                    class PluginEvent;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace plugin {
-                    class AbstractObservableReader;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleReaderException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace event {
-                    class PluginObserver;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                class ReaderPlugin;
-            }
-        } // namespace keyple
-    }     // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleReaderNotFoundException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace message {
-                    class ProxyReader;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
+/* Forward declaration */
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; }}}}}
 
 namespace org {
     namespace eclipse {
@@ -110,23 +38,20 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
 
-                    using ReaderPlugin     = org::eclipse::keyple::seproxy::ReaderPlugin;
-                    using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
-                    using PluginEvent      = org::eclipse::keyple::seproxy::event::PluginEvent;
-                    using KeypleReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using KeypleReaderNotFoundException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
-                    using ProxyReader   = org::eclipse::keyple::seproxy::message::ProxyReader;
-                    using Logger        = org::eclipse::keyple::common::Logger;
-                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+                    using ReaderPlugin                  = org::eclipse::keyple::seproxy::ReaderPlugin;
+                    using ObservablePlugin              = org::eclipse::keyple::seproxy::event::ObservablePlugin;
+                    using PluginEvent                   = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    using KeypleReaderException         = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
+                    using ProxyReader                   = org::eclipse::keyple::seproxy::message::ProxyReader;
+                    using Logger                        = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory                 = org::eclipse::keyple::common::LoggerFactory;
 
                     /**
                      * Observable plugin. These plugin can report when a reader is added or removed.
                      */
                     class EXPORT AbstractObservablePlugin
-                        : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<PluginEvent>,
-                          public virtual ReaderPlugin {
+                    : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<std::shared_ptr<PluginEvent>>, public virtual ReaderPlugin {
 
                       private:
                         const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservablePlugin));
@@ -135,7 +60,7 @@ namespace org {
                          * The list of readers
                          */
                       protected:
-                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> readers = nullptr;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> readers = nullptr;
 
 
                         /**
@@ -165,9 +90,14 @@ namespace org {
                          * threaded plugin {@link AbstractThreadedObservablePlugin}
                          *
                          * @return the current reader list, can be null if the
+                         *
+                         * Alex: Java implementation returns a set of AbstractObservableReader(s) when the base class function
+                         *       returns.a set of SeReader(s). C++ doesn't like this covariant return type even though
+                         *       AbstractObservableReader is derived from SeReader. That's probably due to set::set or std::shared_ptr
+                         *       preventing the base-derived mechanism to work.
                          */
                       public:
-                        std::shared_ptr<std::set<std::shared_ptr<AbstractObservableReader>>> getReaders() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() throw(KeypleReaderException) override;
 
                         /**
                          * Returns the current list of reader names.
@@ -176,7 +106,7 @@ namespace org {
                          *
                          * @return a list of String
                          */
-                        std::shared_ptr<SortedSet<std::string>> getReaderNames() override;
+                        std::shared_ptr<std::set<std::string>> getReaderNames() override;
 
                         /**
                          * Fetch connected native readers (from third party library) and returns a list of corresponding
@@ -185,9 +115,11 @@ namespace org {
                          *
                          * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
+                         *
+                         * Alex: using SeReader instead of AbstractObservableReader
                          */
                     protected:
-                        virtual std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> initNativeReaders() = 0;
+                        virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() = 0;
 
                         /**
                          * Fetch connected native reader (from third party library) by its name Returns the current
@@ -245,7 +177,7 @@ namespace org {
                          * argument
                          *
                          * @param plugin a {@link ReaderPlugin} object
-                         * @return true if the names match (The method is needed for the SortedSet lists)
+                         * @return true if the names match (The method is needed for the std::set lists)
                          */
                         int compareTo(std::shared_ptr<ReaderPlugin> plugin);
 
@@ -255,12 +187,16 @@ namespace org {
                          * @param name of the reader
                          * @return the reader
                          * @throws KeypleReaderNotFoundException if the wanted reader is not found
+                         *
+                         * Alex: once again the std::shared_ptr return type prevents us from using covariant return type.
+                         *       Downcasting to SeReader for now, but should be looked into, maybe returning a reference would
+                         *       could be best here?
                          */
-                        std::shared_ptr<ProxyReader> getReader(const std::string &name) throw(KeypleReaderNotFoundException);
+                        std::shared_ptr<SeReader> getReader(const std::string &name) throw(KeypleReaderNotFoundException);
 
                       protected:
                         std::shared_ptr<AbstractObservablePlugin> shared_from_this() {
-                            return std::static_pointer_cast<AbstractObservablePlugin>(AbstractLoggedObservable<org.eclipse.keyple.seproxy.event_Renamed.PluginEvent>::shared_from_this());
+                            return std::static_pointer_cast<AbstractObservablePlugin>(AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::shared_from_this());
                         }
                     };
 

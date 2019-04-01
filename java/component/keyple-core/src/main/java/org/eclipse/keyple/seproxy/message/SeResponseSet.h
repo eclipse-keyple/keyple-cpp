@@ -76,6 +76,14 @@ namespace org {
                         std::shared_ptr<SeResponse> getSingleResponse();
 
                         std::string toString() override;
+
+                    public:
+                      friend std::ostream &operator<<(std::ostream &os, SeResponseSet &s)
+                      {
+                         os << "<SeResponseSet: elmts: " << s.seResponses.size();
+
+                         return os;
+                      }
                     };
 
                 }

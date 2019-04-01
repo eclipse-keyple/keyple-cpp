@@ -47,7 +47,7 @@ namespace org {
                          * {@link SeResponseSet}.
                          */
                     private:
-                        const std::shared_ptr<Set<std::set<SeRequest>>> sortedRequests = std::make_shared<std::set<std::shared_ptr<SeRequest>>>();
+                        const std::shared_ptr<std::set<std::shared_ptr<SeRequest>>> sortedRequests = std::make_shared<std::set<std::shared_ptr<SeRequest>>>();
 
 
                         /**

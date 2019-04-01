@@ -1,10 +1,3 @@
-#pragma once
-
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequestSet; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -16,26 +9,42 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <memory>
+
+/* Core */
+#include "SeRequestSet.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
-                namespace event_Renamed {
+                namespace event {
 
-                    using SeRequestSet = org::eclipse::keyple::seproxy::message::SeRequestSet;
+                    using org::eclipse::keyple::seproxy::message::SeRequestSet;
 
                     /**
                      * Class containing the {@link SeRequestSet} used to make a default selection at the
                      * {@link org.eclipse.keyple.seproxy.event.ObservableReader} level.
                      */
                     class DefaultSelectionRequest : public std::enable_shared_from_this<DefaultSelectionRequest> {
-                        /** The {@link SeRequestSet} */
                     private:
+                        /**
+                         * The {@link SeRequestSet} 
+                         */
                         const std::shared_ptr<SeRequestSet> selectionSeRequestSet;
 
                     public:
+                        /**
+                         * Constructor
+                         */
                         DefaultSelectionRequest(std::shared_ptr<SeRequestSet> selectionSeRequestSet);
 
+                        /**
+                         *
+                         */
                         virtual std::shared_ptr<SeRequestSet> getSelectionSeRequestSet();
                     };
 

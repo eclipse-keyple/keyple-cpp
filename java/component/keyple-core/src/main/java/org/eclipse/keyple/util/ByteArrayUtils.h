@@ -58,7 +58,7 @@ namespace org {
                      * @param byteArray byte array to represent to hex
                      * @return Hex representation of the byte array
                      */
-                    static std::string toHex(std::vector<char> &byteArray);
+                    static std::string toHex(const std::vector<char> &byteArray);
 
                     /**
                      * Convert three bytes from a byte array into an integer.

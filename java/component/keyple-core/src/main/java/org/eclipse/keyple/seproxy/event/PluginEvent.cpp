@@ -28,7 +28,7 @@ namespace org {
                     }
 
                     std::string PluginEvent::EventType::getName() {
-                        return outerInstance->name;
+                        return this->name;
                     }
 
                     bool EventType::operator == (const EventType &other) {
@@ -58,11 +58,11 @@ namespace org {
                     }
 
                     PluginEvent::PluginEvent(const std::string &pluginName, const std::string &readerName, EventType eventType) : pluginName(pluginName), readerName(readerName), eventType(eventType) {
-			this->readNames.insert(readerName);
+			this->readerNames->insert(readerName);
                     }
 
 		PluginEvent::PluginEvent(const std::string &pluginName, std::shared_ptr<std::set<std::string>> readerNames, EventType eventType) : pluginName(pluginName), eventType(eventType) {
-                        this->readerNames->addAll(readerNames);
+                        this->readerNames->insert(readerNames->begin(), readerNames->end());
                     }
 
                     std::string PluginEvent::getPluginName() {
@@ -70,7 +70,7 @@ namespace org {
                     }
 
                     std::shared_ptr<std::set<std::string>> PluginEvent::getReaderNames() {
-                        return std::make_shared<std::set<std::string>>(readerNames);
+                        return readerNames;
                     }
 
                     PluginEvent::EventType PluginEvent::getEventType() {

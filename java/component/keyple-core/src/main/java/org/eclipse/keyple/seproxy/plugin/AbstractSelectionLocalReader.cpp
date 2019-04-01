@@ -38,10 +38,10 @@ namespace org {
                             }
 
                             if (logger->isTraceEnabled()) {
-                                logger->trace("[{}] openLogicalChannel => ATR = {}", this->getName(), ByteArrayUtils::toHex(atr));
+                                logger->trace("[{}] openLogicalChannel => ATR = {}", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), ByteArrayUtils::toHex(atr));
                             }
                             if (!seSelector->getAtrFilter()->atrMatches(atr)) {
-                                logger->info("[{}] openLogicalChannel => ATR didn't match. SELECTOR = {}, ATR = {}", this->getName(), seSelector, ByteArrayUtils::toHex(atr));
+                                logger->info("[{}] openLogicalChannel => ATR didn't match. SELECTOR = {}, ATR = {}", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), seSelector, ByteArrayUtils::toHex(atr));
                                 selectionHasMatched = false;
                             }
                         }
@@ -51,18 +51,19 @@ namespace org {
                          * requested
                          */
                         if (selectionHasMatched && seSelector->getAidSelector() != nullptr) {
-                            std::shared_ptr<SeSelector::AidSelector> * const aidSelector = seSelector->getAidSelector();
+                            std::shared_ptr<SeSelector::AidSelector> const aidSelector = seSelector->getAidSelector();
                             const std::vector<char> aid = aidSelector->getAidToSelect();
                             if (aid.empty()) {
                                 throw std::invalid_argument("AID must not be null for an AidSelector.");
-                        }
-                                    if (logger->isTraceEnabled()) {
-                                logger->trace("[{}] openLogicalChannel => Select Application with AID = {}", this->getName(), ByteArrayUtils::toHex(aid));
-                                    }
-                                    /*
+                            }
+                            if (logger->isTraceEnabled()) {
+                                logger->trace("[{}] openLogicalChannel => Select Application with AID = {}", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), ByteArrayUtils::toHex(aid));
+                            }
+
+                            /*
                              * build a get response command the actual length expected by the SE in the get response
                              * command is handled in transmitApdu
-                                     */
+                             */
                                     std::vector<char> selectApplicationCommand(6 + aid.size());
                                     selectApplicationCommand[0] = static_cast<char>(0x00); // CLA
                                     selectApplicationCommand[1] = static_cast<char>(0xA4); // INS
@@ -84,7 +85,7 @@ namespace org {
                             fciResponse = processApduRequest(std::make_shared<ApduRequest>("Internal Select Application", selectApplicationCommand, true, aidSelector->getSuccessfulSelectionStatusCodes()));
 
                             if (!fciResponse->isSuccessful()) {
-                                logger->trace("[{}] openLogicalChannel => Application Selection failed. SELECTOR = {}", this->getName(), aidSelector);
+                                logger->trace("[{}] openLogicalChannel => Application Selection failed. SELECTOR = {}", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), aidSelector);
                             }
                             /*
                              * The ATR filtering matched or was not requested. The selection status is determined by
@@ -97,7 +98,10 @@ namespace org {
                              * The ATR filtering didn't match or no AidSelector was provided. The selection status
                              * is determined by the ATR filtering.
                              */
-                            selectionStatus = std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr), std::make_shared<ApduResponse>(nullptr, nullptr), selectionHasMatched);
+                            std::vector<char> v;
+                            selectionStatus = std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr),
+                                                                                std::make_shared<ApduResponse>(v, nullptr),
+                                                                                selectionHasMatched);
                     }
                         return selectionStatus;
                     }

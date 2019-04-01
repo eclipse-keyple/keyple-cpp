@@ -29,9 +29,6 @@ namespace org {
             namespace seproxy {
                 namespace event {
 
-
-                    using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
-
                     /**
                      * ReaderEvent used to notify changes at reader level
                      */

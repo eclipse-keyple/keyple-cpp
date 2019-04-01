@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <stdexcept>
 #include <memory>
+#include <type_traits>
 
 /* Common */
 #include "Logger.h"
@@ -31,17 +32,8 @@
 #include "PluginEvent.h"
 #include "KeypleBaseException.h"
 
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace plugin {
-                    class AbstractObservableReader;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; }}}}}
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservablePlugin; }}}}}
 
 namespace org {
     namespace eclipse {
@@ -53,7 +45,9 @@ namespace org {
                     using Configurable        = org::eclipse::keyple::util::Configurable;
                     using Nameable            = org::eclipse::keyple::util::Nameable;
                     using Logger              = org::eclipse::keyple::common::Logger;
-                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+                    using LoggerFactory       = org::eclipse::keyple::common::LoggerFactory;
+                    using ReaderEvent         = org::eclipse::keyple::seproxy::event::ReaderEvent;
+                    using PluginEvent         = org::eclipse::keyple::seproxy::event::PluginEvent;
 
                     /**
                      * Intermediate observable class to handle the logging of AbstractObservableReader and
@@ -113,7 +107,7 @@ namespace org {
                             std::shared_ptr<org::eclipse::keyple::util::Observer<T>> observer) override
                         {
 
-                            logger->trace("[%s][%s] addObserver => Adding an observer.", this->getClass(), this->getName());
+                            logger->trace("[%s][%s] addObserver => Adding an observer.", name, this->getName());
 
                             org::eclipse::keyple::util::Observable<T>::addObserver(observer);
                         }
@@ -123,14 +117,19 @@ namespace org {
                          *
                          * @param observer Observer to stop notifying
                          */
-                        virtual void removeObserver(
-                            std::shared_ptr<org::eclipse::keyple::util::Observer<T>> observer) override
+                        virtual void removeObserver(std::shared_ptr<org::eclipse::keyple::util::Observer<T>> observer) override
                         {
-                            if (std::dynamic_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
-                                logger->trace("[{}] removeObserver => Deleting a reader observer", this->getName());
+                            /*
+                             * Alex: Downcasting on both AbstractObservableReader and AbstractObservablePlugin doesn't seem possible even though
+                             *       templates are used because somehow the compiler knows where that comes from and doesn't want to apply the
+                             *       cast. Using the type of the template to switch between one or the other.
+                             */
+                            if (std::is_same<T, ReaderEvent>::value) {
+                            //if (std::dynamic_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
+                                logger->trace("[%s] removeObserver => Deleting a reader observer", this->getName());
                             }
-                            else if (std::dynamic_pointer_cast<AbstractObservablePlugin>(shared_from_this()) != nullptr) {
-                                logger->trace("[{}] removeObserver => Deleting a plugin observer", this->getName());
+                            else { //else if (std::reinterpret_pointer_cast<AbstractObservablePlugin>(shared_from_this()) != nullptr) {
+                                logger->trace("[%s] removeObserver => Deleting a plugin observer", this->getName());
                             }
 
                             org::eclipse::keyple::util::Observable<T>::removeObserver(observer);
@@ -146,14 +145,22 @@ namespace org {
                         // Alex: function was final in Java (problem in PcscPlugin.cpp)
                         void notifyObservers(std::shared_ptr<T> event) override
                         {
-                            if (std::dynamic_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
-                                logger->trace("[{}] AbstractObservableReader => Notifying a reader event. EVENTNAME = {}", this->getName(), (std::static_pointer_cast<ReaderEvent>(event_Renamed))->getEventType().getName());
+                            /*
+                             * Alex: Downcasting on both AbstractObservableReader and AbstractObservablePlugin doesn't seem possible even though
+                             *       templates are used because somehow the compiler knows where that comes from and doesn't want to apply the
+                             *       cast. Using the type of the template to switch between one or the other.
+                             */
+                            if (std::is_same<T, ReaderEvent>::value) {
+                            //if (std::static_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
+                                logger->trace("[%s] AbstractObservableReader => Notifying a reader event. EVENTNAME = %s",
+                                              this->getName(), "<fixme event name>"); //(std::static_pointer_cast<ReaderEvent>(event))->getEventType().getName());
                             }
-                            else if (std::dynamic_pointer_cast<AbstractObservablePlugin>(shared_from_this()) != nullptr) {
-                                logger->trace("[{}] AbstractObservableReader => Notifying a plugin event. EVENTNAME = {} ", this->getName(), (std::static_pointer_cast<PluginEvent>(event_Renamed))->getEventType().getName());
+                            else { //else if (std::dynamic_pointer_cast<AbstractObservablePlugin>(shared_from_this()) != nullptr) {
+                                logger->trace("[%s] AbstractObservableReader => Notifying a plugin event. EVENTNAME = %s ",
+                                              this->getName(), "<fixme event name>"); //(std::static_pointer_cast<PluginEvent>(event))->getEventType().getName());
                             }
  
-                            setChanged();
+                            org::eclipse::keyple::util::Observable<T>::setChanged();
  
                             org::eclipse::keyple::util::Observable<T>::notifyObservers(event);
                         }
@@ -175,7 +182,7 @@ namespace org {
 
                       protected:
                         std::shared_ptr<AbstractLoggedObservable> shared_from_this() {
-                            return std::static_pointer_cast<AbstractLoggedObservable>(org.eclipse.keyple.util.Observable<T>::shared_from_this());
+                            return std::static_pointer_cast<AbstractLoggedObservable>(org::eclipse::keyple::util::Observable<T>::shared_from_this());
                         }
                     };
                 } // namespace plugin

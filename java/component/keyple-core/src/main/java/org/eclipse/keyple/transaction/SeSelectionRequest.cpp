@@ -13,11 +13,9 @@ namespace org {
                 using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
                 using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
                 using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                using org::slf4j::Logger;
-                using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> SeSelectionRequest::logger = org::slf4j::LoggerFactory::getLogger(SeSelectionRequest::typeid);
 
-                SeSelectionRequest::SeSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag) : channelState(channelState), protocolFlag(protocolFlag) {
+                SeSelectionRequest::SeSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag)
+                : channelState(channelState), protocolFlag(protocolFlag), matchingClass(std::type_index(typeid(MatchingSe))), selectionClass(std::type_index(typeid(SeSelector))) {
                     this->seSelector = seSelector;
                     if (logger->isTraceEnabled()) {
                         logger->trace("SeSelection");
@@ -42,11 +40,11 @@ const std::shared_ptr<org::slf4j::Logger> SeSelectionRequest::logger = org::slf4
                     this->selectionClass = selectionClass;
                 }
 
-                std::type_info SeSelectionRequest::getSelectionClass() {
+                std::type_index& SeSelectionRequest::getSelectionClass() {
                     return selectionClass;
                 }
 
-                std::type_info SeSelectionRequest::getMatchingClass() {
+                std::type_index& SeSelectionRequest::getMatchingClass() {
                     return matchingClass;
                 }
 
@@ -56,7 +54,11 @@ const std::shared_ptr<org::slf4j::Logger> SeSelectionRequest::logger = org::slf4
 
                 std::string SeSelectionRequest::toString() {
 //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
-                    return "SeSelectionRequest: SELECTION_CLASS = " + selectionClass.toString() + ", MATCHING_CLASS = " + matchingClass.toString();
+                    std::string request = "SeSelectionRequest: SELECTION_CLASS = ";
+                    request += selectionClass.name();
+                    request += ", MATCHING_CLASS = ";
+                    request += matchingClass.name();
+                    return request;
                 }
             }
         }

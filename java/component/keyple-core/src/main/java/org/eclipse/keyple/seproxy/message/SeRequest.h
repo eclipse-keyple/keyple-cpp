@@ -18,13 +18,14 @@
 
 #include "stringhelper.h"
 
+/* Core */
 #include "Protocol.h"
 #include "ChannelState.h"
+#include "SeSelector.h"
+#include "ApduRequest.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SeSelector; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
+/* Common */
+#include "Serializable.h"
 
 namespace org {
     namespace eclipse {
@@ -32,10 +33,10 @@ namespace org {
             namespace seproxy {
                 namespace message {
 
-                    using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                    using Protocol = org::eclipse::keyple::seproxy::protocol::Protocol;
-                    using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                    using SeSelector = org::eclipse::keyple::transaction::SeSelector;
+                    using org::eclipse::keyple::seproxy::ChannelState;
+                    using org::eclipse::keyple::seproxy::protocol::Protocol;
+                    using org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                    using org::eclipse::keyple::seproxy::SeSelector;
 
                     /**
                      * List of APDU requests that will result in a {@link SeResponse}
@@ -47,11 +48,11 @@ namespace org {
                     public:
                         static constexpr long long serialVersionUID = 6018469841127325812LL;
 
-                            /**
+                        /**
                          * SE seSelector is either an AID or an ATR regular expression
-                             */
-                        private:
-                        const std::shared_ptr<SeSelector> seSelector;
+                         */
+                    private:
+                        std::shared_ptr<SeSelector> seSelector;
 
                         /**
                          * contains a group of APDUCommand to operate on the selected SE application by the SE reader.
@@ -62,7 +63,7 @@ namespace org {
                         /**
                          * the protocol flag is used to target specific SE technologies for a given request
                          */
-                        std::shared_ptr<SeProtocol> protocolFlag = std::make_shared<SeProtocol>(Protocol::ANY);
+                        std::shared_ptr<SeProtocol> protocolFlag = std::dynamic_pointer_cast<SeProtocol>(std::make_shared<Protocol>(Protocol::ANY));
 
                         /**
                          * the final logical channel status: the SE reader may kept active the logical channel of the SE

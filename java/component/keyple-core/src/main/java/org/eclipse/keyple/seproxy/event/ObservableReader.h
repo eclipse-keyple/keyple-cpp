@@ -20,9 +20,9 @@
 #include "Export.h"
 
 /* Core */
+#include "DefaultSelectionRequest.h"
 #include "Observable.h"
 #include "ReaderEvent.h"
-#include "SelectionRequest.h"
 #include "SeReader.h"
 
 namespace org {
@@ -31,8 +31,8 @@ namespace org {
             namespace seproxy {
                 namespace event {
 
-                    using SeReader         = org::eclipse::keyple::seproxy::SeReader;
-                    using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
+                    using org::eclipse::keyple::seproxy::SeReader;
+                    using org::eclipse::keyple::seproxy::event::DefaultSelectionRequest;
 
                     class EXPORT ObservableReader : public virtual SeReader {
                       public:
@@ -144,8 +144,7 @@ namespace org {
                         virtual void notifyObservers(std::shared_ptr<ReaderEvent> event) = 0;
 
                         virtual void
-                        setDefaultSelectionRequest(std::shared_ptr<SelectionRequest> defaultSelectionRequest,
-                                                   NotificationMode notificationMode) = 0;
+                        setDefaultSelectionRequest(std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest, NotificationMode notificationMode) = 0;
                     };
                 } // namespace event
             }     // namespace seproxy

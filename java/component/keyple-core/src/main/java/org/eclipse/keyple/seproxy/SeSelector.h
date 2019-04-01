@@ -52,22 +52,9 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
-                namespace message {
-                    class SeRequest;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace transaction {
 
                 using ChannelState  = org::eclipse::keyple::seproxy::ChannelState;
                 using ApduRequest   = org::eclipse::keyple::seproxy::message::ApduRequest;
-                using SeRequest     = org::eclipse::keyple::seproxy::message::SeRequest;
                 using SeProtocol    = org::eclipse::keyple::seproxy::protocol::SeProtocol;
                 using Logger        = org::eclipse::keyple::common::Logger;
                 using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
@@ -77,14 +64,6 @@ namespace org {
                  * element
                  */
                 class SeSelector : public std::enable_shared_from_this<SeSelector> {
-                    /** logger */
-                private:
-                    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelector));
-
-                    const std::shared_ptr<AidSelector> aidSelector;
-                    const std::shared_ptr<AtrFilter> atrFilter;
-                    const std::string extraInfo;
-
                     /**
                      * Static nested class to hold the data elements used to perform an AID based selection
                      */
@@ -139,7 +118,7 @@ namespace org {
                          * List of status codes in response to the select application command that should be
                          * considered successful although they are different from 9000
                          */
-                        std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes = std::make_shared<LinkedHashSet<Integer>>();
+                        std::shared_ptr<std::set<int>> successfulSelectionStatusCodes = std::make_shared<std::set<int>>();
 
                         /**
                          * AidSelector with additional select application successful status codes, file occurrence
@@ -157,7 +136,7 @@ namespace org {
                          *        application response
                          */
                   public:
-                        AidSelector(std::vector<char> &aidToSelect, std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes, FileOccurrence fileOccurrence, FileControlInformation fileControlInformation);
+                        AidSelector(std::vector<char> &aidToSelect, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes, FileOccurrence fileOccurrence, FileControlInformation fileControlInformation);
 
                         /**
                          * AidSelector with additional select application successful status codes
@@ -170,7 +149,7 @@ namespace org {
                          * @param successfulSelectionStatusCodes list of successful status codes for the select
                          *        application response
                          */
-                        AidSelector(std::vector<char> &aidToSelect, std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes);
+                        AidSelector(std::vector<char> &aidToSelect, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes);
 
                         /**
                          * Getter for the AID provided at construction time
@@ -191,7 +170,7 @@ namespace org {
                          *
                          * @return the list of status codes
                      */
-                        virtual std::shared_ptr<Set<Integer>> getSuccessfulSelectionStatusCodes();
+                        virtual std::shared_ptr<std::set<int>> getSuccessfulSelectionStatusCodes();
 
 
                     /**
@@ -222,7 +201,7 @@ namespace org {
                         AtrFilter(const std::string &atrRegex);
 
                     /**
-                         * Setter for the regular expression provided at construction time
+                         * std::setter for the regular expression provided at construction time
                      *
                          * @param atrRegex expression string
                      */
@@ -252,6 +231,14 @@ namespace org {
                          */
                         virtual std::string toString();
                     };
+
+                    /** logger */
+                private:
+                    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelector));
+
+                    const std::shared_ptr<AidSelector> aidSelector;
+                    const std::shared_ptr<AtrFilter> atrFilter;
+                    const std::string extraInfo;
 
                     /**
                      * Create a SeSelector to perform the SE selection
@@ -296,7 +283,7 @@ namespace org {
                      */
                     std::string getExtraInfo();
 
-                    std::string toString() override;
+                    std::string toString();
                 };
 
             } // namespace seproxy

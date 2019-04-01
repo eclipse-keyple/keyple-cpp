@@ -38,7 +38,7 @@ using KeypleIOReaderException = org::eclipse::keyple::seproxy::exception::Keyple
 using namespace org::eclipse::keyple::seproxy::message;
 
 
-class EXPORT AbstractSelectionLocalReader : public AbstractLocalReader, public ObservableReader {
+class EXPORT AbstractSelectionLocalReader : public AbstractLocalReader { //, public ObservableReader {
  private:
                         static const std::shared_ptr<Logger> logger;
 

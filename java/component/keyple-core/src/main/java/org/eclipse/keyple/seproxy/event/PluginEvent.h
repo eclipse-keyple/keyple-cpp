@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include <set>
 #include <string>
 #include <vector>
 #include <memory>
@@ -42,6 +43,17 @@ namespace org {
                      * However, only one type of event is notified at a time.
                      */
                     class EXPORT PluginEvent final : public std::enable_shared_from_this<PluginEvent> {
+                    private:
+                        /**
+                         * The name of the plugin handling the reader that produced the event
+                         */
+                        const std::string pluginName;
+
+                        /**
+                         * The name of the readers involved
+                         */
+                        std::shared_ptr<std::set<std::string>> readerNames = std::make_shared<std::set<std::string>>();
+
                     public:
                         class EXPORT EventType final {
                         public:
@@ -133,11 +145,7 @@ namespace org {
 
                         EventType getEventType();
 
-                        /**
-                         * The name of the plugin handling the reader that produced the event
-                         */
                     private:
-                        const std::string pluginName;
 
                         /**
                          * The name of the reader involved

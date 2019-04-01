@@ -132,7 +132,7 @@ namespace org {
                          * @throws KeypleReaderException if a reader error occurs
                          */
                       protected:
-                        virtual std::shared_ptr<SortedSet<std::string>> fetchNativeReadersNames() = 0;
+                        virtual std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() = 0;
 
                         /**
                          * Constructor

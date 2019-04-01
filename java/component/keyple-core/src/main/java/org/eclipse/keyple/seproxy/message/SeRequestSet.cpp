@@ -15,10 +15,10 @@ namespace org {
                     }
 
                     void SeRequestSet::add(std::shared_ptr<SeRequest> seRequest) {
-                        this->sortedRequests->add(seRequest);
+                        this->sortedRequests->insert(seRequest);
                     }
 
-                    std::shared_ptr<Set<std::shared_ptr<SeRequest>>> SeRequestSet::getRequests() {
+                    std::shared_ptr<std::set<std::shared_ptr<SeRequest>>> SeRequestSet::getRequests() {
                         return sortedRequests;
                     }
 

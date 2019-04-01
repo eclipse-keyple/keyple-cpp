@@ -23,6 +23,7 @@
 
 /* Core */
 #include "KeypleReaderException.h"
+#include "DefaultSelectionRequest.h"
 
 /* Forward class declarations */
 namespace org {
@@ -68,24 +69,6 @@ namespace org {
 namespace org {
     namespace eclipse {
         namespace keyple {
-            namespace transaction {
-                class SeSelector;
-            }
-        } // namespace keyple
-    }     // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace transaction {
-                class SelectionResponse;
-            }
-        } // namespace keyple
-    }     // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
             namespace seproxy {
                 namespace exception {
                     class KeypleReaderException;
@@ -109,13 +92,14 @@ namespace org {
         namespace keyple {
             namespace transaction {
 
-                using SeReader              = org::eclipse::keyple::seproxy::SeReader;
-                using DefaultSelectionRequest = org::eclipse::keyple::seproxy::event_Renamed::DefaultSelectionRequest;
-                using SelectionResponse = org::eclipse::keyple::seproxy::event_Renamed::SelectionResponse;
-                using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                using SeRequest             = org::eclipse::keyple::seproxy::message::SeRequest;
-                using LoggerFactory         = org::eclipse::keyple::common::LoggerFactory;
-                using Logger                = org::eclipse::keyple::common::Logger;
+                using SeReader                = org::eclipse::keyple::seproxy::SeReader;
+                using DefaultSelectionRequest = org::eclipse::keyple::seproxy::event::DefaultSelectionRequest;
+                using SelectionResponse       = org::eclipse::keyple::seproxy::event::SelectionResponse;
+                using KeypleReaderException   = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                using SeRequest               = org::eclipse::keyple::seproxy::message::SeRequest;
+                using LoggerFactory           = org::eclipse::keyple::common::LoggerFactory;
+                using Logger                  = org::eclipse::keyple::common::Logger;
+                using SeRequestSet            = org::eclipse::keyple::seproxy::message::SeRequestSet;
 
                 /**
                  * The SeSelection class handles the SE selection process.
@@ -128,7 +112,7 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
 
                     const std::shared_ptr<SeReader> seReader;
     std::vector<std::shared_ptr<MatchingSe>> matchingSeList = std::vector<std::shared_ptr<MatchingSe>>();
-                    std::shared_ptr<SeRequestSet> selectionRequestSet = std::make_shared<SeRequestSet>(std::make_shared<LinkedHashSet<std::shared_ptr<SeRequest>>>());
+                    std::shared_ptr<SeRequestSet> selectionRequestSet = std::make_shared<SeRequestSet>(std::make_shared<std::set<std::shared_ptr<SeRequest>>>());
     std::shared_ptr<MatchingSe> selectedSe;
 
     /**

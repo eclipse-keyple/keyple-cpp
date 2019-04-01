@@ -54,14 +54,14 @@ namespace org {
 
                         std::shared_ptr<SeResponse> seResponse = std::static_pointer_cast<SeResponse>(o);
                         return seResponse->getSelectionStatus()->equals(selectionStatus) &&
-                               (seResponse->getApduResponses().empty() ? apduResponses.empty() : seResponse->getApduResponses().equals(apduResponses)) &&
+                               (seResponse->getApduResponses().empty() ? apduResponses.empty() : seResponse->getApduResponses() == apduResponses) &&
                                seResponse->wasChannelPreviouslyOpen() == channelPreviouslyOpen;
                     }
 
                     int SeResponse::hashCode() {
                         int hash = 17;
                         hash = 31 * hash + (selectionStatus->getAtr() == nullptr ? 0 : selectionStatus->getAtr()->hashCode());
-                        hash = 7 * hash + (apduResponses.empty() ? 0 : this->apduResponses.hashCode());
+                        hash = 7 * hash + (apduResponses.empty() ? 0 : 1); // FIXME: std::hash<std::shared_ptr>(this->apduResponses));
                         hash = 29 * hash + (this->channelPreviouslyOpen ? 1 : 0);
                         return hash;
                     }

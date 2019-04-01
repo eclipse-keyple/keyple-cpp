@@ -1,12 +1,13 @@
 #include "DefaultSelectionRequest.h"
-#include "../message/SeRequestSet.h"
+#include "SeRequestSet.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
-                namespace event_Renamed {
-                    using SeRequestSet = org::eclipse::keyple::seproxy::message::SeRequestSet;
+                namespace event {
+
+                    using org::eclipse::keyple::seproxy::message::SeRequestSet;
 
                     DefaultSelectionRequest::DefaultSelectionRequest(std::shared_ptr<SeRequestSet> selectionSeRequestSet) : selectionSeRequestSet(selectionSeRequestSet) {
                     }

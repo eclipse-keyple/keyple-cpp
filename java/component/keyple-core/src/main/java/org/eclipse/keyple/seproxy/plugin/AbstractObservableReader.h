@@ -27,6 +27,7 @@
 #include "KeypleReaderException.h"
 #include "ObservableReader.h"
 #include "ProxyReader.h"
+#include "DefaultSelectionRequest.h"
 
 /* Namespace */
 namespace org {
@@ -36,23 +37,20 @@ namespace org {
                 namespace plugin {
 
                     /* Using */
-                    using SeReader         = org::eclipse::keyple::seproxy::SeReader;
-                    using ObservableReader = org::eclipse::keyple::seproxy::event::ObservableReader;
-                    using ReaderEvent      = org::eclipse::keyple::seproxy::event::ReaderEvent;
-                    using KeypleChannelStateException =
-                        org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
-                    using KeypleIOReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
-                    using KeypleReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using ProxyReader      = org::eclipse::keyple::seproxy::message::ProxyReader;
-                    using SeRequest        = org::eclipse::keyple::seproxy::message::SeRequest;
-                    using SeRequestSet     = org::eclipse::keyple::seproxy::message::SeRequestSet;
-                    using SeResponse       = org::eclipse::keyple::seproxy::message::SeResponse;
-                    using SeResponseSet    = org::eclipse::keyple::seproxy::message::SeResponseSet;
-                    using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
-                    using LoggerFactory    = org::eclipse::keyple::common::LoggerFactory;
-                    using Logger = org::eclipse::keyple::common::Logger;
+                    using SeReader                    = org::eclipse::keyple::seproxy::SeReader;
+                    using ObservableReader            = org::eclipse::keyple::seproxy::event::ObservableReader;
+                    using ReaderEvent                 = org::eclipse::keyple::seproxy::event::ReaderEvent;
+                    using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
+                    using KeypleIOReaderException     = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
+                    using KeypleReaderException       = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using ProxyReader                 = org::eclipse::keyple::seproxy::message::ProxyReader;
+                    using SeRequest                   = org::eclipse::keyple::seproxy::message::SeRequest;
+                    using SeRequestSet                = org::eclipse::keyple::seproxy::message::SeRequestSet;
+                    using SeResponse                  = org::eclipse::keyple::seproxy::message::SeResponse;
+                    using SeResponseSet               = org::eclipse::keyple::seproxy::message::SeResponseSet;
+                    using LoggerFactory               = org::eclipse::keyple::common::LoggerFactory;
+                    using Logger                      = org::eclipse::keyple::common::Logger;
+                    using DefaultSelectionRequest     = org::eclipse::keyple::seproxy::event::DefaultSelectionRequest;
 
                     /**
                      * Abstract definition of an observable reader.
@@ -68,7 +66,7 @@ namespace org {
 
                         /** logger */
                     private:
-                        static const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservableReader));
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservableReader));
 
                         /** Timestamp recorder */
                         long long before = 0;
@@ -81,7 +79,7 @@ namespace org {
                         std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest;
 
                         /** Indicate if all SE detected should be notified or only matching SE */
-                        ObservableReader::NotificationMode notificationMode = static_cast<ObservableReader::NotificationMode>(0);
+                        ObservableReader::NotificationMode notificationMode;
 
                         /** ==== Constructor =================================================== */
 
@@ -225,7 +223,7 @@ namespace org {
 
 protected:
                         std::shared_ptr<AbstractObservableReader> shared_from_this() {
-                            return std::static_pointer_cast<AbstractObservableReader>(AbstractLoggedObservable<org.eclipse.keyple.seproxy.event_Renamed.ReaderEvent>::shared_from_this());
+                            return std::static_pointer_cast<AbstractObservableReader>(AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::shared_from_this());
                         }
                     };
 

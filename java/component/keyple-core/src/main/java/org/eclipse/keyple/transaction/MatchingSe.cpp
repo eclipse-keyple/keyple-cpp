@@ -1,12 +1,16 @@
 #include "MatchingSe.h"
 #include "SeResponse.h"
 #include "SeSelectionRequest.h"
+#include "SeRequest.h"
+#include "SelectionStatus.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace transaction {
+
                 using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
+                using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
 
                 MatchingSe::MatchingSe(std::shared_ptr<SeSelectionRequest> seSelectionRequest) : channelIsKeptOpen(seSelectionRequest->getSelectionRequest()->isKeepChannelOpen()), extraInfo(seSelectionRequest->getSeSelector()->getExtraInfo()) {
                 }

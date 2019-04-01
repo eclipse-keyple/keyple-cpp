@@ -56,6 +56,14 @@ namespace org {
                                             public Comparable<ReaderPlugin> {
 
                     /**
+                     * Gets the list of names of all readers
+                     *
+                     * @return a list of String
+                     */
+                public:
+                    virtual std::shared_ptr<std::set<std::string>> getReaderNames() = 0;
+
+                    /**
                      * Gets the readers.
                      *
                      * @return the ‘unique’ name of the readers’ plugin.
