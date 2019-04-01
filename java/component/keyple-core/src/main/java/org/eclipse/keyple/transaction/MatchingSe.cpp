@@ -1,8 +1,6 @@
 #include "MatchingSe.h"
-#include "../seproxy/message/SeResponse.h"
-#include "SeSelector.h"
-#include "SeRequest.h"
-#include "SelectionStatus.h"
+#include "SeResponse.h"
+#include "SeSelectionRequest.h"
 
 namespace org {
     namespace eclipse {
@@ -10,7 +8,7 @@ namespace org {
             namespace transaction {
                 using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
 
-                MatchingSe::MatchingSe(std::shared_ptr<SeSelector> seSelector) : channelIsKeptOpen(seSelector->getSelectorRequest()->isKeepChannelOpen()), extraInfo(seSelector->getExtraInfo()) {
+                MatchingSe::MatchingSe(std::shared_ptr<SeSelectionRequest> seSelectionRequest) : channelIsKeptOpen(seSelectionRequest->getSelectionRequest()->isKeepChannelOpen()), extraInfo(seSelectionRequest->getSeSelector()->getExtraInfo()) {
                 }
 
                 void MatchingSe::setSelectionResponse(std::shared_ptr<SeResponse> selectionResponse) {

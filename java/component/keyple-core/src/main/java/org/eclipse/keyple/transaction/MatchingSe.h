@@ -5,7 +5,7 @@
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SeSelector; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace transaction { class SeSelectionRequest; } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -39,10 +39,10 @@ namespace org {
                      * Constructor taking a SeSelector as an argument. Keeps the isKeepChannelOpen flag and the
                      * extraInfo for later usage.
                      *
-                     * @param seSelector the seSelector
+                     * @param seSelectionRequest the SE selection request
                      */
                 public:
-                    MatchingSe(std::shared_ptr<SeSelector> seSelector);
+                    MatchingSe(std::shared_ptr<SeSelectionRequest> seSelectionRequest);
 
                     /**
                      * Sets the SeResponse obtained in return from the selection process
@@ -85,6 +85,17 @@ namespace org {
                      * @return a string
                      */
                     std::string getExtraInfo();
+
+                    /**
+                     * Restore the initial state of the MatchingSe.
+                     * <p>
+                     * Called by SeSelection at the beginning of the processing of a selection
+                     * <p>
+                     * This method should be overloaded by the objects derived from MatchingSe in order to reset
+                     * their additional attributes.
+                     */
+                protected:
+                    virtual void reset();
                 };
 
             }
