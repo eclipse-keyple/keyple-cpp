@@ -110,23 +110,25 @@ namespace org {
             namespace transaction {
 
                 using SeReader              = org::eclipse::keyple::seproxy::SeReader;
+                using DefaultSelectionRequest = org::eclipse::keyple::seproxy::event_Renamed::DefaultSelectionRequest;
+                using SelectionResponse = org::eclipse::keyple::seproxy::event_Renamed::SelectionResponse;
                 using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                using ProxyReader           = org::eclipse::keyple::seproxy::message::ProxyReader;
                 using SeRequest             = org::eclipse::keyple::seproxy::message::SeRequest;
                 using LoggerFactory         = org::eclipse::keyple::common::LoggerFactory;
                 using Logger                = org::eclipse::keyple::common::Logger;
 
                 /**
-                 * The SeSelection class handles the SE selection process
+                 * The SeSelection class handles the SE selection process.
+                 * <p>
+                 * It provides a way to do explicit SE selection or to post process a default SE selection.
                  */
 class SeSelection final : public std::enable_shared_from_this<SeSelection> {
   private:
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelection));
 
-    const std::shared_ptr<ProxyReader> proxyReader;
+                    const std::shared_ptr<SeReader> seReader;
     std::vector<std::shared_ptr<MatchingSe>> matchingSeList = std::vector<std::shared_ptr<MatchingSe>>();
-    std::shared_ptr<std::set<std::shared_ptr<SeRequest>>> selectionRequestSet =
-        std::make_shared<std::set<std::shared_ptr<SeRequest>>>();
+                    std::shared_ptr<SeRequestSet> selectionRequestSet = std::make_shared<SeRequestSet>(std::make_shared<LinkedHashSet<std::shared_ptr<SeRequest>>>());
     std::shared_ptr<MatchingSe> selectedSe;
 
     /**
@@ -144,11 +146,27 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
                      * Create a MatchingSe, retain it in a list and return it. The MatchingSe may be an extended
                      * class
                      *
-                     * @param seSelector the selector to prepare
+                     * @param seSelectionRequest the selector to prepare
                      * @return a MatchingSe for further information request about this selector
                      */
-    std::shared_ptr<MatchingSe> prepareSelection(std::shared_ptr<SeSelector> seSelector);
+                    std::shared_ptr<MatchingSe> prepareSelection(std::shared_ptr<SeSelectionRequest> seSelectionRequest);
 
+                    /**
+                     * Process the selection response either from a
+                     * {@link org.eclipse.keyple.seproxy.event.ReaderEvent} (default selection) or from an explicit
+                     * selection.
+                     * <p>
+                     * The responses from the {@link SeResponseSet} is parsed and checked.
+                     * <p>
+                     * If one of the responses has matched, the corresponding {@link MatchingSe} is updated with the
+                     * data from the response.
+                     * <p>
+                     * If the updated {@link MatchingSe} is selectable (logical channel requested to be kept open)
+                     * the selectedSe field is updated (making the MatchingSe available through getSelectedSe).
+                     *
+                     * @param selectionResponse the selection response
+                     * @return true if a successful selection has been made.
+                     */
   private:
     bool processSelection(std::shared_ptr<SelectionResponse> selectionResponse);
 
@@ -162,7 +180,7 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
                      * <p>
                      * Responses that have not matched the current SE are set to null.
                      *
-                     * @param selectionResponse the response from the reader to the {@link SelectionRequest}
+                     * @param selectionResponse the response from the reader to the {@link DefaultSelectionRequest}
                      * @return boolean true if a SE was selected
                      */
   public:
@@ -207,13 +225,13 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
     std::vector<std::shared_ptr<MatchingSe>> getMatchingSeList();
 
     /**
-                     * The SelectionOperation is the SelectionRequest to process in ordered to select a SE among
-                     * others through the selection process. This method is useful to build the prepared selection
-                     * to be executed by a reader just after a SE insertion.
+                     * The SelectionOperation is the DefaultSelectionRequest to process in ordered to select a SE
+                     * among others through the selection process. This method is useful to build the prepared
+                     * selection to be executed by a reader just after a SE insertion.
                      *
-                     * @return the {@link SelectionRequest} previously prepared with prepareSelection
+                     * @return the {@link DefaultSelectionRequest} previously prepared with prepareSelection
                      */
-    std::shared_ptr<SelectionRequest> getSelectionOperation();
+                    std::shared_ptr<DefaultSelectionRequest> getSelectionOperation();
 };
 
 } // namespace transaction
