@@ -29,7 +29,7 @@ namespace util {
 template<typename T>
 class Observer {
 public:
-    virtual void update(std::shared_ptr<T> event) = 0;
+    virtual void update(T event) = 0;
 };
 
 /**
@@ -139,7 +139,7 @@ public:
     /**
      *
      */
-    virtual void notifyObservers(std::shared_ptr<T> event)
+    virtual void notifyObservers(T event)
     {
         /* Multithread locking is not converted to native C++ */
 

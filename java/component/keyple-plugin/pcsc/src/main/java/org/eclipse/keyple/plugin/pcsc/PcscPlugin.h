@@ -144,7 +144,7 @@ namespace org {
                          * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> initNativeReaders() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() throw(KeypleReaderException) override;
 
                         /**
                          * Fetch the reader whose name is provided as an argument. Returns the current reader if it is
@@ -172,7 +172,7 @@ namespace org {
                         }
 
                       public:
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override
                         {
                             return AbstractThreadedObservablePlugin::AbstractLoggedObservable::setParameters(
                                 parameters);
@@ -184,32 +184,28 @@ namespace org {
                             return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReaders();
                         }
 
-                        std::shared_ptr<SeReader> getReader(const std::string &name) override
+                        std::shared_ptr<SeReader> getReader(const std::string &name) throw(KeypleReaderNotFoundException) override
                         {
-                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReader(
-                                name);
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReader(name);
                         }
 
                         void addObserver(std::shared_ptr<PluginObserver> observer) override
                         {
                             logger->debug("[PcscPlugin::addObserver] observer: %p\n", observer);
 
-                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::addObserver(
-                                observer);
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::addObserver(observer);
                         }
 
                         void removeObserver(std::shared_ptr<PluginObserver> observer) override
                         {
                             logger->debug("[PcscPlugin::removeObserver]\n");
-                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::removeObserver(
-                                observer);
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::removeObserver(observer);
                         }
 
                         void notifyObservers(std::shared_ptr<PluginEvent> event) override
                         {
                             logger->debug("[PcscPlugin::notifyObservers]\n");
-                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::
-                                notifyObservers(event);
+                            AbstractThreadedObservablePlugin::AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::notifyObservers(event);
                         }
 
                         bool equals(std::shared_ptr<void> o) override

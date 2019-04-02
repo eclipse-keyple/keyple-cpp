@@ -103,9 +103,10 @@ namespace org {
                          * @param pluginName the name of the plugin
                          * @param terminal the PC/SC terminal
                          */
-                    protected:
+                    public:
                         PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal);
 
+                    protected:
                         void closePhysicalChannel() throw(KeypleChannelStateException) override;
 
                         bool checkSePresence() throw(NoStackTraceThrowable) override;
@@ -218,7 +219,7 @@ namespace org {
 
                       protected:
                         std::shared_ptr<PcscReader> shared_from_this() {
-                            return std::static_pointer_cast<PcscReader>(org.eclipse.keyple.seproxy.plugin.AbstractThreadedLocalReader::shared_from_this());
+                            return std::static_pointer_cast<PcscReader>(AbstractThreadedLocalReader::shared_from_this());
                         }
 
                       public:
@@ -226,9 +227,15 @@ namespace org {
 
                         int hashCode() override;
 
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override;
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override;
 
                         void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
+
+                        std::string getName()
+                        {
+                            return AbstractThreadedLocalReader::AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName();
+                        }
+
                     };
 
                 } // namespace pcsc

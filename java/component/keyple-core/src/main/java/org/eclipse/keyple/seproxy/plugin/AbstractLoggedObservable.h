@@ -143,7 +143,7 @@ namespace org {
                          * @param event the event
                          */
                         // Alex: function was final in Java (problem in PcscPlugin.cpp)
-                        void notifyObservers(std::shared_ptr<T> event) override
+                        void notifyObservers(T event) override
                         {
                             /*
                              * Alex: Downcasting on both AbstractObservableReader and AbstractObservablePlugin doesn't seem possible even though

@@ -240,7 +240,7 @@ using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
                         /**
                          * Close the logical channel.
                          */
-                    private:
+                    protected:
                         void closeLogicalChannel();
 
                         /** ==== Protocol management =========================================== */

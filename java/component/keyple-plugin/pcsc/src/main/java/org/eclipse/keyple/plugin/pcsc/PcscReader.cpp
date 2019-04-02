@@ -84,7 +84,7 @@ catch (const CardException &e) {
 }
 }
 
-bool PcscReader::isSePresent() throw(NoStackTraceThrowable) {
+bool PcscReader::checkSePresence() throw(NoStackTraceThrowable) {
 try {
     return terminal->isCardPresent();
 }
@@ -114,10 +114,6 @@ try {
     else {
         return false;
     }
-}
-catch (KeypleChannelStateException &e) {
-    logger->trace("[%s] Exception occured in waitForCardAbsent. Message: %s\n", this->getName(), e.what());
-    throw NoStackTraceThrowable();
 }
 catch (CardException &e) {
     logger->trace("[%s] Exception occured in waitForCardAbsent. Message: %s\n", this->getName(), e.getMessage());
@@ -332,7 +328,7 @@ void PcscReader::openPhysicalChannel() throw(KeypleChannelStateException)
         this->channel = card->getBasicChannel();
     }
     catch (const CardException &e) {
-        throw KeypleChannelStateException("Error while opening Physical Channel\n", e));
+        throw KeypleChannelStateException("Error while opening Physical Channel\n"); //, e));
     }
 }
 
@@ -360,7 +356,7 @@ int PcscReader::hashCode()
     return 0;
 }
 
-void PcscReader::setParameters(std::unordered_map<std::string, std::string> &parameters)
+void PcscReader::setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException)
 {
 
 }
