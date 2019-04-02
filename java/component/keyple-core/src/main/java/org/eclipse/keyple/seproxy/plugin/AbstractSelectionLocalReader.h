@@ -40,7 +40,7 @@ using namespace org::eclipse::keyple::seproxy::message;
 
 class EXPORT AbstractSelectionLocalReader : public AbstractLocalReader { //, public ObservableReader {
  private:
-                        static const std::shared_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractSelectionLocalReader));
 
 protected:
     AbstractSelectionLocalReader(const std::string &pluginName, const std::string &readerName);

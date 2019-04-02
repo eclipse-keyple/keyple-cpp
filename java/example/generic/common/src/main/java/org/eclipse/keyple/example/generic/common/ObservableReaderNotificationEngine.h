@@ -78,6 +78,8 @@ public:
          *
          */
         void update(std::shared_ptr<ReaderEvent> event) override;
+        void update(ReaderEvent event) override;
+
     };
 
     /**
@@ -104,6 +106,7 @@ public:
         SpecificPluginObserver(ObservableReaderNotificationEngine *outerInstance, std::shared_ptr<SpecificReaderObserver> readerObserver);
 
         void update(std::shared_ptr<PluginEvent> event) override;
+        void update(PluginEvent event) override;
     };
 
 private:

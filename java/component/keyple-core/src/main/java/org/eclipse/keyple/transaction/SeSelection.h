@@ -24,68 +24,11 @@
 /* Core */
 #include "KeypleReaderException.h"
 #include "DefaultSelectionRequest.h"
-
-/* Forward class declarations */
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace message {
-                    class ProxyReader;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace transaction {
-                class MatchingSe;
-            }
-        } // namespace keyple
-    }     // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace message {
-                    class SeRequest;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                class SeReader;
-            }
-        } // namespace keyple
-    }     // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleReaderException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace transaction {
-                class SelectionRequest;
-            }
-        } // namespace keyple
-    }     // namespace eclipse
-} // namespace org
+#include "ProxyReader.h"
+#include "MatchingSe.h"
+#include "SeRequest.h"
+#include "SeReader.h"
+#include "KeypleReaderException.h"
 
 namespace org {
     namespace eclipse {

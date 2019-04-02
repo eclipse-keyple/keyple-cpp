@@ -62,12 +62,12 @@
                             Thread::sleep(200);
 
                             std::cout << "Plug reader 1." << std::endl;
-                            stubPlugin.plugStubReader("Reader1");
+                            stubPlugin.plugStubReader("Reader1", true);
 
                             Thread::sleep(100);
 
                             std::cout << "Plug reader 2." << std::endl;
-                            stubPlugin.plugStubReader("Reader2");
+                            stubPlugin.plugStubReader("Reader2", true);
 
                             Thread::sleep(1000);
 
@@ -102,25 +102,25 @@
                             Thread::sleep(100);
 
                             std::cout << "Plug reader 1 again (twice)." << std::endl;
-                            stubPlugin.plugStubReader("Reader1");
+                            stubPlugin.plugStubReader("Reader1", true);
 
                             std::cout << "Unplug reader 1." << std::endl;
-                            stubPlugin.unplugReader("Reader1");
+                            stubPlugin.unplugStubReader("Reader1", true);
 
                             Thread::sleep(100);
 
                             std::cout << "Plug reader 1 again." << std::endl;
-                            stubPlugin.plugStubReader("Reader1");
+                            stubPlugin.plugStubReader("Reader1", true);
 
                             Thread::sleep(100);
 
                             std::cout << "Unplug reader 1." << std::endl;
-                            stubPlugin.unplugReader("Reader1");
+                            stubPlugin.unplugStubReader("Reader1", true);
 
                             Thread::sleep(100);
 
                             std::cout << "Unplug reader 2." << std::endl;
-                            stubPlugin.unplugReader("Reader2");
+                            stubPlugin.unplugStubReader("Reader2", true);
 
                             std::cout << "END." << std::endl;
 

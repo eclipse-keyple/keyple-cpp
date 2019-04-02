@@ -104,6 +104,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/ReaderPlugin.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/SeProxyService.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/SeReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/SeSelector.cpp
 
 	# transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/MatchingSe.cpp

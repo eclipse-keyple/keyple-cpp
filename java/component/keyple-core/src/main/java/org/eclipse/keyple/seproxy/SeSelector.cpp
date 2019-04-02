@@ -7,12 +7,16 @@
 #include "SeRequest.h"
 
 namespace org {
-namespace eclipse {
-namespace keyple {
+    namespace eclipse {
+        namespace keyple {
             namespace seproxy {
-using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 
-                SeSelector::AidSelector::AidSelector(std::vector<char> &aidToSelect, std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes, FileOccurrence fileOccurrence, FileControlInformation fileControlInformation) {
+                using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+                using AidSelector    = org::eclipse::keyple::seproxy::SeSelector::AidSelector;
+                using AtrFilter      = org::eclipse::keyple::seproxy::SeSelector::AtrFilter;
+
+                SeSelector::AidSelector::AidSelector(std::vector<char> &aidToSelect, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes,
+                                                     FileOccurrence fileOccurrence, FileControlInformation fileControlInformation) {
                     if (aidToSelect.empty() || aidToSelect.size() < AID_MIN_LENGTH || aidToSelect.size() > AID_MAX_LENGTH) {
                         throw std::invalid_argument("Bad AID value: must be between " + std::to_string(AID_MIN_LENGTH) + " and " + std::to_string(AID_MIN_LENGTH) + " bytes.");
 }
@@ -22,7 +26,8 @@ using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
                     this->fileControlInformation = fileControlInformation;
 }
 
-                SeSelector::AidSelector::AidSelector(std::vector<char> &aidToSelect, std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes) : AidSelector(aidToSelect, successfulSelectionStatusCodes, FileOccurrence::FIRST, FileControlInformation::FCI) {
+                SeSelector::AidSelector::AidSelector(std::vector<char> &aidToSelect, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes)
+                : AidSelector(aidToSelect, successfulSelectionStatusCodes, FileOccurrence::FIRST, FileControlInformation::FCI) {
 }
 
                 std::vector<char> SeSelector::AidSelector::getAidToSelect() {
@@ -33,7 +38,7 @@ using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
                     return fileOccurrence == FileOccurrence::NEXT;
                 }
 
-                std::shared_ptr<Set<Integer>> SeSelector::AidSelector::getSuccessfulSelectionStatusCodes() {
+                std::shared_ptr<std::set<int>> SeSelector::AidSelector::getSuccessfulSelectionStatusCodes() {
                     return successfulSelectionStatusCodes;
     }
 
@@ -56,9 +61,9 @@ using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
                 bool SeSelector::AtrFilter::atrMatches(std::vector<char> &atr) {
                     bool m;
                     if (atrRegex.length() != 0) {
-                        std::shared_ptr<Pattern> p = Pattern::compile(atrRegex);
+                        Pattern p = Pattern::compile(atrRegex);
                         std::string atrString = ByteArrayUtils::toHex(atr);
-                        m = p->matcher(atrString).matches();
+                        m = p.matcher(atrString).matches();
     }
     else {
                         m = true;
@@ -70,13 +75,8 @@ using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
                     return StringHelper::formatSimple("ATR regex:%s", atrRegex.length() != 0 ? atrRegex : "empty");
 }
 
-                SeSelector::SeSelector(std::shared_ptr<AidSelector> aidSelector, std::shared_ptr<AtrFilter> atrFilter, const std::string &extraInfo) : aidSelector(aidSelector), atrFilter(atrFilter) {
-                    if (extraInfo != "") {
-                        this->extraInfo = extraInfo;
-    }
-    else {
-                        this->extraInfo = "";
-    }
+                SeSelector::SeSelector(std::shared_ptr<AidSelector> aidSelector, std::shared_ptr<AtrFilter> atrFilter, const std::string &extraInfo)
+                : aidSelector(aidSelector), atrFilter(atrFilter), extraInfo(extraInfo) {
                     if (logger->isTraceEnabled()) {
                         logger->trace("Selection data: AID = {}, ATRREGEX = {}, EXTRAINFO = {}", this->aidSelector == nullptr ? "null" : ByteArrayUtils::toHex(this->aidSelector->getAidToSelect()), this->atrFilter == nullptr ? "null" : this->atrFilter->getAtrRegex(), extraInfo);
 }
@@ -92,7 +92,7 @@ using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 
                 std::string SeSelector::getExtraInfo() {
                     return extraInfo;
-}
+                }
 
                 std::string SeSelector::toString() {
                     return "SeSelector: AID_SELECTOR = "

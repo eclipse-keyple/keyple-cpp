@@ -32,12 +32,10 @@ namespace org {
                         {
                             /* initializes observers */
                             logger->debug("casting readerObserver\n");
-                            std::shared_ptr<SpecificReaderObserver> readerObserver =
-                                std::shared_ptr<SpecificReaderObserver>(new SpecificReaderObserver(this));
+                            std::shared_ptr<SpecificReaderObserver> readerObserver = std::make_shared<SpecificReaderObserver>(this);
 
                             logger->debug("instanciating pluginObserver\n");
-                            pluginObserver = std::shared_ptr<SpecificPluginObserver>(
-                                new SpecificPluginObserver(this, readerObserver));
+                            pluginObserver = std::make_shared<SpecificPluginObserver>(this, readerObserver);
                         }
 
                         ObservableReaderNotificationEngine::~ObservableReaderNotificationEngine()
@@ -76,8 +74,12 @@ namespace org {
                         {
                         }
 
-                        void ObservableReaderNotificationEngine::SpecificReaderObserver::update(
-                            std::shared_ptr<ReaderEvent> event)
+                        void ObservableReaderNotificationEngine::SpecificReaderObserver::update(ReaderEvent event)
+                        {
+                             /* Should not be used, compilation fix */
+                        }
+
+                        void ObservableReaderNotificationEngine::SpecificReaderObserver::update(std::shared_ptr<ReaderEvent> event)
                         {
                             /* just log the event */
                             outerInstance->logger->info(
@@ -94,89 +96,81 @@ namespace org {
                             this->readerObserver = readerObserver;
                         }
 
-                        void ObservableReaderNotificationEngine::SpecificPluginObserver::update(
-                            std::shared_ptr<PluginEvent> event)
+                        void ObservableReaderNotificationEngine::SpecificPluginObserver::update(PluginEvent event)
                         {
-                            std::shared_ptr<SeReader> reader = nullptr;
-                            outerInstance->logger->info(
-                                "PluginEvent: PLUGINNAME = %s, READERNAME = %s, EVENTTYPE = %s\n",
-                                event->getPluginName(), event->getReaderName(), event->getEventType());
-
-                            /* We retrieve the reader object from its name. */
-                            try
-                            {
-                                reader = SeProxyService::getInstance()
-                                             .getPlugin(event->getPluginName())
-                                             ->getReader(event->getReaderName());
-                            } catch (KeyplePluginNotFoundException &e)
-                            {
-                                e.printStackTrace();
-                            } catch (KeypleReaderNotFoundException &e)
-                            {
-                                e.printStackTrace();
-                            }
-
-                            switch (event->getEventType().innerEnumValue)
-                            {
-                            case PluginEvent::EventType::InnerEnum::READER_CONNECTED:
-                                outerInstance->logger->info("new reader! READERNAME = %s\n",
-                                                            reader->getName());
-
-                                /*
-                                 * We are informed here of a disconnection of a reader.
-                                 *
-                                 * We add an observer to this reader if this is possible.
-                                 */
-                                if (std::dynamic_pointer_cast<ObservableReader>(reader) != nullptr)
-                                {
-                                    if (readerObserver != nullptr)
-                                    {
-                                        outerInstance->logger->info("add observer READERNAME = %s\n",
-                                                                    reader->getName());
-                                        (std::dynamic_pointer_cast<ObservableReader>(reader))
-                                            ->addObserver(readerObserver);
-                                    }
-                                    else
-                                    {
-                                        outerInstance->logger->info("no observer to add READERNAME = %s\n",
-                                                                    reader->getName());
-                                    }
-                                }
-                                break;
-                            case PluginEvent::EventType::InnerEnum::READER_DISCONNECTED:
-                                /*
-                                 * We are informed here of a disconnection of a reader.
-                                 *
-                                 * The reader object still exists but will be removed from the reader list right
-                                 * after. Thus, we can properly remove the observer attached to this reader
-                                 * before the list update.
-                                 */
-                                outerInstance->logger->info("reader removed. READERNAME = %s\n",
-                                                            event->getReaderName());
-                                if (std::dynamic_pointer_cast<ObservableReader>(reader) != nullptr)
-                                {
-                                    if (readerObserver != nullptr)
-                                    {
-                                        outerInstance->logger->info("remove observer READERNAME = %s\n",
-                                                                    event->getReaderName());
-                                        (std::dynamic_pointer_cast<ObservableReader>(reader))
-                                            ->removeObserver(readerObserver);
-                                    }
-                                    else
-                                    {
-                                        outerInstance->logger->info(
-                                            "unplugged reader READERNAME = %s wasn't observed\n",
-                                            event->getReaderName());
-                                    }
-                                }
-                                break;
-                            default:
-                                outerInstance->logger->info("unexpected reader event. EVENT = %s\n",
-                                                            event->getEventType().getName());
-                                break;
-                            }
+                             /* Should not be used, compilation fix */
                         }
 
+                        void ObservableReaderNotificationEngine::SpecificPluginObserver::update(std::shared_ptr<PluginEvent> event)
+                        {
+                            for (auto readerName : *event->getReaderNames()) {
+                                std::shared_ptr<SeReader> reader = nullptr;
+                                outerInstance->logger->info("PluginEvent: PLUGINNAME = %s, READERNAME = %s, EVENTTYPE = %s\n",
+                                                            event->getPluginName(), reader->getName(), event->getEventType());
+
+                                /* We retrieve the reader object from its name. */
+                                try
+                                {
+                                    reader = SeProxyService::getInstance().getPlugin(event->getPluginName())->getReader(reader->getName());
+                                } catch (KeyplePluginNotFoundException &e)
+                                {
+                                    e.printStackTrace();
+                                } catch (KeypleReaderNotFoundException &e)
+                                {
+                                    e.printStackTrace();
+                                }
+
+                                switch (event->getEventType().innerEnumValue)
+                                {
+                                case PluginEvent::EventType::InnerEnum::READER_CONNECTED:
+                                    outerInstance->logger->info("new reader! READERNAME = %s\n", reader->getName());
+
+                                    /*
+                                     * We are informed here of a disconnection of a reader.
+                                     *
+                                     * We add an observer to this reader if this is possible.
+                                     */
+                                    if (std::dynamic_pointer_cast<ObservableReader>(reader) != nullptr)
+                                    {
+                                        if (readerObserver != nullptr)
+                                        {
+                                            outerInstance->logger->info("add observer READERNAME = %s\n", reader->getName());
+                                            (std::dynamic_pointer_cast<ObservableReader>(reader))->addObserver(readerObserver);
+                                        }
+                                        else
+                                        {
+                                            outerInstance->logger->info("no observer to add READERNAME = %s\n", reader->getName());
+                                        }
+                                    }
+                                    break;
+                                case PluginEvent::EventType::InnerEnum::READER_DISCONNECTED:
+                                    /*
+                                     * We are informed here of a disconnection of a reader.
+                                     *
+                                     * The reader object still exists but will be removed from the reader list right
+                                     * after. Thus, we can properly remove the observer attached to this reader
+                                     * before the list update.
+                                     */
+                                    outerInstance->logger->info("reader removed. READERNAME = %s\n", readerName);
+                                    if (std::dynamic_pointer_cast<ObservableReader>(reader) != nullptr)
+                                    {
+                                        if (readerObserver != nullptr)
+                                        {
+                                            outerInstance->logger->info("remove observer READERNAME = %s\n", readerName);
+                                            (std::dynamic_pointer_cast<ObservableReader>(reader))->removeObserver(readerObserver);
+                                        }
+                                        else
+                                        {
+                                            outerInstance->logger->info( "unplugged reader READERNAME = %s wasn't observed\n", readerName);
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    outerInstance->logger->info("unexpected reader event. EVENT = %s\n", event->getEventType().getName());
+                                    break;
+                                }
+                            }
+                         }
                     } // namespace common
                 }     // namespace generic
             }         // namespace example

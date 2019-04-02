@@ -17,6 +17,7 @@
 /* Core */
 #include "ObservableReader.h"
 #include "ReaderEvent_Import.h"
+#include "SelectionResponse.h"
 
 /* Common */
 #include "Logger.h"
@@ -31,7 +32,7 @@ namespace org {
 
                         using ObservableReader  = org::eclipse::keyple::seproxy::event::ObservableReader;
                         using ReaderEvent       = org::eclipse::keyple::seproxy::event::ReaderEvent;
-                        using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
+                        using SelectionResponse = org::eclipse::keyple::seproxy::event::SelectionResponse;
                         using Logger            = org::eclipse::keyple::common::Logger;
                         using LoggerFactory     = org::eclipse::keyple::common::LoggerFactory;
 

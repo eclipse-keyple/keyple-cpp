@@ -36,9 +36,8 @@ throw(std::runtime_error)
     pcscplugin.initReaders();
 
     /* Instantiate SeProxyService and add PC/SC plugin */
-                            std::shared_ptr<SeProxyService> seProxyService = SeProxyService::getInstance();
-
-                            seProxyService->addPlugin(PcscPlugin::getInstance());
+                            SeProxyService& seProxyService = SeProxyService::getInstance();
+                            seProxyService.addPlugin(std::make_shared<PcscPlugin>(PcscPlugin::getInstance()));
 
     /* Set observers */
     demoEngine->setPluginObserver();

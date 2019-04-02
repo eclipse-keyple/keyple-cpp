@@ -13,17 +13,21 @@
 #pragma once
 
 #include <set>
-#include "MatchingSe.h"
 #include "../seproxy/ChannelState.h"
 #include <string>
 #include <unordered_set>
 #include <vector>
+#include <typeinfo>
 #include <typeindex>
 #include <memory>
 
 /* Common */
+#include "Export.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
+
+/* Core */
+#include "MatchingSe.h"
 
 /* Forward class declarations */
 namespace org {
@@ -63,7 +67,7 @@ namespace org {
                  * The SeSelector class groups the information and methods used to select a particular secure
                  * element
                  */
-                class SeSelector : public std::enable_shared_from_this<SeSelector> {
+                class EXPORT SeSelector : public std::enable_shared_from_this<SeSelector> {
                     /**
                      * Static nested class to hold the data elements used to perform an AID based selection
                      */

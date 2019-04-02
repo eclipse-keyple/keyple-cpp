@@ -34,41 +34,10 @@
 #include "CardTerminal.h"
 #include "CardTerminals.h"
 #include "TerminalFactory.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleBaseException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleReaderException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace plugin {
-                    class AbstractObservableReader;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
+#include "KeypleBaseException.h"
+#include "KeypleReaderException.h"
+#include "AbstractObservableReader.h"
+#include "KeypleReaderNotFoundException.h"
 
 namespace org {
     namespace eclipse {
@@ -76,17 +45,15 @@ namespace org {
             namespace plugin {
                 namespace pcsc {
 
-                    using SeReader            = org::eclipse::keyple::seproxy::SeReader;
-                    using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-                    using KeypleReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using AbstractObservableReader =
-                        org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
-                    using AbstractThreadedObservablePlugin =
-                        org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
-                    using PluginEvent = org::eclipse::keyple::seproxy::event::PluginEvent;
-                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
-                    using Logger        = org::eclipse::keyple::common::Logger;
+                    using SeReader                         = org::eclipse::keyple::seproxy::SeReader;
+                    using KeypleBaseException              = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+                    using KeypleReaderException            = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using KeypleReaderNotFoundException    = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
+                    using AbstractObservableReader         = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
+                    using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
+                    using PluginEvent                      = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    using LoggerFactory                    = org::eclipse::keyple::common::LoggerFactory;
+                    using Logger                           = org::eclipse::keyple::common::Logger;
 
                     class EXPORT PcscPlugin : public AbstractThreadedObservablePlugin {
 

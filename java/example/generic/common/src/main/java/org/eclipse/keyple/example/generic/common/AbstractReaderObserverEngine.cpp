@@ -14,7 +14,7 @@ namespace org {
 
                         using ObservableReader  = org::eclipse::keyple::seproxy::event::ObservableReader;
                         using ReaderEvent       = org::eclipse::keyple::seproxy::event::ReaderEvent;
-                        using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
+                        using SelectionResponse = org::eclipse::keyple::seproxy::event::SelectionResponse;
 
                         void AbstractReaderObserverEngine::update(std::shared_ptr<ReaderEvent> event)
                         {

@@ -37,6 +37,8 @@ namespace org {
                     class EXPORT ObservableReader : public virtual SeReader {
                       public:
                         class ReaderObserver : public org::eclipse::keyple::util::Observer<ReaderEvent> {
+                        public:
+                           virtual void update(std::shared_ptr<ReaderEvent> event) = 0;
                         };
 
                         class EXPORT NotificationMode final {
@@ -141,7 +143,7 @@ namespace org {
 
                         virtual void removeObserver(std::shared_ptr<ReaderObserver> observer) = 0;
 
-                        virtual void notifyObservers(std::shared_ptr<ReaderEvent> event) = 0;
+                        virtual void notifyObservers(std::shared_ptr<ReaderEvent> event) { }
 
                         virtual void
                         setDefaultSelectionRequest(std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest, NotificationMode notificationMode) = 0;

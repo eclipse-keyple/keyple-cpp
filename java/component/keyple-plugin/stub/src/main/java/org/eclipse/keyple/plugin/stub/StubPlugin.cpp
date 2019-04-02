@@ -17,8 +17,8 @@ namespace org {
                     using AbstractObservableReader         = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
                     using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
 
-                    std::shared_ptr<std::set<std::string>> StubPlugin::nativeStubReadersNames =
-                        std::make_shared<std::set<std::string>>();
+                    std::shared_ptr<std::set<std::string>> StubPlugin::connectedStubNames = std::make_shared<std::set<std::string>>();
+                    std::shared_ptr<std::set<std::string>> StubPlugin::nativeStubReadersNames = std::make_shared<std::set<std::string>>();
 
                     StubPlugin::StubPlugin()
                         : org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin(

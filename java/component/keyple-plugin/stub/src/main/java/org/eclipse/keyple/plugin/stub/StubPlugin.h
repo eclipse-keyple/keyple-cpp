@@ -98,7 +98,7 @@ namespace org {
                          */
                         void setParameter(const std::string &key, const std::string &value) override;
 
-                      protected:
+                      public:
                         /**
                          * Plug a Stub Reader
                          *
