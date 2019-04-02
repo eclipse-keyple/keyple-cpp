@@ -5,18 +5,17 @@
 /* Core */
 #include "KeypleReaderException.h"
 #include "AbstractObservableReader.h"
+#include "KeypleReaderNotFoundException.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace plugin {
                 namespace stub {
-                    using KeypleReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using AbstractObservableReader =
-                        org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
-                    using AbstractThreadedObservablePlugin =
-                        org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
+                    using KeypleReaderException            = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using KeypleReaderNotFoundException    = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
+                    using AbstractObservableReader         = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
+                    using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
 
                     std::shared_ptr<std::set<std::string>> StubPlugin::nativeStubReadersNames =
                         std::make_shared<std::set<std::string>>();
@@ -77,51 +76,52 @@ namespace org {
                         return nativeReaders;
                     }
 
-                    void StubPlugin::plugStubReader(const std::string &name, Boolean synchronous) {
+                    void StubPlugin::plugStubReader(const std::string &name, bool synchronous) {
 
-                        logger->info("Plugging a new reader with name " + name);
+                        logger->info("Plugging a new reader with name %s\n", name);
                         /* add the native reader to the native readers list */
-                        Boolean exist = connectedStubNames->contains(name);
+                        bool exist = connectedStubNames->find(name) != connectedStubNames->end();
 
                         if (!exist && synchronous) {
                             /* add the reader as a new reader to the readers list */
-                            readers->add(std::make_shared<StubReader>(name));
+                            readers->insert(std::make_shared<StubReader>(name));
                         }
 
-                        connectedStubNames->add(name);
+                        connectedStubNames->insert(name);
 
                         if (exist) {
-                            logger->error("Reader with name " + name + " was already plugged");
+                            logger->error("Reader with name %s was already plugged\n", name);
                         }
 
                     }
 
-                    void StubPlugin::plugStubReaders(std::shared_ptr<Set<std::string>> names, Boolean synchronous) {
-                        logger->debug("Plugging {} readers ..", names->size());
+                    void StubPlugin::plugStubReaders(std::shared_ptr<std::set<std::string>> names, bool synchronous) {
+                        logger->debug("Plugging %s readers ..\n", names->size());
 
                         /* plug stub readers that were not plugged already */
                         // duplicate names
-                        std::shared_ptr<Set<std::string>> newNames = std::unordered_set<std::string>(names);
+                        std::set<std::string> newNames(*names);
                         // remove already connected stubNames
-                        newNames->removeAll(connectedStubNames);
+                        for (auto name : *connectedStubNames)
+                            newNames.erase(name);
 
-                        logger->debug("New readers to be created #{}", newNames->size());
+                        logger->debug("New readers to be created #%s\n", newNames.size());
 
 
                         /*
                          * Add new names to the connectedStubNames
                          */
 
-                        if (newNames->size() > 0) {
+                        if (newNames.size() > 0) {
                             if (synchronous) {
                                 std::vector<std::shared_ptr<StubReader>> newReaders;
                                 for (auto name : newNames) {
                                     newReaders.push_back(std::make_shared<StubReader>(name));
                                 }
-                                readers->addAll(newReaders);
+                                readers->insert(newReaders.begin(), newReaders.end());
                             }
 
-                            connectedStubNames->addAll(names);
+                            connectedStubNames->insert(names->begin(), names->end());
 
                         }
                         else {
@@ -132,70 +132,60 @@ namespace org {
 
                     }
 
-                    void StubPlugin::unplugStubReader(const std::string &name, Boolean synchronous) throw(KeypleReaderException, InterruptedException) {
+                    void StubPlugin::unplugStubReader(const std::string &name, bool synchronous) throw(KeypleReaderException, InterruptedException) {
 
-                        if (!connectedStubNames->contains(name)) {
+                        if (connectedStubNames->find(name) == connectedStubNames->end()) {
                             logger->warn("unplugStubReader() No reader found with name {}", name);
                             }
                         else {
                             /* remove the reader from the readers list */
                             if (synchronous) {
-                                connectedStubNames->remove(name);
-                                readers->remove(getReader(name));
+                                connectedStubNames->erase(name);
+                                readers->erase(getReader(name));
                         }
                             else {
-                                connectedStubNames->remove(name);
+                                connectedStubNames->erase(name);
                             }
                             /* remove the native reader from the native readers list */
                             logger->info("Unplugged reader with name {}, connectedStubNames size {}", name, connectedStubNames->size());
                         }
                     }
 
-                    void StubPlugin::unplugStubReaders(std::shared_ptr<Set<std::string>> names, Boolean synchronous) {
+                    void StubPlugin::unplugStubReaders(std::shared_ptr<std::set<std::string>> names, bool synchronous) {
                         logger->info("Unplug {} stub readers", names->size());
                         logger->debug("Unplug stub readers.. {}", names);
                         std::vector<std::shared_ptr<StubReader>> readersToDelete;
-                        for (auto name : names) {
+                        for (auto name : *names) {
                             try {
-                                readersToDelete.push_back(std::static_pointer_cast<StubReader>(getReader(name)));
+                                readersToDelete.push_back(std::dynamic_pointer_cast<StubReader>(getReader(name)));
                         }
                             catch (const KeypleReaderNotFoundException &e) {
                                 logger->warn("unplugStubReaders() No reader found with name {}", name);
                             }
                         }
-                        connectedStubNames->removeAll(names);
+                        for (auto name : *names)
+                        	connectedStubNames->erase(name);
                         if (synchronous) {
-                            readers->removeAll(readersToDelete);
+                            for (auto name : readersToDelete)
+                                readers->erase(name);
                         }
                     }
 
-                    std::shared_ptr<SortedSet<std::string>> StubPlugin::fetchNativeReadersNames() {
-                        if (connectedStubNames->isEmpty()) {
+                    std::shared_ptr<std::set<std::string>> StubPlugin::fetchNativeReadersNames() {
+                        if (connectedStubNames->empty()) {
                             logger->trace("No reader available.");
                         }
                         return connectedStubNames;
-                        }
-
-                    std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> StubPlugin::initNativeReaders() throw(KeypleReaderException) {
-                        /* init Stub Readers response object */
-                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> newNativeReaders = std::make_shared<ConcurrentSkipListSet<std::shared_ptr<AbstractObservableReader>>>();
-
-                        /*
-                         * parse the current readers list to create the ProxyReader(s) associated with new reader(s)
-                         * if (connectedStubNames != null && connectedStubNames.size() > 0) { for (String name :
-                         * connectedStubNames) { newNativeReaders.add(new StubReader(name)); } }
-                         */
-                        return newNativeReaders;
                     }
 
                     std::shared_ptr<AbstractObservableReader> StubPlugin::fetchNativeReader(const std::string &name) {
-                        for (auto reader : readers) {
+                        for (auto reader : *readers) {
                             if (reader->getName() == name) {
-                                return reader;
+                                return std::dynamic_pointer_cast<AbstractObservableReader>(reader);
                             }
                         }
                         std::shared_ptr<AbstractObservableReader> reader = nullptr;
-                        if (connectedStubNames->contains(name)) {
+                        if (connectedStubNames->find(name) != connectedStubNames->end()) {
                             reader = std::make_shared<StubReader>(name);
                         }
                         return reader;

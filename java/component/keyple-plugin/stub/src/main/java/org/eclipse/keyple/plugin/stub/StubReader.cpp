@@ -135,7 +135,7 @@ namespace org {
                         return result;
                     }
 
-                    bool StubReader::isSePresent()
+                    bool StubReader::checkSePresence()
                     {
                         return se != nullptr;
                     }
@@ -265,7 +265,7 @@ namespace org {
                         return 0;
                     }
 
-                    void StubReader::setParameters(std::unordered_map<std::string, std::string> &parameters)
+                    void StubReader::setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException)
                     {
                     }
                 } // namespace stub

@@ -24,118 +24,12 @@
 /* Core */
 #include "AbstractThreadedLocalReader.h"
 #include "TransmissionMode.h"
+#include "KeypleBaseException.h"
+#include "KeypleChannelStateException.h"
+#include "NoStackTraceThrowable.h"
 
-/* Forward class declarations */
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace plugin {
-                namespace stub {
-                    class StubSecureElement;
-                }
-            } // namespace plugin
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleChannelStateException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleIOReaderException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleReaderException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace protocol {
-                    class SeProtocol;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace message {
-                    class ApduRequest;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace message {
-                    class ApduResponse;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace message {
-                    class SeRequestSet;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace message {
-                    class SeResponseSet;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class NoStackTraceThrowable;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
+/* Forward declarations */
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace stub { class StubSecureElement; }}}}}
 
 namespace org {
     namespace eclipse {
@@ -143,25 +37,21 @@ namespace org {
             namespace plugin {
                 namespace stub {
 
-                    using KeypleChannelStateException =
-                        org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
-                    using KeypleIOReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
-                    using KeypleReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using NoStackTraceThrowable =
-                        org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
-                    using ApduRequest   = org::eclipse::keyple::seproxy::message::ApduRequest;
-                    using ApduResponse  = org::eclipse::keyple::seproxy::message::ApduResponse;
-                    using SeRequestSet  = org::eclipse::keyple::seproxy::message::SeRequestSet;
-                    using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
-                    using AbstractThreadedLocalReader =
-                        org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader;
-                    using SeProtocol       = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                    using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-                    using ReaderEvent      = org::eclipse::keyple::seproxy::event::ReaderEvent;
-                    using Logger           = org::eclipse::keyple::common::Logger;
-                    using LoggerFactory    = org::eclipse::keyple::common::LoggerFactory;
+                    using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
+                    using KeypleIOReaderException     = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
+                    using KeypleReaderException       = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using KeypleBaseException       = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+                    using NoStackTraceThrowable       = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
+                    using ApduRequest                 = org::eclipse::keyple::seproxy::message::ApduRequest;
+                    using ApduResponse                = org::eclipse::keyple::seproxy::message::ApduResponse;
+                    using SeRequestSet                = org::eclipse::keyple::seproxy::message::SeRequestSet;
+                    using SeResponseSet               = org::eclipse::keyple::seproxy::message::SeResponseSet;
+                    using AbstractThreadedLocalReader = org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader;
+                    using SeProtocol                  = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                    using TransmissionMode            = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
+                    using ReaderEvent                 = org::eclipse::keyple::seproxy::event::ReaderEvent;
+                    using Logger                      = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory               = org::eclipse::keyple::common::LoggerFactory;
 
                     class EXPORT StubReader final : public AbstractThreadedLocalReader {
 
@@ -270,7 +160,7 @@ namespace org {
 
                       protected:
                         std::shared_ptr<StubReader> shared_from_this() {
-                            return std::static_pointer_cast<StubReader>(org.eclipse.keyple.seproxy.plugin.AbstractThreadedLocalReader::shared_from_this());
+                            return std::static_pointer_cast<StubReader>(AbstractThreadedLocalReader::shared_from_this());
                         }
 
                       public:
@@ -292,7 +182,12 @@ namespace org {
                         /**
                          *
                          */
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override;
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override;
+
+                        std::string getName() override
+                        {
+                            AbstractThreadedLocalReader::AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName();
+                        }
                     };
 
                 } // namespace stub

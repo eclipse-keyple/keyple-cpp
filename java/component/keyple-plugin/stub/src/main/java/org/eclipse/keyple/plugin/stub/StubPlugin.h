@@ -24,30 +24,9 @@
 #include "Export.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
-
-/* Forward class declarations */
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleReaderException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace plugin {
-                    class AbstractObservableReader;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
+#include "InterruptedException.h"
+#include "ObservablePlugin.h"
+#include "KeypleBaseException.h"
 
 namespace org {
     namespace eclipse {
@@ -65,6 +44,8 @@ namespace org {
                     using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
                     using SeReader      = org::eclipse::keyple::seproxy::SeReader;
                     using PluginEvent   = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
+                    using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
 
                     class EXPORT StubPlugin : public AbstractThreadedObservablePlugin {
 
@@ -77,12 +58,12 @@ namespace org {
                         /**
                          *
                          */
-                        const std::unordered_map<std::string, std::string> parameters = std::unordered_map<std::string, std::string>();
+                        std::unordered_map<std::string, std::string> parameters = std::unordered_map<std::string, std::string>();
 
-			/*
+                        /*
                          * simulated list of real-time connected stubReader
                          */
-                        static std::shared_ptr<SortedSet<std::string>> connectedStubNames;
+                        static std::shared_ptr<std::set<std::string>> connectedStubNames;
 
                         /**
                          *
@@ -119,12 +100,6 @@ namespace org {
 
                       protected:
                         /**
-                         *
-                         */
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
-                        initNativeReaders() throw(KeypleReaderException) override;
-
-                        /**
                          * Plug a Stub Reader
                          *
                          * @param name : name of the created reader
@@ -138,7 +113,7 @@ namespace org {
                          * 
                          * @param names : names of readers to be connected
                          */
-                        void plugStubReaders(std::shared_ptr<Set<std::string>> names, Boolean synchronous);
+                        void plugStubReaders(std::shared_ptr<std::set<std::string>> names, bool synchronous);
 
 
                         /**
@@ -147,10 +122,10 @@ namespace org {
                          * @param name the name of the reader
                          * @throws KeypleReaderException in case of a reader exception
                          */
-                        void unplugStubReader(const std::string &name, Boolean synchronous) throw(KeypleReaderException, InterruptedException);
+                        void unplugStubReader(const std::string &name, bool synchronous) throw(KeypleReaderException, InterruptedException);
 
 
-                        void unplugStubReaders(std::shared_ptr<Set<std::string>> names, Boolean synchronous);
+                        void unplugStubReaders(std::shared_ptr<std::set<std::string>> names, bool synchronous);
 
 
                         /**
@@ -168,7 +143,7 @@ namespace org {
                          * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<SortedSet<std::shared_ptr<AbstractObservableReader>>> initNativeReaders() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() throw(KeypleReaderException) override;
 
                         /**
                          * Fetch the reader whose name is provided as an argument. Returns the current reader if it is
@@ -183,22 +158,19 @@ namespace org {
 
 protected:
                         std::shared_ptr<StubPlugin> shared_from_this() {
-                            return std::static_pointer_cast<StubPlugin>(org.eclipse.keyple.seproxy.plugin.AbstractThreadedObservablePlugin::shared_from_this());
+                            return std::static_pointer_cast<StubPlugin>(AbstractThreadedObservablePlugin::shared_from_this());
                         }
-                    };
 
-                        void removeObserver(std::shared_ptr<PluginObserver> observer) override
+                        void removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) override
                         {
                             logger->debug("\n");
-                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::removeObserver(
-                                observer);
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::removeObserver(observer);
                         }
 
                         void notifyObservers(std::shared_ptr<PluginEvent> event) override
                         {
                             logger->debug("\n");
-                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::
-                                notifyObservers(event);
+                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::notifyObservers(event);
                         }
 
                         bool equals(std::shared_ptr<void> o) override
@@ -211,10 +183,18 @@ protected:
                             return 0; //AbstractThreadedObservablePlugin::hashCode();
                         }
 
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override
                         {
-                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::setParameters(
-                                parameters);
+                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::setParameters(parameters);
+                        }
+
+                        std::string getName() override
+                        {
+                            AbstractThreadedObservablePlugin::AbstractLoggedObservable::getName();
+                        }
+
+                        void addObserver(std::shared_ptr<PluginObserver> observer)
+                        {
                         }
                     };
 
