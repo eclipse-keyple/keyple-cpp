@@ -81,69 +81,69 @@ using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
                         /** ==== Constructor =================================================== */
 
-    /**
+                        /**
                          * Reader constructor
                          * <p>
                          * Force the definition of a name through the use of super method.
                          * <p>
                          * Initialize the time measurement
-     *
+                         *
                          * @param pluginName the name of the plugin that instantiated the reader
                          * @param readerName the name of the reader
-     */
+                         */
                     public:
                         AbstractLocalReader(const std::string &pluginName, const std::string &readerName);
 
                         /** ==== Card presence management ====================================== */
 
-    /**
+                        /**
                          * Check the presence of a SE
                          * <p>
                          * This method is recommended for non-observable readers.
                          * <p>
                          * When the card is not present the logical and physical channels status may be refreshed
                          * through a call to the cardRemoved method.
-     *
+                         *
                          * @return true if the SE is present
-     */
-                        bool isSePresent() throw(NoStackTraceThrowable);
+                         */
+                        bool isSePresent() throw(NoStackTraceThrowable) override;
 
-    /**
+                        /**
                          * Wrapper for the native method of the plugin specific local reader to verify the presence of
                          * the SE.
-     * <p>
+                         * <p>
                          * This method must be implemented by the ProxyReader plugin (e.g. Pcsc reader plugin).
                          * <p>
                          * This method is invoked by isSePresent.
                          *
                          * @return true if the SE is present
                          * @throws NoStackTraceThrowable exception without stack trace
-     */
+                         */
                     protected:
                         virtual bool checkSePresence() = 0;
 
-    /**
+                        /**
                          * This method is invoked when a SE is inserted in the case of an observable reader.
                          * <p>
                          * e.g. from the monitoring thread in the case of a Pcsc plugin
                          * ({@link AbstractSelectionLocalReader}) or from the NfcAdapter callback method onTagDiscovered
                          * in the case of a Android NFC plugin.
-     * <p>
-     * It will fire an ReaderEvent in the following cases:
-     * <ul>
-     * <li>SE_INSERTED: if no default selection request was defined</li>
+                         * <p>
+                         * It will fire an ReaderEvent in the following cases:
+                         * <ul>
+                         * <li>SE_INSERTED: if no default selection request was defined</li>
                          * <li>SE_MATCHED: if a default selection request was defined in any mode and a SE matched the
-     * selection</li>
-     * <li>SE_INSERTED: if a default selection request was defined in ALWAYS mode but no SE matched
-     * the selection (the SelectionResponse is however transmitted)</li>
-     * </ul>
-     * <p>
-     * It will do nothing if a default selection is defined in MATCHED_ONLY mode but no SE matched
-     * the selection.
-     */
+                         * selection</li>
+                         * <li>SE_INSERTED: if a default selection request was defined in ALWAYS mode but no SE matched
+                         * the selection (the SelectionResponse is however transmitted)</li>
+                         * </ul>
+                         * <p>
+                         * It will do nothing if a default selection is defined in MATCHED_ONLY mode but no SE matched
+                         * the selection.
+                         */
                         void cardInserted();
 
-    /**
+                        /**
                          * This method is invoked when a SE is removed in the case of an observable reader
                          * ({@link AbstractThreadedLocalReader}).
                          * <p>
@@ -152,32 +152,32 @@ using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
                          * <p>
                          * The SE will be notified removed only if it has been previously notified present (observable
                          * reader only)
-     */
+                         */
                         void cardRemoved() throw(NoStackTraceThrowable);
 
                         /** ==== Physical and logical channels management ====================== */
-   
-    /**
+
+                        /**
                          * This abstract method must be implemented by the derived class in order to provide the SE ATR
                          * when available.
                          * <p>
                          * Gets the SE Answer to reset
-     *
+                         *
                          * @return ATR returned by the SE or reconstructed by the reader (contactless)
-     */
+                         */
                         virtual std::vector<char> getATR() = 0;
 
-    /**
+                        /**
                          * This abstract method must be implemented by the derived class in order to provide a selection
                          * and ATR filtering mechanism.
                          * <p>
                          * The Selector provided in argument holds all the needed data to handle the Application
                          * Selection and ATR matching process and build the resulting SelectionStatus.
-     *
+                         *
                          * @param seSelector the SE selector
                          * @return the SelectionStatus containing the actual selection result (ATR and/or FCI and the
                          *         matching status flag).
-     */
+                         */
                         virtual std::shared_ptr<SelectionStatus> openLogicalChannel(std::shared_ptr<SeSelector> seSelector) = 0;
 
 
@@ -338,23 +338,23 @@ using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
                          * @param apduRequest APDU request
                          * @return APDU response
                          * @throws KeypleIOReaderException Exception faced
-     */
+                         */
                     protected:
                         std::shared_ptr<ApduResponse> processApduRequest(std::shared_ptr<ApduRequest> apduRequest) throw(KeypleIOReaderException);
-   
-    /**
-     * Execute a get response command in order to get outgoing data from specific cards answering
-     * 9000 with no data although the command has outgoing data. Note that this method relies on the
-     * right get response management by transmitApdu
-     *
-     * @param originalStatusCode the status code of the command that didn't returned data
-     * @return ApduResponse the response to the get response command
-     * @throws KeypleIOReaderException if the transmission fails.
-     */
-                    private:
-    std::shared_ptr<ApduResponse> case4HackGetResponse(int originalStatusCode) throw(KeypleIOReaderException);
 
-    /**
+                        /**
+                         * Execute a get response command in order to get outgoing data from specific cards answering
+                         * 9000 with no data although the command has outgoing data. Note that this method relies on the
+                         * right get response management by transmitApdu
+                         *
+                         * @param originalStatusCode the status code of the command that didn't returned data
+                         * @return ApduResponse the response to the get response command
+                         * @throws KeypleIOReaderException if the transmission fails.
+                         */
+                    private:
+                        std::shared_ptr<ApduResponse> case4HackGetResponse(int originalStatusCode) throw(KeypleIOReaderException);
+
+                        /**
                          * Transmits a single APDU and receives its response.
                          * <p>
                          * This abstract method must be implemented by the ProxyReader plugin (e.g. Pcsc, Nfc). The
@@ -376,13 +376,13 @@ using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
                          * <p>
                          * Depending on the notification mode, the observer will be notified whenever an SE is inserted,
                          * regardless of the selection status, or only if the current SE matches the selection criteria.
-     *
+                         *
                          * @param defaultSelectionRequest the {@link DefaultSelectionRequest} to be executed when a SE
                          *        is inserted
                          * @param notificationMode the notification mode enum (ALWAYS or MATCHED_ONLY)
-     */
+                         */
                     public:
-                        virtual void setDefaultSelectionRequest(std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest, ObservableReader::NotificationMode notificationMode);
+                        virtual void setDefaultSelectionRequest(std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest, ObservableReader::NotificationMode notificationMode) override;
 
 protected:
                         std::shared_ptr<AbstractLocalReader> shared_from_this() {

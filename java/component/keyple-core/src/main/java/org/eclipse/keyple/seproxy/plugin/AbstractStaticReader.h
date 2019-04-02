@@ -45,9 +45,9 @@ namespace org {
                         /** Prevents the use of observers that are not available in a static reader context */
 
                     public:
-                        void addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer);
+                        void addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) override;
 
-                        void removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer);
+                        void removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) override;
 
 protected:
                         std::shared_ptr<AbstractStaticReader> shared_from_this() {

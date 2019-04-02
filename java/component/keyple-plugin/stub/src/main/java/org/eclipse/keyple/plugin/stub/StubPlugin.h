@@ -193,7 +193,7 @@ protected:
                             return AbstractThreadedObservablePlugin::AbstractLoggedObservable::getName();
                         }
 
-                        void addObserver(std::shared_ptr<PluginObserver> observer)
+                        void addObserver(std::shared_ptr<PluginObserver> observer) override
                         {
                         }
                     };

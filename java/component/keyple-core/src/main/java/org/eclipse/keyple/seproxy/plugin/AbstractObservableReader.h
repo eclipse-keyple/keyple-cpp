@@ -131,7 +131,7 @@ namespace org {
                          * @return responseSet the response set
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<SeResponseSet> transmitSet(std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException);
+                        std::shared_ptr<SeResponseSet> transmitSet(std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException) override;
 
                         /**
                          * Abstract method implemented by the AbstractLocalReader and VirtualReader classes.
@@ -158,7 +158,7 @@ namespace org {
                          * @throws KeypleReaderException if a reader error occurs
                          */
                     public:
-                        std::shared_ptr<SeResponse> transmit(std::shared_ptr<SeRequest> seRequest) throw(KeypleReaderException);
+                        std::shared_ptr<SeResponse> transmit(std::shared_ptr<SeRequest> seRequest) throw(KeypleReaderException) override;
 
                         /**
                          * Abstract method implemented by the AbstractLocalReader and VirtualReader classes.

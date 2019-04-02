@@ -192,7 +192,7 @@ namespace org {
                          *       Downcasting to SeReader for now, but should be looked into, maybe returning a reference would
                          *       could be best here?
                          */
-                        std::shared_ptr<SeReader> getReader(const std::string &name) throw(KeypleReaderNotFoundException);
+                        std::shared_ptr<SeReader> getReader(const std::string &name) throw(KeypleReaderNotFoundException) override;
 
                       protected:
                         std::shared_ptr<AbstractObservablePlugin> shared_from_this() {
