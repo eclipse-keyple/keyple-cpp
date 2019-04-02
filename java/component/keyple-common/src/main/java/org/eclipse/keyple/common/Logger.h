@@ -5,6 +5,10 @@
 #include <stdexcept>
 #include <string>
 
+#ifdef __GNUG__ // gnu C++ compiler
+    #include <cxxabi.h>
+#endif
+
 /* Common*/
 #include "Export.h"
 
@@ -111,6 +115,20 @@ namespace org {
                     void setInfoEnabled(bool enabled);
 
                     void setErrorEnabled(bool enabled);
+
+#ifdef __GNUG__ // gnu C++ compiler
+                    std::string demangle( const char* mangled_name ) {
+                        std::size_t len = 0 ;
+                        int status = 0 ;
+                        std::unique_ptr< char, decltype(&std::free) > ptr(
+                        __cxxabiv1::__cxa_demangle( mangled_name, nullptr, &len, &status ), &std::free ) ;
+                        return ptr.get() ;
+                    }
+#else
+                    std::string demangle(const char* name) {
+                        return name;
+                    }
+#endif // _GNUG_
 
                     void trace(const char *s)
                     {

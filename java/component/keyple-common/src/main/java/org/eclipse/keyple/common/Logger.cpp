@@ -8,7 +8,7 @@ namespace org {
 
                 class LoggerFactory;
 
-                Logger::Logger(const std::string &className) : className(className)
+                Logger::Logger(const std::string &className) : className(demangle(className.c_str()))
                 {
                     traceEnabled = 1;
                     debugEnabled = 1;
