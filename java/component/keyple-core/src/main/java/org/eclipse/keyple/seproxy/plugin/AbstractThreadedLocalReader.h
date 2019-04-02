@@ -32,24 +32,23 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
 
-                    using NoStackTraceThrowable =
-                        org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
-                    using Logger        = org::eclipse::keyple::common::Logger;
-                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+                    using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
+                    using Logger                = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory         = org::eclipse::keyple::common::LoggerFactory;
 
-                        /**
+                    /**
                      * Abstract definition of an threader local reader. Factorizes the observation mechanism through the
                      * implementation of a monitoring thread.
                      */
-                    class AbstractThreadedLocalReader : public AbstractSelectionLocalReader, public Object {
+                    class EXPORT AbstractThreadedLocalReader : public AbstractSelectionLocalReader, public Object {
 
                         /**
                          * Thread in charge of reporting live events
                          */
                     private:
                         class EventThread : public Thread {
-                                        private:
-                                            std::shared_ptr<AbstractThreadedLocalReader> outerInstance;
+                        private:
+                            std::shared_ptr<AbstractThreadedLocalReader> outerInstance;
 
                             /**
                              * Plugin name

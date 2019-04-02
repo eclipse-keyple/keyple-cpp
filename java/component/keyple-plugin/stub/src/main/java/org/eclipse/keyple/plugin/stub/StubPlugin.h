@@ -190,7 +190,7 @@ protected:
 
                         std::string getName() override
                         {
-                            AbstractThreadedObservablePlugin::AbstractLoggedObservable::getName();
+                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::getName();
                         }
 
                         void addObserver(std::shared_ptr<PluginObserver> observer)

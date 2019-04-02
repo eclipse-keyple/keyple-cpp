@@ -1,14 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-#include "exceptionhelper.h"
-#include <memory>
-#include "Serializable.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -20,12 +9,36 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include "exceptionhelper.h"
+#include <memory>
+
+/* Common */
+#include "Export.h"
+#include "Serializable.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
                 namespace message {
+                    class SeResponse;
+                }
+            } // namespace seproxy
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org
 
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace message {
 
                     /**
                      * Aggregates the seResponses of a response from a local or remote SE Reader, received through a
@@ -34,16 +47,15 @@ namespace org {
                      *
                      * @see SeRequestSet
                      */
-                    class SeResponseSet final : public std::enable_shared_from_this<SeResponseSet>, public Serializable {
+                    class EXPORT SeResponseSet final : public std::enable_shared_from_this<SeResponseSet>, public Serializable {
 
-                    public:
+                      public:
                         static constexpr long long serialVersionUID = 125369841119873812LL;
-
 
                         /**
                          * List of seResponses that were received following the transmission of the {@link SeRequest}.
                          */
-                    private:
+                      private:
                         const std::vector<std::shared_ptr<SeResponse>> seResponses;
 
                         /**
@@ -51,7 +63,7 @@ namespace org {
                          *
                          * @return List of response seResponses
                          */
-                    public:
+                      public:
                         std::vector<std::shared_ptr<SeResponse>> getResponses();
 
                         /**
@@ -77,17 +89,17 @@ namespace org {
 
                         std::string toString() override;
 
-                    public:
-                      friend std::ostream &operator<<(std::ostream &os, SeResponseSet &s)
-                      {
-                         os << "<SeResponseSet: elmts: " << s.seResponses.size();
+                      public:
+                        friend std::ostream &operator<<(std::ostream &os, SeResponseSet &s)
+                        {
+                            os << "<SeResponseSet: elmts: " << s.seResponses.size();
 
-                         return os;
-                      }
+                            return os;
+                        }
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace message
+            }     // namespace seproxy
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

@@ -139,6 +139,8 @@ namespace org {
                             e.printStackTrace();
                             outerInstance->logger->warn("[%s] An exception occurred while monitoring plugin: %s, cause %s", this->pluginName, e.what(), e.getCause());
                         }
+
+                        return nullptr;
                     }
 
                     void AbstractThreadedObservablePlugin::finalize() throw(std::runtime_error) {

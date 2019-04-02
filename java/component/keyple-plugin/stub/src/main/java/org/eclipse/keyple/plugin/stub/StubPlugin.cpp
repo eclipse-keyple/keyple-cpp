@@ -125,7 +125,7 @@ namespace org {
 
                         }
                         else {
-                            logger->error("All {} readers were already plugged", names->size());
+                            logger->error("All %d readers were already plugged\n", names->size());
 
                         }
 
@@ -135,7 +135,7 @@ namespace org {
                     void StubPlugin::unplugStubReader(const std::string &name, bool synchronous) throw(KeypleReaderException, InterruptedException) {
 
                         if (connectedStubNames->find(name) == connectedStubNames->end()) {
-                            logger->warn("unplugStubReader() No reader found with name {}", name);
+                            logger->warn("unplugStubReader() No reader found with name %s\n", name);
                             }
                         else {
                             /* remove the reader from the readers list */
@@ -147,20 +147,20 @@ namespace org {
                                 connectedStubNames->erase(name);
                             }
                             /* remove the native reader from the native readers list */
-                            logger->info("Unplugged reader with name {}, connectedStubNames size {}", name, connectedStubNames->size());
+                            logger->info("Unplugged reader with name %s, connectedStubNames size %s\n", name, connectedStubNames->size());
                         }
                     }
 
                     void StubPlugin::unplugStubReaders(std::shared_ptr<std::set<std::string>> names, bool synchronous) {
-                        logger->info("Unplug {} stub readers", names->size());
-                        logger->debug("Unplug stub readers.. {}", names);
+                        logger->info("Unplug %d stub readers\n", names->size());
+                        logger->debug("Unplug stub readers.. %s\n", names);
                         std::vector<std::shared_ptr<StubReader>> readersToDelete;
                         for (auto name : *names) {
                             try {
                                 readersToDelete.push_back(std::dynamic_pointer_cast<StubReader>(getReader(name)));
                         }
                             catch (const KeypleReaderNotFoundException &e) {
-                                logger->warn("unplugStubReaders() No reader found with name {}", name);
+                                logger->warn("unplugStubReaders() No reader found with name %s\n", name);
                             }
                         }
                         for (auto name : *names)
@@ -173,7 +173,7 @@ namespace org {
 
                     std::shared_ptr<std::set<std::string>> StubPlugin::fetchNativeReadersNames() {
                         if (connectedStubNames->empty()) {
-                            logger->trace("No reader available.");
+                            logger->trace("No reader available\n");
                         }
                         return connectedStubNames;
                     }
