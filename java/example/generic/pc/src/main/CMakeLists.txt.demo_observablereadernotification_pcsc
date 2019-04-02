@@ -15,7 +15,7 @@ ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
 
 	# Example generic common
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common
@@ -53,7 +53,7 @@ IF(APPLE)
 ENDIF(APPLE)
 
 IF(UNIX)
-	FIND_LIBRARY(PCSC pcsclite)
+	FIND_LIBRARY(WINSCARD pcsclite)
 ENDIF(UNIX)
 
 ADD_EXECUTABLE(demo_observablereadernotification_pcsc
@@ -65,4 +65,4 @@ ADD_EXECUTABLE(demo_observablereadernotification_pcsc
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/Demo_ObservableReaderNotification_Pcsc.cpp
 )
 
-TARGET_LINK_LIBRARIES(demo_observablereadernotification_pcsc keyplepluginpcsc ${PCSC})
+TARGET_LINK_LIBRARIES(demo_observablereadernotification_pcsc keyplepluginpcsc ${WINSCARD})
