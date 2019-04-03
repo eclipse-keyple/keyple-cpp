@@ -39,14 +39,6 @@ namespace keyple {
                 {
                 }
 
-                /**
-                 * Destructor.
-                 *
-                 * Virtual to allow for subclassing.
-                 */
-                virtual ~CardException() throw()
-                {
-                }
             };
         } // namespace pcsc
     } // namespace plugin

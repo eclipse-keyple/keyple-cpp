@@ -105,6 +105,8 @@ namespace org {
                     public:
                         PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal);
 
+                        virtual ~PcscReader() { }
+
                     protected:
                         void closePhysicalChannel() override;
 

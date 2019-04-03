@@ -13,11 +13,6 @@ namespace org {
                 {
                 }
 
-                SeProxyService::~SeProxyService()
-                {
-                
-                }
-
                 void SeProxyService::setPlugins(std::set<std::shared_ptr<ReaderPlugin>> &plugins)
                 {
                     this->plugins = plugins;

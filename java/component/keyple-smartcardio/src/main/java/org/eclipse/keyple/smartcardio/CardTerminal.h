@@ -140,15 +140,6 @@ public:
         logger->debug("[CardTerminal::CardTerminal]\n");
     }
 
-    /**
-     * Destructor
-     *
-     */
-    ~CardTerminal()
-    {
-
-    }
-
 private:
     /**
      *

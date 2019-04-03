@@ -83,11 +83,6 @@ namespace org {
                             logger->debug("constructor (name: %s)\n", name);
                         }
 
-                        ~AbstractLoggedObservable()
-                        {
-                            logger->debug("destructor (name: %s)\n", name);
-                        }
-
                         /**
                          * Gets the reader name
                          *

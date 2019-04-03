@@ -25,11 +25,6 @@ PcscPlugin::PcscPlugin() : org::eclipse::keyple::seproxy::plugin::AbstractThread
     logger->debug("constructor\n");
 }
 
-PcscPlugin::~PcscPlugin()
-{
-    logger->debug("destructor\n");
-}
-
 PcscPlugin PcscPlugin::getInstance()
 {
     static PcscPlugin uniqueInstance;

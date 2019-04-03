@@ -48,7 +48,7 @@ public:
     /**
      * Destructor
      */
-    ~ObservableReaderNotificationEngine();
+    virtual ~ObservableReaderNotificationEngine() { }
 
     /**
      *
@@ -73,6 +73,8 @@ public:
          * Constructor
          */
         SpecificReaderObserver(ObservableReaderNotificationEngine *outerInstance); //super();
+
+        virtual ~SpecificReaderObserver() { }
 
         /**
          *
@@ -104,6 +106,8 @@ public:
          * Constructor
          */
         SpecificPluginObserver(ObservableReaderNotificationEngine *outerInstance, std::shared_ptr<SpecificReaderObserver> readerObserver);
+
+        virtual ~SpecificPluginObserver() { }
 
         void update(std::shared_ptr<PluginEvent> event) override;
         void update(PluginEvent event) override;

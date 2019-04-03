@@ -46,7 +46,7 @@ namespace org {
                         return s;
                     }
 
-                    std::vector<char> ApduResponse::getBytes() {
+                    std::vector<char> ApduResponse::getBytes() const {
                         return this->bytes;
                     }
 

@@ -42,6 +42,8 @@ namespace org {
 
                                     StubSe1();
 
+                                    virtual ~StubSe1() { }
+
                                     std::vector<char> getATR() override;
 
                                     std::string getSeProcotol() override;

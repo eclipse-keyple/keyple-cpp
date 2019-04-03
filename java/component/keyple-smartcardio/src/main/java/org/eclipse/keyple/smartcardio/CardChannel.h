@@ -41,14 +41,6 @@ namespace keyple {
                 }
 
                 /*
-                 *
-                 */
-                ~CardChannel()
-                {
-
-                }
-
-                /*
                  * public abstract Card getCard()
                  *
                  * Returns the Card this channel is associated with.

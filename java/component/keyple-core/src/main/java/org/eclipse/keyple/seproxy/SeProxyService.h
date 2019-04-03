@@ -71,12 +71,7 @@ namespace org {
                      */
                     SeProxyService();
 
-                    public:
-                    /**
-                     * Destructor
-                     */
-                    ~SeProxyService();
-
+                public:
                     /**
                      * Gets the single instance of SeProxyService.
                      *

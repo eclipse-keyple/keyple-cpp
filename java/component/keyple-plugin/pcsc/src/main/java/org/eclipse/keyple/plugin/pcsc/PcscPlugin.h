@@ -72,10 +72,9 @@ namespace org {
                          */
                         PcscPlugin();
 
-                        /**
-                         * Destructor
-                         */
-                        ~PcscPlugin();
+                        virtual ~PcscPlugin() { }
+
+                        PcscPlugin(const PcscPlugin&) = default;
 
                         /**
                          * Gets the single instance of PcscPlugin.

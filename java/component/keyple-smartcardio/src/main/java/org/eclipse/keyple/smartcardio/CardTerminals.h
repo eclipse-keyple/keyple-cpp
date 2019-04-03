@@ -32,7 +32,7 @@ class CardTerminals {
 	 *
 	 * @throws CardException if the card operation failed
 	 */
-    std::vector<CardTerminal> list() throw(CardException)
+    std::vector<CardTerminal> list()
     {
         LONG ret;
         char *pszReaderList = nullptr;

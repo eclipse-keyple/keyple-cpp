@@ -16,7 +16,6 @@ using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
 using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
 
 int main(int argc, char **argv)
-throw(std::runtime_error)
 {
     (void)argc;
     (void)argv;

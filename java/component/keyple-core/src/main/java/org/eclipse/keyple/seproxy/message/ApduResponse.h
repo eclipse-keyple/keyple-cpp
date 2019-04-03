@@ -9,6 +9,7 @@
 
 #include "Serializable.h"
 #include "Object.h"
+#include "stringhelper.h"
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -66,6 +67,8 @@ namespace org {
                     public:
                         ApduResponse(std::vector<char> &buffer, std::shared_ptr<std::set<int>> successfulStatusCodes);
 
+                        virtual ~ApduResponse() { }
+
                         /**
                          * Checks if is successful.
                          *
@@ -75,7 +78,7 @@ namespace org {
 
                         int getStatusCode();
 
-                        std::vector<char> getBytes();
+                        std::vector<char> getBytes() const;
 
                         /**
                          * Get the data before the statusCode
@@ -92,7 +95,10 @@ namespace org {
 
                         friend std::ostream &operator<<(std::ostream &os, const ApduResponse &r)
                         {
-                            os << r;
+                            os << std::string("r-apdu: ");
+                            const std::vector<char> b = r.getBytes();
+                            for (int i = 0; i < (int)b.size(); i++)
+                                os << StringHelper::formatSimple("%02x ", b[i]);
                             return os;
                         }
 

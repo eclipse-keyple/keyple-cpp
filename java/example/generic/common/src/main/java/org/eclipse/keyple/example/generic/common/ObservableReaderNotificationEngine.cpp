@@ -38,11 +38,6 @@ namespace org {
                             pluginObserver = std::make_shared<SpecificPluginObserver>(this, readerObserver);
                         }
 
-                        ObservableReaderNotificationEngine::~ObservableReaderNotificationEngine()
-                        {
-                            logger->debug("destructor\n");
-                        }
-
                         void ObservableReaderNotificationEngine::setPluginObserver()
                         {
                             logger->debug("\n");

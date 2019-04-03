@@ -74,6 +74,8 @@ namespace org {
                         public:
                             EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName);
 
+                            virtual ~EventThread() { }
+
                             /**
                              * Marks the thread as one that should end when the last cardWaitTimeout occurs
                              */

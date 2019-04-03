@@ -75,9 +75,9 @@ namespace org {
 
                         virtual bool isPhysicalChannelOpen();
 
-                        virtual void openPhysicalChannel() throw(KeypleChannelStateException);
+                        virtual void openPhysicalChannel();
 
-                        virtual void closePhysicalChannel() throw(KeypleChannelStateException);
+                        virtual void closePhysicalChannel();
 
 
                         /**
@@ -110,7 +110,7 @@ namespace org {
                          * @return APDU response
                          * @throws KeypleIOReaderException if the transmission fails
                          */
-                        virtual std::vector<char> processApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException);
+                        virtual std::vector<char> processApdu(std::vector<char> &apduIn);
                     };
 
                 } // namespace stub

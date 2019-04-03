@@ -27,11 +27,6 @@ namespace org {
                         logger->debug("constructor (name: %s)\n", name);
                     }
 
-                    AbstractThreadedObservablePlugin::~AbstractThreadedObservablePlugin()
-                    {
-                        logger->debug("destructor (name: %s)\n", name);
-                    }
-
                     void AbstractThreadedObservablePlugin::startObservation() {
                         logger->debug("\n");
                         thread = std::make_shared<AbstractThreadedObservablePlugin::EventThread>(shared_from_this(), this->getName());

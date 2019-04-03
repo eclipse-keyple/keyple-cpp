@@ -49,11 +49,9 @@
                             SeProxyService seProxyService = SeProxyService::getInstance();
                             std::set<std::shared_ptr<ReaderPlugin>> pluginsSet = std::set<std::shared_ptr<ReaderPlugin>>();
 
-                            
-                            StubPlugin stubPlugin = StubPlugin::getInstance();
+                            StubPlugin& stubPlugin = StubPlugin::getInstance();
                             stubPlugin.initReaders();
-                            pluginsSet.insert(std::dynamic_pointer_cast<ReaderPlugin>(
-                                std::dynamic_pointer_cast<ObservablePlugin>(std::make_shared<StubPlugin>(stubPlugin))));
+                            pluginsSet.insert(std::dynamic_pointer_cast<ReaderPlugin>(std::dynamic_pointer_cast<ObservablePlugin>(std::make_shared<StubPlugin>(stubPlugin))));
                             seProxyService.setPlugins(pluginsSet);
 
                             // Set observers

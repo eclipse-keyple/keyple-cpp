@@ -24,11 +24,13 @@ namespace org {
                         return isPhysicalChannelOpen_Renamed;
                     }
 
-                    void StubSecureElement::openPhysicalChannel() throw(KeypleChannelStateException) {
+                    void StubSecureElement::openPhysicalChannel()
+                    {
                         isPhysicalChannelOpen_Renamed = true;
                     }
 
-                    void StubSecureElement::closePhysicalChannel() throw(KeypleChannelStateException) {
+                    void StubSecureElement::closePhysicalChannel()
+                    {
                         isPhysicalChannelOpen_Renamed = false;
                     }
 
@@ -49,7 +51,8 @@ namespace org {
                         hexCommands.erase(StringHelper::trim(command));
                     }
 
-                    std::vector<char> StubSecureElement::processApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) {
+                    std::vector<char> StubSecureElement::processApdu(std::vector<char> &apduIn)
+                    {
 
                         if (apduIn.empty()) {
                             return apduIn;

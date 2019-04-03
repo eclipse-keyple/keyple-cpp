@@ -36,6 +36,8 @@ namespace org {
                     public:
                         SelectionStatus(std::shared_ptr<AnswerToReset> atr, std::shared_ptr<ApduResponse> fci, bool hasMatched);
 
+                        virtual ~SelectionStatus() { }
+
                         virtual std::shared_ptr<AnswerToReset> getAtr();
 
                         virtual std::shared_ptr<ApduResponse> getFci();

@@ -88,7 +88,9 @@ namespace org {
                             virtual void end();
 
                             virtual void *run();
-                        };
+
+                            virtual ~EventThread() { }
+                         };
 
                       private:
                         /**
@@ -141,11 +143,6 @@ namespace org {
                          */
                       public:
                         AbstractThreadedObservablePlugin(const std::string &name);
-
-                        /**
-                         * Destructor
-                         */
-                        ~AbstractThreadedObservablePlugin();
 
                         /**
                          * Start the monitoring thread.

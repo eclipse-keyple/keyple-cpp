@@ -37,6 +37,8 @@ namespace org {
                     SelectionResponse(std::shared_ptr<SeResponseSet> selectionSeResponseSet);
 
                     virtual std::shared_ptr<SeResponseSet> getSelectionSeResponseSet();
+
+                    virtual ~SelectionResponse() { }
                 };
 
                 }

@@ -20,9 +20,7 @@ namespace org {
                     std::shared_ptr<std::set<std::string>> StubPlugin::connectedStubNames = std::make_shared<std::set<std::string>>();
                     std::shared_ptr<std::set<std::string>> StubPlugin::nativeStubReadersNames = std::make_shared<std::set<std::string>>();
 
-                    StubPlugin::StubPlugin()
-                        : org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin(
-                              "StubPlugin")
+                    StubPlugin::StubPlugin() : org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin("StubPlugin")
                     {
                         logger->debug("constructor\n");
 
@@ -31,11 +29,6 @@ namespace org {
                          * 50 ms to speed up responsiveness.
                          */
                         threadWaitTimeout = 50;
-                    }
-
-                    StubPlugin::~StubPlugin()
-                    {
-                        logger->debug("destructor\n");
                     }
 
                     StubPlugin& StubPlugin::getInstance()

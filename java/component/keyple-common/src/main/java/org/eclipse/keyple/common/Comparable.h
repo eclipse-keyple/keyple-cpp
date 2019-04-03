@@ -3,11 +3,13 @@
 template <class T> class Comparable {
 
 public:
-	Comparable() {
+	Comparable()
+	{
 
 	}
 	
-	Comparable(T *t) {
-
+	Comparable(T *t)
+	{
+		(void)t;
 	}
 };

@@ -46,6 +46,8 @@ namespace org {
                          *
                          */
                         virtual std::shared_ptr<SeRequestSet> getSelectionSeRequestSet();
+
+                        virtual ~DefaultSelectionRequest() { }
                     };
 
                 }

@@ -44,15 +44,6 @@ namespace keyple {
                 }
 
                 /**
-                 * Destructor
-                 *
-                 */
-                ~Card()
-                {
-
-                }
-
-                /**
                  * Returns the CardChannel for the basic logical channel. The basic logical
                  * channel has a channel number of 0.
                  *
@@ -99,7 +90,7 @@ namespace keyple {
                  * @throw IllegalStateException if this card object has been
                  *        disposed of via the disconnect() method
                  */
-                void beginExclusive() throw(CardException)
+                void beginExclusive()
                 {
 
                 }
@@ -131,7 +122,7 @@ namespace keyple {
                  * @throw SecurityException if a SecurityManager exists and the
                  *        caller does not have the required permission
                  */
-                void disconnect(bool reset) throw(CardException)
+                void disconnect(bool reset)
                 {
                     (void)reset;
                 }

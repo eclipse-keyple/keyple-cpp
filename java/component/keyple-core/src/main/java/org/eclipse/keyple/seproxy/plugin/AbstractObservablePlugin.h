@@ -72,11 +72,6 @@ namespace org {
                          */
                         AbstractObservablePlugin(const std::string &name);
 
-                        /**
-                         *
-                         */
-                        ~AbstractObservablePlugin();
-
                       public:
                         /**
                          *

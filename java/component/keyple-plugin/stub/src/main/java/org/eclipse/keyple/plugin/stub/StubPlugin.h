@@ -34,18 +34,15 @@ namespace org {
             namespace plugin {
                 namespace stub {
 
-                    using KeypleReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using AbstractObservableReader =
-                        org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
-                    using AbstractThreadedObservablePlugin =
-                        org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
-                    using Logger        = org::eclipse::keyple::common::Logger;
-                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
-                    using SeReader      = org::eclipse::keyple::seproxy::SeReader;
-                    using PluginEvent   = org::eclipse::keyple::seproxy::event::PluginEvent;
-                    using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
-                    using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+                    using KeypleReaderException            = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using AbstractObservableReader         = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
+                    using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
+                    using Logger                           = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory                    = org::eclipse::keyple::common::LoggerFactory;
+                    using SeReader                         = org::eclipse::keyple::seproxy::SeReader;
+                    using PluginEvent                      = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    using ObservablePlugin                 = org::eclipse::keyple::seproxy::event::ObservablePlugin;
+                    using KeypleBaseException              = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
 
                     class EXPORT StubPlugin : public AbstractThreadedObservablePlugin {
 
@@ -70,10 +67,15 @@ namespace org {
                          */
                         static std::shared_ptr<std::set<std::string>> nativeStubReadersNames;
 
+                    public:
                         /**
                          * Constructor 
                          */
                         StubPlugin();
+
+                        virtual ~StubPlugin() { }
+
+                        StubPlugin (const StubPlugin&) = default;
 
                         /**
                          * Gets the single instance of StubPlugin.
@@ -82,11 +84,6 @@ namespace org {
                          */
                       public:
                         static StubPlugin& getInstance();
-
-                        /**
-                         *
-                         */
-                        ~StubPlugin();
 
                         /**
                          *

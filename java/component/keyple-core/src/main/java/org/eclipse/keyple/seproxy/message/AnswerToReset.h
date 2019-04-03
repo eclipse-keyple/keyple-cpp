@@ -34,6 +34,8 @@ namespace org {
                     public:
                         AnswerToReset(std::vector<char> &atrBytes);
 
+                        virtual ~AnswerToReset() { }
+
                         std::vector<char> getBytes();
 
                         bool equals(std::shared_ptr<void> o) override;
