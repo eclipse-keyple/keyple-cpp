@@ -42,7 +42,7 @@ namespace org {
 
                                 /** The command. */
                             private:
-                                static constexpr CalypsoPoCommands command = CalypsoPoCommands::INCREASE;
+                                const CalypsoPoCommands command = CalypsoPoCommands::INCREASE;
 
                                 /**
                                  * Instantiates a new increase cmd build from command parameters.

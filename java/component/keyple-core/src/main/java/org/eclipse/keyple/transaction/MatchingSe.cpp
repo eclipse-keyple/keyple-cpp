@@ -1,6 +1,6 @@
 #include "MatchingSe.h"
-#include "../seproxy/message/SeResponse.h"
-#include "SeSelector.h"
+#include "SeResponse.h"
+#include "SeSelectionRequest.h"
 #include "SeRequest.h"
 #include "SelectionStatus.h"
 
@@ -8,9 +8,11 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace transaction {
-                using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
 
-                MatchingSe::MatchingSe(std::shared_ptr<SeSelector> seSelector) : channelIsKeptOpen(seSelector->getSelectorRequest()->isKeepChannelOpen()), extraInfo(seSelector->getExtraInfo()) {
+                using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
+                using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
+
+                MatchingSe::MatchingSe(std::shared_ptr<SeSelectionRequest> seSelectionRequest) : channelIsKeptOpen(seSelectionRequest->getSelectionRequest()->isKeepChannelOpen()), extraInfo(seSelectionRequest->getSeSelector()->getExtraInfo()) {
                 }
 
                 void MatchingSe::setSelectionResponse(std::shared_ptr<SeResponse> selectionResponse) {
@@ -26,11 +28,15 @@ namespace org {
                 }
 
                 bool MatchingSe::isSelected() {
-                    return channelIsKeptOpen && selectionSeResponse != nullptr && selectionSeResponse->getSelectionStatus()->hasMatched();
+                    return channelIsKeptOpen && selectionSeResponse != nullptr && selectionSeResponse->getSelectionStatus() != nullptr && selectionSeResponse->getSelectionStatus()->hasMatched();
                 }
 
                 std::string MatchingSe::getExtraInfo() {
                     return extraInfo;
+                }
+
+                void MatchingSe::reset() {
+                    selectionSeResponse.reset();
                 }
             }
         }

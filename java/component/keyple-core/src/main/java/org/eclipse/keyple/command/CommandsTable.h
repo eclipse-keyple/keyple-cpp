@@ -1,8 +1,3 @@
-#pragma once
-
-#include <string>
-#include <typeinfo>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -14,6 +9,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <typeinfo>
+
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -26,9 +28,9 @@ namespace org {
 
                     virtual char getInstructionByte() = 0;
 
-                    virtual std::type_info getCommandBuilderClass() = 0;
+                    virtual const std::type_info& getCommandBuilderClass() = 0;
 
-                    virtual std::type_info getResponseParserClass() = 0;
+                    virtual const std::type_info& getResponseParserClass() = 0;
 
                 };
 

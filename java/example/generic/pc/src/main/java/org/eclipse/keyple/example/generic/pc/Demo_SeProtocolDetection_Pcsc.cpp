@@ -1,55 +1,63 @@
-#include "Demo_SeProtocolDetection_Pcsc.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleBaseException.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
-#include "../../../../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
-#include "PcscReadersSettings.h"
+/* Core */
+#include "ContactlessProtocols_Import.h"
+#include "KeypleBaseException.h"
+#include "ObservableReader.h"
+#include "SeProtocolSetting.h"
+#include "SeProtocol.h"
+#include "SeProxyService.h"
+#include "SeReader.h"
+#include "SeProtocolSettingList.h"
+
+/* Plugin */
+#include "PcscPlugin.h"
+#include "PcscReader.h"
+#include "PcscProtocolSetting.h"
+
+/* Example */
+#include "CustomProtocolSetting.h"
 #include "ReaderUtilities.h"
-#include "../../../../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscReader.h"
-#include "../../../../../../../../../../common/src/main/java/org/eclipse/keyple/example/generic/common/SeProtocolDetectionEngine.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/SeProtocolSetting.h"
-#include "../../../../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscProtocolSetting.h"
-#include "../../../../../../../../../../common/src/main/java/org/eclipse/keyple/example/generic/common/CustomProtocolSetting.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/SeProtocol.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/ContactlessProtocols.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ObservableReader.h"
+#include "SeProtocolDetectionEngine.h"
+#include "PcscReadersSettings.h"
 
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace example {
-                namespace generic_Renamed {
-                    namespace pc {
-                        using CustomProtocolSetting = org::eclipse::keyple::example::generic_Renamed::common::CustomProtocolSetting;
-                        using SeProtocolDetectionEngine = org::eclipse::keyple::example::generic_Renamed::common::SeProtocolDetectionEngine;
-                        using PcscPlugin = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
+
+                        using CustomProtocolSetting =
+                            org::eclipse::keyple::example::generic::common::CustomProtocolSetting;
+                        using SeProtocolDetectionEngine =
+                            org::eclipse::keyple::example::generic::common::SeProtocolDetectionEngine;
+                        using PcscPlugin          = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
                         using PcscProtocolSetting = org::eclipse::keyple::plugin::pcsc::PcscProtocolSetting;
-                        using PcscReader = org::eclipse::keyple::plugin::pcsc::PcscReader;
-                        using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
-                        using SeReader = org::eclipse::keyple::seproxy::SeReader;
-                        using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
-                        using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-                        using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
-                        using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                        using PcscReader          = org::eclipse::keyple::plugin::pcsc::PcscReader;
+                        using PcscReadersSettings =
+                            org::eclipse::keyple::example::generic::pc::PcscReadersSettings;
+                        using SeProxyService   = org::eclipse::keyple::seproxy::SeProxyService;
+                        using SeReader         = org::eclipse::keyple::seproxy::SeReader;
+                        using ObservableReader = org::eclipse::keyple::seproxy::event::ObservableReader;
+                        using KeypleBaseException =
+                            org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+                        using ContactlessProtocols =
+                            org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
+                        using SeProtocol        = org::eclipse::keyple::seproxy::protocol::SeProtocol;
                         using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
+                        using ReaderUtilities   = org::eclipse::keyple::example::generic::pc::ReaderUtilities;
+                        using ReaderPlugin      = org::eclipse::keyple::seproxy::ReaderPlugin;
+			using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
 
-//JAVA TO C++ CONVERTER TODO TASK: No base class can be determined:
-                        Demo_SeProtocolDetection_Pcsc::Demo_SeProtocolDetection_Pcsc() {
-                        }
-
-                        void Demo_SeProtocolDetection_Pcsc::main(std::vector<std::string> &args) throw(std::invalid_argument, KeypleBaseException) {
+                        int main(int argc, char **argv) throw(std::invalid_argument, KeypleBaseException)
+                        {
                             /* get the SeProxyService instance */
-                            std::shared_ptr<SeProxyService> seProxyService = SeProxyService::getInstance();
+                            SeProxyService seProxyService = SeProxyService::getInstance();
 
                             /* add the PcscPlugin to the SeProxyService */
-                            std::shared_ptr<PcscPlugin> pcscPlugin = PcscPlugin::getInstance();
-
-                            seProxyService->addPlugin(pcscPlugin);
+                            PcscPlugin pcscPlugin = PcscPlugin::getInstance();
+                            seProxyService.addPlugin(std::dynamic_pointer_cast<ReaderPlugin>(std::make_shared<PcscPlugin>(pcscPlugin)));
 
                             /* attempt to get the SeReader (the right reader should be ready here) */
-                            std::shared_ptr<SeReader> poReader = ReaderUtilities::getReaderByName(seProxyService, PcscReadersSettings::PO_READER_NAME_REGEX);
+                            std::shared_ptr<SeReader> poReader = ReaderUtilities::getReaderByName(
+                                std::make_shared<SeProxyService>(seProxyService),
+                                PcscReadersSettings::PO_READER_NAME_REGEX);
 
-                            if (poReader == nullptr) {
+                            if (poReader == nullptr)
+                            {
                                 throw std::make_shared<IllegalStateException>("Bad PO/SAM setup");
                             }
 
@@ -99,24 +107,26 @@ namespace org {
 
                             // wait for Enter key to exit.
                             std::cout << "Press Enter to exit" << std::endl;
-                            std::shared_ptr<BufferedReader> br = std::make_shared<BufferedReader>(std::make_shared<InputStreamReader>(System::in));
-                            while (true) {
-                                int c = 0;
-                                try {
-                                    c = br->read();
+
+                            while (true)
+                            {
+                                char c = 0;
+                                try
+                                {
+                                    std::string input = "";
+                                    getline(std::cin, input);
+                                    if (input.length())
+                                        c = input[0];
+
+                                } catch (const IOException &e)
+                                {
+                                    e.printStackTrace();
                                 }
-                                catch (const IOException &e) {
-                                    e->printStackTrace();
-                                }
-                                if (c == 0x0A) {
+                                if (c == 0x0A)
+                                {
                                     std::cout << "Exiting..." << std::endl;
                                     exit(0);
                                 }
                             }
                         }
-                    }
-                }
-            }
-        }
-    }
-}
+

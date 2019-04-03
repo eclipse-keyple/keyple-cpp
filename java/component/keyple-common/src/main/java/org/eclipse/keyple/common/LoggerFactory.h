@@ -2,16 +2,25 @@
 
 #include <memory>
 #include <typeinfo>
+#include <vector>
 
-/* Common */
+/* Common*/
+#include "Export.h"
 #include "Logger.h"
 
-class LoggerFactory
-{
-public:
-	static std::shared_ptr<Logger> getLogger(const std::type_info &type)
-	{
-		static Logger *logger = new Logger(type.name());
-		return std::shared_ptr<Logger>(logger);
-	}
-};
+namespace org {
+    namespace eclipse {
+        namespace keyple {
+            namespace common {
+
+                class EXPORT LoggerFactory {
+                  public:
+                    /**
+                     *
+                     */
+                    static std::shared_ptr<Logger> getLogger(const std::type_info &type);
+                };
+            } // namespace common
+        }     // namespace keyple
+    }         // namespace eclipse
+} // namespace org

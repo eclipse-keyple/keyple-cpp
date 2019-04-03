@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "PluginEvent.h"
 
 namespace org {
@@ -45,10 +47,6 @@ namespace org {
                         return ordinalValue;
                     }
 
-                    std::string EventType::toString() {
-                        return nameValue;
-                    }
-
                     EventType EventType::valueOf(const std::string &name) {
                         for (auto enumInstance : EventType::valueList) {
                             if (enumInstance.nameValue == name) {
@@ -60,14 +58,19 @@ namespace org {
                     }
 
                     PluginEvent::PluginEvent(const std::string &pluginName, const std::string &readerName, EventType eventType) : pluginName(pluginName), readerName(readerName), eventType(eventType) {
+			this->readerNames->insert(readerName);
+                    }
+
+		PluginEvent::PluginEvent(const std::string &pluginName, std::shared_ptr<std::set<std::string>> readerNames, EventType eventType) : pluginName(pluginName), eventType(eventType) {
+                        this->readerNames->insert(readerNames->begin(), readerNames->end());
                     }
 
                     std::string PluginEvent::getPluginName() {
                         return pluginName;
                     }
 
-                    std::string PluginEvent::getReaderName() {
-                        return readerName;
+                    std::shared_ptr<std::set<std::string>> PluginEvent::getReaderNames() {
+                        return readerNames;
                     }
 
                     PluginEvent::EventType PluginEvent::getEventType() {

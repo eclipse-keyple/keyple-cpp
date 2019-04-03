@@ -31,8 +31,7 @@ namespace org {
                     private:
                         const std::shared_ptr<AnswerToReset> atr;
                         const std::shared_ptr<ApduResponse> fci;
-//JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
-                        const bool hasMatched_Renamed;
+                        const bool isMatching;
 
                     public:
                         SelectionStatus(std::shared_ptr<AnswerToReset> atr, std::shared_ptr<ApduResponse> fci, bool hasMatched);

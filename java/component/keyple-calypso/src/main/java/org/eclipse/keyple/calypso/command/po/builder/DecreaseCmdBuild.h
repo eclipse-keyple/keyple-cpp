@@ -42,7 +42,7 @@ namespace org {
 
                                 /** The command. */
                             private:
-                                static constexpr CalypsoPoCommands command = CalypsoPoCommands::DECREASE;
+                                const CalypsoPoCommands command = CalypsoPoCommands::DECREASE;
 
                                 /**
                                  * Instantiates a new decrease cmd build from command parameters.

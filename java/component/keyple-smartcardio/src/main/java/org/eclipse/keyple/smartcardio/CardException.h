@@ -30,6 +30,16 @@ namespace keyple {
                 }
 
                 /**
+                 * New exception to be thrown
+                 *
+                 * @param message : message to identify the exception and the context
+                 * @param cause : cause of the exception
+                 */
+                CardException(const std::string &message, std::runtime_error cause) : Exception(message, cause)
+                {
+                }
+
+                /**
                  * Destructor.
                  *
                  * Virtual to allow for subclassing.

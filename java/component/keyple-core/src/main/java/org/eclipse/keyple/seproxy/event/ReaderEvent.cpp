@@ -1,14 +1,12 @@
 #include "ReaderEvent.h"
-#include "../../transaction/SelectionResponse.h"
-#include "SelectionRequest.h"
+#include "SelectionResponse.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
                 namespace event {
-                    using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
-                    using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
+                    using org::eclipse::keyple::seproxy::event::SelectionResponse;
                     using EventType = org::eclipse::keyple::seproxy::event::ReaderEvent::EventType;
 
                     EventType EventType::IO_ERROR("IO_ERROR", InnerEnum::IO_ERROR, "SE Reader IO Error");

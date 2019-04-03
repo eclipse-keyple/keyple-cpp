@@ -72,7 +72,7 @@ namespace org {
                      * A reader plugin will handle a list of protocol settings in order to target multiple types of
                      * SE.
                      *
-                     * @param seProtocolSetting the protocol setting to be add to the plugin internal list
+                     * @param seProtocolSetting the protocol setting to be added to the plugin internal list
                      */
                     virtual void addSeProtocolSetting(std::shared_ptr<SeProtocolSetting> seProtocolSetting) = 0;
 

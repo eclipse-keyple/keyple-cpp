@@ -1,7 +1,6 @@
 #include "RmDisconnectReaderInvoker.h"
-#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ProxyReader.h"
-#include "../../transport/KeypleDto.h"
-#include "../../transport/RemoteMethod.h"
+#include "../../transport/model/KeypleDto.h"
+#include "../../rm/RemoteMethod.h"
 
 namespace org {
     namespace eclipse {
@@ -10,16 +9,20 @@ namespace org {
                 namespace remotese {
                     namespace nativese {
                         namespace method {
-                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::KeypleDto;
-                            using RemoteMethod = org::eclipse::keyple::plugin::remotese::transport::RemoteMethod;
-                            using RemoteMethodInvoker = org::eclipse::keyple::plugin::remotese::transport::RemoteMethodInvoker;
-                            using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
+                            using RemoteMethod = org::eclipse::keyple::plugin::remotese::rm::RemoteMethod;
+                            using RemoteMethodInvoker = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodInvoker;
+                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
+                            using com::google::gson::JsonObject;
 
-                            RmDisconnectReaderInvoker::RmDisconnectReaderInvoker(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId) : localReader(localReader), clientNodeId(clientNodeId) {
+                            RmDisconnectReaderInvoker::RmDisconnectReaderInvoker(const std::string &sessionId, const std::string &nativeReaderName, const std::string &slaveNodeId) : sessionId(sessionId), nativeReaderName(nativeReaderName), slaveNodeId(slaveNodeId) {
                             }
 
                             std::shared_ptr<KeypleDto> RmDisconnectReaderInvoker::dto() {
-                                return std::make_shared<KeypleDto>(RemoteMethod::READER_DISCONNECT.getName(), "{}", true, nullptr, localReader->getName(), nullptr, clientNodeId);
+
+                                std::shared_ptr<JsonObject> body = std::make_shared<JsonObject>();
+                                body->addProperty("sessionId", sessionId);
+
+                                return std::make_shared<KeypleDto>(RemoteMethod::READER_DISCONNECT.getName(), body->getAsString(), true, nullptr, nativeReaderName, nullptr, slaveNodeId);
                             }
                         }
                     }

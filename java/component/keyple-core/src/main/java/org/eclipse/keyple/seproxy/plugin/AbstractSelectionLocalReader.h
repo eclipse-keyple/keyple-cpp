@@ -38,70 +38,28 @@ using KeypleIOReaderException = org::eclipse::keyple::seproxy::exception::Keyple
 using namespace org::eclipse::keyple::seproxy::message;
 
 
-class EXPORT AbstractSelectionLocalReader : public AbstractLocalReader {
-
-public:
-    /**
-     *
-     */
-    std::string getName() override;
+class EXPORT AbstractSelectionLocalReader : public AbstractLocalReader { //, public ObservableReader {
+ private:
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractSelectionLocalReader));
 
 protected:
-    /**
-     *
-     */
     AbstractSelectionLocalReader(const std::string &pluginName, const std::string &readerName);
 
-    /**
-     * Gets the SE Answer to reset
-      *
-     * @return ATR returned by the SE or reconstructed by the reader (contactless)
-     */
-    virtual std::vector<char> getATR() = 0;
+                        /** ==== ATR filtering and application selection by AID ================ */
 
     /**
-     * Tells if the physical channel is open or not
+                         * Build a select application command, transmit it to the SE and deduct the SelectionStatus.
      *
-     * @return true is the channel is open
+                         * @param seSelector the targeted application SE selector
+                         * @return the SelectionStatus
+                         * @throws KeypleIOReaderException if a reader error occurs
      */
-    virtual bool isPhysicalChannelOpen() = 0;
+                        std::shared_ptr<SelectionStatus> openLogicalChannel(std::shared_ptr<SeSelector> seSelector) throw(KeypleIOReaderException) override;
 
-    /**
-     * Attempts to open the physical channel
-     *
-     * @throws KeypleChannelStateException if the channel opening fails
-     */
-    virtual void openPhysicalChannel() = 0;
-
-    /**
-     * Opens a logical channel
-     *
-     * @param selector the SE Selector: AID of the application to select or ATR regex
-     * @param successfulSelectionStatusCodes the list of successful status code for the select
-     *        command
-     * @return a {@link SelectionStatus} object containing the SE ATR, the SE FCI and a flag giving
-     *         the selection process result. When ATR or FCI are not available, they are set to null
-     * @throws KeypleChannelStateException - if a channel state exception occurred
-     * @throws KeypleIOReaderException - if an IO exception occurred
-     * @throws KeypleApplicationSelectionException - if the application selection is not successful
-     */
-    std::shared_ptr<SelectionStatus> openLogicalChannelAndSelect(std::shared_ptr<SeRequest::Selector> selector,
-        std::shared_ptr<std::set<int>> successfulSelectionStatusCodes) throw(KeypleChannelStateException,
-        KeypleApplicationSelectionException, KeypleIOReaderException) override;
-
-    /**
-     *
-     */
-    std::shared_ptr<AbstractSelectionLocalReader> shared_from_this()
-    {
+protected:
+                        std::shared_ptr<AbstractSelectionLocalReader> shared_from_this() {
         return std::static_pointer_cast<AbstractSelectionLocalReader>(AbstractLocalReader::shared_from_this());
     }
-
-private:
-    /**
-     *
-     */
-    const std::shared_ptr<Logger> logger;
 };
 
 }

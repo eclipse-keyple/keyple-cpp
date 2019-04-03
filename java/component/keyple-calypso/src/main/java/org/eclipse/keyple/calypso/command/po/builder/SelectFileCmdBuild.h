@@ -36,7 +36,7 @@ namespace org {
                             class SelectFileCmdBuild final : public PoCommandBuilder {
 
                             private:
-                                static constexpr CalypsoPoCommands command = CalypsoPoCommands::SELECT_FILE;
+                                const CalypsoPoCommands command = CalypsoPoCommands::SELECT_FILE;
 
                             public:
                                 enum class SelectControl {
@@ -61,7 +61,7 @@ namespace org {
 
 protected:
                                 std::shared_ptr<SelectFileCmdBuild> shared_from_this() {
-                                    return std::static_pointer_cast<SelectFileCmdBuild>(org.eclipse.keyple.calypso.command.po.PoCommandBuilder::shared_from_this());
+                                    return std::static_pointer_cast<SelectFileCmdBuild>(PoCommandBuilder::shared_from_this());
                                 }
                             };
 

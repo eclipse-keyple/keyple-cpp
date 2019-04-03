@@ -58,7 +58,7 @@ namespace org {
 
 protected:
                             std::shared_ptr<PoCustomModificationCommandBuilder> shared_from_this() {
-                                return std::static_pointer_cast<PoCustomModificationCommandBuilder>(org.eclipse.keyple.command.AbstractIso7816CommandBuilder::shared_from_this());
+                                return std::static_pointer_cast<PoCustomModificationCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());
                             }
                         };
 

@@ -31,6 +31,8 @@ namespace org {
                     using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                     using MatchingSe = org::eclipse::keyple::transaction::MatchingSe;
 
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @SuppressWarnings("PMD.VariableNamingConventions") public class PoFileStructureInfo
                     class PoFileStructureInfo : public std::enable_shared_from_this<PoFileStructureInfo> {
 
                     public:

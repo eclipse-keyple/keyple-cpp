@@ -9,7 +9,6 @@
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ReaderEvent; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class PoTransaction; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
@@ -37,13 +36,15 @@ namespace org {
 
                             using CalypsoPo = org::eclipse::keyple::calypso::transaction::CalypsoPo;
                             using PoTransaction = org::eclipse::keyple::calypso::transaction::PoTransaction;
-                            using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                            using namespace org::eclipse::keyple::seproxy;
                             using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                             using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
                             using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                             using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                             using namespace org::eclipse::keyple::seproxy::message;
 
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @SuppressWarnings("PMD.VariableNamingConventions") public class Demo_ValidationTransaction implements org.eclipse.keyple.seproxy.event.ObservableReader.ReaderObserver
                             class Demo_ValidationTransaction : public std::enable_shared_from_this<Demo_ValidationTransaction>, public ObservableReader::ReaderObserver {
 
                             private:
@@ -52,7 +53,7 @@ namespace org {
                             public:
                                 void update(std::shared_ptr<ReaderEvent> event_Renamed) override;
 
-                                static std::vector<char> longToBytes(long long l);
+                                static std::vector<char> longToBytes(long long lg);
 
                                 static long long bytesToLong(std::vector<char> &b);
 

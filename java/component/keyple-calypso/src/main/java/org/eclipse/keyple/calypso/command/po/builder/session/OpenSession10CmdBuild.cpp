@@ -15,7 +15,8 @@ namespace org {
                                 using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
                                 using PoRevision = org::eclipse::keyple::calypso::command::po::PoRevision;
 
-                                OpenSession10CmdBuild::OpenSession10CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo) throw(std::invalid_argument) : AbstractOpenSessionCmdBuild(PoRevision::REV1_0) {
+                                OpenSession10CmdBuild::OpenSession10CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo) throw(std::invalid_argument)
+                                 : AbstractOpenSessionCmdBuild(PoRevision::REV1_0) {
 
                                     if (keyIndex == 0x00) {
                                         throw std::invalid_argument("Key index can't be null for rev 1.0!");
@@ -29,7 +30,7 @@ namespace org {
                                      */
                                     char le = 0;
 
-                                    this->request = setApduRequest(PoClass::LEGACY.getValue(), CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV1_0), p1, p2, samChallenge, le);
+                                    this->request = setApduRequest(PoClass::LEGACY.getValue(), std::make_shared<CalypsoPoCommands>(CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV1_0)), p1, p2, samChallenge, le);
                                     if (extraInfo != "") {
                                         this->addSubName(extraInfo);
                                     }

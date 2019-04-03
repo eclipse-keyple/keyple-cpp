@@ -1,8 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -14,64 +9,88 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+
+/* Core */
+#include "SeProtocolSettingList.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace common {
 
+                        using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
 
                         /**
                          * Custom protocol setting definitions to illustrate the extension of the Keyple SDK definitions
                          */
                         class CustomProtocolSetting final : public SeProtocolSettingList {
-public:
+                          public:
                             static CustomProtocolSetting CUSTOM_SETTING_PROTOCOL_B_PRIME;
 
                             static CustomProtocolSetting CUSTOM_SETTING_PROTOCOL_ISO14443_4;
 
-private:
-                            static std::vector<CustomProtocolSetting> valueList;
+                          private:
+                            static std::vector<std::shared_ptr<SeProtocolSettingList>> valueList;
 
                             class StaticConstructor {
-                            public:
+                              public:
                                 StaticConstructor();
                             };
 
                             static StaticConstructor staticConstructor;
 
-public:
-                            enum class InnerEnum {
+                          public:
+                            enum class InnerEnum
+                            {
                                 CUSTOM_SETTING_PROTOCOL_B_PRIME,
                                 CUSTOM_SETTING_PROTOCOL_ISO14443_4
                             };
 
                             const InnerEnum innerEnumValue;
-private:
+
+                          private:
                             const std::string nameValue;
                             const int ordinalValue;
                             static int nextOrdinal;
 
-                            /* the protocol flag */
-                        public:
+                            
+                          public:
+                            /**
+                             * The protocol flag
+                             */
                             std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> flag;
 
-                            /* the protocol setting value */
+                            /**
+                             * The protocol setting value
+                             */
                             std::string value;
 
-                            CustomProtocolSetting(const std::string &name, InnerEnum innerEnum, std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> flag, const std::string &value);
+                            /**
+                             * Constructor
+                             */
+                            CustomProtocolSetting(
+                                const std::string &name, InnerEnum innerEnum,
+                                std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> flag,
+                                const std::string &value);
 
-                            std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> getFlag() override;
+                            std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol>
+                            getFlag() override;
 
                             std::string getValue() override;
 
-public:
-                            bool operator == (const CustomProtocolSetting &other);
+                          public:
+                            bool operator==(const CustomProtocolSetting &other);
 
-                            bool operator != (const CustomProtocolSetting &other);
+                            bool operator!=(const CustomProtocolSetting &other);
 
-                            static std::vector<CustomProtocolSetting> values();
+                            static std::vector<std::shared_ptr<SeProtocolSettingList>> values();
 
                             int ordinal();
 
@@ -80,9 +99,9 @@ public:
                             static CustomProtocolSetting valueOf(const std::string &name);
                         };
 
-                    }
-                }
-            }
-        }
-    }
-}
+                    } // namespace common
+                }     // namespace generic
+            }         // namespace example
+        }             // namespace keyple
+    }                 // namespace eclipse
+} // namespace org

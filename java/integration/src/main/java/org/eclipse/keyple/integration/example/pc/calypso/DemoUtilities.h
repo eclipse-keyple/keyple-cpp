@@ -34,8 +34,8 @@ namespace org {
                             class DemoUtilities : public std::enable_shared_from_this<DemoUtilities> {
 
                             public:
-                                static std::string PO_READER_NAME_REGEX;
-                                static std::string SAM_READER_NAME_REGEX;
+                                static const std::string PO_READER_NAME_REGEX;
+                                static const std::string SAM_READER_NAME_REGEX;
 
                                 /**
                                  * Get the terminals with names that match the expected pattern

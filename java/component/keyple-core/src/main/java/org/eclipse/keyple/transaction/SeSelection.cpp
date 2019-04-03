@@ -4,21 +4,24 @@
 #include "SeRequest.h"
 #include "SeReader.h"
 #include "SelectionResponse.h"
-#include "SelectionRequest.h"
 #include "SelectionStatus.h"
 #include "SeResponse.h"
 #include "SeResponseSet.h"
 #include "SeRequestSet.h"
 #include "SeSelection.h"
 #include "SeSelector.h"
-
+#include "SeSelectionRequest.h"
 #include "LoggerFactory.h"
+
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeSelectionRequest; }}}}
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace transaction {
                 using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                using DefaultSelectionRequest = org::eclipse::keyple::seproxy::event::DefaultSelectionRequest;
+                using SelectionResponse = org::eclipse::keyple::seproxy::event::SelectionResponse;
                 using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                 using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
                 using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
@@ -26,48 +29,57 @@ namespace org {
                 using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                 using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
 
-                const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelection));
-
-                SeSelection::SeSelection(std::shared_ptr<SeReader> seReader) : proxyReader(std::dynamic_pointer_cast<ProxyReader>(seReader)) {
+                SeSelection::SeSelection(std::shared_ptr<SeReader> seReader) : seReader(seReader) {
                 }
 
-                std::shared_ptr<MatchingSe> SeSelection::prepareSelection(std::shared_ptr<SeSelector> seSelector) {
+                std::shared_ptr<MatchingSe> SeSelection::prepareSelection(std::shared_ptr<SeSelectionRequest> seSelectionRequest) {
                     if (logger->isTraceEnabled()) {
-                        logger->trace("SELECTORREQUEST = {}, EXTRAINFO = {}", seSelector->getSelectorRequest(), seSelector->getExtraInfo());
+                        logger->trace("SELECTORREQUEST = %s, EXTRAINFO = %s", seSelectionRequest->getSelectionRequest(), seSelectionRequest->getSeSelector()->getExtraInfo());
                     }
-                    selectionRequestSet->insert(seSelector->getSelectorRequest());
+                    selectionRequestSet->add(seSelectionRequest->getSelectionRequest());
                     std::shared_ptr<MatchingSe> matchingSe = nullptr;
-/*
- * Alex: problem!
                     try {
-                        std::shared_ptr<Constructor> constructor = seSelector->getMatchingClass().getConstructor(seSelector->getSelectorClass());
-                        matchingSe = std::static_pointer_cast<MatchingSe>(constructor->newInstance(seSelector));
-                        matchingSeList.push_back(matchingSe);
+                        /*
+                         * Alex: problem, C++ cannot instanciate objects based on runtime-known types.
+                         */
+                        //std::shared_ptr<Constructor> constructor = seSelectionRequest->getMatchingClass().getConstructor(seSelectionRequest->getSelectionClass());
+                        //matchingSe = std::static_pointer_cast<MatchingSe>(constructor->newInstance(seSelectionRequest));
+                        //matchingSeList.push_back(matchingSe);
                     }
-                    catch (NoSuchMethodException &e) {
-                        e.printStackTrace();
+                    catch (const NoSuchMethodException &e) {
+                        //e.printStackTrace();
                     }
-                    catch (InstantiationException &e) {
-                        e.printStackTrace();
+                    catch (const InstantiationException &e) {
+                        //e.printStackTrace();
                     }
-                    catch (IllegalAccessException &e) {
-                        e.printStackTrace();
+                    catch (const IllegalAccessException &e) {
+                        //e.printStackTrace();
                     }
-                    catch (InvocationTargetException &e) {
-                        e.printStackTrace();
+                    catch (const InvocationTargetException &e) {
+                        //e.printStackTrace();
                     }
-*/
                     return matchingSe;
                 }
 
                 bool SeSelection::processSelection(std::shared_ptr<SelectionResponse> selectionResponse) {
                     bool selectionSuccessful = false;
+
+                    /* null pointer exception protection */
+                    if (selectionResponse == nullptr) {
+                        logger->error("selectionResponse shouldn't be null in processSelection.");
+                        return false;
+                    }
+
+                    /* resets MatchingSe previous data */
+                    for (auto matchingSe : matchingSeList) {
+                        matchingSe->reset();
+                    }
                     /* Check SeResponses */
                     std::vector<std::shared_ptr<MatchingSe>>::const_iterator matchingSeIterator = matchingSeList.begin();
                     for (auto seResponse : selectionResponse->getSelectionSeResponseSet()->getResponses()) {
                         if (seResponse != nullptr) {
                             /* test if the selection is successful: we should have either a FCI or an ATR */
-                            if (seResponse->getSelectionStatus()->hasMatched()) {
+                            if (seResponse->getSelectionStatus() != nullptr && seResponse->getSelectionStatus()->hasMatched()) {
                                 /* at least one is successful */
                                 selectionSuccessful = true;
                                 /* update the matchingSe list */
@@ -120,11 +132,11 @@ namespace org {
 
                 bool SeSelection::processExplicitSelection() throw(KeypleReaderException) {
                     if (logger->isTraceEnabled()) {
-                        logger->trace("Transmit SELECTIONREQUEST ({} request(s))", selectionRequestSet->size());
+                        logger->trace("Transmit SELECTIONREQUEST ({} request(s))", selectionRequestSet->getRequests()->size());
                     }
 
                     /* Communicate with the SE to do the selection */
-                    std::shared_ptr<SeResponseSet> seResponseSet = proxyReader->transmitSet(std::make_shared<SeRequestSet>(selectionRequestSet));
+                    std::shared_ptr<SeResponseSet> seResponseSet = (std::dynamic_pointer_cast<ProxyReader>(seReader))->transmitSet(selectionRequestSet);
 
                     return processSelection(std::make_shared<SelectionResponse>(seResponseSet));
                 }
@@ -137,8 +149,8 @@ namespace org {
                     return matchingSeList;
                 }
 
-                std::shared_ptr<SelectionRequest> SeSelection::getSelectionOperation() {
-                    return std::make_shared<SelectionRequest>(std::make_shared<SeRequestSet>(selectionRequestSet));
+                std::shared_ptr<DefaultSelectionRequest> SeSelection::getSelectionOperation() {
+                    return std::make_shared<DefaultSelectionRequest>(selectionRequestSet);
                 }
             }
         }

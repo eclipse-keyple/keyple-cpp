@@ -1,10 +1,3 @@
-#pragma once
-
-//#include <set>
-#include <unordered_set>
-#include <memory>
-#include "ReaderEvent.h"
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -16,122 +9,170 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+ #pragma once
+
+#include <iostream>
+#include <ostream>
+#include <memory>
+#include <set>
+#include <unordered_set>
+
+/* Core */
+#include "ReaderEvent.h"
+
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace util {
+namespace eclipse {
+namespace keyple {
+namespace util {
 
-                template<typename T>
-                class Observer {
-                public:
-                    virtual void update(T event) = 0;
-                };
+template<typename T>
+class Observer {
+public:
+    virtual void update(T event) = 0;
+};
 
-                /**
-                 * Generic Observable class
-                 *
-                 * @param <T> Generic event
-                 *
-                 */
-
-                template<typename T>
-                class Observable : public std::enable_shared_from_this<Observable<T>> {
-                public:
-
-
-                private:
-                    bool changed = false;
-
-                    /*
-                     * this object will be used to synchronize the access to the observers list in order to be
-                     * thread safe
-                     */
-                    const std::shared_ptr<void> SYNC = nullptr;
-
-//                    std::shared_ptr<std::set<Observer<T>>> observers;
-
-                public:
-                    virtual void addObserver(std::shared_ptr<Observer<T>> observer) {
-                        if (observer == nullptr) {
-                            return;
-                        }
-
-//JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
-//                        synchronized(SYNC) {
-//                            if (observers == nullptr) {
-//                                observers = std::unordered_set<Observer<T>>(1);
-//                            }
-//                            observers->add(observer);
-//                        }
-                    }
-
-                    virtual void removeObserver(std::shared_ptr<Observer<T>> observer) {
-                        if (observer == nullptr) {
-                            return;
-                        }
-
-//JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
-//                        synchronized(SYNC) {
-//                            if (observers != nullptr) {
-//                                observers->remove(observer);
-//                            }
-//                        }
-                    }
-
-                    virtual void clearObservers() {
-/*
- * Alex: removed 'observers' related code
-                        if (observers != nullptr) {
-                             this->observers->clear();
-                        }
+/**
+ * Generic Observable class
+ *
+ * @param <T> Generic event
+ *
  */
-                    }
 
-                    virtual void setChanged() {
-                        this->changed = true;
-                    }
+template<typename T>
+class Observable : public std::enable_shared_from_this<Observable<T>> {
 
-                    virtual void clearChanged() {
-                        this->changed = false;
-                    }
+public:
+    /**
+     *
+     */
+    virtual void addObserver(std::shared_ptr<Observer<T>> observer)
+    {
+        std::cout << "[Observable::addObserver]" << std::endl;
 
-                    virtual bool hasChanged() {
-                        return this->changed;
-                    }
+        if (observer == nullptr) {
+            std::cout << "[Observable::addObserver] observer is null, skipping it" << std::endl;
+            return;
+        }
 
-                    virtual int countObservers() {
-/*
- * Alex: removed 'observers' related code
-                        return observers == nullptr ? 0 : observers->size();
- */
-                        return 0;
-                    }
+        /* Multithread locking is not converted to native C++ */
 
-                    virtual void notifyObservers() {
-                        notifyObservers(nullptr);
-                    }
+        if (observers == nullptr) {
+            std::cout << "[Observable::addObserver] observers is null, creating new set" << std::endl;
+            observers = std::shared_ptr<std::set<std::shared_ptr<Observer<T>>>>(new std::set<std::shared_ptr<Observer<T>>>());
+        }
 
-                    virtual void notifyObservers(std::shared_ptr<T> event) {
-/*
- * Alex: <set> not supported in abstract class ?
-                        std::shared_ptr<std::set<std::shared_ptr<Observer<T>>>> observersCopy;
+        std::cout << "[Observable::addObserver] adding observer to set" << std::endl;
+        observers->insert(observer);
+    }
 
-//JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
-//                        synchronized(SYNC) {
-//                            if (observers == nullptr) {
-//                                return;
-//                            }
-//                            observersCopy = std::unordered_set<std::shared_ptr<Observer<T>>>(observers);
-//                        }
+    /**
+     *
+     */
+    virtual void removeObserver(std::shared_ptr<Observer<T>> observer)
+    {
+        std::cout << "[Observable::addObserver]" << std::endl;
 
-                        for (auto observer : observersCopy) {
-                            observer->update(event_Renamed);
-                        }
- */
-                    }
-                };
+        if (observer == nullptr) {
+            std::cout << "[Observable::addObserver] observer is null, skipping it" << std::endl;
+            return;
+        }
 
-            }
+        /* Multithread locking is not converted to native C++ */
+        if (observers != nullptr) {
+            std::cout << "[Observable::addObserver] removing observer from set" << std::endl;
+            observers->erase(observer);
         }
     }
+
+    /**
+     *
+     */
+    virtual void clearObservers()
+    {
+        std::cout << "[Observable::clearObservers]" << std::endl;
+
+        if (observers != nullptr) {
+            std::cout << "[Observable::clearObservers] clearing observers set" << std::endl;
+            this->observers->clear();
+        }
+    }
+
+    /**
+     *
+     */
+    virtual void setChanged()
+    {
+        this->changed = true;
+    }
+
+    /**
+     *
+     */
+    virtual void clearChanged()
+    {
+        this->changed = false;
+    }
+
+    virtual bool hasChanged() {
+        return this->changed;
+    }
+
+    /**
+     *
+     */
+    virtual int countObservers()
+    {
+        std::cout << "[Observable::countObservers]" << std::endl;
+
+        return observers == nullptr ? 0 : observers->size();
+    }
+
+    /**
+     *
+     */
+    virtual void notifyObservers()
+    {
+        notifyObservers(nullptr);
+    }
+
+    /**
+     *
+     */
+    virtual void notifyObservers(T event)
+    {
+        /* Multithread locking is not converted to native C++ */
+
+        if (observers == nullptr)
+            return;
+
+        /* Alex: Not sure I need the copy */
+        //std::shared_ptr<std::set<std::shared_ptr<Observer<T>>>> observersCopy;
+        //observersCopy = observers;
+
+        for (auto observer : *observers /* initially observersCopy */)
+            observer->update(event);
+    }
+
+private:
+    /**
+     *
+     */
+    bool changed = false;
+
+    /*
+     * this object will be used to synchronize the access to the observers list in order to be
+     * thread safe
+     */
+    const std::shared_ptr<void> SYNC = nullptr;
+
+    /**
+     *
+     */
+    std::shared_ptr<std::set<std::shared_ptr<Observer<T>>>> observers;
+};
+
+}
+}
+}
 }

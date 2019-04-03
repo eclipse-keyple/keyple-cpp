@@ -1,10 +1,12 @@
 #pragma once
 
+#include "../../rm/RemoteMethodExecutor.h"
 #include <string>
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace nativese { class NativeReaderServiceImpl; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace model { class TransportDto; } } } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -26,7 +28,9 @@ namespace org {
                         namespace method {
 
                             using NativeReaderServiceImpl = org::eclipse::keyple::plugin::remotese::nativese::NativeReaderServiceImpl;
+                            using RemoteMethodExecutor = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodExecutor;
                             using namespace org::eclipse::keyple::plugin::remotese::transport;
+                            using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
                             using org::slf4j::Logger;
                             using org::slf4j::LoggerFactory;
 

@@ -47,13 +47,21 @@ namespace org {
                              * SE EVENTS
                              */
 
+                        public:
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @Before public void setUp() throws Exception
+                            virtual void setUp() throw(std::runtime_error);
+
+//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+//ORIGINAL LINE: @After public void tearDown() throws Exception
+                            virtual void tearDown() throw(std::runtime_error);
+
 
                             /**
                              * Test SE_INSERTED Reader Event throwing and catching
-                             * 
+                             *
                              * @throws Exception
                              */
-                        public:
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @Test public void testInsert() throws Exception
                             virtual void testInsert() throw(std::runtime_error);

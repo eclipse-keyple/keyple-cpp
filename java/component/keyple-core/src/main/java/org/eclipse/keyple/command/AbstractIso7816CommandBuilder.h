@@ -91,7 +91,7 @@ namespace org {
                      * @return an ApduRequest
                      */
                 protected:
-                    virtual std::shared_ptr<ApduRequest> setApduRequest(char cla, std::shared_ptr<CommandsTable> command, char p1, char p2, std::vector<char> &dataIn, Byte le);
+                    virtual std::shared_ptr<ApduRequest> setApduRequest(char cla, std::shared_ptr<CommandsTable> command, char p1, char p2, std::vector<char> &dataIn, char le);
 
 protected:
                     std::shared_ptr<AbstractIso7816CommandBuilder> shared_from_this() {

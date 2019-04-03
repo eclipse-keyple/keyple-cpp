@@ -21,6 +21,9 @@ namespace keyple {
     namespace plugin {
         namespace pcsc {
 
+            using Logger = org::eclipse::keyple::common::Logger;
+            using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+
             /**
              * @class Card
              *
@@ -37,8 +40,6 @@ namespace keyple {
                  */
                 Card()
                 {
-                    logger = LoggerFactory::getLogger(typeid(this));
-
                     logger->debug("Card::Card\n");
                 }
 
@@ -149,7 +150,7 @@ namespace keyple {
                 /**
                  *
                  */
-                std::shared_ptr<Logger> logger;
+                const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(this));
             };
         }
     }

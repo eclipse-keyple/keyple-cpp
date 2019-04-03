@@ -9,14 +9,11 @@ namespace org {
                 namespace plugin {
                     using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
 
-                    const std::shared_ptr<Logger> AbstractThreadedLocalReader::logger = nullptr; //LoggerFactory::getLogger(AbstractThreadedLocalReader::typeid);
-
                     AbstractThreadedLocalReader::AbstractThreadedLocalReader(const std::string &pluginName, const std::string &readerName) : AbstractSelectionLocalReader(pluginName, readerName) {
                     }
 
                     void AbstractThreadedLocalReader::startObservation() {
-                        EventThread *_et = new EventThread(shared_from_this(), this->getPluginName(), this->getName());
-                        thread = std::shared_ptr<EventThread>(_et);
+                        thread = std::make_shared<EventThread>(shared_from_this(), this->getPluginName(), AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
                         thread->start();
                     }
 
@@ -28,7 +25,11 @@ namespace org {
                         this->threadWaitTimeout = timeout;
                     }
 
-                    AbstractThreadedLocalReader::EventThread::EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName) : Thread("observable-reader-events-" + std::to_string(++(outerInstance->threadCount))), pluginName(pluginName), readerName(readerName), outerInstance(outerInstance) {
+                    AbstractThreadedLocalReader::EventThread::EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName)
+                    : Thread("observable-reader-events-" + std::to_string(++(outerInstance->threadCount))), pluginName(pluginName), readerName(readerName), outerInstance(outerInstance)
+                    {
+                        outerInstance->logger->debug("constructor\n");
+
                         setDaemon(true);
                     }
 
@@ -37,7 +38,10 @@ namespace org {
                         this->interrupt(); // exit io wait if needed
                     }
 
-                    void AbstractThreadedLocalReader::EventThread::run() {
+                    void *AbstractThreadedLocalReader::EventThread::run()
+                    {
+                        outerInstance->logger->debug("run\n");
+
                         try {
                             // First thing we'll do is to notify that a card was inserted if one is already
                             // present.
@@ -65,23 +69,19 @@ namespace org {
                                 }
                             }
                         }
-                        catch (NoStackTraceThrowable &e) {
-                            logger->trace("[{}] Exception occurred in monitoring thread: {}", readerName, e.what());
+                        catch (const NoStackTraceThrowable &e) {
+                            outerInstance->logger->trace("[%s] exception occurred in monitoring thread: %s)", readerName, e.what());
                         }
+
+                        return NULL;
                     }
 
 //JAVA TO C++ CONVERTER WARNING: Unlike Java, there is no automatic call to this finalizer method in native C++:
                     void AbstractThreadedLocalReader::finalize() throw(std::runtime_error) {
                         thread->end();
                         thread.reset();
-                        logger->trace("[{}] Observable Reader thread ended.", this->getName());
-
-                        /*
-                         * Alex: Not sure which super class is supposed to be
-                         * called here. Object class has only the virtual
-                         * method.
-                         */
-                        //finalize();
+                        logger->trace("[{}] Observable Reader thread ended.", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
+                        //AbstractSelectionLocalReader::finalize();
                     }
                 }
             }

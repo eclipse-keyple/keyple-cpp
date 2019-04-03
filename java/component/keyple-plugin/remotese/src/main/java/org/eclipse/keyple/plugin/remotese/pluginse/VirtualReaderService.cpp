@@ -2,10 +2,13 @@
 #include "RemoteSePlugin.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
 #include "VirtualReaderSessionFactory.h"
-#include "../transport/RemoteMethod.h"
-#include "method/RmConnectReaderExecutor.h"
-#include "method/RmDisconnectReaderExecutor.h"
-#include "method/RmEventExecutor.h"
+#include "../transport/factory/TransportNode.h"
+#include "../transport/model/TransportDto.h"
+#include "../transport/model/KeypleDto.h"
+#include "../rm/RemoteMethod.h"
+#include "RmConnectReaderExecutor.h"
+#include "RmDisconnectReaderExecutor.h"
+#include "RmEventExecutor.h"
 #include "VirtualReader.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderNotFoundException.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
@@ -16,10 +19,11 @@ namespace org {
             namespace plugin {
                 namespace remotese {
                     namespace pluginse {
-                        using RmConnectReaderExecutor = org::eclipse::keyple::plugin::remotese::pluginse::method::RmConnectReaderExecutor;
-                        using RmDisconnectReaderExecutor = org::eclipse::keyple::plugin::remotese::pluginse::method::RmDisconnectReaderExecutor;
-                        using RmEventExecutor = org::eclipse::keyple::plugin::remotese::pluginse::method::RmEventExecutor;
+                        using RemoteMethod = org::eclipse::keyple::plugin::remotese::rm::RemoteMethod;
                         using namespace org::eclipse::keyple::plugin::remotese::transport;
+                        using TransportNode = org::eclipse::keyple::plugin::remotese::transport::factory::TransportNode;
+                        using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
+                        using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
                         using SeReader = org::eclipse::keyple::seproxy::SeReader;
                         using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
@@ -52,25 +56,24 @@ const std::shared_ptr<org::slf4j::Logger> VirtualReaderService::logger = org::sl
                             logger->trace("onDTO, Remote Method called : {} - isRequest : {} - keypleDto : {}", method, keypleDTO->isRequest(), KeypleDtoHelper::toJson(keypleDTO));
 
 
-
                             switch (method.innerEnumValue) {
-                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::READER_CONNECT:
+                                case RemoteMethod::InnerEnum::READER_CONNECT:
                                     if (keypleDTO->isRequest()) {
                                         return (std::make_shared<RmConnectReaderExecutor>(this->plugin, this->dtoSender))->execute(transportDto);
                                     }
                                     else {
                                         throw std::make_shared<IllegalStateException>("a READER_CONNECT response has been received by VirtualReaderService");
                                     }
-                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::READER_DISCONNECT:
+                                case RemoteMethod::InnerEnum::READER_DISCONNECT:
                                     if (keypleDTO->isRequest()) {
                                         return (std::make_shared<RmDisconnectReaderExecutor>(this->plugin))->execute(transportDto);
                                     }
                                     else {
                                         throw std::make_shared<IllegalStateException>("a READER_DISCONNECT response has been received by VirtualReaderService");
                                     }
-                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::READER_EVENT:
+                                case RemoteMethod::InnerEnum::READER_EVENT:
                                     return (std::make_shared<RmEventExecutor>(plugin))->execute(transportDto);
-                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::READER_TRANSMIT:
+                                case RemoteMethod::InnerEnum::READER_TRANSMIT:
                                     // can be more general
                                     if (keypleDTO->isRequest()) {
                                         throw std::make_shared<IllegalStateException>("a READER_TRANSMIT request has been received by VirtualReaderService");
@@ -95,7 +98,7 @@ const std::shared_ptr<org::slf4j::Logger> VirtualReaderService::logger = org::sl
                                         }
                                     }
 
-                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::DEFAULT_SELECTION_REQUEST:
+                                case RemoteMethod::InnerEnum::DEFAULT_SELECTION_REQUEST:
                                     if (keypleDTO->isRequest()) {
                                         throw std::make_shared<IllegalStateException>("a READER_TRANSMIT request has been received by VirtualReaderService");
                                     }

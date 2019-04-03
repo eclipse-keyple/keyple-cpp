@@ -14,8 +14,8 @@ namespace org {
                             using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
                             using SeReader = org::eclipse::keyple::seproxy::SeReader;
                             using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-std::string DemoUtilities::PO_READER_NAME_REGEX = ".*(ASK|ACS).*";
-std::string DemoUtilities::SAM_READER_NAME_REGEX = ".*(Cherry TC|SCM Microsystems|Identive|HID|Generic).*";
+const std::string DemoUtilities::PO_READER_NAME_REGEX = ".*(ASK|ACS).*";
+const std::string DemoUtilities::SAM_READER_NAME_REGEX = ".*(Cherry TC|SCM Microsystems|Identive|HID|Generic).*";
 
                             std::shared_ptr<SeReader> DemoUtilities::getReader(std::shared_ptr<SeProxyService> seProxyService, const std::string &pattern) throw(KeypleReaderException) {
                                 std::shared_ptr<Pattern> p = Pattern::compile(pattern);

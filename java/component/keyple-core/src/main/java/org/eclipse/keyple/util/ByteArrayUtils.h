@@ -41,7 +41,7 @@ namespace org {
                     /**
                      * Chars we will ignore when loading a sample HEX string. It allows to copy/paste the specs APDU
                      */
-                    static const std::shared_ptr<Pattern> HEX_IGNORED_CHARS;
+                    static const Pattern HEX_IGNORED_CHARS;
 
                     /**
                      * Create a byte array from an hexa string. This method allows spaces and "h".
@@ -59,6 +59,20 @@ namespace org {
                      * @return Hex representation of the byte array
                      */
                     static std::string toHex(const std::vector<char> &byteArray);
+
+                    /**
+                     * Convert three bytes from a byte array into an integer.
+                     * <p>
+                     * The three bytes are expected to be in the MSB first order (aka network order).
+                     * <p>
+                     * Throw an exception if the buffer is null or not long enough to contain all 3 bytes.
+                     * 
+                     * @param bytes byte array
+                     * @param offset offset from which the 3 bytes are
+                     * @return the resulting int
+                     * @throws IllegalArgumentException if the buffer has a bad length
+                     */
+                    static int threeBytesToInt(std::vector<char> &bytes, int offset);
                 };
 
             }

@@ -18,30 +18,31 @@ using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
 int main(int argc, char **argv)
 throw(std::runtime_error)
 {
-    ObservableReaderNotificationEngine *demoEngine = new ObservableReaderNotificationEngine();
-
-    /* Instantiate SeProxyService and add PC/SC plugin */
-    SeProxyService seProxyService = SeProxyService::getInstance();
+    std::shared_ptr<ObservableReaderNotificationEngine> demoEngine = std::make_shared<ObservableReaderNotificationEngine>();
 
     /*
-    * Alex: diamond issue, casting PcscPlugin into ReaderPlugin can take two
-    * routes:
-    * - PcscPlugin -> AbstractThreadedObservablePlugin ->
-    *   AbstractObservablePlugin -> ReaderPlugin
-    * or
-    * - PcscPlugin -> AbstractThreadedObservablePlugin -> ObservablePlugin ->
-    *   ReaderPlugin
-    *
-    * Forcing conversion to ObservablePlugin for now but should be fixed or at
-    * least validated.
-    */
-    std::shared_ptr<ObservablePlugin> plugin = std::dynamic_pointer_cast<ObservablePlugin>(PcscPlugin::getInstance());
-    seProxyService.addPlugin(std::dynamic_pointer_cast<ReaderPlugin>(plugin));
+     * Alex: diamond issue, casting PcscPlugin into ReaderPlugin can take two
+     * routes:
+     * - PcscPlugin -> AbstractThreadedObservablePlugin ->
+     *   AbstractObservablePlugin -> ReaderPlugin
+     * or
+     * - PcscPlugin -> AbstractThreadedObservablePlugin -> ObservablePlugin ->
+     *   ReaderPlugin
+     *
+     * Forcing conversion to ObservablePlugin for now but should be fixed or at
+     * least validated.
+     */
+    PcscPlugin pcscplugin = PcscPlugin::getInstance();
+    pcscplugin.initReaders();
+
+    /* Instantiate SeProxyService and add PC/SC plugin */
+                            SeProxyService& seProxyService = SeProxyService::getInstance();
+                            seProxyService.addPlugin(std::make_shared<PcscPlugin>(PcscPlugin::getInstance()));
 
     /* Set observers */
     demoEngine->setPluginObserver();
 
-    std::cout << "Wait for reader or SE insertion/removal" << std::endl;
+                            std::cout << "Wait for reader or SE insertion/removal" << std::endl;
 
     /* Wait indefinitely. CTRL-C to exit. */
 //JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:

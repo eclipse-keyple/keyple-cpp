@@ -1,6 +1,9 @@
 #include "AbstractIso7816CommandBuilder.h"
 #include "CommandsTable.h"
-#include "../seproxy/message/ApduRequest.h"
+#include "ApduRequest.h"
+
+/* Common */
+#include "System.h"
 
 namespace org {
     namespace eclipse {
@@ -14,10 +17,10 @@ namespace org {
                 AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request) : AbstractApduCommandBuilder(name, request) {
                 }
 
-                std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(char cla, std::shared_ptr<CommandsTable> command, char p1, char p2, std::vector<char> &dataIn, Byte le) {
+                std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(char cla, std::shared_ptr<CommandsTable> command, char p1, char p2, std::vector<char> &dataIn, char le) {
                     bool case4;
                     /* sanity check */
-                    if (dataIn.size() > 0 && le != nullptr && le != 0) {
+                    if (dataIn.size() > 0 && le != -1 && le != 0) {
                         throw std::invalid_argument("Le must be equal to 0 when not null and ingoing data are present.");
                     }
 
@@ -42,7 +45,7 @@ namespace org {
                         /* append Lc and ingoing data */
                         apdu[4] = static_cast<char>(dataIn.size());
                         System::arraycopy(dataIn, 0, apdu, 5, dataIn.size());
-                        if (le != nullptr) {
+                        if (le != -1) {
                             /*
                              * case4: ingoing and outgoing data, Le is always set to 0 (see Calypso Reader
                              * Recommendations - T84)
@@ -56,7 +59,7 @@ namespace org {
                         }
                     }
                     else {
-                        if (le != nullptr) {
+                        if (le != -1) {
                             /* case2: outgoing data only */
                             apdu[4] = le;
                         }

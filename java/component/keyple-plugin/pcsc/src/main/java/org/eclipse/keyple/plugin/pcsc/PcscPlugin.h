@@ -23,6 +23,7 @@
 /* Common */
 #include "Export.h"
 #include "Logger.h"
+#include "LoggerFactory.h"
 
 /* Core */
 #include "AbstractThreadedObservablePlugin.h"
@@ -33,11 +34,10 @@
 #include "CardTerminal.h"
 #include "CardTerminals.h"
 #include "TerminalFactory.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleBaseException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace plugin { class AbstractObservableReader; } } } } }
+#include "KeypleBaseException.h"
+#include "KeypleReaderException.h"
+#include "AbstractObservableReader.h"
+#include "KeypleReaderNotFoundException.h"
 
 namespace org {
     namespace eclipse {
@@ -45,43 +45,51 @@ namespace org {
             namespace plugin {
                 namespace pcsc {
 
-                    using SeReader = org::eclipse::keyple::seproxy::SeReader;
-                    using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using AbstractObservableReader = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
+                    using SeReader                         = org::eclipse::keyple::seproxy::SeReader;
+                    using KeypleBaseException              = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+                    using KeypleReaderException            = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using KeypleReaderNotFoundException    = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
+                    using AbstractObservableReader         = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
                     using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
-                    using PluginEvent = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    using PluginEvent                      = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    using LoggerFactory                    = org::eclipse::keyple::common::LoggerFactory;
+                    using Logger                           = org::eclipse::keyple::common::Logger;
 
                     class EXPORT PcscPlugin : public AbstractThreadedObservablePlugin {
 
-                    private:
-                        const std::shared_ptr<Logger> logger;
+                      private:
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PcscPlugin));
 
                         static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 1000;
 
-                        /**
-                         * singleton instance of SeProxyService
-                         */
-                        static const std::shared_ptr<PcscPlugin> uniqueInstance;
-
                         static std::shared_ptr<TerminalFactory> factory;
-
 
                         bool logging = false;
 
+                      public:
+                        /**
+                         * Constructor
+                         */
                         PcscPlugin();
+
+                        /**
+                         * Destructor
+                         */
+                        ~PcscPlugin();
 
                         /**
                          * Gets the single instance of PcscPlugin.
                          *
                          * @return single instance of PcscPlugin
                          */
-                    public:
-                        static std::shared_ptr<PcscPlugin> getInstance();
+                      public:
+                        static PcscPlugin getInstance();
 
                         std::unordered_map<std::string, std::string> getParameters() override;
 
-                        void setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument, KeypleBaseException) override;
+                        void setParameter(const std::string &key,
+                                          const std::string &value) throw(std::invalid_argument,
+                                                                          KeypleBaseException) override;
 
                         /**
                          * Enable the logging
@@ -92,25 +100,22 @@ namespace org {
                          */
                         std::shared_ptr<PcscPlugin> setLogging(bool logging);
 
-                    protected:
-                        std::shared_ptr<std::set<std::string>> getNativeReadersNames() throw(KeypleReaderException) override;
+                      protected:
+                        std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() throw(KeypleReaderException) override;
 
                         /**
-                         * Gets the list of all native readers
+                         * Fetch connected native readers (from smartcard.io) and returns a list of corresponding
+                         * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader}
+                         * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader} are new instances.
                          *
-                         * New reader objects are created.
-                         *
-                         * @return the list of new readers.
+                         * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getNativeReaders() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() throw(KeypleReaderException) override;
 
                         /**
-                         * Gets the reader whose name is provided as an argument.
-                         *
-                         * Returns the current reader if it is already listed.
-                         *
-                         * Creates and returns a new reader if not.
+                         * Fetch the reader whose name is provided as an argument. Returns the current reader if it is
+                         * already listed. Creates and returns a new reader if not.
                          *
                          * Throws an exception if the wanted reader is not found.
                          *
@@ -118,62 +123,76 @@ namespace org {
                          * @return the reader object
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<SeReader> getNativeReader(const std::string &name) throw(KeypleReaderException) override;
+                        std::shared_ptr<AbstractObservableReader> fetchNativeReader(const std::string &name) throw(KeypleReaderException) override;
 
-                    private:
+                      private:
+                        /**
+                         *
+                         */
                         std::shared_ptr<CardTerminals> getCardTerminals();
 
-                    protected:
-
-                        std::shared_ptr<PcscPlugin> shared_from_this() {
-                            return std::static_pointer_cast<PcscPlugin>(AbstractThreadedObservablePlugin::shared_from_this());
+                      protected:
+                        std::shared_ptr<PcscPlugin> shared_from_this()
+                        {
+                            return std::static_pointer_cast<PcscPlugin>(
+                                AbstractThreadedObservablePlugin::shared_from_this());
                         }
 
-                    public:
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override
+                      public:
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override
                         {
-                            return this->setParameters(parameters);
+                            return AbstractThreadedObservablePlugin::AbstractLoggedObservable::setParameters(
+                                parameters);
                         }
 
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() throw(KeypleReaderException) override
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
+                        getReaders() throw(KeypleReaderException) override
                         {
-                            return this->getReaders();
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReaders();
                         }
 
-                        std::shared_ptr<SeReader> getReader(const std::string &name) override
+                        std::shared_ptr<SeReader> getReader(const std::string &name) throw(KeypleReaderNotFoundException) override
                         {
-                            return this->getReader(name);
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReader(name);
                         }
 
                         void addObserver(std::shared_ptr<PluginObserver> observer) override
                         {
-                            return this->addObserver(observer);
+                            logger->debug("[PcscPlugin::addObserver] observer: %p\n", observer);
+
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::addObserver(observer);
                         }
 
                         void removeObserver(std::shared_ptr<PluginObserver> observer) override
                         {
-                            return this->removeObserver(observer);
+                            logger->debug("[PcscPlugin::removeObserver]\n");
+                            return AbstractThreadedObservablePlugin::AbstractObservablePlugin::removeObserver(observer);
                         }
 
                         void notifyObservers(std::shared_ptr<PluginEvent> event) override
                         {
-                            return this->notifyObservers(event);
+                            logger->debug("[PcscPlugin::notifyObservers]\n");
+                            AbstractThreadedObservablePlugin::AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::notifyObservers(event);
                         }
 
                         bool equals(std::shared_ptr<void> o) override
                         {
-                            return this->equals(o);
+                            return true; //AbstractThreadedObservablePlugin::equals(o);
                         }
 
                         int hashCode() override
                         {
-                            return this->hashCode();
+                            return 0; //AbstractThreadedObservablePlugin::hashCode();
                         }
 
+                        /**
+                         *
+                         */
+                        std::set<std::string> nativeReadersNames;
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace pcsc
+            }     // namespace plugin
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

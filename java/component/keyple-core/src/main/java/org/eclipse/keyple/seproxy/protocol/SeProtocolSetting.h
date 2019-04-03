@@ -39,7 +39,7 @@ namespace org {
 
                         SeProtocolSetting(std::shared_ptr<SeProtocolSettingList> seProtocolSetting);
 
-                        SeProtocolSetting(std::vector<std::shared_ptr<SeProtocolSettingList>> &seProtocolSettingList);
+                        SeProtocolSetting(std::vector<std::shared_ptr<SeProtocolSettingList>> seProtocolSettingList);
 
                         virtual std::unordered_map<std::shared_ptr<SeProtocol>, std::string> getProtocolsMap();
                     };

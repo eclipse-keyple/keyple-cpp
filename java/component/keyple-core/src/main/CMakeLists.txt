@@ -25,12 +25,12 @@ SET(CMAKE_CXX_STANDARD 11)
 SET(LIBRARY_NAME keyplecore)
 
 IF(WIN32)
-	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
+	ADD_COMPILE_OPTIONS(/wd4275 /wd4251 /wd4290)
 ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
+        ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event
@@ -49,10 +49,12 @@ INCLUDE_DIRECTORIES(
 ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
 	# seproxy - event
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/DefaultSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/ObservablePlugin.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/ObservableReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/PluginEvent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/ReaderEvent.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/SelectionResponse.cpp
 
 	# seproxy - exception
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/KeypleApplicationSelectionException.cpp
@@ -102,13 +104,12 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/ReaderPlugin.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/SeProxyService.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/SeReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/SeSelector.cpp
 
 	# transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/MatchingSe.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SelectionRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SelectionResponse.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SeSelection.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SeSelector.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SeSelectionRequest.cpp
 
 	# util
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/ByteArrayUtils.cpp
@@ -116,3 +117,5 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Nameable.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Observable.cpp
 )
+
+TARGET_LINK_LIBRARIES(${LIBRARY_NAME} keyplecommon)

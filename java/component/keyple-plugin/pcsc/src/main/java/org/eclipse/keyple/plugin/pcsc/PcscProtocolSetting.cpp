@@ -7,6 +7,8 @@ namespace org {
         namespace keyple {
             namespace plugin {
                 namespace pcsc {
+
+                    using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
                     using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
                     using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
 

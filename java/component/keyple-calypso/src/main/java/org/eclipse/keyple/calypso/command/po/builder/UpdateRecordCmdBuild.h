@@ -43,7 +43,7 @@ namespace org {
 
                                 /** The command. */
                             private:
-                                static constexpr CalypsoPoCommands command = CalypsoPoCommands::UPDATE_RECORD;
+                                const CalypsoPoCommands command = CalypsoPoCommands::UPDATE_RECORD;
 
                                 /**
                                  * Instantiates a new UpdateRecordCmdBuild.

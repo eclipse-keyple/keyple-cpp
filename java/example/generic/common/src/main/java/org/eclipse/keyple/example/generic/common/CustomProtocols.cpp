@@ -4,8 +4,9 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace common {
+
                         using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
 
 CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_B_PRIME("CUSTOM_PROTOCOL_B_PRIME", InnerEnum::CUSTOM_PROTOCOL_B_PRIME, "Custom Old Calypso B prime");
@@ -21,7 +22,7 @@ CustomProtocols::StaticConstructor::StaticConstructor() {
 CustomProtocols::StaticConstructor CustomProtocols::staticConstructor;
 int CustomProtocols::nextOrdinal = 0;
 
-                        CustomProtocols::CustomProtocols(const std::string &name, InnerEnum innerEnum, const std::string &name) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
+                        CustomProtocols::CustomProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
                             this->name = name;
                         }
 

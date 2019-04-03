@@ -1,13 +1,3 @@
-#pragma once
-
-#include "../ReaderPlugin.h"
-#include "../../util/Observable.h"
-#include <memory>
-#include "Observable.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class PluginEvent; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -19,6 +9,19 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+#pragma once
+
+#include "../ReaderPlugin.h"
+#include "../../util/Observable.h"
+#include <memory>
+#include "Observable.h"
+
+/* Common */
+#include "Export.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class PluginEvent; } } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -27,11 +30,11 @@ namespace org {
 
                     using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
 
-                    class ObservablePlugin : public ReaderPlugin {
+                    class EXPORT ObservablePlugin : public virtual ReaderPlugin {
                     public:
-                        class PluginObserver : public org::eclipse::keyple::util::Observer<std::shared_ptr<PluginEvent>> {
+                        class PluginObserver : public org::eclipse::keyple::util::Observer<PluginEvent> {
                         public:
-                            virtual void update(std::shared_ptr<PluginEvent> event_Renamed) = 0;
+                            virtual void update(std::shared_ptr<PluginEvent> event) = 0;
                         };
 
                     public:
@@ -39,7 +42,7 @@ namespace org {
 
                         virtual void removeObserver(std::shared_ptr<PluginObserver> observer) = 0;
 
-                        virtual void notifyObservers(std::shared_ptr<PluginEvent> event) = 0;
+                        virtual void notifyObservers(std::shared_ptr<PluginEvent> event) { }
                     };
 
                 }

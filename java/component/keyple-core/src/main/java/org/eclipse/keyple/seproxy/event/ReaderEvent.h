@@ -10,7 +10,8 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-#pragma once
+#ifndef KEYPLE_SEPROXY_READER_EVENT_H
+#define KEYPLE_SEPROXY_READER_EVENT_H
 
 #include <string>
 #include <vector>
@@ -19,17 +20,14 @@
 /* Common */
 #include "Export.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionResponse; } } } }
+/* Core */
+#include "SelectionResponse.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
                 namespace event {
-
-
-                    using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
 
                     /**
                      * ReaderEvent used to notify changes at reader level
@@ -136,7 +134,8 @@ namespace org {
                          * @param pluginName the name of the current plugin
                          * @param readerName the name of the current reader
                          * @param eventType the type of event
-                         * @param selectionResponse the response to the default {@link SelectionRequest} (may be null)
+                         * @param selectionResponse the response to the default {@link DefaultSelectionRequest} (may be
+                         *        null)
                          */
                     public:
                         ReaderEvent(const std::string &pluginName, const std::string &readerName, EventType eventType, std::shared_ptr<SelectionResponse> selectionResponse);
@@ -156,3 +155,5 @@ namespace org {
         }
     }
 }
+
+#endif

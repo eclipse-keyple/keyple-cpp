@@ -1,11 +1,11 @@
 #include "StubSe1.h"
-#include "../../../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
+#include "ByteArrayUtils.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace pc {
                         namespace stub {
                             namespace se {

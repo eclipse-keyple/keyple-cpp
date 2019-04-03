@@ -66,7 +66,7 @@ namespace org {
                          * flag is set to false, the transmission go on for the next {@link SeRequest}. The channel is
                          * left closed.
                          * <p>
-                         * This method could also fail in case of IO error or wrong card state &rarr; some readerâ€™s
+                         * This method could also fail in case of IO error or wrong card state &rarr; some reader’s
                          * exception (SE missing, IO error, wrong card state, timeout) have to be caught during the
                          * processing of the SE request transmission.
                          *
@@ -88,7 +88,7 @@ namespace org {
                          * The logical channel is set according to the keepChannelOpen flag.
                          *
                          * <p>
-                         * This method could also fail in case of IO error or wrong card state &rarr; some readerâ€™s
+                         * This method could also fail in case of IO error or wrong card state &rarr; some reader’s
                          * exception (SE missing, IO error, wrong card state, timeout) have to be caught during the
                          * processing of the SE request transmission. *
                          *

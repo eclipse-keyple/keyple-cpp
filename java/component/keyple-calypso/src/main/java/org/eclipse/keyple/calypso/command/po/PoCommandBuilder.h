@@ -42,11 +42,11 @@ namespace org {
                              * @param request the ApduRequest (the instruction byte will be overwritten)
                              */
                         public:
-                            PoCommandBuilder(CalypsoPoCommands reference, std::shared_ptr<ApduRequest> request);
+                            PoCommandBuilder(std::shared_ptr<CalypsoPoCommands> reference, std::shared_ptr<ApduRequest> request);
 
 protected:
                             std::shared_ptr<PoCommandBuilder> shared_from_this() {
-                                return std::static_pointer_cast<PoCommandBuilder>(org.eclipse.keyple.command.AbstractIso7816CommandBuilder::shared_from_this());
+                                return std::static_pointer_cast<PoCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());
                             }
                         };
 

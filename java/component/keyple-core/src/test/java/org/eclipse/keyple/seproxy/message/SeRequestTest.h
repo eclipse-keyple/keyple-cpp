@@ -8,7 +8,7 @@
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequest; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class Selector; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeSelector; } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -30,6 +30,7 @@ namespace org {
 //JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
 //                    import static org.junit.Assert.*;
                     using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
+                    using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
                     using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
@@ -47,7 +48,7 @@ namespace org {
                         ChannelState channelState = static_cast<ChannelState>(0);
                         std::shared_ptr<SeProtocol> seProtocol;
                         std::shared_ptr<Set<Integer>> selectionStatusCode;
-                        std::shared_ptr<SeRequest::Selector> selector;
+                        std::shared_ptr<SeSelector> selector;
 
 
 
@@ -114,7 +115,7 @@ namespace org {
 
                         static std::shared_ptr<SeProtocol> getASeProtocol();
 
-                        static std::shared_ptr<SeRequest::Selector> getAidSelector();
+                        static std::shared_ptr<SeSelector> getSelector(std::shared_ptr<Set<Integer>> selectionStatusCode);
 
                     };
 

@@ -1,7 +1,14 @@
 #include "NativeReaderServiceImpl.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
-#include "../transport/RemoteMethod.h"
+#include "../rm/RemoteMethodTxEngine.h"
+#include "../transport/factory/TransportNode.h"
+#include "../transport/model/TransportDto.h"
+#include "../transport/model/KeypleDto.h"
+#include "../rm/RemoteMethod.h"
+#include "../rm/RemoteMethodExecutor.h"
+#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ProxyReader.h"
+#include "../exception/KeypleRemoteException.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin/AbstractObservableReader.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderNotFoundException.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
@@ -13,13 +20,21 @@ namespace org {
             namespace plugin {
                 namespace remotese {
                     namespace nativese {
+                        using KeypleRemoteException = org::eclipse::keyple::plugin::remotese::exception::KeypleRemoteException;
                         using namespace org::eclipse::keyple::plugin::remotese::nativese::method;
+                        using RemoteMethod = org::eclipse::keyple::plugin::remotese::rm::RemoteMethod;
+                        using RemoteMethodExecutor = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodExecutor;
+                        using RemoteMethodTxEngine = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodTxEngine;
                         using namespace org::eclipse::keyple::plugin::remotese::transport;
+                        using TransportNode = org::eclipse::keyple::plugin::remotese::transport::factory::TransportNode;
                         using JsonParser = org::eclipse::keyple::plugin::remotese::transport::json::JsonParser;
+                        using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
+                        using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
                         using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
                         using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                         using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
+                        using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                         using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                         using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
                         using AbstractObservableReader = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
@@ -27,7 +42,7 @@ namespace org {
                         using org::slf4j::LoggerFactory;
 const std::shared_ptr<org::slf4j::Logger> NativeReaderServiceImpl::logger = org::slf4j::LoggerFactory::getLogger(NativeReaderServiceImpl::typeid);
 
-                        NativeReaderServiceImpl::NativeReaderServiceImpl(std::shared_ptr<DtoSender> dtoSender) : dtoSender(dtoSender), seProxyService(SeProxyService::getInstance()) {
+                        NativeReaderServiceImpl::NativeReaderServiceImpl(std::shared_ptr<DtoSender> dtoSender) : dtoSender(dtoSender), seProxyService(SeProxyService::getInstance()), rmTxEngine(std::make_shared<RemoteMethodTxEngine>(dtoSender)) {
                             // this.nseSessionManager = new NseSessionManager();
                         }
 
@@ -46,37 +61,30 @@ const std::shared_ptr<org::slf4j::Logger> NativeReaderServiceImpl::logger = org:
                             logger->debug("Remote Method called : {} - isRequest : {}", method, keypleDTO->isRequest());
 
                             switch (method.innerEnumValue) {
-                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::READER_CONNECT:
+                                case RemoteMethod::InnerEnum::READER_CONNECT:
                                     // process READER_CONNECT response
                                     if (keypleDTO->isRequest()) {
                                         throw std::make_shared<IllegalStateException>("a READER_CONNECT request has been received by NativeReaderService");
                                     }
                                     else {
-                                        try {
-                                            std::shared_ptr<RemoteMethodParser<std::string>> rmConnectReaderParser = std::make_shared<RmConnectReaderParser>(shared_from_this());
-                                            std::string sessionId = rmConnectReaderParser->parseResponse(keypleDTO);
-                                            logger->info("Native Reader {} has been connected to Master with sessionId {}", keypleDTO->getNativeReaderName(), sessionId);
-                                        }
-                                        catch (const KeypleRemoteReaderException &e) {
-                                            e->printStackTrace();
-                                        }
-                                        out = transportDto->nextTransportDTO(KeypleDtoHelper::NoResponse());
+                                        // send DTO to TxEngine
+                                        out = this->rmTxEngine->onDTO(transportDto);
                                     }
                                     break;
 
-                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::READER_DISCONNECT:
+                                case RemoteMethod::InnerEnum::READER_DISCONNECT:
                                     // process READER_DISCONNECT response
                                     if (keypleDTO->isRequest()) {
                                         throw std::make_shared<IllegalStateException>("a READER_DISCONNECT request has been received by NativeReaderService");
                                     }
                                     else {
-                                        logger->info("Native Reader {} has been disconnected from Master", keypleDTO->getNativeReaderName());
-                                        out = transportDto->nextTransportDTO(KeypleDtoHelper::NoResponse());
+                                        // send DTO to TxEngine
+                                        out = this->rmTxEngine->onDTO(transportDto);
                                     }
                                     break;
 
 
-                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::READER_TRANSMIT:
+                                case RemoteMethod::InnerEnum::READER_TRANSMIT:
                                     // must be a request
                                     if (keypleDTO->isRequest()) {
                                         std::shared_ptr<RemoteMethodExecutor> rmTransmit = std::make_shared<RmTransmitExecutor>(shared_from_this());
@@ -87,7 +95,7 @@ const std::shared_ptr<org::slf4j::Logger> NativeReaderServiceImpl::logger = org:
                                     }
                                     break;
 
-                                case org::eclipse::keyple::plugin::remotese::transport::RemoteMethod::InnerEnum::DEFAULT_SELECTION_REQUEST:
+                                case RemoteMethod::InnerEnum::DEFAULT_SELECTION_REQUEST:
                                     // must be a request
                                     if (keypleDTO->isRequest()) {
                                         std::shared_ptr<RmSetDefaultSelectionRequestExecutor> rmSetDefaultSelectionRequest = std::make_shared<RmSetDefaultSelectionRequestExecutor>(shared_from_this());
@@ -104,29 +112,53 @@ const std::shared_ptr<org::slf4j::Logger> NativeReaderServiceImpl::logger = org:
                                     throw std::make_shared<IllegalStateException>("a  ERROR - UNRECOGNIZED request has been received by NativeReaderService");
                             }
 
-                            logger->debug("onDto response to be sent {}", KeypleDtoHelper::toJson(out->getKeypleDTO()));
+                            logger->trace("onDto response to be sent {}", KeypleDtoHelper::toJson(out->getKeypleDTO()));
                             return out;
 
 
                         }
 
-                        void NativeReaderServiceImpl::connectReader(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId) throw(KeypleRemoteException) {
+                        std::string NativeReaderServiceImpl::connectReader(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId) throw(KeypleReaderException) {
+
                             logger->info("connectReader {} from device {}", localReader->getName(), clientNodeId);
-                            dtoSender->sendDTO((std::make_shared<RmConnectReaderInvoker>(localReader, clientNodeId))->dto());
+
+                            std::shared_ptr<RmConnectReaderTx> connect = std::make_shared<RmConnectReaderTx>(nullptr, localReader->getName(), nullptr, clientNodeId, localReader, clientNodeId, shared_from_this());
+                            try {
+                                rmTxEngine->register_Renamed(connect);
+                                return connect->get();
+                            }
+                            catch (const KeypleRemoteException &e) {
+                                throw std::make_shared<KeypleReaderException>("An error occured while calling connectReader", e);
+                            }
+
                         }
 
-                        void NativeReaderServiceImpl::disconnectReader(std::shared_ptr<ProxyReader> localReader, const std::string &clientNodeId) throw(KeypleRemoteException) {
-                            logger->info("disconnectReader {} from device {}", localReader->getName(), clientNodeId);
+                        void NativeReaderServiceImpl::disconnectReader(const std::string &sessionId, const std::string &nativeReaderName, const std::string &clientNodeId) throw(KeypleReaderException) {
+                            logger->info("disconnectReader {} from device {}", nativeReaderName, clientNodeId);
 
-                            dtoSender->sendDTO((std::make_shared<RmDisconnectReaderInvoker>(localReader, clientNodeId))->dto());
+                            std::shared_ptr<RmDisconnectReaderTx> disconnect = std::make_shared<RmDisconnectReaderTx>(sessionId, nativeReaderName, clientNodeId);
 
-                            // stop propagating the local reader events
-                            (std::static_pointer_cast<AbstractObservableReader>(localReader))->removeObserver(shared_from_this());
+                            try {
+                                rmTxEngine->register_Renamed(disconnect);
+                                Boolean status = disconnect->get();
+                                std::shared_ptr<ProxyReader> nativeReader = findLocalReader(nativeReaderName);
+                                if (std::dynamic_pointer_cast<AbstractObservableReader>(nativeReader) != nullptr) {
+                                    // stop propagating the local reader events
+                                    (std::static_pointer_cast<AbstractObservableReader>(nativeReader))->removeObserver(shared_from_this());
+                                }
+                            }
+                            catch (const KeypleRemoteException &e) {
+                                throw std::make_shared<KeypleReaderException>("An error occured while calling connectReader", e);
+                            }
+                            catch (const KeypleReaderNotFoundException &e) {
+                                e->printStackTrace();
+                            }
+
 
                         }
 
                         std::shared_ptr<ProxyReader> NativeReaderServiceImpl::findLocalReader(const std::string &nativeReaderName) throw(KeypleReaderNotFoundException) {
-                            logger->debug("Find local reader by name {} in {} plugin(s)", nativeReaderName, seProxyService->getPlugins()->size());
+                            logger->trace("Find local reader by name {} in {} plugin(s)", nativeReaderName, seProxyService->getPlugins()->size());
                             for (auto plugin : seProxyService->getPlugins()) {
                                 try {
                                     return std::static_pointer_cast<ProxyReader>(plugin->getReader(nativeReaderName));
@@ -154,7 +186,6 @@ const std::shared_ptr<org::slf4j::Logger> NativeReaderServiceImpl::logger = org:
 //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
                                 logger->error("Event " + event_Renamed->toString() + " could not be sent though Remote Service Interface", e);
                             }
-
                         }
                     }
                 }

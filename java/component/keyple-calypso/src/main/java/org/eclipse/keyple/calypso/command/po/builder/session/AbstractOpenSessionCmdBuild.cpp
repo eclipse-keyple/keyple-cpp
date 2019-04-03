@@ -16,7 +16,8 @@ namespace org {
                                 using PoCommandBuilder = org::eclipse::keyple::calypso::command::po::PoCommandBuilder;
                                 using PoRevision = org::eclipse::keyple::calypso::command::po::PoRevision;
 
-                                AbstractOpenSessionCmdBuild::AbstractOpenSessionCmdBuild(PoRevision revision) : org::eclipse::keyple::calypso::command::po::PoCommandBuilder(CalypsoPoCommands::getOpenSessionForRev(revision), nullptr) {
+                                AbstractOpenSessionCmdBuild::AbstractOpenSessionCmdBuild(PoRevision revision)
+                                : PoCommandBuilder(std::make_shared<CalypsoPoCommands>(CalypsoPoCommands::getOpenSessionForRev(revision)), nullptr) {
                                 }
 
                                 std::shared_ptr<AbstractOpenSessionCmdBuild> AbstractOpenSessionCmdBuild::create(PoRevision revision, char debitKeyIndex, std::vector<char> &sessionTerminalChallenge, char sfi, char recordNb, const std::string &extraInfo) {
@@ -31,7 +32,7 @@ namespace org {
                                         case PoRevision::REV3_2:
                                             return std::make_shared<OpenSession32CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo);
                                         default:
-                                            throw std::invalid_argument("Revision " + revision + " isn't supported");
+                                            throw std::invalid_argument("Revision <to print: revision> isn't supported");
                                     }
                                 }
                             }

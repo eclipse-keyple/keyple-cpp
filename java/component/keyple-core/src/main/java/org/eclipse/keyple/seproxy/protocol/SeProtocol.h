@@ -1,7 +1,3 @@
-#pragma once
-
-#include <string>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -13,6 +9,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <iostream>
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -22,6 +24,16 @@ namespace org {
                     class SeProtocol {
                     public:
                         virtual std::string getName() = 0;
+
+                        /**
+                         *
+                         */
+                        friend std::ostream &operator<<(std::ostream &os, SeProtocol &se)
+                        {
+                            os << "name: " << se.getName();
+
+                            return os;
+                        }
                     };
 
                 }

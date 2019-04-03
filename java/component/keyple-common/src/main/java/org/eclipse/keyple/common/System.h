@@ -1,6 +1,8 @@
 #pragma once
 
 #include <math.h>
+#include <vector>
+#include <memory>
 
 #if defined(_WIN32)
 	#include <windows.h>
@@ -13,7 +15,7 @@ public:
 #if defined(WIN32)
 		SYSTEMTIME time;
 		GetSystemTime(&time);
-		return ((time.wSecond * 1000) + time.wMilliseconds) * pow(10, 6);
+		return static_cast<long>(((time.wSecond * 1000) + time.wMilliseconds) * pow(10, 6));
 #else
 		timespec ts;
    		// clock_gettime(CLOCK_MONOTONIC, &ts); // Works on FreeBSD

@@ -1,15 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
-#include <string>
-#include <unordered_set>
-#include <vector>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class PoAidSelector; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class PoAtrFilter; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -21,6 +9,17 @@ namespace org { namespace eclipse { namespace keyple { namespace calypso { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <unordered_set>
+#include <vector>
+#include <memory>
+
+/* Core */
+#include "SeSelector.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {

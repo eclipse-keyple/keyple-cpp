@@ -15,7 +15,8 @@ namespace org {
                                 using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
                                 using PoRevision = org::eclipse::keyple::calypso::command::po::PoRevision;
 
-                                OpenSession31CmdBuild::OpenSession31CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo) throw(std::invalid_argument) : AbstractOpenSessionCmdBuild(PoRevision::REV3_1) {
+                                OpenSession31CmdBuild::OpenSession31CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo) throw(std::invalid_argument)
+                                : AbstractOpenSessionCmdBuild(PoRevision::REV3_1) {
 
                                     char p1 = static_cast<char>((recordNumberToRead * 8) + keyIndex);
                                     char p2 = static_cast<char>((sfiToSelect * 8) + 1);
@@ -25,7 +26,7 @@ namespace org {
                                      */
                                     char le = 0;
 
-                                    this->request = setApduRequest(PoClass::ISO.getValue(), CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV3_1), p1, p2, samChallenge, le);
+                                    this->request = setApduRequest(PoClass::ISO.getValue(), std::make_shared<CalypsoPoCommands>(CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV3_1)), p1, p2, samChallenge, le);
                                     if (extraInfo != "") {
                                         this->addSubName(extraInfo);
                                     }

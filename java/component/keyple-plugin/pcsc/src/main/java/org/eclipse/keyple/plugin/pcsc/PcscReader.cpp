@@ -1,7 +1,3 @@
-/* Common */
-#include "Logger.h"
-#include "LoggerFactory.h"
-
 /* Core */
 #include "ByteArrayUtils.h"
 #include "Protocol_Import.h"
@@ -63,7 +59,7 @@ PcscReader::PcscReader(const std::string &pluginName, std::shared_ptr<CardTermin
         setParameter(SETTING_KEY_DISCONNECT, "");
         setParameter(SETTING_KEY_LOGGING, "");
     } catch (KeypleBaseException &e) {
-        logger->trace("[{}] PcscReader => KeypleBaseException");
+        logger->trace("[%s] PcscReader => KeypleBaseException\n");
     }
 }
 
@@ -71,7 +67,7 @@ void PcscReader::closePhysicalChannel() throw(KeypleChannelStateException) {
 try {
     if (card != nullptr) {
         if (logging) {
-            logger->trace("[{}] closePhysicalChannel => closing the channel.", this->getName());
+            logger->trace("[%s] closePhysicalChannel => closing the channel\n", this->getName());
         }
         channel.reset();
         card->disconnect(cardReset);
@@ -79,7 +75,7 @@ try {
     }
     else {
         if (logging) {
-            logger->trace("[{}] closePhysicalChannel => card object is null.", this->getName());
+            logger->trace("[%s] closePhysicalChannel => card object is null\n", this->getName());
         }
     }
 }
@@ -88,12 +84,12 @@ catch (const CardException &e) {
 }
 }
 
-bool PcscReader::isSePresent() throw(NoStackTraceThrowable) {
+bool PcscReader::checkSePresence() throw(NoStackTraceThrowable) {
 try {
     return terminal->isCardPresent();
 }
-catch (CardException &e) {
-    logger->trace("[{}] Exception occured in isSePresent. Message: {}", this->getName(), e.getMessage());
+catch (const CardException &e) {
+    logger->trace("[%s] Exception occured in isSePresent. Message: %s\n", this->getName(), e.getMessage());
     throw NoStackTraceThrowable();
 }
 }
@@ -102,8 +98,8 @@ bool PcscReader::waitForCardPresent(long long timeout) throw(NoStackTraceThrowab
 try {
     return terminal->waitForCardPresent(timeout);
 }
-catch (CardException &e) {
-    logger->trace("[{}] Exception occured in waitForCardPresent. Message: {}", this->getName(), e.getMessage());
+catch (const CardException &e) {
+    logger->trace("[%s] Exception occured in waitForCardPresent. Message: %s\n", this->getName(), e.getMessage());
     throw NoStackTraceThrowable();
 }
 }
@@ -119,13 +115,9 @@ try {
         return false;
     }
 }
-catch (KeypleChannelStateException &e) {
-    logger->trace("[{}] Exception occured in waitForCardAbsent. Message: {}", this->getName(), e.what());
-    throw std::shared_ptr<NoStackTraceThrowable>(new NoStackTraceThrowable());
-}
 catch (CardException &e) {
-    logger->trace("[{}] Exception occured in waitForCardAbsent. Message: {}", this->getName(), e.getMessage());
-    throw std::shared_ptr<NoStackTraceThrowable>(new NoStackTraceThrowable());
+    logger->trace("[%s] Exception occured in waitForCardAbsent. Message: %s\n", this->getName(), e.getMessage());
+    throw NoStackTraceThrowable();
 }
 }
 
@@ -135,7 +127,7 @@ try {
     apduResponseData = channel->transmit(std::shared_ptr<CommandAPDU>(new CommandAPDU(apduIn)));
 }
 catch (CardException &e) {
-    throw std::shared_ptr<KeypleIOReaderException>(new KeypleIOReaderException(this->getName() + ":" + e.getMessage()));
+    throw KeypleIOReaderException(this->getName() + ":" + e.getMessage());
 }
 return apduResponseData->getBytes();
 }
@@ -152,17 +144,17 @@ if (*(std::dynamic_pointer_cast<Protocol>(protocolFlag)) != Protocol::ANY) {
     if (selectionMask == "") {
         throw KeypleReaderException("Target selector mask not found!");// nullptr));
     }
-    std::shared_ptr<Pattern> p = Pattern::compile(selectionMask);
+    Pattern p = Pattern::compile(selectionMask);
     std::string atr = ByteArrayUtils::toHex(card->getATR()); //.getBytes());
-    if (!p->matcher(atr).matches()) {
+    if (!p.matcher(atr).matches()) {
         if (logging) {
-            logger->trace("[{}] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = {}", this->getName(), "protocolFlag");
+            logger->trace("[%s] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %s\n", this->getName(), protocolFlag);
         }
         result = false;
     }
     else {
         if (logging) {
-            logger->trace("[{}] protocolFlagMatches => matching SE. PROTOCOLFLAG = {}", this->getName(), "protocolFlag");
+            logger->trace("[%s] protocolFlagMatches => matching SE. PROTOCOLFLAG = %s\n", this->getName(), protocolFlag);
         }
         result = true;
     }
@@ -180,11 +172,11 @@ throw(std::invalid_argument, KeypleBaseException)
     logger->debug("PcscReader::setParameter name: %s, value: %s\n", name, value);
 
     if (logging) {
-        logger->trace("[{}] setParameter => PCSC: Set a parameter. NAME = {}, VALUE = {}", this->getName(), name, value);
+        logger->trace("[%s] setParameter => PCSC: Set a parameter. NAME = %s, VALUE = %s\n", this->getName(), name, value);
     }
 
     if (name == "") {
-        throw std::invalid_argument("Parameter shouldn't be null");
+        throw std::invalid_argument("Parameter shouldn't be null\n");
     }
 
     if (name == SETTING_KEY_TRANSMISSION_MODE) {
@@ -320,26 +312,23 @@ void PcscReader::openPhysicalChannel() throw(KeypleChannelStateException)
     // channel
     try {
         if (card == nullptr) {
-            if (isLogicalChannelOpen()) {
-                throw std::make_shared<KeypleChannelStateException>("Logical channel found open while physical channel is not!");
-            }
             this->card = this->terminal->connect(parameterCardProtocol);
             if (cardExclusiveMode) {
                 card->beginExclusive();
                 if (logging) {
-                    logger->trace("[{}] Opening of a physical SE channel in exclusive mode.", this->getName());
+                    logger->trace("[%s] Opening of a physical SE channel in exclusive mode\n", this->getName());
                 }
             }
             else {
                 if (logging) {
-                    logger->trace("[{}] Opening of a physical SE channel in shared mode.", this->getName());
+                    logger->trace("[%s] Opening of a physical SE channel in shared mode\n", this->getName());
                 }
             }
         }
         this->channel = card->getBasicChannel();
     }
     catch (const CardException &e) {
-        throw KeypleChannelStateException("Error while opening Physical Channel"); //, e));
+        throw KeypleChannelStateException("Error while opening Physical Channel\n"); //, e));
     }
 }
 
@@ -367,7 +356,7 @@ int PcscReader::hashCode()
     return 0;
 }
 
-void PcscReader::setParameters(std::unordered_map<std::string, std::string> &parameters)
+void PcscReader::setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException)
 {
 
 }

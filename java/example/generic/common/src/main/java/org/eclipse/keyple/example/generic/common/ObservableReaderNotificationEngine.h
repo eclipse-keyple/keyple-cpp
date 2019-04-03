@@ -33,7 +33,9 @@ namespace common {
 using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
 using ObservableReader = org::eclipse::keyple::seproxy::event::ObservableReader;
 using PluginEvent = org::eclipse::keyple::seproxy::event::PluginEvent;
-using ReaderEvent = org::eclipse::keyple::seproxy::event::ReaderEvent;
+using ReaderEvent      = org::eclipse::keyple::seproxy::event::ReaderEvent;
+using Logger           = org::eclipse::keyple::common::Logger;
+using LoggerFactory    = org::eclipse::keyple::common::LoggerFactory;
 
 class ObservableReaderNotificationEngine
 : public std::enable_shared_from_this<ObservableReaderNotificationEngine> {
@@ -42,6 +44,11 @@ public:
      * Constructor
      */
     ObservableReaderNotificationEngine();
+
+    /**
+     * Destructor
+     */
+    ~ObservableReaderNotificationEngine();
 
     /**
      *
@@ -67,7 +74,12 @@ public:
          */
         SpecificReaderObserver(ObservableReaderNotificationEngine *outerInstance); //super();
 
-        virtual void update(std::shared_ptr<ReaderEvent> event_Renamed);
+        /**
+         *
+         */
+        void update(std::shared_ptr<ReaderEvent> event) override;
+        void update(ReaderEvent event) override;
+
     };
 
     /**
@@ -94,13 +106,14 @@ public:
         SpecificPluginObserver(ObservableReaderNotificationEngine *outerInstance, std::shared_ptr<SpecificReaderObserver> readerObserver);
 
         void update(std::shared_ptr<PluginEvent> event) override;
+        void update(PluginEvent event) override;
     };
 
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger;
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(ObservableReaderNotificationEngine));
 
     /**
      *

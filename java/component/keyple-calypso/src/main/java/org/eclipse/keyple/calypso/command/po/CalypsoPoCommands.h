@@ -1,10 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-#include "exceptionhelper.h"
-#include <memory>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -16,6 +9,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include "exceptionhelper.h"
+#include <memory>
+
+/* Core */
+#include "CommandsTable.h"
+#include "PoRevision.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -23,11 +28,13 @@ namespace org {
                 namespace command {
                     namespace po {
 
+                        using CommandsTable = org::eclipse::keyple::command::CommandsTable;
+                        using PoRevision    = org::eclipse::keyple::calypso::command::po::PoRevision;
 
                         class CalypsoPoCommands final : public CommandsTable {
 
                             /** The po get data. */
-public:
+                        public:
                             static CalypsoPoCommands GET_DATA_FCI;
 
                             /** The po open session. */
@@ -66,7 +73,7 @@ public:
                             /** The po decrease counter. */
                             static CalypsoPoCommands SELECT_FILE;
 
-private:
+                        private:
                             static std::vector<CalypsoPoCommands> valueList;
 
                             class StaticConstructor {
@@ -76,7 +83,7 @@ private:
 
                             static StaticConstructor staticConstructor;
 
-public:
+                        public:
                             enum class InnerEnum {
                                 GET_DATA_FCI,
                                 OPEN_SESSION_10,
@@ -94,7 +101,7 @@ public:
                             };
 
                             const InnerEnum innerEnumValue;
-private:
+                        private:
                             const std::string nameValue;
                             const int ordinalValue;
                             static int nextOrdinal;
@@ -107,10 +114,10 @@ private:
                             const char instructionbyte;
 
                             /** The command builder class. */
-                            const std::type_info commandBuilderClass;
+                            const std::type_info& commandBuilderClass;
 
                             /** The response parser class. */
-                            const std::type_info responseParserClass;
+                            const std::type_info& responseParserClass;
 
                             /**
                              * The generic constructor of CalypsoCommands.
@@ -121,7 +128,7 @@ private:
                              * @param responseParserClass the response parser class
                              */
                         public:
-                            CalypsoPoCommands(const std::string &name, InnerEnum innerEnum, const std::string &name, char instructionByte, std::type_info commandBuilderClass, std::type_info responseParserClass);
+                            CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte, const std::type_info& commandBuilderClass, const std::type_info& responseParserClass);
 
 
                             /**
@@ -143,14 +150,14 @@ private:
                              *
                              * @return the corresponding command builder class
                              */
-                            virtual std::type_info getCommandBuilderClass();
+                            virtual const std::type_info& getCommandBuilderClass();
 
                             /**
                              * Gets the response parser class.
                              *
                              * @return the corresponding response parser class
                              */
-                            virtual std::type_info getResponseParserClass();
+                            virtual const std::type_info& getResponseParserClass();
 
 
                             /**

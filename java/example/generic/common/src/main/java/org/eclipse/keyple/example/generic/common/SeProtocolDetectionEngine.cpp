@@ -1,23 +1,28 @@
 #include "SeProtocolDetectionEngine.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/ContactlessProtocols.h"
-#include "../../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/PoSelector.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduRequest.h"
-#include "../../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/po/parser/ReadDataStructure.h"
+
+/* Core */
+#include "ChannelState.h"
+#include "ContactlessProtocols_Import.h"
+#include "SeReader.h"
+#include "SeSelector.h"
+#include "ByteArrayUtils.h"
+#include "ApduRequest.h"
+
+/* Calypso */
+#include "PoSelector.h"
+#include "ReadDataStructure.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace common {
                         using ReadDataStructure = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
-                        using PoSelector = org::eclipse::keyple::calypso::transaction::PoSelector;
-                        using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                        using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                        using PoSelectionRequest = org::eclipse::keyple::calypso::transaction::PoSelectionRequest;
+                        using namespace org::eclipse::keyple::seproxy;
+                        using DefaultSelectionRequest = org::eclipse::keyple::seproxy::event::DefaultSelectionRequest;
+                        using SelectionResponse = org::eclipse::keyple::seproxy::event_Renamed::SelectionResponse;
                         using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
                         using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
                         using namespace org::eclipse::keyple::transaction;
@@ -30,7 +35,7 @@ namespace org {
                             this->poReader = poReader;
                         }
 
-                        std::shared_ptr<SelectionRequest> SeProtocolDetectionEngine::prepareSeSelection() {
+                        std::shared_ptr<DefaultSelectionRequest> SeProtocolDetectionEngine::prepareSeSelection() {
 
                             seSelection = std::make_shared<SeSelection>(poReader);
 
@@ -42,14 +47,14 @@ namespace org {
                                         std::string HoplinkAID = "A000000291A000000191";
                                         char SFI_T2Usage = static_cast<char>(0x1A);
                                         char SFI_T2Environment = static_cast<char>(0x14);
+					
+                                        std::shared_ptr<PoSelectionRequest> poSelectionRequest = std::make_shared<PoSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(HoplinkAID), nullptr), nullptr, "Hoplink selector"), ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4);
 
-                                        std::shared_ptr<PoSelector> poSelector = std::make_shared<PoSelector>(ByteArrayUtils::fromHex(HoplinkAID), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4, "Hoplink selector");
+                                        poSelectionRequest->preparePoCustomReadCmd("Standard Get Data", std::make_shared<ApduRequest>(ByteArrayUtils::fromHex("FFCA000000"), false));
 
-                                        poSelector->preparePoCustomReadCmd("Standard Get Data", std::make_shared<ApduRequest>(ByteArrayUtils::fromHex("FFCA000000"), false));
+                                        poSelectionRequest->prepareReadRecordsCmd(SFI_T2Environment, ReadDataStructure::SINGLE_RECORD_DATA, static_cast<char>(0x01), "Hoplink T2 Environment");
 
-                                        poSelector->prepareReadRecordsCmd(SFI_T2Environment, ReadDataStructure::SINGLE_RECORD_DATA, static_cast<char>(0x01), "Hoplink T2 Environment");
-
-                                        seSelection->prepareSelection(poSelector);
+                                        seSelection->prepareSelection(poSelectionRequest);
 
                                         break;
                                     }
@@ -63,7 +68,7 @@ namespace org {
                                         break;
                                     default:
                                         /* Add a generic selector */
-                                        seSelection->prepareSelection(std::make_shared<SeSelector>(".*", ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4, "Default selector"));
+                                        seSelection->prepareSelection(std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(nullptr, std::make_shared<SeSelector::AtrFilter>(".*"), "Default selector"), ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4));
                                         break;
                                 }
                             }

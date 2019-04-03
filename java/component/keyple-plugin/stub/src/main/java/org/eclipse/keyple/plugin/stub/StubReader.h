@@ -1,25 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin/AbstractThreadedLocalReader.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/TransmissionMode.h"
-#include <string>
-#include <unordered_map>
-#include <vector>
-#include "exceptionhelper.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace stub { class StubSecureElement; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleChannelStateException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleIOReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequestSet; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponseSet; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class NoStackTraceThrowable; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -31,6 +9,28 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+#include "exceptionhelper.h"
+
+/* Core */
+#include "AbstractThreadedLocalReader.h"
+#include "TransmissionMode.h"
+#include "KeypleBaseException.h"
+#include "KeypleChannelStateException.h"
+#include "NoStackTraceThrowable.h"
+
+/* Forward declarations */
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace stub { class StubSecureElement; }}}}}
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -38,32 +38,46 @@ namespace org {
                 namespace stub {
 
                     using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
-                    using KeypleIOReaderException = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
-                    using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
-                    using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
-                    using SeRequestSet = org::eclipse::keyple::seproxy::message::SeRequestSet;
-                    using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
+                    using KeypleIOReaderException     = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
+                    using KeypleReaderException       = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using KeypleBaseException       = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+                    using NoStackTraceThrowable       = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
+                    using ApduRequest                 = org::eclipse::keyple::seproxy::message::ApduRequest;
+                    using ApduResponse                = org::eclipse::keyple::seproxy::message::ApduResponse;
+                    using SeRequestSet                = org::eclipse::keyple::seproxy::message::SeRequestSet;
+                    using SeResponseSet               = org::eclipse::keyple::seproxy::message::SeResponseSet;
                     using AbstractThreadedLocalReader = org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader;
-                    using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                    using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
+                    using SeProtocol                  = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                    using TransmissionMode            = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
+                    using ReaderEvent                 = org::eclipse::keyple::seproxy::event::ReaderEvent;
+                    using Logger                      = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory               = org::eclipse::keyple::common::LoggerFactory;
 
+                    class EXPORT StubReader final : public AbstractThreadedLocalReader {
 
-                    class StubReader final : public AbstractThreadedLocalReader {
+                      private:
+                        /**
+                         *
+                         */
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(StubReader));
 
-                    private:
-                        static const std::shared_ptr<Logger> logger;
-
+                        /**
+                         *
+                         */
                         std::shared_ptr<StubSecureElement> se;
 
+                        /**
+                         *
+                         */
                         bool sePresent = false;
 
-                        std::unordered_map<std::string, std::string> parameters = std::unordered_map<std::string, std::string>();
+                        /**
+                         *
+                         */
+                        std::unordered_map<std::string, std::string> parameters =
+                            std::unordered_map<std::string, std::string>();
 
-                    public:
+                      public:
                         static const std::string ALLOWED_PARAMETER_1;
                         static const std::string ALLOWED_PARAMETER_2;
                         static const std::string CONTACTLESS_PARAMETER;
@@ -76,26 +90,29 @@ namespace org {
 
                         StubReader(const std::string &name);
 
-                    protected:
+                        ~StubReader();
+
+                      protected:
                         std::vector<char> getATR() override;
 
                         bool isPhysicalChannelOpen() override;
 
                         void openPhysicalChannel() throw(KeypleChannelStateException) override;
 
-                    public:
+                      public:
                         void closePhysicalChannel() throw(KeypleChannelStateException) override;
 
                         std::vector<char> transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
 
-                    protected:
+                      protected:
                         bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(KeypleReaderException) override;
 
+                      
+                         bool checkSePresence() override;
 
-                    public:
-                        bool isSePresent() override;
-
-                        void setParameter(const std::string &name, const std::string &value) throw(KeypleReaderException) override;
+                      public:
+                        void setParameter(const std::string &name,
+                                          const std::string &value) throw(KeypleReaderException) override;
 
                         std::unordered_map<std::string, std::string> getParameters() override;
 
@@ -129,7 +146,7 @@ namespace org {
                          * @return true if the SE is present
                          * @throws NoStackTraceThrowable in case of unplugging the reader
                          */
-                    protected:
+                      protected:
                         bool waitForCardPresent(long long timeout) throw(NoStackTraceThrowable) override;
 
                         /**
@@ -141,14 +158,40 @@ namespace org {
                          */
                         bool waitForCardAbsent(long long timeout) throw(NoStackTraceThrowable) override;
 
-protected:
+                      protected:
                         std::shared_ptr<StubReader> shared_from_this() {
-                            return std::static_pointer_cast<StubReader>(org.eclipse.keyple.seproxy.plugin.AbstractThreadedLocalReader::shared_from_this());
+                            return std::static_pointer_cast<StubReader>(AbstractThreadedLocalReader::shared_from_this());
+                        }
+
+                      public:
+                        /**
+                         *
+                         */
+                        void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
+
+                        /**
+                         *
+                         */
+                        bool equals(std::shared_ptr<void> o) override;
+
+                        /**
+                         *
+                         */
+                        int hashCode() override;
+
+                        /**
+                         *
+                         */
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override;
+
+                        std::string getName() override
+                        {
+                            return AbstractThreadedLocalReader::AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName();
                         }
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace stub
+            }     // namespace plugin
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

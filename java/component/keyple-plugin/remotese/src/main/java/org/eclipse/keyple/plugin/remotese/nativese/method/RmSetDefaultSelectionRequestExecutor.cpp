@@ -1,9 +1,12 @@
 #include "RmSetDefaultSelectionRequestExecutor.h"
 #include "../NativeReaderServiceImpl.h"
+#include "../../transport/model/TransportDto.h"
+#include "../../transport/model/KeypleDto.h"
 #include "../../transport/json/JsonParser.h"
-#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SelectionRequest.h"
+#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/DefaultSelectionRequest.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ObservableReader.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ProxyReader.h"
+#include "../../rm/RemoteMethod.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
 
 namespace org {
@@ -14,12 +17,16 @@ namespace org {
                     namespace nativese {
                         namespace method {
                             using NativeReaderServiceImpl = org::eclipse::keyple::plugin::remotese::nativese::NativeReaderServiceImpl;
+                            using RemoteMethod = org::eclipse::keyple::plugin::remotese::rm::RemoteMethod;
+                            using RemoteMethodExecutor = org::eclipse::keyple::plugin::remotese::rm::RemoteMethodExecutor;
                             using namespace org::eclipse::keyple::plugin::remotese::transport;
                             using JsonParser = org::eclipse::keyple::plugin::remotese::transport::json::JsonParser;
+                            using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
+                            using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
+                            using DefaultSelectionRequest = org::eclipse::keyple::seproxy::event_Renamed::DefaultSelectionRequest;
                             using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
                             using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                             using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
-                            using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
                             using org::slf4j::Logger;
                             using org::slf4j::LoggerFactory;
                             using com::google::gson::JsonObject;
@@ -36,17 +43,17 @@ const std::shared_ptr<org::slf4j::Logger> RmSetDefaultSelectionRequestExecutor::
                                 std::string body = keypleDto->getBody();
                                 std::shared_ptr<JsonObject> jsonObject = JsonParser::getGson()->fromJson(body, JsonObject::typeid);
 
-                                std::shared_ptr<JsonPrimitive> selectionRequestJson = jsonObject->getAsJsonPrimitive("selectionRequest");
+                                std::shared_ptr<JsonPrimitive> selectionRequestJson = jsonObject->getAsJsonPrimitive("defaultSelectionRequest");
                                 std::shared_ptr<JsonPrimitive> notificationModeJson = jsonObject->getAsJsonPrimitive("notificationMode");
 
-                                logger->debug(selectionRequestJson->getAsString());
-                                logger->debug(notificationModeJson->getAsString());
+                                logger->trace("DefaultSelectionRequest : {}", selectionRequestJson->getAsString());
+                                logger->trace("Notification Mode : {}", notificationModeJson->getAsString());
 
-                                std::shared_ptr<SelectionRequest> selectionRequest = JsonParser::getGson()->fromJson(selectionRequestJson->getAsString(), SelectionRequest::typeid);
+                                std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest = JsonParser::getGson()->fromJson(selectionRequestJson->getAsString(), DefaultSelectionRequest::typeid);
                                 ObservableReader::NotificationMode notificationMode = ObservableReader::NotificationMode.get(notificationModeJson->getAsString());
 
                                 std::string nativeReaderName = keypleDto->getNativeReaderName();
-                                logger->debug("Execute locally SetDefaultSelectionRequest : {} - {}", notificationMode, selectionRequest);
+                                logger->trace("Execute locally SetDefaultSelectionRequest : {} - {}", notificationMode, defaultSelectionRequest);
 
                                 try {
                                     // find native reader by name
@@ -54,7 +61,7 @@ const std::shared_ptr<org::slf4j::Logger> RmSetDefaultSelectionRequestExecutor::
 
                                     if (std::dynamic_pointer_cast<ObservableReader>(reader) != nullptr) {
                                         logger->debug(reader->getName() + " is an ObservableReader, invoke setDefaultSelectionRequest on it");
-                                        (std::static_pointer_cast<ObservableReader>(reader))->setDefaultSelectionRequest(selectionRequest, notificationMode);
+                                        (std::static_pointer_cast<ObservableReader>(reader))->setDefaultSelectionRequest(defaultSelectionRequest, notificationMode);
 
                                         // prepare response
                                         std::string parseBody = "{}";

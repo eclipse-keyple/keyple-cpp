@@ -3,7 +3,7 @@
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { class TransportDto; } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace remotese { namespace transport { namespace model { class TransportDto; } } } } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -23,8 +23,10 @@ namespace org {
                 namespace remotese {
                     namespace transport {
 
+                        using TransportDto = org::eclipse::keyple::plugin::remotese::transport::model::TransportDto;
+
                         /**
-                         * Component that process locally DTO
+                         * Internal Remote SE Plugin components that processes incoming messages
                          */
                         class DtoHandler {
 

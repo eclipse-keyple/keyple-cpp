@@ -5,16 +5,14 @@
 #include "../../../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.h"
 #include "../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
 #include "DemoUtilities.h"
-#include "../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelection.h"
 #include "../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
+#include "../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
 #include "../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/Protocol.h"
-#include "../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
 #include "../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
 #include "../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/CalypsoPo.h"
-#include "../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/PoSelector.h"
+#include "../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/PoSelectionRequest.h"
 #include "../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
 #include "../../../calypso/PoFileStructureInfo.h"
-#include "../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/MatchingSe.h"
 #include "../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/PoTransaction.h"
 #include "../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/TransmissionMode.h"
 
@@ -26,21 +24,20 @@ namespace org {
                     namespace pc {
                         namespace calypso {
                             using CalypsoPo = org::eclipse::keyple::calypso::transaction::CalypsoPo;
-                            using PoSelector = org::eclipse::keyple::calypso::transaction::PoSelector;
+                            using PoSelectionRequest = org::eclipse::keyple::calypso::transaction::PoSelectionRequest;
                             using PoTransaction = org::eclipse::keyple::calypso::transaction::PoTransaction;
                             using PoFileStructureInfo = org::eclipse::keyple::integration::calypso::PoFileStructureInfo;
                             using PcscPlugin = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
                             using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
                             using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
                             using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                            using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
                             using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                             using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                             using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
                             using Protocol = org::eclipse::keyple::seproxy::protocol::Protocol;
                             using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-                            using MatchingSe = org::eclipse::keyple::transaction::MatchingSe;
-                            using SeSelection = org::eclipse::keyple::transaction::SeSelection;
-                            using SeSelector = org::eclipse::keyple::transaction::SeSelector;
+                            using namespace org::eclipse::keyple::transaction;
                             using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
                             using org::slf4j::Logger;
                             using org::slf4j::LoggerFactory;
@@ -72,10 +69,10 @@ const std::shared_ptr<org::slf4j::Logger> Demo_WriteName::logger = org::slf4j::L
 
                                 std::shared_ptr<SeSelection> samSelection = std::make_shared<SeSelection>(samReader);
 
-                                std::shared_ptr<SeSelector> samSelector = std::make_shared<SeSelector>(SAM_ATR_REGEX, ChannelState::KEEP_OPEN, Protocol::ANY, "SAM Selection");
+                                std::shared_ptr<SeSelectionRequest> samSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(nullptr, std::make_shared<SeSelector::AtrFilter>(SAM_ATR_REGEX), "SAM Selection"), ChannelState::KEEP_OPEN, Protocol::ANY);
 
                                 /* Prepare selector, ignore MatchingSe here */
-                                samSelection->prepareSelection(samSelector);
+                                samSelection->prepareSelection(samSelectionRequest);
 
                                 try {
                                     if (!samSelection->processExplicitSelection()) {
@@ -104,8 +101,8 @@ const std::shared_ptr<org::slf4j::Logger> Demo_WriteName::logger = org::slf4j::L
                                      */
 
                                     /*
-                                     * Calypso selection: configures a PoSelector with all the desired attributes to make
-                                     * the selection and read additional information afterwards
+                                     * Calypso selection: configures a PoSelectionRequest with all the desired attributes to
+                                     * make the selection and read additional information afterwards
                                      */
                                     /* Calypso AID */
                                     std::string poAuditC0Aid = "315449432E4943414C54"; // AID of the PO with Audit C0 profile
@@ -113,13 +110,13 @@ const std::shared_ptr<org::slf4j::Logger> Demo_WriteName::logger = org::slf4j::L
                                     std::string cdLightAid = "315449432E494341"; // AID of the Rev2.4 PO emulating CDLight
 
                                     // Add Audit C0 AID to the list
-                                    std::shared_ptr<CalypsoPo> auditC0Se = std::static_pointer_cast<CalypsoPo>(seSelection->prepareSelection(std::make_shared<PoSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::poAuditC0Aid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "Audit C0")));
+                                    std::shared_ptr<CalypsoPo> auditC0Se = std::static_pointer_cast<CalypsoPo>(seSelection->prepareSelection(std::make_shared<PoSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::poAuditC0Aid), nullptr), nullptr, "Audit C0"), ChannelState::KEEP_OPEN, Protocol::ANY)));
 
                                     // Add CLAP AID to the list
-                                    std::shared_ptr<CalypsoPo> clapSe = std::static_pointer_cast<CalypsoPo>(seSelection->prepareSelection(std::make_shared<PoSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::clapAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "CLAP")));
+                                    std::shared_ptr<CalypsoPo> clapSe = std::static_pointer_cast<CalypsoPo>(seSelection->prepareSelection(std::make_shared<PoSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::clapAid), nullptr), nullptr, "CLAP"), ChannelState::KEEP_OPEN, Protocol::ANY)));
 
                                     // Add cdLight AID to the list
-                                    std::shared_ptr<CalypsoPo> cdLightSe = std::static_pointer_cast<CalypsoPo>(seSelection->prepareSelection(std::make_shared<PoSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::cdLightAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, Protocol::ANY, "CDLight")));
+                                    std::shared_ptr<CalypsoPo> cdLightSe = std::static_pointer_cast<CalypsoPo>(seSelection->prepareSelection(std::make_shared<PoSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(PoFileStructureInfo::cdLightAid), nullptr), nullptr, "CDLight"), ChannelState::KEEP_OPEN, Protocol::ANY)));
 
                                     if (!seSelection->processExplicitSelection()) {
                                         throw std::invalid_argument("No recognizable PO detected.");

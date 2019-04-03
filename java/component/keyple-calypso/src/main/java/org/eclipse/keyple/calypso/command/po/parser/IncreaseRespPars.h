@@ -38,21 +38,21 @@ namespace org {
                             class IncreaseRespPars final : public AbstractApduResponseParser {
 
                             private:
-                                static const std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
-                                                        private:
-                                                            class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-                                                            public:
-                                                                StaticConstructor();
-                                                            };
+                            private:
+                                class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+                                public:
+                                    StaticConstructor();
+                                };
 
-                                                        private:
-                                                            static IncreaseRespPars::StaticConstructor staticConstructor;
+                            private:
+                                static IncreaseRespPars::StaticConstructor staticConstructor;
 
 
 
                             protected:
-                                std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
+                                std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
                                 /**
                                  * Instantiates a new IncreaseRespPars.
@@ -69,11 +69,11 @@ namespace org {
                                  */
                                 int getNewValue() throw(IllegalStateException);
 
-                                std::string toString() override;
+                                std::string toString();
 
 protected:
                                 std::shared_ptr<IncreaseRespPars> shared_from_this() {
-                                    return std::static_pointer_cast<IncreaseRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                    return std::static_pointer_cast<IncreaseRespPars>(AbstractApduResponseParser::shared_from_this());
                                 }
                             };
 

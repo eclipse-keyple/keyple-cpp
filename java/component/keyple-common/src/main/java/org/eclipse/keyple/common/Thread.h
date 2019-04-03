@@ -1,16 +1,18 @@
 #pragma once
 
 #if defined(_WIN32)
-	#include <windows.h>
+#include <windows.h>
 #else
-	#include <unistd.h>
+#include <pthread.h>
+#include <unistd.h>
 #endif
 
 #include "Object.h"
 
 class Thread {
-public:
-	/**
+
+  public:
+    /**
 	 * Constructor
 	 *
 	 * Allocates a new Thread object. This constructor has the same effect as
@@ -18,11 +20,11 @@ public:
 	 * Automatically generated names are of the form "Thread-"+n, where n is an
 	 * integer.
 	 */
-	Thread() : name("Thread-x"), interrupted(false)
-	{
-	}
+    Thread() : name("Thread-x"), interrupted(false), tid(0), running(0), detached(0)
+    {
+    }
 
-	/**
+    /**
 	 * Constructor
 	 *
 	 * Allocates a new Thread object. This constructor has the same effect as
@@ -30,11 +32,35 @@ public:
 	 *
 	 * @param name the name of the new thread
 	 */
-	Thread(const std::string &name) : name(name), interrupted(true)
-	{
-	}
+    Thread(const std::string &name) : name(name), interrupted(true)
+    {
+    }
 
-	/**
+    /**
+	 * Destructor
+	 */
+    ~Thread()
+    {
+        if (running == 1 && detached == 0)
+        {
+#if defined(_WIN32)
+            CloseHandle(tid);
+#else
+            pthread_detach(tid);
+#endif
+        }
+
+        if (running == 1)
+        {
+#if defined(_WIN32)
+            CloseHandle(tid);
+#else
+            pthread_cancel(tid);
+#endif
+        }
+    }
+
+    /**
 	 * Causes this thread to begin execution.
 	 *
 	 * The result is that two threads are running concurrently: the current
@@ -46,16 +72,120 @@ public:
 	 *
 	 * @throws IllegalThreadStateException if the thread was already started.
 	 */
-	void start()
-	{
-		interrupted = false;
-	}
+    void start()
+    {
+        int result;
 
-	void setDaemon(bool on)
-	{
-	}
+        interrupted = false;
 
-	/**
+#if defined(_WIN32)
+        DWORD unused_tid;
+        tid    = CreateThread(NULL, 0, runThread, this, 0, &unused_tid);
+        result = tid ? 0 : -1;
+#else
+        result = pthread_create(&tid, NULL, runThread, this);
+#endif
+        if (result == 0)
+            running = 1;
+    }
+
+    /**
+	 * In the call to pthread_create() the last argument is a void pointer to a
+	 * data structure which will be passed to the runThread() function when it
+	 * is called. Since the input argument to the runThread() is the Thread
+	 * class this pointer, we can cast it to a Thread pointer then use it to
+	 * call the Thread::run() method. Due to polymorphism, the Thread subclass
+	 * run() method will be called to carry out the thread’s action.
+	 */
+#if defined(_WIN32)
+    static DWORD WINAPI runThread(LPVOID arg)
+    {
+        ((Thread *)arg)->run();
+
+        return 0;
+    }
+#else
+    static void *runThread(void *arg)
+    {
+        return ((Thread *)arg)->run();
+    }
+#endif
+
+    /**
+	 * By default Pthreads are joinable. meaning you can wait for them to
+	 * complete with a call to pthread_join(). The Thread class join method
+	 * checks to see if the thread is running, then calls this function to wait
+	 * for the thread to complete. If the call is successful the thread is
+	 * marked as detached since pthread_join() automatically detatches a thread.
+	 */
+    int join()
+    {
+        int result = -1;
+
+        if (running == 1)
+        {
+#if defined(_WIN32)
+            WaitForMultipleObjects(1, &tid, TRUE, INFINITE);
+            result = 0; // Close handle anyway
+#else
+            result = pthread_join(tid, NULL);
+#endif
+            if (result == 0)
+            {
+#if defined(_WIN32)
+                CloseHandle(tid);
+#endif
+                detached = 1;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+	 * This is a utility method that detaches a thread when the caller doesn’t
+	 * want to wait for the thread to complete. If the thread is running and not
+	 * detached, pthread_detach() is called and the thread is flagged as
+	 * detached if the call is successful.
+	 */
+    int detach()
+    {
+        int result = -1;
+
+        if (running == 1 && detached == 0)
+        {
+#if defined(_WIN32)
+            result = !CloseHandle(tid);
+#else
+            result = pthread_detach(tid);
+#endif
+            if (result == 0)
+            {
+                detached = 1;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+	 * This is another utility method that returns the thread ID for display or
+	 * logging purposes.
+	 */
+#if defined(_WIN32)
+    HANDLE self()
+#else
+    pthread_t self()
+#endif
+    {
+        return tid;
+    }
+
+    void setDaemon(bool on)
+    {
+    }
+
+    /**
 	 * Causes the currently executing thread to sleep (temporarily cease
 	 * execution) for the specified number of milliseconds, subject to the
 	 * precision and accuracy of system timers and schedulers. The thread does
@@ -70,16 +200,16 @@ public:
 	 *                              exception is thrown.static void sleep(long
 	 *                              millis) throw(InterruptedException)
 	 */
-	static void sleep(long millis)
-	{
+    static void sleep(long millis)
+    {
 #if defined(_WIN32)
-		Sleep(millis);
+        Sleep(millis);
 #else
-		usleep(millis * 1000);
+        usleep(millis * 1000);
 #endif
-	}
+    }
 
-	/**
+    /**
 	 * Interrupts this thread.
 	 *
 	 * Unless the current thread is interrupting itself, which is always
@@ -108,19 +238,40 @@ public:
 	 *
 	 * @throws SecurityException if the current thread cannot modify this thread
 	 */
-	void interrupt()
-	{
-		interrupted = true;
-	}
+    void interrupt()
+    {
+        interrupted = true;
+    }
 
-private:
-	/**
+    virtual void *run() = 0;
+
+  private:
+    /**
 	 *
 	 */
-	const std::string name;
+    const std::string name;
 
-	/**
+    /**
 	 *
 	 */
-	bool interrupted;
+    bool interrupted;
+
+    /**
+	 *
+	 */
+#if defined(_WIN32)
+    HANDLE tid;
+#else
+    pthread_t tid;
+#endif
+
+    /**
+	 *
+	 */
+    int running;
+
+    /**
+	 *
+	 */
+    int detached;
 };

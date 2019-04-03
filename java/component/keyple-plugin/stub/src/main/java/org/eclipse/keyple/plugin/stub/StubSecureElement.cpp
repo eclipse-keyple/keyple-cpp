@@ -1,7 +1,15 @@
+/* Plugin - Stub */
 #include "StubSecureElement.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleChannelStateException.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleIOReaderException.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
+
+/* Core - Seproxy - Exception */
+#include "KeypleChannelStateException.h"
+#include "KeypleIOReaderException.h"
+
+/* Core - Util */
+#include "ByteArrayUtils.h"
+
+/* Common */
+#include "stringhelper.h"
 
 namespace org {
     namespace eclipse {
@@ -25,20 +33,26 @@ namespace org {
                     }
 
                     void StubSecureElement::addHexCommand(const std::string &command, const std::string &response) {
-                        assert((command != "" && response != "", "command and response should not be null"));
+                        if (command.compare("") && response.compare(""))
+                            //"command and response should not be null"));
+                            return;
+
                         // add commands without space
                         hexCommands.emplace(StringHelper::replace(command, " ", ""), StringHelper::replace(response, " ", ""));
                     }
 
                     void StubSecureElement::removeHexCommand(const std::string &command) {
-                        assert((command != "", "command should not be null"));
+                        if (command.compare(""))
+                            //"command should not be null"));
+                            return;
+
                         hexCommands.erase(StringHelper::trim(command));
                     }
 
                     std::vector<char> StubSecureElement::processApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) {
 
                         if (apduIn.empty()) {
-                            return nullptr;
+                            return apduIn;
                         }
 
                         // convert apduIn to hexa

@@ -35,7 +35,7 @@ namespace org {
                             class UpdateRecordRespPars final : public AbstractApduResponseParser {
 
                             private:
-                                static const std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                static const std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
                                                         private:
                                                             class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
@@ -48,7 +48,7 @@ namespace org {
 
 
                             protected:
-                                std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
+                                std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
                                 /**
                                  * Instantiates a new UpdateRecordRespPars.
@@ -58,7 +58,7 @@ namespace org {
 
 protected:
                                 std::shared_ptr<UpdateRecordRespPars> shared_from_this() {
-                                    return std::static_pointer_cast<UpdateRecordRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                    return std::static_pointer_cast<UpdateRecordRespPars>(AbstractApduResponseParser::shared_from_this());
                                 }
                             };
 

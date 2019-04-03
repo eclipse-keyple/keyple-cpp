@@ -27,190 +27,208 @@
 #include "KeypleReaderException.h"
 #include "ObservableReader.h"
 #include "ProxyReader.h"
+#include "DefaultSelectionRequest.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class ReaderEvent; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SelectionRequest; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequestSet; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponseSet; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class ObservableReader; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace event { class ReaderObserver; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
-
+/* Namespace */
 namespace org {
-namespace eclipse {
-namespace keyple {
-namespace seproxy {
-namespace plugin {
+    namespace eclipse {
+        namespace keyple {
+            namespace seproxy {
+                namespace plugin {
 
+                    /* Using */
+                    using SeReader                    = org::eclipse::keyple::seproxy::SeReader;
+                    using ObservableReader            = org::eclipse::keyple::seproxy::event::ObservableReader;
+                    using ReaderEvent                 = org::eclipse::keyple::seproxy::event::ReaderEvent;
+                    using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
+                    using KeypleIOReaderException     = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
+                    using KeypleReaderException       = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using ProxyReader                 = org::eclipse::keyple::seproxy::message::ProxyReader;
+                    using SeRequest                   = org::eclipse::keyple::seproxy::message::SeRequest;
+                    using SeRequestSet                = org::eclipse::keyple::seproxy::message::SeRequestSet;
+                    using SeResponse                  = org::eclipse::keyple::seproxy::message::SeResponse;
+                    using SeResponseSet               = org::eclipse::keyple::seproxy::message::SeResponseSet;
+                    using LoggerFactory               = org::eclipse::keyple::common::LoggerFactory;
+                    using Logger                      = org::eclipse::keyple::common::Logger;
+                    using DefaultSelectionRequest     = org::eclipse::keyple::seproxy::event::DefaultSelectionRequest;
 
-using SeReader = org::eclipse::keyple::seproxy::SeReader;
-using ObservableReader = org::eclipse::keyple::seproxy::event::ObservableReader;
-using ReaderEvent = org::eclipse::keyple::seproxy::event::ReaderEvent;
-using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
-using KeypleIOReaderException = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
-using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
-using SeRequest = org::eclipse::keyple::seproxy::message::SeRequest;
-using SeRequestSet = org::eclipse::keyple::seproxy::message::SeRequestSet;
-using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
-using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
-using SelectionRequest = org::eclipse::keyple::transaction::SelectionRequest;
+                    /**
+                     * Abstract definition of an observable reader.
+                     * <ul>
+                     * <li>High level logging and benchmarking of SeRequestSet and SeRequest transmission</li>
+                     * <li>Observability management</li>
+                     * <li>Name-based comparison of ProxyReader (required for SortedSet&lt;ProxyReader&gt;)</li>
+                     * <li>Plugin naming management</li>
+                     * </ul>
+                     */
 
-/**
-    *
-    * Abstract definition of an observable reader. Factorizes setSetProtocols and will factorize the
-    * transmit method logging
-    *
-    */
+                    class EXPORT AbstractObservableReader : public AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>, public ObservableReader, public ProxyReader {
 
-class EXPORT AbstractObservableReader : public AbstractLoggedObservable<ReaderEvent>, public ObservableReader, public ProxyReader {
+                        /** logger */
+                    private:
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservableReader));
 
-public:
-    using AbstractLoggedObservable<ReaderEvent>::name;
+                        /** Timestamp recorder */
+                        long long before = 0;
 
-    /**
-     * Add a reader observer.
-     * <p>
-     * The observer will receive all the events produced by this reader (card insertion, removal,
-     * etc.)
-     * <p>
-     * The startObservation() is called when the first observer is added. (to start a monitoring
-     * thread for instance)
-     *
-     * @param observer the observer object
-     */
-    void addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) override;
+                        /** Contains the name of the plugin */
+                    protected:
+                        const std::string pluginName;
 
-    /**
-     * Remove a reader observer.
-     * <p>
-     * The observer will not receive any of the events produced by this reader.
-     * <p>
-     * The stopObservation() is called when the last observer is removed. (to stop a monitoring
-     * thread for instance)
-     *
-     * @param observer the observer object
-     */
-    void removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) override;
+                        /** The default DefaultSelectionRequest to be executed upon SE insertion */
+                        std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest;
 
-    /**
-     * Execute the transmission of a list of {@link SeRequest} and returns a list of
-     * {@link SeResponse}
-     *
-     * @param requestSet the request set
-     * @return responseSet the response set
-     * @throws KeypleReaderException if a reader error occurs
-     */
-    std::shared_ptr<SeResponseSet>
-    transmitSet(std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException) override;
+                        /** Indicate if all SE detected should be notified or only matching SE */
+                        ObservableReader::NotificationMode notificationMode;
 
-    /**
-     * Execute the transmission of a {@link SeRequest} and returns a {@link SeResponse}
-     *
-     * @param seRequest the request to be transmitted
-     * @return the received response
-     * @throws KeypleReaderException if a reader error occurs
-     */
-    std::shared_ptr<SeResponse>
-    transmit(std::shared_ptr<SeRequest> seRequest) throw(KeypleReaderException) override;
+                        /** ==== Constructor =================================================== */
 
-    /**
-     * Compare the name of the current SeReader to the name of the SeReader provided in argument
-     *
-     * @param seReader a SeReader object
-     * @return true if the names match (The method is needed for the SortedSet lists)
-     */
-    int compareTo(std::shared_ptr<SeReader> seReader);
+                        /**
+                         * Reader constructor
+                         * <p>
+                         * Force the definition of a name through the use of super method.
+                         * <p>
+                         * Initialize the time measurement
+                         *
+                         * @param pluginName the name of the plugin that instantiated the reader
+                         * @param readerName the name of the reader
+                         */
+                        AbstractObservableReader(const std::string &pluginName, const std::string &readerName);
 
-    /**
-     *
-     */
-    std::string getName() override;
+                        /** ==== Utility methods =============================================== */
 
- protected:
-    /**
-     *
-     */
-    const std::shared_ptr<Logger> logger;
- 
-    /**
-     * Timestamp recorder
-     */
-    long long before = 0;
+                        /**
+                         * Gets the name of plugin provided in the constructor.
+                         * <p>
+                         * The method will be used particularly for logging purposes. The plugin name is also part of
+                         * the ReaderEvent and PluginEvent objects.
+                         *
+                         * @return the plugin name String
+                         */
+                        std::string getPluginName();
 
-    /**
-     *
-     */
-    const std::string pluginName;
+                        /**
+                         * Compare the name of the current SeReader to the name of the SeReader provided in argument
+                         *
+                         * @param seReader a SeReader object
+                         * @return true if the names match (The method is needed for the SortedSet lists)
+                         */
+                    public:
+                        int compareTo(std::shared_ptr<SeReader> seReader);
 
-    /**
-     * The default SelectionRequest to be executed upon SE insertion
-     */
-    std::shared_ptr<SelectionRequest> defaultSelectionRequest;
+                        /** ==== High level communication API ================================== */
 
-    /** 
-     * Indicate if all SE detected should be notified or only matching SE
-     */
-    ObservableReader::NotificationMode notificationMode = event::ObservableReader::NotificationMode::ALWAYS;
+                        /**
+                         * Execute the transmission of a list of {@link SeRequest} and returns a list of
+                         * {@link SeResponse}
+                         * <p>
+                         * The global execution time (inter-exchange and communication) and the SeRequestSet content is
+                         * logged (DEBUG level).
+                         * <p>
+                         * As the method is final, it cannot be extended.
+                         *
+                         * @param requestSet the request set
+                         * @return responseSet the response set
+                         * @throws KeypleReaderException if a reader error occurs
+                         */
+                        std::shared_ptr<SeResponseSet> transmitSet(std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException) override;
 
-    /**
-     *
-     */
-    virtual std::shared_ptr<SeResponseSet> processSeRequestSet(std::shared_ptr<SeRequestSet> requestSet) = 0;
+                        /**
+                         * Abstract method implemented by the AbstractLocalReader and VirtualReader classes.
+                         * <p>
+                         * This method is handled by transmitSet.
+                         *
+                         * @param requestSet the SeRequestSet to be processed
+                         * @return the SeResponseSet (responses to the SeRequestSet)
+                         * @throws KeypleReaderException if reader error occurs
+                         */
+                    protected:
+                        virtual std::shared_ptr<SeResponseSet> processSeRequestSet(std::shared_ptr<SeRequestSet> requestSet) = 0;
 
-    /**
-     *
-     */
-    virtual std::shared_ptr<SeResponse> processSeRequest(std::shared_ptr<SeRequest> seRequest) = 0;
+                        /**
+                         * Execute the transmission of a {@link SeRequest} and returns a {@link SeResponse}
+                         * <p>
+                         * The individual execution time (inter-exchange and communication) and the SeRequestSet content
+                         * is logged (DEBUG level).
+                         * <p>
+                         * As the method is final, it cannot be extended.
+                         *
+                         * @param seRequest the request to be transmitted
+                         * @return the received response
+                         * @throws KeypleReaderException if a reader error occurs
+                         */
+                    public:
+                        std::shared_ptr<SeResponse> transmit(std::shared_ptr<SeRequest> seRequest) throw(KeypleReaderException) override;
 
-    /**
-     * Reader constructor
-     *
-     * Force the definition of a name through the use of super method.
-     *
-     * @param pluginName the name of the plugin that instantiated the reader
-     * @param readerName the name of the reader
-     */
-    AbstractObservableReader(const std::string &pluginName, const std::string &readerName);
+                        /**
+                         * Abstract method implemented by the AbstractLocalReader and VirtualReader classes.
+                         * <p>
+                         * This method is handled by transmit.
+                         *
+                         * @param seRequest the SeRequestSet to be processed
+                         * @return the SeResponse (responses to the SeRequest)
+                         * @throws KeypleReaderException if reader error occurs
+                         */
+                    protected:
+                        virtual std::shared_ptr<SeResponse> processSeRequest(std::shared_ptr<SeRequest> seRequest) = 0;
 
+                        /** ==== Methods specific to observability ============================= */
 
-    /**
-     * Starts the monitoring thread
-     * <p>
-     * This method has to be overloaded by the class that handle the monitoring thread. It will be
-     * called when a first observer is added.
-     */
-    virtual void startObservation();
+                        /**
+                         * Starts the monitoring of the reader activity (especially card insertion and removal)
+                         * <p>
+                         * This abstract method has to be implemented by the class that handle the monitoring thread (
+                         * e.g. {@link AbstractThreadedLocalReader}).
+                         * <p>
+                         * It will be called when a first observer is added (see addObserver).
+                         */
+                        virtual void startObservation() = 0;
 
-    /**
-     * Ends the monitoring thread
-     * <p>
-     * This method has to be overloaded by the class that handle the monitoring thread. It will be
-     * called when the observer is removed.
-     */
-    virtual void stopObservation();
+                        /**
+                         * Ends the monitoring of the reader activity
+                         * <p>
+                         * This abstract method has to be implemented by the class that handle the monitoring thread
+                         * (e.g. {@link AbstractThreadedLocalReader}). It will be called when the observer is removed.
+                         * <p>
+                         * It will be called when the last observer is removed (see removeObserver).
+                         *
+                         */
+                        virtual void stopObservation() = 0;
 
-    /**
-     * @return Plugin name
-     */
-    std::string getPluginName();
+                        /**
+                         * Add a reader observer.
+                         * <p>
+                         * The observer will receive all the events produced by this reader (card insertion, removal,
+                         * etc.)
+                         * <p>
+                         * The startObservation() is called when the first observer is added. (to start a monitoring
+                         * thread for instance)
+                         *
+                         * @param observer the observer object
+                         */
+                    public:
+                        void addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) override;
 
-    /**
-     *
-     */
-    std::shared_ptr<AbstractObservableReader> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractObservableReader>(
-            AbstractLoggedObservable<ReaderEvent>::shared_from_this());
-    }
-};
+                        /**
+                         * Remove a reader observer.
+                         * <p>
+                         * The observer will not receive any of the events produced by this reader.
+                         * <p>
+                         * The stopObservation() is called when the last observer is removed. (to stop a monitoring
+                         * thread for instance)
+                         *
+                         * @param observer the observer object
+                         */
+                        void removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) override;
 
-}
-}
-}
-}
-}
+                    protected:
+                        std::shared_ptr<AbstractObservableReader> shared_from_this() {
+                            return std::static_pointer_cast<AbstractObservableReader>(AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::shared_from_this());
+                        }
+                    };
+
+                } // namespace plugin
+            }     // namespace seproxy
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

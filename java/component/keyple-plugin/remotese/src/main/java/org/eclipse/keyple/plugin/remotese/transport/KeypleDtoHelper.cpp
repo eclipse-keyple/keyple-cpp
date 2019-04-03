@@ -1,5 +1,5 @@
 #include "KeypleDtoHelper.h"
-#include "KeypleDto.h"
+#include "model/KeypleDto.h"
 #include "json/JsonParser.h"
 
 namespace org {
@@ -9,6 +9,7 @@ namespace org {
                 namespace remotese {
                     namespace transport {
                         using JsonParser = org::eclipse::keyple::plugin::remotese::transport::json::JsonParser;
+                        using KeypleDto = org::eclipse::keyple::plugin::remotese::transport::model::KeypleDto;
                         using com::google::gson::JsonObject;
 
                         std::string KeypleDtoHelper::toJson(std::shared_ptr<KeypleDto> keypleDto) {

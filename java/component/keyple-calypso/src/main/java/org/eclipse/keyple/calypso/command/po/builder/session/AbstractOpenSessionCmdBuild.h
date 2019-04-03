@@ -53,7 +53,7 @@ namespace org {
 
 protected:
                                     std::shared_ptr<AbstractOpenSessionCmdBuild> shared_from_this() {
-                                        return std::static_pointer_cast<AbstractOpenSessionCmdBuild>(org.eclipse.keyple.calypso.command.po.PoCommandBuilder::shared_from_this());
+                                        return std::static_pointer_cast<AbstractOpenSessionCmdBuild>(PoCommandBuilder::shared_from_this());
                                     }
                                 };
 

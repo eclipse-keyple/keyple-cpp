@@ -33,12 +33,18 @@ namespace org {
                 namespace plugin {
 
                     using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
+                    using Logger                = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory         = org::eclipse::keyple::common::LoggerFactory;
 
                     /**
                      * Abstract definition of an threader local reader. Factorizes the observation mechanism through the
                      * implementation of a monitoring thread.
                      */
                     class EXPORT AbstractThreadedLocalReader : public AbstractSelectionLocalReader, public Object {
+
+                        /**
+                         * Thread in charge of reporting live events
+                         */
                     private:
                         class EventThread : public Thread {
                         private:
@@ -57,13 +63,11 @@ namespace org {
                             /**
                              * If the thread should be kept a alive
                              */
-//JAVA TO C++ CONVERTER TODO TASK: 'volatile' has a different meaning in C++:
-//ORIGINAL LINE: private volatile boolean running = true;
                             bool running = true;
 
                             /**
                              * Constructor
-                             *
+                             * 
                              * @param pluginName name of the plugin that instantiated the reader
                              * @param readerName name of the reader who owns this thread
                              */
@@ -75,24 +79,23 @@ namespace org {
                              */
                             virtual void end();
 
-                            virtual void run();
+                            virtual void *run();
 
 protected:
 /*
                             std::shared_ptr<EventThread> shared_from_this() {
                                 return std::static_pointer_cast<EventThread>(Thread::shared_from_this());
                             }
-*/
-                        };
-
-                    private:
-                        static const std::shared_ptr<Logger> logger;
+ */
+                       };
+                      private:
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractThreadedLocalReader));
                         std::shared_ptr<EventThread> thread;
                         std::atomic<int> threadCount;
                         /**
                          * Thread wait timeout in ms
                          */
-                    protected:
+                      protected:
                         long long threadWaitTimeout = 0;
 
                         AbstractThreadedLocalReader(const std::string &pluginName, const std::string &readerName);
@@ -139,30 +142,24 @@ protected:
                          */
                         virtual bool waitForCardAbsent(long long timeout) = 0;
 
-                        /**
-                         * Thread in charge of reporting live events
-                         */
-
 
                         /**
                          * Called when the class is unloaded. Attempt to do a clean exit.
                          *
                          * @throws Throwable a generic exception
                          */
-                    protected:
-//JAVA TO C++ CONVERTER WARNING: Unlike Java, there is no automatic call to this finalizer method in native C++:
+                      protected:
+                        //JAVA TO C++ CONVERTER WARNING: Unlike Java, there is no automatic call to this finalizer method in native C++:
                         void finalize() throw(std::runtime_error) override;
 
-protected:
-
+                      protected:
                         std::shared_ptr<AbstractThreadedLocalReader> shared_from_this() {
                             return std::static_pointer_cast<AbstractThreadedLocalReader>(AbstractSelectionLocalReader::shared_from_this());
                         }
-
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace plugin
+            }     // namespace seproxy
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

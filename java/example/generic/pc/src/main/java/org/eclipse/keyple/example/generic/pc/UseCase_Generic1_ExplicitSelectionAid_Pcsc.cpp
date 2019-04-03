@@ -5,12 +5,10 @@
 #include "../../../../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
 #include "ReaderUtilities.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelection.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
+#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/ContactlessProtocols.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
 #include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/MatchingSe.h"
 
 namespace org {
     namespace eclipse {
@@ -22,12 +20,11 @@ namespace org {
                         using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
                         using SeReader = org::eclipse::keyple::seproxy::SeReader;
+                        using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
                         using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
                         using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
                         using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
-                        using MatchingSe = org::eclipse::keyple::transaction::MatchingSe;
-                        using SeSelection = org::eclipse::keyple::transaction::SeSelection;
-                        using SeSelector = org::eclipse::keyple::transaction::SeSelector;
+                        using namespace org::eclipse::keyple::transaction;
                         using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
                         using org::slf4j::Logger;
                         using org::slf4j::LoggerFactory;
@@ -82,13 +79,13 @@ std::string UseCase_Generic1_ExplicitSelectionAid_Pcsc::seAid = "A00000040401250
                                  * Generic selection: configures a SeSelector with all the desired attributes to make
                                  * the selection and read additional information afterwards
                                  */
-                                std::shared_ptr<SeSelector> seSelector = std::make_shared<SeSelector>(ByteArrayUtils::fromHex(seAid), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4, "AID: " + seAid);
+                                std::shared_ptr<SeSelectionRequest> seSelectionRequest = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(seAid), nullptr), nullptr, "AID: " + seAid), ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4);
 
                                 /*
                                  * Add the selection case to the current selection (we could have added other cases
                                  * here)
                                  */
-                                std::shared_ptr<MatchingSe> matchingSe = seSelection->prepareSelection(seSelector);
+                                std::shared_ptr<MatchingSe> matchingSe = seSelection->prepareSelection(seSelectionRequest);
 
                                 /*
                                  * Actual SE communication: operate through a single request the SE selection
