@@ -20,7 +20,7 @@ namespace org {
                                         throw std::invalid_argument(StringHelper::formatSimple("Bad digest length! Expected 4 or 8, got %s", expectedResponseLength));
                                     }
 
-                                    char cla = this->defaultRevision.getClassByte();
+                                    char cla = SamRevision::S1D.equals(this->defaultRevision) ? static_cast<char>(0x94) : static_cast<char>(0x80);
                                     char p1 = 0x00;
                                     char p2 = static_cast<char>(0x00);
 
