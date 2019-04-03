@@ -1,10 +1,3 @@
-#pragma once
-
-#include "../PoCommandBuilder.h"
-#include "../CalypsoPoCommands.h"
-#include "../../PoClass.h"
-#include <memory>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -16,6 +9,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include "../PoCommandBuilder.h"
+#include "../CalypsoPoCommands.h"
+#include "../../PoClass.h"
+#include <memory>
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -24,9 +25,9 @@ namespace org {
                     namespace po {
                         namespace builder {
 
-                            using PoClass = org::eclipse::keyple::calypso::command::PoClass;
+                            using PoClass           = org::eclipse::keyple::calypso::command::PoClass;
                             using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
-                            using PoCommandBuilder = org::eclipse::keyple::calypso::command::po::PoCommandBuilder;
+                            using PoCommandBuilder  = org::eclipse::keyple::calypso::command::po::PoCommandBuilder;
 
                             /**
                              * This class provides the dedicated constructor to build the Get data APDU commands.
@@ -38,7 +39,7 @@ namespace org {
                             class GetDataFciCmdBuild final : public PoCommandBuilder {
 
                             private:
-                                static constexpr CalypsoPoCommands command = CalypsoPoCommands::GET_DATA_FCI;
+                                static const CalypsoPoCommands command;
 
                                 /**
                                  * Instantiates a new GetDataFciCmdBuild.
@@ -50,7 +51,7 @@ namespace org {
 
 protected:
                                 std::shared_ptr<GetDataFciCmdBuild> shared_from_this() {
-                                    return std::static_pointer_cast<GetDataFciCmdBuild>(org.eclipse.keyple.calypso.command.po.PoCommandBuilder::shared_from_this());
+                                    return std::static_pointer_cast<GetDataFciCmdBuild>(PoCommandBuilder::shared_from_this());
                                 }
                             };
 

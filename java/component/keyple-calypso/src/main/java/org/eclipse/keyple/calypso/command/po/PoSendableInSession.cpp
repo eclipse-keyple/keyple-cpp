@@ -7,7 +7,7 @@ namespace org {
             namespace calypso {
                 namespace command {
                     namespace po {
-                        using SendableInSession = org::eclipse::keyple::calypso::command::SendableInSession;
+                        
                     }
                 }
             }

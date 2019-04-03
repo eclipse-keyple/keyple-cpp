@@ -37,16 +37,16 @@ namespace org {
                             class SelectFileRespPars final : public AbstractApduResponseParser {
 
                             private:
-                                static const std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                static const std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
-                                                        private:
-                                                            class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-                                                            public:
-                                                                StaticConstructor();
-                                                            };
+                            private:
+                                class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+                                public:
+                                    StaticConstructor();
+                                };
 
-                                                        private:
-                                                            static SelectFileRespPars::StaticConstructor staticConstructor;
+                            private:
+                                static SelectFileRespPars::StaticConstructor staticConstructor;
 
 
                                 /**
@@ -60,7 +60,7 @@ namespace org {
 
 protected:
                                 std::shared_ptr<SelectFileRespPars> shared_from_this() {
-                                    return std::static_pointer_cast<SelectFileRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                    return std::static_pointer_cast<SelectFileRespPars>(AbstractApduResponseParser::shared_from_this());
                                 }
                             };
 

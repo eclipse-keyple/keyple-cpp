@@ -11,7 +11,8 @@ namespace org {
                             using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
                             using PoCommandBuilder = org::eclipse::keyple::calypso::command::po::PoCommandBuilder;
 
-                            SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, SelectControl selectControl, SelectOptions selectOptions, std::vector<char> &selectData) : org::eclipse::keyple::calypso::command::po::PoCommandBuilder(command, nullptr) {
+                            SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, SelectControl selectControl, SelectOptions selectOptions, std::vector<char> &selectData)
+                            : org::eclipse::keyple::calypso::command::po::PoCommandBuilder(std::make_shared<CalypsoPoCommands>(command), nullptr) {
                                 char p1 = 0;
                                 switch (selectControl) {
                                     case org::eclipse::keyple::calypso::command::po::builder::SelectFileCmdBuild::SelectControl::MF:
@@ -34,7 +35,7 @@ namespace org {
                                         break;
                                 }
 
-                                request = setApduRequest(poClass.getValue(), command, p1, p2, selectData, static_cast<char>(0x00));
+                                request = setApduRequest(poClass.getValue(), std::make_shared<CalypsoPoCommands>(command), p1, p2, selectData, static_cast<char>(0x00));
                             }
                         }
                     }

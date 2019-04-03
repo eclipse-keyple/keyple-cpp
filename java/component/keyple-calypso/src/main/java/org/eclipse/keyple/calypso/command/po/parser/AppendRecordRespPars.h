@@ -35,16 +35,16 @@ namespace org {
                             class AppendRecordRespPars final : public AbstractApduResponseParser {
 
                             private:
-                                static const std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
-                                                        private:
-                                                            class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-                                                            public:
-                                                                StaticConstructor();
-                                                            };
+                            private:
+                                class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+                                public:
+                                    StaticConstructor();
+                                };
 
-                                                        private:
-                                                            static AppendRecordRespPars::StaticConstructor staticConstructor;
+                            private:
+                                static AppendRecordRespPars::StaticConstructor staticConstructor;
 
 
                                 /**
@@ -59,11 +59,11 @@ namespace org {
                                  * @return Status table
                                  */
                             protected:
-                                std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
+                                std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
 protected:
                                 std::shared_ptr<AppendRecordRespPars> shared_from_this() {
-                                    return std::static_pointer_cast<AppendRecordRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                    return std::static_pointer_cast<AppendRecordRespPars>(AbstractApduResponseParser::shared_from_this());
                                 }
                             };
 

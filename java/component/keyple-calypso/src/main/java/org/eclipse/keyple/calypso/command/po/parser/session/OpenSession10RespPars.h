@@ -1,13 +1,3 @@
-#pragma once
-
-#include "AbstractOpenSessionRespPars.h"
-#include <vector>
-#include "exceptionhelper.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -19,6 +9,18 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include "AbstractOpenSessionRespPars.h"
+#include <vector>
+#include "exceptionhelper.h"
+#include <memory>
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
+
+
 namespace org {
     namespace eclipse {
         namespace keyple {

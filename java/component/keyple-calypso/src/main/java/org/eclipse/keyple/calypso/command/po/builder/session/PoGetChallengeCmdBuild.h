@@ -36,7 +36,7 @@ namespace org {
                                 class PoGetChallengeCmdBuild final : public PoCommandBuilder {
 
                                 private:
-                                    static constexpr CalypsoPoCommands command = CalypsoPoCommands::GET_CHALLENGE;
+                                    const CalypsoPoCommands command = CalypsoPoCommands::GET_CHALLENGE;
 
                                     /**
                                      * Instantiates a new PoGetChallengeCmdBuild.
@@ -48,7 +48,7 @@ namespace org {
 
 protected:
                                     std::shared_ptr<PoGetChallengeCmdBuild> shared_from_this() {
-                                        return std::static_pointer_cast<PoGetChallengeCmdBuild>(org.eclipse.keyple.calypso.command.po.PoCommandBuilder::shared_from_this());
+                                        return std::static_pointer_cast<PoGetChallengeCmdBuild>(PoCommandBuilder::shared_from_this());
                                     }
                                 };
 

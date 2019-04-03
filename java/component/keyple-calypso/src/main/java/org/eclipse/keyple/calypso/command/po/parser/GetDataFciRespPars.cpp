@@ -1,6 +1,11 @@
+/* Calypso.h */
 #include "GetDataFciRespPars.h"
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduResponse.h"
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
+#include "ApduResponse.h"
+#include "ByteArrayUtils.h"
+
+/* Common */
+#include "stringhelper.h"
+#include "BerDecoder.h"
 
 namespace org {
     namespace eclipse {
@@ -10,25 +15,22 @@ namespace org {
                     namespace po {
                         namespace parser {
                             using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                            using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
-                            using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-                            using org::slf4j::Logger;
-                            using org::slf4j::LoggerFactory;
-                            using com::sun::jndi::ldap::BerDecoder;
-const std::shared_ptr<org::slf4j::Logger> GetDataFciRespPars::logger = org::slf4j::LoggerFactory::getLogger(GetDataFciRespPars::typeid);
-const std::unordered_map<Integer, std::shared_ptr<StatusProperties>> GetDataFciRespPars::STATUS_TABLE;
+                            using ApduResponse               = org::eclipse::keyple::seproxy::message::ApduResponse;
+                            using ByteArrayUtils             = org::eclipse::keyple::util::ByteArrayUtils;
+
+                            std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> GetDataFciRespPars::STATUS_TABLE;
 
                             GetDataFciRespPars::StaticConstructor::StaticConstructor() {
-                                                                    std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
-                                                                    m.emplace(0x6A88, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Data object not found (optional mode not available)."));
-                                                                    m.emplace(0x6B00, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "P1 or P2 value not supported (<>004fh, 0062h, 006Fh, 00C0h, 00D0h, 0185h and 5F52h, according to availabl optional modes)."));
-                                                                    m.emplace(0x6283, std::make_shared<AbstractApduResponseParser::StatusProperties>(true, "Successful execution, FCI request and DF is invalidated."));
-                                                                    STATUS_TABLE = m;
+                                std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
+                                m.emplace(0x6A88, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Data object not found (optional mode not available)."));
+                                m.emplace(0x6B00, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "P1 or P2 value not supported (<>004fh, 0062h, 006Fh, 00C0h, 00D0h, 0185h and 5F52h, according to availabl optional modes)."));
+                                m.emplace(0x6283, std::make_shared<AbstractApduResponseParser::StatusProperties>(true, "Successful execution, FCI request and DF is invalidated."));
+                                STATUS_TABLE = m;
                             }
 
 GetDataFciRespPars::StaticConstructor GetDataFciRespPars::staticConstructor;
 
-                            std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> GetDataFciRespPars::getStatusTable() {
+                            std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> GetDataFciRespPars::getStatusTable() {
                                 return STATUS_TABLE;
                             }
 
@@ -52,7 +54,8 @@ std::vector<int> const GetDataFciRespPars::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE 
                                     ber = std::make_shared<BerDecoder>(response, 0, response.size());
 
                                     /* Extract the FCI Template */
-                                    octetString = ber->parseOctetString(TAG_FCI_TEMPLATE, nullptr);
+                                    std::vector<int> empty;
+                                    octetString = ber->parseOctetString(TAG_FCI_TEMPLATE, empty);
 
                                     ber = std::make_shared<BerDecoder>(octetString, 0, octetString.size());
 
@@ -75,12 +78,12 @@ std::vector<int> const GetDataFciRespPars::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE 
                                      */
                                     char b = static_cast<char>(ber->parseByte());
                                     if (b != static_cast<char>(TAG_FCI_ISSUER_DISCRETIONARY_DATA >> 8)) {
-                                        throw std::make_shared<IllegalStateException>(std::string::format("Encountered ASN.1 tag %d (expected tag %d)", b, TAG_FCI_ISSUER_DISCRETIONARY_DATA >> 8));
+                                        throw std::make_shared<IllegalStateException>(StringHelper::formatSimple("Encountered ASN.1 tag %d (expected tag %d)", b, TAG_FCI_ISSUER_DISCRETIONARY_DATA >> 8));
                                     }
 
                                     b = static_cast<char>(ber->parseByte());
                                     if (b != static_cast<char>(TAG_FCI_ISSUER_DISCRETIONARY_DATA & 0xFF)) {
-                                        throw std::make_shared<IllegalStateException>(std::string::format("Encountered ASN.1 tag %d (expected tag %d)", b, TAG_FCI_ISSUER_DISCRETIONARY_DATA & 0xFF));
+                                        throw std::make_shared<IllegalStateException>(StringHelper::formatSimple("Encountered ASN.1 tag %d (expected tag %d)", b, TAG_FCI_ISSUER_DISCRETIONARY_DATA & 0xFF));
                                     }
 
                                     ber = std::make_shared<BerDecoder>(octetString, 3, octetString.size());
@@ -93,7 +96,8 @@ std::vector<int> const GetDataFciRespPars::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE 
                                     }
 
                                     /* Get the Discretionary Data */
-                                    discretionaryData = ber->parseOctetString(TAG_DISCRETIONARY_DATA, nullptr);
+                                    std::vector<int> emptyVector;
+                                    discretionaryData = ber->parseOctetString(TAG_DISCRETIONARY_DATA, emptyVector);
 
                                     if (logger->isDebugEnabled()) {
                                         logger->debug("Discretionary Data = {}", ByteArrayUtils::toHex(discretionaryData));

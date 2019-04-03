@@ -40,7 +40,7 @@ namespace org {
 
                                 /** The command. */
                             private:
-                                static constexpr CalypsoPoCommands command = CalypsoPoCommands::READ_RECORDS;
+                                const CalypsoPoCommands command = CalypsoPoCommands::READ_RECORDS;
 
                                 /**
                                  * Instantiates a new read records cmd build.
@@ -73,9 +73,9 @@ namespace org {
                                  */
                                 ReadRecordsCmdBuild(PoClass poClass, char sfi, char firstRecordNumber, bool readJustOneRecord, const std::string &extraInfo) throw(std::invalid_argument);
 
-protected:
+                            protected:
                                 std::shared_ptr<ReadRecordsCmdBuild> shared_from_this() {
-                                    return std::static_pointer_cast<ReadRecordsCmdBuild>(org.eclipse.keyple.calypso.command.po.PoCommandBuilder::shared_from_this());
+                                    return std::static_pointer_cast<ReadRecordsCmdBuild>(PoCommandBuilder::shared_from_this());
                                 }
                             };
 

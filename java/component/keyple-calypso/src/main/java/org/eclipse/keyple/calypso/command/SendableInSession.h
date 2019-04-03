@@ -1,6 +1,4 @@
-#pragma once
-
-/********************************************************************************
+#/********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
  * See the NOTICE file(s) distributed with this work for additional information regarding copyright
@@ -11,6 +9,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
 namespace org {
     namespace eclipse {
         namespace keyple {

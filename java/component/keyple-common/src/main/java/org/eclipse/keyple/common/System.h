@@ -1,6 +1,8 @@
 #pragma once
 
 #include <math.h>
+#include <vector>
+#include <memory>
 
 #if defined(_WIN32)
 	#include <windows.h>

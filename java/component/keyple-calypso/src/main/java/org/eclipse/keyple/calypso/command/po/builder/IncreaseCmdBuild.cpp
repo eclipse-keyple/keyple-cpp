@@ -10,7 +10,7 @@ namespace org {
                             using PoClass = org::eclipse::keyple::calypso::command::PoClass;
                             using namespace org::eclipse::keyple::calypso::command::po;
 
-                            IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int incValue, const std::string &extraInfo) throw(std::invalid_argument) : PoCommandBuilder(command, nullptr) {
+                            IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int incValue, const std::string &extraInfo) throw(std::invalid_argument) : PoCommandBuilder(std::make_shared<CalypsoPoCommands>(command), nullptr) {
 
                                 // only counter number >= 1 are allowed
                                 if (counterNumber < 1) {
@@ -31,7 +31,7 @@ namespace org {
                                 char p2 = static_cast<char>(sfi * 8);
 
                                 /* this is a case4 command, we set Le = 0 */
-                                this->request = setApduRequest(poClass.getValue(), command, counterNumber, p2, incValueBuffer, static_cast<char>(0x00));
+                                this->request = setApduRequest(poClass.getValue(), std::make_shared<CalypsoPoCommands>(command), counterNumber, p2, incValueBuffer, static_cast<char>(0x00));
                                 if (extraInfo != "") {
                                     this->addSubName(extraInfo);
                                 }

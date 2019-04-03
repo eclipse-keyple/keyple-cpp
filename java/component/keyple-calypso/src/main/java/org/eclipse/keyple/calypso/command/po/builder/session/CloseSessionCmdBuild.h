@@ -40,7 +40,7 @@ namespace org {
 
                                     /** The command. */
                                 private:
-                                    static constexpr CalypsoPoCommands command = CalypsoPoCommands::CLOSE_SESSION;
+                                    const CalypsoPoCommands command = CalypsoPoCommands::CLOSE_SESSION;
 
                                     /**
                                      * Instantiates a new CloseSessionCmdBuild depending of the revision of the PO.
@@ -65,7 +65,7 @@ namespace org {
 
 protected:
                                     std::shared_ptr<CloseSessionCmdBuild> shared_from_this() {
-                                        return std::static_pointer_cast<CloseSessionCmdBuild>(org.eclipse.keyple.calypso.command.po.PoCommandBuilder::shared_from_this());
+                                        return std::static_pointer_cast<CloseSessionCmdBuild>(PoCommandBuilder::shared_from_this());
                                     }
                                 };
 

@@ -1,10 +1,3 @@
-#pragma once
-
-#include "../SendableInSession.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { class PoCommandBuilder; } } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -16,6 +9,17 @@ namespace org { namespace eclipse { namespace keyple { namespace calypso { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <memory>
+
+#include "SendableInSession.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { class PoCommandBuilder; } } } } } }
+
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -23,9 +27,7 @@ namespace org {
                 namespace command {
                     namespace po {
 
-                        using SendableInSession = org::eclipse::keyple::calypso::command::SendableInSession;
-
-                        class PoSendableInSession : public SendableInSession<std::shared_ptr<PoCommandBuilder>> {
+                        class PoSendableInSession : public org::eclipse::keyple::calypso::command::SendableInSession<std::shared_ptr<PoCommandBuilder>> {
                         };
 
                     }

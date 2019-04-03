@@ -1,17 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
-#include <string>
-#include <unordered_map>
-#include <vector>
-#include <stdexcept>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -23,6 +9,27 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <stdexcept>
+#include <memory>
+
+/* Common */
+#include "Logger.h"
+#include "LoggerFactory.h"
+
+/* Calypso */
+#include "AbstractApduResponseParser.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -32,10 +39,9 @@ namespace org {
                         namespace parser {
 
                             using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                            using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
-                            using org::slf4j::Logger;
-                            using org::slf4j::LoggerFactory;
-
+                            using ApduResponse               = org::eclipse::keyple::seproxy::message::ApduResponse;
+                            using Logger                     = org::eclipse::keyple::common::Logger;
+                            using LoggerFactory              = org::eclipse::keyple::common::LoggerFactory;
 
                             /**
                              * Extracts information from the FCI data returned is response to the selection application command.
@@ -44,23 +50,23 @@ namespace org {
                              */
                             class GetDataFciRespPars final : public AbstractApduResponseParser {
                             protected:
-                                static const std::shared_ptr<Logger> logger;
+                                const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(GetDataFciRespPars));
 
                             private:
-                                static const std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
-                                                        private:
-                                                            class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-                                                            public:
-                                                                StaticConstructor();
-                                                            };
+                            private:
+                                class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+                                public:
+                                    StaticConstructor();
+                                };
 
-                                                        private:
-                                                            static GetDataFciRespPars::StaticConstructor staticConstructor;
+                            private:
+                                static GetDataFciRespPars::StaticConstructor staticConstructor;
 
 
                             protected:
-                                std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
+                                std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
                                 /* buffer indicator to buffer size lookup table */
                             private:
@@ -173,7 +179,7 @@ namespace org {
 
 protected:
                                 std::shared_ptr<GetDataFciRespPars> shared_from_this() {
-                                    return std::static_pointer_cast<GetDataFciRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                    return std::static_pointer_cast<GetDataFciRespPars>(AbstractApduResponseParser::shared_from_this());
                                 }
                             };
 
