@@ -66,7 +66,7 @@ namespace org {
                     int StubProtocolSetting::nextOrdinal = 0;
 
                     StubProtocolSetting::StubProtocolSetting(const std::string &name, InnerEnum innerEnum, ContactlessProtocols& flag, const std::string &value)
-                        : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum), flag(flag)
+                    : innerEnumValue(innerEnum), nameValue(name), ordinalValue(nextOrdinal++), flag(flag)
                     {
                         this->value = value;
                     }

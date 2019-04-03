@@ -26,8 +26,11 @@
 
                         static const std::shared_ptr<void> waitBeforeEnd = nullptr;
 
-                        int main(int argc, char **argv) throw(std::runtime_error)
+                        int main(int argc, char **argv)
                         {
+                            (void)argc;
+                            (void)argv;
+
                             std::shared_ptr<ObservableReaderNotificationEngine> demoEngine =
                                 std::make_shared<ObservableReaderNotificationEngine>();
 

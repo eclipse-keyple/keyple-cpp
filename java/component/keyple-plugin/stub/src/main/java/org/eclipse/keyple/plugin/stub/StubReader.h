@@ -97,22 +97,21 @@ namespace org {
 
                         bool isPhysicalChannelOpen() override;
 
-                        void openPhysicalChannel() throw(KeypleChannelStateException) override;
+                        void openPhysicalChannel() override;
 
                       public:
-                        void closePhysicalChannel() throw(KeypleChannelStateException) override;
+                        void closePhysicalChannel() override;
 
-                        std::vector<char> transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
+                        std::vector<char> transmitApdu(std::vector<char> &apduIn) override;
 
                       protected:
-                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(KeypleReaderException) override;
+                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag)  override;
 
                       
                          bool checkSePresence() override;
 
                       public:
-                        void setParameter(const std::string &name,
-                                          const std::string &value) throw(KeypleReaderException) override;
+                        void setParameter(const std::string &name, const std::string &value)  override;
 
                         std::unordered_map<std::string, std::string> getParameters() override;
 
@@ -124,9 +123,9 @@ namespace org {
                         /*
                          * HELPERS TO TEST INTERNAL METHOD TODO : is this necessary?
                          */
-                        std::shared_ptr<ApduResponse> processApduRequestTestProxy(std::shared_ptr<ApduRequest> apduRequest) throw(KeypleReaderException);
+                        std::shared_ptr<ApduResponse> processApduRequestTestProxy(std::shared_ptr<ApduRequest> apduRequest);
 
-                        std::shared_ptr<SeResponseSet> processSeRequestSetTestProxy(std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException);
+                        std::shared_ptr<SeResponseSet> processSeRequestSetTestProxy(std::shared_ptr<SeRequestSet> requestSet);
 
                         bool isLogicalChannelOpenTestProxy();
 
@@ -147,7 +146,7 @@ namespace org {
                          * @throws NoStackTraceThrowable in case of unplugging the reader
                          */
                       protected:
-                        bool waitForCardPresent(long long timeout) throw(NoStackTraceThrowable) override;
+                        bool waitForCardPresent(long long timeout) override;
 
                         /**
                          * This method is called by the monitoring thread to check SE absence
@@ -156,7 +155,7 @@ namespace org {
                          * @return true if the SE is absent
                          * @throws NoStackTraceThrowable in case of unplugging the reader
                          */
-                        bool waitForCardAbsent(long long timeout) throw(NoStackTraceThrowable) override;
+                        bool waitForCardAbsent(long long timeout) override;
 
                       protected:
                         std::shared_ptr<StubReader> shared_from_this() {
@@ -182,7 +181,7 @@ namespace org {
                         /**
                          *
                          */
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override;
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override;
 
                         std::string getName() override
                         {

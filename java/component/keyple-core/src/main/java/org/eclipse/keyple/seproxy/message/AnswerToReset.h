@@ -41,7 +41,7 @@ namespace org {
                         int hashCode() override;
 
                     protected:
-                        void finalize() throw(std::runtime_error) override;
+                        void finalize() override;
                     };
 
                 }

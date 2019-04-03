@@ -76,6 +76,7 @@ namespace org {
 
                         void ObservableReaderNotificationEngine::SpecificReaderObserver::update(ReaderEvent event)
                         {
+                            (void)event;
                              /* Should not be used, compilation fix */
                         }
 
@@ -98,6 +99,7 @@ namespace org {
 
                         void ObservableReaderNotificationEngine::SpecificPluginObserver::update(PluginEvent event)
                         {
+                            (void)event;
                              /* Should not be used, compilation fix */
                         }
 

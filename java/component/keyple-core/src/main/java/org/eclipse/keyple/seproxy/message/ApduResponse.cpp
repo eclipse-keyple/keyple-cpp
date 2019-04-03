@@ -78,7 +78,7 @@ namespace org {
                         return hash;
                     }
 
-                    void ApduResponse::finalize() throw(std::runtime_error)
+                    void ApduResponse::finalize()
                     {
 
                     }

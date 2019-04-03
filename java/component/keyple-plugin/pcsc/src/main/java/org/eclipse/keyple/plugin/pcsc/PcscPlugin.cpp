@@ -41,8 +41,10 @@ std::unordered_map<std::string, std::string> PcscPlugin::getParameters() {
      return std::unordered_map<std::string, std::string>();
 }
 
-                    void PcscPlugin::setParameter(const std::string &key, const std::string &value) throw(std::invalid_argument, KeypleBaseException) {
-
+void PcscPlugin::setParameter(const std::string &key, const std::string &value)
+{
+    (void)key;
+    (void)value;
 }
 
 std::shared_ptr<PcscPlugin> PcscPlugin::setLogging(bool logging)
@@ -51,7 +53,7 @@ std::shared_ptr<PcscPlugin> PcscPlugin::setLogging(bool logging)
                         return shared_from_this();
 }
 
-std::shared_ptr<std::set<std::string>> PcscPlugin::fetchNativeReadersNames() throw(KeypleReaderException)
+std::shared_ptr<std::set<std::string>> PcscPlugin::fetchNativeReadersNames()
 {
     nativeReadersNames.clear();
     std::shared_ptr<CardTerminals> terminals = getCardTerminals();
@@ -75,7 +77,7 @@ std::shared_ptr<std::set<std::string>> PcscPlugin::fetchNativeReadersNames() thr
     return std::make_shared<std::set<std::string>>(nativeReadersNames);
 }
 
-std::shared_ptr<std::set<std::shared_ptr<SeReader>>> PcscPlugin::initNativeReaders() throw(KeypleReaderException)
+std::shared_ptr<std::set<std::shared_ptr<SeReader>>> PcscPlugin::initNativeReaders()
 {
     logger->debug("creating new list\n");
     std::shared_ptr<std::set<std::shared_ptr<SeReader>>> nativeReaders = std::shared_ptr<std::set<std::shared_ptr<SeReader>>>(new std::set<std::shared_ptr<SeReader>>());
@@ -105,7 +107,8 @@ std::shared_ptr<std::set<std::shared_ptr<SeReader>>> PcscPlugin::initNativeReade
     return nativeReaders;
 }
 
-std::shared_ptr<AbstractObservableReader> PcscPlugin::fetchNativeReader(const std::string &name) throw(KeypleReaderException) {
+std::shared_ptr<AbstractObservableReader> PcscPlugin::fetchNativeReader(const std::string &name)
+{
     // return the current reader if it is already listed
     for (auto reader : *readers) {
         if (reader->getName() == name) {

@@ -133,7 +133,7 @@ namespace keyple {
                  */
                 void disconnect(bool reset) throw(CardException)
                 {
-
+                    (void)reset;
                 }
 
             private:

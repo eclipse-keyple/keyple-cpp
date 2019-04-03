@@ -18,6 +18,9 @@ using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
 int main(int argc, char **argv)
 throw(std::runtime_error)
 {
+    (void)argc;
+    (void)argv;
+
     std::shared_ptr<ObservableReaderNotificationEngine> demoEngine = std::make_shared<ObservableReaderNotificationEngine>();
 
     /*

@@ -20,7 +20,7 @@ namespace keyple {
              *
              */
             class CommandAPDU {
-              public:
+            public:
                 /**
                  * Constructor
                  *
@@ -45,6 +45,14 @@ namespace keyple {
                 ~CommandAPDU()
                 {
 
+                }
+
+                /*
+                 * Retrieve APDU data
+                 */
+                std::vector<char>& getApdu()
+                {
+                    return apdu;
                 }
 
               private:

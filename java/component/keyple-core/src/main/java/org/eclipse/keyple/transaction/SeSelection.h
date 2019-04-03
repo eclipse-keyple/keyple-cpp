@@ -58,15 +58,15 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
                     std::shared_ptr<SeRequestSet> selectionRequestSet = std::make_shared<SeRequestSet>(std::make_shared<std::set<std::shared_ptr<SeRequest>>>());
     std::shared_ptr<MatchingSe> selectedSe;
 
-    /**
+                    /**
                      * Initializes the SeSelection
                      *
                      * @param seReader the reader to use to make the selection
                      */
-  public:
-    SeSelection(std::shared_ptr<SeReader> seReader);
+                  public:
+                    SeSelection(std::shared_ptr<SeReader> seReader);
 
-    /**
+                    /**
                      * Prepare a selection: add the selection request from the provided selector to the selection
                      * request set.
                      * <p>
@@ -94,8 +94,8 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
                      * @param selectionResponse the selection response
                      * @return true if a successful selection has been made.
                      */
-  private:
-    bool processSelection(std::shared_ptr<SelectionResponse> selectionResponse);
+                  private:
+                    bool processSelection(std::shared_ptr<SelectionResponse> selectionResponse);
 
     /**
                      * Parses the response to a selection operation sent to a SE and sets the selectedSe if any
@@ -110,8 +110,8 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
                      * @param selectionResponse the response from the reader to the {@link DefaultSelectionRequest}
                      * @return boolean true if a SE was selected
                      */
-  public:
-    bool processDefaultSelection(std::shared_ptr<SelectionResponse> selectionResponse);
+                  public:
+                    bool processDefaultSelection(std::shared_ptr<SelectionResponse> selectionResponse);
 
     /**
                      * Execute the selection process.
@@ -134,24 +134,24 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
                      * @return boolean true if a SE was selected
                      * @throws KeypleReaderException if the requests transmission failed
                      */
-    bool processExplicitSelection() throw(KeypleReaderException);
+                    bool processExplicitSelection();
 
-    /**
+                    /**
                      * Returns the {@link MatchingSe} if there is one, null if not
                      *
                      * @return a {@link MatchingSe} or null
                      */
-    std::shared_ptr<MatchingSe> getSelectedSe();
+                    std::shared_ptr<MatchingSe> getSelectedSe();
 
-    /**
+                    /**
                      * Returns the updated list of prepared {@link MatchingSe} updated with the responses to the
                      * selection requests sent.
                      *
                      * @return a list of {@link MatchingSe}
                      */
-    std::vector<std::shared_ptr<MatchingSe>> getMatchingSeList();
+                    std::vector<std::shared_ptr<MatchingSe>> getMatchingSeList();
 
-    /**
+                    /**
                      * The SelectionOperation is the DefaultSelectionRequest to process in ordered to select a SE
                      * among others through the selection process. This method is useful to build the prepared
                      * selection to be executed by a reader just after a SE insertion.

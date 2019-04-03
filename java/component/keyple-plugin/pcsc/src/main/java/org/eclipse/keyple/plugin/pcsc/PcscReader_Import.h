@@ -102,15 +102,15 @@ namespace org {
                     public:
                         PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal);
 
-                        void closePhysicalChannel() throw(KeypleChannelStateException) override;
+                        void closePhysicalChannel() override;
 
                     public:
-                        bool isSePresent() throw(NoStackTraceThrowable) override;
+                        bool isSePresent() override;
 
                     protected:
-                        bool waitForCardPresent(long long timeout) throw(NoStackTraceThrowable) override;
+                        bool waitForCardPresent(long long timeout) override;
 
-                        bool waitForCardAbsent(long long timeout) throw(NoStackTraceThrowable) override;
+                        bool waitForCardAbsent(long long timeout) override;
 
                         /**
                          * Transmission of single APDU
@@ -119,7 +119,7 @@ namespace org {
                          * @return apduOut buffer
                          * @throws KeypleIOReaderException if the transmission failed
                          */
-                        std::vector<char> transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
+                        std::vector<char> transmitApdu(std::vector<char> &apduIn) override;
 
                         /**
                          * Tells if the current SE protocol matches the provided protocol flag. If the protocol flag is
@@ -130,7 +130,7 @@ namespace org {
                          * @return true if the current SE matches the protocol flag
                          * @throws KeypleReaderException if the protocol mask is not found
                          */
-                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(KeypleReaderException) override;
+                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) override;
 
                         /**
                          * Set a parameter.
@@ -170,7 +170,7 @@ namespace org {
                          *
                          */
                     public:
-                        void setParameter(const std::string &name, const std::string &value) throw(std::invalid_argument, KeypleBaseException) override;
+                        void setParameter(const std::string &name, const std::string &value) override;
 
                         std::unordered_map<std::string, std::string> getParameters() override;
 
@@ -194,7 +194,7 @@ namespace org {
                          *
                          * @throws KeypleChannelStateException if a reader error occurs
                          */
-                        void openPhysicalChannel() throw(KeypleChannelStateException) override;
+                        void openPhysicalChannel() override;
 
                         /**
                          * The transmission mode can set with setParameter(SETTING_KEY_TRANSMISSION_MODE, )

@@ -26,7 +26,7 @@ namespace org {
                     }
 
                     AbstractThreadedLocalReader::EventThread::EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName)
-                    : Thread("observable-reader-events-" + std::to_string(++(outerInstance->threadCount))), pluginName(pluginName), readerName(readerName), outerInstance(outerInstance)
+                    : Thread("observable-reader-events-" + std::to_string(++(outerInstance->threadCount))), outerInstance(outerInstance), pluginName(pluginName), readerName(readerName)
                     {
                         outerInstance->logger->debug("constructor\n");
 
@@ -77,7 +77,8 @@ namespace org {
                     }
 
 //JAVA TO C++ CONVERTER WARNING: Unlike Java, there is no automatic call to this finalizer method in native C++:
-                    void AbstractThreadedLocalReader::finalize() throw(std::runtime_error) {
+                    void AbstractThreadedLocalReader::finalize()
+                    {
                         thread->end();
                         thread.reset();
                         logger->trace("[{}] Observable Reader thread ended.", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());

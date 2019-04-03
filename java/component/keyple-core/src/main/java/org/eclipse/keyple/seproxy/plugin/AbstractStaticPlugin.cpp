@@ -16,10 +16,12 @@ namespace org {
                     }
 
                     void AbstractStaticPlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
+                        (void)observer;
                         throw std::runtime_error("Abstract Static Plugin does not support Observers, do not use this function");
                     }
 
                     void AbstractStaticPlugin::removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
+                        (void)observer;
                         throw std::runtime_error("Abstract Static Plugin does not support Observers, do not use this function");
                     }
                 }

@@ -17,7 +17,7 @@ namespace org {
                     std::vector<NotificationMode> NotificationMode::valueList;
                     int NotificationMode::nextOrdinal = 0;
 
-                    NotificationMode::NotificationMode(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
+                    NotificationMode::NotificationMode(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++) {
                         this->name = name;
                     }
 

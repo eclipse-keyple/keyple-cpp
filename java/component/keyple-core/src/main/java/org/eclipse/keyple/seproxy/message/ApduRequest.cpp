@@ -65,6 +65,9 @@ namespace org {
                     }
 
                     bool equals(std::shared_ptr<void> o) {
+                        
+                        (void)o;
+
                         /* To be implemented */
                         return false;
                     }

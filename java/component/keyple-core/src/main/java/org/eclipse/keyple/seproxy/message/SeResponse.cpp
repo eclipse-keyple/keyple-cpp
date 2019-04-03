@@ -66,7 +66,7 @@ namespace org {
                         return hash;
                     }
 
-                    void SeResponse::finalize() throw(std::runtime_error)
+                    void SeResponse::finalize()
                     {
 
                     }

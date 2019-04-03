@@ -21,12 +21,18 @@ public:
 	static Pattern& compile(std::string regex) {
 		/* To be implemented */
 		static Pattern p;
+
+		(void)regex;
+
     	return p;
 	}
 
 	static Matcher &matcher(std::string input)
 	{
 		static Matcher privateMatcher;
+
+		(void)input;
+		
 		return privateMatcher;
 	}
 };

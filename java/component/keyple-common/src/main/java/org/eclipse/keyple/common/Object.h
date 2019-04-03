@@ -9,5 +9,5 @@ public:
 	virtual int hashCode() = 0;
 
 protected:
-	virtual void finalize() throw(std::runtime_error) = 0;
+	virtual void finalize() = 0;
 };

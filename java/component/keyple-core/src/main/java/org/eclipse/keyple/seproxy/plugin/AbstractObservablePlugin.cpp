@@ -52,7 +52,8 @@ namespace org {
                         }
                     }
 
-                    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> AbstractObservablePlugin::getReaders() throw(KeypleReaderException) {
+                    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> AbstractObservablePlugin::getReaders()
+                    {
                         if (readers == nullptr) {
                             throw std::make_shared<KeypleReaderException>("List of readers has not been initialized");
                         }
@@ -93,7 +94,7 @@ namespace org {
                     /*
                      * Alex: consider note in header comment (covariant return type).
                      */
-                    std::shared_ptr<SeReader> AbstractObservablePlugin::getReader(const std::string &name)throw(KeypleReaderNotFoundException)
+                    std::shared_ptr<SeReader> AbstractObservablePlugin::getReader(const std::string &name)
                     {
                         for (auto reader : *readers)
                         {

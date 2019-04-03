@@ -63,7 +63,8 @@ PcscReader::PcscReader(const std::string &pluginName, std::shared_ptr<CardTermin
     }
 }
 
-void PcscReader::closePhysicalChannel() throw(KeypleChannelStateException) {
+void PcscReader::closePhysicalChannel()
+{
 try {
     if (card != nullptr) {
         if (logging) {
@@ -84,7 +85,8 @@ catch (const CardException &e) {
 }
 }
 
-bool PcscReader::checkSePresence() throw(NoStackTraceThrowable) {
+bool PcscReader::checkSePresence()
+{
 try {
     return terminal->isCardPresent();
 }
@@ -94,7 +96,8 @@ catch (const CardException &e) {
 }
 }
 
-bool PcscReader::waitForCardPresent(long long timeout) throw(NoStackTraceThrowable) {
+bool PcscReader::waitForCardPresent(long long timeout)
+{
 try {
     return terminal->waitForCardPresent(timeout);
 }
@@ -104,7 +107,8 @@ catch (const CardException &e) {
 }
 }
 
-bool PcscReader::waitForCardAbsent(long long timeout) throw(NoStackTraceThrowable) {
+bool PcscReader::waitForCardAbsent(long long timeout)
+{
 try {
     if (terminal->waitForCardAbsent(timeout)) {
         closeLogicalChannel();
@@ -121,7 +125,8 @@ catch (CardException &e) {
 }
 }
 
-std::vector<char> PcscReader::transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) {
+std::vector<char> PcscReader::transmitApdu(std::vector<char> &apduIn)
+{
 std::shared_ptr<ResponseAPDU> apduResponseData;
 try {
     apduResponseData = channel->transmit(std::shared_ptr<CommandAPDU>(new CommandAPDU(apduIn)));
@@ -132,7 +137,8 @@ catch (CardException &e) {
 return apduResponseData->getBytes();
 }
 
-bool PcscReader::protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(KeypleReaderException) {
+bool PcscReader::protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag)
+{
 bool result;
 // Get protocolFlag to check if ATR filtering is required
 if (*(std::dynamic_pointer_cast<Protocol>(protocolFlag)) != Protocol::ANY) {
@@ -167,7 +173,6 @@ return result;
 }
 
 void PcscReader::setParameter(const std::string &name, const std::string &value)
-throw(std::invalid_argument, KeypleBaseException)
 {
     logger->debug("PcscReader::setParameter name: %s, value: %s\n", name, value);
 
@@ -306,7 +311,7 @@ bool PcscReader::isPhysicalChannelOpen()
     return card != nullptr;
 }
 
-void PcscReader::openPhysicalChannel() throw(KeypleChannelStateException)
+void PcscReader::openPhysicalChannel()
 {
     // init of the physical SE channel: if not yet established, opening of a new physical
     // channel
@@ -348,6 +353,7 @@ TransmissionMode PcscReader::getTransmissionMode()
 
 bool PcscReader::equals(std::shared_ptr<void> o)
 {
+    (void)o;
     return false;
 }
 
@@ -356,14 +362,14 @@ int PcscReader::hashCode()
     return 0;
 }
 
-void PcscReader::setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException)
+void PcscReader::setParameters(std::unordered_map<std::string, std::string> &parameters)
 {
-
+    (void)parameters;
 }
 
 void PcscReader::notifyObservers(std::shared_ptr<ReaderEvent> event)
 {
-
+    (void)event;
 }
 
 }

@@ -26,7 +26,7 @@ namespace org {
                     EventType::StaticConstructor EventType::staticConstructor;
                     int EventType::nextOrdinal = 0;
 
-                    ReaderEvent::EventType::EventType(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
+                    ReaderEvent::EventType::EventType(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++){
 
                         this->name = name;
                     }
@@ -66,7 +66,8 @@ namespace org {
                         return EventType::IO_ERROR;
                     }
 
-                    ReaderEvent::ReaderEvent(const std::string &pluginName, const std::string &readerName, EventType eventType, std::shared_ptr<SelectionResponse> selectionResponse) : pluginName(pluginName), readerName(readerName), eventType(eventType), defaultResponseSet(selectionResponse) {
+                    ReaderEvent::ReaderEvent(const std::string &pluginName, const std::string &readerName, EventType eventType, std::shared_ptr<SelectionResponse> selectionResponse)
+                    : pluginName(pluginName), readerName(readerName), eventType(eventType), defaultResponseSet(selectionResponse) {
                     }
 
                     std::string ReaderEvent::getPluginName() {

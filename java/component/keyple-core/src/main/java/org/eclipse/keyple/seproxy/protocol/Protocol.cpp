@@ -18,7 +18,7 @@ Protocol::StaticConstructor::StaticConstructor()
 }
 
 Protocol::Protocol(const std::string &nameValue, InnerEnum innerEnum, const std::string &name)
-: nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum), name(name)
+: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name)
 {
 
 }

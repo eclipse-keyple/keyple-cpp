@@ -33,7 +33,7 @@ namespace org {
                         return hash;
                     }
 
-                    void AnswerToReset::finalize() throw(std::runtime_error)
+                    void AnswerToReset::finalize()
                     {
 
                     }

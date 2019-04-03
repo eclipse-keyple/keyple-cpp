@@ -32,7 +32,7 @@ ContactlessProtocols::StaticConstructor::StaticConstructor()
 }
 
 ContactlessProtocols::ContactlessProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name)
-: nameValue(nameValue), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum), name(name)
+: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name)
 {
     this->name = name;
 }

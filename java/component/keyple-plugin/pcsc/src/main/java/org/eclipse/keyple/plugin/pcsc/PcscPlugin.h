@@ -87,9 +87,7 @@ namespace org {
 
                         std::unordered_map<std::string, std::string> getParameters() override;
 
-                        void setParameter(const std::string &key,
-                                          const std::string &value) throw(std::invalid_argument,
-                                                                          KeypleBaseException) override;
+                        void setParameter(const std::string &key, const std::string &value) override;
 
                         /**
                          * Enable the logging
@@ -101,7 +99,7 @@ namespace org {
                         std::shared_ptr<PcscPlugin> setLogging(bool logging);
 
                       protected:
-                        std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() override;
 
                         /**
                          * Fetch connected native readers (from smartcard.io) and returns a list of corresponding
@@ -111,7 +109,7 @@ namespace org {
                          * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() override;
 
                         /**
                          * Fetch the reader whose name is provided as an argument. Returns the current reader if it is
@@ -123,7 +121,7 @@ namespace org {
                          * @return the reader object
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<AbstractObservableReader> fetchNativeReader(const std::string &name) throw(KeypleReaderException) override;
+                        std::shared_ptr<AbstractObservableReader> fetchNativeReader(const std::string &name) override;
 
                       private:
                         /**
@@ -139,19 +137,18 @@ namespace org {
                         }
 
                       public:
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override
                         {
                             return AbstractThreadedObservablePlugin::AbstractLoggedObservable::setParameters(
                                 parameters);
                         }
 
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
-                        getReaders() throw(KeypleReaderException) override
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders()  override
                         {
                             return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReaders();
                         }
 
-                        std::shared_ptr<SeReader> getReader(const std::string &name) throw(KeypleReaderNotFoundException) override
+                        std::shared_ptr<SeReader> getReader(const std::string &name) override
                         {
                             return AbstractThreadedObservablePlugin::AbstractObservablePlugin::getReader(name);
                         }
@@ -177,6 +174,7 @@ namespace org {
 
                         bool equals(std::shared_ptr<void> o) override
                         {
+                            (void)o;
                             return true; //AbstractThreadedObservablePlugin::equals(o);
                         }
 

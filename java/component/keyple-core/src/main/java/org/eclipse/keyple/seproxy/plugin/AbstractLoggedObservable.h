@@ -174,7 +174,7 @@ namespace org {
                          * @throws KeypleBaseException This method can fail when disabling the exclusive mode as it's
                          *         executed instantly
                          */
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override {
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override {
                             for (auto en : parameters) {
                                 setParameter(en.first, en.second);
                             }

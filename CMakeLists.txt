@@ -8,7 +8,10 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-set(CMAKE_LEGACY_CYGWIN_WIN32 0)
+SET(CMAKE_LEGACY_CYGWIN_WIN32 0)
+SET(CMAKE_CXX_STANDARD 11)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -Wextra -Wdeprecated -pedantic -pedantic-errors -std=c++11")
 
 # Set common output directory
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

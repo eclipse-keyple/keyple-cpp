@@ -45,10 +45,8 @@ namespace org {
                         }
                     }
 
-                    AbstractThreadedObservablePlugin::EventThread::EventThread(
-                        std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance,
-                        const std::string &pluginName)
-                        : pluginName(pluginName), outerInstance(outerInstance)
+                    AbstractThreadedObservablePlugin::EventThread::EventThread(std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance, const std::string &pluginName)
+                    : outerInstance(outerInstance), pluginName(pluginName)
                     {
                         outerInstance->logger->debug("constructor with outerInstance: %p, pluginName: %s\n",
                                                      outerInstance, pluginName);
@@ -133,17 +131,18 @@ namespace org {
                         }
                         catch (const InterruptedException &e) {
                             e.printStackTrace();
-                            outerInstance->logger->warn("[%s] An exception occurred while monitoring plugin: %s, cause %s", this->pluginName, e.getMessage(), e.getCause());
+                            outerInstance->logger->warn("[%s] An exception occurred while monitoring plugin: %s, cause %s", this->pluginName, e.getMessage(), e.getCause().what());
                         }
                         catch (const KeypleReaderException &e) {
                             e.printStackTrace();
-                            outerInstance->logger->warn("[%s] An exception occurred while monitoring plugin: %s, cause %s", this->pluginName, e.what(), e.getCause());
+                            outerInstance->logger->warn("[%s] An exception occurred while monitoring plugin: %s, cause %s", this->pluginName, e.what(), e.getCause().what());
                         }
 
                         return nullptr;
                     }
 
-                    void AbstractThreadedObservablePlugin::finalize() throw(std::runtime_error) {
+                    void AbstractThreadedObservablePlugin::finalize()
+                    {
                         thread->end();
                         thread.reset();
                         logger->trace("[%s] observable Plugin thread ended.", this->getName());

@@ -72,7 +72,7 @@ namespace org {
                         return se != nullptr && se->isPhysicalChannelOpen();
                     }
 
-                    void StubReader::openPhysicalChannel() throw(KeypleChannelStateException)
+                    void StubReader::openPhysicalChannel()
                     {
                         if (se != nullptr)
                         {
@@ -80,7 +80,7 @@ namespace org {
                         }
                     }
 
-                    void StubReader::closePhysicalChannel() throw(KeypleChannelStateException)
+                    void StubReader::closePhysicalChannel()
                     {
                         if (se != nullptr)
                         {
@@ -89,13 +89,12 @@ namespace org {
                     }
 
                     std::vector<char>
-                    StubReader::transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException)
+                    StubReader::transmitApdu(std::vector<char> &apduIn)
                     {
                         return se->processApdu(apduIn);
                     }
 
-                    bool StubReader::protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(
-                        KeypleReaderException)
+                    bool StubReader::protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) 
                     {
                         bool result;
                         // Get protocolFlag to check if ATR filtering is required
@@ -140,8 +139,7 @@ namespace org {
                         return se != nullptr;
                     }
 
-                    void StubReader::setParameter(const std::string &name,
-                                                  const std::string &value) throw(KeypleReaderException)
+                    void StubReader::setParameter(const std::string &name, const std::string &value) 
                     {
                         if (name == ALLOWED_PARAMETER_1 || name == ALLOWED_PARAMETER_2)
                         {
@@ -172,14 +170,12 @@ namespace org {
                         return transmissionMode;
                     }
 
-                    std::shared_ptr<ApduResponse> StubReader::processApduRequestTestProxy(
-                        std::shared_ptr<ApduRequest> apduRequest) throw(KeypleReaderException)
+                    std::shared_ptr<ApduResponse> StubReader::processApduRequestTestProxy(std::shared_ptr<ApduRequest> apduRequest)
                     {
                         return this->processApduRequest(apduRequest);
                     }
 
-                    std::shared_ptr<SeResponseSet> StubReader::processSeRequestSetTestProxy(
-                        std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException)
+                    std::shared_ptr<SeResponseSet> StubReader::processSeRequestSetTestProxy(std::shared_ptr<SeRequestSet> requestSet)
                     {
                         return this->processSeRequestSet(requestSet);
                     }
@@ -213,7 +209,7 @@ namespace org {
                         sePresent = false;
                     }
 
-                    bool StubReader::waitForCardPresent(long long timeout) throw(NoStackTraceThrowable)
+                    bool StubReader::waitForCardPresent(long long timeout)
                     {
                         for (int i = 0; i < timeout / 10; i++)
                         {
@@ -232,7 +228,7 @@ namespace org {
                         return sePresent;
                     }
 
-                    bool StubReader::waitForCardAbsent(long long timeout) throw(NoStackTraceThrowable)
+                    bool StubReader::waitForCardAbsent(long long timeout)
                     {
                         for (int i = 0; i < timeout / 10; i++)
                         {
@@ -253,10 +249,13 @@ namespace org {
 
                     void StubReader::notifyObservers(std::shared_ptr<ReaderEvent> event)
                     {
+                        (void)event;
                     }
 
                     bool StubReader::equals(std::shared_ptr<void> o)
                     {
+                        (void)o;
+
                         return false;
                     }
 
@@ -265,8 +264,9 @@ namespace org {
                         return 0;
                     }
 
-                    void StubReader::setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException)
+                    void StubReader::setParameters(std::unordered_map<std::string, std::string> &parameters)
                     {
+                        (void)parameters;
                     }
                 } // namespace stub
             }     // namespace plugin

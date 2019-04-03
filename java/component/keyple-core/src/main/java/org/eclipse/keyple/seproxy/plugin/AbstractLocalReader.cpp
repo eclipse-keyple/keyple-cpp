@@ -47,7 +47,8 @@ namespace org {
                                                             */
                     }
 
-                    bool AbstractLocalReader::isSePresent() throw(NoStackTraceThrowable) {
+                    bool AbstractLocalReader::isSePresent() 
+                    {
                         if (checkSePresence()) {
                             return true;
                         }
@@ -116,7 +117,8 @@ namespace org {
                         }
                     }
 
-                    void AbstractLocalReader::cardRemoved() throw(NoStackTraceThrowable) {
+                    void AbstractLocalReader::cardRemoved()
+                    {
                         if (presenceNotified) {
                             ObservableReader::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_REMOVAL, nullptr));
                             presenceNotified = false;
@@ -132,8 +134,7 @@ namespace org {
                     }
 
                     std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector)
-                    throw(KeypleChannelStateException, KeypleIOReaderException, KeypleApplicationSelectionException) {
-
+                    {
                         std::shared_ptr<SelectionStatus> selectionStatus;
 
                         if (seSelector == nullptr) {
@@ -174,7 +175,7 @@ namespace org {
                     }
 
                     std::shared_ptr<SeResponseSet> AbstractLocalReader::processSeRequestSet(std::shared_ptr<SeRequestSet> requestSet)
-                    throw(KeypleReaderException) {
+                    {
                         std::vector<bool> requestMatchesProtocol(requestSet->getRequests()->size());
                         int requestIndex = 0, lastRequestIndex;
 
@@ -266,7 +267,6 @@ namespace org {
                     }
 
                     std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequest(std::shared_ptr<SeRequest> seRequest)
-                    throw(IllegalStateException, KeypleReaderException)
                     {
 
                         std::shared_ptr<SeResponse> seResponse = processSeRequestLogical(seRequest);
@@ -279,8 +279,7 @@ namespace org {
                         return seResponse;
                     }
 
-                    std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(std::shared_ptr<SeRequest> seRequest) 
-                    throw(IllegalStateException, KeypleReaderException) 
+                    std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(std::shared_ptr<SeRequest> seRequest)
                     {
                         bool previouslyOpen = true;
                         std::shared_ptr<SelectionStatus> selectionStatus = nullptr;
@@ -400,7 +399,7 @@ namespace org {
                         return std::make_shared<SeResponse>(previouslyOpen, selectionStatus, apduResponseList);
                     }
 
-                    std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(std::shared_ptr<ApduRequest> apduRequest) throw(KeypleIOReaderException)
+                    std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(std::shared_ptr<ApduRequest> apduRequest)
                     {
                         std::shared_ptr<ApduResponse> apduResponse;
                         if (logger->isTraceEnabled()) {
@@ -429,7 +428,7 @@ namespace org {
                         return apduResponse;
                     }
 
-                    std::shared_ptr<ApduResponse> AbstractLocalReader::case4HackGetResponse(int originalStatusCode) throw(KeypleIOReaderException)
+                    std::shared_ptr<ApduResponse> AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
                     {
                         /*
                          * build a get response command the actual length expected by the SE in the get response

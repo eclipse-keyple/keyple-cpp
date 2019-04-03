@@ -35,7 +35,8 @@ public:
      * Parses the next byte in this BER buffer.
      * @return The byte parsed.
      */
-    int parseByte() throw(std::runtime_error) {
+    int parseByte()
+    {
         if (bufsize - offset < 1) {
             throw std::runtime_error("Insufficient data");
         }
@@ -46,7 +47,8 @@ public:
      * Returns the next byte in this BER buffer without consuming it.
      * @return The next byte.
      */
-    int peekByte() throw(std::runtime_error) {
+    int peekByte()
+    {
         if (bufsize - offset < 1) {
             throw std::runtime_error("Insufficient data");
         }
@@ -56,7 +58,8 @@ public:
     /**
       * Parses a possibly variable length field.
       */
-    int parseLength() throw(std::runtime_error) {
+    int parseLength() 
+    {
 
         int lengthbyte = parseByte();
 
@@ -104,7 +107,8 @@ public:
      * <tt>tag</tt>, or if length specified in the BER buffer exceeds the
      * number of bytes left in the buffer.
      */
-    std::vector<char> parseOctetString(int tag, std::vector<int> rlen) throw(std::runtime_error) {
+    std::vector<char> parseOctetString(int tag, std::vector<int> rlen)
+    {
 
         int origOffset = offset;
         int st;

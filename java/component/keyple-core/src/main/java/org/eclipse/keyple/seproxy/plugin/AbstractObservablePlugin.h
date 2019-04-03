@@ -97,7 +97,7 @@ namespace org {
                          *       preventing the base-derived mechanism to work.
                          */
                       public:
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() override;
 
                         /**
                          * Returns the current list of reader names.
@@ -192,7 +192,7 @@ namespace org {
                          *       Downcasting to SeReader for now, but should be looked into, maybe returning a reference would
                          *       could be best here?
                          */
-                        std::shared_ptr<SeReader> getReader(const std::string &name) throw(KeypleReaderNotFoundException) override;
+                        std::shared_ptr<SeReader> getReader(const std::string &name) override;
 
                       protected:
                         std::shared_ptr<AbstractObservablePlugin> shared_from_this() {

@@ -43,10 +43,10 @@ namespace org {
                     void AbstractObservableReader::startObservation()
                     {
                         logger->debug("\n");
-                    };
+                    }
 
                     void AbstractObservableReader::stopObservation() {
-                    };
+                    }
 
                     std::string AbstractObservableReader::getPluginName() {
                         return pluginName;
@@ -60,7 +60,7 @@ namespace org {
                         return AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName().compare(seReader->getName());
                     }
 
-                    std::shared_ptr<SeResponseSet> AbstractObservableReader::transmitSet(std::shared_ptr<SeRequestSet> requestSet) throw(KeypleReaderException) {
+                    std::shared_ptr<SeResponseSet> AbstractObservableReader::transmitSet(std::shared_ptr<SeRequestSet> requestSet) {
                         if (requestSet == nullptr) {
                             throw std::invalid_argument("seRequestSet must not be null\n");
                         }
@@ -106,7 +106,7 @@ namespace org {
                         return responseSet;
                     }
 
-                    std::shared_ptr<SeResponse> AbstractObservableReader::transmit(std::shared_ptr<SeRequest> seRequest) throw(KeypleReaderException) {
+                    std::shared_ptr<SeResponse> AbstractObservableReader::transmit(std::shared_ptr<SeRequest> seRequest) {
                         if (seRequest == nullptr) {
                             throw std::invalid_argument("seRequest must not be null\n");
                         }

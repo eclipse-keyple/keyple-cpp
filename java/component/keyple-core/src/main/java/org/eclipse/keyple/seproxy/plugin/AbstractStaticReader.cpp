@@ -16,10 +16,12 @@ namespace org {
                     }
 
                     void AbstractStaticReader::addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
+                        (void)observer;
                         throw std::runtime_error("Abstract Static Reader does not support ObservableReader::ReaderObservers, do not use this function");
                     }
 
                     void AbstractStaticReader::removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
+                        (void)observer;
                         throw std::runtime_error("Abstract Static Reader does not support ObservableReader::ReaderObservers, do not use this function");
                     }
                 }

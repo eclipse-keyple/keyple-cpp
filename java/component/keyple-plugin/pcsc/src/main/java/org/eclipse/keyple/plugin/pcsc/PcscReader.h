@@ -41,13 +41,12 @@ namespace org {
                 namespace pcsc {
 
                     using namespace org::eclipse::keyple::seproxy::exception;
-                    using AbstractThreadedLocalReader =
-                        org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader;
-                    using SeProtocol       = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                    using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-                    using ReaderEvent      = org::eclipse::keyple::seproxy::event::ReaderEvent;
-                    using LoggerFactory    = org::eclipse::keyple::common::LoggerFactory;
-                    using Logger           = org::eclipse::keyple::common::Logger;
+                    using AbstractThreadedLocalReader = org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader;
+                    using SeProtocol                  = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                    using TransmissionMode            = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
+                    using ReaderEvent                 = org::eclipse::keyple::seproxy::event::ReaderEvent;
+                    using LoggerFactory               = org::eclipse::keyple::common::LoggerFactory;
+                    using Logger                      = org::eclipse::keyple::common::Logger;
 
                     class EXPORT PcscReader : public AbstractThreadedLocalReader {
 
@@ -107,13 +106,13 @@ namespace org {
                         PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal);
 
                     protected:
-                        void closePhysicalChannel() throw(KeypleChannelStateException) override;
+                        void closePhysicalChannel() override;
 
-                        bool checkSePresence() throw(NoStackTraceThrowable) override;
+                        bool checkSePresence() override;
 
-                        bool waitForCardPresent(long long timeout) throw(NoStackTraceThrowable) override;
+                        bool waitForCardPresent(long long timeout) override;
 
-                        bool waitForCardAbsent(long long timeout) throw(NoStackTraceThrowable) override;
+                        bool waitForCardAbsent(long long timeout) override;
 
                         /**
                          * Transmission of single APDU
@@ -122,7 +121,7 @@ namespace org {
                          * @return apduOut buffer
                          * @throws KeypleIOReaderException if the transmission failed
                          */
-                        std::vector<char> transmitApdu(std::vector<char> &apduIn) throw(KeypleIOReaderException) override;
+                        std::vector<char> transmitApdu(std::vector<char> &apduIn) override;
 
                         /**
                          * Tells if the current SE protocol matches the provided protocol flag. If the protocol flag is
@@ -133,7 +132,7 @@ namespace org {
                          * @return true if the current SE matches the protocol flag
                          * @throws KeypleReaderException if the protocol mask is not found
                          */
-                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(KeypleReaderException) override;
+                        bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) override;
 
                         /**
                          * Set a parameter.
@@ -173,7 +172,7 @@ namespace org {
                          *
                          */
                       public:
-                        void setParameter(const std::string &name, const std::string &value) throw(std::invalid_argument, KeypleBaseException) override;
+                        void setParameter(const std::string &name, const std::string &value) override;
 
                         std::unordered_map<std::string, std::string> getParameters() override;
 
@@ -201,7 +200,7 @@ namespace org {
                          *
                          * @throws KeypleChannelStateException if a reader error occurs
                          */
-                        void openPhysicalChannel() throw(KeypleChannelStateException) override;
+                        void openPhysicalChannel() override;
 
                         /**
                          * The transmission mode can set with setParameter(SETTING_KEY_TRANSMISSION_MODE, )
@@ -227,7 +226,7 @@ namespace org {
 
                         int hashCode() override;
 
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override;
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override;
 
                         void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
 

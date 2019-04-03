@@ -183,6 +183,7 @@ namespace org {
                         if (warnEnabled)
                         {
                             std::cout << "[ WARN]   [" << className << "]   ";
+                            log(s, value, std::forward<Args>(args)...);
                         }
                     }
 

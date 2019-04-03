@@ -122,7 +122,7 @@ namespace org {
                          * @param name the name of the reader
                          * @throws KeypleReaderException in case of a reader exception
                          */
-                        void unplugStubReader(const std::string &name, bool synchronous) throw(KeypleReaderException, InterruptedException);
+                        void unplugStubReader(const std::string &name, bool synchronous);
 
 
                         void unplugStubReaders(std::shared_ptr<std::set<std::string>> names, bool synchronous);
@@ -143,7 +143,7 @@ namespace org {
                          * @return the list of AbstractObservableReader objects.
                          * @throws KeypleReaderException if a reader error occurs
                          */
-                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() throw(KeypleReaderException) override;
+                        std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() override;
 
                         /**
                          * Fetch the reader whose name is provided as an argument. Returns the current reader if it is
@@ -175,6 +175,7 @@ protected:
 
                         bool equals(std::shared_ptr<void> o) override
                         {
+                            (void)o;
                             return true; //AbstractThreadedObservablePlugin::equals(o);
                         }
 
@@ -183,7 +184,7 @@ protected:
                             return 0; //AbstractThreadedObservablePlugin::hashCode();
                         }
 
-                        void setParameters(std::unordered_map<std::string, std::string> &parameters) throw(std::invalid_argument, KeypleBaseException) override
+                        void setParameters(std::unordered_map<std::string, std::string> &parameters) override
                         {
                             return AbstractThreadedObservablePlugin::AbstractLoggedObservable::setParameters(parameters);
                         }
@@ -195,6 +196,7 @@ protected:
 
                         void addObserver(std::shared_ptr<PluginObserver> observer) override
                         {
+                            (void)observer;
                         }
                     };
 

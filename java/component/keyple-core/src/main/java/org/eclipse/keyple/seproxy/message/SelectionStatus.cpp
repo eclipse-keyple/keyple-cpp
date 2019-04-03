@@ -47,7 +47,7 @@ namespace org {
                     }
 
 
-                    void SelectionStatus::finalize() throw(std::runtime_error)
+                    void SelectionStatus::finalize()
                     {
 
                     }

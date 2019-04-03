@@ -150,7 +150,7 @@ protected:
                          */
                       protected:
                         //JAVA TO C++ CONVERTER WARNING: Unlike Java, there is no automatic call to this finalizer method in native C++:
-                        void finalize() throw(std::runtime_error) override;
+                        void finalize() override;
 
                       protected:
                         std::shared_ptr<AbstractThreadedLocalReader> shared_from_this() {

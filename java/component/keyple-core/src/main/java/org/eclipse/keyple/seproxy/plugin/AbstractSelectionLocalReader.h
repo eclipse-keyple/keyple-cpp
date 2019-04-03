@@ -54,7 +54,7 @@ protected:
                          * @return the SelectionStatus
                          * @throws KeypleIOReaderException if a reader error occurs
      */
-                        std::shared_ptr<SelectionStatus> openLogicalChannel(std::shared_ptr<SeSelector> seSelector) throw(KeypleIOReaderException) override;
+                        std::shared_ptr<SelectionStatus> openLogicalChannel(std::shared_ptr<SeSelector> seSelector) override;
 
 protected:
                         std::shared_ptr<AbstractSelectionLocalReader> shared_from_this() {

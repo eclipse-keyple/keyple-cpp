@@ -23,7 +23,7 @@ namespace org {
                     EventType::StaticConstructor EventType::staticConstructor;
                     int EventType::nextOrdinal = 0;
 
-                    PluginEvent::EventType::EventType(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : nameValue(nameValue), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
+                    PluginEvent::EventType::EventType(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++) {
                         this->name = name;
                     }
 

@@ -54,8 +54,7 @@ namespace org {
                         parameters.emplace(key, value);
                     }
 
-                    std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
-                    StubPlugin::initNativeReaders() throw(KeypleReaderException)
+                    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> StubPlugin::initNativeReaders()
                     {
                         /* init Stub Readers list */
                         logger->debug("creating new list\n");
@@ -132,7 +131,8 @@ namespace org {
 
                     }
 
-                    void StubPlugin::unplugStubReader(const std::string &name, bool synchronous) throw(KeypleReaderException, InterruptedException) {
+                    void StubPlugin::unplugStubReader(const std::string &name, bool synchronous)
+                    {
 
                         if (connectedStubNames->find(name) == connectedStubNames->end()) {
                             logger->warn("unplugStubReader() No reader found with name %s\n", name);

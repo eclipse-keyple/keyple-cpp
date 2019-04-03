@@ -33,8 +33,7 @@ namespace org {
                     return plugins;
                 }
 
-                std::shared_ptr<ReaderPlugin>
-                SeProxyService::getPlugin(const std::string &name) throw(KeyplePluginNotFoundException)
+                std::shared_ptr<ReaderPlugin> SeProxyService::getPlugin(const std::string &name)
                 {
                     for (auto plugin : plugins)
                     {

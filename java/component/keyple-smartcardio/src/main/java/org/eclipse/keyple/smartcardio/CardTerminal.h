@@ -103,6 +103,7 @@ public:
      */
     bool waitForCardAbsent(long timeout)
     {
+        (void)timeout;
         return false;
     }
 
@@ -123,6 +124,7 @@ public:
      */
     bool waitForCardPresent(long timeout)
     {
+        (void)timeout;
         return false;
     }
 

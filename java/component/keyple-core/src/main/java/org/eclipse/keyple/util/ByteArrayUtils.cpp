@@ -19,7 +19,7 @@ const Pattern ByteArrayUtils::HEX_IGNORED_CHARS = Pattern::compile(" |h");
                     }
 
                     std::vector<char> byteArray(hex.length() / 2);
-                    for (int i = 0; i < _hex.length(); i += 2) {
+                    for (int i = 0; i < (int)_hex.length(); i += 2) {
                         byteArray[i / 2] = static_cast<char>((Character::digit(hex[i], 16) << 4) + Character::digit(_hex[i + 1], 16));
                     }
 
@@ -31,14 +31,14 @@ const Pattern ByteArrayUtils::HEX_IGNORED_CHARS = Pattern::compile(" |h");
                         return "";
                     }
                     std::shared_ptr<StringBuilder> hexStringBuilder = std::make_shared<StringBuilder>();
-                    for (int i = 0; i < byteArray.size(); i++) {
+                    for (int i = 0; i < (int)byteArray.size(); i++) {
                         hexStringBuilder->append(byteToHex[byteArray[i] & 0xFF]);
                     }
                     return hexStringBuilder->toString();
                 }
 
                 int ByteArrayUtils::threeBytesToInt(std::vector<char> &bytes, int offset) {
-                    if (bytes.empty() || bytes.size() < offset + 3 || offset < 0) {
+                    if (bytes.empty() || (int)bytes.size() < offset + 3 || offset < 0) {
                         throw std::invalid_argument("Bad data for converting 3-byte integers.");
                     }
                     return ((static_cast<int>(bytes[offset])) << 16) + ((static_cast<int>(bytes[offset + 1])) << 8) + (static_cast<int>(bytes[offset + 2]));

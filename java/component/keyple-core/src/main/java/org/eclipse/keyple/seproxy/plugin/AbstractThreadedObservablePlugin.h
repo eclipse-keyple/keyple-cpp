@@ -170,7 +170,7 @@ namespace org {
                          * @throws Throwable a generic exception
                          */
                       protected:
-                        void finalize() throw(std::runtime_error) override;
+                        void finalize() override;
 
                       protected:
                         std::shared_ptr<AbstractThreadedObservablePlugin> shared_from_this()

@@ -124,7 +124,7 @@ class StringHelper {
         int percent        = -1;
         while ((percent = input.find('%', percent + 1)) > -1)
         {
-            if (percent + 1 < input.length())
+            if (percent + 1 < (int)input.length())
             {
                 if (input[percent + 1] == '%')
                 {
@@ -180,7 +180,7 @@ class StringHelper {
         int percent        = -1;
         while ((percent = input.find('%', percent + 1)) > -1)
         {
-            if (percent + 1 < input.length())
+            if (percent + 1 < (int)input.length())
             {
                 if (input[percent + 1] == '%')
                 {
@@ -190,7 +190,7 @@ class StringHelper {
 
                 int formatEnd = -1;
                 std::string index;
-                for (int i = percent + 1; i < input.length(); i++)
+                for (int i = percent + 1; i < (int)input.length(); i++)
                 {
                     if (input[i] == 's')
                     {
@@ -198,7 +198,7 @@ class StringHelper {
                         formatEnd = i;
                         break;
                     }
-                    else if (input[i] == '$' && i + 1 < input.length() && input[i + 1] == 's')
+                    else if (input[i] == '$' && i + 1 < (int)input.length() && input[i + 1] == 's')
                     {
                         index     = input.substr(percent + 1, i - percent - 1);
                         formatEnd = i + 1;
@@ -224,7 +224,7 @@ class StringHelper {
             }
         }
 
-        if (lastFormatChar + 1 < input.length())
+        if (lastFormatChar + 1 < (int)input.length())
             ss << input.substr(lastFormatChar + 1);
 
         return ss.str();
@@ -238,7 +238,7 @@ class StringHelper {
         int percent        = -1;
         while ((percent = input.find('%', percent + 1)) > -1)
         {
-            if (percent + 1 < input.length())
+            if (percent + 1 < (int)input.length())
             {
                 if (input[percent + 1] == '%')
                 {
@@ -256,7 +256,7 @@ class StringHelper {
                         formatEnd = i;
                         break;
                     }
-                    else if (input[i] == '$' && i + 1 < input.length() && input[i + 1] == 's')
+                    else if (input[i] == '$' && i + 1 < (int)input.length() && input[i + 1] == 's')
                     {
                         index     = input.substr(percent + 1, i - percent - 1);
                         formatEnd = i + 1;
@@ -284,7 +284,7 @@ class StringHelper {
             }
         }
 
-        if (lastFormatChar + 1 < input.length())
+        if (lastFormatChar + 1 < (int)input.length())
             ss << input.substr(lastFormatChar + 1);
 
         return ss.str();
@@ -360,7 +360,7 @@ class StringHelper {
         int percent        = -1;
         while ((percent = input.find('%', percent + 1)) > -1)
         {
-            if (percent + 1 < input.length())
+            if (percent + 1 < (int)input.length())
             {
                 if (input[percent + 1] == '%')
                 {
@@ -370,7 +370,7 @@ class StringHelper {
 
                 int formatEnd = -1;
                 std::string index;
-                for (int i = percent + 1; i < input.length(); i++)
+                for (int i = percent + 1; i < (int)input.length(); i++)
                 {
                     if (input[i] == 's')
                     {
@@ -378,7 +378,7 @@ class StringHelper {
                         formatEnd = i;
                         break;
                     }
-                    else if (input[i] == '$' && i + 1 < input.length() && input[i + 1] == 's')
+                    else if (input[i] == '$' && i + 1 < (int)input.length() && input[i + 1] == 's')
                     {
                         index     = input.substr(percent + 1, i - percent - 1);
                         formatEnd = i + 1;
@@ -410,7 +410,7 @@ class StringHelper {
             }
         }
 
-        if (lastFormatChar + 1 < input.length())
+        if (lastFormatChar + 1 < (int)input.length())
             ss << input.substr(lastFormatChar + 1);
 
         return ss.str();

@@ -40,7 +40,8 @@ PcscProtocolSetting::StaticConstructor::StaticConstructor() {
 PcscProtocolSetting::StaticConstructor PcscProtocolSetting::staticConstructor;
 int PcscProtocolSetting::nextOrdinal = 0;
 
-                    PcscProtocolSetting::PcscProtocolSetting(const std::string &name, InnerEnum innerEnum, ContactlessProtocols &flag, const std::string &value) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum), flag(flag) {
+                    PcscProtocolSetting::PcscProtocolSetting(const std::string &name, InnerEnum innerEnum, ContactlessProtocols &flag, const std::string &value)
+                    : innerEnumValue(innerEnum), nameValue(name), ordinalValue(nextOrdinal++), flag(flag) {
                         this->value = value;
                     }
 

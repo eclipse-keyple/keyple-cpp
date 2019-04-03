@@ -183,6 +183,7 @@ class Thread {
 
     void setDaemon(bool on)
     {
+        (void)on;
     }
 
     /**

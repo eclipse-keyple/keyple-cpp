@@ -117,8 +117,7 @@ namespace org {
                      * @return the plugin
                      * @throws KeyplePluginNotFoundException if the wanted plugin is not found
                      */
-                    std::shared_ptr<ReaderPlugin>
-                    getPlugin(const std::string &name) throw(KeyplePluginNotFoundException);
+                    std::shared_ptr<ReaderPlugin> getPlugin(const std::string &name);
 
                     /**
                      * Gets the version API, (the version of the sdk).

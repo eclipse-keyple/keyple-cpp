@@ -43,7 +43,7 @@ namespace org {
                  * </ul>
                  * Interface used by applications processing SE.
                  */
-                class SeReader : public Nameable, public Configurable, public Comparable<std::shared_ptr<SeReader>> {
+                class SeReader : public virtual Nameable, public Configurable, public Comparable<std::shared_ptr<SeReader>> {
 
                     /**
                      * Checks if is SE present.

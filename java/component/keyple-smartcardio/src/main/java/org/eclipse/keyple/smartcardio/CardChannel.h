@@ -102,8 +102,7 @@ namespace keyple {
                  */
                 std::shared_ptr<ResponseAPDU> transmit(std::shared_ptr<CommandAPDU> command)
                 {
-                    std::vector<char> rapdu = {};
-                    return std::shared_ptr<ResponseAPDU>(new ResponseAPDU(rapdu));
+                    return std::shared_ptr<ResponseAPDU>(new ResponseAPDU(command->getApdu()));
                 }
 
                 /*
