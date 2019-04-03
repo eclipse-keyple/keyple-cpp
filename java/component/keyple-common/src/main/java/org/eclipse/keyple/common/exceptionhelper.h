@@ -16,7 +16,7 @@ class IOException : public Exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -31,7 +31,7 @@ class SecurityException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -46,7 +46,7 @@ class NoSuchElementException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -61,7 +61,7 @@ class IllegalAccessException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -76,7 +76,7 @@ class InvocationTargetException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -91,7 +91,7 @@ class NoSuchMethodException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -106,7 +106,7 @@ class ClassNotFoundException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -121,7 +121,7 @@ class NameNotFoundException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -136,7 +136,7 @@ class IllegalStateException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -153,7 +153,7 @@ public:
     {
     }
 
-    const char * what() const _NOEXCEPT
+    const char * what()
     {
         return msg.c_str();
     }
@@ -169,7 +169,7 @@ class InstantiationException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -186,7 +186,7 @@ public:
     {
     }
 
-    const char * what() const _NOEXCEPT
+    const char * what()
     {
         return msg.c_str();
     }
@@ -202,7 +202,7 @@ class JsonParseException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -217,7 +217,7 @@ class FileNotFoundException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
@@ -232,7 +232,7 @@ class URISyntaxException : public std::exception {
     {
     }
 
-    const char *what() const _NOEXCEPT
+    const char *what()
     {
         return msg.c_str();
     }
