@@ -1,5 +1,7 @@
 #include "DigestInitCmdBuild.h"
 
+#include "System.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -12,10 +14,10 @@ namespace org {
                                 using SamCommandBuilder = org::eclipse::keyple::calypso::command::sam::SamCommandBuilder;
                                 using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
-                                DigestInitCmdBuild::DigestInitCmdBuild(SamRevision revision, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif, char workKeyKVC, std::vector<char> &digestData) throw(std::invalid_argument) : org::eclipse::keyple::calypso::command::sam::SamCommandBuilder(command, nullptr) {
-                                    if (revision != nullptr) {
-                                        this->defaultRevision = revision;
-                                    }
+                                DigestInitCmdBuild::DigestInitCmdBuild(SamRevision revision, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif, char workKeyKVC, std::vector<char> &digestData)
+                                : org::eclipse::keyple::calypso::command::sam::SamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr)
+                                {
+                                    this->defaultRevision = revision;
 
                                     if (workKeyRecordNumber == 0x00 && (workKeyKif == 0x00 || workKeyKVC == 0x00)) {
                                         throw std::invalid_argument("Bad key record number, kif or kvc!");
@@ -23,7 +25,7 @@ namespace org {
                                     if (digestData.empty()) {
                                         throw std::invalid_argument("Digest data is null!");
                                     }
-                                    char cla = SamRevision::S1D.equals(this->defaultRevision) ? static_cast<char>(0x94) : static_cast<char>(0x80);
+                                    char cla = SamRevision::S1D == (this->defaultRevision) ? static_cast<char>(0x94) : static_cast<char>(0x80);
                                     char p1 = 0x00;
                                     if (verificationMode) {
                                         p1 = static_cast<char>(p1 + 1);
@@ -50,7 +52,7 @@ namespace org {
                                     }
                                     // CalypsoRequest calypsoRequest = new CalypsoRequest(cla, CalypsoCommands.SAM_DIGEST_INIT,
                                     // p1, p2, dataIn);
-                                    request = setApduRequest(cla, CalypsoSamCommands::DIGEST_INIT, p1, p2, dataIn, nullptr);
+                                    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(CalypsoSamCommands::DIGEST_INIT), p1, p2, dataIn, -1);
 
                                 }
                             }

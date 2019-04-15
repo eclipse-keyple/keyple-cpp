@@ -37,6 +37,8 @@ public:
                             /** The revision of S1D SAM SAM. CLA 0x94 */
                             static SamRevision S1D;
 
+                            static SamRevision NO_REV;
+
                             /**
                              * Joker value matching any application type.
                              * <p>
@@ -58,25 +60,28 @@ private:
 
 public:
                             enum class InnerEnum {
+                                NO_REV,
                                 C1,
                                 S1E,
                                 S1D,
                                 AUTO
                             };
 
-                            const InnerEnum innerEnumValue;
+                            InnerEnum innerEnumValue;
 private:
-                            const std::string nameValue;
-                            const int ordinalValue;
+                            std::string nameValue;
+                            int ordinalValue;
                             static int nextOrdinal;
 
                         private:
-                            const std::string name;
-                            const std::string applicationTypeMask;
-                            const char classByte;
+                            std::string name;
+                            std::string applicationTypeMask;
+                            char classByte;
 
                         public:
-                            SamRevision(const std::string &name, InnerEnum innerEnum, const std::string &name, const std::string &applicationTypeMask, char classByte);
+                            SamRevision(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, const std::string &applicationTypeMask, char classByte);
+
+                            SamRevision(const SamRevision& s);
 
                             virtual std::string getName();
 
@@ -85,9 +90,11 @@ private:
                             virtual char getClassByte();
 
 public:
-                            bool operator == (const SamRevision &other);
+                            bool operator== (const SamRevision &other);
 
-                            bool operator != (const SamRevision &other);
+                            bool operator!= (const SamRevision &other);
+
+                            void operator= (const SamRevision &other);
 
                             static std::vector<SamRevision> values();
 
@@ -96,6 +103,8 @@ public:
                             std::string toString();
 
                             static SamRevision valueOf(const std::string &name);
+
+                            
                         };
 
                     }

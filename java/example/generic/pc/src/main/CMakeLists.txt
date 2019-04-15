@@ -24,4 +24,4 @@ SET(CMAKE_CXX_STANDARD 11)
 
 INCLUDE(CMakeLists.txt.demo_observablereadernotification_pcsc)
 INCLUDE(CMakeLists.txt.demo_observablereadernotification_stub)
-#INCLUDE(CMakeLists.txt.demo_seprotocoldetection_pcsc)
+INCLUDE(CMakeLists.txt.demo_seprotocoldetection_pcsc)

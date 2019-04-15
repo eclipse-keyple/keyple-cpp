@@ -22,7 +22,7 @@ CustomProtocols::StaticConstructor::StaticConstructor() {
 CustomProtocols::StaticConstructor CustomProtocols::staticConstructor;
 int CustomProtocols::nextOrdinal = 0;
 
-                        CustomProtocols::CustomProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
+                        CustomProtocols::CustomProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++) {
                             this->name = name;
                         }
 
@@ -56,7 +56,11 @@ CustomProtocols CustomProtocols::valueOf(const std::string &name) {
             return enumInstance;
         }
     }
+
+    /* Make compiler happy */
+    return valueList.front();
 }
+
                     }
                 }
             }

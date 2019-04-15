@@ -61,9 +61,9 @@ namespace org {
                 bool SeSelector::AtrFilter::atrMatches(std::vector<char> &atr) {
                     bool m;
                     if (atrRegex.length() != 0) {
-                        Pattern p = Pattern::compile(atrRegex);
+                        Pattern *p = Pattern::compile(atrRegex);
                         std::string atrString = ByteArrayUtils::toHex(atr);
-                        m = p.matcher(atrString).matches();
+                        m = p->matcher(atrString)->matches();
     }
     else {
                         m = true;

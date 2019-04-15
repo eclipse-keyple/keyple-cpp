@@ -1,11 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
-#include "../../command/sam/SamRevision.h"
-#include <string>
-#include <stdexcept>
-#include <memory>
-
 /********************************************************************************
  * Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -17,6 +9,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <stdexcept>
+#include <memory>
+
+/* Core */
+#include "SeSelector.h"
+
+/* Calypso */
+#include "SamRevision.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -47,7 +52,7 @@ namespace org {
 
 protected:
                             std::shared_ptr<SamSelector> shared_from_this() {
-                                return std::static_pointer_cast<SamSelector>(org.eclipse.keyple.seproxy.SeSelector::shared_from_this());
+                                return std::static_pointer_cast<SamSelector>(SeSelector::shared_from_this());
                             }
                         };
 

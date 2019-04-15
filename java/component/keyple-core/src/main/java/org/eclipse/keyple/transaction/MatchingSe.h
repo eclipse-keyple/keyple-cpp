@@ -3,8 +3,8 @@
 #include <string>
 #include <memory>
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
+#include "SeResponse.h"
+
 namespace org { namespace eclipse { namespace keyple { namespace transaction { class SeSelectionRequest; } } } }
 
 /********************************************************************************

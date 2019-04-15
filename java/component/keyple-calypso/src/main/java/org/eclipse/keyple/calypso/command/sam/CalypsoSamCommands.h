@@ -1,8 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -14,6 +9,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <typeinfo>
+
+/* Core */
+#include "CommandsTable.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -21,13 +26,12 @@ namespace org {
                 namespace command {
                     namespace sam {
 
-                        using namespace org::eclipse::keyple::calypso::command::sam::builder::session;
-                        using namespace org::eclipse::keyple::calypso::command::sam::parser::session;
+                        using CommandsTable = org::eclipse::keyple::command::CommandsTable;
 
                         class CalypsoSamCommands final : public CommandsTable {
 
                             /** The sam select diversifier. */
-public:
+                        public:
                             static CalypsoSamCommands SELECT_DIVERSIFIER;
 
                             /** The sam get challenge. */
@@ -48,7 +52,7 @@ public:
                             /** The sam digest authenticate. */
                             static CalypsoSamCommands DIGEST_AUTHENTICATE;
 
-private:
+                        private:
                             static std::vector<CalypsoSamCommands> valueList;
 
                             class StaticConstructor {
@@ -58,7 +62,7 @@ private:
 
                             static StaticConstructor staticConstructor;
 
-public:
+                        public:
                             enum class InnerEnum {
                                 SELECT_DIVERSIFIER,
                                 GET_CHALLENGE,
@@ -70,7 +74,7 @@ public:
                             };
 
                             const InnerEnum innerEnumValue;
-private:
+                        private:
                             const std::string nameValue;
                             const int ordinalValue;
                             static int nextOrdinal;
@@ -83,10 +87,10 @@ private:
                             const char instructionbyte;
 
                             /** The command builder class. */
-                            const std::type_info commandBuilderClass;
+                            const std::type_info& commandBuilderClass;
 
                             /** The response parser class. */
-                            const std::type_info responseParserClass;
+                            const std::type_info& responseParserClass;
 
                             /**
                              * The generic constructor of CalypsoCommands.
@@ -97,7 +101,7 @@ private:
                              * @param responseParserClass the response parser class
                              */
                         public:
-                            CalypsoSamCommands(const std::string &name, InnerEnum innerEnum, const std::string &name, char instructionByte, std::type_info commandBuilderClass, std::type_info responseParserClass);
+                            CalypsoSamCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte, const std::type_info& commandBuilderClass, const std::type_info& responseParserClass);
 
                             /**
                              * Gets the name.
@@ -118,16 +122,16 @@ private:
                              *
                              * @return the corresponding command builder class
                              */
-                            virtual std::type_info getCommandBuilderClass();
+                            virtual const std::type_info& getCommandBuilderClass();
 
                             /**
                              * Gets the response parser class.
                              *
                              * @return the corresponding response parser class
                              */
-                            virtual std::type_info getResponseParserClass();
+                            virtual const std::type_info& getResponseParserClass();
 
-public:
+                        public:
                             bool operator == (const CalypsoSamCommands &other);
 
                             bool operator != (const CalypsoSamCommands &other);

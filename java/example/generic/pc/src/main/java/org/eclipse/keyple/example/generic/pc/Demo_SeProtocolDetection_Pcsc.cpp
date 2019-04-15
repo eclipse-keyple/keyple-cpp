@@ -20,30 +20,28 @@
 #include "PcscReadersSettings.h"
 
 
-                        using CustomProtocolSetting =
-                            org::eclipse::keyple::example::generic::common::CustomProtocolSetting;
-                        using SeProtocolDetectionEngine =
-                            org::eclipse::keyple::example::generic::common::SeProtocolDetectionEngine;
-                        using PcscPlugin          = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
-                        using PcscProtocolSetting = org::eclipse::keyple::plugin::pcsc::PcscProtocolSetting;
-                        using PcscReader          = org::eclipse::keyple::plugin::pcsc::PcscReader;
-                        using PcscReadersSettings =
-                            org::eclipse::keyple::example::generic::pc::PcscReadersSettings;
-                        using SeProxyService   = org::eclipse::keyple::seproxy::SeProxyService;
-                        using SeReader         = org::eclipse::keyple::seproxy::SeReader;
-                        using ObservableReader = org::eclipse::keyple::seproxy::event::ObservableReader;
-                        using KeypleBaseException =
-                            org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-                        using ContactlessProtocols =
-                            org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
-                        using SeProtocol        = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                        using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
-                        using ReaderUtilities   = org::eclipse::keyple::example::generic::pc::ReaderUtilities;
-                        using ReaderPlugin      = org::eclipse::keyple::seproxy::ReaderPlugin;
-			using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
+                        using CustomProtocolSetting     = org::eclipse::keyple::example::generic::common::CustomProtocolSetting;
+                        using SeProtocolDetectionEngine = org::eclipse::keyple::example::generic::common::SeProtocolDetectionEngine;
+                        using PcscPlugin                = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
+                        using PcscProtocolSetting       = org::eclipse::keyple::plugin::pcsc::PcscProtocolSetting;
+                        using PcscReader                = org::eclipse::keyple::plugin::pcsc::PcscReader;
+                        using PcscReadersSettings       = org::eclipse::keyple::example::generic::pc::PcscReadersSettings;
+                        using SeProxyService            = org::eclipse::keyple::seproxy::SeProxyService;
+                        using SeReader                  = org::eclipse::keyple::seproxy::SeReader;
+                        using ObservableReader          = org::eclipse::keyple::seproxy::event::ObservableReader;
+                        using KeypleBaseException       = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+                        using ContactlessProtocols      = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
+                        using SeProtocol                = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                        using SeProtocolSetting         = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
+                        using ReaderUtilities           = org::eclipse::keyple::example::generic::pc::ReaderUtilities;
+                        using ReaderPlugin              = org::eclipse::keyple::seproxy::ReaderPlugin;
+			            using SeProtocolSettingList     = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
 
-                        int main(int argc, char **argv) throw(std::invalid_argument, KeypleBaseException)
+                        int main(int argc, char **argv)
                         {
+                            (void)argc;
+                            (void)argv;
+
                             /* get the SeProxyService instance */
                             SeProxyService seProxyService = SeProxyService::getInstance();
 
@@ -81,10 +79,10 @@
 
                             // Method 1
                             // add protocols individually
-                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25));
+                            poReader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25)));
 
 
-                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4));
+                            poReader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4)));
 
 
                             // Method 2
@@ -95,15 +93,15 @@
                             // create and fill a protocol map
                             std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap;
 
-                            protocolsMap.emplace(ContactlessProtocols::PROTOCOL_MIFARE_CLASSIC, PcscProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_CLASSIC);
+                            protocolsMap.emplace(std::pair<std::shared_ptr<SeProtocol>, std::string>(std::make_shared<SeProtocol>(ContactlessProtocols::PROTOCOL_MIFARE_CLASSIC), PcscProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_CLASSIC));
 
-                            protocolsMap.emplace(ContactlessProtocols::PROTOCOL_MIFARE_UL, PcscProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_UL);
+                            protocolsMap.emplace(std::pair<std::shared_ptr<SeProtocol>, std::string>(std::make_shared<SeProtocol>(ContactlessProtocols::PROTOCOL_MIFARE_UL), PcscProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_UL));
 
                             // provide the reader with the map
                             poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(protocolsMap));
 
                             // Set terminal as Observer of the first reader
-                            (std::static_pointer_cast<ObservableReader>(poReader))->addObserver(observer);
+                            (std::dynamic_pointer_cast<ObservableReader>(poReader))->addObserver(observer);
 
                             // wait for Enter key to exit.
                             std::cout << "Press Enter to exit" << std::endl;

@@ -111,9 +111,9 @@ namespace org {
                                 throw std::make_shared<KeypleReaderException>(
                                     "Target selector mask not found!"); //, nullptr);
                             }
-                            Pattern p = Pattern::compile(selectionMask);
+                            Pattern *p = Pattern::compile(selectionMask);
                             std::string protocol       = se->getSeProcotol();
-                            if (!p.matcher(protocol).matches())
+                            if (!p->matcher(protocol)->matches())
                             {
                                 logger->trace("[%s] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %s",
                                               this->getName(), protocolFlag);

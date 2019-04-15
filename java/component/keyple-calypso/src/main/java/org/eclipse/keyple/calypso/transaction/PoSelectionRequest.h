@@ -1,24 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelectionRequest.h"
-#include "../command/PoClass.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
-#include "../command/po/parser/ReadDataStructure.h"
-#include <string>
-#include <vector>
-#include <stdexcept>
-#include "exceptionhelper.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeSelector; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class ReadRecordsRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class SelectFileRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -30,6 +9,33 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <stdexcept>
+#include <memory>
+
+#include "SeSelectionRequest.h"
+#include "PoClass.h"
+#include "ChannelState.h"
+#include "ReadDataStructure.h"
+
+/* Common */
+#include "Logger.h"
+#include "exceptionhelper.h"
+#include "LoggerFactory.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeSelector; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class ReadRecordsRespPars; } } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class SelectFileRespPars; } } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -49,17 +55,17 @@ namespace org {
                     using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                     using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
                     using SeSelectionRequest = org::eclipse::keyple::transaction::SeSelectionRequest;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
+                    using Logger        = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
                     /**
                      * Specialized selection request to manage the specific characteristics of Calypso POs
                      */
                     class PoSelectionRequest final : public SeSelectionRequest {
                     private:
-                        static const std::shared_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PoSelectionRequest));
 
-                        const PoClass poClass;
+                        PoClass poClass;
 
                         /** The list to contain the parsers associated to the prepared commands */
                         std::vector<std::shared_ptr<AbstractApduResponseParser>> poResponseParserList = std::vector<std::shared_ptr<AbstractApduResponseParser>>();
@@ -154,12 +160,12 @@ namespace org {
                          *
                          * @param seResponse the seResponse from the PO
                          */
-                    protected:
+                    public:
                         void updateParsersWithResponses(std::shared_ptr<SeResponse> seResponse);
 
 protected:
                         std::shared_ptr<PoSelectionRequest> shared_from_this() {
-                            return std::static_pointer_cast<PoSelectionRequest>(org.eclipse.keyple.transaction.SeSelectionRequest::shared_from_this());
+                            return std::static_pointer_cast<PoSelectionRequest>(SeSelectionRequest::shared_from_this());
                         }
                     };
 

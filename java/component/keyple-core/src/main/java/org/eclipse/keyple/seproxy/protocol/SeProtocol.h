@@ -23,7 +23,10 @@ namespace org {
 
                     class SeProtocol {
                     public:
-                        virtual std::string getName() = 0;
+                        virtual std::string getName()
+                        {
+                            return "";
+                        }
 
                         /**
                          *

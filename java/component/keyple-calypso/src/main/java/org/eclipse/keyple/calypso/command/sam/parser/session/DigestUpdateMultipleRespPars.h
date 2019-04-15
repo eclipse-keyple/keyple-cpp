@@ -45,7 +45,7 @@ namespace org {
 
 protected:
                                     std::shared_ptr<DigestUpdateMultipleRespPars> shared_from_this() {
-                                        return std::static_pointer_cast<DigestUpdateMultipleRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                        return std::static_pointer_cast<DigestUpdateMultipleRespPars>(AbstractApduResponseParser::shared_from_this());
                                     }
                                 };
 

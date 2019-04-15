@@ -104,7 +104,7 @@ CalypsoPoCommands::StaticConstructor CalypsoPoCommands::staticConstructor;
 int CalypsoPoCommands::nextOrdinal = 0;
 
                         CalypsoPoCommands::CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte, const std::type_info& commandBuilderClass, const std::type_info& responseParserClass)
-                        : nameValue(nameValue), name(name), instructionbyte(instructionByte), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum), commandBuilderClass(commandBuilderClass), responseParserClass(responseParserClass) {
+                        : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name), instructionbyte(instructionByte), commandBuilderClass(commandBuilderClass), responseParserClass(responseParserClass) {
                             
                         }
 
@@ -166,6 +166,9 @@ CalypsoPoCommands CalypsoPoCommands::valueOf(const std::string &name) {
             return enumInstance;
         }
     }
+
+    /* Compiler fix */
+    return CalypsoPoCommands("Dummy", InnerEnum::APPEND_RECORD, "Dummy", 0, typeid(CalypsoPoCommands), typeid(CalypsoPoCommands));
 }
                     }
                 }

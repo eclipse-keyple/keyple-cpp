@@ -46,7 +46,7 @@ namespace org {
 
 protected:
                                     std::shared_ptr<SelectDiversifierRespPars> shared_from_this() {
-                                        return std::static_pointer_cast<SelectDiversifierRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                        return std::static_pointer_cast<SelectDiversifierRespPars>(AbstractApduResponseParser::shared_from_this());
                                     }
                                 };
 

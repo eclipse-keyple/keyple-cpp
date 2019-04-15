@@ -1,19 +1,20 @@
 #include "ReaderUtilities.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderNotFoundException.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleBaseException.h"
+#include "SeProxyService.h"
+#include "SeReader.h"
+#include "KeypleReaderException.h"
+#include "KeypleReaderNotFoundException.h"
+#include "KeypleBaseException.h"
 #include "PcscReadersSettings.h"
-#include "../../../../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscReader.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/SeProtocolSetting.h"
-#include "../../../../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscProtocolSetting.h"
+#include "PcscReader.h"
+#include "SeProtocolSetting.h"
+#include "PcscProtocolSetting.h"
+#include "ReaderPlugin.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace pc {
                         using PcscProtocolSetting = org::eclipse::keyple::plugin::pcsc::PcscProtocolSetting;
                         using PcscReader = org::eclipse::keyple::plugin::pcsc::PcscReader;
@@ -25,11 +26,12 @@ namespace org {
                         using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                         using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
 
-                        std::shared_ptr<SeReader> ReaderUtilities::getReaderByName(std::shared_ptr<SeProxyService> seProxyService, const std::string &pattern) throw(KeypleReaderException) {
-                            std::shared_ptr<Pattern> p = Pattern::compile(pattern);
+                        std::shared_ptr<SeReader> ReaderUtilities::getReaderByName(std::shared_ptr<SeProxyService> seProxyService, const std::string &pattern)
+                        {
+                            Pattern* p = Pattern::compile(pattern);
                             for (auto plugin : seProxyService->getPlugins()) {
-                                for (auto reader : plugin->getReaders()) {
-                                    if (p->matcher(reader->getName()).matches()) {
+                                for (auto reader : *plugin->getReaders()) {
+                                    if (p->matcher(reader->getName())->matches()) {
                                         return reader;
                                     }
                                 }
@@ -37,7 +39,8 @@ namespace org {
                             throw std::make_shared<KeypleReaderNotFoundException>("Reader name pattern: " + pattern);
                         }
 
-                        std::shared_ptr<SeReader> ReaderUtilities::getDefaultContactLessSeReader(std::shared_ptr<SeProxyService> seProxyService) throw(KeypleBaseException) {
+                        std::shared_ptr<SeReader> ReaderUtilities::getDefaultContactLessSeReader(std::shared_ptr<SeProxyService> seProxyService)
+                        {
                             std::shared_ptr<SeReader> seReader = ReaderUtilities::getReaderByName(seProxyService, PcscReadersSettings::PO_READER_NAME_REGEX);
 
                             ReaderUtilities::setContactlessSettings(seReader);
@@ -45,7 +48,8 @@ namespace org {
                             return seReader;
                         }
 
-                        void ReaderUtilities::setContactlessSettings(std::shared_ptr<SeReader> reader) throw(KeypleBaseException) {
+                        void ReaderUtilities::setContactlessSettings(std::shared_ptr<SeReader> reader)
+                        {
                             /* Enable logging */
                             reader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");
 
@@ -66,11 +70,12 @@ namespace org {
                             reader->setParameter(PcscReader::SETTING_KEY_MODE, PcscReader::SETTING_MODE_SHARED);
 
                             /* Set the PO reader protocol flag */
-                            reader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4));
+                            reader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4)));
 
                         }
 
-                        void ReaderUtilities::setContactsSettings(std::shared_ptr<SeReader> reader) throw(KeypleBaseException) {
+                        void ReaderUtilities::setContactsSettings(std::shared_ptr<SeReader> reader)
+                        {
                             /* Enable logging */
                             reader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");
 

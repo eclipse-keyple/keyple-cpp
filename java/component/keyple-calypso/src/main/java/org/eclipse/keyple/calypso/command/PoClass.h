@@ -43,14 +43,14 @@ public:
                             ISO
                         };
 
-                        const InnerEnum innerEnumValue;
+                        InnerEnum innerEnumValue;
 private:
-                        const std::string nameValue;
-                        const int ordinalValue;
+                        std::string nameValue;
+                        int ordinalValue;
                         static int nextOrdinal;
 
                     private:
-                        const char cla;
+                        char cla;
 
 
                     public:
@@ -62,6 +62,8 @@ public:
                         bool operator == (const PoClass &other);
 
                         bool operator != (const PoClass &other);
+
+                        void operator=(const PoClass &other);
 
                         static std::vector<PoClass> values();
 

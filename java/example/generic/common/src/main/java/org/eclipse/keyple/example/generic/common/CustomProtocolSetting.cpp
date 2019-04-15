@@ -33,7 +33,8 @@ CustomProtocolSetting::StaticConstructor::StaticConstructor() {
 CustomProtocolSetting::StaticConstructor CustomProtocolSetting::staticConstructor;
 int CustomProtocolSetting::nextOrdinal = 0;
 
-                        CustomProtocolSetting::CustomProtocolSetting(const std::string &name, InnerEnum innerEnum, std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> flag, const std::string &value) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
+                        CustomProtocolSetting::CustomProtocolSetting(const std::string &name, InnerEnum innerEnum, std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> flag, const std::string &value)
+                        : innerEnumValue(innerEnum), nameValue(name), ordinalValue(nextOrdinal++) {
                             this->flag = flag;
                             this->value = value;
                         }
@@ -73,6 +74,9 @@ CustomProtocolSetting CustomProtocolSetting::valueOf(const std::string &name) {
             return *custom;
         }
     }
+
+    /* Make compiler happy */
+    return  *(std::dynamic_pointer_cast<CustomProtocolSetting>(valueList.front()));
 }
                     }
                 }

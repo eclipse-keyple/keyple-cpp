@@ -53,7 +53,7 @@ namespace org {
 
 protected:
                                     std::shared_ptr<SamGetChallengeRespPars> shared_from_this() {
-                                        return std::static_pointer_cast<SamGetChallengeRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                        return std::static_pointer_cast<SamGetChallengeRespPars>(AbstractApduResponseParser::shared_from_this());
                                     }
                                 };
 

@@ -92,7 +92,7 @@ namespace org {
                      * @param matchingClass the expected class for this SeSelector
                      */
                 protected:
-                    void setMatchingClass(std::type_info matchingClass);
+                    void setMatchingClass(const std::type_info& matchingClass);
 
                     /**
                      * The selectionClass is the SeSelector class or one of its extensions
@@ -105,7 +105,7 @@ namespace org {
                      *
                      * @param selectionClass the argument for the constructor of the matchingClass
                      */
-                    void setSelectionClass(std::type_info selectionClass);
+                    void setSelectionClass(const std::type_info& selectionClass);
 
                     /**
                      * The default value for the selectionClass (unless setSelectionClass is used) is

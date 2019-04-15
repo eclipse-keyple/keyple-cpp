@@ -415,4 +415,138 @@ class StringHelper {
 
         return ss.str();
     }
+
+    template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
+    static std::string formatSimple(const std::string &input, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
+    {
+        std::ostringstream ss;
+        int lastFormatChar = -1;
+        int percent        = -1;
+        while ((percent = input.find('%', percent + 1)) > -1)
+        {
+            if (percent + 1 < (int)input.length())
+            {
+                if (input[percent + 1] == '%')
+                {
+                    percent++;
+                    continue;
+                }
+
+                int formatEnd = -1;
+                std::string index;
+                for (int i = percent + 1; i < (int)input.length(); i++)
+                {
+                    if (input[i] == 's')
+                    {
+                        index     = "1";
+                        formatEnd = i;
+                        break;
+                    }
+                    else if (input[i] == '$' && i + 1 < (int)input.length() && input[i + 1] == 's')
+                    {
+                        index     = input.substr(percent + 1, i - percent - 1);
+                        formatEnd = i + 1;
+                        break;
+                    }
+                    else if (!std::isdigit(input[i]))
+                        break;
+                }
+
+                if (formatEnd > -1)
+                {
+                    ss << input.substr(lastFormatChar + 1, percent - lastFormatChar - 1);
+                    lastFormatChar = formatEnd;
+
+                    if (index == "1")
+                        ss << arg1;
+                    else if (index == "2")
+                        ss << arg2;
+                    else if (index == "3")
+                        ss << arg3;
+                    else if (index == "4")
+                        ss << arg4;
+                    else if (index == "5")
+                        ss << arg5;
+                    else if (index == "6")
+                        ss << arg6;
+                    else
+                        throw std::runtime_error("Only simple positional format specifiers are handled by "
+                                                 "the 'formatSimple' helper method.");
+                }
+            }
+        }
+
+        if (lastFormatChar + 1 < (int)input.length())
+            ss << input.substr(lastFormatChar + 1);
+
+        return ss.str();
+    }
+
+    template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+    static std::string formatSimple(const std::string &input, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
+    {
+        std::ostringstream ss;
+        int lastFormatChar = -1;
+        int percent        = -1;
+        while ((percent = input.find('%', percent + 1)) > -1)
+        {
+            if (percent + 1 < (int)input.length())
+            {
+                if (input[percent + 1] == '%')
+                {
+                    percent++;
+                    continue;
+                }
+
+                int formatEnd = -1;
+                std::string index;
+                for (int i = percent + 1; i < (int)input.length(); i++)
+                {
+                    if (input[i] == 's')
+                    {
+                        index     = "1";
+                        formatEnd = i;
+                        break;
+                    }
+                    else if (input[i] == '$' && i + 1 < (int)input.length() && input[i + 1] == 's')
+                    {
+                        index     = input.substr(percent + 1, i - percent - 1);
+                        formatEnd = i + 1;
+                        break;
+                    }
+                    else if (!std::isdigit(input[i]))
+                        break;
+                }
+
+                if (formatEnd > -1)
+                {
+                    ss << input.substr(lastFormatChar + 1, percent - lastFormatChar - 1);
+                    lastFormatChar = formatEnd;
+
+                    if (index == "1")
+                        ss << arg1;
+                    else if (index == "2")
+                        ss << arg2;
+                    else if (index == "3")
+                        ss << arg3;
+                    else if (index == "4")
+                        ss << arg4;
+                    else if (index == "5")
+                        ss << arg5;
+                    else if (index == "6")
+                        ss << arg6;
+                    else if (index == "7")
+                        ss << arg7;
+                    else
+                        throw std::runtime_error("Only simple positional format specifiers are handled by "
+                                                 "the 'formatSimple' helper method.");
+                }
+            }
+        }
+
+        if (lastFormatChar + 1 < (int)input.length())
+            ss << input.substr(lastFormatChar + 1);
+
+        return ss.str();
+    }
 };

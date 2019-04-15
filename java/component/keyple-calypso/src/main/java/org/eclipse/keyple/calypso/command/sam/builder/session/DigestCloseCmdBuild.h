@@ -38,7 +38,7 @@ namespace org {
 
                                     /** The command. */
                                 private:
-                                    static constexpr CalypsoSamCommands command = CalypsoSamCommands::DIGEST_CLOSE;
+                                    const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_CLOSE;
 
                                     /**
                                      * Instantiates a new DigestCloseCmdBuild .
@@ -48,11 +48,11 @@ namespace org {
                                      * @throws java.lang.IllegalArgumentException - if the expected response length is wrong.
                                      */
                                 public:
-                                    DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength) throw(std::invalid_argument);
+                                    DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength);
 
 protected:
                                     std::shared_ptr<DigestCloseCmdBuild> shared_from_this() {
-                                        return std::static_pointer_cast<DigestCloseCmdBuild>(org.eclipse.keyple.calypso.command.sam.SamCommandBuilder::shared_from_this());
+                                        return std::static_pointer_cast<DigestCloseCmdBuild>(SamCommandBuilder::shared_from_this());
                                     }
                                 };
 

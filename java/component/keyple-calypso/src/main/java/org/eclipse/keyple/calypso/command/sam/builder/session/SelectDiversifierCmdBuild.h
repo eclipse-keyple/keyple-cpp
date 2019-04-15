@@ -41,7 +41,7 @@ namespace org {
 
                                     /** The command. */
                                 private:
-                                    static constexpr CalypsoSamCommands command = CalypsoSamCommands::SELECT_DIVERSIFIER;
+                                    const CalypsoSamCommands command = CalypsoSamCommands::SELECT_DIVERSIFIER;
 
                                     /**
                                      * Instantiates a new SelectDiversifierCmdBuild.
@@ -52,11 +52,11 @@ namespace org {
                                      * @throws java.lang.IllegalArgumentException - if the request is inconsistent
                                      */
                                 public:
-                                    SelectDiversifierCmdBuild(SamRevision revision, std::vector<char> &diversifier) throw(std::invalid_argument);
+                                    SelectDiversifierCmdBuild(SamRevision revision, std::vector<char> &diversifier);
 
 protected:
                                     std::shared_ptr<SelectDiversifierCmdBuild> shared_from_this() {
-                                        return std::static_pointer_cast<SelectDiversifierCmdBuild>(org.eclipse.keyple.calypso.command.sam.SamCommandBuilder::shared_from_this());
+                                        return std::static_pointer_cast<SelectDiversifierCmdBuild>(SamCommandBuilder::shared_from_this());
                                     }
                                 };
 

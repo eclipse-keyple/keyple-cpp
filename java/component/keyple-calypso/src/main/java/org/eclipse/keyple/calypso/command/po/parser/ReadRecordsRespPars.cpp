@@ -1,8 +1,12 @@
+#include <algorithm>
+#include <functional>
+
 #include "ReadRecordsRespPars.h"
 #include "ByteArrayUtils.h"
 
 /* Common */
 #include "stringhelper.h"
+#include "Arrays.h"
 
 namespace org {
     namespace eclipse {
@@ -66,7 +70,7 @@ namespace org {
                                     while (apduLen > 0) {
                                         char recordNb = apdu[index++];
                                         char len = apdu[index++];
-                                        records->add(static_cast<int>(recordNb), Arrays::copyOfRange(apdu, index, index + len));
+                                        records->insert(std::pair<int, std::vector<char>>(recordNb, Arrays::copyOfRange(apdu, index, index + len)));
                                         index = index + len;
                                         apduLen = apduLen - 2 - len;
                                     }
@@ -77,16 +81,19 @@ namespace org {
                                 return records;
                             }
 
-                            std::shared_ptr<std::map<int, int>> ReadRecordsRespPars::getCounters() {
+                            std::shared_ptr<std::map<int, int>> ReadRecordsRespPars::getCounters()
+                            {
                                 if (!isInitialized()) {
                                     throw IllegalStateException("Parser not initialized.");
                                 }
-                                std::shared_ptr<std::map<int, int>> counters = std::make_shared<sstd::map<int, int>>();
+
+                                std::shared_ptr<std::map<int, int>> counters = std::make_shared<std::map<int, int>>();
                                 if (!response->isSuccessful()) {
                                     /* return an empty map */
                                     // TODO should we raise an exception?
                                     return counters;
                                 }
+
                                 if (readDataStructure == ReadDataStructure::SINGLE_COUNTER || readDataStructure == ReadDataStructure::MULTIPLE_COUNTER) {
                                     std::vector<char> apdu = response->getDataOut();
                                     int numberOfCounters = apdu.size() / 3;
@@ -97,7 +104,7 @@ namespace org {
                                          * convert the 3-byte unsigned value of the counter into an integer (up to 2^24 -1)
                                          */
                                         int counterValue = ((apdu[index + 0] & 0xFF) * 65536) + ((apdu[index + 1] & 0xFF) * 256) + (apdu[index + 2] & 0xFF);
-                                        counters->put(key++, counterValue);
+                                        counters->insert(std::pair<int, int>(key++, counterValue));
                                         index = index + 3;
                                     }
 
@@ -113,19 +120,20 @@ namespace org {
                                 if (isInitialized()) {
                                     switch (readDataStructure) {
                                         case org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure::SINGLE_RECORD_DATA: {
-                                            std::shared_ptr<std::map<Integer, std::vector<char>>> recordMap = getRecords();
-                                            string = StringHelper::formatSimple("Single record data: {RECORD = %d, DATA = %s}", recordMap->firstKey(), ByteArrayUtils::toHex(recordMap->get(recordMap->firstKey())));
+                                            std::shared_ptr<std::map<int, std::vector<char>>> recordMap = getRecords();
+                                            string = StringHelper::formatSimple("Single record data: {RECORD = %d, DATA = %s}", recordMap->begin()->first, ByteArrayUtils::toHex(recordMap->begin()->second));
                                         }
                                             break;
                                         case org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure::MULTIPLE_RECORD_DATA: {
                                             std::shared_ptr<std::map<int, std::vector<char>>> recordMap = getRecords();
                                             std::shared_ptr<StringBuilder> sb = std::make_shared<StringBuilder>();
                                             sb->append("Multiple record data: ");
-                                            std::shared_ptr<std::set> records = recordMap->keySet();
-                                            for (std::shared_ptr<std::set::const_iterator> it = records->begin(); it != records->end(); ++it) {
+                                            std::set<int> records;
+                                            std::transform(recordMap->begin(), recordMap->end(), inserter(records, records.begin()), std::bind(&std::map<int, std::vector<char>>::value_type::first, std::placeholders::_1));
+                                            for (std::set<int>::const_iterator it = records.begin(); it != records.end(); ++it) {
                                                 int record = (int) *it;
-                                                sb->append(StringHelper::formatSimple("{RECORD = %d, DATA = %s}", record, ByteArrayUtils::toHex(recordMap->get(record))));
-                                                if ((*it)->hasNext()) {
+                                                sb->append(StringHelper::formatSimple("{RECORD = %d, DATA = %s}", record, ByteArrayUtils::toHex(recordMap->find(record)->second)));
+                                                if (it != records.end()) {
                                                     sb->append(", ");
                                                 }
                                             }
@@ -134,18 +142,19 @@ namespace org {
                                             break;
                                         case org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure::SINGLE_COUNTER: {
                                             std::shared_ptr<std::map<int, int>> counterMap = getCounters();
-                                            string = StringHelper::formatSimple("Single counter: {COUNTER = %d, VALUE = %d}", counterMap->firstKey(), counterMap->get(counterMap->firstKey()));
+                                            string = StringHelper::formatSimple("Single counter: {COUNTER = %d, VALUE = %d}", counterMap->begin()->first, counterMap->begin()->second);
                                         }
                                             break;
                                         case org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure::MULTIPLE_COUNTER: {
                                             std::shared_ptr<std::map<int, int>> counterMap = getCounters();
                                             std::shared_ptr<StringBuilder> sb = std::make_shared<StringBuilder>();
                                             sb->append("Multiple counter: ");
-                                            std::shared_ptr<std::set> counters = counterMap->keySet();
-                                            for (std::shared_ptr<std::set::const_iterator> it = counters->begin(); it != counters->end(); ++it) {
+                                            std::set<int> counters;
+                                            std::transform(counterMap->begin(), counterMap->end(), inserter(counters, counters.begin()), std::bind(&std::map<int, int>::value_type::first, std::placeholders::_1));
+                                            for (std::set<int>::const_iterator it = counters.begin(); it != counters.end(); ++it) {
                                                 int counter = (int) *it;
-                                                sb->append(StringHelper::formatSimple("{COUNTER = %d, VALUE = %d}", counter, counterMap->get(counter)));
-                                                if ((*it)->hasNext()) {
+                                                sb->append(StringHelper::formatSimple("{COUNTER = %d, VALUE = %d}", counter, counterMap->find(counter)->second));
+                                                if (it != counters.end()) {
                                                     sb->append(", ");
                                                 }
                                             }

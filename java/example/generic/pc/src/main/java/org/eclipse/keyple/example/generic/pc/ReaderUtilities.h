@@ -24,7 +24,7 @@ namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace pc {
 
                         using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
@@ -42,7 +42,7 @@ namespace org {
                              * @throws KeypleReaderException Readers are not initialized
                              */
                         public:
-                            static std::shared_ptr<SeReader> getReaderByName(std::shared_ptr<SeProxyService> seProxyService, const std::string &pattern) throw(KeypleReaderException);
+                            static std::shared_ptr<SeReader> getReaderByName(std::shared_ptr<SeProxyService> seProxyService, const std::string &pattern);
 
                             /**
                              * Get a fully configured contactless proxy reader
@@ -52,7 +52,7 @@ namespace org {
                              * @throws KeypleBaseException in case of an error while retrieving the reader or setting its
                              *         parameters
                              */
-                            static std::shared_ptr<SeReader> getDefaultContactLessSeReader(std::shared_ptr<SeProxyService> seProxyService) throw(KeypleBaseException);
+                            static std::shared_ptr<SeReader> getDefaultContactLessSeReader(std::shared_ptr<SeProxyService> seProxyService);
 
                             /**
                              * Sets the reader parameters for contactless secure elements
@@ -60,7 +60,7 @@ namespace org {
                              * @param reader the reader to configure
                              * @throws KeypleBaseException in case of an error while settings the parameters
                              */
-                            static void setContactlessSettings(std::shared_ptr<SeReader> reader) throw(KeypleBaseException);
+                            static void setContactlessSettings(std::shared_ptr<SeReader> reader);
 
                             /**
                              * Sets the reader parameters for contacts secure elements
@@ -68,7 +68,7 @@ namespace org {
                              * @param reader the reader to configure
                              * @throws KeypleBaseException in case of an error while settings the parameters
                              */
-                            static void setContactsSettings(std::shared_ptr<SeReader> reader) throw(KeypleBaseException);
+                            static void setContactsSettings(std::shared_ptr<SeReader> reader);
                         };
 
                     }

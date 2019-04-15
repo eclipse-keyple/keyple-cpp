@@ -1,3 +1,5 @@
+
+/* Calypso */
 #include "SamSelector.h"
 
 namespace org {
@@ -9,11 +11,12 @@ namespace org {
                         using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
                         using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
 
-                        SamSelector::SamSelector(SamRevision samRevision, const std::string &serialNumber, const std::string &extraInfo) : org::eclipse::keyple::seproxy::SeSelector(nullptr, new AtrFilter(nullptr), extraInfo) {
+                        SamSelector::SamSelector(SamRevision samRevision, const std::string &serialNumber, const std::string &extraInfo)
+                        : SeSelector(nullptr, std::make_shared<AtrFilter>(nullptr), extraInfo) {
                             std::string atrRegex;
                             std::string snRegex;
                             /* check if serialNumber is defined */
-                            if (serialNumber == "" || serialNumber.isEmpty()) {
+                            if (serialNumber == "" || serialNumber.empty()) {
                                 /* match all serial numbers */
                                 snRegex = ".{8}";
                             }

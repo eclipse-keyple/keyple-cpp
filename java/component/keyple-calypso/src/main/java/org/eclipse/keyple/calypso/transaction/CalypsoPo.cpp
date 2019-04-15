@@ -1,8 +1,13 @@
 #include "CalypsoPo.h"
 #include "PoSelectionRequest.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeResponse.h"
-#include "../command/po/parser/GetDataFciRespPars.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
+#include "SeResponse.h"
+#include "GetDataFciRespPars.h"
+#include "ByteArrayUtils.h"
+#include "SeResponse.h"
+#include "SelectionStatus.h"
+
+/* Common */
+#include "System.h"
 
 namespace org {
     namespace eclipse {
@@ -15,9 +20,6 @@ namespace org {
                     using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                     using MatchingSe = org::eclipse::keyple::transaction::MatchingSe;
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> CalypsoPo::logger = org::slf4j::LoggerFactory::getLogger(CalypsoPo::typeid);
 
                     CalypsoPo::CalypsoPo(std::shared_ptr<PoSelectionRequest> poSelectionRequest) : org::eclipse::keyple::transaction::MatchingSe(poSelectionRequest), poSelectionRequest(poSelectionRequest) {
                     }
@@ -96,7 +98,7 @@ const std::shared_ptr<org::slf4j::Logger> CalypsoPo::logger = org::slf4j::Logger
                             System::arraycopy(poAtr, 12, this->applicationSerialNumber, 4, 4);
                         }
                         if (logger->isTraceEnabled()) {
-                            logger->trace("REVISION = {}, SERIALNUMBER = {}, DFNAME = {}", this->revision, ByteArrayUtils::toHex(this->applicationSerialNumber), ByteArrayUtils::toHex(this->dfName));
+                            logger->trace("REVISION = %s, SERIALNUMBER = %s, DFNAME = %s", static_cast<int>(this->revision), ByteArrayUtils::toHex(this->applicationSerialNumber), ByteArrayUtils::toHex(this->dfName));
                         }
                     }
 
@@ -128,13 +130,13 @@ const std::shared_ptr<org::slf4j::Logger> CalypsoPo::logger = org::slf4j::Logger
                         /* Rev1 and Rev2 expects the legacy class byte while Rev3 expects the ISO class byte */
                         if (revision == PoRevision::REV1_0 || revision == PoRevision::REV2_4) {
                             if (logger->isTraceEnabled()) {
-                                logger->trace("PO revision = {}, PO class = {}", revision, PoClass::LEGACY);
+                                logger->trace("PO revision = %d, PO class = %s", static_cast<int>(revision), "PoClass::LEGACY");
                             }
                             return PoClass::LEGACY;
                         }
                         else {
                             if (logger->isTraceEnabled()) {
-                                logger->trace("PO revision = {}, PO class = {}", revision, PoClass::ISO);
+                                logger->trace("PO revision = %d, PO class = %s", static_cast<int>(revision), "PoClass::ISO");
                             }
                             return PoClass::ISO;
                         }

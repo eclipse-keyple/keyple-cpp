@@ -2,37 +2,55 @@
 
 #include <string>
 
+#include "Matcher.h"
+
 class Pattern {
+private:
+	/*
+	 *
+	 */
+	std::string pattern;
+
+	/*
+	 *
+	 */
+	int flags;
 
 public:
-	class Matcher {
-	public:
-		bool matches() {
-			/* To be implemented */
-			return false;
-		}
+	/*
+	 * Constructor
+	 */
+	Pattern(std::string pattern, int flags) : pattern(pattern), flags(flags)
+	{
 
-		std::string replaceAll(std::string replacement) {
-			/* To be implemented */
-			return replacement;
-		}
-	};
-
-	static Pattern& compile(std::string regex) {
-		/* To be implemented */
-		static Pattern p;
-
-		(void)regex;
-
-    	return p;
 	}
 
-	static Matcher &matcher(std::string input)
+	/*
+	 * Returns a compiled form of the given regular expression, as modified by the
+	 * given flags.
+	 * 
+	 * @throws PatternSyntexException
+	 */
+	Pattern* compile(std::string regularExpression, int flags)
 	{
-		static Matcher privateMatcher;
+		return new Pattern(regularExpression, flags);
+	}
 
-		(void)input;
-		
-		return privateMatcher;
+	/*
+	 * Equivalent to Pattern.compile(pattern, 0)
+	 */
+	static Pattern* compile(std::string pattern)
+	{
+		return new Pattern(pattern, 0);
+	}
+
+	/*
+	 * Returns a Matcher for this pattern applied to the given input. The Matcher can
+	 * be used to match the Pattern against the whole input, find occurences of the
+	 * Pattern in the input, or replace parts of the input.
+	 */
+	Matcher *matcher(std::string input)
+	{
+		return new Matcher(this, input);
 	}
 };

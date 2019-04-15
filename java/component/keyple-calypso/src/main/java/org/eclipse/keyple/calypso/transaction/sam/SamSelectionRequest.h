@@ -1,13 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelectionRequest.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeSelector; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -19,6 +9,19 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <memory>
+
+/* Calypso */
+#include "SamSelectionRequest.h"
+
+/* Core */
+#include "SeSelectionRequest.h"
+#include "ChannelState.h"
+#include "SeProtocol.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -40,7 +43,7 @@ namespace org {
 
 protected:
                             std::shared_ptr<SamSelectionRequest> shared_from_this() {
-                                return std::static_pointer_cast<SamSelectionRequest>(org.eclipse.keyple.transaction.SeSelectionRequest::shared_from_this());
+                                return std::static_pointer_cast<SamSelectionRequest>(SeSelectionRequest::shared_from_this());
                             }
                         };
 

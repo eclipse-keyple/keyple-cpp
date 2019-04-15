@@ -1,16 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
-#include <unordered_map>
-#include <vector>
-#include <stdexcept>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -22,6 +9,20 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include "AbstractApduResponseParser.h"
+#include <unordered_map>
+#include <vector>
+#include <stdexcept>
+#include <memory>
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -42,7 +43,7 @@ namespace org {
                                 class CloseSessionRespPars final : public AbstractApduResponseParser {
 
                                 private:
-                                    static const std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                    static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
                                 private:
                                     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {

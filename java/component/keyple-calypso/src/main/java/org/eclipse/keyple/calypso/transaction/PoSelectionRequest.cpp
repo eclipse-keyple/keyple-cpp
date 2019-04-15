@@ -1,50 +1,48 @@
 #include "PoSelectionRequest.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/SeProtocol.h"
+#include "AbstractApduResponseParser.h"
+#include "SeSelector.h"
+#include "SeProtocol.h"
 #include "CalypsoPo.h"
-#include "../command/po/parser/ReadRecordsRespPars.h"
-#include "../command/po/builder/ReadRecordsCmdBuild.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/ContactsProtocols.h"
-#include "../command/po/parser/SelectFileRespPars.h"
-#include "../command/po/builder/SelectFileCmdBuild.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduRequest.h"
-#include "../command/po/PoCustomReadCommandBuilder.h"
-#include "../command/po/PoCustomModificationCommandBuilder.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeResponse.h"
+#include "ReadRecordsRespPars.h"
+#include "ReadRecordsCmdBuild.h"
+#include "ContactsProtocols.h"
+#include "SelectFileRespPars.h"
+#include "SelectFileCmdBuild.h"
+#include "ByteArrayUtils.h"
+#include "ApduRequest.h"
+#include "PoCustomReadCommandBuilder.h"
+#include "PoCustomModificationCommandBuilder.h"
+#include "SeResponse.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace calypso {
                 namespace transaction {
-                    using PoClass = org::eclipse::keyple::calypso::command::PoClass;
+                    using PoClass                            = org::eclipse::keyple::calypso::command::PoClass;
                     using PoCustomModificationCommandBuilder = org::eclipse::keyple::calypso::command::po::PoCustomModificationCommandBuilder;
-                    using PoCustomReadCommandBuilder = org::eclipse::keyple::calypso::command::po::PoCustomReadCommandBuilder;
-                    using ReadRecordsCmdBuild = org::eclipse::keyple::calypso::command::po::builder::ReadRecordsCmdBuild;
-                    using SelectFileCmdBuild = org::eclipse::keyple::calypso::command::po::builder::SelectFileCmdBuild;
-                    using ReadDataStructure = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
-                    using ReadRecordsRespPars = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
-                    using SelectFileRespPars = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
-                    using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                    using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                    using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
-                    using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
-                    using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
-                    using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
-                    using ContactsProtocols = org::eclipse::keyple::seproxy::protocol::ContactsProtocols;
-                    using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                    using SeSelectionRequest = org::eclipse::keyple::transaction::SeSelectionRequest;
-                    using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> PoSelectionRequest::logger = org::slf4j::LoggerFactory::getLogger(PoSelectionRequest::typeid);
+                    using PoCustomReadCommandBuilder         = org::eclipse::keyple::calypso::command::po::PoCustomReadCommandBuilder;
+                    using ReadRecordsCmdBuild                = org::eclipse::keyple::calypso::command::po::builder::ReadRecordsCmdBuild;
+                    using SelectFileCmdBuild                 = org::eclipse::keyple::calypso::command::po::builder::SelectFileCmdBuild;
+                    using ReadDataStructure                  = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
+                    using ReadRecordsRespPars                = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
+                    using SelectFileRespPars                 = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
+                    using AbstractApduResponseParser         = org::eclipse::keyple::command::AbstractApduResponseParser;
+                    using ChannelState                       = org::eclipse::keyple::seproxy::ChannelState;
+                    using SeSelector                         = org::eclipse::keyple::seproxy::SeSelector;
+                    using ApduRequest                        = org::eclipse::keyple::seproxy::message::ApduRequest;
+                    using ApduResponse                       = org::eclipse::keyple::seproxy::message::ApduResponse;
+                    using SeResponse                         = org::eclipse::keyple::seproxy::message::SeResponse;
+                    using ContactsProtocols                  = org::eclipse::keyple::seproxy::protocol::ContactsProtocols;
+                    using SeProtocol                         = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                    using SeSelectionRequest                 = org::eclipse::keyple::transaction::SeSelectionRequest;
+                    using ByteArrayUtils                     = org::eclipse::keyple::util::ByteArrayUtils;
 
-                    PoSelectionRequest::PoSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag) : org::eclipse::keyple::transaction::SeSelectionRequest(seSelector, channelState, protocolFlag) {
+                    PoSelectionRequest::PoSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag) : SeSelectionRequest(seSelector, channelState, protocolFlag), poClass(PoClass::LEGACY)
+                    {
 
-                        setMatchingClass(CalypsoPo::typeid);
-                        setSelectionClass(PoSelectionRequest::typeid);
+                        setMatchingClass(typeid(CalypsoPo));
+                        setSelectionClass(typeid(PoSelectionRequest));
 
                         /* No AID selector for a legacy Calypso PO */
                         if (seSelector->getAidSelector() == nullptr) {
@@ -55,7 +53,7 @@ const std::shared_ptr<org::slf4j::Logger> PoSelectionRequest::logger = org::slf4
                         }
 
                         if (logger->isTraceEnabled()) {
-                            logger->trace("Calypso {} selector", poClass);
+                            logger->trace("Calypso %s selector", poClass.toString());
                         }
                     }
 
@@ -70,7 +68,7 @@ const std::shared_ptr<org::slf4j::Logger> PoSelectionRequest::logger = org::slf4
                         addApduRequest((std::make_shared<ReadRecordsCmdBuild>(poClass, sfi, firstRecordNumber, readJustOneRecord, static_cast<char>(expectedLength), extraInfo))->getApduRequest());
 
                         if (logger->isTraceEnabled()) {
-                            logger->trace("ReadRecords: SFI = {}, RECNUMBER = {}, JUSTONE = {}, EXPECTEDLENGTH = {}", sfi, firstRecordNumber, readJustOneRecord, expectedLength);
+                            logger->trace("ReadRecords: SFI = %02x, RECNUMBER = %d, JUSTONE = %d, EXPECTEDLENGTH = %d", sfi, firstRecordNumber, readJustOneRecord, expectedLength);
                         }
 
                         /* create a parser to be returned to the caller */
@@ -92,16 +90,19 @@ const std::shared_ptr<org::slf4j::Logger> PoSelectionRequest::logger = org::slf4
                     }
 
                     std::shared_ptr<ReadRecordsRespPars> PoSelectionRequest::prepareReadRecordsCmd(char sfi, ReadDataStructure readDataStructureEnum, char firstRecordNumber, const std::string &extraInfo) {
-                        if (protocolFlag == ContactsProtocols::PROTOCOL_ISO7816_3) {
+                        if (*(std::dynamic_pointer_cast<ContactsProtocols>(protocolFlag)).get() == ContactsProtocols::PROTOCOL_ISO7816_3) {
                             throw std::invalid_argument("In contacts mode, the expected length must be specified.");
                         }
                         return prepareReadRecordsCmdInternal(sfi, readDataStructureEnum, firstRecordNumber, 0, extraInfo);
                     }
 
-                    std::shared_ptr<SelectFileRespPars> PoSelectionRequest::prepareSelectFileDfCmd(std::vector<char> &path, const std::string &extraInfo) {
+                    std::shared_ptr<SelectFileRespPars> PoSelectionRequest::prepareSelectFileDfCmd(std::vector<char> &path, const std::string &extraInfo)
+                    {
+                        (void)extraInfo;
+
                         addApduRequest((std::make_shared<SelectFileCmdBuild>(poClass, SelectFileCmdBuild::SelectControl::PATH_FROM_MF, SelectFileCmdBuild::SelectOptions::FCI, path))->getApduRequest());
                         if (logger->isTraceEnabled()) {
-                            logger->trace("Select File: PATH = {}", ByteArrayUtils::toHex(path));
+                            logger->trace("Select File: PATH = %s", ByteArrayUtils::toHex(path));
                         }
 
                         /* create a parser to be returned to the caller */
@@ -118,14 +119,14 @@ const std::shared_ptr<org::slf4j::Logger> PoSelectionRequest::logger = org::slf4
                     void PoSelectionRequest::preparePoCustomReadCmd(const std::string &name, std::shared_ptr<ApduRequest> apduRequest) {
                         addApduRequest((std::make_shared<PoCustomReadCommandBuilder>(name, apduRequest))->getApduRequest());
                         if (logger->isTraceEnabled()) {
-                            logger->trace("CustomReadCommand: APDUREQUEST = {}", apduRequest);
+                            logger->trace("CustomReadCommand: APDUREQUEST = %s", apduRequest);
                         }
                     }
 
                     void PoSelectionRequest::preparePoCustomModificationCmd(const std::string &name, std::shared_ptr<ApduRequest> apduRequest) {
                         addApduRequest((std::make_shared<PoCustomModificationCommandBuilder>(name, apduRequest))->getApduRequest());
                         if (logger->isTraceEnabled()) {
-                            logger->trace("CustomModificationCommand: APDUREQUEST = {}", apduRequest);
+                            logger->trace("CustomModificationCommand: APDUREQUEST = %s", apduRequest);
                         }
                     }
 
@@ -135,12 +136,10 @@ const std::shared_ptr<org::slf4j::Logger> PoSelectionRequest::logger = org::slf4
                             std::vector<std::shared_ptr<AbstractApduResponseParser>>::const_iterator parserIterator = poResponseParserList.begin();
                             /* double loop to set apdu responses to corresponding parsers */
                             for (auto apduResponse : seResponse->getApduResponses()) {
-//JAVA TO C++ CONVERTER TODO TASK: Java iterators are only converted within the context of 'while' and 'for' loops:
-                                if (!parserIterator.hasNext()) {
+                                if (parserIterator == poResponseParserList.end()) {
                                     throw std::make_shared<IllegalStateException>("Parsers list and responses list mismatch! ");
                                 }
-//JAVA TO C++ CONVERTER TODO TASK: Java iterators are only converted within the context of 'while' and 'for' loops:
-                                parserIterator.next().setApduResponse(apduResponse);
+                                (*(++parserIterator)).get()->setApduResponse(apduResponse);
                                 if (!apduResponse->isSuccessful()) {
                                 }
                             }

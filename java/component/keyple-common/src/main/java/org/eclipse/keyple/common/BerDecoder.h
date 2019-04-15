@@ -27,7 +27,8 @@ public:
     /**
      * Creates a BER decoder that reads bytes from the specified buffer.
      */
-    BerDecoder(std::vector<char> buf, int offset, int bufsize) : buf(buf), bufsize(bufsize), origOffset(origOffset) {
+    BerDecoder(std::vector<char> buf, int offset, int bufsize) : origOffset(offset), buf(buf), bufsize(bufsize)
+    {
         reset();
     }
 

@@ -12,10 +12,10 @@ namespace org {
                                 using SamCommandBuilder = org::eclipse::keyple::calypso::command::sam::SamCommandBuilder;
                                 using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
-                                SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(SamRevision revision, char expectedResponseLength) throw(std::invalid_argument) : org::eclipse::keyple::calypso::command::sam::SamCommandBuilder(command, nullptr) {
-                                    if (revision != nullptr) {
-                                        this->defaultRevision = revision;
-                                    }
+                                SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(SamRevision revision, char expectedResponseLength) : SamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr)
+                                {
+                                    this->defaultRevision = revision;
+
                                     if (expectedResponseLength != 0x04 && expectedResponseLength != 0x08) {
                                         throw std::invalid_argument(StringHelper::formatSimple("Bad challenge length! Expected 4 or 8, got %s", expectedResponseLength));
                                     }
@@ -24,7 +24,8 @@ namespace org {
                                     char p2 = 0x00;
 
                                     // CalypsoRequest calypsoRequest = new CalypsoRequest();
-                                    request = setApduRequest(cla, command, p1, p2, nullptr, expectedResponseLength);
+                                    std::vector<char> emptyVector;
+                                    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, emptyVector, expectedResponseLength);
                                 }
                             }
                         }

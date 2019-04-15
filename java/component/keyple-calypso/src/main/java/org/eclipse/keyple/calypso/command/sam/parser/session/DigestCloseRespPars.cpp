@@ -1,5 +1,5 @@
 #include "DigestCloseRespPars.h"
-#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduResponse.h"
+#include "ApduResponse.h"
 
 namespace org {
     namespace eclipse {
@@ -12,11 +12,11 @@ namespace org {
                                 using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
                                 using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
 
-                                DigestCloseRespPars::DigestCloseRespPars(std::shared_ptr<ApduResponse> response) : org::eclipse::keyple::command::AbstractApduResponseParser(response) {
+                                DigestCloseRespPars::DigestCloseRespPars(std::shared_ptr<ApduResponse> response) : AbstractApduResponseParser(response) {
                                 }
 
                                 std::vector<char> DigestCloseRespPars::getSignature() {
-                                    return isSuccessful() ? response->getDataOut() : nullptr;
+                                    return isSuccessful() ? response->getDataOut() : std::vector<char>();
                                 }
                             }
                         }

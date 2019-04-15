@@ -36,15 +36,15 @@ namespace org {
                          */
                         class SamCommandBuilder : public AbstractIso7816CommandBuilder {
 
-                        protected:
-                            org::eclipse::keyple::calypso::command::sam::SamRevision defaultRevision = SamRevision::S1D; // 94
+                        public:
+                            SamRevision defaultRevision = SamRevision::S1D; // 94
 
                         public:
-                            SamCommandBuilder(CalypsoSamCommands reference, std::shared_ptr<ApduRequest> request);
+                            SamCommandBuilder(std::shared_ptr<CalypsoSamCommands> reference, std::shared_ptr<ApduRequest> request);
 
 protected:
                             std::shared_ptr<SamCommandBuilder> shared_from_this() {
-                                return std::static_pointer_cast<SamCommandBuilder>(org.eclipse.keyple.command.AbstractIso7816CommandBuilder::shared_from_this());
+                                return std::static_pointer_cast<SamCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());
                             }
                         };
 

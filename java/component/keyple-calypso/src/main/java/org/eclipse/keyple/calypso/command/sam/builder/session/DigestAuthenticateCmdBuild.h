@@ -39,7 +39,7 @@ namespace org {
 
                                     /** The command. */
                                 private:
-                                    static constexpr CalypsoSamCommands command = CalypsoSamCommands::DIGEST_AUTHENTICATE;
+                                    const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_AUTHENTICATE;
 
                                     /**
                                      * Instantiates a new DigestAuthenticateCmdBuild .
@@ -49,11 +49,11 @@ namespace org {
                                      * @throws java.lang.IllegalArgumentException - if the signature is null or has a wrong length.
                                      */
                                 public:
-                                    DigestAuthenticateCmdBuild(SamRevision revision, std::vector<char> &signature) throw(std::invalid_argument);
+                                    DigestAuthenticateCmdBuild(SamRevision revision, std::vector<char> &signature);
 
 protected:
                                     std::shared_ptr<DigestAuthenticateCmdBuild> shared_from_this() {
-                                        return std::static_pointer_cast<DigestAuthenticateCmdBuild>(org.eclipse.keyple.calypso.command.sam.SamCommandBuilder::shared_from_this());
+                                        return std::static_pointer_cast<DigestAuthenticateCmdBuild>(SamCommandBuilder::shared_from_this());
                                     }
                                 };
 

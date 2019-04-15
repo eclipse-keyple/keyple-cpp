@@ -67,11 +67,11 @@ namespace org {
                                  * @throws java.lang.IllegalStateException - if the counter value is not available from the
                                  *         command response.
                                  */
-                                int getNewValue() throw(IllegalStateException);
+                                int getNewValue();
 
                                 std::string toString();
 
-protected:
+                            protected:
                                 std::shared_ptr<DecreaseRespPars> shared_from_this() {
                                     return std::static_pointer_cast<DecreaseRespPars>(AbstractApduResponseParser::shared_from_this());
                                 }

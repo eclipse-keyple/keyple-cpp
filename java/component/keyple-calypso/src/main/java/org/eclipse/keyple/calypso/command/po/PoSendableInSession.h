@@ -27,7 +27,7 @@ namespace org {
                 namespace command {
                     namespace po {
 
-                        class PoSendableInSession : public org::eclipse::keyple::calypso::command::SendableInSession<std::shared_ptr<PoCommandBuilder>> {
+                        class PoSendableInSession : public org::eclipse::keyple::calypso::command::SendableInSession<PoCommandBuilder> {
                         };
 
                     }

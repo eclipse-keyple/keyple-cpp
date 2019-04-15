@@ -10,7 +10,7 @@ namespace org {
                             using PoClass = org::eclipse::keyple::calypso::command::PoClass;
                             using namespace org::eclipse::keyple::calypso::command::po;
 
-                            UpdateRecordCmdBuild::UpdateRecordCmdBuild(PoClass poClass, char sfi, char recordNumber, std::vector<char> &newRecordData, const std::string &extraInfo) throw(std::invalid_argument)
+                            UpdateRecordCmdBuild::UpdateRecordCmdBuild(PoClass poClass, char sfi, char recordNumber, std::vector<char> &newRecordData, const std::string &extraInfo)
                             : PoCommandBuilder(std::make_shared<CalypsoPoCommands>(command), nullptr) {
                                 if (recordNumber < 1) {
                                     throw std::invalid_argument("Bad record number (< 1)");

@@ -7,7 +7,6 @@ namespace org {
             namespace calypso {
                 namespace command {
                     namespace sam {
-                        using SendableInSession = org::eclipse::keyple::calypso::command::SendableInSession;
                     }
                 }
             }

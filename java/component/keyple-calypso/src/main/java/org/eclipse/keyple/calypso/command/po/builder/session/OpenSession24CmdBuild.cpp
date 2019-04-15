@@ -15,8 +15,9 @@ namespace org {
                                 using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
                                 using PoRevision = org::eclipse::keyple::calypso::command::po::PoRevision;
 
-                                OpenSession24CmdBuild::OpenSession24CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo) throw(std::invalid_argument)
-                                : AbstractOpenSessionCmdBuild(PoRevision::REV2_4) {
+                                OpenSession24CmdBuild::OpenSession24CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo)
+                                : AbstractOpenSessionCmdBuild(PoRevision::REV2_4)
+                                {
 
                                     if (keyIndex == 0x00) {
                                         throw std::invalid_argument("Key index can't be null for rev 2.4!");

@@ -38,7 +38,7 @@ namespace org {
 
                                     /** The command reference. */
                                 private:
-                                    static constexpr CalypsoSamCommands command = CalypsoSamCommands::GET_CHALLENGE;
+                                    const CalypsoSamCommands command = CalypsoSamCommands::GET_CHALLENGE;
 
                                     /**
                                      * Instantiates a new SamGetChallengeCmdBuild.
@@ -48,11 +48,11 @@ namespace org {
                                      * @throws java.lang.IllegalArgumentException - if the expected response length has wrong value.
                                      */
                                 public:
-                                    SamGetChallengeCmdBuild(SamRevision revision, char expectedResponseLength) throw(std::invalid_argument);
+                                    SamGetChallengeCmdBuild(SamRevision revision, char expectedResponseLength);
 
 protected:
                                     std::shared_ptr<SamGetChallengeCmdBuild> shared_from_this() {
-                                        return std::static_pointer_cast<SamGetChallengeCmdBuild>(org.eclipse.keyple.calypso.command.sam.SamCommandBuilder::shared_from_this());
+                                        return std::static_pointer_cast<SamGetChallengeCmdBuild>(SamCommandBuilder::shared_from_this());
                                     }
                                 };
 

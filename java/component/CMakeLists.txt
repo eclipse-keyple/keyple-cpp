@@ -7,7 +7,7 @@
 #
 
 # Add projects
-#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/keyple-calypso/)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/keyple-calypso/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/keyple-common/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/keyple-core/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/keyple-plugin/)

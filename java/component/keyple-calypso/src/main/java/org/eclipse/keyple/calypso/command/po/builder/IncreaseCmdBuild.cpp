@@ -10,7 +10,8 @@ namespace org {
                             using PoClass = org::eclipse::keyple::calypso::command::PoClass;
                             using namespace org::eclipse::keyple::calypso::command::po;
 
-                            IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int incValue, const std::string &extraInfo) throw(std::invalid_argument) : PoCommandBuilder(std::make_shared<CalypsoPoCommands>(command), nullptr) {
+                            IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int incValue, const std::string &extraInfo)
+                            : PoCommandBuilder(std::make_shared<CalypsoPoCommands>(command), nullptr) {
 
                                 // only counter number >= 1 are allowed
                                 if (counterNumber < 1) {

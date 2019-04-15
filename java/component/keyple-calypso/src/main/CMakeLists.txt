@@ -40,6 +40,8 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder/session
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/parser/session
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/exception
 
 	/* Core */
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple
@@ -53,6 +55,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/transaction
+	
 
 	/* Helpers */
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/java/org/eclipse/keyple/common

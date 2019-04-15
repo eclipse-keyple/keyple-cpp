@@ -40,7 +40,8 @@ IncreaseRespPars::StaticConstructor IncreaseRespPars::staticConstructor;
                             IncreaseRespPars::IncreaseRespPars() {
                             }
 
-                            int IncreaseRespPars::getNewValue() throw(IllegalStateException) {
+                            int IncreaseRespPars::getNewValue()
+                            {
                                 std::vector<char> newValueBuffer = getApduResponse()->getDataOut();
                                 if (newValueBuffer.size() == 3) {
                                     return (newValueBuffer[0] << 16) + (newValueBuffer[1] << 8) + newValueBuffer[2];

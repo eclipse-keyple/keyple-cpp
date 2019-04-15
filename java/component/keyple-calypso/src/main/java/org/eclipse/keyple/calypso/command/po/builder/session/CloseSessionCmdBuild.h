@@ -52,7 +52,7 @@ namespace org {
                                      * @throws java.lang.IllegalArgumentException - if the command is inconsistent
                                      */
                                 public:
-                                    CloseSessionCmdBuild(PoClass poClass, bool ratificationAsked, std::vector<char> &terminalSessionSignature) throw(std::invalid_argument);
+                                    CloseSessionCmdBuild(PoClass poClass, bool ratificationAsked, std::vector<char> &terminalSessionSignature);
 
                                     /**
                                      * Instantiates a new CloseSessionCmdBuild based on the revision of the PO to generate an abort

@@ -32,11 +32,11 @@ namespace org {
                     return seSelector;
                 }
 
-                void SeSelectionRequest::setMatchingClass(std::type_info matchingClass) {
+                void SeSelectionRequest::setMatchingClass(const std::type_info& matchingClass) {
                     this->matchingClass = matchingClass;
                 }
 
-                void SeSelectionRequest::setSelectionClass(std::type_info selectionClass) {
+                void SeSelectionRequest::setSelectionClass(const std::type_info& selectionClass) {
                     this->selectionClass = selectionClass;
                 }
 

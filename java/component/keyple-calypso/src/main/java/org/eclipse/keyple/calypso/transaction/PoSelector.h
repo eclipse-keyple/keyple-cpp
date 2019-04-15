@@ -44,28 +44,17 @@ namespace org {
                             REJECT,
                             ACCEPT
                         };
-
-                        /**
-                         * Create a PoSelector to perform the PO selection. See {@link SeSelector}
-                         * 
-                         * @param poAidSelector the AID selection data
-                         * @param poAtrFilter the ATR filter
-                         * @param extraInfo information string (to be printed in logs)
-                         */
-                    public:
-                        PoSelector(std::shared_ptr<PoAidSelector> poAidSelector, std::shared_ptr<PoAtrFilter> poAtrFilter, const std::string &extraInfo);
-
-                        /**
+                                                /**
                          * PoAidSelector embedding the Calypo PO additional successful codes list
                          */
                     public:
                         class PoAidSelector : public SeSelector::AidSelector {
 
                         private:
-                            static const std::shared_ptr<Set<Integer>> successfulSelectionStatusCodes;
+                            static const std::shared_ptr<std::set<int>> successfulSelectionStatusCodes;
 
                         private:
-                            class HashSetAnonymousInnerClass : public std::unordered_set<Integer>, public std::enable_shared_from_this<HashSetAnonymousInnerClass> {
+                            class HashSetAnonymousInnerClass : public std::unordered_set<int>, public std::enable_shared_from_this<HashSetAnonymousInnerClass> {
                     //            {
                     //                add(0x6283);
                     //            }
@@ -98,7 +87,7 @@ namespace org {
 
 protected:
                             std::shared_ptr<PoAidSelector> shared_from_this() {
-                                return std::static_pointer_cast<PoAidSelector>(org.eclipse.keyple.seproxy.SeSelector.AidSelector::shared_from_this());
+                                return std::static_pointer_cast<PoAidSelector>(AidSelector::shared_from_this());
                             }
                         };
 
@@ -120,13 +109,26 @@ protected:
 
 protected:
                             std::shared_ptr<PoAtrFilter> shared_from_this() {
-                                return std::static_pointer_cast<PoAtrFilter>(org.eclipse.keyple.seproxy.SeSelector.AtrFilter::shared_from_this());
+                                return std::static_pointer_cast<PoAtrFilter>(AtrFilter::shared_from_this());
                             }
                         };
+                        
+
+                        /**
+                         * Create a PoSelector to perform the PO selection. See {@link SeSelector}
+                         * 
+                         * @param poAidSelector the AID selection data
+                         * @param poAtrFilter the ATR filter
+                         * @param extraInfo information string (to be printed in logs)
+                         */
+                    public:
+                        PoSelector(std::shared_ptr<PoAidSelector> poAidSelector, std::shared_ptr<PoAtrFilter> poAtrFilter, const std::string &extraInfo);
+
+
 
 protected:
                         std::shared_ptr<PoSelector> shared_from_this() {
-                            return std::static_pointer_cast<PoSelector>(org.eclipse.keyple.seproxy.SeSelector::shared_from_this());
+                            return std::static_pointer_cast<PoSelector>(SeSelector::shared_from_this());
                         }
                     };
 

@@ -35,7 +35,7 @@ namespace org {
                             class UpdateRecordRespPars final : public AbstractApduResponseParser {
 
                             private:
-                                static const std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
                                                         private:
                                                             class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {

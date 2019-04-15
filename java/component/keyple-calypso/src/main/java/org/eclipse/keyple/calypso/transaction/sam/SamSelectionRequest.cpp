@@ -1,6 +1,6 @@
 #include "SamSelectionRequest.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/SeProtocol.h"
+#include "SeSelector.h"
+#include "SeProtocol.h"
 #include "CalypsoSam.h"
 
 namespace org {
@@ -16,8 +16,8 @@ namespace org {
 
                         SamSelectionRequest::SamSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag) : org::eclipse::keyple::transaction::SeSelectionRequest(seSelector, channelState, protocolFlag) {
 
-                            setMatchingClass(CalypsoSam::typeid);
-                            setSelectionClass(SamSelectionRequest::typeid);
+                            setMatchingClass(typeid(CalypsoSam));
+                            setSelectionClass(typeid(SamSelectionRequest));
                         }
                     }
                 }

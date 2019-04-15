@@ -57,7 +57,7 @@ namespace org {
                                  * @throws java.lang.IllegalArgumentException - if the request is inconsistent
                                  */
                             public:
-                                UpdateRecordCmdBuild(PoClass poClass, char sfi, char recordNumber, std::vector<char> &newRecordData, const std::string &extraInfo) throw(std::invalid_argument);
+                                UpdateRecordCmdBuild(PoClass poClass, char sfi, char recordNumber, std::vector<char> &newRecordData, const std::string &extraInfo);
 
 protected:
                                 std::shared_ptr<UpdateRecordCmdBuild> shared_from_this() {

@@ -1,16 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/MatchingSe.h"
-#include "../../command/sam/SamRevision.h"
-#include <string>
-#include <vector>
-#include "exceptionhelper.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { namespace sam { class SamSelectionRequest; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -22,6 +9,27 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <memory>
+
+/* Core */
+#include "MatchingSe.h"
+#include "SeResponse.h"
+
+/* Calypso */
+#include "SamRevision.h"
+#include "SamSelectionRequest.h"
+
+/* Common */
+#include "exceptionhelper.h"
+#include "Logger.h"
+#include "LoggerFactory.h"
+
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -29,20 +37,17 @@ namespace org {
                 namespace transaction {
                     namespace sam {
 
-                        using namespace org::eclipse::keyple::calypso::command::sam;
-//JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
-//                        import static org.eclipse.keyple.calypso.command.sam.SamRevision.*;
-                        using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
-                        using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
-                        using MatchingSe = org::eclipse::keyple::transaction::MatchingSe;
-                        using org::slf4j::Logger;
-                        using org::slf4j::LoggerFactory;
+                        using SamRevision   = org::eclipse::keyple::calypso::command::sam::SamRevision;
+                        using SeResponse    = org::eclipse::keyple::seproxy::message::SeResponse;
+                        using MatchingSe    = org::eclipse::keyple::transaction::MatchingSe;
+                        using Logger        = org::eclipse::keyple::common::Logger;
+                        using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
                         class CalypsoSam : public MatchingSe {
                         private:
-                            static const std::shared_ptr<Logger> logger;
+                            const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CalypsoSam));
 
-                            SamRevision samRevision = static_cast<SamRevision>(0);
+                            SamRevision samRevision;
                             std::vector<char> serialNumber = std::vector<char>(4);
                             char platform = 0;
                             char applicationType = 0;
@@ -82,9 +87,9 @@ namespace org {
 
                             virtual char getSoftwareRevision();
 
-protected:
+                        protected:
                             std::shared_ptr<CalypsoSam> shared_from_this() {
-                                return std::static_pointer_cast<CalypsoSam>(org.eclipse.keyple.transaction.MatchingSe::shared_from_this());
+                                return std::static_pointer_cast<CalypsoSam>(MatchingSe::shared_from_this());
                             }
                         };
 

@@ -33,7 +33,7 @@ namespace org {
 
 protected:
                             std::shared_ptr<KeypleCalypsoSecureSessionUnauthorizedKvcException> shared_from_this() {
-                                return std::static_pointer_cast<KeypleCalypsoSecureSessionUnauthorizedKvcException>(org.eclipse.keyple.seproxy.exception.KeypleReaderException::shared_from_this());
+                                return std::static_pointer_cast<KeypleCalypsoSecureSessionUnauthorizedKvcException>(KeypleReaderException::shared_from_this());
                             }
                         };
 

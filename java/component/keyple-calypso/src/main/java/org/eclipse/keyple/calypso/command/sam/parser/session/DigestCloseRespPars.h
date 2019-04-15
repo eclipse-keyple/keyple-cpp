@@ -53,7 +53,7 @@ namespace org {
 
 protected:
                                     std::shared_ptr<DigestCloseRespPars> shared_from_this() {
-                                        return std::static_pointer_cast<DigestCloseRespPars>(org.eclipse.keyple.command.AbstractApduResponseParser::shared_from_this());
+                                        return std::static_pointer_cast<DigestCloseRespPars>(AbstractApduResponseParser::shared_from_this());
                                     }
                                 };
 

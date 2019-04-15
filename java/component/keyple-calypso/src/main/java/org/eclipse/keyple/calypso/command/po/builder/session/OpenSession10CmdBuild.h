@@ -41,7 +41,7 @@ namespace org {
                                      * @throws IllegalArgumentException - if the request is inconsistent
                                      */
                                 public:
-                                    OpenSession10CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo) throw(std::invalid_argument);
+                                    OpenSession10CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo);
 
 protected:
                                     std::shared_ptr<OpenSession10CmdBuild> shared_from_this() {

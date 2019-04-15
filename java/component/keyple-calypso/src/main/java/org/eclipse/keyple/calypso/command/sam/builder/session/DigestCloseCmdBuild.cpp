@@ -12,21 +12,22 @@ namespace org {
                                 using SamCommandBuilder = org::eclipse::keyple::calypso::command::sam::SamCommandBuilder;
                                 using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
-                                DigestCloseCmdBuild::DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength) throw(std::invalid_argument) : org::eclipse::keyple::calypso::command::sam::SamCommandBuilder(command, nullptr) {
-                                    if (revision != nullptr) {
-                                        this->defaultRevision = revision;
-                                    }
+                                DigestCloseCmdBuild::DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength) : SamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr) 
+                                {
+                                    this->defaultRevision = revision;
+
                                     if (expectedResponseLength != 0x04 && expectedResponseLength != 0x08) {
                                         throw std::invalid_argument(StringHelper::formatSimple("Bad digest length! Expected 4 or 8, got %s", expectedResponseLength));
                                     }
 
-                                    char cla = SamRevision::S1D.equals(this->defaultRevision) ? static_cast<char>(0x94) : static_cast<char>(0x80);
+                                    char cla = SamRevision::S1D == (this->defaultRevision) ? static_cast<char>(0x94) : static_cast<char>(0x80);
                                     char p1 = 0x00;
                                     char p2 = static_cast<char>(0x00);
 
                                     // CalypsoRequest calypsoRequest = new CalypsoRequest(cla, command, p1, p2, null,
                                     // expectedResponseLength);
-                                    request = setApduRequest(cla, command, p1, p2, nullptr, expectedResponseLength);
+                                    std::vector<char> emptyVector;
+                                    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, emptyVector, expectedResponseLength);
                                 }
                             }
                         }

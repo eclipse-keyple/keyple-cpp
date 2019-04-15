@@ -56,7 +56,7 @@ namespace org {
                                  * @throws java.lang.IllegalArgumentException - if the request is inconsistent
                                  */
                             public:
-                                ReadRecordsCmdBuild(PoClass poClass, char sfi, char firstRecordNumber, bool readJustOneRecord, char expectedLength, const std::string &extraInfo) throw(std::invalid_argument);
+                                ReadRecordsCmdBuild(PoClass poClass, char sfi, char firstRecordNumber, bool readJustOneRecord, char expectedLength, const std::string &extraInfo);
 
                                 /**
                                  * Instantiates a new read records cmd build without specifying the expected length. This
@@ -71,7 +71,7 @@ namespace org {
                                  * @throws java.lang.IllegalArgumentException - if record number &lt; 1
                                  * @throws java.lang.IllegalArgumentException - if the request is inconsistent
                                  */
-                                ReadRecordsCmdBuild(PoClass poClass, char sfi, char firstRecordNumber, bool readJustOneRecord, const std::string &extraInfo) throw(std::invalid_argument);
+                                ReadRecordsCmdBuild(PoClass poClass, char sfi, char firstRecordNumber, bool readJustOneRecord, const std::string &extraInfo);
 
                             protected:
                                 std::shared_ptr<ReadRecordsCmdBuild> shared_from_this() {

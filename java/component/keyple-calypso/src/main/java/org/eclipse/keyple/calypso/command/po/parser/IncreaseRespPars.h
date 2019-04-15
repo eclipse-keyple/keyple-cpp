@@ -67,7 +67,7 @@ namespace org {
                                  * @throws java.lang.IllegalStateException - if the counter value is not available from the
                                  *         command response.
                                  */
-                                int getNewValue() throw(IllegalStateException);
+                                int getNewValue();
 
                                 std::string toString();
 

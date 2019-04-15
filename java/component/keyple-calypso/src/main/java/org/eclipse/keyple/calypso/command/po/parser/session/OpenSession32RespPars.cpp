@@ -1,5 +1,8 @@
 #include "OpenSession32RespPars.h"
-#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduResponse.h"
+#include "ApduResponse.h"
+#include "AbstractOpenSessionRespPars.h"
+
+#include "Arrays.h"
 
 namespace org {
     namespace eclipse {
@@ -11,15 +14,16 @@ namespace org {
                             namespace session {
                                 using PoRevision = org::eclipse::keyple::calypso::command::po::PoRevision;
                                 using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
+                                using AbstractOpenSessionRespPars = org::eclipse::keyple::calypso::command::po::parser::session::AbstractOpenSessionRespPars;
 
                                 OpenSession32RespPars::OpenSession32RespPars(std::shared_ptr<ApduResponse> response) : AbstractOpenSessionRespPars(response, PoRevision::REV3_2) {
                                 }
 
-                                std::shared_ptr<SecureSession> OpenSession32RespPars::toSecureSession(std::vector<char> &apduResponseData) {
+                                std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession32RespPars::toSecureSession(std::vector<char> &apduResponseData) {
                                     return createSecureSession(apduResponseData);
                                 }
 
-                                std::shared_ptr<SecureSession> OpenSession32RespPars::createSecureSession(std::vector<char> &apduResponse) {
+                                std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession32RespPars::createSecureSession(std::vector<char> &apduResponse) {
 
                                     char flag = apduResponse[8];
                                     // ratification: if the bit 0 of flag is set then the previous session has been ratified

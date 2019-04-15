@@ -41,7 +41,7 @@ namespace org {
                                      * The command.
                                      */
                                 private:
-                                    static constexpr CalypsoSamCommands command = CalypsoSamCommands::DIGEST_INIT;
+                                    const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_INIT;
 
                                     /**
                                      * Instantiates a new DigestInitCmdBuild.
@@ -58,11 +58,11 @@ namespace org {
                                      * @throws java.lang.IllegalArgumentException - if the request is inconsistent
                                      */
                                 public:
-                                    DigestInitCmdBuild(SamRevision revision, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif, char workKeyKVC, std::vector<char> &digestData) throw(std::invalid_argument);
+                                    DigestInitCmdBuild(SamRevision revision, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif, char workKeyKVC, std::vector<char> &digestData);
 
 protected:
                                     std::shared_ptr<DigestInitCmdBuild> shared_from_this() {
-                                        return std::static_pointer_cast<DigestInitCmdBuild>(org.eclipse.keyple.calypso.command.sam.SamCommandBuilder::shared_from_this());
+                                        return std::static_pointer_cast<DigestInitCmdBuild>(SamCommandBuilder::shared_from_this());
                                     }
                                 };
 

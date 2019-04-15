@@ -12,10 +12,10 @@ namespace org {
                                 using SamCommandBuilder = org::eclipse::keyple::calypso::command::sam::SamCommandBuilder;
                                 using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
-                                SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(SamRevision revision, std::vector<char> &diversifier) throw(std::invalid_argument) : org::eclipse::keyple::calypso::command::sam::SamCommandBuilder(command, nullptr) {
-                                    if (revision != nullptr) {
-                                        this->defaultRevision = revision;
-                                    }
+                                SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(SamRevision revision, std::vector<char> &diversifier) : SamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr)
+                                {
+                                    this->defaultRevision = revision;
+
                                     if (diversifier.empty() || (diversifier.size() != 4 && diversifier.size() != 8)) {
                                         throw std::invalid_argument("Bad diversifier value!");
                                     }
@@ -23,7 +23,7 @@ namespace org {
                                     char p1 = 0x00;
                                     char p2 = 0x00;
 
-                                    request = setApduRequest(cla, command, p1, p2, diversifier, nullptr);
+                                    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, diversifier, -1);
 
                                 }
                             }

@@ -59,9 +59,9 @@ namespace org {
                                  */
 
                             public:
-                                DecreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int decValue, const std::string &extraInfo) throw(std::invalid_argument);
+                                DecreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int decValue, const std::string &extraInfo);
 
-protected:
+                            protected:
                                 std::shared_ptr<DecreaseCmdBuild> shared_from_this() {
                                     return std::static_pointer_cast<DecreaseCmdBuild>(PoCommandBuilder::shared_from_this());
                                 }

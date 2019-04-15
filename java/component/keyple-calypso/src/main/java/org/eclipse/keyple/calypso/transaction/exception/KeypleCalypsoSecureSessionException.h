@@ -35,14 +35,15 @@ namespace org {
 
                         public:
                             enum class Type {
+                                NO_TYPE,
                                 PO,
                                 SAM
                             };
 
                         private:
-                            const Type type;
-                            const std::vector<std::shared_ptr<ApduRequest>> requests;
-                            const std::vector<std::shared_ptr<ApduResponse>> responses;
+                            Type type;
+                            std::vector<std::shared_ptr<ApduRequest>> requests;
+                            std::vector<std::shared_ptr<ApduResponse>> responses;
 
                         public:
                             KeypleCalypsoSecureSessionException(const std::string &message, Type type, std::vector<std::shared_ptr<ApduRequest>> &requests, std::vector<std::shared_ptr<ApduResponse>> &responses);
@@ -59,7 +60,7 @@ namespace org {
 
 protected:
                             std::shared_ptr<KeypleCalypsoSecureSessionException> shared_from_this() {
-                                return std::static_pointer_cast<KeypleCalypsoSecureSessionException>(org.eclipse.keyple.seproxy.exception.KeypleReaderException::shared_from_this());
+                                return std::static_pointer_cast<KeypleCalypsoSecureSessionException>(KeypleReaderException::shared_from_this());
                             }
                         };
 

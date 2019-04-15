@@ -156,7 +156,7 @@ namespace org {
                                     };
 
                                 private:
-                                    static const std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                    static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
                                 private:
                                     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
@@ -188,7 +188,11 @@ namespace org {
 
                                     static std::shared_ptr<AbstractOpenSessionRespPars> create(std::shared_ptr<ApduResponse> response, PoRevision revision);
 
-                                    virtual std::shared_ptr<SecureSession> toSecureSession(std::vector<char> &apduResponseData) = 0;
+                                    virtual std::shared_ptr<SecureSession> toSecureSession(std::vector<char> &apduResponseData)
+                                    {
+                                        (void)apduResponseData;
+                                        return nullptr;
+                                    }
 
                                     virtual std::vector<char> getPoChallenge();
 

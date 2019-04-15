@@ -40,7 +40,7 @@ namespace org {
                                      * @throws java.lang.IllegalArgumentException - if the request is inconsistent
                                      */
                                 public:
-                                    OpenSession32CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo) throw(std::invalid_argument);
+                                    OpenSession32CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo);
 
 protected:
                                     std::shared_ptr<OpenSession32CmdBuild> shared_from_this() {

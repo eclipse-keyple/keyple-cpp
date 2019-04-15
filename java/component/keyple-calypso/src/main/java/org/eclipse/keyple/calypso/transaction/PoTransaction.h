@@ -1,25 +1,3 @@
-#pragma once
-
-#include "../command/sam/SamRevision.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/TransmissionMode.h"
-#include <string>
-#include <unordered_map>
-#include <vector>
-#include <algorithm>
-#include <stdexcept>
-#include "exceptionhelper.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class CalypsoPo; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { template<typename T>class SendableInSession; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace sam { class SamSendableInSession; } } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -31,30 +9,75 @@ namespace org { namespace eclipse { namespace keyple { namespace calypso { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <map>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include "exceptionhelper.h"
+#include <memory>
+
+
+/* Calypso */
+#include "AppendRecordRespPars.h"
+#include "DecreaseRespPars.h"
+#include "IncreaseRespPars.h"
+#include "PoModificationCommand.h"
+#include "PoSendableInSession.h"
+#include "ReadDataStructure.h"
+#include "ReadRecordsRespPars.h"
+#include "SeRequest.h"
+#include "SamRevision.h"
+#include "TransmissionMode.h"
+#include "UpdateRecordRespPars.h"
+
+/* Core */
+#include "ApduRequest.h"
+#include "ApduResponse.h"
+#include "ByteArrayUtils.h"
+#include "ChannelState.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class CalypsoPo; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { template<typename T>class SendableInSession; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace sam { class SamSendableInSession; } } } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace calypso {
                 namespace transaction {
 
-                    using SendableInSession = org::eclipse::keyple::calypso::command::SendableInSession;
-                    using namespace org::eclipse::keyple::calypso::command::po;
-                    using namespace org::eclipse::keyple::calypso::command::po::builder;
-                    using namespace org::eclipse::keyple::calypso::command::po::parser;
-                    using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
-                    using SamSendableInSession = org::eclipse::keyple::calypso::command::sam::SamSendableInSession;
-                    using namespace org::eclipse::keyple::calypso::transaction::exception;
                     using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                    using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                    using SeReader = org::eclipse::keyple::seproxy::SeReader;
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using namespace org::eclipse::keyple::seproxy::message;
-                    using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
-                    using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-                    using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
-
+                    using ApduRequest                = org::eclipse::keyple::seproxy::message::ApduRequest;
+                    using ApduResponse               = org::eclipse::keyple::seproxy::message::ApduResponse;
+                    using AppendRecordRespPars       = org::eclipse::keyple::calypso::command::po::parser::AppendRecordRespPars;
+                    using ByteArrayUtils             = org::eclipse::keyple::util::ByteArrayUtils;
+                    using ChannelState               = org::eclipse::keyple::seproxy::ChannelState;
+                    using DecreaseRespPars           = org::eclipse::keyple::calypso::command::po::parser::DecreaseRespPars;
+                    using IncreaseRespPars           = org::eclipse::keyple::calypso::command::po::parser::IncreaseRespPars;
+                    using KeypleReaderException      = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using Logger                     = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory              = org::eclipse::keyple::common::LoggerFactory;
+                    using PoSendableInSession        = org::eclipse::keyple::calypso::command::po::PoSendableInSession;
+                    using PoModificationCommand      = org::eclipse::keyple::calypso::command::po::PoModificationCommand;
+                    using ProxyReader                = org::eclipse::keyple::seproxy::message::ProxyReader;
+                    using ReadRecordsRespPars        = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
+                    using ReadDataStructure          = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
+                    using SamRevision                = org::eclipse::keyple::calypso::command::sam::SamRevision;
+                    using SamSendableInSession       = org::eclipse::keyple::calypso::command::sam::SamSendableInSession;
+                    using SeReader                   = org::eclipse::keyple::seproxy::SeReader;
+                    using SeRequest                  = org::eclipse::keyple::seproxy::message::SeRequest;
+                    using TransmissionMode           = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
+                    using UpdateRecordRespPars       = org::eclipse::keyple::calypso::command::po::parser::UpdateRecordRespPars;
 
                     /**
                      * Portable Object Secure Session.
@@ -66,353 +89,7 @@ namespace org {
                      */
                     class PoTransaction final : public std::enable_shared_from_this<PoTransaction> {
 
-                        /* public constants */
-                        /** The key index for personalization operations (issuer key needed) */
-                    public:
-                        static const char KEY_INDEX_PERSONALIZATION = static_cast<char>(0x01);
-                        /** The key index for reloading operations (loading key needed) */
-                        static const char KEY_INDEX_LOAD = static_cast<char>(0x02);
-                        /** The key index for debit and validation operations (validation key needed) */
-                        static const char KEY_INDEX_VALIDATION_DEBIT = static_cast<char>(0x03);
-                        /** The default KIF value for personalization */
-                        static const char DEFAULT_KIF_PERSO = static_cast<char>(0x21);
-                        /** The default KIF value for loading */
-                        static const char DEFAULT_KIF_LOAD = static_cast<char>(0x27);
-                        /** The default KIF value for debiting */
-                        static const char DEFAULT_KIF_DEBIT = static_cast<char>(0x30);
-                        /** The default key record number */
-                        static const char DEFAULT_KEY_RECORD_NUMER = static_cast<char>(0x00);
-
-                        /* private constants */
-                    private:
-                        static const char KIF_UNDEFINED = static_cast<char>(0xFF);
-
-                        static const char CHALLENGE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
-                        static const char CHALLENGE_LENGTH_REV32 = static_cast<char>(0x08);
-                        static const char SIGNATURE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
-                        static const char SIGNATURE_LENGTH_REV32 = static_cast<char>(0x08);
-
-                        static constexpr int OFFSET_CLA = 0;
-                        static constexpr int OFFSET_INS = 1;
-                        static constexpr int OFFSET_P1 = 2;
-                        static constexpr int OFFSET_P2 = 3;
-                        static constexpr int OFFSET_Lc = 4;
-                        static constexpr int OFFSET_DATA = 5;
-
-                        /** Ratification command APDU for rev <= 2.4 */
-                        static std::vector<char> const ratificationCmdApduLegacy;
-                        /** Ratification command APDU for rev > 2.4 */
-                        static std::vector<char> const ratificationCmdApdu;
-
-                        static const std::shared_ptr<Logger> logger;
-
-                        /** The reader for PO. */
-                        const std::shared_ptr<ProxyReader> poReader;
-                        /** The reader for session SAM. */
-                        std::shared_ptr<ProxyReader> samReader;
-                        /** The SAM default revision. */
-                        const SamRevision samRevision = SamRevision::C1;
-                        /** The SAM settings map. */
-                        const std::shared_ptr<EnumMap<SamSettings, Byte>> samSetting = std::make_shared<EnumMap<SamSettings, Byte>>(SamSettings::typeid);
-                        /** The PO serial number extracted from FCI */
-                        std::vector<char> const poCalypsoInstanceSerial;
-                        /** The current CalypsoPo */
-                    protected:
-                        const std::shared_ptr<CalypsoPo> calypsoPo;
-                        /** the type of the notified event. */
-                    private:
-                        SessionState currentState = static_cast<SessionState>(0);
-                        /** Selected AID of the Calypso PO. */
-                        std::vector<char> poCalypsoInstanceAid;
-                        /** The PO Calypso Revision. */
-                        PoRevision poRevision = PoRevision::REV3_1;
-                        /** The PO Secure Session final status according to mutual authentication result */
-                        bool transactionResult = false;
-                        /** The diversification status */
-                        bool isDiversificationDone = false;
-                        /** The PO KIF */
-                        char poKif = 0;
-                        /** The previous PO Secure Session ratification status */
-//JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
-                        bool wasRatified_Renamed = false;
-                        /** The data read at opening */
-                        std::vector<char> openRecordDataRead;
-                        /** The list to contain the prepared commands */
-                        std::vector<std::shared_ptr<PoSendableInSession>> poCommandBuilderList = std::vector<std::shared_ptr<PoSendableInSession>>();
-                        /** The list to contain the parsers associated to the prepared commands */
-                        std::vector<std::shared_ptr<AbstractApduResponseParser>> poResponseParserList = std::vector<std::shared_ptr<AbstractApduResponseParser>>();
-                        /** The SAM settings status */
-                        bool samSettingsDefined = false;
-                        /** List of authorized KVCs */
-                        std::vector<Byte> authorizedKvcList;
-                        /** The current secure session modification mode: ATOMIC or MULTIPLE */
-                        ModificationMode currentModificationMode = static_cast<ModificationMode>(0);
-                        /** The current secure session access level: PERSO, RELOAD, DEBIT */
-                        SessionAccessLevel currentAccessLevel = static_cast<SessionAccessLevel>(0);
-                        /* modifications counter management */
-                        bool modificationsCounterIsInBytes = false;
-                        int modificationsCounterMax = 0;
-                        int modificationsCounter = 0;
-
-                        /**
-                         * PoTransaction with PO and SAM readers.
-                         * <ul>
-                         * <li>Logical channels with PO &amp; SAM could already be established or not.</li>
-                         * <li>A list of SAM parameters is provided as en EnumMap.</li>
-                         * </ul>
-                         *
-                         * @param poReader the PO reader
-                         * @param calypsoPO the CalypsoPo object obtained at the end of the selection step
-                         * @param samReader the SAM reader
-                         * @param samSetting a list of SAM related parameters. In the case this parameter is null,
-                         *        default parameters are applied. The available setting keys are defined in
-                         *        {@link SamSettings}
-                         */
-                    public:
-                        PoTransaction(std::shared_ptr<SeReader> poReader, std::shared_ptr<CalypsoPo> calypsoPO, std::shared_ptr<SeReader> samReader, std::shared_ptr<EnumMap<SamSettings, Byte>> samSetting);
-
-                        /**
-                         * PoTransaction with PO reader and without SAM reader.
-                         * <ul>
-                         * <li>Logical channels with PO could already be established or not.</li>
-                         * </ul>
-                         *
-                         * @param poReader the PO reader
-                         * @param calypsoPO the CalypsoPo object obtained at the end of the selection step
-                         */
-                        PoTransaction(std::shared_ptr<SeReader> poReader, std::shared_ptr<CalypsoPo> calypsoPO);
-
-                        /**
-                         * Sets the SAM parameters for Secure Session management
-                         * 
-                         * @param samReader
-                         * @param samSetting
-                         */
-                        void setSamSettings(std::shared_ptr<SeReader> samReader, std::shared_ptr<EnumMap<SamSettings, Byte>> samSetting);
-
-                        /**
-                         * Provides a list of authorized KVC
-                         *
-                         * If this method is not called, the list will remain empty and all KVCs will be accepted.
-                         *
-                         * If a list is provided and a PO with a KVC not belonging to this list is presented, a
-                         * {@link KeypleCalypsoSecureSessionUnauthorizedKvcException} will be raised.
-                         * 
-                         * @param authorizedKvcList the list of authorized KVCs
-                         */
-                        void setAuthorizedKvcList(std::vector<Byte> &authorizedKvcList);
-
-                        /**
-                         * Indicates whether or not the SAM settings have been defined
-                         * 
-                         * @return true if the SAM settings have been defined.
-                         */
-                        bool isSamSettingsDefined();
-
-                        /**
-                         * Open a Secure Session.
-                         * <ul>
-                         * <li>The PO must have been previously selected, so a logical channel with the PO application
-                         * must be already active.</li>
-                         * <li>The PO serial &amp; revision are identified from FCI data.</li>
-                         * <li>A first request is sent to the SAM session reader.
-                         * <ul>
-                         * <li>In case not logical channel is active with the SAM, a channel is open.</li>
-                         * <li>Then a Select Diversifier (with the PO serial) &amp; a Get Challenge are automatically
-                         * operated. The SAM challenge is recovered.</li>
-                         * </ul>
-                         * </li>
-                         * <li>The PO Open Session command is built according to the PO revision, the SAM challenge, the
-                         * keyIndex, and openingSfiToSelect / openingRecordNumberToRead.</li>
-                         * <li>Next the PO reader is requested:
-                         * <ul>
-                         * <li>for the current selected PO AID, with channelState set to KEEP_OPEN,</li>
-                         * <li>and some PO Apdu Requests including at least the Open Session command and optionally some
-                         * PO command to operate inside the session.</li>
-                         * </ul>
-                         * </li>
-                         * <li>The session PO keyset reference is identified from the PO Open Session response, the PO
-                         * challenge is recovered too.</li>
-                         * <li>According to the PO responses of Open Session and the PO commands sent inside the
-                         * session, a "cache" of SAM commands is filled with the corresponding Digest Init &amp; Digest
-                         * Update commands.</li>
-                         * <li>Returns the corresponding PO SeResponse (responses to poCommandsInsideSession).</li>
-                         * </ul>
-                         *
-                         * @param accessLevel access level of the session (personalization, load or debit).
-                         * @param openingSfiToSelect SFI of the file to select (0 means no file to select)
-                         * @param openingRecordNumberToRead number of the record to read
-                         * @param poCommandsInsideSession the po commands inside session
-                         * @return SeResponse response to all executed commands including the self generated "Open
-                         *         Secure Session" command
-                         * @throws KeypleReaderException the IO reader exception
-                         */
-                    private:
-                        std::shared_ptr<SeResponse> processAtomicOpening(SessionAccessLevel accessLevel, char openingSfiToSelect, char openingRecordNumberToRead, std::vector<std::shared_ptr<PoSendableInSession>> &poCommandsInsideSession) throw(KeypleReaderException);
-
-                        /**
-                         * Change SendableInSession List to ApduRequest List .
-                         *
-                         * @param poOrSamCommandsInsideSession a po or sam commands list to be sent in session
-                         * @return the ApduRequest list
-                         */
-                        std::vector<std::shared_ptr<ApduRequest>> getApduRequestsToSendInSession(std::vector<std::shared_ptr<SendableInSession>> &poOrSamCommandsInsideSession);
-
-                        /**
-                         * Process PO commands in a Secure Session.
-                         * <ul>
-                         * <li>On the PO reader, generates a SeRequest with channelState set to KEEP_OPEN, and
-                         * ApduRequests with the PO commands.</li>
-                         * <li>In case the secure session is active, the "cache" of SAM commands is completed with the
-                         * corresponding Digest Update commands.</li>
-                         * <li>If a session is open and channelState is set to CLOSE_AFTER, the current PO session is
-                         * aborted</li>
-                         * <li>Returns the corresponding PO SeResponse.</li>
-                         * </ul>
-                         *
-                         * @param poCommands the po commands inside session
-                         * @param channelState indicated if the SE channel of the PO reader must be closed after the
-                         *        last command
-                         * @return SeResponse all responses to the provided commands
-                         *
-                         * @throws KeypleReaderException IO Reader exception
-                         */
-                        std::shared_ptr<SeResponse> processAtomicPoCommands(std::vector<std::shared_ptr<PoSendableInSession>> &poCommands, ChannelState channelState) throw(KeypleReaderException);
-
-                        /**
-                         * Process SAM commands.
-                         * <ul>
-                         * <li>On the SAM reader, transmission of a SeRequest with channelState set to KEEP_OPEN.</li>
-                         * <li>Returns the corresponding SAM SeResponse.</li>
-                         * </ul>
-                         *
-                         * @param samCommands a list of commands to sent to the SAM
-                         * @return SeResponse all sam responses
-                         * @throws KeypleReaderException if a reader error occurs
-                         */
-                    public:
-                        std::shared_ptr<SeResponse> processSamCommands(std::vector<std::shared_ptr<SamSendableInSession>> &samCommands) throw(KeypleReaderException);
-
-                        /**
-                         * Close the Secure Session.
-                         * <ul>
-                         * <li>The SAM cache is completed with the Digest Update commands related to the new PO commands
-                         * to be sent and their anticipated responses. A Digest Close command is also added to the SAM
-                         * command cache.</li>
-                         * <li>On the SAM session reader side, a SeRequest is transmitted with SAM commands from the
-                         * command cache. The SAM command cache is emptied.</li>
-                         * <li>The SAM certificate is retrieved from the Digest Close response. The terminal signature
-                         * is identified.</li>
-                         * <li>Then, on the PO reader, a SeRequest is transmitted with the provided channelState, and
-                         * apduRequests including the new PO commands to send in the session, a Close Session command
-                         * (defined with the SAM certificate), and optionally a ratificationCommand.
-                         * <ul>
-                         * <li>The management of ratification is conditioned by the mode of communication.
-                         * <ul>
-                         * <li>If the communication mode is CONTACTLESS, a specific ratification command is sent after
-                         * the Close Session command. No ratification is requested in the Close Session command.</li>
-                         * <li>If the communication mode is CONTACTS, no ratification command is sent after the Close
-                         * Session command. Ratification is requested in the Close Session command.</li>
-                         * </ul>
-                         * </li>
-                         * <li>Otherwise, the PO Close Secure Session command is defined to directly set the PO as
-                         * ratified.</li>
-                         * </ul>
-                         * </li>
-                         * <li>The PO responses of the poModificationCommands are compared with the
-                         * poAnticipatedResponses. The PO signature is identified from the PO Close Session
-                         * response.</li>
-                         * <li>The PO certificate is recovered from the Close Session response. The card signature is
-                         * identified.</li>
-                         * <li>Finally, on the SAM session reader, a Digest Authenticate is automatically operated in
-                         * order to verify the PO signature.</li>
-                         * <li>Returns the corresponding PO SeResponse.</li>
-                         * </ul>
-                         *
-                         * The method is marked as deprecated because the advanced variant defined below must be used at
-                         * the application level.
-                         * 
-                         * @param poModificationCommands a list of commands that can modify the PO memory content
-                         * @param poAnticipatedResponses a list of anticipated PO responses to the modification commands
-                         * @param transmissionMode the communication mode. If the communication mode is CONTACTLESS, a
-                         *        ratification command will be generated and sent to the PO after the Close Session
-                         *        command; the ratification will not be requested in the Close Session command. On the
-                         *        contrary, if the communication mode is CONTACTS, no ratification command will be sent
-                         *        to the PO and ratification will be requested in the Close Session command
-                         * @param channelState indicates if the SE channel of the PO reader must be closed after the
-                         *        last command
-                         * @return SeResponse close session response
-                         * @throws KeypleReaderException the IO reader exception This method is deprecated.
-                         *         <ul>
-                         *         <li>The argument of the ratification command is replaced by an indication of the PO
-                         *         communication mode.</li>
-                         *         </ul>
-                         */
-                    private:
-                        std::shared_ptr<SeResponse> processAtomicClosing(std::vector<std::shared_ptr<PoModificationCommand>> &poModificationCommands, std::vector<std::shared_ptr<ApduResponse>> &poAnticipatedResponses, TransmissionMode transmissionMode, ChannelState channelState) throw(KeypleReaderException);
-
-                        /**
-                         * Advanced variant of processAtomicClosing in which the list of expected responses is
-                         * determined from previous reading operations.
-                         *
-                         * @param poModificationCommands a list of commands that can modify the PO memory content
-                         * @param transmissionMode the communication mode. If the communication mode is CONTACTLESS, a
-                         *        ratification command will be generated and sent to the PO after the Close Session
-                         *        command; the ratification will not be requested in the Close Session command. On the
-                         *        contrary, if the communication mode is CONTACTS, no ratification command will be sent
-                         *        to the PO and ratification will be requested in the Close Session command
-                         * @param channelState indicates if the SE channel of the PO reader must be closed after the
-                         *        last command
-                         * @return SeResponse close session response
-                         * @throws KeypleReaderException the IO reader exception This method is deprecated.
-                         *         <ul>
-                         *         <li>The argument of the ratification command is replaced by an indication of the PO
-                         *         communication mode.</li>
-                         *         </ul>
-                         */
-                        std::shared_ptr<SeResponse> processAtomicClosing(std::vector<std::shared_ptr<PoModificationCommand>> &poModificationCommands, TransmissionMode transmissionMode, ChannelState channelState) throw(KeypleReaderException);
-
-                        /**
-                         * Gets the PO Revision.
-                         *
-                         * @return the PoPlainSecureSession_OLD.poRevision
-                         */
-                    public:
-                        PoRevision getRevision();
-
-                        /**
-                         * Get the Secure Session Status.
-                         * <ul>
-                         * <li>To check the result of a closed secure session, returns true if the SAM Digest
-                         * Authenticate is successful.</li>
-                         * </ul>
-                         *
-                         * @return the {@link PoTransaction}.transactionResult
-                         */
-                        bool isSuccessful();
-
-                        /**
-                         * Get the PO KIF
-                         * 
-                         * @return the PO KIF byte
-                         */
-                        char getPoKif();
-
-                        /**
-                         * Get the ratification status obtained at Session Opening
-                         * 
-                         * @return true or false
-                         */
-                        bool wasRatified();
-
-                        /**
-                         * Get the data read at Session Opening
-                         * 
-                         * @return a byte array containing the data
-                         */
-                        std::vector<char> getOpenRecordDataRead();
-
-                        /**
+    /**
                          * List of SAM settings keys that can be provided when the secure session is created.
                          */
                     public:
@@ -490,7 +167,7 @@ namespace org {
                              * PO command/response pairs
                              */
                         private:
-                            static const std::vector<std::vector<char>> poDigestDataCache;
+                            static std::vector<std::vector<char>> poDigestDataCache;
                             static SamRevision samRevision;
                             static PoRevision poRevision;
                             static bool encryption;
@@ -560,7 +237,7 @@ namespace org {
                              * A Map of SFI and Commands/Responses
                              */
                         private:
-                            static std::unordered_map<Byte, std::shared_ptr<CommandResponse>> sfiCommandResponseHashMap;
+                            static std::unordered_map<char, std::shared_ptr<CommandResponse>> sfiCommandResponseHashMap;
 
                             /**
                              * Store all Read Record exchanges in a Map whose key is the SFI.
@@ -572,7 +249,8 @@ namespace org {
                              *        be ignored or not.
                              */
                         public:
-                            static void storeCommandResponse(std::vector<std::shared_ptr<PoSendableInSession>> &poSendableInSessions, std::vector<std::shared_ptr<ApduRequest>> &apduRequests, std::vector<std::shared_ptr<ApduResponse>> &apduResponses, Boolean skipFirstItem);
+                            static void storeCommandResponse(std::vector<std::shared_ptr<PoSendableInSession>> &poSendableInSessions, std::vector<std::shared_ptr<ApduRequest>> &apduRequests,
+                                                             std::vector<std::shared_ptr<ApduResponse>> &apduResponses, bool skipFirstItem);
 
                             /**
                              * Establish the anticipated responses to commands provided in poModificationCommands.
@@ -591,8 +269,355 @@ namespace org {
                              * @return the anticipated responses.
                              * @throws KeypleCalypsoSecureSessionException if an response can't be determined.
                              */
-                            static std::vector<std::shared_ptr<ApduResponse>> getResponses(std::vector<std::shared_ptr<PoModificationCommand>> &poModificationCommands) throw(KeypleCalypsoSecureSessionException);
+                            static std::vector<std::shared_ptr<ApduResponse>> getResponses(std::vector<std::shared_ptr<PoModificationCommand>> &poModificationCommands);
                         };
+
+                        /* public constants */
+                        /** The key index for personalization operations (issuer key needed) */
+                    public:
+                        static const char KEY_INDEX_PERSONALIZATION = static_cast<char>(0x01);
+                        /** The key index for reloading operations (loading key needed) */
+                        static const char KEY_INDEX_LOAD = static_cast<char>(0x02);
+                        /** The key index for debit and validation operations (validation key needed) */
+                        static const char KEY_INDEX_VALIDATION_DEBIT = static_cast<char>(0x03);
+                        /** The default KIF value for personalization */
+                        static const char DEFAULT_KIF_PERSO = static_cast<char>(0x21);
+                        /** The default KIF value for loading */
+                        static const char DEFAULT_KIF_LOAD = static_cast<char>(0x27);
+                        /** The default KIF value for debiting */
+                        static const char DEFAULT_KIF_DEBIT = static_cast<char>(0x30);
+                        /** The default key record number */
+                        static const char DEFAULT_KEY_RECORD_NUMER = static_cast<char>(0x00);
+
+                        /* private constants */
+                    private:
+                        static const char KIF_UNDEFINED = static_cast<char>(0xFF);
+
+                        static const char CHALLENGE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
+                        static const char CHALLENGE_LENGTH_REV32 = static_cast<char>(0x08);
+                        static const char SIGNATURE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
+                        static const char SIGNATURE_LENGTH_REV32 = static_cast<char>(0x08);
+
+                        static constexpr int OFFSET_CLA = 0;
+                        static constexpr int OFFSET_INS = 1;
+                        static constexpr int OFFSET_P1 = 2;
+                        static constexpr int OFFSET_P2 = 3;
+                        static constexpr int OFFSET_Lc = 4;
+                        static constexpr int OFFSET_DATA = 5;
+
+                        /** Ratification command APDU for rev <= 2.4 */
+                        static std::vector<char> ratificationCmdApduLegacy;
+                        /** Ratification command APDU for rev > 2.4 */
+                        static std::vector<char> ratificationCmdApdu;
+
+                        static const std::shared_ptr<Logger> logger;
+
+                        /** The reader for PO. */
+                        const std::shared_ptr<ProxyReader> poReader;
+                        /** The reader for session SAM. */
+                        std::shared_ptr<ProxyReader> samReader;
+                        /** The SAM default revision. */
+                        const SamRevision samRevision = SamRevision::C1;
+                        /** The SAM settings map. */
+                        const std::shared_ptr<std::map<PoTransaction::SamSettings, char>> samSetting = std::make_shared<std::map<PoTransaction::SamSettings, char>>();
+                        /** The PO serial number extracted from FCI */
+                        std::vector<char> poCalypsoInstanceSerial;
+                        /** The current CalypsoPo */
+                    protected:
+                        const std::shared_ptr<CalypsoPo> calypsoPo;
+                        /** the type of the notified event. */
+                    private:
+                        SessionState currentState = static_cast<SessionState>(0);
+                        /** Selected AID of the Calypso PO. */
+                        std::vector<char> poCalypsoInstanceAid;
+                        /** The PO Calypso Revision. */
+                        PoRevision poRevision = PoRevision::REV3_1;
+                        /** The PO Secure Session final status according to mutual authentication result */
+                        bool transactionResult = false;
+                        /** The diversification status */
+                        bool isDiversificationDone = false;
+                        /** The PO KIF */
+                        char poKif = 0;
+                        /** The previous PO Secure Session ratification status */
+//JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
+                        bool wasRatified_Renamed = false;
+                        /** The data read at opening */
+                        std::vector<char> openRecordDataRead;
+                        /** The list to contain the prepared commands */
+                        std::vector<std::shared_ptr<PoSendableInSession>> poCommandBuilderList = std::vector<std::shared_ptr<PoSendableInSession>>();
+                        /** The list to contain the parsers associated to the prepared commands */
+                        std::vector<std::shared_ptr<AbstractApduResponseParser>> poResponseParserList = std::vector<std::shared_ptr<AbstractApduResponseParser>>();
+                        /** The SAM settings status */
+                        bool samSettingsDefined = false;
+                        /** List of authorized KVCs */
+                        std::vector<char> authorizedKvcList;
+                        /** The current secure session modification mode: ATOMIC or MULTIPLE */
+                        ModificationMode currentModificationMode = static_cast<ModificationMode>(0);
+                        /** The current secure session access level: PERSO, RELOAD, DEBIT */
+                        SessionAccessLevel currentAccessLevel = static_cast<SessionAccessLevel>(0);
+                        /* modifications counter management */
+                        bool modificationsCounterIsInBytes = false;
+                        int modificationsCounterMax = 0;
+                        int modificationsCounter = 0;
+
+                        /**
+                         * PoTransaction with PO and SAM readers.
+                         * <ul>
+                         * <li>Logical channels with PO &amp; SAM could already be established or not.</li>
+                         * <li>A list of SAM parameters is provided as en EnumMap.</li>
+                         * </ul>
+                         *
+                         * @param poReader the PO reader
+                         * @param calypsoPO the CalypsoPo object obtained at the end of the selection step
+                         * @param samReader the SAM reader
+                         * @param samSetting a list of SAM related parameters. In the case this parameter is null,
+                         *        default parameters are applied. The available setting keys are defined in
+                         *        {@link SamSettings}
+                         */
+                    public:
+                        PoTransaction(std::shared_ptr<SeReader> poReader, std::shared_ptr<CalypsoPo> calypsoPO, std::shared_ptr<SeReader> samReader, std::shared_ptr<std::map<SamSettings, char>> samSetting);
+
+                        /**
+                         * PoTransaction with PO reader and without SAM reader.
+                         * <ul>
+                         * <li>Logical channels with PO could already be established or not.</li>
+                         * </ul>
+                         *
+                         * @param poReader the PO reader
+                         * @param calypsoPO the CalypsoPo object obtained at the end of the selection step
+                         */
+                        PoTransaction(std::shared_ptr<SeReader> poReader, std::shared_ptr<CalypsoPo> calypsoPO);
+
+                        /**
+                         * Sets the SAM parameters for Secure Session management
+                         * 
+                         * @param samReader
+                         * @param samSetting
+                         */
+                        void setSamSettings(std::shared_ptr<SeReader> samReader, std::shared_ptr<std::map<SamSettings, char>> samSetting);
+
+                        /**
+                         * Provides a list of authorized KVC
+                         *
+                         * If this method is not called, the list will remain empty and all KVCs will be accepted.
+                         *
+                         * If a list is provided and a PO with a KVC not belonging to this list is presented, a
+                         * {@link KeypleCalypsoSecureSessionUnauthorizedKvcException} will be raised.
+                         * 
+                         * @param authorizedKvcList the list of authorized KVCs
+                         */
+                        void setAuthorizedKvcList(std::vector<char> &authorizedKvcList);
+
+                        /**
+                         * Indicates whether or not the SAM settings have been defined
+                         * 
+                         * @return true if the SAM settings have been defined.
+                         */
+                        bool isSamSettingsDefined();
+
+                        /**
+                         * Open a Secure Session.
+                         * <ul>
+                         * <li>The PO must have been previously selected, so a logical channel with the PO application
+                         * must be already active.</li>
+                         * <li>The PO serial &amp; revision are identified from FCI data.</li>
+                         * <li>A first request is sent to the SAM session reader.
+                         * <ul>
+                         * <li>In case not logical channel is active with the SAM, a channel is open.</li>
+                         * <li>Then a Select Diversifier (with the PO serial) &amp; a Get Challenge are automatically
+                         * operated. The SAM challenge is recovered.</li>
+                         * </ul>
+                         * </li>
+                         * <li>The PO Open Session command is built according to the PO revision, the SAM challenge, the
+                         * keyIndex, and openingSfiToSelect / openingRecordNumberToRead.</li>
+                         * <li>Next the PO reader is requested:
+                         * <ul>
+                         * <li>for the current selected PO AID, with channelState set to KEEP_OPEN,</li>
+                         * <li>and some PO Apdu Requests including at least the Open Session command and optionally some
+                         * PO command to operate inside the session.</li>
+                         * </ul>
+                         * </li>
+                         * <li>The session PO keyset reference is identified from the PO Open Session response, the PO
+                         * challenge is recovered too.</li>
+                         * <li>According to the PO responses of Open Session and the PO commands sent inside the
+                         * session, a "cache" of SAM commands is filled with the corresponding Digest Init &amp; Digest
+                         * Update commands.</li>
+                         * <li>Returns the corresponding PO SeResponse (responses to poCommandsInsideSession).</li>
+                         * </ul>
+                         *
+                         * @param accessLevel access level of the session (personalization, load or debit).
+                         * @param openingSfiToSelect SFI of the file to select (0 means no file to select)
+                         * @param openingRecordNumberToRead number of the record to read
+                         * @param poCommandsInsideSession the po commands inside session
+                         * @return SeResponse response to all executed commands including the self generated "Open
+                         *         Secure Session" command
+                         * @throws KeypleReaderException the IO reader exception
+                         */
+                    private:
+                        std::shared_ptr<SeResponse> processAtomicOpening(SessionAccessLevel accessLevel, char openingSfiToSelect, char openingRecordNumberToRead, std::vector<std::shared_ptr<PoSendableInSession>> &poCommandsInsideSession);
+
+                        /**
+                         * Change SendableInSession List to ApduRequest List .
+                         *
+                         * @param poOrSamCommandsInsideSession a po or sam commands list to be sent in session
+                         * @return the ApduRequest list
+                         */
+                        template<class T>
+                        std::vector<std::shared_ptr<ApduRequest>> getApduRequestsToSendInSession(std::vector<std::shared_ptr<org::eclipse::keyple::calypso::command::SendableInSession<T>>> &poOrSamCommandsInsideSession);
+
+                        /**
+                         * Process PO commands in a Secure Session.
+                         * <ul>
+                         * <li>On the PO reader, generates a SeRequest with channelState set to KEEP_OPEN, and
+                         * ApduRequests with the PO commands.</li>
+                         * <li>In case the secure session is active, the "cache" of SAM commands is completed with the
+                         * corresponding Digest Update commands.</li>
+                         * <li>If a session is open and channelState is set to CLOSE_AFTER, the current PO session is
+                         * aborted</li>
+                         * <li>Returns the corresponding PO SeResponse.</li>
+                         * </ul>
+                         *
+                         * @param poCommands the po commands inside session
+                         * @param channelState indicated if the SE channel of the PO reader must be closed after the
+                         *        last command
+                         * @return SeResponse all responses to the provided commands
+                         *
+                         * @throws KeypleReaderException IO Reader exception
+                         */
+                        std::shared_ptr<SeResponse> processAtomicPoCommands(std::vector<std::shared_ptr<PoSendableInSession>> &poCommands, ChannelState channelState);
+
+                        /**
+                         * Process SAM commands.
+                         * <ul>
+                         * <li>On the SAM reader, transmission of a SeRequest with channelState set to KEEP_OPEN.</li>
+                         * <li>Returns the corresponding SAM SeResponse.</li>
+                         * </ul>
+                         *
+                         * @param samCommands a list of commands to sent to the SAM
+                         * @return SeResponse all sam responses
+                         * @throws KeypleReaderException if a reader error occurs
+                         */
+                    public:
+                        std::shared_ptr<SeResponse> processSamCommands(std::vector<std::shared_ptr<SamSendableInSession>> &samCommands);
+
+                        /**
+                         * Close the Secure Session.
+                         * <ul>
+                         * <li>The SAM cache is completed with the Digest Update commands related to the new PO commands
+                         * to be sent and their anticipated responses. A Digest Close command is also added to the SAM
+                         * command cache.</li>
+                         * <li>On the SAM session reader side, a SeRequest is transmitted with SAM commands from the
+                         * command cache. The SAM command cache is emptied.</li>
+                         * <li>The SAM certificate is retrieved from the Digest Close response. The terminal signature
+                         * is identified.</li>
+                         * <li>Then, on the PO reader, a SeRequest is transmitted with the provided channelState, and
+                         * apduRequests including the new PO commands to send in the session, a Close Session command
+                         * (defined with the SAM certificate), and optionally a ratificationCommand.
+                         * <ul>
+                         * <li>The management of ratification is conditioned by the mode of communication.
+                         * <ul>
+                         * <li>If the communication mode is CONTACTLESS, a specific ratification command is sent after
+                         * the Close Session command. No ratification is requested in the Close Session command.</li>
+                         * <li>If the communication mode is CONTACTS, no ratification command is sent after the Close
+                         * Session command. Ratification is requested in the Close Session command.</li>
+                         * </ul>
+                         * </li>
+                         * <li>Otherwise, the PO Close Secure Session command is defined to directly set the PO as
+                         * ratified.</li>
+                         * </ul>
+                         * </li>
+                         * <li>The PO responses of the poModificationCommands are compared with the
+                         * poAnticipatedResponses. The PO signature is identified from the PO Close Session
+                         * response.</li>
+                         * <li>The PO certificate is recovered from the Close Session response. The card signature is
+                         * identified.</li>
+                         * <li>Finally, on the SAM session reader, a Digest Authenticate is automatically operated in
+                         * order to verify the PO signature.</li>
+                         * <li>Returns the corresponding PO SeResponse.</li>
+                         * </ul>
+                         *
+                         * The method is marked as deprecated because the advanced variant defined below must be used at
+                         * the application level.
+                         * 
+                         * @param poModificationCommands a list of commands that can modify the PO memory content
+                         * @param poAnticipatedResponses a list of anticipated PO responses to the modification commands
+                         * @param transmissionMode the communication mode. If the communication mode is CONTACTLESS, a
+                         *        ratification command will be generated and sent to the PO after the Close Session
+                         *        command; the ratification will not be requested in the Close Session command. On the
+                         *        contrary, if the communication mode is CONTACTS, no ratification command will be sent
+                         *        to the PO and ratification will be requested in the Close Session command
+                         * @param channelState indicates if the SE channel of the PO reader must be closed after the
+                         *        last command
+                         * @return SeResponse close session response
+                         * @throws KeypleReaderException the IO reader exception This method is deprecated.
+                         *         <ul>
+                         *         <li>The argument of the ratification command is replaced by an indication of the PO
+                         *         communication mode.</li>
+                         *         </ul>
+                         */
+                    private:
+                        std::shared_ptr<SeResponse> processAtomicClosing(std::vector<std::shared_ptr<PoModificationCommand>> &poModificationCommands, std::vector<std::shared_ptr<ApduResponse>> &poAnticipatedResponses, TransmissionMode transmissionMode, ChannelState channelState);
+
+                        /**
+                         * Advanced variant of processAtomicClosing in which the list of expected responses is
+                         * determined from previous reading operations.
+                         *
+                         * @param poModificationCommands a list of commands that can modify the PO memory content
+                         * @param transmissionMode the communication mode. If the communication mode is CONTACTLESS, a
+                         *        ratification command will be generated and sent to the PO after the Close Session
+                         *        command; the ratification will not be requested in the Close Session command. On the
+                         *        contrary, if the communication mode is CONTACTS, no ratification command will be sent
+                         *        to the PO and ratification will be requested in the Close Session command
+                         * @param channelState indicates if the SE channel of the PO reader must be closed after the
+                         *        last command
+                         * @return SeResponse close session response
+                         * @throws KeypleReaderException the IO reader exception This method is deprecated.
+                         *         <ul>
+                         *         <li>The argument of the ratification command is replaced by an indication of the PO
+                         *         communication mode.</li>
+                         *         </ul>
+                         */
+                        std::shared_ptr<SeResponse> processAtomicClosing(std::vector<std::shared_ptr<PoModificationCommand>> &poModificationCommands, TransmissionMode transmissionMode, ChannelState channelState);
+
+                        /**
+                         * Gets the PO Revision.
+                         *
+                         * @return the PoPlainSecureSession_OLD.poRevision
+                         */
+                    public:
+                        PoRevision getRevision();
+
+                        /**
+                         * Get the Secure Session Status.
+                         * <ul>
+                         * <li>To check the result of a closed secure session, returns true if the SAM Digest
+                         * Authenticate is successful.</li>
+                         * </ul>
+                         *
+                         * @return the {@link PoTransaction}.transactionResult
+                         */
+                        bool isSuccessful();
+
+                        /**
+                         * Get the PO KIF
+                         * 
+                         * @return the PO KIF byte
+                         */
+                        char getPoKif();
+
+                        /**
+                         * Get the ratification status obtained at Session Opening
+                         * 
+                         * @return true or false
+                         */
+                        bool wasRatified();
+
+                        /**
+                         * Get the data read at Session Opening
+                         * 
+                         * @return a byte array containing the data
+                         */
+                        std::vector<char> getOpenRecordDataRead();
 
                         /**
                          * Open a Secure Session.
@@ -634,7 +659,7 @@ namespace org {
                          * @throws KeypleReaderException the IO reader exception
                          */
                     public:
-                        bool processOpening(ModificationMode modificationMode, SessionAccessLevel accessLevel, char openingSfiToSelect, char openingRecordNumberToRead) throw(KeypleReaderException);
+                        bool processOpening(ModificationMode modificationMode, SessionAccessLevel accessLevel, char openingSfiToSelect, char openingRecordNumberToRead);
 
                         /**
                          * Process all prepared PO commands (outside a Secure Session).
@@ -651,7 +676,7 @@ namespace org {
                          *
                          * @throws KeypleReaderException IO Reader exception
                          */
-                        bool processPoCommands(ChannelState channelState) throw(KeypleReaderException);
+                        bool processPoCommands(ChannelState channelState);
 
                         /**
                          * Process all prepared PO commands in a Secure Session.
@@ -668,7 +693,7 @@ namespace org {
                          *
                          * @throws KeypleReaderException IO Reader exception
                          */
-                        bool processPoCommandsInSession() throw(KeypleReaderException);
+                        bool processPoCommandsInSession();
 
                         /**
                          * Sends the currently prepared commands list (may be empty) and closes the Secure Session.
@@ -693,7 +718,7 @@ namespace org {
                          *         communication mode.</li>
                          *         </ul>
                          */
-                        bool processClosing(TransmissionMode transmissionMode, ChannelState channelState) throw(KeypleReaderException);
+                        bool processClosing(TransmissionMode transmissionMode, ChannelState channelState);
 
                         /**
                          * Abort a Secure Session.
@@ -716,7 +741,9 @@ namespace org {
                          * @return false if one or more of the commands do not succeed
                          */
                     private:
-                        bool updateParsersWithResponses(std::shared_ptr<SeResponse> seResponse, std::shared_ptr<Iterator<std::shared_ptr<AbstractApduResponseParser>>> parserIterator);
+                        bool updateParsersWithResponses(std::shared_ptr<SeResponse> seResponse,
+                                                        std::shared_ptr<std::vector<std::shared_ptr<AbstractApduResponseParser>>::const_iterator> parserIterator,
+                                                        std::vector<std::shared_ptr<AbstractApduResponseParser>> responseList);
 
                         /**
                          * Checks whether the requirement for the modifications buffer of the command provided in

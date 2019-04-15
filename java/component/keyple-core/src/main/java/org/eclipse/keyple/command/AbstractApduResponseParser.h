@@ -17,6 +17,7 @@
 #include <memory>
 
 /* Common */
+#include "Export.h"
 #include "exceptionhelper.h"
 
 /* Core */

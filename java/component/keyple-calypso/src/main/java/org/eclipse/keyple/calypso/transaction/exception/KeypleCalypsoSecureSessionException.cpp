@@ -1,6 +1,6 @@
 #include "KeypleCalypsoSecureSessionException.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduRequest.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduResponse.h"
+#include "ApduRequest.h"
+#include "ApduResponse.h"
 
 namespace org {
     namespace eclipse {
@@ -12,24 +12,33 @@ namespace org {
                         using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
                         using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
 
-                        KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(const std::string &message, Type type, std::vector<std::shared_ptr<ApduRequest>> &requests, std::vector<std::shared_ptr<ApduResponse>> &responses) : org::eclipse::keyple::seproxy::exception::KeypleReaderException(message), type(type), requests(requests), responses(responses) {
+                        KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(const std::string &message, Type type, std::vector<std::shared_ptr<ApduRequest>> &requests, std::vector<std::shared_ptr<ApduResponse>> &responses)
+                        : org::eclipse::keyple::seproxy::exception::KeypleReaderException(message), type(type), requests(requests), responses(responses) {
                         }
 
-                        KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(const std::string &message, std::shared_ptr<ApduRequest> req, std::shared_ptr<ApduResponse> resp) : KeypleCalypsoSecureSessionException(message, nullptr, Collections::singletonList(req), Collections::singletonList(resp)) {
+                        KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(const std::string &message, std::shared_ptr<ApduRequest> req, std::shared_ptr<ApduResponse> resp)
+                        : org::eclipse::keyple::seproxy::exception::KeypleReaderException(message)
+                        {
+                            requests.push_back(req);
+                            responses.push_back(resp);
+                            type = Type::NO_TYPE; 
                         }
 
                         KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(const std::string &message, std::shared_ptr<ApduResponse> resp) : KeypleCalypsoSecureSessionException(message, nullptr, resp) {
                         }
 
-                        KeypleCalypsoSecureSessionException::Type KeypleCalypsoSecureSessionException::getType() {
+                        KeypleCalypsoSecureSessionException::Type KeypleCalypsoSecureSessionException::getType()
+                        {
                             return type;
                         }
 
-                        std::vector<std::shared_ptr<ApduRequest>> KeypleCalypsoSecureSessionException::getRequests() {
+                        std::vector<std::shared_ptr<ApduRequest>> KeypleCalypsoSecureSessionException::getRequests()
+                        {
                             return requests;
                         }
 
-                        std::vector<std::shared_ptr<ApduResponse>> KeypleCalypsoSecureSessionException::getResponses() {
+                        std::vector<std::shared_ptr<ApduResponse>> KeypleCalypsoSecureSessionException::getResponses()
+                        {
                             return responses;
                         }
                     }

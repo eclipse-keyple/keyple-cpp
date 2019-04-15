@@ -12,7 +12,7 @@ namespace org {
                             using PoCommandBuilder = org::eclipse::keyple::calypso::command::po::PoCommandBuilder;
                             using PoSendableInSession = org::eclipse::keyple::calypso::command::po::PoSendableInSession;
 
-                            ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi, char firstRecordNumber, bool readJustOneRecord, char expectedLength, const std::string &extraInfo) throw(std::invalid_argument)
+                            ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi, char firstRecordNumber, bool readJustOneRecord, char expectedLength, const std::string &extraInfo)
                             : org::eclipse::keyple::calypso::command::po::PoCommandBuilder(std::make_shared<CalypsoPoCommands>(command), nullptr) {
 
                                 if (firstRecordNumber < 1) {
@@ -30,7 +30,7 @@ namespace org {
                                 }
                             }
 
-                            ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi, char firstRecordNumber, bool readJustOneRecord, const std::string &extraInfo) throw(std::invalid_argument)
+                            ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi, char firstRecordNumber, bool readJustOneRecord, const std::string &extraInfo)
                             : ReadRecordsCmdBuild(poClass, sfi, firstRecordNumber, readJustOneRecord, 0x00, extraInfo) {
                             }
                         }

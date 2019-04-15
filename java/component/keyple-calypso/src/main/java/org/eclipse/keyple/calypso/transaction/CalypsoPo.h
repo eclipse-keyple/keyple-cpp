@@ -1,16 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction/MatchingSe.h"
-#include "../command/po/PoRevision.h"
-#include "../command/PoClass.h"
-#include <vector>
-#include "exceptionhelper.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class PoSelectionRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -22,6 +9,27 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <vector>
+#include <memory>
+
+/* Calypso */
+#include "MatchingSe.h"
+#include "PoRevision.h"
+#include "PoClass.h"
+
+/* Common */
+#include "exceptionhelper.h"
+#include "Logger.h"
+#include "LoggerFactory.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace transaction { class PoSelectionRequest; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
+
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -30,12 +38,12 @@ namespace org {
 
 
 
-                    using PoClass = org::eclipse::keyple::calypso::command::PoClass;
-                    using PoRevision = org::eclipse::keyple::calypso::command::po::PoRevision;
-                    using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
-                    using MatchingSe = org::eclipse::keyple::transaction::MatchingSe;
-                    using org::slf4j::Logger;
-                    using org::slf4j::LoggerFactory;
+                    using PoClass       = org::eclipse::keyple::calypso::command::PoClass;
+                    using PoRevision    = org::eclipse::keyple::calypso::command::po::PoRevision;
+                    using SeResponse    = org::eclipse::keyple::seproxy::message::SeResponse;
+                    using MatchingSe    = org::eclipse::keyple::transaction::MatchingSe;
+                    using Logger        = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
                     /**
                      * The CalypsoPo handles the Calypso SE characteristics such as:
@@ -48,7 +56,7 @@ namespace org {
                      */
                     class CalypsoPo final : public MatchingSe {
                     private:
-                        static const std::shared_ptr<Logger> logger;
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CalypsoPo));
 
                         const std::shared_ptr<PoSelectionRequest> poSelectionRequest;
                         std::vector<char> applicationSerialNumber;
@@ -94,7 +102,7 @@ namespace org {
 
 protected:
                         std::shared_ptr<CalypsoPo> shared_from_this() {
-                            return std::static_pointer_cast<CalypsoPo>(org.eclipse.keyple.transaction.MatchingSe::shared_from_this());
+                            return std::static_pointer_cast<CalypsoPo>(MatchingSe::shared_from_this());
                         }
                     };
 

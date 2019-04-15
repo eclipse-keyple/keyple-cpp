@@ -42,7 +42,7 @@ namespace org {
                                     /** The command reference. */
 
                                 private:
-                                    static constexpr CalypsoSamCommands command = CalypsoSamCommands::DIGEST_UPDATE;
+                                    const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_UPDATE;
 
                                     /**
                                      * Instantiates a new DigestUpdateCmdBuild.
@@ -55,11 +55,11 @@ namespace org {
                                      * @throws java.lang.IllegalArgumentException - if the request is inconsistent
                                      */
                                 public:
-                                    DigestUpdateCmdBuild(SamRevision revision, bool encryptedSession, std::vector<char> &digestData) throw(std::invalid_argument);
+                                    DigestUpdateCmdBuild(SamRevision revision, bool encryptedSession, std::vector<char> &digestData);
 
 protected:
                                     std::shared_ptr<DigestUpdateCmdBuild> shared_from_this() {
-                                        return std::static_pointer_cast<DigestUpdateCmdBuild>(org.eclipse.keyple.calypso.command.sam.SamCommandBuilder::shared_from_this());
+                                        return std::static_pointer_cast<DigestUpdateCmdBuild>(SamCommandBuilder::shared_from_this());
                                     }
                                 };
 
