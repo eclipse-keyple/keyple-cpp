@@ -120,7 +120,10 @@ using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
                          * @throws NoStackTraceThrowable exception without stack trace
                          */
                     protected:
-                        virtual bool checkSePresence() = 0;
+                        virtual bool checkSePresence()
+                        { 
+                            return false;
+                        }
 
                         /**
                          * This method is invoked when a SE is inserted in the case of an observable reader.
