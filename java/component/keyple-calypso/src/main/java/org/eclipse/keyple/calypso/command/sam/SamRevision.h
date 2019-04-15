@@ -1,8 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -14,6 +9,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+
+/* Common */
+#include "Export.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -25,7 +29,7 @@ namespace org {
                          * This enumeration registers all supported revisions of SAM.
                          *
                          */
-                        class SamRevision final {
+                        class EXPORT SamRevision final {
 
                             /** The revision of C1 and S1E SAM. CLA 0x00 or 0x80 */
 public:

@@ -1,15 +1,3 @@
-#pragma once
-
-#include "AbstractApduCommandBuilder.h"
-#include <string>
-#include <vector>
-#include <stdexcept>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class CommandsTable; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -21,6 +9,23 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <stdexcept>
+#include <memory>
+
+/* Core */
+#include "AbstractApduCommandBuilder.h"
+#include "Export.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace command { class CommandsTable; } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
+
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -42,7 +47,7 @@ namespace org {
                  * </ul>
                  */
 
-                class AbstractIso7816CommandBuilder : public AbstractApduCommandBuilder {
+                class EXPORT AbstractIso7816CommandBuilder : public AbstractApduCommandBuilder {
 
                     /**
                      * Abstract constructor to build a command with a command reference and an {@link ApduRequest}.

@@ -33,7 +33,7 @@ namespace org {
                 /**
                  * Base class for parsing APDU
                  */
-                class AbstractApduResponseParser : public std::enable_shared_from_this<AbstractApduResponseParser> {
+                class EXPORT AbstractApduResponseParser : public std::enable_shared_from_this<AbstractApduResponseParser> {
 
                     /**
                      * Status code properties
@@ -77,7 +77,7 @@ namespace org {
                 protected:
                     std::shared_ptr<ApduResponse> response;
 
-                    static const std::unordered_map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+                    static std::unordered_map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
                                 private:
                                     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
                                     public:

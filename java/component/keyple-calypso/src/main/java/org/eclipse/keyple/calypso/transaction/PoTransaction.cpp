@@ -86,6 +86,11 @@ namespace org {
 
                     std::vector<char> PoTransaction::ratificationCmdApduLegacy = org::eclipse::keyple::util::ByteArrayUtils::fromHex("94B2000000");
                     std::vector<char> PoTransaction::ratificationCmdApdu = org::eclipse::keyple::util::ByteArrayUtils::fromHex("00B2000000");
+                    std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PoTransaction));
+
+                    const char PoTransaction::SIGNATURE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
+                    const char PoTransaction::SIGNATURE_LENGTH_REV32 = static_cast<char>(0x08);
+                    SamRevision PoTransaction::DigestProcessor::samRevision = SamRevision::NO_REV;
 
                     PoTransaction::PoTransaction(std::shared_ptr<SeReader> poReader, std::shared_ptr<CalypsoPo> calypsoPO, std::shared_ptr<SeReader> samReader, std::shared_ptr<std::map<SamSettings, char>> samSetting)
                     : PoTransaction(poReader, calypsoPO) {
@@ -783,12 +788,15 @@ namespace org {
                         keyRecordNumber = workKeyRecordNumber;
                         keyKIF = workKeyKif;
                         keyKVC = workKeyKVC;
+                        /*
+                         * Alex: logger is not static...
                         if (logger->isDebugEnabled()) {
                             logger->debug("PoTransaction.DigestProcessor => initialize: POREVISION = %d, SAMREVISION = %d, SESSIONENCRYPTION = %d", static_cast<int>(poRev), static_cast<int>(samRev.ordinal()), sessionEncryption, verificationMode);
                             logger->debug("PoTransaction.DigestProcessor => initialize: VERIFICATIONMODE = %d, REV32MODE = %d KEYRECNUMBER = %d", verificationMode, rev3_2Mode, workKeyRecordNumber);
                             logger->debug("PoTransaction.DigestProcessor => initialize: KIF = %s, KVC %ds DIGESTDATA = %s", StringHelper::formatSimple("%02X", workKeyKif),
                                           StringHelper::formatSimple("%02X", workKeyKVC), org::eclipse::keyple::util::ByteArrayUtils::toHex(digestData));
                         }
+                        */
 
                         /* Clear data cache */
                         poDigestDataCache.clear();
@@ -802,7 +810,7 @@ namespace org {
                     void PoTransaction::DigestProcessor::pushPoExchangeData(std::shared_ptr<ApduRequest> request, std::shared_ptr<ApduResponse> response)
                     {
 
-                        logger->debug("PoTransaction.DigestProcessor => pushPoExchangeData: REQUEST = {}", request);
+                        //logger->debug("PoTransaction.DigestProcessor => pushPoExchangeData: REQUEST = {}", request);
 
                         /*
                          * Add an ApduRequest to the digest computation: if the request is of case4 type, Le
@@ -816,7 +824,7 @@ namespace org {
                             poDigestDataCache.push_back(request->getBytes());
                         }
 
-                        logger->debug("PoTransaction.DigestProcessor => pushPoExchangeData: RESPONSE = {}", response);
+                        //logger->debug("PoTransaction.DigestProcessor => pushPoExchangeData: RESPONSE = {}", response);
 
                         /* Add an ApduResponse to the digest computation */
                         poDigestDataCache.push_back(response->getBytes());
@@ -827,12 +835,12 @@ namespace org {
                         std::vector<std::shared_ptr<ApduRequest>> samApduRequestList;
 
                         if (poDigestDataCache.empty()) {
-                            logger->debug("PoTransaction.DigestProcessor => getSamDigestRequest: no data in cache.");
+                            //logger->debug("PoTransaction.DigestProcessor => getSamDigestRequest: no data in cache.");
                             throw std::make_shared<IllegalStateException>("Digest data cache is empty.");
                         }
                         if (poDigestDataCache.size() % 2 == 0) {
                             /* the number of buffers should be 2*n + 1 */
-                            logger->debug("PoTransaction.DigestProcessor => getSamDigestRequest: wrong number of buffer in cache NBR = {}.", poDigestDataCache.size());
+                            //logger->debug("PoTransaction.DigestProcessor => getSamDigestRequest: wrong number of buffer in cache NBR = {}.", poDigestDataCache.size());
                             throw std::make_shared<IllegalStateException>("Digest data cache is inconsistent.");
                         }
 
@@ -949,12 +957,15 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                                         response[3] = static_cast<char>(0x90);
                                         response[4] = static_cast<char>(0x00);
                                         apduResponses.push_back(std::make_shared<ApduResponse>(response, nullptr));
+                                        /*
+                                         * Alex: logger is not static...
+                                         * 
                                         if (logger->isDebugEnabled()) {
-                                            /* FIXME: dynamic cast doesn't work here, it's just logs but... */
                                             logger->debug("Anticipated response. COMMAND = %s, SFI = %d, COUNTERVALUE = %d, DECREMENT = %d, NEWVALUE = %d ",
                                                           "(std::dynamic_pointer_cast<DecreaseCmdBuild>(poModificationCommand) != nullptr)" ? "Decrease" : "Increase",
                                                           sfi, currentCounterValue, addSubtractValue, newCounterValue);
                                         }
+                                        */
                                     }
                                     else {
                                         throw KeypleCalypsoSecureSessionException(StringHelper::formatSimple("Anticipated response. COMMAND = %s. Unable to determine anticipated counter value. SFI = %s\n",

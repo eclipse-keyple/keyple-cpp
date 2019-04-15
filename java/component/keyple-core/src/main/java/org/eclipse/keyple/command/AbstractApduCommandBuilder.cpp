@@ -8,9 +8,10 @@ namespace org {
             namespace command {
                 using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
 
-                AbstractApduCommandBuilder::AbstractApduCommandBuilder(std::shared_ptr<CommandsTable> commandReference, std::shared_ptr<ApduRequest> request) {
+                AbstractApduCommandBuilder::AbstractApduCommandBuilder(std::shared_ptr<CommandsTable> commandReference, std::shared_ptr<ApduRequest> request)
+                : commandParserClass(commandReference->getResponseParserClass())
+                {
                     this->name = commandReference->getName();
-                    this->commandParserClass = commandReference->getResponseParserClass();
                     this->request = request;
                     // set APDU name for non null request
                     if (request != nullptr) {
@@ -18,10 +19,11 @@ namespace org {
                     }
                 }
 
-                AbstractApduCommandBuilder::AbstractApduCommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request) {
+                AbstractApduCommandBuilder::AbstractApduCommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request)
+                : commandParserClass(typeid(AbstractApduCommandBuilder))
+                {
                     this->name = name;
                     this->request = request;
-                    this->commandParserClass = nullptr;
                     // set APDU name for non null request
                     if (request != nullptr) {
                         this->request->setName(name);
@@ -41,7 +43,8 @@ namespace org {
                     return this->name;
                 }
 
-                std::type_info AbstractApduCommandBuilder::getApduResponseParserClass() {
+                const std::type_info& AbstractApduCommandBuilder::getApduResponseParserClass()
+                {
                     return this->commandParserClass;
                 }
 

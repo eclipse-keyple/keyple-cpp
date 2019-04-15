@@ -13,7 +13,7 @@ namespace org {
                             using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
                             using PoCommandBuilder  = org::eclipse::keyple::calypso::command::po::PoCommandBuilder;
 
-                            static const CalypsoPoCommands command = CalypsoPoCommands::GET_DATA_FCI;
+                            const CalypsoPoCommands GetDataFciCmdBuild::command = CalypsoPoCommands::GET_DATA_FCI;
 
                             GetDataFciCmdBuild::GetDataFciCmdBuild(PoClass poClass) : org::eclipse::keyple::calypso::command::po::PoCommandBuilder(std::make_shared<CalypsoPoCommands>(command), nullptr) {
                                 std::vector<char> emtpyVector;

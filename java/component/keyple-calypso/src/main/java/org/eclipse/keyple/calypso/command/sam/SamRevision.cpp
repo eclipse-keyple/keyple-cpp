@@ -11,10 +11,12 @@ namespace org {
                         SamRevision SamRevision::S1E("S1E", InnerEnum::S1E, "S1E", "E1", static_cast<char>(0x80));
                         SamRevision SamRevision::S1D("S1D", InnerEnum::S1D, "S1D", "D?", static_cast<char>(0x94));
                         SamRevision SamRevision::AUTO("AUTO", InnerEnum::AUTO, "AUTO", "??", static_cast<char>(0x00));
+                        SamRevision SamRevision::NO_REV("NO_REV", InnerEnum::NO_REV, "NO_REV", "??", static_cast<char>(0x00));
 
                         std::vector<SamRevision> SamRevision::valueList;
 
                         SamRevision::StaticConstructor::StaticConstructor() {
+                            valueList.push_back(NO_REV);
                             valueList.push_back(C1);
                             valueList.push_back(S1E);
                             valueList.push_back(S1D);

@@ -47,7 +47,7 @@ namespace org {
                     /**
                      * The command parser class
                      */
-                    std::type_info commandParserClass;
+                    const std::type_info& commandParserClass;
 
                     /** the byte array APDU request. */
                 protected:
@@ -86,7 +86,7 @@ namespace org {
                      * @return the corresponding AbstractApduResponseParser class of the APDU command from the
                      *         CommandsTable information
                      */
-                    std::type_info getApduResponseParserClass();
+                    const std::type_info& getApduResponseParserClass();
 
                     /**
                      * Gets the request.

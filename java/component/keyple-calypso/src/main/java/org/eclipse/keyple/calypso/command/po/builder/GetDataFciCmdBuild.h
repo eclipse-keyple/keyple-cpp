@@ -36,7 +36,7 @@ namespace org {
                              * and thus make calculation of the digest impossible.
                              *
                              */
-                            class GetDataFciCmdBuild final : public PoCommandBuilder {
+                            class EXPORT GetDataFciCmdBuild final : public PoCommandBuilder {
 
                             private:
                                 static const CalypsoPoCommands command;

@@ -18,7 +18,6 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
-#include "exceptionhelper.h"
 #include <memory>
 
 
@@ -40,6 +39,10 @@
 #include "ApduResponse.h"
 #include "ByteArrayUtils.h"
 #include "ChannelState.h"
+
+/* Common */
+#include "exceptionhelper.h"
+#include "Export.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
@@ -87,7 +90,7 @@ namespace org {
                      *
                      * @author Calypso Networks Association
                      */
-                    class PoTransaction final : public std::enable_shared_from_this<PoTransaction> {
+                    class EXPORT PoTransaction final : public std::enable_shared_from_this<PoTransaction> {
 
     /**
                          * List of SAM settings keys that can be provided when the secure session is created.
@@ -281,13 +284,13 @@ namespace org {
                         /** The key index for debit and validation operations (validation key needed) */
                         static const char KEY_INDEX_VALIDATION_DEBIT = static_cast<char>(0x03);
                         /** The default KIF value for personalization */
-                        static const char DEFAULT_KIF_PERSO = static_cast<char>(0x21);
+                        const char DEFAULT_KIF_PERSO = static_cast<char>(0x21);
                         /** The default KIF value for loading */
-                        static const char DEFAULT_KIF_LOAD = static_cast<char>(0x27);
+                        const char DEFAULT_KIF_LOAD = static_cast<char>(0x27);
                         /** The default KIF value for debiting */
-                        static const char DEFAULT_KIF_DEBIT = static_cast<char>(0x30);
+                        const char DEFAULT_KIF_DEBIT = static_cast<char>(0x30);
                         /** The default key record number */
-                        static const char DEFAULT_KEY_RECORD_NUMER = static_cast<char>(0x00);
+                        const char DEFAULT_KEY_RECORD_NUMER = static_cast<char>(0x00);
 
                         /* private constants */
                     private:
@@ -295,8 +298,8 @@ namespace org {
 
                         static const char CHALLENGE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
                         static const char CHALLENGE_LENGTH_REV32 = static_cast<char>(0x08);
-                        static const char SIGNATURE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
-                        static const char SIGNATURE_LENGTH_REV32 = static_cast<char>(0x08);
+                        static const char SIGNATURE_LENGTH_REV_INF_32;
+                        static const char SIGNATURE_LENGTH_REV32;
 
                         static constexpr int OFFSET_CLA = 0;
                         static constexpr int OFFSET_INS = 1;
@@ -310,8 +313,10 @@ namespace org {
                         /** Ratification command APDU for rev > 2.4 */
                         static std::vector<char> ratificationCmdApdu;
 
-                        static const std::shared_ptr<Logger> logger;
+                    protected:
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PoTransaction));
 
+                    private:
                         /** The reader for PO. */
                         const std::shared_ptr<ProxyReader> poReader;
                         /** The reader for session SAM. */

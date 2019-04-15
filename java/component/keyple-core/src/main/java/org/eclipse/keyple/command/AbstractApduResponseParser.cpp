@@ -6,17 +6,18 @@ namespace org {
         namespace keyple {
             namespace command {
                 using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
-const std::unordered_map<Integer, std::shared_ptr<StatusProperties>> AbstractApduResponseParser::STATUS_TABLE;
+
+                std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> AbstractApduResponseParser::STATUS_TABLE;
 
                 AbstractApduResponseParser::StaticConstructor::StaticConstructor() {
-                                            std::unordered_map<Integer, std::shared_ptr<StatusProperties>> m;
+                                            std::unordered_map<int, std::shared_ptr<StatusProperties>> m;
                                             m.emplace(0x9000, std::make_shared<StatusProperties>(true, "Success"));
                                             STATUS_TABLE = m;
                 }
 
 AbstractApduResponseParser::StaticConstructor AbstractApduResponseParser::staticConstructor;
 
-                std::unordered_map<Integer, std::shared_ptr<StatusProperties>> AbstractApduResponseParser::getStatusTable() {
+                std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> AbstractApduResponseParser::getStatusTable() {
                     return STATUS_TABLE;
                 }
 
@@ -51,7 +52,7 @@ AbstractApduResponseParser::StaticConstructor AbstractApduResponseParser::static
                     return response->getStatusCode();
                 }
 
-                std::shared_ptr<StatusProperties> AbstractApduResponseParser::getPropertiesForStatusCode() {
+                std::shared_ptr<AbstractApduResponseParser::StatusProperties> AbstractApduResponseParser::getPropertiesForStatusCode() {
                     return getStatusTable()[getStatusCode()];
                 }
 

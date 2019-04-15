@@ -29,9 +29,11 @@ namespace org {
                     if (dataIn.size() > 0) {
                         length += dataIn.size() + 1; // Lc + data
                     }
-                    if (le != nullptr) {
+                    if (le != -1) {
+                    //if (le != nullptr) {
                         length += 1; // Le
                     }
+                    
                     std::vector<char> apdu(length);
 
                     /* Build APDU buffer from provided arguments */

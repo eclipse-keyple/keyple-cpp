@@ -48,6 +48,12 @@ INCLUDE_DIRECTORIES(
 
 ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
+	# command
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/command/AbstractApduCommandBuilder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/command/AbstractApduResponseParser.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/command/AbstractIso7816CommandBuilder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/command/CommandsTable.cpp
+
 	# seproxy - event
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/DefaultSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/ObservablePlugin.cpp
