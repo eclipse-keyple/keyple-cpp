@@ -25,6 +25,7 @@
 
 namespace org {
     namespace eclipse {
+
         namespace keyple {
             namespace example {
                 namespace generic {

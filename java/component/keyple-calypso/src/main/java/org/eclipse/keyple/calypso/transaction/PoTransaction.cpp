@@ -1,6 +1,6 @@
 
 #include "AbstractApduCommandBuilder.h"
-#include "AbstractApduResponseParser.h"
+#include "AbstractApduResponseParser_Import.h"
 #include "AbstractOpenSessionCmdBuild.h"
 #include "AbstractOpenSessionRespPars.h"
 #include "AppendRecordCmdBuild.h"

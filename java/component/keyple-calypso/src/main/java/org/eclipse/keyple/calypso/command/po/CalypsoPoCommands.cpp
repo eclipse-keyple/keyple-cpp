@@ -3,7 +3,7 @@
 #include "CalypsoPoCommands.h"
 #include "PoRevision.h"
 #include "AbstractApduCommandBuilder.h"
-#include "AbstractApduResponseParser.h"
+#include "AbstractApduResponseParser_Import.h"
 #include "GetDataFciCmdBuild.h"
 #include "OpenSession10CmdBuild.h"
 #include "OpenSession24CmdBuild.h"

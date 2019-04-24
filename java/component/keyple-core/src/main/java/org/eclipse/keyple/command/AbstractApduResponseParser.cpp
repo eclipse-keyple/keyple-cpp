@@ -1,10 +1,10 @@
 #include "AbstractApduResponseParser.h"
-#include "../seproxy/message/ApduResponse.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace command {
+
                 using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
 
                 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> AbstractApduResponseParser::STATUS_TABLE;

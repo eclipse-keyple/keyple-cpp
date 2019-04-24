@@ -1,9 +1,3 @@
-#pragma once
-
-#include "SeProtocol.h"
-#include <string>
-#include <vector>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -15,6 +9,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+
+/* Core */
+#include "SeProtocol.h"
+
+/* Common */
+#include "Export.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -22,7 +28,7 @@ namespace org {
                 namespace protocol {
 
 
-                    class ContactsProtocols final : public SeProtocol {
+                    class EXPORT ContactsProtocols final : public SeProtocol {
 
                         // Contact standard
 public:

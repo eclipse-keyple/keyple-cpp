@@ -1,16 +1,3 @@
-#pragma once
-
-#include <set>
-#include <string>
-#include <vector>
-#include <limits>
-#include <stdexcept>
-#include <memory>
-
-#include "Serializable.h"
-#include "Object.h"
-#include "stringhelper.h"
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -22,6 +9,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <set>
+#include <string>
+#include <vector>
+#include <limits>
+#include <stdexcept>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+#include "Object.h"
+#include "Serializable.h"
+#include "stringhelper.h"
+
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -33,7 +37,7 @@ namespace org {
                     /**
                      * Single APDU response wrapper
                      */
-                    class ApduResponse : public std::enable_shared_from_this<ApduResponse>, public Serializable, public Object {
+                    class EXPORT ApduResponse : public std::enable_shared_from_this<ApduResponse>, public Serializable, public Object {
 
                     public:
                         static constexpr long long serialVersionUID = 6418469841122636812LL;

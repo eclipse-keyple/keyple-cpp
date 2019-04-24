@@ -1,18 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
-#include "../../PoRevision.h"
-#include <string>
-#include <unordered_map>
-#include <vector>
-#include <stdexcept>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -24,6 +9,21 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <stdexcept>
+#include <memory>
+
+/* Core */
+#include "AbstractApduResponseParser_Import.h"
+
+/* Calypso */
+#include "PoRevision.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -33,9 +33,9 @@ namespace org {
                         namespace parser {
                             namespace session {
 
-                                using PoRevision = org::eclipse::keyple::calypso::command::po::PoRevision;
+                                using PoRevision                 = org::eclipse::keyple::calypso::command::po::PoRevision;
                                 using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                                using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
+                                using ApduResponse               = org::eclipse::keyple::seproxy::message::ApduResponse;
 
                                 /**
                                  * Open session response parser. See specs: Calypso / page 100 / 9.5.1 - Open secure session
@@ -43,14 +43,14 @@ namespace org {
                                  */
                                 class AbstractOpenSessionRespPars : public AbstractApduResponseParser {
 
-                                       /**
+                                    /**
                                      * The Class SecureSession. A secure session is returned by a open secure session command
                                      */
-                                public:
+                                  public:
                                     class SecureSession : public std::enable_shared_from_this<SecureSession> {
 
                                         /** Challenge transaction counter */
-                                    private:
+                                      private:
                                         std::vector<char> const challengeTransactionCounter;
 
                                         /** Challenge random number */
@@ -88,9 +88,9 @@ namespace org {
                                          * @param secureSessionData the secure session data from the response of open secure session
                                          *        APDU command
                                          */
-                                    public:
-                                        SecureSession(std::vector<char> &challengeTransactionCounter, std::vector<char> &challengeRandomNumber, bool previousSessionRatified, bool manageSecureSessionAuthorized, char kif,
-                                                      char kvc, std::vector<char> &originalData, std::vector<char> &secureSessionData);
+                                      public:
+                                        SecureSession(std::vector<char> &challengeTransactionCounter, std::vector<char> &challengeRandomNumber, bool previousSessionRatified, bool manageSecureSessionAuthorized, char kif, char kvc, std::vector<char> &originalData,
+                                                      std::vector<char> &secureSessionData);
 
                                         /**
                                          * Instantiates a new SecureSession for a Calypso application revision 2.4
@@ -105,8 +105,7 @@ namespace org {
                                          * @param secureSessionData the secure session data from the response of open secure session
                                          *        APDU command
                                          */
-                                        SecureSession(std::vector<char> &challengeTransactionCounter, std::vector<char> &challengeRandomNumber, bool previousSessionRatified, bool manageSecureSessionAuthorized, char kvc,
-                                                      std::vector<char> &originalData, std::vector<char> &secureSessionData);
+                                        SecureSession(std::vector<char> &challengeTransactionCounter, std::vector<char> &challengeRandomNumber, bool previousSessionRatified, bool manageSecureSessionAuthorized, char kvc, std::vector<char> &originalData, std::vector<char> &secureSessionData);
 
                                         virtual std::vector<char> getChallengeTransactionCounter();
 
@@ -155,27 +154,26 @@ namespace org {
                                         virtual std::vector<char> getSecureSessionData();
                                     };
 
-                                private:
+                                  private:
                                     static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
-                                private:
+                                  private:
                                     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-                                    public:
+                                      public:
                                         StaticConstructor();
                                     };
 
-                                private:
+                                  private:
                                     static AbstractOpenSessionRespPars::StaticConstructor staticConstructor;
 
-
-                                protected:
+                                  protected:
                                     std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
-                                private:
+                                  private:
                                     const PoRevision revision;
 
                                     /** The secure session. */
-                                public:
+                                  public:
                                     std::shared_ptr<SecureSession> secureSession;
 
                                     /**
@@ -196,7 +194,6 @@ namespace org {
 
                                     virtual std::vector<char> getPoChallenge();
 
-
                                     virtual int getTransactionCounterValue();
 
                                     virtual bool wasRatified();
@@ -209,19 +206,18 @@ namespace org {
 
                                     virtual std::vector<char> getRecordDataRead();
 
-                                 
-
-protected:
-                                    std::shared_ptr<AbstractOpenSessionRespPars> shared_from_this() {
+                                  protected:
+                                    std::shared_ptr<AbstractOpenSessionRespPars> shared_from_this()
+                                    {
                                         return std::static_pointer_cast<AbstractOpenSessionRespPars>(AbstractApduResponseParser::shared_from_this());
                                     }
                                 };
 
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+                            } // namespace session
+                        }     // namespace parser
+                    }         // namespace po
+                }             // namespace command
+            }                 // namespace calypso
+        }                     // namespace keyple
+    }                         // namespace eclipse
+} // namespace org

@@ -5,7 +5,7 @@
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/SeResponseSet.h"
 #include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
 #include "../../../../../../../../../../main/java/org/eclipse/keyple/calypso/command/po/parser/session/CloseSessionRespPars.h"
-#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
+#include "AbstractApduResponseParser_Import.h"
 
 namespace org {
     namespace eclipse {

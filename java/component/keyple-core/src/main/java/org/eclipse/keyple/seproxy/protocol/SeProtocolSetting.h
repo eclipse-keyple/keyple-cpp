@@ -1,14 +1,3 @@
-#pragma once
-
-#include <string>
-#include <unordered_map>
-#include <vector>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocolSettingList; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -20,6 +9,21 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocolSettingList; } } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -30,7 +34,7 @@ namespace org {
                     /**
                      * SeProtocol Map builder
                      */
-                    class SeProtocolSetting : public std::enable_shared_from_this<SeProtocolSetting> {
+                    class EXPORT SeProtocolSetting : public std::enable_shared_from_this<SeProtocolSetting> {
                     private:
                         std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap = std::unordered_map<std::shared_ptr<SeProtocol>, std::string>();
 

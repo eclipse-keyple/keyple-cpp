@@ -1,8 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -14,6 +9,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+
+/* Common */
+#include "Export.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -21,47 +25,48 @@ namespace org {
                 namespace command {
 
                     /* Class for the Calypso command: LEGACY for REV1 / BPRIME type PO, ISO for REV2/3 / B type */
-                    class PoClass final {
+                    class EXPORT PoClass final {
 
-public:
+                      public:
                         static PoClass LEGACY;
                         static PoClass ISO;
 
-private:
+                      private:
                         static std::vector<PoClass> valueList;
 
                         class StaticConstructor {
-                        public:
+                          public:
                             StaticConstructor();
                         };
 
                         static StaticConstructor staticConstructor;
 
-public:
-                        enum class InnerEnum {
+                      public:
+                        enum class InnerEnum
+                        {
                             LEGACY,
                             ISO
                         };
 
                         InnerEnum innerEnumValue;
-private:
+
+                      private:
                         std::string nameValue;
                         int ordinalValue;
                         static int nextOrdinal;
 
-                    private:
+                      private:
                         char cla;
 
-
-                    public:
+                      public:
                         virtual char getValue();
 
                         PoClass(const std::string &name, InnerEnum innerEnum, char cla);
 
-public:
-                        bool operator == (const PoClass &other);
+                      public:
+                        bool operator==(const PoClass &other);
 
-                        bool operator != (const PoClass &other);
+                        bool operator!=(const PoClass &other);
 
                         void operator=(const PoClass &other);
 
@@ -74,8 +79,8 @@ public:
                         static PoClass valueOf(const std::string &name);
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace command
+            }     // namespace calypso
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

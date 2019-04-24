@@ -17,6 +17,9 @@
 /* Core */
 #include "SeRequestSet.h"
 
+/* Common */
+#include "Export.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -29,7 +32,7 @@ namespace org {
                      * Class containing the {@link SeRequestSet} used to make a default selection at the
                      * {@link org.eclipse.keyple.seproxy.event.ObservableReader} level.
                      */
-                    class DefaultSelectionRequest : public std::enable_shared_from_this<DefaultSelectionRequest> {
+                    class EXPORT DefaultSelectionRequest : public std::enable_shared_from_this<DefaultSelectionRequest> {
                     private:
                         /**
                          * The {@link SeRequestSet} 

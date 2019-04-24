@@ -79,8 +79,8 @@ public:
         /**
          *
          */
-        void update(std::shared_ptr<ReaderEvent> event) override;
-        void update(ReaderEvent event) override;
+        void update(std::shared_ptr<ReaderEvent> event); // override;
+        void update(ReaderEvent event); // override;
 
     };
 

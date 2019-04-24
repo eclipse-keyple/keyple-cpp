@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <functional>
+#include <iterator>
 
 #include "ReadRecordsRespPars.h"
 #include "ByteArrayUtils.h"
@@ -129,7 +130,7 @@ namespace org {
                                             std::shared_ptr<StringBuilder> sb = std::make_shared<StringBuilder>();
                                             sb->append("Multiple record data: ");
                                             std::set<int> records;
-                                            std::transform(recordMap->begin(), recordMap->end(), inserter(records, records.begin()), std::bind(&std::map<int, std::vector<char>>::value_type::first, std::placeholders::_1));
+                                            std::transform(recordMap->begin(), recordMap->end(), std::inserter(records, records.begin()), std::bind(&std::map<int, std::vector<char>>::value_type::first, std::placeholders::_1));
                                             for (std::set<int>::const_iterator it = records.begin(); it != records.end(); ++it) {
                                                 int record = (int) *it;
                                                 sb->append(StringHelper::formatSimple("{RECORD = %d, DATA = %s}", record, ByteArrayUtils::toHex(recordMap->find(record)->second)));

@@ -1,7 +1,7 @@
 #include "SelectDiversifierRespParsTest.h"
 #include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduResponse.h"
 #include "../../../../../../../../../main/java/org/eclipse/keyple/calypso/command/sam/parser/session/SelectDiversifierRespPars.h"
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
+#include "AbstractApduResponseParser_Import.h"
 
 namespace org {
     namespace eclipse {

@@ -23,18 +23,17 @@
 #include "ReadDataStructure.h"
 
 /* Common */
-#include "Logger.h"
 #include "exceptionhelper.h"
+#include "Export.h"
+#include "Logger.h"
 #include "LoggerFactory.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeSelector; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class ReadRecordsRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class SelectFileRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
+/* Core */
+#include "AbstractApduResponseParser_Import.h"
+
+/* Calypso */
+#include "ReadRecordsRespPars.h"
+#include "SelectFileRespPars.h"
 
 namespace org {
     namespace eclipse {
@@ -42,27 +41,25 @@ namespace org {
             namespace calypso {
                 namespace transaction {
 
-
-
-                    using PoClass = org::eclipse::keyple::calypso::command::PoClass;
-                    using ReadDataStructure = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
-                    using ReadRecordsRespPars = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
-                    using SelectFileRespPars = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
+                    using PoClass                    = org::eclipse::keyple::calypso::command::PoClass;
+                    using ReadDataStructure          = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
+                    using ReadRecordsRespPars        = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
+                    using SelectFileRespPars         = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
                     using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                    using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                    using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
-                    using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
-                    using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
-                    using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                    using SeSelectionRequest = org::eclipse::keyple::transaction::SeSelectionRequest;
-                    using Logger        = org::eclipse::keyple::common::Logger;
-                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+                    using ChannelState               = org::eclipse::keyple::seproxy::ChannelState;
+                    using SeSelector                 = org::eclipse::keyple::seproxy::SeSelector;
+                    using ApduRequest                = org::eclipse::keyple::seproxy::message::ApduRequest;
+                    using SeResponse                 = org::eclipse::keyple::seproxy::message::SeResponse;
+                    using SeProtocol                 = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                    using SeSelectionRequest         = org::eclipse::keyple::transaction::SeSelectionRequest;
+                    using Logger                     = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory              = org::eclipse::keyple::common::LoggerFactory;
 
                     /**
                      * Specialized selection request to manage the specific characteristics of Calypso POs
                      */
-                    class PoSelectionRequest final : public SeSelectionRequest {
-                    private:
+                    class EXPORT PoSelectionRequest final : public SeSelectionRequest {
+                      private:
                         const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PoSelectionRequest));
 
                         PoClass poClass;
@@ -74,7 +71,7 @@ namespace org {
                          *
                          * @param seSelector
                          */
-                    public:
+                      public:
                         PoSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag);
 
                         /**
@@ -91,7 +88,7 @@ namespace org {
                          * @param expectedLength the expected length of the record(s)
                          * @param extraInfo extra information included in the logs (can be null or empty)
                          */
-                    private:
+                      private:
                         std::shared_ptr<ReadRecordsRespPars> prepareReadRecordsCmdInternal(char sfi, ReadDataStructure readDataStructureEnum, char firstRecordNumber, int expectedLength, const std::string &extraInfo);
 
                         /**
@@ -110,7 +107,7 @@ namespace org {
                          * @param expectedLength the expected length of the record(s)
                          * @param extraInfo extra information included in the logs (can be null or empty)
                          */
-                    public:
+                      public:
                         std::shared_ptr<ReadRecordsRespPars> prepareReadRecordsCmd(char sfi, ReadDataStructure readDataStructureEnum, char firstRecordNumber, int expectedLength, const std::string &extraInfo);
 
                         /**
@@ -154,23 +151,23 @@ namespace org {
                          */
                         void preparePoCustomModificationCmd(const std::string &name, std::shared_ptr<ApduRequest> apduRequest);
 
-
                         /**
                          * Loops on the SeResponse and updates the list of parsers previously memorized
                          *
                          * @param seResponse the seResponse from the PO
                          */
-                    public:
+                      public:
                         void updateParsersWithResponses(std::shared_ptr<SeResponse> seResponse);
 
-protected:
-                        std::shared_ptr<PoSelectionRequest> shared_from_this() {
+                      protected:
+                        std::shared_ptr<PoSelectionRequest> shared_from_this()
+                        {
                             return std::static_pointer_cast<PoSelectionRequest>(SeSelectionRequest::shared_from_this());
                         }
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace transaction
+            }     // namespace calypso
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

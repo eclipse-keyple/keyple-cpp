@@ -1,7 +1,10 @@
+/* Core */
+#include "ReaderEvent_Import.h"
+#include "KeypleReaderException.h"
+
+/* PC/SC plugin */
 #include "PcscReaderActualTest.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.h"
+#include "PcscPlugin.h"
 
 namespace org {
     namespace eclipse {

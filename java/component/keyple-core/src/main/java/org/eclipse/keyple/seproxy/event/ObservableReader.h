@@ -22,7 +22,7 @@
 /* Core */
 #include "DefaultSelectionRequest.h"
 #include "Observable.h"
-#include "ReaderEvent.h"
+#include "ReaderEvent_Import.h"
 #include "SeReader.h"
 
 namespace org {

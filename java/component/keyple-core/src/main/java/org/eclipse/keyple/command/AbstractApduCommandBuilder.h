@@ -1,13 +1,3 @@
-#pragma once
-
-#include <string>
-#include <typeinfo>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class CommandsTable; } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -19,6 +9,21 @@ namespace org { namespace eclipse { namespace keyple { namespace command { class
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <typeinfo>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace command { class CommandsTable; } } } }
+
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -37,7 +42,7 @@ namespace org {
                  * </ul>
                  */
 
-                class AbstractApduCommandBuilder : public std::enable_shared_from_this<AbstractApduCommandBuilder> {
+                class EXPORT AbstractApduCommandBuilder : public std::enable_shared_from_this<AbstractApduCommandBuilder> {
 
                     /**
                      * The command name (will appear in logs)

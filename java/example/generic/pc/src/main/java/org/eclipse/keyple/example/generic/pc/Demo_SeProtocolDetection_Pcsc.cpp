@@ -10,8 +10,8 @@
 
 /* Plugin */
 #include "PcscPlugin.h"
-#include "PcscReader.h"
-#include "PcscProtocolSetting.h"
+#include "PcscReader_Import.h"
+#include "PcscProtocolSetting_Import.h"
 
 /* Example */
 #include "CustomProtocolSetting.h"

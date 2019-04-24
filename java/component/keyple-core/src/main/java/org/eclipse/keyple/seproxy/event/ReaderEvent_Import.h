@@ -10,8 +10,7 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-#ifndef KEYPLE_SEPROXY_READER_EVENT_H
-#define KEYPLE_SEPROXY_READER_EVENT_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -29,7 +28,7 @@ namespace org {
             namespace seproxy {
                 namespace event {
 
-                    using SelectionResponse = org::eclipse::keyple::transaction::SelectionResponse;
+                    using SelectionResponse = org::eclipse::keyple::seproxy::event::SelectionResponse;
 
                     /**
                      * ReaderEvent used to notify changes at reader level
@@ -161,4 +160,3 @@ namespace org {
     }             // namespace eclipse
 } // namespace org
 
-#endif

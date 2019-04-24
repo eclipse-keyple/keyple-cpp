@@ -23,12 +23,7 @@
 #include "LoggerFactory.h"
 
 /* Calypso */
-#include "AbstractApduResponseParser.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
+#include "AbstractApduResponseParser_Import.h"
 
 namespace org {
     namespace eclipse {

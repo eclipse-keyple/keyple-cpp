@@ -19,7 +19,7 @@
 #include <unordered_set>
 
 /* Core */
-#include "ReaderEvent.h"
+#include "ReaderEvent_Import.h"
 
 namespace org {
 namespace eclipse {

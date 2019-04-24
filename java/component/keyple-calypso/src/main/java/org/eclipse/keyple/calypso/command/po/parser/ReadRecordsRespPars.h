@@ -12,20 +12,22 @@
 
 #pragma once
 
-#include "AbstractApduResponseParser.h"
-#include "ReadDataStructure.h"
 #include <string>
 #include <map>
 #include <unordered_map>
 #include <vector>
-#include "exceptionhelper.h"
 #include <memory>
+
+/* Core */
+#include "AbstractApduResponseParser_Import.h"
+
+/* Calypso */
+#include "ReadDataStructure.h"
+
+/* Common */
+#include "exceptionhelper.h"
+#include "Export.h"
 #include "stringbuilder.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-
 
 namespace org {
     namespace eclipse {
@@ -43,26 +45,25 @@ namespace org {
                              * provides methods to retrieve these data according to the file structure profile specified in the
                              * command preparation step: SINGLE or MULTIPLE RECORD or COUNTER.
                              */
-                            class ReadRecordsRespPars final : public AbstractApduResponseParser {
+                            class EXPORT ReadRecordsRespPars final : public AbstractApduResponseParser {
 
-                            private:
+                              private:
                                 static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
-                            private:
+                              private:
                                 class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-                                public:
+                                  public:
                                     StaticConstructor();
                                 };
 
-                            private:
+                              private:
                                 static ReadRecordsRespPars::StaticConstructor staticConstructor;
 
-
-                            protected:
+                              protected:
                                 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
                                 /** Type of data to parse: record data or counter, single or multiple */
-                            private:
+                              private:
                                 ReadDataStructure readDataStructure = static_cast<ReadDataStructure>(0);
                                 /** Number of the first record read */
                                 char recordNumber = 0;
@@ -73,7 +74,7 @@ namespace org {
                                  * @param recordNumber the record number
                                  * @param readDataStructure the type of content in the response to parse
                                  */
-                            public:
+                              public:
                                 ReadRecordsRespPars(char recordNumber, ReadDataStructure readDataStructure);
 
                                 /**
@@ -111,16 +112,17 @@ namespace org {
 
                                 std::string toString();
 
-protected:
-                                std::shared_ptr<ReadRecordsRespPars> shared_from_this() {
+                              protected:
+                                std::shared_ptr<ReadRecordsRespPars> shared_from_this()
+                                {
                                     return std::static_pointer_cast<ReadRecordsRespPars>(AbstractApduResponseParser::shared_from_this());
                                 }
                             };
 
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+                        } // namespace parser
+                    }     // namespace po
+                }         // namespace command
+            }             // namespace calypso
+        }                 // namespace keyple
+    }                     // namespace eclipse
+} // namespace org

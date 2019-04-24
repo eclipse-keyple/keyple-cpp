@@ -67,7 +67,8 @@ namespace org {
                             static StaticConstructor staticConstructor;
 
                         public:
-                            enum class InnerEnum {
+                            enum class InnerEnum
+                            {
                                 IO_ERROR,
                                 SE_INSERTED,
                                 SE_MATCHED,

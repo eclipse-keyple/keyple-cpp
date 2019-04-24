@@ -1,9 +1,3 @@
-#pragma once
-
-#include "KeypleReaderException.h"
-#include <string>
-#include <memory>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -15,35 +9,46 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <memory>
+
+/* Core */
+#include "KeypleReaderException.h"
+
+/* Common */
+#include "Export.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
                 namespace exception {
 
-
                     /*
                      * Exception thrown when {@link org.eclipse.keyple.seproxy.message.ProxyReader} is not found
                      */
-                    class KeypleReaderNotFoundException : public KeypleReaderException {
+                    class EXPORT KeypleReaderNotFoundException : public KeypleReaderException {
 
                         /**
                          * Exception thrown when @{@link ProxyReader} is not found
                          * 
                          * @param readerName : readerName that has not been found
                          */
-                    public:
+                      public:
                         KeypleReaderNotFoundException(const std::string &readerName);
 
-
-protected:
-                        std::shared_ptr<KeypleReaderNotFoundException> shared_from_this() {
+                      protected:
+                        std::shared_ptr<KeypleReaderNotFoundException> shared_from_this()
+                        {
                             return std::static_pointer_cast<KeypleReaderNotFoundException>(KeypleReaderException::shared_from_this());
                         }
                     };
 
-                }
-            }
-        }
-    }
-}
+                } // namespace exception
+            }     // namespace seproxy
+        }         // namespace keyple
+    }             // namespace eclipse
+} // namespace org

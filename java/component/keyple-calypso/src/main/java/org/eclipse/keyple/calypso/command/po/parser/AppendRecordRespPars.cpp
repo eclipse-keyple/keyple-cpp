@@ -1,5 +1,5 @@
 #include "AppendRecordRespPars.h"
-#include "AbstractApduResponseParser.h"
+#include "AbstractApduResponseParser_Import.h"
 
 namespace org {
     namespace eclipse {

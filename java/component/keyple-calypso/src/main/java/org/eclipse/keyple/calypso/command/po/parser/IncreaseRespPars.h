@@ -1,16 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/command/AbstractApduResponseParser.h"
-#include <string>
-#include <unordered_map>
-#include <vector>
-#include "exceptionhelper.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -22,6 +9,18 @@ namespace org { namespace eclipse { namespace keyple { namespace command { class
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "exceptionhelper.h"
+#include <memory>
+
+/* Core */
+#include "AbstractApduResponseParser_Import.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -37,27 +36,25 @@ namespace org {
                              */
                             class IncreaseRespPars final : public AbstractApduResponseParser {
 
-                            private:
+                              private:
                                 static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
-                            private:
+                              private:
                                 class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-                                public:
+                                  public:
                                     StaticConstructor();
                                 };
 
-                            private:
+                              private:
                                 static IncreaseRespPars::StaticConstructor staticConstructor;
 
-
-
-                            protected:
+                              protected:
                                 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
                                 /**
                                  * Instantiates a new IncreaseRespPars.
                                  */
-                            public:
+                              public:
                                 IncreaseRespPars();
 
                                 /**
@@ -71,16 +68,17 @@ namespace org {
 
                                 std::string toString();
 
-protected:
-                                std::shared_ptr<IncreaseRespPars> shared_from_this() {
+                              protected:
+                                std::shared_ptr<IncreaseRespPars> shared_from_this()
+                                {
                                     return std::static_pointer_cast<IncreaseRespPars>(AbstractApduResponseParser::shared_from_this());
                                 }
                             };
 
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+                        } // namespace parser
+                    }     // namespace po
+                }         // namespace command
+            }             // namespace calypso
+        }                 // namespace keyple
+    }                     // namespace eclipse
+} // namespace org

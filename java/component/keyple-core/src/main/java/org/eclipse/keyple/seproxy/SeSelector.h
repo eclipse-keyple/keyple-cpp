@@ -72,7 +72,7 @@ namespace org {
                      * Static nested class to hold the data elements used to perform an AID based selection
                      */
                 public:
-                    class AidSelector : public std::enable_shared_from_this<AidSelector> {
+                    class EXPORT AidSelector : public std::enable_shared_from_this<AidSelector> {
 
                     /**
                          * FileOccurrence indicates how to carry out the file occurrence in accordance with
@@ -189,7 +189,7 @@ namespace org {
                      * Static nested class to hold the data elements used to perform an ATR based filtering
                      */
                 public:
-                    class AtrFilter : public std::enable_shared_from_this<AtrFilter> {
+                    class EXPORT AtrFilter : public std::enable_shared_from_this<AtrFilter> {
                         /**
                          * Regular expression dedicated to handle SE logical channel opening based on ATR pattern
                          */

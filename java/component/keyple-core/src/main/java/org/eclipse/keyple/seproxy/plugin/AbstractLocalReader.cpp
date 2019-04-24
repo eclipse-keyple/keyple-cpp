@@ -3,7 +3,7 @@
 #include "AbstractLocalReader.h"
 #include "SeRequest.h"
 #include "SeProtocol.h"
-#include "ReaderEvent.h"
+#include "ReaderEvent_Import.h"
 #include "SelectionResponse.h"
 #include "KeypleReaderException.h"
 #include "KeypleIOReaderException.h"

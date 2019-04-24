@@ -18,6 +18,7 @@
 #include <memory>
 
 /* Common */
+#include "Export.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
 
@@ -49,14 +50,14 @@ namespace org {
                  * <p>
                  * It provides a way to do explicit SE selection or to post process a default SE selection.
                  */
-class SeSelection final : public std::enable_shared_from_this<SeSelection> {
-  private:
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelection));
+                class EXPORT SeSelection final : public std::enable_shared_from_this<SeSelection> {
+                  private:
+                    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelection));
 
                     const std::shared_ptr<SeReader> seReader;
-    std::vector<std::shared_ptr<MatchingSe>> matchingSeList = std::vector<std::shared_ptr<MatchingSe>>();
-                    std::shared_ptr<SeRequestSet> selectionRequestSet = std::make_shared<SeRequestSet>(std::make_shared<std::set<std::shared_ptr<SeRequest>>>());
-    std::shared_ptr<MatchingSe> selectedSe;
+                    std::vector<std::shared_ptr<MatchingSe>> matchingSeList = std::vector<std::shared_ptr<MatchingSe>>();
+                    std::shared_ptr<SeRequestSet> selectionRequestSet       = std::make_shared<SeRequestSet>(std::make_shared<std::set<std::shared_ptr<SeRequest>>>());
+                    std::shared_ptr<MatchingSe> selectedSe;
 
                     /**
                      * Initializes the SeSelection
@@ -97,7 +98,7 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
                   private:
                     bool processSelection(std::shared_ptr<SelectionResponse> selectionResponse);
 
-    /**
+                    /**
                      * Parses the response to a selection operation sent to a SE and sets the selectedSe if any
                      * <p>
                      * The returned boolean indicates if at least one response was successful.
@@ -113,7 +114,7 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
                   public:
                     bool processDefaultSelection(std::shared_ptr<SelectionResponse> selectionResponse);
 
-    /**
+                    /**
                      * Execute the selection process.
                      * <p>
                      * The selection requests are transmitted to the SE.
@@ -159,9 +160,9 @@ class SeSelection final : public std::enable_shared_from_this<SeSelection> {
                      * @return the {@link DefaultSelectionRequest} previously prepared with prepareSelection
                      */
                     std::shared_ptr<DefaultSelectionRequest> getSelectionOperation();
-};
+                };
 
-} // namespace transaction
-} // namespace keyple
-} // namespace eclipse
+            } // namespace transaction
+        }     // namespace keyple
+    }         // namespace eclipse
 } // namespace org

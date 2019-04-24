@@ -12,16 +12,13 @@
 
 #pragma once
 
-#include "AbstractApduResponseParser.h"
 #include <unordered_map>
 #include <vector>
 #include <stdexcept>
 #include <memory>
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace command { class AbstractApduResponseParser; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace command { class StatusProperties; } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
+/* Core */
+#include "AbstractApduResponseParser_Import.h"
 
 namespace org {
     namespace eclipse {

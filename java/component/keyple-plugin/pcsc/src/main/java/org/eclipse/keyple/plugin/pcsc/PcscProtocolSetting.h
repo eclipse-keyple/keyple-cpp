@@ -19,22 +19,23 @@
 #include "ContactlessProtocols_Import.h"
 #include "SeProtocolSettingList.h"
 
+/* Common */
+#include "Export.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace plugin {
                 namespace pcsc {
 
-                    using SeProtocolSettingList =
-                        org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
-                    using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                    using ContactlessProtocols =
-                        org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
+                    using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
+                    using SeProtocol            = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+                    using ContactlessProtocols  = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
 
                     /**
                      * These objects are used by the application to build the SeProtocolsMap
                      */
-                    class PcscProtocolSetting final : public SeProtocolSettingList {
+                    class EXPORT PcscProtocolSetting final : public SeProtocolSettingList {
 
                       public:
                         static PcscProtocolSetting SETTING_PROTOCOL_ISO14443_4;
@@ -76,7 +77,7 @@ namespace org {
                          * Regular expressions to match ATRs produced by PcSc readers
                          */
                       public:
-                        class ProtocolSetting {
+                        class EXPORT ProtocolSetting {
                           public:
                             static const std::string REGEX_PROTOCOL_ISO14443_4;
                             static const std::string REGEX_PROTOCOL_B_PRIME;
@@ -93,11 +94,9 @@ namespace org {
                         /* the protocol setting value */
                         std::string value;
 
-                        PcscProtocolSetting(const std::string &name, InnerEnum innerEnum,
-                                            ContactlessProtocols &flag, const std::string &value);
+                        PcscProtocolSetting(const std::string &name, InnerEnum innerEnum, ContactlessProtocols &flag, const std::string &value);
 
-                        std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol>
-                        getFlag() override;
+                        std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> getFlag() override;
 
                         std::string getValue() override;
 

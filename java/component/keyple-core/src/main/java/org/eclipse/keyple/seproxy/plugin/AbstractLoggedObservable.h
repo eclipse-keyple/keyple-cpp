@@ -28,7 +28,7 @@
 #include "Configurable.h"
 #include "Nameable.h"
 #include "Observable.h"
-#include "ReaderEvent.h"
+#include "ReaderEvent_Import.h"
 #include "PluginEvent.h"
 #include "KeypleBaseException.h"
 

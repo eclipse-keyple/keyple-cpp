@@ -5,9 +5,9 @@
 #include "KeypleReaderNotFoundException.h"
 #include "KeypleBaseException.h"
 #include "PcscReadersSettings.h"
-#include "PcscReader.h"
+#include "PcscReader_Import.h"
 #include "SeProtocolSetting.h"
-#include "PcscProtocolSetting.h"
+#include "PcscProtocolSetting_Import.h"
 #include "ReaderPlugin.h"
 
 namespace org {

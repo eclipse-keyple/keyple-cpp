@@ -1,9 +1,3 @@
-#pragma once
-
-#include <vector>
-#include <memory>
-#include "Object.h"
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -15,6 +9,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <vector>
+#include <memory>
+
+/* Common*/
+#include "Object.h"
+#include "Export.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -27,7 +31,7 @@ namespace org {
                      * <p>
                      * (May be enhanced to provide analysis methods)
                      */
-                    class AnswerToReset : public std::enable_shared_from_this<AnswerToReset>, public Object{
+                    class EXPORT AnswerToReset : public std::enable_shared_from_this<AnswerToReset>, public Object{
                     private:
                         std::vector<char> atrBytes;
 

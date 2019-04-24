@@ -38,8 +38,8 @@ namespace org {
                     /**
                      * Status code properties
                      */
-                protected:
-                    class StatusProperties : public std::enable_shared_from_this<StatusProperties> {
+                public:
+                    class EXPORT StatusProperties : public std::enable_shared_from_this<StatusProperties> {
 
                         /** The successful. */
                     private:

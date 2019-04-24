@@ -25,6 +25,7 @@
 #include "ApduRequest.h"
 
 /* Common */
+#include "Export.h"
 #include "Serializable.h"
 
 namespace org {
@@ -43,7 +44,7 @@ namespace org {
                      *
                      * @see SeResponse
                      */
-                    class SeRequest final : public std::enable_shared_from_this<SeRequest>, public Serializable {
+                    class EXPORT SeRequest final : public std::enable_shared_from_this<SeRequest>, public Serializable {
 
                     public:
                         static constexpr long long serialVersionUID = 6018469841127325812LL;

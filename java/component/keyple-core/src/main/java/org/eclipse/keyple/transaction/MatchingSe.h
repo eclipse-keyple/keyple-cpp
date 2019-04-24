@@ -1,12 +1,3 @@
-#pragma once
-
-#include <string>
-#include <memory>
-
-#include "SeResponse.h"
-
-namespace org { namespace eclipse { namespace keyple { namespace transaction { class SeSelectionRequest; } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -18,6 +9,20 @@ namespace org { namespace eclipse { namespace keyple { namespace transaction { c
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <memory>
+
+/* Core */
+#include "SeResponse.h"
+
+/* Common */
+#include "Export.h"
+
+namespace org { namespace eclipse { namespace keyple { namespace transaction { class SeSelectionRequest; } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -29,7 +34,7 @@ namespace org {
                  * MatchingSe is the class to manage the elements of the result of a selection.
                  *
                  */
-                class MatchingSe : public std::enable_shared_from_this<MatchingSe> {
+                class EXPORT MatchingSe : public std::enable_shared_from_this<MatchingSe> {
                 private:
                     const bool channelIsKeptOpen;
                     const std::string extraInfo;
