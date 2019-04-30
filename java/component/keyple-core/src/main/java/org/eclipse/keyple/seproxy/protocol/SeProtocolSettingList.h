@@ -1,11 +1,3 @@
-#pragma once
-
-#include <string>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace protocol { class SeProtocol; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -17,6 +9,17 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+#pragma once
+
+#include <string>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+
+/* Core */
+#include "SeProtocol.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -26,7 +29,7 @@ namespace org {
                     /**
                      * Interface to be implemented by SeProtocolSetting enums
                      */
-                    class SeProtocolSettingList {
+                    class EXPORT SeProtocolSettingList {
                     public:
                         virtual std::shared_ptr<SeProtocol> getFlag() = 0;
 

@@ -15,9 +15,12 @@
 #include <string>
 #include <vector>
 
-/* Core - Seproxy - Protocol */
+/* Core */
 #include "ContactlessProtocols_Import.h"
 #include "SeProtocolSettingList.h"
+
+/* Common */
+#include "Export.h"
 
 namespace org {
     namespace eclipse {
@@ -25,15 +28,13 @@ namespace org {
             namespace plugin {
                 namespace stub {
 
-                    using SeProtocolSettingList =
-                        org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
-                    using ContactlessProtocols =
-                        org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
+                    using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
+                    using ContactlessProtocols  = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
 
                     /**
                      * These objects are used by the application to build the SeProtocolsMap
                      */
-                    class StubProtocolSetting final : public SeProtocolSettingList {
+                    class EXPORT StubProtocolSetting final : public SeProtocolSettingList {
 
 public:
                         static StubProtocolSetting SETTING_PROTOCOL_ISO14443_4;
@@ -76,7 +77,7 @@ private:
                          * <p>
                          * To be compared with the StubSE protocol
                          */
-                        class ProtocolSetting
+                        class EXPORT ProtocolSetting
                         {
                           public:
                             static const std::string REGEX_PROTOCOL_ISO14443_4;

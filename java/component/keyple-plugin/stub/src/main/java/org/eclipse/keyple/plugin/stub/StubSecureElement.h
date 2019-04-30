@@ -25,40 +25,14 @@
 #include "KeypleChannelStateException.h"
 #include "KeypleIOReaderException.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleChannelStateException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace exception {
-                    class KeypleIOReaderException;
-                }
-            } // namespace seproxy
-        }     // namespace keyple
-    }         // namespace eclipse
-} // namespace org
-
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace plugin {
                 namespace stub {
 
-                    using KeypleChannelStateException =
-                        org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
-                    using KeypleIOReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
+                    using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
+                    using KeypleIOReaderException     = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
 
                     class EXPORT StubSecureElement : public std::enable_shared_from_this<StubSecureElement> {
 

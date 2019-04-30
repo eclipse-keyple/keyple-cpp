@@ -1,12 +1,11 @@
 #include "KeypleReaderException.h"
-#include "../message/SeResponseSet.h"
-#include "../message/SeResponse.h"
 
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace seproxy {
                 namespace exception {
+
                     using SeResponse = org::eclipse::keyple::seproxy::message::SeResponse;
                     using SeResponseSet = org::eclipse::keyple::seproxy::message::SeResponseSet;
 

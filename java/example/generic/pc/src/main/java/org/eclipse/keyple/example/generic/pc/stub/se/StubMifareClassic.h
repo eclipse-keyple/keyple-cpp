@@ -1,10 +1,3 @@
-#pragma once
-
-#include "../../../../../../../../../../../../../../component/keyple-plugin/stub/src/main/java/org/eclipse/keyple/plugin/stub/StubSecureElement.h"
-#include <string>
-#include <vector>
-#include <memory>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -16,11 +9,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <memory>
+
+/* Example */
+#include "StubSecureElement.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
             namespace example {
-                namespace generic_Renamed {
+                namespace generic {
                     namespace pc {
                         namespace stub {
                             namespace se {
@@ -47,7 +50,7 @@ namespace org {
 
 protected:
                                     std::shared_ptr<StubMifareClassic> shared_from_this() {
-                                        return std::static_pointer_cast<StubMifareClassic>(org.eclipse.keyple.plugin.stub.StubSecureElement::shared_from_this());
+                                        return std::static_pointer_cast<StubMifareClassic>(StubSecureElement::shared_from_this());
                                     }
                                 };
 

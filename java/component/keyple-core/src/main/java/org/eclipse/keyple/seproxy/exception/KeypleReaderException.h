@@ -1,19 +1,3 @@
-#pragma once
-
-#include <string>
-#include <stdexcept>
-#include <memory>
-
-/* Common */
-#include "Export.h"
-
-/* Core */
-#include "KeypleBaseException.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponseSet; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class SeResponse; } } } } }
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -25,6 +9,21 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <stdexcept>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+
+/* Core */
+#include "KeypleBaseException.h"
+#include "SeResponse.h"
+#include "SeResponseSet.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
