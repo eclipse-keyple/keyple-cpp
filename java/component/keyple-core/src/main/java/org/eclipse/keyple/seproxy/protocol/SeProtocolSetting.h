@@ -36,7 +36,7 @@ namespace org {
                      */
                     class EXPORT SeProtocolSetting : public std::enable_shared_from_this<SeProtocolSetting> {
                     private:
-                        std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap = std::unordered_map<std::shared_ptr<SeProtocol>, std::string>();
+                        std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap;
 
                     public:
                         SeProtocolSetting(std::unordered_map<std::shared_ptr<SeProtocol>, std::string> &seProtocolSettingList);

@@ -256,7 +256,7 @@ using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
                          * plugins, technology name for Nfc plugins, etc).
                          */
                     protected:
-                        std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap = std::unordered_map<std::shared_ptr<SeProtocol>, std::string>();
+                        std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap;
 
                         /**
                          * Defines the protocol setting Map to allow SE to be differentiated according to their

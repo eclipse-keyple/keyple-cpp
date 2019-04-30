@@ -47,6 +47,7 @@
 
                             /* add the PcscPlugin to the SeProxyService */
                             PcscPlugin pcscPlugin = PcscPlugin::getInstance();
+                            pcscPlugin.initReaders();
                             seProxyService.addPlugin(std::dynamic_pointer_cast<ReaderPlugin>(std::make_shared<PcscPlugin>(pcscPlugin)));
 
                             /* attempt to get the SeReader (the right reader should be ready here) */
@@ -79,10 +80,8 @@
 
                             // Method 1
                             // add protocols individually
-                            poReader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25)));
-
-
-                            poReader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4)));
+                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(std::static_pointer_cast<SeProtocolSettingList>(std::make_shared<PcscProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25))));
+                            poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(std::static_pointer_cast<SeProtocolSettingList>(std::make_shared<PcscProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4))));
 
 
                             // Method 2

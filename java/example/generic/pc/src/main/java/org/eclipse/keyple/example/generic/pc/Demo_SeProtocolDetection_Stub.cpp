@@ -6,6 +6,7 @@
 #include "ReaderPlugin.h"
 #include "SeProxyService.h"
 #include "SeProtocolSetting.h"
+#include "SeProtocolSettingList.h"
 #include "SeProtocol.h"
 #include "SeReader.h"
 #include "StubReader.h"
@@ -36,6 +37,7 @@ using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::
 using ContactlessProtocols          = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
 using SeProtocol                    = org::eclipse::keyple::seproxy::protocol::SeProtocol;
 using SeProtocolSetting             = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
+using SeProtocolSettingList         = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
 using StubMifareClassic             = org::eclipse::keyple::example::generic::pc::stub::se::StubMifareClassic;
 using StubMifareDesfire             = org::eclipse::keyple::example::generic::pc::stub::se::StubMifareDesfire;
 using StubMifareUL                  = org::eclipse::keyple::example::generic::pc::stub::se::StubMifareUL;
@@ -49,6 +51,7 @@ void main(int argc, char **argv)
     std::set<std::shared_ptr<ReaderPlugin>> pluginsSet;
 
     StubPlugin stubPlugin = StubPlugin::getInstance();
+    stubPlugin.initReaders();
 
     pluginsSet.insert(std::make_shared<StubPlugin>(stubPlugin));
 
@@ -84,9 +87,8 @@ void main(int argc, char **argv)
 
     // Method 1
     // add protocols individually
-    poReader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared <StubProtocolSetting>(StubProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25)));
-
-    poReader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared <StubProtocolSetting>(StubProtocolSetting::SETTING_PROTOCOL_ISO14443_4)));
+    poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(std::static_pointer_cast<SeProtocolSettingList>(std::make_shared <StubProtocolSetting>(StubProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25))));
+    poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(std::static_pointer_cast<SeProtocolSettingList>(std::make_shared <StubProtocolSetting>(StubProtocolSetting::SETTING_PROTOCOL_ISO14443_4))));
 
     // Method 2
     // add all settings at once with setting enum
@@ -147,4 +149,6 @@ void main(int argc, char **argv)
     poReader->removeSe();
 
     Thread::sleep(100);
+
+    while(1);
 }

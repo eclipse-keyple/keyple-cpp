@@ -164,14 +164,15 @@ namespace org {
                     }
 
                     void AbstractLocalReader::closeLogicalChannel() {
-                        logger->trace("[%s] closeLogicalChannel => Closing of the logical channel.", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
+                        logger->trace("[%s] closeLogicalChannel => Closing of the logical channel\n", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
                         logicalChannelIsOpen = false;
                         aidCurrentlySelected.clear();
                         currentSelectionStatus.reset();
                     }
 
                     void AbstractLocalReader::addSeProtocolSetting(std::shared_ptr<SeProtocolSetting> seProtocolSetting) {
-                        this->protocolsMap.insert(seProtocolSetting->getProtocolsMap().begin(), seProtocolSetting->getProtocolsMap().end());
+                        std::unordered_map<std::shared_ptr<SeProtocol>, std::string> map = seProtocolSetting->getProtocolsMap();
+                        this->protocolsMap.insert(map.begin(), map.end());
                     }
 
                     std::shared_ptr<SeResponseSet> AbstractLocalReader::processSeRequestSet(std::shared_ptr<SeRequestSet> requestSet)
