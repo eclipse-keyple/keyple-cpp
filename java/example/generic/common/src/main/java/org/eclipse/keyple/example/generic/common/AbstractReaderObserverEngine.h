@@ -62,7 +62,7 @@ namespace org {
                           public:
                             bool currentlyProcessingSe = false;
 
-                            virtual void update(std::shared_ptr<ReaderEvent> event_Renamed);
+                            virtual void update(std::shared_ptr<ReaderEvent> event);
                         };
 
                     } // namespace common

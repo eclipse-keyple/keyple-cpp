@@ -38,10 +38,10 @@ namespace org {
                             }
 
                             if (logger->isTraceEnabled()) {
-                                logger->trace("[{}] openLogicalChannel => ATR = {}", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), ByteArrayUtils::toHex(atr));
+                                logger->trace("[{}] openLogicalChannel => ATR = {}", AbstractLoggedObservable<ReaderEvent>::getName(), ByteArrayUtils::toHex(atr));
                             }
                             if (!seSelector->getAtrFilter()->atrMatches(atr)) {
-                                logger->info("[{}] openLogicalChannel => ATR didn't match. SELECTOR = {}, ATR = {}", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), seSelector, ByteArrayUtils::toHex(atr));
+                                logger->info("[{}] openLogicalChannel => ATR didn't match. SELECTOR = {}, ATR = {}", AbstractLoggedObservable<ReaderEvent>::getName(), seSelector, ByteArrayUtils::toHex(atr));
                                 selectionHasMatched = false;
                             }
                         }
@@ -57,7 +57,7 @@ namespace org {
                                 throw std::invalid_argument("AID must not be null for an AidSelector.");
                             }
                             if (logger->isTraceEnabled()) {
-                                logger->trace("[{}] openLogicalChannel => Select Application with AID = {}", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), ByteArrayUtils::toHex(aid));
+                                logger->trace("[{}] openLogicalChannel => Select Application with AID = {}", AbstractLoggedObservable<ReaderEvent>::getName(), ByteArrayUtils::toHex(aid));
                             }
 
                             /*
@@ -85,7 +85,7 @@ namespace org {
                             fciResponse = processApduRequest(std::make_shared<ApduRequest>("Internal Select Application", selectApplicationCommand, true, aidSelector->getSuccessfulSelectionStatusCodes()));
 
                             if (!fciResponse->isSuccessful()) {
-                                logger->trace("[{}] openLogicalChannel => Application Selection failed. SELECTOR = {}", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), aidSelector);
+                                logger->trace("[{}] openLogicalChannel => Application Selection failed. SELECTOR = {}", AbstractLoggedObservable<ReaderEvent>::getName(), aidSelector);
                             }
                             /*
                              * The ATR filtering matched or was not requested. The selection status is determined by

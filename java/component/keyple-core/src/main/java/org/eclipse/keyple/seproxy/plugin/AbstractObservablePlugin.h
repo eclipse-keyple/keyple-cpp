@@ -51,7 +51,7 @@ namespace org {
                      * Observable plugin. These plugin can report when a reader is added or removed.
                      */
                     class EXPORT AbstractObservablePlugin
-                    : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<std::shared_ptr<PluginEvent>>, public virtual ReaderPlugin {
+                    : public org::eclipse::keyple::seproxy::plugin::AbstractLoggedObservable<PluginEvent>, public virtual ReaderPlugin {
 
                       private:
                         const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservablePlugin));
@@ -191,7 +191,7 @@ namespace org {
 
                       protected:
                         std::shared_ptr<AbstractObservablePlugin> shared_from_this() {
-                            return std::static_pointer_cast<AbstractObservablePlugin>(AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::shared_from_this());
+                            return std::static_pointer_cast<AbstractObservablePlugin>(AbstractLoggedObservable<PluginEvent>::shared_from_this());
                         }
                     };
 

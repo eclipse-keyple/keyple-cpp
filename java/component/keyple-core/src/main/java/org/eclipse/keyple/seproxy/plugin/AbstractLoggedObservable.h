@@ -98,8 +98,7 @@ namespace org {
                          *
                          * @param observer Observer to notiy
                          */
-                        virtual void addObserver(
-                            std::shared_ptr<org::eclipse::keyple::util::Observer<T>> observer) override
+                        virtual void addObserver(std::shared_ptr<org::eclipse::keyple::util::Observer<T>> observer) override
                         {
 
                             logger->trace("[%s][%s] addObserver => Adding an observer\n", name, this->getName());
@@ -138,8 +137,10 @@ namespace org {
                          * @param event the event
                          */
                         // Alex: function was final in Java (problem in PcscPlugin.cpp)
-                        void notifyObservers(T event) override
+                        void notifyObservers(std::shared_ptr<T> event) override
                         {
+                            logger->debug("notifyObservers => event: %p\n", event);
+
                             /*
                              * Alex: Downcasting on both AbstractObservableReader and AbstractObservablePlugin doesn't seem possible even though
                              *       templates are used because somehow the compiler knows where that comes from and doesn't want to apply the

@@ -77,8 +77,8 @@ namespace org {
                                     changedReaderNames->clear();
                                     for (auto _it : (*outerInstance->readers)) {
                                             std::shared_ptr<AbstractObservableReader> it = std::dynamic_pointer_cast<AbstractObservableReader>(_it);
-                                            if (actualNativeReadersNames->find(it->AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName()) == actualNativeReadersNames->end()) {
-                                            changedReaderNames->insert(it->AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
+                                            if (actualNativeReadersNames->find(it->AbstractLoggedObservable<ReaderEvent>::getName()) == actualNativeReadersNames->end()) {
+                                            changedReaderNames->insert(it->AbstractLoggedObservable<ReaderEvent>::getName());
                                         }
                                     }
                                     /* notify disconnections if any and update the reader list */
@@ -88,12 +88,12 @@ namespace org {
                                         /* list update */
                                         for (auto _it : (*outerInstance->readers)) {
                                             std::shared_ptr<AbstractObservableReader> it = std::dynamic_pointer_cast<AbstractObservableReader>(_it);
-                                            if (actualNativeReadersNames->find(it->AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName()) != actualNativeReadersNames->end()) {
+                                            if (actualNativeReadersNames->find(it->AbstractLoggedObservable<ReaderEvent>::getName()) != actualNativeReadersNames->end()) {
                                                 outerInstance->readers->erase(_it);
                                                 outerInstance->logger->trace("[%s][%s] Plugin thread => Remove unplugged reader from readers list.", this->pluginName,
-                                                              it->AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
+                                                              it->AbstractLoggedObservable<ReaderEvent>::getName());
                                                 /* remove reader name from the current list */
-                                                outerInstance->nativeReadersNames->erase(it->AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
+                                                outerInstance->nativeReadersNames->erase(it->AbstractLoggedObservable<ReaderEvent>::getName());
                                         }
                                     }
                                         /* clean the list for a possible connection notification */
@@ -110,7 +110,7 @@ namespace org {
                                             /* add to the notification list */
                                             changedReaderNames->insert(readerName);
                                             outerInstance->logger->trace("[%s][%s] Plugin thread => Add plugged reader to readers list.", this->pluginName,
-                                                                         reader->AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
+                                                                         reader->AbstractLoggedObservable<ReaderEvent>::getName());
                                             /* add reader name to the current list */
                                             outerInstance->nativeReadersNames->insert(readerName);
                                         }

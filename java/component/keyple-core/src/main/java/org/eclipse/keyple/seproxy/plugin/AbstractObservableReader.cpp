@@ -32,7 +32,7 @@ namespace org {
                     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractObservableReader));
 
                     AbstractObservableReader::AbstractObservableReader(const std::string &pluginName, const std::string &readerName)
-                    : AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>(readerName), pluginName(pluginName) , notificationMode(NotificationMode::ALWAYS) {
+                    : AbstractLoggedObservable<ReaderEvent>(readerName), pluginName(pluginName) , notificationMode(NotificationMode::ALWAYS) {
                         this->before = System::nanoTime(); /*
                                                                                   * provides an initial value for measuring the
                                                                                   * inter-exchange time. The first measurement gives the
@@ -42,7 +42,7 @@ namespace org {
 
                     void AbstractObservableReader::startObservation()
                     {
-                        logger->debug("\n");
+                        logger->debug("starting observation\n");
                     }
 
                     void AbstractObservableReader::stopObservation() {
@@ -50,14 +50,14 @@ namespace org {
 
                     std::string AbstractObservableReader::getPluginName() {
                         return pluginName;
-                        if (AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::countObservers() == 0) {
+                        if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
                             logger->debug("stop the reader monitoring\n");
                             stopObservation();
                         }
                     }
 
                     int AbstractObservableReader::compareTo(std::shared_ptr<SeReader> seReader) {
-                        return AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName().compare(seReader->getName());
+                        return AbstractLoggedObservable<ReaderEvent>::getName().compare(seReader->getName());
                     }
 
                     std::shared_ptr<SeResponseSet> AbstractObservableReader::transmitSet(std::shared_ptr<SeRequestSet> requestSet) {
@@ -72,7 +72,7 @@ namespace org {
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
                             logger->debug("[%s] transmit => SEREQUESTSET = %s, elapsed %d ms\n",
-                                          AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), requestSet->toString(), elapsedMs);
+                                          AbstractLoggedObservable<ReaderEvent>::getName(), requestSet->toString(), elapsedMs);
                         }
 
                         try {
@@ -100,7 +100,7 @@ namespace org {
                             double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
                             this->before = timeStamp;
                             logger->debug("[%s] transmit => SERESPONSESET = %s, elapsed %d ms\n",
-                                          AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), responseSet->toString(), elapsedMs);
+                                          AbstractLoggedObservable<ReaderEvent>::getName(), responseSet->toString(), elapsedMs);
                         }
 
                         return responseSet;
@@ -118,7 +118,7 @@ namespace org {
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
                             logger->debug("[%s] transmit => SEREQUEST = %s, elapsed %d ms\n",
-                                          AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), seRequest->toString(), elapsedMs);
+                                          AbstractLoggedObservable<ReaderEvent>::getName(), seRequest->toString(), elapsedMs);
                         }
 
                         try {
@@ -129,7 +129,7 @@ namespace org {
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
                             logger->debug("[%s] transmit => SEREQUEST channel failure. elapsed %d\n",
-                                          AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), elapsedMs);
+                                          AbstractLoggedObservable<ReaderEvent>::getName(), elapsedMs);
                             /* Throw an exception with the responses collected so far (ex.getSeResponse()). */
                             throw ex;
                         }
@@ -138,7 +138,7 @@ namespace org {
                             double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
                             this->before = timeStamp;
                             logger->debug("[%s] transmit => SEREQUEST IO failure. elapsed %d\n",
-                                          AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), elapsedMs);
+                                          AbstractLoggedObservable<ReaderEvent>::getName(), elapsedMs);
                             /* Throw an exception with the responses collected so far (ex.getSeResponse()). */
                             throw ex;
                         }
@@ -148,7 +148,7 @@ namespace org {
                             double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
                             this->before = timeStamp;
                             logger->debug("[%s] transmit => SERESPONSE = %s, elapsed %d ms\n",
-                                          AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName(), seResponse->toString(), elapsedMs);
+                                          AbstractLoggedObservable<ReaderEvent>::getName(), seResponse->toString(), elapsedMs);
                         }
 
                         return seResponse;
@@ -156,19 +156,18 @@ namespace org {
 
                     void AbstractObservableReader::addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
                         // if an observer is added to an empty list, start the observation
-                        if (AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::countObservers() == 0) {
-                            logger->debug("Start the reader monitoring.");
+                        if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
+                            logger->debug("Start the reader monitoring\n");
                             startObservation();
                         }
-                        AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::addObserver(
-                            std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<std::shared_ptr<ReaderEvent>>>(observer));
+
+                        AbstractLoggedObservable<ReaderEvent>::addObserver(observer);
                     }
 
                     void AbstractObservableReader::removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
-                        AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::removeObserver(
-                            std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<std::shared_ptr<ReaderEvent>>>(observer));
-                        if (AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::countObservers() == 0) {
-                            logger->debug("Stop the reader monitoring.");
+                        AbstractLoggedObservable<ReaderEvent>::removeObserver(observer);
+                        if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
+                            logger->debug("Stop the reader monitoring\n");
                             stopObservation();
                         }
                     }

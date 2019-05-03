@@ -2,6 +2,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <mutex>
 #include <stdexcept>
 #include <string>
 
@@ -51,18 +52,29 @@ namespace org {
                     const std::string className;
 
                     /**
+                     * Mutex for critical sections (std::cout usage)
+                     */
+                    std::mutex mtx;
+
+                    /**
                      *
                      */
                     void log(const char *s)
                     {
+                        mtx.lock();
+
                         while (s && *s)
                         {
-                            if (*s == '%' &&
-                                *++s != '%') // make sure that there wasn't meant to be more arguments
-                                             // %% represents plain % in a format string
+                            if (*s == '%' && *++s != '%') { // make sure that there wasn't meant to be more arguments
+                                                            // %% represents plain % in a format string
+                                mtx.unlock();
                                 throw std::runtime_error("invalid format: missing arguments");
+                            }
+
                             std::cout << *s++;
                         }
+
+                        mtx.unlock();
                     }
 
                     /**
@@ -71,15 +83,21 @@ namespace org {
                     template <typename T, typename... Args>
                     void log(const char *s, T value, Args... args)
                     {
+                        mtx.lock();
+
                         while (s && *s)
                         {
                             if (*s == '%' && *++s != '%')
                             {                             // a format specifier (ignore which one it is)
                                 std::cout << value;       // use first non-format argument
+                                mtx.unlock();
                                 return log(++s, args...); // ``peel off'' first argument
                             }
                             std::cout << *s++;
                         }
+
+                        mtx.unlock();
+
                         throw std::runtime_error("extra arguments provided to log");
                     }
 

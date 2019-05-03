@@ -47,11 +47,10 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
 
-                    using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
-                    using KeypleReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using Logger        = org::eclipse::keyple::common::Logger;
-                    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+                    using ObservablePlugin      = org::eclipse::keyple::seproxy::event::ObservablePlugin;
+                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using Logger                = org::eclipse::keyple::common::Logger;
+                    using LoggerFactory         = org::eclipse::keyple::common::LoggerFactory;
 
                     class EXPORT AbstractThreadedObservablePlugin : public AbstractObservablePlugin,
                                                                     public ObservablePlugin,

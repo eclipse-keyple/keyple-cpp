@@ -18,6 +18,8 @@ namespace org {
 
                         void AbstractReaderObserverEngine::update(std::shared_ptr<ReaderEvent> event)
                         {
+                            logger->debug("update\n");
+
                             if (event->getEventType() != ReaderEvent::EventType::SE_INSERTED &&
                                 logger->isInfoEnabled())
                             {

@@ -13,7 +13,7 @@ namespace org {
                     }
 
                     void AbstractThreadedLocalReader::startObservation() {
-                        thread = std::make_shared<EventThread>(shared_from_this(), this->getPluginName(), AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
+                        thread = std::make_shared<EventThread>(shared_from_this(), this->getPluginName(), AbstractLoggedObservable<ReaderEvent>::getName());
                         thread->start();
                     }
 
@@ -70,7 +70,7 @@ namespace org {
                             }
                         }
                         catch (const NoStackTraceThrowable &e) {
-                            outerInstance->logger->trace("[%s] exception occurred in monitoring thread: %s)", readerName, e.what());
+                            outerInstance->logger->trace("[%s] exception occurred in monitoring thread: %s\n", readerName, e.what());
                         }
 
                         return NULL;
@@ -81,7 +81,7 @@ namespace org {
                     {
                         thread->end();
                         thread.reset();
-                        logger->trace("[{}] Observable Reader thread ended.", AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName());
+                        logger->trace("[%s] Observable Reader thread ended\n", AbstractLoggedObservable<ReaderEvent>::getName());
                         //AbstractSelectionLocalReader::finalize();
                     }
                 }

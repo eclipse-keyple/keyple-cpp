@@ -29,7 +29,7 @@ namespace util {
 template<typename T>
 class Observer {
 public:
-    virtual void update(T event)
+    virtual void update(std::shared_ptr<T> event)
     {
         (void)event;
     }
@@ -51,22 +51,21 @@ public:
      */
     virtual void addObserver(std::shared_ptr<Observer<T>> observer)
     {
-        std::cout << "[Observable::addObserver]" << std::endl;
+        std::cout << "[DEBUG]   [class Observable]   [addObserver]" << std::endl;
 
         if (observer == nullptr) {
-            std::cout << "[Observable::addObserver] observer is null, skipping it" << std::endl;
+            std::cout << "[DEBUG]   [class Observable]   [addObserver] observer is null, skipping it" << std::endl;
             return;
         }
 
         /* Multithread locking is not converted to native C++ */
 
-        if (observers == nullptr) {
-            std::cout << "[Observable::addObserver] observers is null, creating new set" << std::endl;
-            observers = std::shared_ptr<std::set<std::shared_ptr<Observer<T>>>>(new std::set<std::shared_ptr<Observer<T>>>());
-        }
+        if (!observers.size())
+            std::cout << "[DEBUG]   [class Observable]   [addObserver] observers is empty, creating new set" << std::endl;
+           
 
-        std::cout << "[Observable::addObserver] adding observer to set" << std::endl;
-        observers->insert(observer);
+        std::cout << "[DEBUG]   [class Observable]   [addObserver] adding observer to set" << std::endl;
+        observers.insert(observer);
     }
 
     /**
@@ -74,17 +73,17 @@ public:
      */
     virtual void removeObserver(std::shared_ptr<Observer<T>> observer)
     {
-        std::cout << "[Observable::addObserver]" << std::endl;
+        std::cout << "[DEBUG]   [class Observable]   [addObserver]" << std::endl;
 
         if (observer == nullptr) {
-            std::cout << "[Observable::addObserver] observer is null, skipping it" << std::endl;
+            std::cout << "[DEBUG]   [class Observable]   [addObserver] observer is null, skipping it" << std::endl;
             return;
         }
 
         /* Multithread locking is not converted to native C++ */
-        if (observers != nullptr) {
-            std::cout << "[Observable::addObserver] removing observer from set" << std::endl;
-            observers->erase(observer);
+        if (observers.size()) {
+            std::cout << "[DEBUG]   [class Observable]   [addObserver] removing observer from set" << std::endl;
+            observers.erase(observer);
         }
     }
 
@@ -93,11 +92,11 @@ public:
      */
     virtual void clearObservers()
     {
-        std::cout << "[Observable::clearObservers]" << std::endl;
+        std::cout << "[DEBUG]   [class Observable]   [clearObservers]" << std::endl;
 
-        if (observers != nullptr) {
-            std::cout << "[Observable::clearObservers] clearing observers set" << std::endl;
-            this->observers->clear();
+        if (observers.size()) {
+            std::cout << "[DEBUG]   [class Observable]   [clearObservers] clearing observers set" << std::endl;
+            this->observers.clear();
         }
     }
 
@@ -117,7 +116,8 @@ public:
         this->changed = false;
     }
 
-    virtual bool hasChanged() {
+    virtual bool hasChanged()
+    {
         return this->changed;
     }
 
@@ -126,9 +126,9 @@ public:
      */
     virtual int countObservers()
     {
-        std::cout << "[Observable::countObservers]" << std::endl;
+        std::cout << "[DEBUG]   [class Observable] " << observers.size() << "observers" << std::endl;
 
-        return observers == nullptr ? 0 : observers->size();
+        return observers.size();
     }
 
     /**
@@ -136,24 +136,28 @@ public:
      */
     virtual void notifyObservers()
     {
+        std::cout << "[DEBUG]   [class Observable] notify observers (no event)" << std::endl;
+
         notifyObservers(nullptr);
     }
 
     /**
      *
      */
-    virtual void notifyObservers(T event)
+    virtual void notifyObservers(std::shared_ptr<T> event)
     {
+        std::cout << "[DEBUG]   [class Observable] notify observers" << std::endl;
+
         /* Multithread locking is not converted to native C++ */
 
-        if (observers == nullptr)
+        if (!observers.size())
             return;
 
         /* Alex: Not sure I need the copy */
-        //std::shared_ptr<std::set<std::shared_ptr<Observer<T>>>> observersCopy;
-        //observersCopy = observers;
+        std::set<std::shared_ptr<Observer<T>>> observersCopy;
+        observersCopy.insert(observers.begin(), observers.end());
 
-        for (auto observer : *observers /* initially observersCopy */)
+        for (auto observer : observersCopy)
             observer->update(event);
     }
 
@@ -172,7 +176,7 @@ private:
     /**
      *
      */
-    std::shared_ptr<std::set<std::shared_ptr<Observer<T>>>> observers;
+    std::set<std::shared_ptr<Observer<T>>> observers;
 };
 
 }

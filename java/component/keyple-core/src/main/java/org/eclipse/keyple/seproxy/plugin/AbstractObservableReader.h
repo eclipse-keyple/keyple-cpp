@@ -62,7 +62,7 @@ namespace org {
                      * </ul>
                      */
 
-                    class EXPORT AbstractObservableReader : public AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>, public ObservableReader, public ProxyReader {
+                    class EXPORT AbstractObservableReader : public AbstractLoggedObservable<ReaderEvent>, public ObservableReader, public ProxyReader {
 
                         /** logger */
                     private:
@@ -223,7 +223,7 @@ namespace org {
 
                     protected:
                         std::shared_ptr<AbstractObservableReader> shared_from_this() {
-                            return std::static_pointer_cast<AbstractObservableReader>(AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::shared_from_this());
+                            return std::static_pointer_cast<AbstractObservableReader>(AbstractLoggedObservable<ReaderEvent>::shared_from_this());
                         }
                     };
 

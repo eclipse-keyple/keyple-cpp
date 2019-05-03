@@ -23,8 +23,7 @@ namespace org {
                         org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
                     using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
 
-                    AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name)
-                        : AbstractLoggedObservable<std::shared_ptr<PluginEvent>>(name)
+                    AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name) : AbstractLoggedObservable<PluginEvent>(name)
                     {
                         logger->debug("constructor (name: %s)\n", name);
                     }
@@ -63,19 +62,19 @@ namespace org {
                         return readerNames;
                     }
 
-                    void AbstractObservablePlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
-                        AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::addObserver(
-                            std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<std::shared_ptr<PluginEvent>>>(observer));
-                        if (AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::countObservers() == 1) {
+                    void AbstractObservablePlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+                    {
+                        AbstractLoggedObservable<PluginEvent>::addObserver(observer);
+                        if (AbstractLoggedObservable<PluginEvent>::countObservers() == 1) {
                             logger->debug("Start the plugin monitoring.");
                             startObservation();
                         }
                     }
 
-                    void AbstractObservablePlugin::removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer) {
-                        AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::removeObserver(
-                            std::dynamic_pointer_cast<org::eclipse::keyple::util::Observer<std::shared_ptr<PluginEvent>>>(observer));
-                        if (AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::countObservers() == 0) {
+                    void AbstractObservablePlugin::removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+                    {
+                        AbstractLoggedObservable<PluginEvent>::removeObserver(observer);
+                        if (AbstractLoggedObservable<PluginEvent>::countObservers() == 0) {
                             logger->debug("Stop the plugin monitoring.");
                             stopObservation();
                         }
