@@ -110,7 +110,7 @@ public:
         virtual ~SpecificPluginObserver() { }
 
         void update(std::shared_ptr<PluginEvent> event) override;
-        void update(PluginEvent event) override;
+        void update(PluginEvent event);
     };
 
 private:

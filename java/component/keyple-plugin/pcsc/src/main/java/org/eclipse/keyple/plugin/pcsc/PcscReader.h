@@ -234,7 +234,7 @@ namespace org {
 
                         std::string getName() override
                         {
-                            return AbstractThreadedLocalReader::AbstractLoggedObservable<std::shared_ptr<ReaderEvent>>::getName();
+                            return AbstractThreadedLocalReader::AbstractLoggedObservable<ReaderEvent>::getName();
                         }
 
                     };

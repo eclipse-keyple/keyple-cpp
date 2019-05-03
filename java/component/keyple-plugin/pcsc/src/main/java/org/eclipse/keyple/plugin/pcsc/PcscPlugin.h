@@ -168,7 +168,7 @@ namespace org {
                         void notifyObservers(std::shared_ptr<PluginEvent> event) override
                         {
                             logger->debug("[PcscPlugin::notifyObservers]\n");
-                            AbstractThreadedObservablePlugin::AbstractLoggedObservable<std::shared_ptr<PluginEvent>>::notifyObservers(event);
+                            AbstractThreadedObservablePlugin::AbstractLoggedObservable<PluginEvent>::notifyObservers(event);
                         }
 
                         bool equals(std::shared_ptr<void> o) override
