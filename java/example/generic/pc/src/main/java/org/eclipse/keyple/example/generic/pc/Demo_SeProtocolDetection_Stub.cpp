@@ -42,8 +42,11 @@ using StubMifareClassic             = org::eclipse::keyple::example::generic::pc
 using StubMifareDesfire             = org::eclipse::keyple::example::generic::pc::stub::se::StubMifareDesfire;
 using StubMifareUL                  = org::eclipse::keyple::example::generic::pc::stub::se::StubMifareUL;
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
+    (void)argc;
+    (void)argv;
+
     /* get the SeProxyService instance */
     SeProxyService seProxyService = SeProxyService::getInstance();
 
@@ -150,5 +153,5 @@ void main(int argc, char **argv)
 
     Thread::sleep(100);
 
-    while(1);
+    return 0;
 }
