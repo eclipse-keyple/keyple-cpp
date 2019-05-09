@@ -49,16 +49,6 @@ class CardTerminals {
 
         terminals.empty();
 
-#ifdef SCARD_AUTOALLOCATE
-        len = SCARD_AUTOALLOCATE;
-
-        ret = SCardListReaders(ctx, NULL, (LPTSTR)&pszReaderList, &len);
-        if (ret != SCARD_S_SUCCESS)
-        {
-            logger->debug("error listing readers (%x)\n", ret);
-            throw(CardException("error listing readers", std::runtime_error("SCARD_E_NO_READERS_AVAILABLE")));
-        }
-#else
         ret = SCardListReaders(ctx, NULL, NULL, &len);
         if (ret != SCARD_S_SUCCESS)
         {
@@ -73,7 +63,7 @@ class CardTerminals {
             logger->debug("error listing readers (2)\n");
             return {};
         }
-#endif
+
 
         pszReader = pszReaderList;
         while (*pszReader)
@@ -84,11 +74,8 @@ class CardTerminals {
             pszReader += strlen(pszReader) + 1;
         }
 
-#ifdef SCARD_AUTOALLOCATE
-        SCardFreeMemory(ctx, pszReaderList);
-#else
         free(pszReaderList);
-#endif
+
 
         return terminals;
     }
