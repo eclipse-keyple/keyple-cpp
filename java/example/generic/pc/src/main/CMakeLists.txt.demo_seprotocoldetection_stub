@@ -59,7 +59,6 @@ ADD_EXECUTABLE(demo_seprotocoldetection_stub
 
 	# Example - PC
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/Demo_SeProtocolDetection_Stub.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/ReaderUtilities.cpp
 )
 
 IF(APPLE)
