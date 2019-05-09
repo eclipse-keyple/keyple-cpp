@@ -88,8 +88,7 @@ namespace org {
                         }
                     }
 
-                    std::vector<char>
-                    StubReader::transmitApdu(std::vector<char> &apduIn)
+                    std::vector<char> StubReader::transmitApdu(std::vector<char> &apduIn)
                     {
                         return se->processApdu(apduIn);
                     }
@@ -187,34 +186,44 @@ namespace org {
 
                     void StubReader::insertSe(std::shared_ptr<StubSecureElement> _se)
                     {
+                        logger->debug("inserting SE: %p\n", _se);
+
                         /* clean channels status */
                         if (isPhysicalChannelOpen())
                         {
+                            logger->debug("closing logical channel\n");
                             closeLogicalChannel();
                             try
                             {
+                                logger->debug("closing physical channel\n");
                                 closePhysicalChannel();
                             } catch (const KeypleReaderException &e)
                             {
                                 e.printStackTrace();
                             }
                         }
+
                         se        = _se;
                         sePresent = true;
                     }
 
                     void StubReader::removeSe()
                     {
-                        se.reset();
+                        logger->debug("removing SE\n");
+
+                        se = nullptr;
                         sePresent = false;
                     }
 
                     bool StubReader::waitForCardPresent(long long timeout)
                     {
+                        logger->debug("waiting for card present (%d ms)\n", timeout);
+
                         for (int i = 0; i < timeout / 10; i++)
                         {
                             if (sePresent)
                             {
+                                logger->debug("SE present\n");
                                 break;
                             }
                             try
@@ -225,6 +234,7 @@ namespace org {
                                 logger->debug("Sleep was interrupted\n");
                             }
                         }
+
                         return sePresent;
                     }
 
@@ -247,10 +257,10 @@ namespace org {
                         return !sePresent;
                     }
 
-                    void StubReader::notifyObservers(std::shared_ptr<ReaderEvent> event)
-                    {
-                        (void)event;
-                    }
+                    // void StubReader::notifyObservers(std::shared_ptr<ReaderEvent> event)
+                    // {
+                    //     (void)event;
+                    // }
 
                     bool StubReader::equals(std::shared_ptr<void> o)
                     {

@@ -54,7 +54,7 @@ namespace org {
                                     processSeRemoval();
                                     if (logger->isInfoEnabled())
                                     {
-                                        logger->info("Waiting for a SE...");
+                                        logger->info("Waiting for a SE...\n");
                                     }
                                 }
                                 currentlyProcessingSe = false;
@@ -62,7 +62,7 @@ namespace org {
                             else
                             {
 
-                                logger->error("IO Error");
+                                logger->error("IO Error\n");
                             }
                         }
                     } // namespace common

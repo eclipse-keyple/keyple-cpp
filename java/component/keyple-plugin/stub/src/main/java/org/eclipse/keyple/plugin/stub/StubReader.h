@@ -166,7 +166,7 @@ namespace org {
                         /**
                          *
                          */
-                        void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
+                        //void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
 
                         /**
                          *

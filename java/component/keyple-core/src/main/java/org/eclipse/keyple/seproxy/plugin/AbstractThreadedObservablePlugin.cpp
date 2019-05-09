@@ -11,30 +11,28 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
 
-                    using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
-                    using PluginEvent      = org::eclipse::keyple::seproxy::event::PluginEvent;
-                    using KeypleReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using ObservablePlugin      = org::eclipse::keyple::seproxy::event::ObservablePlugin;
+                    using PluginEvent           = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
 
                     std::set<std::string> _set;
-                    std::shared_ptr<std::set<std::string>> nativeReadersNames =
-                        std::make_shared<std::set<std::string>>(_set);
+                    std::shared_ptr<std::set<std::string>> nativeReadersNames = std::make_shared<std::set<std::string>>(_set);
 
-                    AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(
-                        const std::string &name)
-                        : AbstractObservablePlugin(name)
+                    AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(const std::string &name) : AbstractObservablePlugin(name)
                     {
                         logger->debug("constructor (name: %s)\n", name);
                     }
 
-                    void AbstractThreadedObservablePlugin::startObservation() {
-                        logger->debug("\n");
+                    void AbstractThreadedObservablePlugin::startObservation()
+                    {
+                        logger->debug("starting observation\n");
                         thread = std::make_shared<AbstractThreadedObservablePlugin::EventThread>(shared_from_this(), this->getName());
                         thread->start();
                     }
 
-                    void AbstractThreadedObservablePlugin::stopObservation() {
-                        logger->debug("\n");
+                    void AbstractThreadedObservablePlugin::stopObservation()
+                    {
+                        logger->debug("stopping observation\n");
                         if (thread != nullptr) {
                             thread->end();
                         }
@@ -43,13 +41,12 @@ namespace org {
                     AbstractThreadedObservablePlugin::EventThread::EventThread(std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance, const std::string &pluginName)
                     : outerInstance(outerInstance), pluginName(pluginName)
                     {
-                        outerInstance->logger->debug("constructor with outerInstance: %p, pluginName: %s\n",
-                                                     outerInstance, pluginName);
+                        outerInstance->logger->debug("constructor with outerInstance: %p, pluginName: %s (running: %d)\n", outerInstance, pluginName, running);
                     }
 
                     void AbstractThreadedObservablePlugin::EventThread::end()
                     {
-                        outerInstance->logger->debug("\n");
+                        outerInstance->logger->debug("stopping event thread\n");
 
                         running = false;
                         this->interrupt();
@@ -57,7 +54,10 @@ namespace org {
 
                     void *AbstractThreadedObservablePlugin::EventThread::run()
                     {
+                        outerInstance->logger->debug("starting event thread\n");
+
                         std::shared_ptr<std::set<std::string>> changedReaderNames = std::make_shared<std::set<std::string>>();
+
                         try
                         {
                             while (running)

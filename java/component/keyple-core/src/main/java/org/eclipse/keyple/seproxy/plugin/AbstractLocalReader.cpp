@@ -61,13 +61,19 @@ namespace org {
                     }
 
 
-                    void AbstractLocalReader::cardInserted() {
+                    void AbstractLocalReader::cardInserted()
+                    {
+                        logger->debug("card inserted notification\n");
+
                         if (defaultSelectionRequest == nullptr) {
+                            logger->debug("defaultSelectionRequest is null\n");
+
                             /* no default request is defined, just notify the SE insertion */
-                            ObservableReader::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED, nullptr));
+                            AbstractLoggedObservable::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED, nullptr));
                             presenceNotified = true;
-                        }
-                        else {
+                        } else {
+                            logger->debug("defaultSelectionRequest is not null\n");
+
                             /*
                              * a default request is defined, send it a notify according to the notification mode and
                              * the selection status
@@ -85,7 +91,7 @@ namespace org {
                                 if (notificationMode == ObservableReader::NotificationMode::MATCHED_ONLY) {
                                     /* notify only if a SE matched the selection, just ignore if not */
                                     if (aSeMatched) {
-                                        ObservableReader::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_MATCHED, std::make_shared<SelectionResponse>(seResponseSet)));
+                                        AbstractLoggedObservable::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_MATCHED, std::make_shared<SelectionResponse>(seResponseSet)));
                                         presenceNotified = true;
                                     }
                                     else {
@@ -96,14 +102,14 @@ namespace org {
                                 else {
                                     if (aSeMatched) {
                                         /* The SE matched, notify an SE_MATCHED event with the received response */
-                                        ObservableReader::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_MATCHED, std::make_shared<SelectionResponse>(seResponseSet)));
+                                        AbstractLoggedObservable::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_MATCHED, std::make_shared<SelectionResponse>(seResponseSet)));
                                     }
                                     else {
                                         /*
                                          * The SE didn't match, notify an SE_INSERTED event with the received
                                          * response
                                          */
-                                        ObservableReader::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED, std::make_shared<SelectionResponse>(seResponseSet)));
+                                        AbstractLoggedObservable::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED, std::make_shared<SelectionResponse>(seResponseSet)));
                                     }
                                     presenceNotified = true;
                                 }
@@ -120,7 +126,7 @@ namespace org {
                     void AbstractLocalReader::cardRemoved()
                     {
                         if (presenceNotified) {
-                            ObservableReader::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_REMOVAL, nullptr));
+                            AbstractLoggedObservable::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_REMOVAL, nullptr));
                             presenceNotified = false;
                         }
                         closeLogicalChannel();
