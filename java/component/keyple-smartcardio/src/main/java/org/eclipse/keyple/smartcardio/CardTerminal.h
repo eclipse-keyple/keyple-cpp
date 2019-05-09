@@ -134,10 +134,9 @@ public:
      * Constructs a new CardTerminal object.
      *
      */
-    CardTerminal(std::string &name)
-    : name(name)
+    CardTerminal(std::string &name) : name(name)
     {
-        logger->debug("[CardTerminal::CardTerminal]\n");
+        logger->debug("constructor\n");
     }
 
 private:

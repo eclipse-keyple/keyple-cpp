@@ -257,11 +257,6 @@ namespace org {
                         return !sePresent;
                     }
 
-                    // void StubReader::notifyObservers(std::shared_ptr<ReaderEvent> event)
-                    // {
-                    //     (void)event;
-                    // }
-
                     bool StubReader::equals(std::shared_ptr<void> o)
                     {
                         (void)o;

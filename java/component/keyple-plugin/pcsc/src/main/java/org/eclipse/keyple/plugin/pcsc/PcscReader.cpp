@@ -42,8 +42,7 @@ const std::string PcscReader::PROTOCOL_T1 = "T=1";
 const std::string PcscReader::PROTOCOL_T_CL = "T=CL";
 const std::string PcscReader::PROTOCOL_ANY = "T=0";
 
-PcscReader::PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal)
-: AbstractThreadedLocalReader(pluginName, terminal->getName()), terminal(terminal)
+PcscReader::PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal) : AbstractThreadedLocalReader(pluginName, terminal->getName()), terminal(terminal)
 {
     logger->debug("PcscReader::PcscReader pluginName: %s, terminal: %p\n", pluginName, terminal);
 

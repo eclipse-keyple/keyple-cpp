@@ -90,7 +90,7 @@ std::shared_ptr<std::set<std::shared_ptr<SeReader>>> PcscPlugin::initNativeReade
         logger->debug("CardException\n");
         std::string cause = e.getCause().what();
         if (!cause.compare("SCARD_E_NO_READERS_AVAILABLE")) {
-            logger->trace("No reader available.");
+            logger->trace("No reader available\n");
         }
         else {
             logger->trace("[%s] terminal list is not accessible, exception: %s", this->getName(), e.getMessage());

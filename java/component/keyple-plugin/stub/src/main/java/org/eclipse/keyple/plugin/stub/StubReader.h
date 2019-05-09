@@ -163,10 +163,6 @@ namespace org {
                         }
 
                       public:
-                        /**
-                         *
-                         */
-                        //void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
 
                         /**
                          *

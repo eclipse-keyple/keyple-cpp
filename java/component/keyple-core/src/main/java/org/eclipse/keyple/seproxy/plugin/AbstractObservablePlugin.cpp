@@ -66,7 +66,7 @@ namespace org {
                     {
                         AbstractLoggedObservable<PluginEvent>::addObserver(observer);
                         if (AbstractLoggedObservable<PluginEvent>::countObservers() == 1) {
-                            logger->debug("Start the plugin monitoring.");
+                            logger->debug("Start the plugin monitoring\n");
                             startObservation();
                         }
                     }
@@ -75,7 +75,7 @@ namespace org {
                     {
                         AbstractLoggedObservable<PluginEvent>::removeObserver(observer);
                         if (AbstractLoggedObservable<PluginEvent>::countObservers() == 0) {
-                            logger->debug("Stop the plugin monitoring.");
+                            logger->debug("Stop the plugin monitoring\n");
                             stopObservation();
                         }
                     }
