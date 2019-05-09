@@ -62,8 +62,7 @@ namespace org {
                         /**
                          *
                          */
-                        const std::shared_ptr<Logger> logger =
-                            LoggerFactory::getLogger(typeid(AbstractLoggedObservable));
+                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractLoggedObservable));
 
                         /**
                          * The item name (must be unique)
@@ -77,8 +76,7 @@ namespace org {
                          * @param name name of the observed object
                          */
                       public:
-                        AbstractLoggedObservable(const std::string &name)
-                            : name(name)
+                        AbstractLoggedObservable(const std::string &name) : name(name)
                         {
                             logger->debug("constructor (name: %s)\n", name);
                         }
@@ -149,11 +147,12 @@ namespace org {
                             if (std::is_same<T, ReaderEvent>::value) {
                             //if (std::static_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
                                 logger->trace("[%s] AbstractObservableReader => Notifying a reader event. EVENTNAME = %s\n",
-                                              this->getName(), "<fixme event name>"); //(std::static_pointer_cast<ReaderEvent>(event))->getEventType().getName());
+                                              this->getName(), (reinterpret_cast<ReaderEvent *>(event.get()))->getEventType().getName());
+                                              
                             }
                             else { //else if (std::dynamic_pointer_cast<AbstractObservablePlugin>(shared_from_this()) != nullptr) {
                                 logger->trace("[%s] AbstractObservableReader => Notifying a plugin event. EVENTNAME = %s\n",
-                                              this->getName(), "<fixme event name>"); //(std::static_pointer_cast<PluginEvent>(event))->getEventType().getName());
+                                              this->getName(), (reinterpret_cast<PluginEvent *>(event.get()))->getEventType().getName());
                             }
  
                             org::eclipse::keyple::util::Observable<T>::setChanged();
