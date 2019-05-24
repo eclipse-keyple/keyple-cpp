@@ -1,6 +1,6 @@
 #include "ByteArrayUtils.h"
 #include "ChannelState.h"
-#include "ContactlessProtocols.h"
+#include "ContactlessProtocols_Import.h"
 #include "KeypleBaseException.h"
 #include "MatchingSe.h"
 #include "NoStackTraceThrowable.h"
@@ -44,13 +44,14 @@ int main(int argc, char **argv)
 
     /* Get the instance of the SeProxyService (Singleton pattern) and assign PcscPlugin to the SeProxyService */
     SeProxyService& seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(std::make_shared<PcscPlugin>(PcscPlugin::getInstance()));
+    seProxyService.addPlugin(std::shared_ptr<PcscPlugin>(&pcscplugin));
+    std::shared_ptr<SeProxyService> shared_seProxyService = std::shared_ptr<SeProxyService>(&seProxyService);
 
     /*
      * Get a SE reader ready to work with generic SE. Use the getReader helper method from the
      * ReaderUtilities class.
      */
-    std::shared_ptr<SeReader> seReader = ReaderUtilities::getDefaultContactLessSeReader(std::shared_ptr<SeProxyService>(&seProxyService));
+    std::shared_ptr<SeReader> seReader = ReaderUtilities::getDefaultContactLessSeReader(shared_seProxyService);
 
     /* Check if the reader exists */
     if (seReader == nullptr) {

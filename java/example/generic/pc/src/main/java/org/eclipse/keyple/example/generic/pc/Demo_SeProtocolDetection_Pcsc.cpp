@@ -35,7 +35,7 @@
                         using SeProtocolSetting         = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
                         using ReaderUtilities           = org::eclipse::keyple::example::generic::pc::ReaderUtilities;
                         using ReaderPlugin              = org::eclipse::keyple::seproxy::ReaderPlugin;
-			            using SeProtocolSettingList     = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
+                        using SeProtocolSettingList     = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
 
                         int main(int argc, char **argv)
                         {

@@ -30,4 +30,9 @@ public:
 			dest[destPos + i] = src[srcPos + i];
 		}
 	}
+
+    static long currentTimeMillis()
+	{
+        return nanoTime() * pow(10, 6);
+    }
 };

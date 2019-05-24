@@ -10,21 +10,41 @@
 #include <PCSC/wintypes.h>
 #endif
 
+/* Smartcard I/O */
+#include "CardException.h"
+#include "CardTerminal.h"
+
 /* Common */
 #include "Logger.h"
 #include "LoggerFactory.h"
 
-/* Smartcard I/O */
-#include "CardException.h"
+namespace org {
+namespace eclipse {
+namespace keyple {
+namespace smartcardio {
 
-
-    using Logger        = org::eclipse::keyple::common::Logger;
-    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+using Logger        = org::eclipse::keyple::common::Logger;
 
 class CardTerminals {
-    
+protected:
+    /**
+	 *
+	 */
+    SCARDCONTEXT ctx;
 
-  public:
+private:
+    /**
+	 *
+	 */
+    std::vector<CardTerminal> terminals;
+
+    /**
+	 *
+	 */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardTerminals));
+
+public:
     /**
 	 * Returns an unmodifiable list of all available terminals.
 	 *
@@ -40,7 +60,7 @@ class CardTerminals {
         char *pszReader;
 
         logger->debug("listing current readers\n");
-        ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &ctx);
+        ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &this->ctx);
         if (ret != SCARD_S_SUCCESS)
         {
             logger->debug("error establishing context\n");
@@ -70,7 +90,7 @@ class CardTerminals {
         {
             std::string s(pszReader);
             logger->debug("adding reader '%s' to list\n", s);
-            terminals.push_back(CardTerminal(s));
+            terminals.push_back(CardTerminal(this->ctx, s));
             pszReader += strlen(pszReader) + 1;
         }
 
@@ -101,21 +121,9 @@ class CardTerminals {
     {
         logger->debug("destructor\n");
     }
-
-  protected:
-    /**
-	 *
-	 */
-    SCARDCONTEXT ctx;
-
-  private:
-    /**
-	 *
-	 */
-    std::vector<CardTerminal> terminals;
-
-    /**
-	 *
-	 */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardTerminals));
 };
+
+}
+}
+}
+}

@@ -7,244 +7,244 @@
 #include <string>
 
 #ifdef __GNUG__ // gnu C++ compiler
-    #include <cxxabi.h>
+#include <cxxabi.h>
 #endif
 
 /* Common*/
 #include "Export.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace common {
+namespace eclipse {
+namespace keyple {
+namespace common {
 
-                class EXPORT Logger {
-                  private:
-                    /**
-                     *
-                     */
-                    bool traceEnabled;
+class EXPORT Logger {
+    private:
+    /**
+     *
+      */
+    bool traceEnabled;
 
-                    /**
+    /**
+     *
+     */
+    bool debugEnabled;
 
-                     *
-                     */
-                    bool debugEnabled;
+    /**
+     *
+     */
+    bool warnEnabled;
 
-                    /**
-                     *
-                     */
-                    bool warnEnabled;
+    /**
+     *
+     */
+    bool infoEnabled;
 
-                    /**
-                     *
-                     */
-                    bool infoEnabled;
+    /**
+     *
+     */
+    bool errorEnabled;
 
-                    /**
-                     *
-                     */
-                    bool errorEnabled;
+    /**
+     *
+     */
+    const std::string className;
 
-                    /**
-                     *
-                     */
-                    const std::string className;
+    /**
+     * Mutex for critical sections (std::cout usage)
+     */
+    std::mutex mtx;
 
-                    /**
-                     * Mutex for critical sections (std::cout usage)
-                     */
-                    std::mutex mtx;
+    /**
+     *
+     */
+    void log(const char *s)
+    {
+        mtx.lock();
 
-                    /**
-                     *
-                     */
-                    void log(const char *s)
-                    {
-                        mtx.lock();
+        while (s && *s)
+        {
+            if (*s == '%' && *++s != '%') { // make sure that there wasn't meant to be more arguments
+                                            // %% represents plain % in a format string
+                mtx.unlock();
+                throw std::runtime_error("invalid format: missing arguments");
+            }
 
-                        while (s && *s)
-                        {
-                            if (*s == '%' && *++s != '%') { // make sure that there wasn't meant to be more arguments
-                                                            // %% represents plain % in a format string
-                                mtx.unlock();
-                                throw std::runtime_error("invalid format: missing arguments");
-                            }
+            std::cout << *s++;
+        }
 
-                            std::cout << *s++;
-                        }
+        mtx.unlock();
+    }
 
-                        mtx.unlock();
-                    }
+    /**
+     * Actual printing function
+     */
+    template <typename T, typename... Args>
+    void log(const char *s, T value, Args... args)
+    {
+        mtx.lock();
 
-                    /**
-                     * Actual printing function
-                     */
-                    template <typename T, typename... Args>
-                    void log(const char *s, T value, Args... args)
-                    {
-                        mtx.lock();
+        while (s && *s)
+        {
+            if (*s == '%' && *++s != '%')
+            {                             // a format specifier (ignore which one it is)
+                std::cout << value;       // use first non-format argument
+                mtx.unlock();
+                return log(++s, args...); // ``peel off'' first argument
+            }
+            std::cout << *s++;
+        }
 
-                        while (s && *s)
-                        {
-                            if (*s == '%' && *++s != '%')
-                            {                             // a format specifier (ignore which one it is)
-                                std::cout << value;       // use first non-format argument
-                                mtx.unlock();
-                                return log(++s, args...); // ``peel off'' first argument
-                            }
-                            std::cout << *s++;
-                        }
+        mtx.unlock();
 
-                        mtx.unlock();
+        throw std::runtime_error("extra arguments provided to log");
+    }
 
-                        throw std::runtime_error("extra arguments provided to log");
-                    }
+    public:
+    /**
+     * Constructor
+     */
+    Logger(const std::string &className);
 
-                  public:
-                    /**
-	                 * Constructor
-	                 */
-                    Logger(const std::string &className);
+    /**
+     * Destructor
+     */
+    ~Logger();
 
-                    /**
-                     * Destructor
-                     */
-                    ~Logger();
+    bool isTraceEnabled();
 
-                    bool isTraceEnabled();
+    bool isDebugEnabled();
 
-                    bool isDebugEnabled();
+    bool isWarnEnabled();
 
-                    bool isWarnEnabled();
+    bool isInfoEnabled();
 
-                    bool isInfoEnabled();
+    bool isErrorEnabled();
 
-                    bool isErrorEnabled();
+    std::string getClassName();
 
-                    std::string getClassName();
+    void setTraceEnabled(bool enabled);
 
-                    void setTraceEnabled(bool enabled);
+    void setDebugEnabled(bool enabled);
 
-                    void setDebugEnabled(bool enabled);
+    void setWarnEnabled(bool enabled);
 
-                    void setWarnEnabled(bool enabled);
+    void setInfoEnabled(bool enabled);
 
-                    void setInfoEnabled(bool enabled);
-
-                    void setErrorEnabled(bool enabled);
+    void setErrorEnabled(bool enabled);
 
 #ifdef __GNUG__ // gnu C++ compiler
-                    std::string demangle( const char* mangled_name ) {
-                        std::size_t len = 0 ;
-                        int status = 0 ;
-                        std::unique_ptr< char, decltype(&std::free) > ptr(
-                        __cxxabiv1::__cxa_demangle( mangled_name, nullptr, &len, &status ), &std::free ) ;
-                        return ptr.get() ;
-                    }
+    std::string demangle( const char* mangled_name ) {
+        std::size_t len = 0 ;
+        int status = 0 ;
+        std::unique_ptr< char, decltype(&std::free) > ptr(
+        __cxxabiv1::__cxa_demangle( mangled_name, nullptr, &len, &status ), &std::free ) ;
+        return ptr.get() ;
+    }
 #else
-                    std::string demangle(const char* name) {
-                        return name;
-                    }
+    std::string demangle(const char* name) {
+        return name;
+    }
 #endif // _GNUG_
 
-                    void trace(const char *s)
-                    {
-                        if (traceEnabled)
-                        {
-                            std::cout << "[TRACE]   [" << className << "]   ";
-                            log(s);
-                        }
-                    }
-
-                    template <typename T, typename... Args>
-                    void trace(const char *s, T value, Args... args)
-                    {
-                        if (traceEnabled)
-                        {
-                            std::cout << "[TRACE]   [" << className << "]   ";
-                            log(s, value, std::forward<Args>(args)...);
-                        }
-                    }
-
-                    void debug(const char *s)
-                    {
-                        if (debugEnabled)
-                        {
-                            std::cout << "[DEBUG]   [" << className << "]   ";
-                            log(s);
-                        }
-                    }
-
-                    template <typename T, typename... Args>
-                    void debug(const char *s, T value, Args... args)
-                    {
-                        if (debugEnabled)
-                        {
-                            std::cout << "[DEBUG]   [" << className << "]   ";
-                            log(s, value, std::forward<Args>(args)...);
-                        }
-                    }
-
-                    void warn(const char *s)
-                    {
-                        if (warnEnabled)
-                        {
-                            std::cout << "[ WARN]   [" << className << "    ";
-                            log(s);
-                        }
-                    }
-
-                    template <typename T, typename... Args>
-                    void warn(const char *s, T value, Args... args)
-                    {
-                        if (warnEnabled)
-                        {
-                            std::cout << "[ WARN]   [" << className << "]   ";
-                            log(s, value, std::forward<Args>(args)...);
-                        }
-                    }
-
-                    void info(const char *s)
-                    {
-                        if (infoEnabled)
-                        {
-                            std::cout << "[ INFO]   [" << className << "]   ";
-                            log(s);
-                        }
-                    }
-
-                    template <typename T, typename... Args>
-                    void info(const char *s, T value, Args... args)
-                    {
-                        if (infoEnabled)
-                        {
-                            std::cout << "[ INFO]   [" << className << "]   ";
-                            log(s, value, std::forward<Args>(args)...);
-                        }
-                    }
-
-                    void error(const char *s)
-                    {
-                        if (errorEnabled)
-                        {
-                            std::cout << "[ERROR]   [" << className << "]   ";
-                            log(s);
-                        }
-                    }
-
-                    template <typename T, typename... Args>
-                    void error(const char *s, T value, Args... args)
-                    {
-                        if (errorEnabled)
-                        {
-                            std::cout << "[ERROR]   [" << className << "]   ";
-                            log(s, value, std::forward<Args>(args)...);
-                        }
-                    }
-                };
-            } // namespace common
+    void trace(const char *s)
+    {
+        if (traceEnabled)
+        {
+            std::cout << "[TRACE]   [" << className << "]   ";
+            log(s);
         }
     }
+
+    template <typename T, typename... Args>
+    void trace(const char *s, T value, Args... args)
+    {
+        if (traceEnabled)
+        {
+            std::cout << "[TRACE]   [" << className << "]   ";
+            log(s, value, std::forward<Args>(args)...);
+        }
+    }
+
+    void debug(const char *s)
+    {
+        if (debugEnabled)
+        {
+            std::cout << "[DEBUG]   [" << className << "]   ";
+            log(s);
+        }
+    }
+
+    template <typename T, typename... Args>
+    void debug(const char *s, T value, Args... args)
+    {
+        if (debugEnabled)
+        {
+            std::cout << "[DEBUG]   [" << className << "]   ";
+            log(s, value, std::forward<Args>(args)...);
+        }
+    }
+
+    void warn(const char *s)
+    {
+        if (warnEnabled)
+        {
+            std::cout << "[ WARN]   [" << className << "    ";
+            log(s);
+        }
+    }
+
+    template <typename T, typename... Args>
+    void warn(const char *s, T value, Args... args)
+    {
+        if (warnEnabled)
+        {
+            std::cout << "[ WARN]   [" << className << "]   ";
+            log(s, value, std::forward<Args>(args)...);
+        }
+    }
+
+    void info(const char *s)
+    {
+        if (infoEnabled)
+        {
+            std::cout << "[ INFO]   [" << className << "]   ";
+            log(s);
+        }
+    }
+
+    template <typename T, typename... Args>
+    void info(const char *s, T value, Args... args)
+    {
+        if (infoEnabled)
+        {
+            std::cout << "[ INFO]   [" << className << "]   ";
+            log(s, value, std::forward<Args>(args)...);
+        }
+    }
+
+    void error(const char *s)
+    {
+        if (errorEnabled)
+        {
+            std::cout << "[ERROR]   [" << className << "]   ";
+            log(s);
+        }
+    }
+
+    template <typename T, typename... Args>
+    void error(const char *s, T value, Args... args)
+    {
+        if (errorEnabled)
+        {
+            std::cout << "[ERROR]   [" << className << "]   ";
+            log(s, value, std::forward<Args>(args)...);
+        }
+    }
+};
+
+}
+}
+}
 }
 

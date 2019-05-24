@@ -1,47 +1,146 @@
 #pragma once
 
+#include <regex>
 #include <stdexcept>
 
-class Pattern;
+#include "Export.h"
 
-class Matcher {
+class Pattern;  
+
+class EXPORT Matcher {
 private:
-    /*
-     * Holds the pattern, that is, the compiled regular expression
+    /**
+     * The Pattern object that created this Matcher.
      */
-    Pattern *pattern;
+    Pattern* parentPattern;
 
-    /*
-     * Holds the input text
+    /**
+     * The original string being matched.
      */
-    std::string& input;
+    const std::string text;
+
+    /**
+     * The range within the sequence that is to be matched. Anchors
+     * will match at these "hard" boundaries. Changing the region
+     * changes these values.
+     */
+    int from, to;
+
+    /**
+     * Matcher state used by the last node. NOANCHOR is used when a
+     * match does not have to consume all of the input. ENDANCHOR is
+     * the mode used for matching all the input.
+     */
+    int ENDANCHOR = 1;
+    int NOANCHOR = 0;
+    int acceptMode = NOANCHOR;
+
+    /**
+     * The range of string that last matched the pattern. If the last
+     * match failed then first is -1; last initially holds 0 then it
+     * holds the index of the end of the last match (which is where the
+     * next search starts).
+     */
+    int first = -1, last = 0;
+
+    /**
+     * The end index of what matched in the last match operation.
+     */
+    int oldLast = -1;
+
+    /**
+     * Boolean indicating whether or not more input could change
+     * the results of the last match.
+     *
+     * If hitEnd is true, and a match was found, then more input
+     * might cause a different match to be found.
+     * If hitEnd is true and a match was not found, then more
+     * input could cause a match to be found.
+     * If hitEnd is false and a match was found, then more input
+     * will not change the match.
+     * If hitEnd is false and a match was not found, then more
+     * input will not cause a match to be found.
+     */
+    bool hitEnd;
+
+    /**
+     * Boolean indicating whether or not more input could change
+     * a positive match into a negative one.
+     *
+     * If requireEnd is true, and a match was found, then more
+     * input could cause the match to be lost.
+     * If requireEnd is false and a match was found, then more
+     * input might change the match but the match won't be lost.
+     * If a match was not found, then requireEnd has no meaning.
+     */
+    bool requireEnd;
+
+    /**
+     * The storage used by groups. They may contain invalid values if
+     * a group was skipped during the matching.
+     */
+    std::vector<int> groups;
 
 public:
-    /*
-     * Constructor
-     * 
-     * Creates a Matcher for a given combination of pattern and input. Both
-     * elements can be changed later on.
-     * 
-     * @param pattern the pattern to use
-     * @param input the input to use
+    /**
+     * All matchers have the state used by Pattern during a match.
      */
-    Matcher(Pattern* pattern, std::string input) : pattern(pattern), input(input)
-    {
+    Matcher(Pattern* parent, const std::string& text);
 
-    }
+    /**
+     * Initiates a search for an anchored match to a Pattern within the given
+     * bounds. The groups are filled with default values and the match of the
+     * root of the state machine is called. The state machine will hold the
+     * state of the match as it proceeds in this matcher.
+     */
+    bool match(int from, int anchor);
 
-    bool matches()
-        {
-        /* To be implemented */
-        return false;
-    }
+    /**
+     * Attempts to match the entire region against the pattern.
+     *
+     * <p> If the match succeeds then more information can be obtained via the
+     * <tt>start</tt>, <tt>end</tt>, and <tt>group</tt> methods.  </p>
+     *
+     * @return  <tt>true</tt> if, and only if, the entire region sequence
+     *          matches this matcher's pattern
+     */
+    bool matches();
 
-    std::string replaceAll(std::string replacement)
-    {
-        /* To be implemented */
-        return replacement;
-    }
+    /**
+     * Replaces every subsequence of the input sequence that matches the
+     * pattern with the given replacement string.
+     *
+     * <p> This method first resets this matcher.  It then scans the input
+     * sequence looking for matches of the pattern.  Characters that are not
+     * part of any match are appended directly to the result string; each match
+     * is replaced in the result by the replacement string.  The replacement
+     * string may contain references to captured subsequences as in the {@link
+     * #appendReplacement appendReplacement} method.
+     *
+     * <p> Note that backslashes (<tt>\</tt>) and dollar signs (<tt>$</tt>) in
+     * the replacement string may cause the results to be different than if it
+     * were being treated as a literal replacement string. Dollar signs may be
+     * treated as references to captured subsequences as described above, and
+     * backslashes are used to escape literal characters in the replacement
+     * string.
+     *
+     * <p> Given the regular expression <tt>a*b</tt>, the input
+     * <tt>"aabfooaabfooabfoob"</tt>, and the replacement string
+     * <tt>"-"</tt>, an invocation of this method on a matcher for that
+     * expression would yield the string <tt>"-foo-foo-foo-"</tt>.
+     *
+     * <p> Invoking this method changes this matcher's state.  If the matcher
+     * is to be used in further matching operations then it should first be
+     * reset.  </p>
+     *
+     * @param  replacement
+     *         The replacement string
+     *
+     * @return  The string constructed by replacing each matching subsequence
+     *          by the replacement string, substituting captured subsequences
+     *          as needed
+     */
+    std::string replaceAll(std::string replacement);
 
     /*
      * Attempts to find the next subsequence of the input sequence that matches the pattern.
@@ -54,11 +153,7 @@ public:
      * 
      * @return true if, and only if, a subsequence of the input sequences matches this matcher's patern.
      */
-    bool find()
-    {
-        /* To be implemented */
-        return false;
-    }
+    bool find();
 
     /*
      * Resets this matcher and then attempts to find the next subsequence of the input sequence that
@@ -73,14 +168,7 @@ public:
      * @throws IndexOutOfBoundException if start is less than zero of if start is greated than the length
      *                                  of the input sequence.
      */
-    bool find(int start)
-    {
-        if (start < 0 || start > (int)input.size())
-            throw std::runtime_error("Out of bound exception");
-
-        /* To be implemented */
-        return false;
-    }
+    bool find(int start);
 
     /*
      * Returns the text that matched a given group of the regular expression. Explicit capturing groups
@@ -99,13 +187,7 @@ public:
      * 
      * @throws IllegalStateException if no successful match has been made
      */
-    std::string group(int group)
-    {
-        (void)group;
-        
-        /* To be implemented */
-        return "";
-    }
+    std::string group(int group);
 
     /*
      * Returns the text that matched the whole regular expression.
@@ -114,8 +196,5 @@ public:
      * 
      * @throws IllegalStateException if no successful match has been made
      */
-    std::string group()
-    {
-        return group(0);
-    }
+    std::string group();
 };

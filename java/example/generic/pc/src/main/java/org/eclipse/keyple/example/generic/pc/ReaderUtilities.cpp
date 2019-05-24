@@ -7,6 +7,7 @@
 #include "PcscReadersSettings.h"
 #include "PcscReader_Import.h"
 #include "SeProtocolSetting.h"
+#include "SeProtocolSettingList.h"
 #include "PcscProtocolSetting_Import.h"
 #include "ReaderPlugin.h"
 
@@ -16,22 +17,24 @@ namespace org {
             namespace example {
                 namespace generic {
                     namespace pc {
-                        using PcscProtocolSetting = org::eclipse::keyple::plugin::pcsc::PcscProtocolSetting;
-                        using PcscReader = org::eclipse::keyple::plugin::pcsc::PcscReader;
-                        using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
-                        using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
-                        using SeReader = org::eclipse::keyple::seproxy::SeReader;
-                        using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-                        using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                        using PcscProtocolSetting           = org::eclipse::keyple::plugin::pcsc::PcscProtocolSetting;
+                        using PcscReader                    = org::eclipse::keyple::plugin::pcsc::PcscReader;
+                        using ReaderPlugin                  = org::eclipse::keyple::seproxy::ReaderPlugin;
+                        using SeProxyService                = org::eclipse::keyple::seproxy::SeProxyService;
+                        using SeReader                      = org::eclipse::keyple::seproxy::SeReader;
+                        using KeypleBaseException           = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+                        using KeypleReaderException         = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                         using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
-                        using SeProtocolSetting = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
+                        using SeProtocolSetting             = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
+                        using SeProtocolSettingList         = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
 
                         std::shared_ptr<SeReader> ReaderUtilities::getReaderByName(std::shared_ptr<SeProxyService> seProxyService, const std::string &pattern)
                         {
                             Pattern* p = Pattern::compile(pattern);
                             for (auto plugin : seProxyService->getPlugins()) {
                                 for (auto reader : *plugin->getReaders()) {
-                                    if (p->matcher(reader->getName())->matches()) {
+                                    Matcher *matcher = p->matcher(reader->getName());
+                                    if (matcher->matches()) {
                                         return reader;
                                     }
                                 }
@@ -70,7 +73,7 @@ namespace org {
                             reader->setParameter(PcscReader::SETTING_KEY_MODE, PcscReader::SETTING_MODE_SHARED);
 
                             /* Set the PO reader protocol flag */
-                            reader->addSeProtocolSetting(std::dynamic_pointer_cast<SeProtocolSetting>(std::make_shared<PcscProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4)));
+                            reader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(std::static_pointer_cast<SeProtocolSettingList>(std::make_shared<PcscProtocolSetting>(PcscProtocolSetting::SETTING_PROTOCOL_ISO14443_4))));
 
                         }
 

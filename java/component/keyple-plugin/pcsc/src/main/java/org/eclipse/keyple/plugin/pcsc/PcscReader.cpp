@@ -108,66 +108,69 @@ catch (const CardException &e) {
 
 bool PcscReader::waitForCardAbsent(long long timeout)
 {
-try {
-    if (terminal->waitForCardAbsent(timeout)) {
-        closeLogicalChannel();
-        closePhysicalChannel();
-        return true;
+    try {
+        if (terminal->waitForCardAbsent(timeout)) {
+            closeLogicalChannel();
+            closePhysicalChannel();
+            return true;
+        } else {
+            return false;
+        }
+    } catch (CardException &e) {
+        logger->trace("[%s] Exception occured in waitForCardAbsent. Message: %s\n",
+                      this->getName(), e.getMessage());
+        throw NoStackTraceThrowable();
     }
-    else {
-        return false;
-    }
-}
-catch (CardException &e) {
-    logger->trace("[%s] Exception occured in waitForCardAbsent. Message: %s\n", this->getName(), e.getMessage());
-    throw NoStackTraceThrowable();
-}
 }
 
 std::vector<char> PcscReader::transmitApdu(std::vector<char> &apduIn)
 {
-std::shared_ptr<ResponseAPDU> apduResponseData;
-try {
-    apduResponseData = channel->transmit(std::shared_ptr<CommandAPDU>(new CommandAPDU(apduIn)));
-}
-catch (CardException &e) {
-    throw KeypleIOReaderException(this->getName() + ":" + e.getMessage());
-}
-return apduResponseData->getBytes();
+    std::shared_ptr<ResponseAPDU> apduResponseData;
+    try {
+        apduResponseData = channel->transmit(std::shared_ptr<CommandAPDU>(new CommandAPDU(apduIn)));
+    }
+    catch (CardException &e) {
+        throw KeypleIOReaderException(this->getName() + ":" + e.getMessage());
+    }
+
+    return apduResponseData->getBytes();
 }
 
 bool PcscReader::protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag)
 {
-bool result;
-// Get protocolFlag to check if ATR filtering is required
-if (*(std::dynamic_pointer_cast<Protocol>(protocolFlag)) != Protocol::ANY) {
-    if (!isPhysicalChannelOpen()) {
-        openPhysicalChannel();
-    }
-    // the requestSet will be executed only if the protocol match the requestElement
-    std::string selectionMask = protocolsMap[protocolFlag];
-    if (selectionMask == "") {
-        throw KeypleReaderException("Target selector mask not found!");// nullptr));
-    }
-    Pattern *p = Pattern::compile(selectionMask);
-    std::string atr = ByteArrayUtils::toHex(card->getATR()); //.getBytes());
-    if (!p->matcher(atr)->matches()) {
-        if (logging) {
-            logger->trace("[%s] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %s\n", this->getName(), protocolFlag);
+    bool result;
+
+    /* Get protocolFlag to check if ATR filtering is required */
+    Protocol* protocol = reinterpret_cast<Protocol*>(protocolFlag.get());
+    if (*protocol != Protocol::ANY) {
+        if (!isPhysicalChannelOpen()) {
+            openPhysicalChannel();
         }
-        result = false;
-    }
-    else {
-        if (logging) {
-            logger->trace("[%s] protocolFlagMatches => matching SE. PROTOCOLFLAG = %s\n", this->getName(), protocolFlag);
+
+        /*
+         * The requestSet will be executed only if the protocol match the
+         * requestElement.
+         */
+        std::string selectionMask = protocolsMap[protocolFlag];
+        if (selectionMask == "") {
+            throw KeypleReaderException("Target selector mask not found!");// nullptr));
         }
+
+        Pattern *p = Pattern::compile(selectionMask);
+        std::string atr = ByteArrayUtils::toHex(card->getATR()); //.getBytes());
+        if (!p->matcher(atr)->matches()) {
+            logger->trace("[%s] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %s\n",
+                          this->getName(), protocolFlag);
+            result = false;
+        } else {
+            logger->trace("[%s] protocolFlagMatches => matching SE. PROTOCOLFLAG = %s\n",
+                          this->getName(), protocolFlag);
+            result = true;
+        }
+    } else {
+        // no protocol defined returns true
         result = true;
     }
-}
-else {
-    // no protocol defined returns true
-    result = true;
-}
 return result;
 }
 

@@ -1,17 +1,12 @@
 #pragma once
 
-#if defined(_WIN32)
-#include <windows.h>
-#else
-#include <pthread.h>
-#include <unistd.h>
-#endif
+#include <chrono>
+#include <thread>
 
 #include "Object.h"
 
 class Thread {
-
-  public:
+public:
     /**
 	 * Constructor
 	 *
@@ -20,8 +15,11 @@ class Thread {
 	 * Automatically generated names are of the form "Thread-"+n, where n is an
 	 * integer.
 	 */
-    Thread() : name("Thread-x"), interrupted(false), tid(0), running(0), detached(0)
+    Thread() : name("Thread-x")
     {
+        interrupted = false;
+        detached = true;
+        running = false;
     }
 
     /**
@@ -32,8 +30,10 @@ class Thread {
 	 *
 	 * @param name the name of the new thread
 	 */
-    Thread(const std::string &name) : name(name), interrupted(true)
+    Thread(const std::string &name) : name(name)
     {
+        interrupted = false;
+        detached = true;
     }
 
     /**
@@ -43,20 +43,7 @@ class Thread {
     {
         if (running == 1 && detached == 0)
         {
-#if defined(_WIN32)
-            CloseHandle(tid);
-#else
-            pthread_detach(tid);
-#endif
-        }
-
-        if (running == 1)
-        {
-#if defined(_WIN32)
-            CloseHandle(tid);
-#else
-            pthread_cancel(tid);
-#endif
+            t->detach();
         }
     }
 
@@ -78,13 +65,9 @@ class Thread {
 
         interrupted = false;
 
-#if defined(_WIN32)
-        DWORD unused_tid;
-        tid    = CreateThread(NULL, 0, runThread, this, 0, &unused_tid);
-        result = tid ? 0 : -1;
-#else
-        result = pthread_create(&tid, NULL, runThread, this);
-#endif
+        t = new std::thread(runThread, this);
+        result = t ? 0 : -1;
+
         if (result == 0)
             running = 1;
     }
@@ -97,19 +80,10 @@ class Thread {
 	 * call the Thread::run() method. Due to polymorphism, the Thread subclass
 	 * run() method will be called to carry out the thread’s action.
 	 */
-#if defined(_WIN32)
-    static DWORD WINAPI runThread(LPVOID arg)
+    static void runThread(void *arg)
     {
         ((Thread *)arg)->run();
-
-        return 0;
     }
-#else
-    static void *runThread(void *arg)
-    {
-        return ((Thread *)arg)->run();
-    }
-#endif
 
     /**
 	 * By default Pthreads are joinable. meaning you can wait for them to
@@ -122,21 +96,9 @@ class Thread {
     {
         int result = -1;
 
-        if (running == 1)
-        {
-#if defined(_WIN32)
-            WaitForMultipleObjects(1, &tid, TRUE, INFINITE);
-            result = 0; // Close handle anyway
-#else
-            result = pthread_join(tid, NULL);
-#endif
-            if (result == 0)
-            {
-#if defined(_WIN32)
-                CloseHandle(tid);
-#endif
-                detached = 1;
-            }
+        if (running == 1) {
+            t->join();
+            detached = 1;
         }
 
         return result;
@@ -152,17 +114,9 @@ class Thread {
     {
         int result = -1;
 
-        if (running == 1 && detached == 0)
-        {
-#if defined(_WIN32)
-            result = !CloseHandle(tid);
-#else
-            result = pthread_detach(tid);
-#endif
-            if (result == 0)
-            {
-                detached = 1;
-            }
+        if (running == 1 && detached == 0) {
+            t->detach();
+            detached = 1;
         }
 
         return result;
@@ -172,13 +126,9 @@ class Thread {
 	 * This is another utility method that returns the thread ID for display or
 	 * logging purposes.
 	 */
-#if defined(_WIN32)
-    HANDLE self()
-#else
-    pthread_t self()
-#endif
+    std::thread::id self()
     {
-        return tid;
+        return t->get_id();
     }
 
     void setDaemon(bool on)
@@ -203,11 +153,7 @@ class Thread {
 	 */
     static void sleep(long millis)
     {
-#if defined(_WIN32)
-        Sleep(millis);
-#else
-        usleep(millis * 1000);
-#endif
+        std::this_thread::sleep_for(std::chrono::milliseconds(millis));
     }
 
     /**
@@ -246,33 +192,24 @@ class Thread {
 
     virtual void *run() = 0;
 
-  private:
-    /**
-	 *
-	 */
+    static std::thread::id currentThread()
+    {
+        return std::this_thread::get_id();
+    }
+
+private:
+    /** */
     const std::string name;
 
-    /**
-	 *
-	 */
+    /** */
     bool interrupted;
 
-    /**
-	 *
-	 */
-#if defined(_WIN32)
-    HANDLE tid;
-#else
-    pthread_t tid;
-#endif
+    /** */
+    std::thread *t;
 
-    /**
-	 *
-	 */
+    /** */
     int running;
 
-    /**
-	 *
-	 */
+    /** */
     int detached;
 };

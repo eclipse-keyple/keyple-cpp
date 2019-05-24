@@ -108,6 +108,7 @@ namespace org {
                      */
                     void setSelectionClass(const std::type_info& selectionClass);
 
+                public:
                     /**
                      * The default value for the selectionClass (unless setSelectionClass is used) is
                      * SeSelector.class
@@ -122,7 +123,7 @@ namespace org {
                      * @return the current matchingClass
                      */
                     std::type_index& getMatchingClass();
-
+                protected:
                     /**
                      * Add an additional {@link ApduRequest} to be executed after the selection process if it
                      * succeeds.

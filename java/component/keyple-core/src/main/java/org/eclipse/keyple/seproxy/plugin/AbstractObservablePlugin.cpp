@@ -14,14 +14,12 @@ namespace org {
             namespace seproxy {
                 namespace plugin {
 
-                    using ReaderPlugin     = org::eclipse::keyple::seproxy::ReaderPlugin;
-                    using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
-                    using PluginEvent      = org::eclipse::keyple::seproxy::event::PluginEvent;
-                    using KeypleReaderException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using KeypleReaderNotFoundException =
-                        org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
-                    using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
+                    using ReaderPlugin                  = org::eclipse::keyple::seproxy::ReaderPlugin;
+                    using ObservablePlugin              = org::eclipse::keyple::seproxy::event::ObservablePlugin;
+                    using PluginEvent                   = org::eclipse::keyple::seproxy::event::PluginEvent;
+                    using KeypleReaderException         = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+                    using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
+                    using ProxyReader                   = org::eclipse::keyple::seproxy::message::ProxyReader;
 
                     AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name) : AbstractLoggedObservable<PluginEvent>(name)
                     {

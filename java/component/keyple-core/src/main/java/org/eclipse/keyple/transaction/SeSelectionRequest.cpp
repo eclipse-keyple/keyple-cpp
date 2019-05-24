@@ -15,11 +15,11 @@ namespace org {
                 using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
 
                 SeSelectionRequest::SeSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag)
-                : matchingClass(std::type_index(typeid(MatchingSe))), selectionClass(std::type_index(typeid(SeSelector))), channelState(channelState), protocolFlag(protocolFlag) {
+                : matchingClass(std::type_index(typeid(MatchingSe))), selectionClass(std::type_index(typeid(SeSelector))), channelState(channelState), protocolFlag(protocolFlag)
+                {
                     this->seSelector = seSelector;
-                    if (logger->isTraceEnabled()) {
-                        logger->trace("SeSelection");
-                    }
+                    /* Alex: removed 'if (logger-isTraceEnabled())', that check will be done in the trace function already */
+                    logger->trace("constructor\n");
                 }
 
                 std::shared_ptr<SeRequest> SeSelectionRequest::getSelectionRequest() {

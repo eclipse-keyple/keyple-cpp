@@ -3,8 +3,17 @@
 class Character
 {
 public:
-	static int	digit(char ch, int radix) {
+	static char digit(char ch, int radix)
+    {
 		(void)radix;
-		return ch;
+
+        if (ch >= '0' && ch <= '9')
+            return ch - '0';
+        if (ch >= 'A' && ch <= 'Z')
+            return ch - 'A' + 10;
+        if (ch >= 'a' && ch <= 'z')
+            return ch - 'a' + 10;
+
+        return 0;
 	}
 };

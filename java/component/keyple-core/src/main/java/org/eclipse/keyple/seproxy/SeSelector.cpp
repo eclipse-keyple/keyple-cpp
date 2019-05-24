@@ -78,13 +78,13 @@ namespace org {
                 SeSelector::SeSelector(std::shared_ptr<AidSelector> aidSelector, std::shared_ptr<AtrFilter> atrFilter, const std::string &extraInfo)
                 : aidSelector(aidSelector), atrFilter(atrFilter), extraInfo(extraInfo) {
                     if (logger->isTraceEnabled()) {
-                        logger->trace("Selection data: AID = {}, ATRREGEX = {}, EXTRAINFO = {}", this->aidSelector == nullptr ? "null" : ByteArrayUtils::toHex(this->aidSelector->getAidToSelect()), this->atrFilter == nullptr ? "null" : this->atrFilter->getAtrRegex(), extraInfo);
+                        logger->trace("Selection data: AID = %s ATRREGEX = %s, EXTRAINFO = %s\n", this->aidSelector == nullptr ? "null" : ByteArrayUtils::toHex(this->aidSelector->getAidToSelect()), this->atrFilter == nullptr ? "null" : this->atrFilter->getAtrRegex(), extraInfo);
 }
 }
 
                 std::shared_ptr<AidSelector> SeSelector::getAidSelector() {
                     return aidSelector;
-}
+}   
 
                 std::shared_ptr<AtrFilter> SeSelector::getAtrFilter() {
                     return atrFilter;
