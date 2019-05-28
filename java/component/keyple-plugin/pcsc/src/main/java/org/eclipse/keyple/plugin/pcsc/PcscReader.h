@@ -54,6 +54,9 @@ using Logger                      = org::eclipse::keyple::common::Logger;
 
 class EXPORT PcscReader : public AbstractThreadedLocalReader {
 public:
+    /**
+     * 
+     */
     static const std::string SETTING_KEY_TRANSMISSION_MODE;
     static const std::string SETTING_TRANSMISSION_MODE_CONTACTS;
     static const std::string SETTING_TRANSMISSION_MODE_CONTACTLESS;
@@ -74,25 +77,63 @@ public:
     static const std::string SETTING_KEY_LOGGING;
 
 private:
+    /**
+     * 
+     */
     static const std::string PROTOCOL_T0;
     static const std::string PROTOCOL_T1;
     static const std::string PROTOCOL_T_CL;
     static const std::string PROTOCOL_ANY;
 
+    /**
+     * 
+     */
     static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 5000;
 
+    /**
+     * 
+     */
     const std::shared_ptr<CardTerminal> terminal;
 
+    /**
+     * 
+     */
     std::string parameterCardProtocol;
+    
+    /**
+     * 
+     */
     bool cardExclusiveMode            = false;
+    
+    /**
+     * 
+     */
     bool cardReset                    = false;
+    
+    /**
+     * 
+     */
     TransmissionMode transmissionMode = static_cast<TransmissionMode>(0);
 
+
+    /**
+     * 
+     */
     std::shared_ptr<Card> card;
+    
+    /**
+     * 
+     */
     std::shared_ptr<CardChannel> channel;
 
+    /**
+     * 
+     */
     bool logging = false;
 
+    /**
+     * 
+     */
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PcscReader));
 
 public:
@@ -107,8 +148,12 @@ public:
 
     PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal);
 
+    /**
+     * 
+     */
     virtual ~PcscReader() { }
-        /**
+    
+    /**
      * Set a parameter.
      * <p>
      * These are the parameters you can use with their associated values:

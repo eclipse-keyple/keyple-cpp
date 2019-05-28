@@ -59,4 +59,4 @@ IF(APPLE)
 	SET(SPEC_LIBS pcsclite)
 ENDIF(APPLE)
 
-TARGET_LINK_LIBRARIES(usecase_generic1_explicitselectionaid_pcsc keyplepluginpcsc keyplecalypso keyplecore ${SPEC_LIBS})
+TARGET_LINK_LIBRARIES(usecase_generic1_explicitselectionaid_pcsc keyplepluginpcsc keyplecalypso keyplecore keyplesmartcardio ${SPEC_LIBS})

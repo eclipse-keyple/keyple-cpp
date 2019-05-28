@@ -65,4 +65,4 @@ ADD_EXECUTABLE(demo_observablereadernotification_pcsc
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/Demo_ObservableReaderNotification_Pcsc.cpp
 )
 
-TARGET_LINK_LIBRARIES(demo_observablereadernotification_pcsc keyplepluginpcsc ${WINSCARD})
+TARGET_LINK_LIBRARIES(demo_observablereadernotification_pcsc keyplepluginpcsc keyplesmartcardio ${WINSCARD})

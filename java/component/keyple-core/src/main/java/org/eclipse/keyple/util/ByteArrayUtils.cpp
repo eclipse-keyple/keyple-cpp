@@ -1,6 +1,7 @@
 #include "ByteArrayUtils.h"
 #include "Pattern.h"
 #include "Character.h"
+#include "stringbuilder.h"
 
 namespace org {
     namespace eclipse {

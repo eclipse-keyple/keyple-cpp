@@ -6,6 +6,32 @@
 #include "Object.h"
 
 class Thread {
+private:
+    /**
+     * 
+     */
+    const std::string name;
+
+    /**
+     * 
+     */
+    bool interrupted;
+
+    /**
+     * 
+     */
+    std::thread *t;
+
+    /**
+     * 
+     */
+    int running;
+
+    /**
+     * 
+     */
+    int detached;
+
 public:
     /**
 	 * Constructor
@@ -126,11 +152,22 @@ public:
 	 * This is another utility method that returns the thread ID for display or
 	 * logging purposes.
 	 */
-    std::thread::id self()
+    std::thread::id selfId()
     {
         return t->get_id();
     }
 
+    /**
+     *
+     */
+    std::thread* self()
+    {
+        return t;
+    }
+
+    /**
+     * 
+     */
     void setDaemon(bool on)
     {
         (void)on;
@@ -190,26 +227,32 @@ public:
         interrupted = true;
     }
 
+    /**
+     * 
+     */
     virtual void *run() = 0;
 
-    static std::thread::id currentThread()
+    /**
+     * 
+     */
+    static std::thread::id currentThreadId()
     {
         return std::this_thread::get_id();
     }
 
-private:
-    /** */
-    const std::string name;
+    /**
+     * 
+     */
+    std::string getName()
+    {
+        return name;
+    }
 
-    /** */
-    bool interrupted;
-
-    /** */
-    std::thread *t;
-
-    /** */
-    int running;
-
-    /** */
-    int detached;
+    /**
+     * 
+     */
+    void setThread(std::thread* t)
+    {
+        this->t = t;
+    }
 };

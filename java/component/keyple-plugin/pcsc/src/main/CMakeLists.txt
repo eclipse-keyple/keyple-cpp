@@ -77,6 +77,6 @@ ENDIF(APPLE)
 #	PATHS ${CMAKE_BUILD_DIRECTORY}
 #	PATH_SUFFIXES bin)
 
-SET(LINK_LIBS ${WINSCARD} keyplecore)
+SET(LINK_LIBS ${WINSCARD} keyplecore keyplesmartcardio)
 
 TARGET_LINK_LIBRARIES(keyplepluginpcsc ${LINK_LIBS})

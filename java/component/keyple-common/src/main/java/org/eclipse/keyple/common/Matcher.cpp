@@ -8,6 +8,9 @@ Matcher::Matcher(Pattern* parent, const std::string& text) : parentPattern(paren
 
 bool Matcher::match(int from, int anchor)
 {
+    (void)from;
+    (void)anchor;
+
     /* Alex: let's stop here the Java code copy and try to use C++ regex */
     std::regex word_regex(parentPattern->pattern);
     if (std::regex_search(text, word_regex))
@@ -23,6 +26,8 @@ bool Matcher::matches()
 
 std::string Matcher::replaceAll(std::string replacement)
 {
+    (void)replacement;
+
     /* To be implemented */
     return text;
 }

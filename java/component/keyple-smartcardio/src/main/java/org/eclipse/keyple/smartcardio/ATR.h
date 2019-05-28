@@ -13,8 +13,10 @@
 
 /* Common */
 #include "Arrays.h"
+#include "Export.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
+#include "Object.h"
 #include "stringhelper.h"
 
 namespace org {
@@ -22,7 +24,18 @@ namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-class ATR : public Object {
+class EXPORT ATR : public Object {
+private:
+    /**
+     * 
+     */
+    std::vector<char> atr;
+
+    /**
+     * 
+     */
+    int startHistorical, nHistorical;
+
 public:
     /**
      * Constructs an ATR from a byte array.
@@ -30,22 +43,14 @@ public:
      * @param atr the byte array containing the answer-to-reset bytes
      * @throws NullPointerException if <code>atr</code> is null
      */
-    ATR(std::vector<char> atr) : atr(atr)
-    {
-        parse();
-    }
+    ATR(std::vector<char> atr);
 
     /**
      * Returns a copy of the bytes in this ATR.
      *
      * @return a copy of the bytes in this ATR.
      */
-    std::vector<char> getBytes()
-    {
-        std::vector<char> copy(atr.begin(), atr.end());
-
-        return copy;
-    }
+    std::vector<char> getBytes();
 
     /**
      * Returns a copy of the historical bytes in this ATR.
@@ -54,25 +59,14 @@ public:
      *
      * @return a copy of the historical bytes in this ATR.
      */
-    std::vector<char> getHistoricalBytes()
-    {
-        std::vector<char> copy;
-        std::copy(atr.begin() + startHistorical,
-                  atr.begin() + startHistorical + nHistorical,
-                  std::back_inserter(copy));
-
-        return copy;
-    }
+    std::vector<char> getHistoricalBytes();
 
     /**
      * Returns a string representation of this ATR.
      *
      * @return a String representation of this ATR.
      */
-    std::string toString()
-    {
-        return StringHelper::formatSimple("ATR: %d bytes", atr.size());
-    }
+    std::string toString();
 
     /**
      * Compares the specified object with this ATR for equality.
@@ -82,84 +76,31 @@ public:
      * @param obj the object to be compared for equality with this ATR
      * @return true if the specified object is equal to this ATR
      */
-    bool equals(Object& obj)
-    {
-        if (this == &obj)
-            return true;
-
-        ATR& other = dynamic_cast<ATR&>(obj);
-        return Arrays::equals(this->atr, other.atr);
-    }
+    bool equals(Object& obj);
 
     /**
      * Returns the hash code value for this ATR.
      *
      * @return the hash code value for this ATR.
      */
-    int hashCode()
-    {
-        return Arrays::hashCode(atr);
-    }
+    int hashCode();
 
-    bool equals(std::shared_ptr<void> o)
-    {
-        if (this == o.get())
-            return true;
-
-        return false;
-    }
+    /**
+     * 
+     */
+    bool equals(std::shared_ptr<void> o);
 
 protected:
-    void finalize()
-    {
-
-    }
+    /**
+     * 
+     */
+    void finalize();
 
 private:
-    std::vector<char> atr;
-
-    int startHistorical, nHistorical;
-
-    void parse()
-    {
-        if (atr.size() < 2) {
-            return;
-        }
-
-        if ((atr[0] != 0x3b) && (atr[0] != 0x3f)) {
-            return;
-        }
-
-        int t0 = (atr[1] & 0xf0) >> 4;
-        int n = atr[1] & 0xf;
-        int i = 2;
-
-        while ((t0 != 0) && (i < atr.size())) {
-            if ((t0 & 1) != 0) {
-                i++;
-            }
-            if ((t0 & 2) != 0) {
-                i++;
-            }
-            if ((t0 & 4) != 0) {
-                i++;
-            }
-            if ((t0 & 8) != 0) {
-                if (i >= atr.size()) {
-                    return;
-                }
-                t0 = (atr[i++] & 0xf0) >> 4;
-            } else {
-                t0 = 0;
-            }
-        }
-
-        int k = i + n;
-        if ((k == atr.size()) || (k == atr.size() - 1)) {
-            startHistorical = i;
-            nHistorical = n;
-        }
-    }
+    /**
+     * 
+     */
+    void parse();
 };
 
 }

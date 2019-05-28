@@ -19,7 +19,7 @@ namespace keyple {
 namespace common {
 
 class EXPORT Logger {
-    private:
+private:
     /**
      *
       */

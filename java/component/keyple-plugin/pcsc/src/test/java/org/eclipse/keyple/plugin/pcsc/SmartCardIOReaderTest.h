@@ -26,58 +26,63 @@
 #include "Card.h"
 #include "CardChannel.h"
 #include "CardTerminal.h"
-
-/* Core */
 #include "ResponseAPDU.h"
 
 /* PC/SC plugin */
 #include "PcscReader_Import.h"
 
 using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-using PcscReader = org::eclipse::keyple::plugin::pcsc::PcscReader;
+using Card           = org::eclipse::keyple::smartcardio::Card;
+using CardChannel    = org::eclipse::keyple::smartcardio::CardChannel;
+using CardTerminal   = org::eclipse::keyple::smartcardio::CardTerminal;
+using PcscReader     = org::eclipse::keyple::plugin::pcsc::PcscReader;
+using ResponseAPDU   = org::eclipse::keyple::smartcardio::ResponseAPDU;
 
 class SmartCardIOReaderTest : public ::testing::Test {
 
 public:
-    std::shared_ptr<PcscReader> reader;
+    PcscReader* reader;
 
     std::string readerName;
 
     std::vector<char> responseApduByte;
 
-    std::shared_ptr<CardTerminal> terminal;
+    CardTerminal* terminal;
 
-    std::shared_ptr<Card> card;
+    Card *card;
 
-    std::shared_ptr<CardChannel> channel;
+    CardChannel* channel;
 
     std::vector<char> atr;
 
-    std::shared_ptr<ResponseAPDU> res;
+    ResponseAPDU* res;
+
+    SCARDCONTEXT ctx;
 
     void SetUp() //throw(CardException, std::invalid_argument, KeypleBaseException);
     {
         std::string s("dummy");
-        terminal = std::shared_ptr<CardTerminal>(new CardTerminal(s));
-        if (terminal == nullptr)
+        terminal = new CardTerminal(ctx, s);
+        if (!terminal)
             return;
 
         card = terminal->connect("");
-        if (card == nullptr)
+        if (!card)
             return;
 
         channel = card->getBasicChannel();
-        if (channel == nullptr)
+        if (!channel)
             return;
 
         responseApduByte = ByteArrayUtils::fromHex("851700010000001212000001030101007E7E7E000000000000");
-        res = std::shared_ptr<ResponseAPDU>(new ResponseAPDU(responseApduByte));
+        res = new ResponseAPDU(responseApduByte);
         if (res == nullptr)
             return;
 
         readerName = "reader";
-        reader = std::shared_ptr<PcscReader>(new PcscReader("pcscPlugin", terminal));
-        if (reader == nullptr)
+        std::shared_ptr<CardTerminal> shared_terminal = std::shared_ptr<CardTerminal>(terminal);
+        reader = new PcscReader("pcscPlugin", shared_terminal);
+        if (!reader)
             return;
 
         reader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");

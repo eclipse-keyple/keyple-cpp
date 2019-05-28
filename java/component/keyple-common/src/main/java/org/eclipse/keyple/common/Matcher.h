@@ -1,7 +1,8 @@
 #pragma once
 
 #include <regex>
-#include <stdexcept>
+#include <string>
+#include <vector>
 
 #include "Export.h"
 

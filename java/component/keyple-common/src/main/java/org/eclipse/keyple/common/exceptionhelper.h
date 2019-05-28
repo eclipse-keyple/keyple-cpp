@@ -1,8 +1,6 @@
 #pragma once
 
 #include <string>
-#include <sstream>
-#include <iostream>
 
 /* Common */
 #include "Exception.h"
@@ -244,23 +242,6 @@ class URISyntaxException : public std::exception {
 
   public:
     URISyntaxException(const std::string &message = "") : msg(message)
-    {
-    }
-
-    const char *what()
-    {
-        return msg.c_str();
-    }
-};
-
-class PCSCException : public std::exception {
-  private:
-    std::string msg;
-
-  public:
-      long code;
-
-    PCSCException(const std::string &message = "") : msg(message)
     {
     }
 

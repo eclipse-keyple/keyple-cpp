@@ -6,19 +6,17 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
-#ifndef KEYPLE_PLUGIN_PCSC_COMMAND_APDU_H
-#define KEYPLE_PLUGIN_PCSC_COMMAND_APDU_H
+#pragma once
 
-#include <cstdint>
-#include <vector>
+/* Common */
+#include "Export.h"
 
 namespace org {
 namespace eclipse {
 namespace keyple {
-namespace plugin {
 namespace smartcardio {
 
-class CommandAPDU {
+class EXPORT CommandAPDU {
 public:
     /**
      * Constructor
@@ -67,4 +65,3 @@ public:
 }
 }
 
-#endif /* KEYPLE_PLUGIN_PCSC_RESPONSE_APDU_H */

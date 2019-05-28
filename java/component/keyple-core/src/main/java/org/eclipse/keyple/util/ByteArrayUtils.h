@@ -12,70 +12,63 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-#include <stdexcept>
-#include <memory>
-
-#include "stringbuilder.h"
-
 /* Common */
 #include "Export.h"
 #include "Pattern.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace util {
+namespace eclipse {
+namespace keyple {
+namespace util {
 
+/**
+ * Utils around byte arrays
+ */
+class EXPORT ByteArrayUtils {
+private:
+    /**
+     * Byte to hex string conversion table
+     */
+    static std::vector<std::string> const byteToHex;
 
+    /**
+     * Chars we will ignore when loading a sample HEX string. It allows to copy/paste the specs APDU
+     */
+    static Pattern* HEX_IGNORED_CHARS;
 
-                /**
-                 * Utils around byte arrays
-                 */
-                class EXPORT ByteArrayUtils : public std::enable_shared_from_this<ByteArrayUtils> {
-                    /* byte to hex string conversion table */
-                private:
-                    static std::vector<std::string> const byteToHex;
+    /**
+     * Create a byte array from an hexa string. This method allows spaces and "h".
+     *
+     * @param hex Hexa string
+     * @return byte array
+     */
+public:
+    static std::vector<char> fromHex(const std::string &hex);
 
-                    /**
-                     * Chars we will ignore when loading a sample HEX string. It allows to copy/paste the specs APDU
-                     */
-                    static Pattern* HEX_IGNORED_CHARS;
+    /**
+     * Represents the byte array in a hexadecimal string.
+     *
+     * @param byteArray byte array to represent to hex
+     * @return Hex representation of the byte array
+     */
+    static std::string toHex(const std::vector<char> &byteArray);
 
-                    /**
-                     * Create a byte array from an hexa string. This method allows spaces and "h".
-                     *
-                     * @param hex Hexa string
-                     * @return byte array
-                     */
-                public:
-                    static std::vector<char> fromHex(const std::string &hex);
+    /**
+     * Convert three bytes from a byte array into an integer.
+     * <p>
+     * The three bytes are expected to be in the MSB first order (aka network order).
+     * <p>
+     * Throw an exception if the buffer is null or not long enough to contain all 3 bytes.
+     * 
+     * @param bytes byte array
+     * @param offset offset from which the 3 bytes are
+     * @return the resulting int
+     * @throws IllegalArgumentException if the buffer has a bad length
+     */
+    static int threeBytesToInt(std::vector<char> &bytes, int offset);
+};
 
-                    /**
-                     * Represents the byte array in a hexadecimal string.
-                     *
-                     * @param byteArray byte array to represent to hex
-                     * @return Hex representation of the byte array
-                     */
-                    static std::string toHex(const std::vector<char> &byteArray);
-
-                    /**
-                     * Convert three bytes from a byte array into an integer.
-                     * <p>
-                     * The three bytes are expected to be in the MSB first order (aka network order).
-                     * <p>
-                     * Throw an exception if the buffer is null or not long enough to contain all 3 bytes.
-                     * 
-                     * @param bytes byte array
-                     * @param offset offset from which the 3 bytes are
-                     * @return the resulting int
-                     * @throws IllegalArgumentException if the buffer has a bad length
-                     */
-                    static int threeBytesToInt(std::vector<char> &bytes, int offset);
-                };
-
-            }
-        }
-    }
+}
+}
+}
 }

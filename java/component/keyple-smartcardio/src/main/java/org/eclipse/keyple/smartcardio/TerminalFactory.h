@@ -1,6 +1,13 @@
 #pragma once
 
+/* Common */
+#include "Export.h"
+
+/* Smartcard I/O */
 #include "CardTerminal.h"
+#include "CardTerminals.h"
+
+using CardTerminals = org::eclipse::keyple::smartcardio::CardTerminals;
 
 class TerminalFactory {
 public:

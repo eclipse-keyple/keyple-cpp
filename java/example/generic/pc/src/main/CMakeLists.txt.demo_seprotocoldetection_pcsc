@@ -66,4 +66,4 @@ IF(APPLE)
 	SET(SPEC_LIBS pthread)
 ENDIF(APPLE)
 
-TARGET_LINK_LIBRARIES(demo_seprotocoldetection_pcsc keyplepluginpcsc keyplecalypso keyplecore ${SPEC_LIBS})
+TARGET_LINK_LIBRARIES(demo_seprotocoldetection_pcsc keyplepluginpcsc keyplecalypso keyplecore keyplesmartcardio ${SPEC_LIBS})

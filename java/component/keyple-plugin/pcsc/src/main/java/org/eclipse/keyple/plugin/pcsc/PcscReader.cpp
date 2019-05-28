@@ -1,8 +1,19 @@
 /* Core */
 #include "ByteArrayUtils.h"
+#include "KeypleBaseException.h"
+#include "KeypleChannelStateException.h"
+#include "KeypleIOReaderException.h"
+#include "KeypleReaderException.h"
+#include "NoStackTraceThrowable.h"
 #include "Protocol_Import.h"
 #include "PcscReader.h"
 #include "SeProtocol.h"
+
+/* Smartcard I/O */
+#include "ATR.h"
+#include "CardException.h"
+#include "CommandAPDU.h"
+#include "ResponseAPDU.h"
 
 namespace org {
 namespace eclipse {
@@ -10,12 +21,20 @@ namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using namespace org::eclipse::keyple::seproxy::exception;
 using AbstractThreadedLocalReader = org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader;
-using Protocol = org::eclipse::keyple::seproxy::protocol::Protocol;
-using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+using ATR                         = org::eclipse::keyple::smartcardio::ATR;
+using CardException               = org::eclipse::keyple::smartcardio::CardException;
+using CommandAPDU                 = org::eclipse::keyple::smartcardio::CommandAPDU;
+using KeypleBaseException         = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+using KeypleChannelStateException = org::eclipse::keyple::seproxy::exception::KeypleChannelStateException;
+using KeypleIOReaderException     = org::eclipse::keyple::seproxy::exception::KeypleIOReaderException;
+using KeypleReaderException       = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+using NoStackTraceThrowable       = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
+using Protocol                    = org::eclipse::keyple::seproxy::protocol::Protocol;
+using ResponseAPDU                = org::eclipse::keyple::smartcardio::ResponseAPDU;
+using SeProtocol                  = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+using TransmissionMode            = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
+using ByteArrayUtils              = org::eclipse::keyple::util::ByteArrayUtils;
 
 const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PcscReader));
 
@@ -64,46 +83,50 @@ PcscReader::PcscReader(const std::string &pluginName, std::shared_ptr<CardTermin
 
 void PcscReader::closePhysicalChannel()
 {
-try {
-    if (card != nullptr) {
-        if (logging) {
-            logger->trace("[%s] closePhysicalChannel => closing the channel\n", this->getName());
+    try {
+        if (card != nullptr) {
+            if (logging) {
+                logger->trace("[%s] closePhysicalChannel => closing the channel\n", this->getName());
+            }
+            channel.reset();
+            card->disconnect(cardReset);
+            card.reset();
         }
-        channel.reset();
-        card->disconnect(cardReset);
-        card.reset();
-    }
-    else {
-        if (logging) {
-            logger->trace("[%s] closePhysicalChannel => card object is null\n", this->getName());
+        else {
+            if (logging) {
+                logger->trace("[%s] closePhysicalChannel => card object is null\n", this->getName());
+            }
         }
     }
-}
-catch (const CardException &e) {
-    throw KeypleChannelStateException("Error while closing physical channel"); //, e);
-}
+    catch (const CardException &e) {
+        throw KeypleChannelStateException("Error while closing physical channel"); //, e);
+    }
 }
 
 bool PcscReader::checkSePresence()
 {
-try {
-    return terminal->isCardPresent();
-}
-catch (const CardException &e) {
-    logger->trace("[%s] Exception occured in isSePresent. Message: %s\n", this->getName(), e.getMessage());
-    throw NoStackTraceThrowable();
-}
+    try {
+        return terminal->isCardPresent();
+    }
+    catch (const CardException &e) {
+        logger->trace("[%s] Exception occured in isSePresent. Message: %s\n", this->getName(), e.getMessage());
+        throw NoStackTraceThrowable();
+    }
+
+    return false;
 }
 
 bool PcscReader::waitForCardPresent(long long timeout)
 {
-try {
-    return terminal->waitForCardPresent(timeout);
-}
-catch (const CardException &e) {
-    logger->trace("[%s] Exception occured in waitForCardPresent. Message: %s\n", this->getName(), e.getMessage());
-    throw NoStackTraceThrowable();
-}
+    try {
+        return terminal->waitForCardPresent(timeout);
+    }
+    catch (const CardException &e) {
+        logger->trace("[%s] Exception occured in waitForCardPresent. Message: %s\n", this->getName(), e.getMessage());
+        throw NoStackTraceThrowable();
+    }
+
+    return false;
 }
 
 bool PcscReader::waitForCardAbsent(long long timeout)
@@ -121,6 +144,8 @@ bool PcscReader::waitForCardAbsent(long long timeout)
                       this->getName(), e.getMessage());
         throw NoStackTraceThrowable();
     }
+
+    return false;
 }
 
 std::vector<char> PcscReader::transmitApdu(std::vector<char> &apduIn)
@@ -157,7 +182,7 @@ bool PcscReader::protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag)
         }
 
         Pattern *p = Pattern::compile(selectionMask);
-        std::string atr = ByteArrayUtils::toHex(card->getATR()); //.getBytes());
+        std::string atr = ByteArrayUtils::toHex(card->getATR()->getBytes());
         if (!p->matcher(atr)->matches()) {
             logger->trace("[%s] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %s\n",
                           this->getName(), protocolFlag);
@@ -305,7 +330,7 @@ std::unordered_map<std::string, std::string> PcscReader::getParameters()
 
 std::vector<char> PcscReader::getATR()
 {
-    return card->getATR(); //.getBytes(); /* No ATR structure here, getATR returns a vector already `/
+    return card->getATR()->getBytes();
 }
 
 bool PcscReader::isPhysicalChannelOpen()
@@ -319,7 +344,7 @@ void PcscReader::openPhysicalChannel()
     // channel
     try {
         if (card == nullptr) {
-            this->card = this->terminal->connect(parameterCardProtocol);
+            this->card = std::shared_ptr<Card>(this->terminal->connect(parameterCardProtocol));
             if (cardExclusiveMode) {
                 card->beginExclusive();
                 if (logging) {
@@ -332,7 +357,7 @@ void PcscReader::openPhysicalChannel()
                 }
             }
         }
-        this->channel = card->getBasicChannel();
+        this->channel = std::shared_ptr<CardChannel>(card->getBasicChannel());
     }
     catch (const CardException &e) {
         throw KeypleChannelStateException("Error while opening Physical Channel\n"); //, e));

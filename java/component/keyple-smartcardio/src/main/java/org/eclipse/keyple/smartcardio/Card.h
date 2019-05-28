@@ -8,27 +8,39 @@
 
 #pragma once
 
+#include <vector>
+
 /* Smartcard I/O */
-#include "ATR.h"
-#include "CardChannel.h"
 #include "CardException.h"
-#include "CardTerminal.h"
+#include "PCSCException.h"
 
 /* Common */
+#include "Export.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
+#include "Thread.h"
+
+/* PC/SC */
+#if defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
+#include <winscard.h>
+#else
+#include <PCSC/winscard.h>
+#include <PCSC/wintypes.h>
+#endif
+
+namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class ATR; }}}}
+namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class CardChannel; }}}}
+namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class CardTerminal; }}}}
 
 namespace org {
 namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-using ATR           = org::eclipse::keyple::smartcardio::ATR;
-using CardTerminal  = org::eclipse::keyple::smartcardio::CardTerminal;
 using Logger        = org::eclipse::keyple::common::Logger;
 using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
-class Card {
+class EXPORT Card {
 public:
     /** */
     enum State {
@@ -37,35 +49,55 @@ public:
         DISCONNECTED
     };
 
-    /** Protocol in use, one of SCARD_PROTOCOL_T0 and SCARD_PROTOCOL_T1 */
+    /** 
+     * Protocol in use, one of SCARD_PROTOCOL_T0 and SCARD_PROTOCOL_T1 
+     */
     DWORD protocol;
 
-    /** The native SCARDHANDLE */
+    /**
+     * The native SCARDHANDL
+     */
     SCARDHANDLE ctx;
 
-    /** */
+    /**
+     * 
+     */
     SCARD_IO_REQUEST pioSendPCI;
 
 private:
-    /** */
+    /**
+     * 
+     */
     CardChannel* channel;
 
-    /** ATR of this card */
-    std::vector<char> atr;
+    /**
+     * ATR of this card
+     */
+    ATR* atr;
 
-    /** */
+    /**
+     * 
+     */
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(Card));
 
-    /** The terminal that created this card */
+    /**
+     * The terminal that created this card
+     */
     CardTerminal* terminal;
 
-    /** The basic logical channel (channel 0) */
+    /**
+     * The basic logical channel (channel 0)
+     */
     CardChannel* basicChannel;
 
-    /* State of this card connection */
+    /**
+     * State of this card connection
+     */
     State state;
 
-    /** Thread holding exclusive access to the card, or null */
+    /**
+     * Thread holding exclusive access to the card, or null
+     */
     Thread *exclusiveThread;
 
 public:
@@ -77,44 +109,19 @@ public:
      * This constructor is called by subclasses only. Application should call list() or
      * getTerminal() to obtain a CardTerminal object.
      */
-    Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
-    {
-        logger->debug("constructor\n");
+    Card(CardTerminal* terminal, std::string protocol);
 
-        int sharingMode = SCARD_SHARE_SHARED;
-        int connectProtocol;
-        if (!protocol.compare("*")) {
-            connectProtocol = SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1;
-        } else if (!protocol.compare("T=0")) {
-            connectProtocol = SCARD_PROTOCOL_T0;
-        } else if (!protocol.compare("T=1")) {
-            connectProtocol = SCARD_PROTOCOL_T1;
-        } else if (!protocol.compare("direct")) {
-            // testing
-            connectProtocol = 0;
-            sharingMode = SCARD_SHARE_DIRECT;
-        } else {
-            throw IllegalArgumentException("Unsupported protocol " + protocol);
-        }
+    /**
+     * Returns the ATR of this card.
+     *
+     * @return the ATR of this card.
+     */
+    ATR* getATR();
 
-        logger->debug("connecting with protocol: %s and connectProtocol: %d, "\
-                      "sharing mode: %d\n", protocol, connectProtocol,
-                      sharingMode);
-
-        SCardConnect(terminal->ctx, terminal->name, sharingMode,
-                     connectProtocol, &this->ctx, &this->protocol);
-
-        switch(this->protocol) {
-        case SCARD_PROTOCOL_T0:
-            this->pioSendPCI = *SCARD_PCI_T0;
-            break;
-        case SCARD_PROTOCOL_T1:
-            this->pioSendPCI = *SCARD_PCI_T1;
-            break;
-        }
-        basicChannel = new CardChannel(this, 0);
-        this->state = State::OK;
-    }
+    /**
+     * 
+     */
+    std::string getProtocol();
 
     /**
      * Returns the CardChannel for the basic logical channel. The basic logical
@@ -125,72 +132,12 @@ public:
      * @throws IllegalStateException if this card object has been disposed of via
      *                               the disconnect() method
      */
-    std::shared_ptr<CardChannel> getBasicChannel()
-    {
-        logger->debug("getBasicChannel\n");
-
-        return std::make_shared<CardChannel>(channel);
-    }
-
+    CardChannel* getBasicChannel();
 
     /**
-     * Returns the ATR of this card.
-     *
-     * @return the ATR of this card.
+     * 
      */
-    ATR& getATR()
-    {
-        logger->debug("getATR\n");
-
-        return atr;
-    }
-
-    std::string getProtocol()
-    {
-        logger->debug("getProtocol\n");
-
-        switch (protocol) {
-        case SCARD_PROTOCOL_T0:
-            return "T=0";
-        case SCARD_PROTOCOL_T1:
-            return "T=1";
-        default:
-            // should never occur
-            return "Unknown protocol " + protocol;
-        }
-    }
-
-    CardChannel& getBasicChannel()
-    {
-        logger->debug("getBasicChannel\n");
-
-        checkSecurity("getBasicChannel");
-        checkState();
-
-        return basicChannel;
-    }
-
-    CardChannel* openLogicalChannel()
-    {
-        logger->debug("openLogicalChannel\n");
-
-        checkSecurity("openLogicalChannel");
-        checkState();
-        checkExclusive();
-
-        try {
-            byte[] response = SCardTransmit(cardId, protocol, commandOpenChannel, 0, commandOpenChannel.size());
-            if ((response.length != 3) || (getSW(response) != 0x9000))
-                throw new CardException
-                        ("openLogicalChannel() failed, card response: "
-                        + PCSC.toString(response));
-
-            return new Channel(this, response[0]);
-        } catch (PCSCException e) {
-            handleError(e);
-            throw new CardException("openLogicalChannel() failed", e);
-        }
-    }
+    CardChannel* openLogicalChannel();
 
     /**
      * Requests exclusive access to this card.
@@ -212,24 +159,7 @@ public:
      * @throw IllegalStateException if this card object has been
      *        disposed of via the disconnect() method
      */
-    void beginExclusive()
-    {
-        checkSecurity("exclusive");
-        checkState();
-
-        if (exclusiveThread != null)
-            throw new CardException
-                    ("Exclusive access has already been assigned to Thread "
-                    + exclusiveThread.getName());
-
-        try {
-            SCardBeginTransaction(cardId);
-        } catch (PCSCException e) {
-            handleError(e);
-            throw new CardException("beginExclusive() failed", e);
-        }
-        exclusiveThread = Thread.currentThread();
-    }
+    void beginExclusive();
 
     /**
      * Releases the exclusive access previously established using beginExclusive.
@@ -241,23 +171,7 @@ public:
      *                              method
      * @throws CardException if the operation failed
      */
-    void endExclusive()
-    {
-        checkState();
-        if (exclusiveThread != Thread.currentThread())
-            throw new IllegalStateException
-                    ("Exclusive access not assigned to current Thread");
-
-
-        try {
-            SCardEndTransaction(cardId, SCARD_LEAVE_CARD);
-        } catch (PCSCException e) {
-            handleError(e);
-            throw new CardException("endExclusive() failed", e);
-        }
-
-        exclusiveThread = NULL;
-    }
+    void endExclusive();
 
     /**
      * Disconnects the connection with this card. After this method
@@ -271,61 +185,38 @@ public:
      * @throw SecurityException if a SecurityManager exists and the
      *        caller does not have the required permission
      */
-    void disconnect(bool reset)
-    {
-        if (reset)
-            checkSecurity("reset");
+    void disconnect(bool reset);
 
-        if (state != State.OK)
-            return;
+    /**
+     * 
+     */
+    bool isValid();
 
-        checkExclusive();
-        try {
-            SCardDisconnect(cardId, (reset ? SCARD_LEAVE_CARD : SCARD_RESET_CARD));
-        } catch (PCSCException e) {
-            throw new CardException("disconnect() failed", e);
-        } finally {
-            state = State.DISCONNECTED;
-            exclusiveThread = null;
-        }
-    }
+    /**
+     * 
+     */
+    void checkExclusive();
 
-    bool isValid()
-    {
-        if (state != State.OK)
-            return false;
+    /**
+     * 
+     */
+    void checkState();
 
-        // ping card via SCardStatus
-        try {
-            SCardStatus(cardId, new byte[2]);
-            return true;
-        } catch (PCSCException e) {
-            state = State.REMOVED;
-            return false;
-        }
-    }
+    /**
+     *
+     */
+    void checkSecurity(std::string action);
 
-    void checkExclusive()
-    {
-        Thread *t = exclusiveThread;
-        if (!t) {
-            logger->debug("exclusiveThread is null\n");
-            return;
-        }
-
-        if (t->self() != Thread::currentThread())
-            throw new CardException("Exclusive access established by another Thread");
-    }
+    /**
+     * 
+     */
+    void handleError(PCSCException e);
 
 private:
-    void checkState()
-    {
-        State s = state;
-        if (s == State::DISCONNECTED)
-            throw IllegalStateException("Card has been disconnected");
-        else if (s == State::REMOVED)
-            throw IllegalStateException("Card has been removed");
-    }
+    /**
+     *
+     */
+    static int getSW(std::vector<char> b);
 };
 
 }

@@ -8,14 +8,16 @@
 
 #pragma once
 
-#include <Exception.h>
+/* Common */
+#include "Exception.h"
+#include "Export.h"
 
 namespace org {
 namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-class CardException : public Exception {
+class EXPORT CardException : public Exception {
 public:
     /**
      * New exception to be thrown
@@ -32,7 +34,8 @@ public:
      * @param message : message to identify the exception and the context
      * @param cause : cause of the exception
      */
-    CardException(const std::string &message, std::runtime_error cause) : Exception(message, cause)
+    CardException(const std::string &message, std::runtime_error cause)
+    : Exception(message, cause)
     {
     }
 

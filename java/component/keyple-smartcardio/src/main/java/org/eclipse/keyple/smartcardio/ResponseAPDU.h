@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include <vector>
+/* Common */
+#include "Export.h"
 
 namespace org {
 namespace eclipse {
@@ -19,7 +19,7 @@ namespace smartcardio {
 /*
  *
  */
-class ResponseAPDU {
+class EXPORT ResponseAPDU {
 public:
     /**
      * Constructor

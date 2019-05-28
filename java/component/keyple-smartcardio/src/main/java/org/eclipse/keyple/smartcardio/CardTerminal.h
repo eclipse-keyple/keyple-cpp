@@ -6,10 +6,7 @@
  * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
  */
 
- #pragma once
-
-#include <algorithm> 
-#include <string>
+#pragma once
 
 #if defined(WIN32) || defined(__MINGW32__) || defined (__MINGW64__)
 #  include <winscard.h>
@@ -18,34 +15,44 @@
 #  include <PCSC/wintypes.h>
 #endif
 
-/* Smartcard I/O */
-#include "CardException.h"
-
 /* Common */
+#include "Export.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
-#include "System.h"
+
+namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class Card; }}}}
 
 namespace org {
 namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-/* Forward declaration */
-namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class Card; }}}}
+using Card          = org::eclipse::keyple::smartcardio::Card;
+using Logger        = org::eclipse::keyple::common::Logger;
+using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
-class CardTerminal {
+class EXPORT CardTerminal {
 public:
-    
-    /** Native SCARDCONTEXT */
+    /**
+     * Native SCARDCONTEXT
+     */
     SCARDCONTEXT ctx;
 
-private:
-    /** The name of this terminal (native PC/SC name) */
+    /**
+     * The name of this terminal (native PC/SC name)
+     */
     std::string name;
 
-    /** */
+private:
+    /**
+     * 
+     */
     Card* card;
+
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardTerminal));
 
 public:
     /**
@@ -53,10 +60,7 @@ public:
      *
      * @return the unique name of this terminal.
      */
-    std::string getName()
-    {
-        return name;
-    }
+    std::string getName();
 
     /**
      * Establishes a connection to the card.
@@ -78,32 +82,7 @@ public:
      *   caller does not have the required
      *   {@linkplain CardPermission permission}
      */
-    Card* connect(std::string protocol)
-    {
-        if (card != NULL) {
-            if (card->isValid()) {
-                std::string cardProto = card->getProtocol();
-                if (!protocol.compare("*") || !protocol.compare(cardProto)) {
-                    return card;
-                } else {
-                    throw new CardException("Cannot connect using " + protocol
-                      + ", connection already established using " + cardProto);
-                }
-            } else {
-                card = NULL;
-            }
-        }
-        try {
-            return new Card(this, protocol);
-        } catch (PCSCException e) {
-            if (e.code == SCARD_W_REMOVED_CARD ||
-                e.code == SCARD_E_NO_SMARTCARD) {
-                throw new CardNotPresentException("No card present");
-            } else {
-                throw new CardException("connect() failed");
-            }
-        }
-    }
+    Card* connect(std::string protocol);
 
     /**
      * Returns whether a card is present in this terminal.
@@ -112,19 +91,7 @@ public:
      *
      * @throws CardException if the status could not be determined
      */
-    bool isCardPresent()
-    {
-        try {
-            SCARD_READERSTATE state;
-            state.szReader = name.c_str();
-            state.dwCurrentState =SCARD_STATE_UNAWARE;
-
-            LONG status = SCardGetStatusChange(this->ctx, 0, &state, 1);
-            return (state.dwCurrentState & SCARD_STATE_PRESENT) != 0;
-        } catch (PCSCException e) {
-            throw new CardException("isCardPresent() failed"); //, e);
-        }
-    }
+    bool isCardPresent();
 
     /**
      * Waits until a card is present in this terminal or the timeout
@@ -142,10 +109,7 @@ public:
      * @throws IllegalArgumentException if timeout is negative
      * @throws CardException if the operation failed
      */
-    bool waitForCardPresent(long timeout)
-    {
-        return waitForCard(true, timeout);
-    }
+    bool waitForCardPresent(long timeout);
 
     /**
      * Waits until a card is absent in this terminal or the timeout
@@ -163,15 +127,12 @@ public:
      * @throws IllegalArgumentException if timeout is negative
      * @throws CardException if the operation failed
      */
-    bool waitForCardAbsent(long timeout)
-    {
-        return waitForCard(false, timeout);
-    }
+    bool waitForCardAbsent(long timeout);
 
-    std::string toString()
-    {
-        return "PC/SC terminal " + name;
-    }
+    /**
+     * 
+     */
+    std::string toString();
 
     /**
      * Constructs a new CardTerminal object.
@@ -181,55 +142,13 @@ public:
      * or {@linkplain CardTerminals#getTerminal getTerminal()}
      * to obtain a CardTerminal object.
      */
-    CardTerminal(SCARDCONTEXT ctx, const std::string& name)
-    : ctx(ctx), name(name)
-    {
-
-    }
+    CardTerminal(SCARDCONTEXT ctx, const std::string& name);
 
 private:
     /**
      *
      */
-    bool waitForCard(bool wantPresent, long timeout)
-    {
-        if (timeout < 0)
-            throw new IllegalArgumentException("timeout must not be negative");
-
-        if (timeout == 0)
-            timeout = INFINITE;
-
-        SCARD_READERSTATE status;
-        status.dwCurrentState = SCARD_STATE_UNAWARE;
-        status.szReader = name.c_str();
-
-        try {
-            /* Check if card status already matches */
-            SCardGetStatusChange(this->ctx, 0, &status, 1);
-            boolean present = (status.dwCurrentState & SCARD_STATE_PRESENT) != 0;
-            if (wantPresent == present) {
-                return true;
-            }
-
-            /* No match, wait (until timeout expires) */
-            long end = System::currentTimeMillis() + timeout;
-            while (wantPresent != present && timeout != 0) {
-                /* Set remaining timeout */
-                if (timeout != INFINITE)
-                    timeout = max(end - System::currentTimeMillis(), 0l);
-
-                SCardGetStatusChange(this->ctx, timeout, &status, 1);
-                present = (status.dwCurrentState & SCARD_STATE_PRESENT) != 0;
-            }
-            return wantPresent == present;
-        } catch (PCSCException e) {
-            if (e.code == SCARD_E_TIMEOUT) {
-                return false;
-            } else {
-                throw CardException("waitForCard() failed"); //, e);
-            }
-        }
-    }
+    bool waitForCard(bool wantPresent, long timeout);
 };
 
 }

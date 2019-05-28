@@ -3,6 +3,11 @@
 #include "KeypleReaderException.h"
 #include "AbstractObservableReader.h"
 
+/* SmartCard I/O */
+#include "CardException.h"
+#include "CardTerminal.h"
+#include "CardTerminals.h"
+
 /* PC/SC plugin */
 #include "PcscReader.h"
 #include "PcscPlugin.h"
@@ -13,10 +18,13 @@ namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-using AbstractObservableReader = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
+using AbstractObservableReader         = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
 using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
+using CardException                    = org::eclipse::keyple::smartcardio::CardException;
+using CardTerminals                    = org::eclipse::keyple::smartcardio::CardTerminals;
+using CardTerminal                     = org::eclipse::keyple::smartcardio::CardTerminal;
+using KeypleBaseException              = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+using KeypleReaderException            = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
 
 std::shared_ptr<TerminalFactory> PcscPlugin::factory;
 
@@ -118,14 +126,14 @@ std::shared_ptr<AbstractObservableReader> PcscPlugin::fetchNativeReader(const st
     std::shared_ptr<CardTerminals> terminals = getCardTerminals();
     std::vector<std::string> terminalList;
     try {
-        for (auto &term : terminals->list()) {
+        for (auto& term : terminals->list()) {
             if (!term.getName().compare(name)) {
                 reader = std::make_shared<PcscReader>(this->getName(), std::make_shared<CardTerminal>(term));
             }
         }
     }
-    catch (CardException &e) {
-        logger->trace("[{}] Terminal list is not accessible. Exception: {}", this->getName(), e.getMessage());
+    catch (CardException& e) {
+        logger->trace("[%s] Terminal list is not accessible. Exception: %s\n", this->getName(), e.getMessage());
         throw KeypleReaderException("Could not access terminals list"); //, e);
     }
     if (reader == nullptr) {
@@ -162,9 +170,7 @@ std::shared_ptr<CardTerminals> PcscPlugin::getCardTerminals() {
         factory = TerminalFactory::getDefault();
     }
 
-    std::shared_ptr<CardTerminals> terminals = factory->terminals();
-
-    return terminals;
+    return factory->terminals();
 }
 
 }

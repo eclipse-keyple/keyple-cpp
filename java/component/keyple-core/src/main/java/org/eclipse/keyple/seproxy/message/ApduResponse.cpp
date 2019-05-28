@@ -53,7 +53,7 @@ int ApduResponse::getStatusCode()
         return 0;
     }
 
-    int code = (bytes[bytes.size() - 2] & 0x000000FF) << 8 +
+    int code = ((bytes[bytes.size() - 2] & 0x000000FF) << 8) +
                (bytes[bytes.size() - 1] & 0x000000FF);
     
     logger->debug("status code: 0x%x (%d)\n", code, code);
