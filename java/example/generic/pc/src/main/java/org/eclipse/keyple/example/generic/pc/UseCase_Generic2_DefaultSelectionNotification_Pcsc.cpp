@@ -1,140 +1,155 @@
-#include "UseCase_Generic2_DefaultSelectionNotification_Pcsc.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleBaseException.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
-#include "../../../../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.h"
+
+#include "ByteArrayUtils.h"
+#include "ContactlessProtocols_Import.h"
+#include "KeypleBaseException.h"
+#include "PcscPlugin.h"
+#include "ReaderEvent_Import.h"
 #include "ReaderUtilities.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeSelector.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/ContactlessProtocols.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
+#include "SeSelector.h"
+#include "SeSelection.h"
+#include "SeSelectionRequest.h"
+#include "SeProtocol.h"
+#include "SeProxyService.h"
+#include "SeReader.h"
 
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace example {
-                namespace generic_Renamed {
-                    namespace pc {
-                        using PcscPlugin = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
-                        using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                        using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
-                        using SeReader = org::eclipse::keyple::seproxy::SeReader;
-                        using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
-                        using ObservableReader = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
-                        using ReaderObserver = org::eclipse::keyple::seproxy::event_Renamed::ObservableReader::ReaderObserver;
-                        using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
-                        using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-                        using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
-                        using namespace org::eclipse::keyple::transaction;
-                        using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-                        using org::slf4j::Logger;
-                        using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> UseCase_Generic2_DefaultSelectionNotification_Pcsc::logger = org::slf4j::LoggerFactory::getLogger(UseCase_Generic2_DefaultSelectionNotification_Pcsc::typeid);
-const std::shared_ptr<void> UseCase_Generic2_DefaultSelectionNotification_Pcsc::waitForEnd = nullptr;
+/* Common */
+#include "Logger.h"
+#include "LoggerFactory.h"
 
-                        UseCase_Generic2_DefaultSelectionNotification_Pcsc::UseCase_Generic2_DefaultSelectionNotification_Pcsc() throw(KeypleBaseException, InterruptedException) {
-                            /* Get the instance of the SeProxyService (Singleton pattern) */
-                            std::shared_ptr<SeProxyService> seProxyService = SeProxyService::getInstance();
+/* Smartcard I/O */
+#include "ChannelState.h"
 
-                            /* Get the instance of the PC/SC plugin */
-                            std::shared_ptr<PcscPlugin> pcscPlugin = PcscPlugin::getInstance();
+/* Examples */
+#include "ReaderUtilities.h"
 
-                            /* Assign PcscPlugin to the SeProxyService */
-                            seProxyService->addPlugin(pcscPlugin);
+using ByteArrayUtils       = org::eclipse::keyple::util::ByteArrayUtils;
+using ChannelState         = org::eclipse::keyple::seproxy::ChannelState;
+using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
+using KeypleBaseException  = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
+using Logger               = org::eclipse::keyple::common::Logger;
+using LoggerFactory        = org::eclipse::keyple::common::LoggerFactory;
+using ObservableReader     = org::eclipse::keyple::seproxy::event::ObservableReader;
+using PcscPlugin           = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
+using ReaderEvent          = org::eclipse::keyple::seproxy::event::ReaderEvent;
+using ReaderObserver       = org::eclipse::keyple::seproxy::event::ObservableReader::ReaderObserver;
+using ReaderUtilities      = org::eclipse::keyple::example::generic::pc::ReaderUtilities;
+using SeProxyService       = org::eclipse::keyple::seproxy::SeProxyService;
+using SeReader             = org::eclipse::keyple::seproxy::SeReader;
+using SeSelector           = org::eclipse::keyple::seproxy::SeSelector;
+using SeSelection          = org::eclipse::keyple::transaction::SeSelection;
+using SeSelectionRequest   = org::eclipse::keyple::transaction::SeSelectionRequest;
+using SeProtocol           = org::eclipse::keyple::seproxy::protocol::SeProtocol;
 
-                            /*
-                             * Get a SE reader ready to work with contactless SE. Use the getReader helper method from
-                             * the ReaderUtilities class.
-                             */
-                            seReader = ReaderUtilities::getDefaultContactLessSeReader(seProxyService);
+class UseCase_Generic2_DefaultSelectionNotification_Pcsc
+: public std::enable_shared_from_this<UseCase_Generic2_DefaultSelectionNotification_Pcsc>, public ObservableReader::ReaderObserver  {
+private:
+    const std::shared_ptr<void> waitForEnd = nullptr;
 
-                            /* Check if the reader exists */
-                            if (seReader == nullptr) {
-                                throw std::make_shared<IllegalStateException>("Bad SE reader setup");
-                            }
+    std::string seAid = "A0000004040125090101";
 
-                            logger->info("=============== UseCase Generic #2: AID based default selection ===================");
-                            logger->info("= SE Reader  NAME = {}", seReader->getName());
+    std::shared_ptr<SeSelection> seSelection;
 
-                            /*
-                             * Prepare a SE selection
-                             */
-                            seSelection = std::make_shared<SeSelection>(seReader);
+public:
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(UseCase_Generic2_DefaultSelectionNotification_Pcsc));
 
-                            /*
-                             * Setting of an AID based selection
-                             *
-                             * Select the first application matching the selection AID whatever the SE communication
-                             * protocol keep the logical channel open after the selection
-                             */
+    UseCase_Generic2_DefaultSelectionNotification_Pcsc()
+    {
+        /* Get the instance of the PC/SC plugin */
+        PcscPlugin pcscplugin = PcscPlugin::getInstance();
+        pcscplugin.initReaders();
+        std::shared_ptr<PcscPlugin> shared_plugin = std::shared_ptr<PcscPlugin>(&pcscplugin);
 
-                            /*
-                             * Generic selection: configures a SeSelector with all the desired attributes to make the
-                             * selection
-                             */
-                            std::shared_ptr<SeSelectionRequest> seSelector = std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(ByteArrayUtils::fromHex(seAid), nullptr), nullptr, "AID: " + seAid), ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4);
+        /* Assign PcscPlugin to the SeProxyService */
+        SeProxyService& seProxyService = SeProxyService::getInstance();
+        seProxyService.addPlugin(shared_plugin);
+        std::shared_ptr<SeProxyService> shared_proxy = std::shared_ptr<SeProxyService>(&seProxyService);
 
-                            /*
-                             * Add the selection case to the current selection (we could have added other cases here)
-                             */
-                            seSelection->prepareSelection(seSelector);
+        /*
+            * Get a SE reader ready to work with contactless SE. Use the getReader helper method from
+            * the ReaderUtilities class.
+            */
+        std::shared_ptr<SeReader> seReader = ReaderUtilities::getDefaultContactLessSeReader(shared_proxy);
 
-                            /*
-                             * Provide the SeReader with the selection operation to be processed when a SE is inserted.
-                             */
-                            (std::static_pointer_cast<ObservableReader>(seReader))->setDefaultSelectionRequest(seSelection->getSelectionOperation(), ObservableReader::NotificationMode::MATCHED_ONLY);
+        /* Check if the reader exists */
+        if (seReader == nullptr) {
+            throw std::make_shared<IllegalStateException>("Bad SE reader setup");
+        }
 
-                            /* Set the current class as Observer of the first reader */
-//JAVA TO C++ CONVERTER TODO TASK: You cannot use 'shared_from_this' in a constructor:
-                            (std::static_pointer_cast<ObservableReader>(seReader))->addObserver(shared_from_this());
+        logger->info("=============== UseCase Generic #2: AID based default selection ===================");
+        logger->info("= SE Reader  NAME = %s", seReader->getName());
 
-                            logger->info("==================================================================================");
-                            logger->info("= Wait for a SE. The default AID based selection to be processed as soon as the  =");
-                            logger->info("= SE is detected.                                                                =");
-                            logger->info("==================================================================================");
+        /*
+            * Prepare a SE selection
+            */
+        seSelection = std::make_shared<SeSelection>(seReader);
 
-                            /* Wait for ever (exit with CTRL-C) */
-//JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
-                            synchronized(waitForEnd) {
-                                waitForEnd->wait();
-                            }
-                        }
+        /*
+            * Setting of an AID based selection
+            *
+            * Select the first application matching the selection AID whatever the SE communication
+            * protocol keep the logical channel open after the selection
+            */
 
-                        void UseCase_Generic2_DefaultSelectionNotification_Pcsc::update(std::shared_ptr<ReaderEvent> event_Renamed) {
-                            switch (event_Renamed->getEventType()) {
-                                case SE_MATCHED:
-                                    if (seSelection->processDefaultSelection(event_Renamed->getDefaultSelectionResponse())) {
-                                        std::shared_ptr<MatchingSe> selectedSe = seSelection->getSelectedSe();
+        /*
+            * Generic selection: configures a SeSelector with all the desired attributes to make the
+            * selection
+            */
+        std::vector<char> aid = ByteArrayUtils::fromHex(seAid);
+        std::shared_ptr<SeSelector::AidSelector> shared_aid = std::make_shared<SeSelector::AidSelector>(aid, nullptr);
+        std::shared_ptr<SeSelector> shared_selector = std::make_shared<SeSelector>(shared_aid, nullptr, "AID: " + seAid);
+        std::shared_ptr<SeSelectionRequest> seSelector = std::make_shared<SeSelectionRequest>(shared_selector, ChannelState::KEEP_OPEN, std::dynamic_pointer_cast<SeProtocol>(std::shared_ptr<ContactlessProtocols>(&ContactlessProtocols::PROTOCOL_ISO14443_4)));
 
-                                        logger->info("Observer notification: the selection of the SE has succeeded.");
+        /*
+            * Add the selection case to the current selection (we could have added other cases here)
+            */
+        seSelection->prepareSelection(seSelector);
 
-                                        logger->info("==================================================================================");
-                                        logger->info("= End of the SE processing.                                                      =");
-                                        logger->info("==================================================================================");
-                                    }
-                                    else {
-                                        logger->error("The selection of the SE has failed. Should not have occurred due to the MATCHED_ONLY selection mode.");
-                                    }
-                                    break;
-                                case SE_INSERTED:
-                                    logger->error("SE_INSERTED event: should not have occurred due to the MATCHED_ONLY selection mode.");
-                                    break;
-                                case SE_REMOVAL:
-                                    logger->info("The SE has been removed.");
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
+        /*
+            * Provide the SeReader with the selection operation to be processed when a SE is inserted.
+            */
+        (std::dynamic_pointer_cast<ObservableReader>(seReader))->setDefaultSelectionRequest(seSelection->getSelectionOperation(), ObservableReader::NotificationMode::MATCHED_ONLY);
 
-                        void UseCase_Generic2_DefaultSelectionNotification_Pcsc::main(std::vector<std::string> &args) throw(InterruptedException, KeypleBaseException) {
-                            /* Create the observable object to handle the SE processing */
-                            std::shared_ptr<UseCase_Generic2_DefaultSelectionNotification_Pcsc> m = std::make_shared<UseCase_Generic2_DefaultSelectionNotification_Pcsc>();
-                        }
-                    }
-                }
+        /* Set the current class as Observer of the first reader */
+    //JAVA TO C++ CONVERTER TODO TASK: You cannot use 'shared_from_this' in a constructor:
+        (std::dynamic_pointer_cast<ObservableReader>(seReader))->addObserver(shared_from_this());
+
+        logger->info("==================================================================================");
+        logger->info("= Wait for a SE. The default AID based selection to be processed as soon as the  =");
+        logger->info("= SE is detected.                                                                =");
+        logger->info("==================================================================================");
+
+        /* Wait for ever (exit with CTRL-C) */
+        while(1);
+    }
+
+    void update(std::shared_ptr<ReaderEvent> event)
+    {
+        if (event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
+            if (seSelection->processDefaultSelection(event->getDefaultSelectionResponse())) {
+                //std::shared_ptr<MatchingSe> selectedSe = seSelection->getSelectedSe(); Alex: unused?
+
+                logger->info("Observer notification: the selection of the SE has succeeded.");
+
+                logger->info("==================================================================================");
+                logger->info("= End of the SE processing.                                                      =");
+                logger->info("==================================================================================");
+            } else {
+                logger->error("The selection of the SE has failed. Should not have occurred due to the MATCHED_ONLY selection mode.");
             }
+        } else if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED) {
+            logger->error("SE_INSERTED event: should not have occurred due to the MATCHED_ONLY selection mode.");
+        } else if (event->getEventType() == ReaderEvent::EventType::SE_REMOVAL) {
+            logger->info("The SE has been removed.");
         }
     }
+
+};
+
+int main(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    /* Create the observable object to handle the SE processing */
+    std::shared_ptr<UseCase_Generic2_DefaultSelectionNotification_Pcsc> m = std::make_shared<UseCase_Generic2_DefaultSelectionNotification_Pcsc>();
 }

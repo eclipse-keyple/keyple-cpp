@@ -36,10 +36,11 @@ int main(int argc, char **argv)
      */
     PcscPlugin pcscplugin = PcscPlugin::getInstance();
     pcscplugin.initReaders();
+    std::shared_ptr<PcscPlugin> shared_plugin = std::shared_ptr<PcscPlugin>(&pcscplugin);
 
     /* Instantiate SeProxyService and add PC/SC plugin */
-                            SeProxyService& seProxyService = SeProxyService::getInstance();
-                            seProxyService.addPlugin(std::make_shared<PcscPlugin>(PcscPlugin::getInstance()));
+    SeProxyService& seProxyService = SeProxyService::getInstance();
+    seProxyService.addPlugin(shared_plugin);
 
     /* Set observers */
     demoEngine->setPluginObserver();
