@@ -39,11 +39,11 @@ using SeSelector            = org::eclipse::keyple::seproxy::SeSelector;
 using SeSelection           = org::eclipse::keyple::transaction::SeSelection;
 using SeSelectionRequest    = org::eclipse::keyple::transaction::SeSelectionRequest;
 
-class UseCase_Generic1_ExplicitSelectionAid_Pcsc {
+class UseCase_Generic3_GroupedMultiSelection_Pcsc {
 
 };
 
-const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(UseCase_Generic1_ExplicitSelectionAid_Pcsc));
+const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(UseCase_Generic3_GroupedMultiSelection_Pcsc));
 
 int main(int argc, char **argv)
 {

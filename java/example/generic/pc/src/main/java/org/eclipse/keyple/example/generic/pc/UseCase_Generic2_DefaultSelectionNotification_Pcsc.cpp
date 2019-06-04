@@ -65,9 +65,9 @@ public:
         std::shared_ptr<SeProxyService> shared_proxy = std::shared_ptr<SeProxyService>(&seProxyService);
 
         /*
-            * Get a SE reader ready to work with contactless SE. Use the getReader helper method from
-            * the ReaderUtilities class.
-            */
+         * Get a SE reader ready to work with contactless SE. Use the getReader helper method from
+         * the ReaderUtilities class.
+         */
         std::shared_ptr<SeReader> seReader = ReaderUtilities::getDefaultContactLessSeReader(shared_proxy);
 
         /* Check if the reader exists */
