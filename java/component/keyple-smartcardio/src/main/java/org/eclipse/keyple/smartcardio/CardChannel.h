@@ -13,11 +13,12 @@
 
 /* Common */
 #include "Export.h"
+#include "Logger.h"
+#include "LoggerFactory.h"
 
 /* Smartcard I/O */
 #include "CommandAPDU.h"
 #include "ResponseAPDU.h"
-
 
 namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class Card; }}}}
 namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class CommandAPDU; }}}}
@@ -26,6 +27,9 @@ namespace org {
 namespace eclipse {
 namespace keyple {
 namespace smartcardio {
+
+using Logger        = org::eclipse::keyple::common::Logger;
+using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
 class EXPORT CardChannel {
 public:
@@ -45,6 +49,11 @@ private:
      * closed
      */
     bool isClosed;
+
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardChannel));
 
 public:
     /*

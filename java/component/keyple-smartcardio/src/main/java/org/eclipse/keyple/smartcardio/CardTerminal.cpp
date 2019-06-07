@@ -7,6 +7,7 @@
  */
 
 #include <algorithm>
+#include <cstring>
 
 /* Common */
 #include "exceptionhelper.h"
@@ -30,6 +31,8 @@ std::string CardTerminal::getName()
 
 Card* CardTerminal::connect(std::string protocol)
 {
+    logger->debug("connect\n");
+
     if (card != NULL) {
         if (card->isValid()) {
             std::string cardProto = card->getProtocol();
@@ -57,12 +60,42 @@ Card* CardTerminal::connect(std::string protocol)
 
 bool CardTerminal::isCardPresent()
 {
+    logger->debug("isCardPresent -\n");
+
     try {
-        SCARD_READERSTATE state;
-        state.szReader = name.c_str();
-        state.dwCurrentState =SCARD_STATE_UNAWARE;
-        SCardGetStatusChange(this->ctx, 0, &state, 1);
-        return (state.dwCurrentState & SCARD_STATE_PRESENT) != 0;
+        DWORD state;
+        DWORD protocol;
+        BYTE pbAtr[261];
+        DWORD atrLen = sizeof(pbAtr);
+        SCARDHANDLE hCard;
+        DWORD chReaderLen = 100; //strlen(name.c_str());
+        LONG rv;
+
+        logger->debug("isCardPresent - retrieving card status on %s\n",
+                      name.c_str());
+
+        rv = SCardConnect(this->ctx, (LPSTR)name.c_str(), SCARD_SHARE_SHARED,
+                          SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &hCard,
+                          &protocol);
+        if (rv != SCARD_S_SUCCESS) {
+                logger->debug("isCardPresent - error connecting to card\n");
+                return false;
+        }
+
+        rv = SCardStatus(hCard, (LPSTR)name.c_str(), &chReaderLen, &state,
+                         &protocol, pbAtr, &atrLen);
+        if (rv != SCARD_S_SUCCESS) {
+                logger->debug("isCardPresent - error retrieving status (%x)\n",
+                              rv);
+                return false;
+        }
+
+        logger->debug("isCardPresent - current state: %x (vs. %x)\n",
+                      state, SCARD_PRESENT);
+
+        SCardDisconnect(hCard, SCARD_UNPOWER_CARD);
+
+        return (state & SCARD_PRESENT || state & SCARD_POWERED) != 0;
     } catch (PCSCException e) {
         throw CardException("isCardPresent() failed"); //, e);
     }

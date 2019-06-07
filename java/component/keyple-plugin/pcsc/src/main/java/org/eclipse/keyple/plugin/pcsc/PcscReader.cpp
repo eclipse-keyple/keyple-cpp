@@ -106,6 +106,7 @@ void PcscReader::closePhysicalChannel()
 bool PcscReader::checkSePresence()
 {
     try {
+	logger->debug("checkSePresence - calling isCardPresent\n");
         return terminal->isCardPresent();
     }
     catch (const CardException &e) {
@@ -150,6 +151,8 @@ bool PcscReader::waitForCardAbsent(long long timeout)
 
 std::vector<char> PcscReader::transmitApdu(std::vector<char> &apduIn)
 {
+    logger->debug("transmitApdu\n");
+
     std::shared_ptr<ResponseAPDU> apduResponseData;
     try {
         apduResponseData = channel->transmit(std::shared_ptr<CommandAPDU>(new CommandAPDU(apduIn)));
@@ -330,6 +333,14 @@ std::unordered_map<std::string, std::string> PcscReader::getParameters()
 
 std::vector<char> PcscReader::getATR()
 {
+    logger->debug("getATR -\n");
+
+    ATR *atr = card->getATR();
+    if (!atr) {
+        logger->debug("getATR - atr is null\n");
+        return std::vector<char>();
+    }
+
     return card->getATR()->getBytes();
 }
 

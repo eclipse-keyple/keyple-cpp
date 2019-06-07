@@ -30,6 +30,8 @@ AbstractSelectionLocalReader::AbstractSelectionLocalReader(const std::string &pl
 
 std::shared_ptr<SelectionStatus> AbstractSelectionLocalReader::openLogicalChannel(std::shared_ptr<SeSelector> seSelector)
 {
+    logger->debug("openLogicalChannel- \n");
+
     std::shared_ptr<ApduResponse> fciResponse;
     std::vector<char> atr = getATR();
     bool selectionHasMatched = true;
@@ -72,7 +74,7 @@ std::shared_ptr<SelectionStatus> AbstractSelectionLocalReader::openLogicalChanne
          * Build a get response command the actual length expected by the SE in the get response
          * command is handled in transmitApdu
          */
-        std::vector<char> selectApplicationCommand(6 + aid.size());
+        std::vector<char> selectApplicationCommand(5);
         selectApplicationCommand[0] = static_cast<char>(0x00); // CLA
         selectApplicationCommand[1] = static_cast<char>(0xA4); // INS
         selectApplicationCommand[2] = static_cast<char>(0x04); // P1: select by name
@@ -83,8 +85,9 @@ std::shared_ptr<SelectionStatus> AbstractSelectionLocalReader::openLogicalChanne
         }
 
         selectApplicationCommand[4] = static_cast<char>(aid.size()); // Lc
-        System::arraycopy(aid, 0, selectApplicationCommand, 5, aid.size()); // data
-        selectApplicationCommand[5 + aid.size()] = static_cast<char>(0x00); // Le
+        selectApplicationCommand.insert(selectApplicationCommand.end(),
+                                        aid.begin(), aid.end());
+        selectApplicationCommand.push_back(static_cast<char>(0x00)); // Le
 
         /*
          * We use here processApduRequest to manage case 4 hack. The successful

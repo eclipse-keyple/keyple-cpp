@@ -50,9 +50,10 @@ std::shared_ptr<MatchingSe> SeSelection::prepareSelection(std::shared_ptr<SeSele
     std::shared_ptr<MatchingSe> matchingSe = nullptr;
 
     try {
-        const std::string matching = seSelectionRequest->getMatchingClass().name();
-        const std::string selection = seSelectionRequest->getSelectionClass().name();
-        logger->debug("matching class: %s, selection class: %s\n", matching, selection);
+        const std::string matching = Logger::demangle(seSelectionRequest->getMatchingClass().name());
+        const std::string selection = Logger::demangle(seSelectionRequest->getSelectionClass().name());
+        logger->debug("matching class: %s\n", matching);
+        logger->debug("selection class: %s\n", selection);
 
         /*
          * Problem, C++ cannot instanciate objects based on runtime-known
@@ -67,8 +68,8 @@ std::shared_ptr<MatchingSe> SeSelection::prepareSelection(std::shared_ptr<SeSele
          * matchingSe = std::static_pointer_cast<MatchingSe>(
          *                       constructor->newInstance(seSelectionRequest));
          */
-        if (!matching.compare("class org::eclipse::keyple::transaction::MatchingSe") &&
-            !selection.compare("class org::eclipse::keyple::seproxy::SeSelector")) {
+        if (!matching.compare("org::eclipse::keyple::transaction::MatchingSe") &&
+            !selection.compare("org::eclipse::keyple::seproxy::SeSelector")) {
             matchingSe = std::make_shared<MatchingSe>(seSelectionRequest);
         } else {
             throw std::runtime_error("matching/selector combination not handled yet");

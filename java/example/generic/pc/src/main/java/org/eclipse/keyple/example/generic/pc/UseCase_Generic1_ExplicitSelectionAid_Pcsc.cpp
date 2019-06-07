@@ -31,7 +31,9 @@ using SeSelector            = org::eclipse::keyple::seproxy::SeSelector;
 using SeSelection           = org::eclipse::keyple::transaction::SeSelection;
 using SeSelectionRequest    = org::eclipse::keyple::transaction::SeSelectionRequest;
 
-static std::string seAid = "A0000004040125090101";
+//static std::string seAid = "A0000004040125090101";
+static std::string seAid = "A000000291";
+//static std::string seAid = "A00000019102";
 
 int main(int argc, char **argv)
 {
@@ -44,8 +46,8 @@ int main(int argc, char **argv)
 
     /* Get the instance of the SeProxyService (Singleton pattern) and assign PcscPlugin to the SeProxyService */
     SeProxyService& seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(std::shared_ptr<PcscPlugin>(&pcscplugin));
-    std::shared_ptr<SeProxyService> shared_seProxyService = std::shared_ptr<SeProxyService>(&seProxyService);
+    seProxyService.addPlugin(std::make_shared<PcscPlugin>(pcscplugin));
+    std::shared_ptr<SeProxyService> shared_seProxyService = std::make_shared<SeProxyService>(seProxyService);
 
     /*
      * Get a SE reader ready to work with generic SE. Use the getReader helper method from the
@@ -69,9 +71,9 @@ int main(int argc, char **argv)
         std::cout << "==================================================================================" << std::endl;
 
         /*
-            * Prepare the SE selection
-            */
-        std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(seReader);
+         * Prepare the SE selection
+         */
+        SeSelection* seSelection = new SeSelection(seReader);
 
         /*
             * Setting of an AID based selection (in this example a Calypso REV3 PO)

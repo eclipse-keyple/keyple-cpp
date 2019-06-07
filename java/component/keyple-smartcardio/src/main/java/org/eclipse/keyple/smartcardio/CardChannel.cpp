@@ -53,10 +53,19 @@ int CardChannel::getChannelNumber()
 std::shared_ptr<ResponseAPDU>
 CardChannel::transmit(std::shared_ptr<CommandAPDU> command)
 {
+    logger->debug("transmit\n");
+
+    logger->debug("transmit - checking closed\n");
     checkClosed();
+    logger->debug("transmit - checking exclusive\n");
     card->checkExclusive();
+    logger->debug("transmit - getting command bytes\n");
     std::vector<char> commandBytes = command->getBytes();
+    logger->debug("transmit - command: %s\n",
+                  ByteArrayUtils::toHex(commandBytes));
     std::vector<char> responseBytes = doTransmit(commandBytes);
+    logger->debug("transmit - response: %s\n",
+                  ByteArrayUtils::toHex(responseBytes));
     return std::make_shared<ResponseAPDU>(responseBytes);
 }
 
@@ -93,7 +102,7 @@ void CardChannel::close()
 
         char r_apdu[261];
         DWORD dwRecv = sizeof(r_apdu);
-        SCardTransmit(card->ctx, &card->pioSendPCI, (LPCBYTE)com.data(),
+        SCardTransmit(card->cardhdl, &card->pioSendPCI, (LPCBYTE)com.data(),
                       com.size(), NULL, (LPBYTE)r_apdu, &dwRecv);
         std::vector<char> res(r_apdu, r_apdu + dwRecv);
         if (isOK(res) == false) {
@@ -204,10 +213,12 @@ std::vector<char> CardChannel::doTransmit(std::vector<char> command)
     bool t1GetResponse = true;
     bool t1StripLe = true;
 
+    logger->debug("doTransmit\n");
+
     /*
-        *note that we modify the 'command' array in some cases, so it must
-        * be a copy of the application provided data
-        */
+     *note that we modify the 'command' array in some cases, so it must
+     * be a copy of the application provided data
+     */
     try {
         checkManageChannel(command);
         setChannel(command);
@@ -241,7 +252,7 @@ std::vector<char> CardChannel::doTransmit(std::vector<char> command)
             }
             char r_apdu[261];
             DWORD dwRecv = sizeof(r_apdu);        
-            SCardTransmit(card->ctx, &card->pioSendPCI, (LPCBYTE)command.data(),
+            SCardTransmit(card->cardhdl, &card->pioSendPCI, (LPCBYTE)command.data(),
                           command.size(), NULL, (LPBYTE)r_apdu, &dwRecv);
             std::vector<char> response(r_apdu, r_apdu + dwRecv);
             int rn = response.size();

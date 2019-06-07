@@ -57,7 +57,7 @@ public:
     /**
      * The native SCARDHANDL
      */
-    SCARDHANDLE ctx;
+    SCARDHANDLE cardhdl;
 
     /**
      * 

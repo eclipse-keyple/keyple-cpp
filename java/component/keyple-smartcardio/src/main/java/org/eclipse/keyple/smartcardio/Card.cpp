@@ -7,6 +7,7 @@
 */
 
 /* Smartcard I/O */
+#include "ATR.h"
 #include "Card.h"
 #include "CardChannel.h"
 #include "CardTerminal.h"
@@ -33,10 +34,17 @@ std::vector<char> commandOpenChannel = {0, 0x70, 0, 0, 1};
 
 Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
 {
-    logger->debug("constructor\n");
-
     int sharingMode = SCARD_SHARE_SHARED;
     int connectProtocol;
+    DWORD state;
+    BYTE _atr[33];
+    DWORD atrLen = sizeof(_atr);
+    DWORD rLen = 100;//strlen(terminal->name.c_str());
+    LONG rv;
+
+    logger->debug("constructor\n");
+
+    exclusiveThread = NULL;
 
     if (!protocol.compare("*")) {
         connectProtocol = SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1;
@@ -53,11 +61,14 @@ Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
     }
 
     logger->debug("connecting with protocol: %s and connectProtocol: %d, "\
-                    "sharing mode: %d\n", protocol, connectProtocol,
-                    sharingMode);
+                  "sharing mode: %d\n", protocol, connectProtocol,
+                  sharingMode);
 
-    SCardConnect(terminal->ctx, terminal->name.c_str(), sharingMode,
-                 connectProtocol, &this->ctx, &this->protocol);
+    rv = SCardConnect(terminal->ctx, terminal->name.c_str(), sharingMode,
+                      connectProtocol, &this->cardhdl, &this->protocol);
+    if (rv != SCARD_S_SUCCESS) {
+        logger->debug("constructor - error connecting to reader (%d)\n", rv);
+    }
 
     switch(this->protocol) {
     case SCARD_PROTOCOL_T0:
@@ -70,12 +81,22 @@ Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
 
     basicChannel = new CardChannel(this, 0);
     this->state = State::OK;
-    atr = NULL;
+
+    rv = SCardStatus(this->cardhdl, (LPSTR)terminal->name.c_str(),
+                     &rLen, &state, &this->protocol, _atr, &atrLen);
+    if (rv != SCARD_S_SUCCESS) {
+        logger->debug("constructor - error retrieving status (%d)\n", rv);
+    } else {
+        std::vector<char> __atr(_atr, _atr + atrLen);
+        logger->debug("constructor - atr: %s\n",
+                      ByteArrayUtils::toHex(__atr));
+        atr = new ATR(__atr);
+    }
 }
 
 ATR* Card::getATR()
 {
-    logger->debug("getATR\n");
+    logger->debug("getATR - returning public member ATR *atr (%p)\n", atr);
 
     return atr;
 }
@@ -117,7 +138,7 @@ CardChannel* Card::openLogicalChannel()
         char r_apdu[261];
         DWORD dwRecv = sizeof(r_apdu);
 
-        SCardTransmit(this->ctx, &this->pioSendPCI,
+        SCardTransmit(this->cardhdl, &this->pioSendPCI,
                       (LPCBYTE)commandOpenChannel.data(),
                       commandOpenChannel.size(), NULL, (LPBYTE)r_apdu, &dwRecv);
 
@@ -143,7 +164,7 @@ void Card::beginExclusive()
                             "Thread " + exclusiveThread->getName());
 
     try {
-        SCardBeginTransaction(this->ctx);
+        SCardBeginTransaction(this->cardhdl);
     } catch (PCSCException e) {
         handleError(e);
         throw CardException("beginExclusive() failed"); //, e);
@@ -162,7 +183,7 @@ void Card::endExclusive()
 
 
     try {
-        SCardEndTransaction(this->ctx, SCARD_LEAVE_CARD);
+        SCardEndTransaction(this->cardhdl, SCARD_LEAVE_CARD);
     } catch (PCSCException e) {
         handleError(e);
         throw CardException("endExclusive() failed"); //, e);
@@ -181,7 +202,7 @@ void Card::disconnect(bool reset)
 
     checkExclusive();
     try {
-        SCardDisconnect(this->ctx, (reset ? SCARD_LEAVE_CARD:SCARD_RESET_CARD));
+        SCardDisconnect(this->cardhdl, (reset ? SCARD_LEAVE_CARD:SCARD_RESET_CARD));
     } catch (PCSCException e) {
         throw CardException("disconnect() failed"); //, e);
     }
@@ -201,7 +222,7 @@ bool Card::isValid()
         BYTE attr[32];
         DWORD b = 32;
         DWORD cch = terminal->name.length();
-        SCardStatus(this->ctx, (LPSTR)terminal->name.c_str(),
+        SCardStatus(this->cardhdl, (LPSTR)terminal->name.c_str(),
                     &cch, &state, &protocol,
                     attr, &b);
         return true;
@@ -213,11 +234,16 @@ bool Card::isValid()
 
 void Card::checkExclusive()
 {
+    logger->debug("checkExclusive\n");
+
     Thread *t = exclusiveThread;
     if (!t) {
         logger->debug("exclusiveThread is null\n");
         return;
     }
+
+    logger->debug("checkExclusive - t: %p\n", t);
+    logger->debug("checkExclusive - t->selfId: %d\n", t->selfId());
 
     if (t->selfId() != Thread::currentThreadId())
         throw new CardException("Exclusive access established by another Thread"); //, e);

@@ -134,7 +134,7 @@ private:
     void setErrorEnabled(bool enabled);
 
 #ifdef __GNUG__ // gnu C++ compiler
-    std::string demangle( const char* mangled_name ) {
+    static std::string demangle( const char* mangled_name ) {
         std::size_t len = 0 ;
         int status = 0 ;
         std::unique_ptr< char, decltype(&std::free) > ptr(
@@ -142,7 +142,7 @@ private:
         return ptr.get() ;
     }
 #else
-    std::string demangle(const char* name) {
+    static std::string demangle(const char* name) {
         return name;
     }
 #endif // _GNUG_

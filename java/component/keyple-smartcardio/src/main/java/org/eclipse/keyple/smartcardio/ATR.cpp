@@ -25,6 +25,12 @@ ATR::ATR(std::vector<char> atr) : atr(atr)
 
 std::vector<char> ATR::getBytes()
 {
+
+    if (!atr.size()) {
+        std::vector<char> empty;
+        return empty;
+    }
+
     std::vector<char> copy(atr.begin(), atr.end());
 
     return copy;
