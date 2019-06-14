@@ -31,7 +31,7 @@ ENDIF(WIN32)
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
 
-    # Helpers
+	# Helpers
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/java/org/eclipse/keyple/common
 
 	# Core
@@ -43,7 +43,7 @@ INCLUDE_DIRECTORIES(
 
 ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/smartcardio/ATR.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/smartcardio/ATR.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/smartcardio/Card.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/smartcardio/CardChannel.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/smartcardio/CardTerminal.cpp

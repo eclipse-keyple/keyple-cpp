@@ -1,4 +1,3 @@
-
 #include "ByteArrayUtils.h"
 #include "ContactlessProtocols_Import.h"
 #include "KeypleBaseException.h"
@@ -45,9 +44,11 @@ class UseCase_Generic2_DefaultSelectionNotification_Pcsc
 private:
     const std::shared_ptr<void> waitForEnd = nullptr;
 
-    std::string seAid = "A0000004040125090101";
+    //std::string seAid = "A0000004040125090101";
+    std::string seAid = "304554502E494341";
 
     std::shared_ptr<SeSelection> seSelection;
+    std::shared_ptr<SeReader> seReader;
 
 public:
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(UseCase_Generic2_DefaultSelectionNotification_Pcsc));
@@ -57,66 +58,68 @@ public:
         /* Get the instance of the PC/SC plugin */
         PcscPlugin pcscplugin = PcscPlugin::getInstance();
         pcscplugin.initReaders();
-        std::shared_ptr<PcscPlugin> shared_plugin = std::shared_ptr<PcscPlugin>(&pcscplugin);
 
         /* Assign PcscPlugin to the SeProxyService */
         SeProxyService& seProxyService = SeProxyService::getInstance();
-        seProxyService.addPlugin(shared_plugin);
-        std::shared_ptr<SeProxyService> shared_proxy = std::shared_ptr<SeProxyService>(&seProxyService);
+        seProxyService.addPlugin(std::make_shared<PcscPlugin>(pcscplugin));
+        std::shared_ptr<SeProxyService> shared_proxy = std::make_shared<SeProxyService>(seProxyService);
 
         /*
          * Get a SE reader ready to work with contactless SE. Use the getReader helper method from
          * the ReaderUtilities class.
          */
-        std::shared_ptr<SeReader> seReader = ReaderUtilities::getDefaultContactLessSeReader(shared_proxy);
+        seReader = ReaderUtilities::getDefaultContactLessSeReader(shared_proxy);
 
         /* Check if the reader exists */
         if (seReader == nullptr) {
             throw std::make_shared<IllegalStateException>("Bad SE reader setup");
         }
 
-        logger->info("=============== UseCase Generic #2: AID based default selection ===================");
-        logger->info("= SE Reader  NAME = %s", seReader->getName());
+        logger->info("=============== UseCase Generic #2: AID based default selection ===================\n");
+        logger->info("= SE Reader  NAME = %s\n", seReader->getName());
 
         /*
-            * Prepare a SE selection
-            */
+         * Prepare a SE selection
+         */
         seSelection = std::make_shared<SeSelection>(seReader);
 
         /*
-            * Setting of an AID based selection
-            *
-            * Select the first application matching the selection AID whatever the SE communication
-            * protocol keep the logical channel open after the selection
-            */
+         * Setting of an AID based selection
+         *
+         * Select the first application matching the selection AID whatever the SE communication
+         * protocol keep the logical channel open after the selection
+         */
 
         /*
-            * Generic selection: configures a SeSelector with all the desired attributes to make the
-            * selection
-            */
+         * Generic selection: configures a SeSelector with all the desired attributes to make the
+         * selection
+         */
         std::vector<char> aid = ByteArrayUtils::fromHex(seAid);
         std::shared_ptr<SeSelector::AidSelector> shared_aid = std::make_shared<SeSelector::AidSelector>(aid, nullptr);
         std::shared_ptr<SeSelector> shared_selector = std::make_shared<SeSelector>(shared_aid, nullptr, "AID: " + seAid);
         std::shared_ptr<SeSelectionRequest> seSelector = std::make_shared<SeSelectionRequest>(shared_selector, ChannelState::KEEP_OPEN, std::dynamic_pointer_cast<SeProtocol>(std::shared_ptr<ContactlessProtocols>(&ContactlessProtocols::PROTOCOL_ISO14443_4)));
 
         /*
-            * Add the selection case to the current selection (we could have added other cases here)
-            */
+         * Add the selection case to the current selection (we could have added other cases here)
+         */
         seSelection->prepareSelection(seSelector);
 
         /*
-            * Provide the SeReader with the selection operation to be processed when a SE is inserted.
-            */
+         * Provide the SeReader with the selection operation to be processed when a SE is inserted.
+         */
         (std::dynamic_pointer_cast<ObservableReader>(seReader))->setDefaultSelectionRequest(seSelection->getSelectionOperation(), ObservableReader::NotificationMode::MATCHED_ONLY);
+    }
 
+    void doSomething() 
+    {
         /* Set the current class as Observer of the first reader */
-    //JAVA TO C++ CONVERTER TODO TASK: You cannot use 'shared_from_this' in a constructor:
+        //JAVA TO C++ CONVERTER TODO TASK: You cannot use 'shared_from_this' in a constructor:
         (std::dynamic_pointer_cast<ObservableReader>(seReader))->addObserver(shared_from_this());
 
-        logger->info("==================================================================================");
-        logger->info("= Wait for a SE. The default AID based selection to be processed as soon as the  =");
-        logger->info("= SE is detected.                                                                =");
-        logger->info("==================================================================================");
+        logger->info("==================================================================================\n");
+        logger->info("= Wait for a SE. The default AID based selection to be processed as soon as the  =\n");
+        logger->info("= SE is detected.                                                                =\n");
+        logger->info("==================================================================================\n");
 
         /* Wait for ever (exit with CTRL-C) */
         while(1);
@@ -128,16 +131,16 @@ public:
             if (seSelection->processDefaultSelection(event->getDefaultSelectionResponse())) {
                 //std::shared_ptr<MatchingSe> selectedSe = seSelection->getSelectedSe(); Alex: unused?
 
-                logger->info("Observer notification: the selection of the SE has succeeded.");
+                logger->info("Observer notification: the selection of the SE has succeeded\n");
 
-                logger->info("==================================================================================");
-                logger->info("= End of the SE processing.                                                      =");
-                logger->info("==================================================================================");
+                logger->info("==================================================================================\n");
+                logger->info("= End of the SE processing.                                                      =\n");
+                logger->info("==================================================================================\n");
             } else {
-                logger->error("The selection of the SE has failed. Should not have occurred due to the MATCHED_ONLY selection mode.");
+                logger->error("The selection of the SE has failed. Should not have occurred due to the MATCHED_ONLY selection mode\n");
             }
         } else if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED) {
-            logger->error("SE_INSERTED event: should not have occurred due to the MATCHED_ONLY selection mode.");
+            logger->error("SE_INSERTED event: should not have occurred due to the MATCHED_ONLY selection mode\n");
         } else if (event->getEventType() == ReaderEvent::EventType::SE_REMOVAL) {
             logger->info("The SE has been removed.");
         }
@@ -152,4 +155,5 @@ int main(int argc, char **argv)
 
     /* Create the observable object to handle the SE processing */
     std::shared_ptr<UseCase_Generic2_DefaultSelectionNotification_Pcsc> m = std::make_shared<UseCase_Generic2_DefaultSelectionNotification_Pcsc>();
+    m->doSomething();
 }

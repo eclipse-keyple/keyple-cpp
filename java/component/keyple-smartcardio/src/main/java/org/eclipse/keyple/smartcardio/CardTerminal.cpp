@@ -66,13 +66,12 @@ bool CardTerminal::isCardPresent()
         DWORD state;
         DWORD protocol;
         BYTE pbAtr[261];
-        DWORD atrLen = sizeof(pbAtr);
         SCARDHANDLE hCard;
-        DWORD chReaderLen = 100; //strlen(name.c_str());
+        DWORD atrLen = sizeof(pbAtr);
+        DWORD chReaderLen = strlen(name.c_str()) + 1;
         LONG rv;
 
-        logger->debug("isCardPresent - retrieving card status on %s\n",
-                      name.c_str());
+        logger->debug("isCardPresent - connecting to card");
 
         rv = SCardConnect(this->ctx, (LPSTR)name.c_str(), SCARD_SHARE_SHARED,
                           SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &hCard,
@@ -82,8 +81,11 @@ bool CardTerminal::isCardPresent()
                 return false;
         }
 
-        rv = SCardStatus(hCard, (LPSTR)name.c_str(), &chReaderLen, &state,
-                         &protocol, pbAtr, &atrLen);
+        logger->debug("isCardPresent - retrieving card status on %s\n",
+                      name.c_str());
+
+        rv = SCardStatus(hCard, (LPSTR)name.c_str(), &chReaderLen,
+                         &state, &protocol, pbAtr, &atrLen);
         if (rv != SCARD_S_SUCCESS) {
                 logger->debug("isCardPresent - error retrieving status (%x)\n",
                               rv);
@@ -93,9 +95,10 @@ bool CardTerminal::isCardPresent()
         logger->debug("isCardPresent - current state: %x (vs. %x)\n",
                       state, SCARD_PRESENT);
 
-        SCardDisconnect(hCard, SCARD_UNPOWER_CARD);
+        logger->debug("isCardPresent - disconnecting");
+	SCardDisconnect(hCard, SCARD_LEAVE_CARD);
 
-        return (state & SCARD_PRESENT || state & SCARD_POWERED) != 0;
+	return (state & SCARD_PRESENT || state & SCARD_POWERED) != 0;
     } catch (PCSCException e) {
         throw CardException("isCardPresent() failed"); //, e);
     }
@@ -103,6 +106,8 @@ bool CardTerminal::isCardPresent()
 
 bool CardTerminal::waitForCardPresent(long timeout)
 {
+    logger->debug("waitForCardPresent - timeout: %d\n", timeout);
+
     return waitForCard(true, timeout);
 }
 
@@ -124,35 +129,55 @@ CardTerminal::CardTerminal(SCARDCONTEXT ctx, const std::string& name)
 
 bool CardTerminal::waitForCard(bool wantPresent, long timeout)
 {
+    bool present = !wantPresent;
+    SCARD_READERSTATE status[1];
+    long start = System::currentTimeMillis();
+    long current; 
+
+    logger->debug("waitForCard - wantPresent: %d, timeout: %dl\n", wantPresent,
+                  timeout);
+
     if (timeout < 0)
         throw new IllegalArgumentException("timeout must not be negative");
 
     if (timeout == 0)
         timeout = INFINITE;
 
-    SCARD_READERSTATE status;
-    status.dwCurrentState = SCARD_STATE_UNAWARE;
-    status.szReader = this->name.c_str();
+    status[0].dwCurrentState = SCARD_STATE_UNAWARE;
+    status[0].szReader = this->name.c_str();
 
     try {
-        /* Check if card status already matches */
-        SCardGetStatusChange(this->ctx, 0, &status, 1);
-        bool present = (status.dwCurrentState & SCARD_STATE_PRESENT) != 0;
-        if (wantPresent == present) {
-            return true;
-        }
+        /*
+         * Check if card status already matches
+         *
+         * Note: if executed properly SCardGetStatusChange blocks until the
+         * current availability of the card changes.
+         */
+        logger->debug("waitForCard - waiting for card status change on %s\n",
+                      this->name.c_str());
 
-        /* No match, wait (until timeout expires) */
-        long end = System::currentTimeMillis() + timeout;
         while (wantPresent != present && timeout != 0) {
-            /* Set remaining timeout */
-            if (timeout != INFINITE)
-                timeout = std::max(end - System::currentTimeMillis(), 0l);
+            LONG rv = SCardGetStatusChange(this->ctx, 50, status, 1);
+            if (rv != SCARD_S_SUCCESS) {
+                logger->debug("waitForCard - error in SCardGetStatusChange " \
+                              "(%d)\n", rv);
+                return false;
+            }
 
-            SCardGetStatusChange(this->ctx, timeout, &status, 1);
-            present = (status.dwCurrentState & SCARD_STATE_PRESENT) != 0;
+            present = (status[0].dwEventState & SCARD_STATE_PRESENT) != 0;
+            if (wantPresent == present)
+                return true;
+
+            if (timeout != INFINITE) {
+                current = System::currentTimeMillis();
+                if (current > (start + timeout)) {
+                    logger->debug("waitForCard - timeout\n");
+                    return false;
+                }
+            }
+
+	    Thread::sleep(50);
         }
-        return wantPresent == present;
     } catch (PCSCException e) {
         if (e.code == SCARD_E_TIMEOUT) {
             return false;
@@ -160,6 +185,8 @@ bool CardTerminal::waitForCard(bool wantPresent, long timeout)
             throw CardException("waitForCard() failed"); //, e);
         }
     }
+
+    return false;
 }
 
 }

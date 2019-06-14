@@ -39,7 +39,7 @@ Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
     DWORD state;
     BYTE _atr[33];
     DWORD atrLen = sizeof(_atr);
-    DWORD rLen = 100;//strlen(terminal->name.c_str());
+    DWORD rLen = strlen(terminal->name.c_str()) + 1;
     LONG rv;
 
     logger->debug("constructor\n");

@@ -119,6 +119,8 @@ bool PcscReader::checkSePresence()
 
 bool PcscReader::waitForCardPresent(long long timeout)
 {
+    logger->debug("waitForCardPresent - timeout: %d\n", timeout);
+
     try {
         return terminal->waitForCardPresent(timeout);
     }

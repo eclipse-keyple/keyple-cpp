@@ -43,12 +43,12 @@ public:
      */
     std::string name;
 
-private:
     /**
      * 
      */
     Card* card;
 
+private:
     /**
      *
      */
