@@ -53,12 +53,11 @@ int main(int argc, char **argv)
     /* Get the instance of the PC/SC plugin */
     PcscPlugin pcscplugin = PcscPlugin::getInstance();
     pcscplugin.initReaders();
-    std::shared_ptr<PcscPlugin> shared_plugin = std::shared_ptr<PcscPlugin>(&pcscplugin);
 
     /* Assign PcscPlugin to the SeProxyService */
     SeProxyService& seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(shared_plugin);
-    std::shared_ptr<SeProxyService> shared_proxy = std::shared_ptr<SeProxyService>(&seProxyService);
+    seProxyService.addPlugin(std::make_shared<PcscPlugin>(pcscplugin));
+    std::shared_ptr<SeProxyService> shared_proxy = std::make_shared<SeProxyService>(seProxyService);
 
     /*
      * Get a SE reader ready to work with contactless SE. Use the getReader helper method from
@@ -71,8 +70,8 @@ int main(int argc, char **argv)
         throw std::make_shared<IllegalStateException>("Bad SE reader setup");
     }
 
-    logger->info("=============== UseCase Generic #3: AID based grouped explicit multiple selection ==================");
-    logger->info("= SE Reader  NAME = %s", seReader->getName());
+    logger->info("=============== UseCase Generic #3: AID based grouped explicit multiple selection ==================\n");
+    logger->info("= SE Reader  NAME = %s\n", seReader->getName());
 
     std::vector<std::shared_ptr<MatchingSe>> matchingSeTable(3);
 
@@ -83,7 +82,8 @@ int main(int argc, char **argv)
         std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(seReader);
 
         /* operate SE selection (change the AID here to adapt it to the SE used for the test) */
-        std::string seAidPrefix = "A000000404012509";
+        //std::string seAidPrefix = "A000000404012509";
+	std::string seAidPrefix = "304554502E494341";
 
         /* AID based selection */
         std::vector<char> aid = ByteArrayUtils::fromHex(seAidPrefix);
@@ -105,21 +105,21 @@ int main(int argc, char **argv)
                     matchedSelection++;
                 }
             }
-            logger->info("The SE matched %d time(s) the selection.", matchedSelection);
+            logger->info("The hed %d time(s) the selection\n", matchedSelection);
 
             for (int i = 0; i < (int)matchingSeTable.size(); i++) {
 
                 if (matchingSeTable[i]->getSelectionSeResponse() != nullptr) {
-                    logger->info("Selection status for case %d: \n\t\tATR: %s\n\t\tFCI: %s", i + 1, ByteArrayUtils::toHex(matchingSeTable[i]->getSelectionSeResponse()->getSelectionStatus()->getAtr()->getBytes()), ByteArrayUtils::toHex(matchingSeTable[i]->getSelectionSeResponse()->getSelectionStatus()->getFci()->getDataOut()));
+                    logger->info("Selection status for case %d: \n\t\tATR: %s\n\t\tFCI: %s\n", i + 1, ByteArrayUtils::toHex(matchingSeTable[i]->getSelectionSeResponse()->getSelectionStatus()->getAtr()->getBytes()), ByteArrayUtils::toHex(matchingSeTable[i]->getSelectionSeResponse()->getSelectionStatus()->getFci()->getDataOut()));
                 }
             }
         }
         else {
-            logger->info("The selection process did not return any selected SE.");
+            logger->info("The selection process did not return any selected SE\n");
         }
     }
     else {
-        logger->error("No SE were detected.");
+        logger->error("No SE were detected\n");
     }
 
     return 0;
