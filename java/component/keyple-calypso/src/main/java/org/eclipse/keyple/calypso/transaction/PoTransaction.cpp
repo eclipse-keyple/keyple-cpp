@@ -50,21 +50,21 @@ namespace org {
 
                     using AbstractApduCommandBuilder                         = org::eclipse::keyple::command::AbstractApduCommandBuilder;
                     using AbstractApduResponseParser                         = org::eclipse::keyple::command::AbstractApduResponseParser;
-                    using AbstractOpenSessionCmdBuild                        = org::eclipse::keyple::calypso::command::po::builder::session::AbstractOpenSessionCmdBuild;
-                    using AbstractOpenSessionRespPars                        = org::eclipse::keyple::calypso::command::po::parser::session::AbstractOpenSessionRespPars;
+                    using AbstractOpenSessionCmdBuild                        = org::eclipse::keyple::calypso::command::po::builder::security::AbstractOpenSessionCmdBuild;
+                    using AbstractOpenSessionRespPars                        = org::eclipse::keyple::calypso::command::po::parser::security::AbstractOpenSessionRespPars;
                     using AppendRecordCmdBuild                               = org::eclipse::keyple::calypso::command::po::builder::AppendRecordCmdBuild;
                     using AppendRecordRespPars                               = org::eclipse::keyple::calypso::command::po::parser::AppendRecordRespPars;
                     using ByteArrayUtils                                     = org::eclipse::keyple::util::ByteArrayUtils;
                     using ChannelState                                       = org::eclipse::keyple::seproxy::ChannelState;
-                    using CloseSessionCmdBuild                               = org::eclipse::keyple::calypso::command::po::builder::session::CloseSessionCmdBuild;
-                    using CloseSessionRespPars                               = org::eclipse::keyple::calypso::command::po::parser::session::CloseSessionRespPars;
+                    using CloseSessionCmdBuild                               = org::eclipse::keyple::calypso::command::po::builder::security::CloseSessionCmdBuild;
+                    using CloseSessionRespPars                               = org::eclipse::keyple::calypso::command::po::parser::security::CloseSessionRespPars;
                     using DecreaseCmdBuild                                   = org::eclipse::keyple::calypso::command::po::builder::DecreaseCmdBuild;
-                    using DigestAuthenticateCmdBuild                         = org::eclipse::keyple::calypso::command::sam::builder::session::DigestAuthenticateCmdBuild;
-                    using DigestAuthenticateRespPars                         = org::eclipse::keyple::calypso::command::sam::parser::session::DigestAuthenticateRespPars;
-                    using DigestCloseCmdBuild                                = org::eclipse::keyple::calypso::command::sam::builder::session::DigestCloseCmdBuild;
-                    using DigestCloseRespPars                                = org::eclipse::keyple::calypso::command::sam::parser::session::DigestCloseRespPars;
-                    using DigestInitCmdBuild                                 = org::eclipse::keyple::calypso::command::sam::builder::session::DigestInitCmdBuild;
-                    using DigestUpdateCmdBuild                               = org::eclipse::keyple::calypso::command::sam::builder::session::DigestUpdateCmdBuild;
+                    using DigestAuthenticateCmdBuild                         = org::eclipse::keyple::calypso::command::sam::builder::security::DigestAuthenticateCmdBuild;
+                    using DigestAuthenticateRespPars                         = org::eclipse::keyple::calypso::command::sam::parser::security::DigestAuthenticateRespPars;
+                    using DigestCloseCmdBuild                                = org::eclipse::keyple::calypso::command::sam::builder::security::DigestCloseCmdBuild;
+                    using DigestCloseRespPars                                = org::eclipse::keyple::calypso::command::sam::parser::security::DigestCloseRespPars;
+                    using DigestInitCmdBuild                                 = org::eclipse::keyple::calypso::command::sam::builder::security::DigestInitCmdBuild;
+                    using DigestUpdateCmdBuild                               = org::eclipse::keyple::calypso::command::sam::builder::security::DigestUpdateCmdBuild;
                     using IncreaseCmdBuild                                   = org::eclipse::keyple::calypso::command::po::builder::IncreaseCmdBuild;
                     using KeypleReaderException                              = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
                     using KeypleCalypsoSecureSessionException                = org::eclipse::keyple::calypso::transaction::exception::KeypleCalypsoSecureSessionException;
@@ -75,10 +75,10 @@ namespace org {
                     using ReadDataStructure                                  = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
                     using ReadRecordsCmdBuild                                = org::eclipse::keyple::calypso::command::po::builder::ReadRecordsCmdBuild;
                     using SamCommandBuilder                                  = org::eclipse::keyple::calypso::command::sam::SamCommandBuilder;
-                    using SamGetChallengeRespPars                            = org::eclipse::keyple::calypso::command::sam::parser::session::SamGetChallengeRespPars;
+                    using SamGetChallengeRespPars                            = org::eclipse::keyple::calypso::command::sam::parser::security::SamGetChallengeRespPars;
                     using SamRevision                                        = org::eclipse::keyple::calypso::command::sam::SamRevision;
                     using SamSendableInSession                               = org::eclipse::keyple::calypso::command::sam::SamSendableInSession;
-                    using SelectDiversifierCmdBuild                          = org::eclipse::keyple::calypso::command::sam::builder::session::SelectDiversifierCmdBuild;
+                    using SelectDiversifierCmdBuild                          = org::eclipse::keyple::calypso::command::sam::builder::security::SelectDiversifierCmdBuild;
                     using SeReader                                           = org::eclipse::keyple::seproxy::SeReader;
                     using TransmissionMode                                   = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
                     using UpdateRecordCmdBuild                               = org::eclipse::keyple::calypso::command::po::builder::UpdateRecordCmdBuild;
@@ -187,7 +187,7 @@ namespace org {
                         /* Build the SAM Get Challenge command */
                         char challengeLength = poRevision == PoRevision::REV3_2 ? CHALLENGE_LENGTH_REV32 : CHALLENGE_LENGTH_REV_INF_32;
 
-                        std::shared_ptr<AbstractApduCommandBuilder> samGetChallenge = std::make_shared<org::eclipse::keyple::calypso::command::sam::builder::session::SamGetChallengeCmdBuild>(this->samRevision, challengeLength);
+                        std::shared_ptr<AbstractApduCommandBuilder> samGetChallenge = std::make_shared<org::eclipse::keyple::calypso::command::sam::builder::security::SamGetChallengeCmdBuild>(this->samRevision, challengeLength);
 
                         samApduRequestList.push_back(samGetChallenge->getApduRequest());
 
@@ -210,15 +210,15 @@ namespace org {
                         logger->debug("processAtomicOpening => identification: SAMSERESPONSE = {}", samSeResponse);
 
                         std::vector<std::shared_ptr<ApduResponse>> samApduResponseList = samSeResponse->getApduResponses();
-                        std::vector<char> sessionTerminalChallenge;
+                        std::vector<char> securityTerminalChallenge;
 
                         if ((int)samApduResponseList.size() == numberOfSamCmd &&
                             samApduResponseList[numberOfSamCmd - 1]->isSuccessful() &&
                             (int)samApduResponseList[numberOfSamCmd - 1]->getDataOut().size() == challengeLength) {
                             std::shared_ptr<SamGetChallengeRespPars> samChallengePars = std::make_shared<SamGetChallengeRespPars>(samApduResponseList[numberOfSamCmd - 1]);
-                            sessionTerminalChallenge = samChallengePars->getChallenge();
+                            securityTerminalChallenge = samChallengePars->getChallenge();
                             if (logger->isDebugEnabled()) {
-                                logger->debug("processAtomicOpening => identification: TERMINALCHALLENGE = %s", org::eclipse::keyple::util::ByteArrayUtils::toHex(sessionTerminalChallenge));
+                                logger->debug("processAtomicOpening => identification: TERMINALCHALLENGE = %s", org::eclipse::keyple::util::ByteArrayUtils::toHex(securityTerminalChallenge));
                             }
                         }
                         else {
@@ -230,7 +230,7 @@ namespace org {
 
                         /* Build the PO Open Secure Session command */
                         // TODO decide how to define the extraInfo field. Empty for the moment.
-                        std::shared_ptr<AbstractOpenSessionCmdBuild> poOpenSession = AbstractOpenSessionCmdBuild::create(getRevision(), static_cast<char>(static_cast<int>(accessLevel) + 1), sessionTerminalChallenge, openingSfiToSelect, openingRecordNumberToRead, "");
+                        std::shared_ptr<AbstractOpenSessionCmdBuild> poOpenSession = AbstractOpenSessionCmdBuild::create(getRevision(), static_cast<char>(static_cast<int>(accessLevel) + 1), securityTerminalChallenge, openingSfiToSelect, openingRecordNumberToRead, "");
 
                         /* Add the resulting ApduRequest to the PO ApduRequest list */
                         poApduRequestList.push_back(poOpenSession->getApduRequest());
@@ -294,7 +294,7 @@ namespace org {
 
                         /* Parse the response to Open Secure Session (the first item of poApduResponseList) */
                         std::shared_ptr<AbstractOpenSessionRespPars> poOpenSessionPars = AbstractOpenSessionRespPars::create(poApduResponseList[0], poRevision);
-                        std::vector<char> sessionCardChallenge = poOpenSessionPars->getPoChallenge();
+                        std::vector<char> securityCardChallenge = poOpenSessionPars->getPoChallenge();
 
                         /* Build the Digest Init command from PO Open Session */
                         poKif = poOpenSessionPars->getSelectedKif();
@@ -303,7 +303,7 @@ namespace org {
                         char poKvc = poOpenSessionPars->getSelectedKvc();
 
                         if (logger->isDebugEnabled()) {
-                            logger->debug("processAtomicOpening => opening: CARDCHALLENGE = {}, POKIF = {}, POKVC = {}", ByteArrayUtils::toHex(sessionCardChallenge), StringHelper::formatSimple("%02X", poKif), StringHelper::formatSimple("%02X", poKvc));
+                            logger->debug("processAtomicOpening => opening: CARDCHALLENGE = {}, POKIF = {}, POKVC = {}", ByteArrayUtils::toHex(securityCardChallenge), StringHelper::formatSimple("%02X", poKif), StringHelper::formatSimple("%02X", poKvc));
                         }
 
                         if (authorizedKvcList.size() > 0 && std::find(authorizedKvcList.begin(), authorizedKvcList.end(), poKvc) != authorizedKvcList.end()) {
@@ -335,7 +335,7 @@ namespace org {
 
                         /*
                          * Initialize the DigestProcessor. It will store all digest operations (Digest Init, Digest
-                         * Update) until the session closing. AT this moment, all SAM Apdu will be processed at
+                         * Update) until the security closing. AT this moment, all SAM Apdu will be processed at
                          * once.
                          */
                         std::vector<char> dataOut = poApduResponseList[0]->getDataOut();
@@ -343,7 +343,7 @@ namespace org {
 
                         /*
                          * Add all commands data to the digest computation. The first command in the list is the
-                         * open secure session command. This command is not included in the digest computation, so
+                         * open secure security command. This command is not included in the digest computation, so
                          * we skip it and start the loop at index 1.
                          */
                         if ((poCommandsInsideSession.size() > 0) && !poCommandsInsideSession.empty()) {
@@ -488,7 +488,7 @@ namespace org {
                             std::vector<std::shared_ptr<ApduRequest>> req = samSeRequest->getApduRequests();
                             throw KeypleCalypsoSecureSessionException("The logical channel was not open", KeypleCalypsoSecureSessionException::Type::SAM, req, emptyVector);
                         }
-                        // TODO check if the wasChannelPreviouslyOpen should be done in the case where the session
+                        // TODO check if the wasChannelPreviouslyOpen should be done in the case where the security
                         // is closed
 
                         return samSeResponse;
@@ -500,7 +500,7 @@ namespace org {
                                                                                     ChannelState channelState)
                     {
                         if (currentState != SessionState::SESSION_OPEN) {
-                            throw IllegalStateException(StringHelper::formatSimple("Bad session state. Current: %d, expected: %d",
+                            throw IllegalStateException(StringHelper::formatSimple("Bad security state. Current: %d, expected: %d",
                                                                                    static_cast<int>(currentState),
                                                                                    static_cast<int>(SessionState::SESSION_OPEN)));
                         }
@@ -576,16 +576,16 @@ namespace org {
                         }
 
                         /* Get Terminal Signature from the latest response */
-                        std::vector<char> sessionTerminalSignature;
+                        std::vector<char> securityTerminalSignature;
                         // TODO Add length check according to Calypso REV (4 / 8)
                         if (!samApduResponseList.empty()) {
                             std::shared_ptr<DigestCloseRespPars> respPars = std::make_shared<DigestCloseRespPars>(samApduResponseList[samApduResponseList.size() - 1]);
 
-                            sessionTerminalSignature = respPars->getSignature();
+                            securityTerminalSignature = respPars->getSignature();
                         }
 
                         if (logger->isDebugEnabled()) {
-                            logger->debug("processAtomicClosing => SIGNATURE = {}", org::eclipse::keyple::util::ByteArrayUtils::toHex(sessionTerminalSignature));
+                            logger->debug("processAtomicClosing => SIGNATURE = {}", org::eclipse::keyple::util::ByteArrayUtils::toHex(securityTerminalSignature));
                         }
 
                         std::shared_ptr<PoCustomReadCommandBuilder> ratificationCommand;
@@ -610,8 +610,8 @@ namespace org {
                             ratificationCommand.reset();
                         }
 
-                        /* Build the PO Close Session command. The last one for this session */
-                        std::shared_ptr<CloseSessionCmdBuild> closeCommand = std::make_shared<CloseSessionCmdBuild>(calypsoPo->getPoClass(), ratificationAsked, sessionTerminalSignature);
+                        /* Build the PO Close Session command. The last one for this security */
+                        std::shared_ptr<CloseSessionCmdBuild> closeCommand = std::make_shared<CloseSessionCmdBuild>(calypsoPo->getPoClass(), ratificationAsked, securityTerminalSignature);
 
                         poApduRequestList.push_back(closeCommand->getApduRequest());
 
@@ -777,12 +777,12 @@ namespace org {
                     char PoTransaction::DigestProcessor::keyKIF = 0;
                     char PoTransaction::DigestProcessor::keyKVC = 0;
 
-                    void PoTransaction::DigestProcessor::initialize(PoRevision poRev, SamRevision samRev, bool sessionEncryption, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif, char workKeyKVC, std::vector<char> &digestData)
+                    void PoTransaction::DigestProcessor::initialize(PoRevision poRev, SamRevision samRev, bool securityEncryption, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif, char workKeyKVC, std::vector<char> &digestData)
                     {
                         /* Store work context */
                         poRevision = poRev;
                         samRevision = SamRevision(samRev);
-                        encryption = sessionEncryption;
+                        encryption = securityEncryption;
                         verification = verificationMode;
                         revMode = rev3_2Mode;
                         keyRecordNumber = workKeyRecordNumber;
@@ -791,7 +791,7 @@ namespace org {
                         /*
                          * Alex: logger is not static...
                         if (logger->isDebugEnabled()) {
-                            logger->debug("PoTransaction.DigestProcessor => initialize: POREVISION = %d, SAMREVISION = %d, SESSIONENCRYPTION = %d", static_cast<int>(poRev), static_cast<int>(samRev.ordinal()), sessionEncryption, verificationMode);
+                            logger->debug("PoTransaction.DigestProcessor => initialize: POREVISION = %d, SAMREVISION = %d, SESSIONENCRYPTION = %d", static_cast<int>(poRev), static_cast<int>(samRev.ordinal()), securityEncryption, verificationMode);
                             logger->debug("PoTransaction.DigestProcessor => initialize: VERIFICATIONMODE = %d, REV32MODE = %d KEYRECNUMBER = %d", verificationMode, rev3_2Mode, workKeyRecordNumber);
                             logger->debug("PoTransaction.DigestProcessor => initialize: KIF = %s, KVC %ds DIGESTDATA = %s", StringHelper::formatSimple("%02X", workKeyKif),
                                           StringHelper::formatSimple("%02X", workKeyKVC), org::eclipse::keyple::util::ByteArrayUtils::toHex(digestData));
@@ -1018,7 +1018,7 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                                         poProcessSuccess = false;
                                     }
                                     /*
-                                     * Closes the session, resets the modifications buffer counters for the next
+                                     * Closes the security, resets the modifications buffer counters for the next
                                      * round (set the contact mode to avoid the transmission of the ratification)
                                      */
                                     std::vector<std::shared_ptr<PoModificationCommand>> emptyVector;
@@ -1057,9 +1057,9 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                     bool PoTransaction::processPoCommands(ChannelState channelState)
                     {
 
-                        /** This method should be called only if no session was previously open */
+                        /** This method should be called only if no security was previously open */
                         if (currentState == SessionState::SESSION_OPEN) {
-                            throw std::make_shared<IllegalStateException>("A session is open");
+                            throw std::make_shared<IllegalStateException>("A security is open");
                         }
 
                         bool poProcessSuccess = true;
@@ -1083,9 +1083,9 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                     bool PoTransaction::processPoCommandsInSession()
                     {
 
-                        /** This method should be called only if a session was previously open */
+                        /** This method should be called only if a security was previously open */
                         if (currentState == SessionState::SESSION_CLOSED) {
-                            throw std::make_shared<IllegalStateException>("No open session");
+                            throw std::make_shared<IllegalStateException>("No open security");
                         }
 
                         bool poProcessSuccess = true;
@@ -1094,7 +1094,7 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                          */
                         std::shared_ptr<std::vector<std::shared_ptr<AbstractApduResponseParser>>::const_iterator> abstractApduResponseParserIterator = std::make_shared<std::vector<std::shared_ptr<AbstractApduResponseParser>>::const_iterator>(poResponseParserList.begin());
 
-                        /* A session is open, we have to care about the PO modifications buffer */
+                        /* A security is open, we have to care about the PO modifications buffer */
                         std::vector<std::shared_ptr<PoSendableInSession>> poAtomicCommandBuilderList;
 
                         for (auto poCommandBuilderElement : poCommandBuilderList) {
@@ -1118,13 +1118,13 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                                         poProcessSuccess = false;
                                     }
                                     /*
-                                     * Close the session and reset the modifications buffer counters for the next
+                                     * Close the security and reset the modifications buffer counters for the next
                                      * round (set the contact mode to avoid the transmission of the ratification)
                                      */
                                     std::vector<std::shared_ptr<PoModificationCommand>> empty1;
                                     processAtomicClosing(empty1, TransmissionMode::CONTACTS, ChannelState::KEEP_OPEN);
                                     resetModificationsBufferCounter();
-                                    /* We reopen a new session for the remaining commands to be sent */
+                                    /* We reopen a new security for the remaining commands to be sent */
                                     std::vector<std::shared_ptr<PoSendableInSession>> empty2;
                                     std::shared_ptr<SeResponse> seResponseOpening = processAtomicOpening(currentAccessLevel, static_cast<char>(0x00), static_cast<char>(0x00), empty2);
                                     /*
@@ -1164,7 +1164,7 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                     {
                         bool poProcessSuccess = true;
                         bool atLeastOneReadCommand = false;
-                        bool sessionPreviouslyClosed = false;
+                        bool securityPreviouslyClosed = false;
                         std::vector<std::shared_ptr<PoModificationCommand>> poModificationCommandList;
                         std::shared_ptr<std::vector<std::shared_ptr<AbstractApduResponseParser>>::const_iterator> abstractApduResponseParserIterator = std::make_shared<std::vector<std::shared_ptr<AbstractApduResponseParser>>::const_iterator>(poResponseParserList.begin());
                         std::vector<std::shared_ptr<PoModificationCommand>> poAtomicCommandBuilderList;
@@ -1185,10 +1185,10 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                                         throw IllegalStateException(StringHelper::formatSimple("ATOMIC mode error! This command would overflow the PO modifications buffer: %s\n", poCommandBuilderElement));
                                     }
                                     /*
-                                     * Reopen a session with the same access level if it was previously closed in
+                                     * Reopen a security with the same access level if it was previously closed in
                                      * this current processClosing
                                      */
-                                    if (sessionPreviouslyClosed) {
+                                    if (securityPreviouslyClosed) {
                                         std::vector<std::shared_ptr<PoSendableInSession>> emptyVector;
                                         processAtomicOpening(currentAccessLevel, static_cast<char>(0x00), static_cast<char>(0x00), emptyVector);
                                     }
@@ -1209,7 +1209,7 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                                         /* All commands in the list are 'modifying' */
                                         seResponseClosing = processAtomicClosing(poAtomicCommandBuilderList, TransmissionMode::CONTACTS, ChannelState::KEEP_OPEN);
                                         resetModificationsBufferCounter();
-                                        sessionPreviouslyClosed = true;
+                                        securityPreviouslyClosed = true;
                                     }
 
                                     std::shared_ptr<std::vector<std::shared_ptr<AbstractApduResponseParser>>::const_iterator> apduResponseParserIterator = std::make_shared<std::vector<std::shared_ptr<AbstractApduResponseParser>>::const_iterator>(poResponseParserList.begin());
@@ -1235,16 +1235,16 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                                 }
                             }
                         }
-                        if (sessionPreviouslyClosed) {
+                        if (securityPreviouslyClosed) {
                             /*
-                             * Reopen if needed, to close the session with the requested conditions
+                             * Reopen if needed, to close the security with the requested conditions
                              * (CommunicationMode and channelState)
                              */
                             std::vector<std::shared_ptr<PoSendableInSession>> emptyVector;
                             processAtomicOpening(currentAccessLevel, static_cast<char>(0x00), static_cast<char>(0x00), emptyVector);
                         }
 
-                        /* Finally, close the session as requested */
+                        /* Finally, close the security as requested */
                         seResponseClosing = processAtomicClosing(poAtomicCommandBuilderList, transmissionMode, channelState);
 
                         /* Update parsers */
@@ -1290,12 +1290,12 @@ std::unordered_map<char, std::shared_ptr<PoTransaction::AnticipatedResponseBuild
                         poResponseParserList.clear();
 
                         /*
-                         * session is now considered closed regardless the previous state or the result of the abort
-                         * session command sent to the PO.
+                         * security is now considered closed regardless the previous state or the result of the abort
+                         * security command sent to the PO.
                          */
                         currentState = SessionState::SESSION_CLOSED;
 
-                        /* return the successful status of the abort session command */
+                        /* return the successful status of the abort security command */
                         return poSeResponse->getApduResponses()[0]->isSuccessful();
                     }
 

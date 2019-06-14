@@ -71,7 +71,7 @@ bool CardTerminal::isCardPresent()
         DWORD chReaderLen = strlen(name.c_str()) + 1;
         LONG rv;
 
-        logger->debug("isCardPresent - connecting to card");
+        logger->debug("isCardPresent - connecting to card\n");
 
         rv = SCardConnect(this->ctx, (LPSTR)name.c_str(), SCARD_SHARE_SHARED,
                           SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &hCard,
@@ -95,10 +95,11 @@ bool CardTerminal::isCardPresent()
         logger->debug("isCardPresent - current state: %x (vs. %x)\n",
                       state, SCARD_PRESENT);
 
-        logger->debug("isCardPresent - disconnecting");
-	SCardDisconnect(hCard, SCARD_LEAVE_CARD);
+        logger->debug("isCardPresent - disconnecting\n");
 
-	return (state & SCARD_PRESENT || state & SCARD_POWERED) != 0;
+        SCardDisconnect(hCard, SCARD_LEAVE_CARD);
+
+        return (state & SCARD_PRESENT || state & SCARD_POWERED) != 0;
     } catch (PCSCException e) {
         throw CardException("isCardPresent() failed"); //, e);
     }

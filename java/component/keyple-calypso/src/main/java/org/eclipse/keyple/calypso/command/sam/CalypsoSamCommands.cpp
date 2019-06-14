@@ -21,24 +21,24 @@ namespace org {
                 namespace command {
                     namespace sam {
 
-                        using SelectDiversifierCmdBuild    = org::eclipse::keyple::calypso::command::sam::builder::session::SelectDiversifierCmdBuild;
-                        using SelectDiversifierRespPars    = org::eclipse::keyple::calypso::command::sam::parser::session::SelectDiversifierRespPars;
+                        using SelectDiversifierCmdBuild    = org::eclipse::keyple::calypso::command::sam::builder::security::SelectDiversifierCmdBuild;
+                        using SelectDiversifierRespPars    = org::eclipse::keyple::calypso::command::sam::parser::security::SelectDiversifierRespPars;
                         using AbstractApduCommandBuilder   = org::eclipse::keyple::command::AbstractApduCommandBuilder;
                         using AbstractApduResponseParser   = org::eclipse::keyple::command::AbstractApduResponseParser;
                         using CommandsTable                = org::eclipse::keyple::command::CommandsTable;
-                        using SamGetChallengeCmdBuild      = org::eclipse::keyple::calypso::command::sam::builder::session::SamGetChallengeCmdBuild;
-                        using DigestInitCmdBuild           = org::eclipse::keyple::calypso::command::sam::builder::session::DigestInitCmdBuild;
-                        using DigestUpdateCmdBuild         = org::eclipse::keyple::calypso::command::sam::builder::session::DigestUpdateCmdBuild;
-                        using DigestUpdateMultipleCmdBuild = org::eclipse::keyple::calypso::command::sam::builder::session::DigestUpdateMultipleCmdBuild;
-                        using DigestCloseCmdBuild          = org::eclipse::keyple::calypso::command::sam::builder::session::DigestCloseCmdBuild;
-                        using DigestAuthenticateCmdBuild   = org::eclipse::keyple::calypso::command::sam::builder::session::DigestAuthenticateCmdBuild;
-                        using SelectDiversifierRespPars    = org::eclipse::keyple::calypso::command::sam::parser::session::SelectDiversifierRespPars;
-                        using SamGetChallengeRespPars      = org::eclipse::keyple::calypso::command::sam::parser::session::SamGetChallengeRespPars;
-                        using DigestInitRespPars           = org::eclipse::keyple::calypso::command::sam::parser::session::SamGetChallengeRespPars;
-                        using DigestUpdateRespPars         = org::eclipse::keyple::calypso::command::sam::parser::session::DigestUpdateRespPars;
-                        using DigestUpdateMultipleRespPars = org::eclipse::keyple::calypso::command::sam::parser::session::DigestUpdateMultipleRespPars;
-                        using DigestCloseRespPars          = org::eclipse::keyple::calypso::command::sam::parser::session::DigestCloseRespPars;
-                        using DigestAuthenticateRespPars   = org::eclipse::keyple::calypso::command::sam::parser::session::DigestAuthenticateRespPars;
+                        using SamGetChallengeCmdBuild      = org::eclipse::keyple::calypso::command::sam::builder::security::SamGetChallengeCmdBuild;
+                        using DigestInitCmdBuild           = org::eclipse::keyple::calypso::command::sam::builder::security::DigestInitCmdBuild;
+                        using DigestUpdateCmdBuild         = org::eclipse::keyple::calypso::command::sam::builder::security::DigestUpdateCmdBuild;
+                        using DigestUpdateMultipleCmdBuild = org::eclipse::keyple::calypso::command::sam::builder::security::DigestUpdateMultipleCmdBuild;
+                        using DigestCloseCmdBuild          = org::eclipse::keyple::calypso::command::sam::builder::security::DigestCloseCmdBuild;
+                        using DigestAuthenticateCmdBuild   = org::eclipse::keyple::calypso::command::sam::builder::security::DigestAuthenticateCmdBuild;
+                        using SelectDiversifierRespPars    = org::eclipse::keyple::calypso::command::sam::parser::security::SelectDiversifierRespPars;
+                        using SamGetChallengeRespPars      = org::eclipse::keyple::calypso::command::sam::parser::security::SamGetChallengeRespPars;
+                        using DigestInitRespPars           = org::eclipse::keyple::calypso::command::sam::parser::security::SamGetChallengeRespPars;
+                        using DigestUpdateRespPars         = org::eclipse::keyple::calypso::command::sam::parser::security::DigestUpdateRespPars;
+                        using DigestUpdateMultipleRespPars = org::eclipse::keyple::calypso::command::sam::parser::security::DigestUpdateMultipleRespPars;
+                        using DigestCloseRespPars          = org::eclipse::keyple::calypso::command::sam::parser::security::DigestCloseRespPars;
+                        using DigestAuthenticateRespPars   = org::eclipse::keyple::calypso::command::sam::parser::security::DigestAuthenticateRespPars;
 
                         CalypsoSamCommands CalypsoSamCommands::SELECT_DIVERSIFIER(    "SELECT_DIVERSIFIER",     InnerEnum::SELECT_DIVERSIFIER,     "Select Diversifier",     static_cast<char>(0x14), typeid(SelectDiversifierCmdBuild),    typeid(SelectDiversifierRespPars));
                         CalypsoSamCommands CalypsoSamCommands::GET_CHALLENGE(         "GET_CHALLENGE",          InnerEnum::GET_CHALLENGE,          "Get Challenge",          static_cast<char>(0x84), typeid(SamGetChallengeCmdBuild),      typeid(SamGetChallengeRespPars));

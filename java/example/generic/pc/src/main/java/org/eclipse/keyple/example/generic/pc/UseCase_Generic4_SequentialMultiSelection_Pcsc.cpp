@@ -77,12 +77,11 @@ int main(int argc, char **argv)
     /* Get the instance of the PC/SC plugin */
     PcscPlugin pcscplugin = PcscPlugin::getInstance();
     pcscplugin.initReaders();
-    std::shared_ptr<PcscPlugin> shared_plugin = std::shared_ptr<PcscPlugin>(&pcscplugin);
 
     /* Assign PcscPlugin to the SeProxyService */
     SeProxyService& seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(shared_plugin);
-    std::shared_ptr<SeProxyService> shared_proxy = std::shared_ptr<SeProxyService>(&seProxyService);
+    seProxyService.addPlugin(std::make_shared<PcscPlugin>(pcscplugin));
+    std::shared_ptr<SeProxyService> shared_proxy = std::make_shared<SeProxyService>(seProxyService);
 
     /*
      * Get a SE reader ready to work with contactless SE. Use the getReader helper method from
@@ -95,8 +94,8 @@ int main(int argc, char **argv)
         throw std::make_shared<IllegalStateException>("Bad SE reader setup");
     }
 
-    logger->info("=============== UseCase Generic #4: AID based sequential explicit multiple selection ==================");
-    logger->info("= SE Reader  NAME = %s", seReader->getName());
+    logger->info("=============== UseCase Generic #4: AID based sequential explicit multiple selection ==================\n");
+    logger->info("= SE Reader  NAME = %s\n", seReader->getName());
 
     std::shared_ptr<MatchingSe> matchingSe;
 
@@ -106,7 +105,8 @@ int main(int argc, char **argv)
         std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(seReader);
 
         /* operate SE selection (change the AID here to adapt it to the SE used for the test) */
-        std::string seAidPrefix = "A000000404012509";
+        //std::string seAidPrefix = "A000000404012509";
+        std::string seAidPrefix = "304554502E494341";
 
         /* AID based selection */
         std::vector<char> aid = ByteArrayUtils::fromHex(seAidPrefix);
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 
     }
     else {
-        logger->error("No SE were detected.");
+        logger->error("No SE were detected\n");
     }
 
     return 0;
