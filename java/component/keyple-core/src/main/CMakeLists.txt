@@ -30,17 +30,17 @@ ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/command
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/util
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/protocol
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/command
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/transaction
 
 	/* Helpers */
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/java/org/eclipse/keyple/common
@@ -49,79 +49,79 @@ INCLUDE_DIRECTORIES(
 ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
 	# command
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/command/AbstractApduCommandBuilder.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/command/AbstractApduResponseParser.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/command/AbstractIso7816CommandBuilder.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/command/CommandsTable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/command/AbstractApduCommandBuilder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/command/AbstractApduResponseParser.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/command/AbstractIso7816CommandBuilder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/command/CommandsTable.cpp
 
 	# seproxy - event
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/DefaultSelectionRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/ObservablePlugin.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/ObservableReader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/PluginEvent.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/ReaderEvent.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/event/SelectionResponse.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/event/DefaultSelectionRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/event/ObservablePlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/event/ObservableReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/event/PluginEvent.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/event/ReaderEvent.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/event/SelectionResponse.cpp
 
 	# seproxy - exception
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/KeypleApplicationSelectionException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/KeypleBaseException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/KeypleChannelStateException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/KeypleIOReaderException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/KeyplePluginException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/KeyplePluginNotFoundException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/KeypleReaderNotFoundException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/KeypleRuntimeException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/exception/NoStackTraceThrowable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception/KeypleApplicationSelectionException.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception/KeypleBaseException.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception/KeypleChannelStateException.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception/KeypleIOReaderException.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception/KeyplePluginException.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception/KeyplePluginNotFoundException.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception/KeypleReaderException.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception/KeypleReaderNotFoundException.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception/KeypleRuntimeException.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/exception/NoStackTraceThrowable.cpp
 
 	# seproxy - message
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message/AnswerToReset.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message/ApduRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message/ApduResponse.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message/ProxyReader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message/SelectionStatus.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message/SeRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message/SeRequestSet.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message/SeResponse.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/message/SeResponseSet.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message/AnswerToReset.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message/ApduRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message/ApduResponse.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message/ProxyReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message/SelectionStatus.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message/SeRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message/SeRequestSet.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message/SeResponse.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/message/SeResponseSet.cpp
 
 	# seproxy - plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractLocalReader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractLoggedObservable.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractObservablePlugin.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractObservableReader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractSelectionLocalReader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractStaticPlugin.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractStaticReader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractThreadedLocalReader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/plugin/AbstractThreadedObservablePlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/plugin/AbstractLocalReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/plugin/AbstractLoggedObservable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/plugin/AbstractObservablePlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/plugin/AbstractObservableReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/plugin/AbstractSelectionLocalReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/plugin/AbstractStaticPlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/plugin/AbstractStaticReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/plugin/AbstractThreadedLocalReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/plugin/AbstractThreadedObservablePlugin.cpp
 
 	# seproxy - protocol
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/ContactlessProtocols.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/ContactsProtocols.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/Protocol.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/SeProtocol.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/SeProtocolSetting.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/SeProtocolSettingList.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/protocol/TransmissionMode.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/protocol/ContactlessProtocols.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/protocol/ContactsProtocols.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/protocol/Protocol.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/protocol/SeProtocol.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/protocol/SeProtocolSetting.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/protocol/SeProtocolSettingList.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/protocol/TransmissionMode.cpp
 
 	# seproxy
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/ChannelState.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/ReaderPlugin.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/SeProxyService.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/SeReader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/seproxy/SeSelector.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/ChannelState.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/ReaderPlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/SeProxyService.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/SeReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/seproxy/SeSelector.cpp
 
 	# transaction
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/MatchingSe.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SeSelection.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/transaction/SeSelectionRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/transaction/MatchingSe.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/transaction/SeSelection.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/transaction/SeSelectionRequest.cpp
 
 	# util
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/ByteArrayUtils.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Configurable.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Nameable.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/util/Observable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/util/ByteArrayUtils.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/util/Configurable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/util/Nameable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/core/util/Observable.cpp
 )
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} keyplecommon)

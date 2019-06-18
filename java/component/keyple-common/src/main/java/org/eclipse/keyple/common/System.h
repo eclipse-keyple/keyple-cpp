@@ -33,6 +33,6 @@ public:
 
     static long currentTimeMillis()
 	{
-        return nanoTime() * pow(10, 6);
+        return (long)(nanoTime() * pow(10, 6));
     }
 };
