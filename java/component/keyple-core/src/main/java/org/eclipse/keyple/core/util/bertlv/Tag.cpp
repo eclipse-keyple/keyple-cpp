@@ -33,7 +33,9 @@ Tag::Tag(int tagNumber, char tagClass, TagType tagType) : tagNumber(tagNumber), 
     }
 }
 
-Tag::Tag(std::vector<char> &binary, int offset) throw(std::out_of_range) : tagClass(static_cast<char>(static_cast<int>(static_cast<unsigned int>((binary[offset] & 0xC0)) >> 6))) {
+Tag::Tag(std::vector<char> &binary, int offset)
+: tagClass(static_cast<char>(static_cast<int>(static_cast<unsigned int>((binary[offset] & 0xC0)) >> 6)))
+{
     /* the 2 first bits (b7b6) of the first byte defines the class */
 
     /* the type bit is the third bit (b5) */

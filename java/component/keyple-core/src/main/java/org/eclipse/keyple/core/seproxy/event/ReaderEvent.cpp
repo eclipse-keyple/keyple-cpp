@@ -83,8 +83,9 @@ EventType EventType::valueOf(const std::string &name)
 ReaderEvent::ReaderEvent(const std::string &pluginName,
                          const std::string &readerName, EventType eventType,
                          std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
-: pluginName(pluginName), readerName(readerName), eventType(eventType),
-  defaultResponseSet(std::static_pointer_cast<DefaultSelectionsResponse>(defaultSelectionsResponse))
+: pluginName(pluginName), readerName(readerName), 
+  defaultResponseSet(std::static_pointer_cast<DefaultSelectionsResponse>(defaultSelectionsResponse)),
+  eventType(eventType)
 {
 }
 

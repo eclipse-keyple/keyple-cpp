@@ -54,7 +54,7 @@ SeCommonProtocols::SeCommonProtocols(const std::string &nameValue,
                                      InnerEnum innerEnum,
                                      const std::string &name,
                                      TransmissionMode transmissionMode)
-: nameValue(nameValue), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum),
+: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), 
   name(name), transmissionMode(transmissionMode)
 {
 }
@@ -101,6 +101,9 @@ SeCommonProtocols SeCommonProtocols::valueOf(const std::string &name)
             return enumInstance;
         }
     }
+
+    /* Make compiler happy */
+    return SeCommonProtocols::valueList.front();
 }
 
 }

@@ -191,7 +191,7 @@ public:
                 *         range.
                 */
         public:
-            IsoAid(std::vector<char> &aid);
+            IsoAid(std::vector<char> aid);
 
 
             /**

@@ -122,7 +122,7 @@ public:
         *         including {@link AbstractMatchingSe} and {@link SeResponse}.
         * @throws KeypleReaderException if the requests transmission failed
         */
-    std::shared_ptr<SelectionsResult> processExplicitSelection(std::shared_ptr<SeReader> seReader) throw(KeypleReaderException);
+    std::shared_ptr<SelectionsResult> processExplicitSelection(std::shared_ptr<SeReader> seReader);
 
     /**
         * The SelectionOperation is the DefaultSelectionsRequest to process in ordered to select a SE

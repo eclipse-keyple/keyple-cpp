@@ -201,7 +201,7 @@ protected:
                              * @return a ApduResponse containing the FCI
                              */
                         private:
-                            std::shared_ptr<ApduResponse> openChannelForAidHackGetData(std::shared_ptr<SeSelector::AidSelector> aidSelector) throw(KeypleApplicationSelectionException, KeypleIOReaderException, KeypleChannelStateException);
+                            std::shared_ptr<ApduResponse> openChannelForAidHackGetData(std::shared_ptr<SeSelector::AidSelector> aidSelector);
 
 
                             /**

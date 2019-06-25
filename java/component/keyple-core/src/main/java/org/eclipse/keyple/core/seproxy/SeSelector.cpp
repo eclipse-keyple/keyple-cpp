@@ -37,8 +37,11 @@ FileOccurrence::StaticConstructor::StaticConstructor() {
 FileOccurrence::StaticConstructor FileOccurrence::staticConstructor;
 int FileOccurrence::nextOrdinal = 0;
 
-SeSelector::AidSelector::FileOccurrence::FileOccurrence(const std::string &name, InnerEnum innerEnum, char isoBitMask) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
-                        
+SeSelector::AidSelector::FileOccurrence::FileOccurrence(const std::string &name,
+                                                        InnerEnum innerEnum,
+                                                        char isoBitMask)
+: innerEnumValue(innerEnum), nameValue(name), ordinalValue(nextOrdinal++)
+{
     this->isoBitMask = isoBitMask;
 }
 
@@ -94,8 +97,12 @@ FileControlInformation::StaticConstructor::StaticConstructor() {
 FileControlInformation::StaticConstructor FileControlInformation::staticConstructor;
 int FileControlInformation::nextOrdinal = 0;
 
-SeSelector::AidSelector::FileControlInformation::FileControlInformation(const std::string &name, InnerEnum innerEnum, char isoBitMask) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
-    
+SeSelector::AidSelector::FileControlInformation::FileControlInformation(
+                                                        const std::string &name,
+                                                        InnerEnum innerEnum,
+                                                        char isoBitMask)
+: innerEnumValue(innerEnum), nameValue(name), ordinalValue(nextOrdinal++)
+{
     this->isoBitMask = isoBitMask;
 }
 
@@ -129,9 +136,12 @@ FileControlInformation FileControlInformation::valueOf(const std::string &name) 
             return enumInstance;
         }
     }
+
+    /* Make compiler happy */
+    return FileControlInformation::valueList.front();
 }
 
-                    SeSelector::AidSelector::IsoAid::IsoAid(std::vector<char> &aid) {
+                    SeSelector::AidSelector::IsoAid::IsoAid(std::vector<char> aid) {
                         if (aid.size() < AID_MIN_LENGTH || aid.size() > AID_MAX_LENGTH) {
                             value.clear();
                             throw std::invalid_argument("Bad AID length: " + std::to_string(aid.size()) + ". The AID length should be " + "between 5 and 15.");
@@ -141,8 +151,9 @@ FileControlInformation FileControlInformation::valueOf(const std::string &name) 
                         }
                     }
 
-                    SeSelector::AidSelector::IsoAid::IsoAid(const std::string &aid) : IsoAid(ByteArrayUtil::fromHex(aid)) {
-                    }
+SeSelector::AidSelector::IsoAid::IsoAid(const std::string &aid)
+: IsoAid(ByteArrayUtil::fromHex(aid)) {
+}
 
                     std::vector<char> SeSelector::AidSelector::IsoAid::getValue() {
                         return value;
@@ -239,7 +250,8 @@ SeSelector::SeSelector(std::shared_ptr<SeProtocol> seProtocol,
                        std::shared_ptr<AtrFilter> atrFilter,
                        std::shared_ptr<AidSelector> aidSelector,
                        const std::string &extraInfo)
-: aidSelector(aidSelector), atrFilter(atrFilter), extraInfo(extraInfo)
+: seProtocol(seProtocol), aidSelector(aidSelector), atrFilter(atrFilter),
+  extraInfo(extraInfo)
 {
     if (logger->isTraceEnabled()) {
         logger->trace("Selection data: AID = %s ATRREGEX = %s, EXTRAINFO" \

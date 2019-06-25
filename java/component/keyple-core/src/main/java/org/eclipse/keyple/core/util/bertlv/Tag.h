@@ -68,7 +68,7 @@ public:
         * @param offset the start offset in the byte array
         * @throws IndexOutOfBoundsException if the offset is too large
         */
-    Tag(std::vector<char> &binary, int offset) throw(std::out_of_range);
+    Tag(std::vector<char> &binary, int offset);
 
     virtual int getTagNumber();
 

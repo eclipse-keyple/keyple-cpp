@@ -15,6 +15,7 @@
 #include <memory>
 #include <type_traits>
 
+#include "AbstractMatchingSe.h"
 #include "SeReader.h"
 
 namespace org {
@@ -23,7 +24,8 @@ namespace keyple {
 namespace core {
 namespace selection {
 
-using SeReader = org::eclipse::keyple::core::seproxy::SeReader;
+using AbstractMatchingSe = org::eclipse::keyple::core::selection::AbstractMatchingSe;
+using SeReader           = org::eclipse::keyple::core::seproxy::SeReader;
 
 /**
     * The SeResource class groups a AbstractMatchingSe and its associated SeReader

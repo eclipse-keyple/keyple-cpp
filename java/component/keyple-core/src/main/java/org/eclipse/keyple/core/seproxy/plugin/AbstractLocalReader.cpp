@@ -151,33 +151,35 @@ void AbstractLocalReader::cardRemoved()
     }
 }
 
-                        std::shared_ptr<ApduResponse> AbstractLocalReader::openChannelForAidHackGetData(std::shared_ptr<SeSelector::AidSelector> aidSelector) throw(KeypleApplicationSelectionException, KeypleIOReaderException, KeypleChannelStateException) {
-                            std::shared_ptr<SeSelector::AidSelector> noResponseAidSelector = std::make_shared<SeSelector::AidSelector>(aidSelector->getAidToSelect(), aidSelector->getSuccessfulSelectionStatusCodes(), aidSelector->getFileOccurrence(), SeSelector::AidSelector::FileControlInformation::NO_RESPONSE);
-                            std::shared_ptr<ApduResponse> fciResponse = openChannelForAid(noResponseAidSelector);
-                            if (fciResponse->isSuccessful()) {
-                                std::vector<char> getDataCommand(4);
-                                getDataCommand[0] = static_cast<char>(0x00); // CLA
-                                getDataCommand[1] = static_cast<char>(0xCA); // INS
-                                getDataCommand[2] = static_cast<char>(0x00); // P1: always 0
-                                getDataCommand[3] = static_cast<char>(0x6F); // P2: 0x6F FCI for the current DF
+std::shared_ptr<ApduResponse> AbstractLocalReader::openChannelForAidHackGetData(std::shared_ptr<SeSelector::AidSelector> aidSelector)
+{
+    std::shared_ptr<SeSelector::AidSelector> noResponseAidSelector = std::make_shared<SeSelector::AidSelector>(aidSelector->getAidToSelect(), aidSelector->getSuccessfulSelectionStatusCodes(), aidSelector->getFileOccurrence(), SeSelector::AidSelector::FileControlInformation::NO_RESPONSE);
+    std::shared_ptr<ApduResponse> fciResponse = openChannelForAid(noResponseAidSelector);
 
-                                /*
-                                 * The successful status codes list for this command is provided.
-                                 */
-                                fciResponse = processApduRequest(std::make_shared<ApduRequest>("Internal Get Data", getDataCommand, false, aidSelector->getSuccessfulSelectionStatusCodes()));
+    if (fciResponse->isSuccessful()) {
+        std::vector<char> getDataCommand(4);
+        getDataCommand[0] = static_cast<char>(0x00); // CLA
+        getDataCommand[1] = static_cast<char>(0xCA); // INS
+        getDataCommand[2] = static_cast<char>(0x00); // P1: always 0
+        getDataCommand[3] = static_cast<char>(0x6F); // P2: 0x6F FCI for the current DF
 
-                                if (!fciResponse->isSuccessful()) {
-                                    logger->trace("[%s] openChannelForAidHackGetData => Get data failed. SELECTOR = %s", this->getName(), aidSelector);
-                                }
-                            }
-                            return fciResponse;
-                        }
+        /* The successful status codes list for this command is provided */
+        fciResponse = processApduRequest(std::make_shared<ApduRequest>("Internal Get Data", getDataCommand, false, aidSelector->getSuccessfulSelectionStatusCodes()));
+        if (!fciResponse->isSuccessful()) {
+            logger->trace("[%s] openChannelForAidHackGetData => Get data failed. SELECTOR = %s", this->getName(), aidSelector);
+        }
+    }
 
-                        void AbstractLocalReader::setForceGetDataFlag(bool forceGetDataFlag) {
-                            this->forceGetDataFlag = forceGetDataFlag;
-                        }
+    return fciResponse;
+}
 
-                        std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannel(std::shared_ptr<SeSelector> seSelector) throw(KeypleIOReaderException, KeypleChannelStateException, KeypleApplicationSelectionException) {
+void AbstractLocalReader::setForceGetDataFlag(bool forceGetDataFlag)
+{
+    this->forceGetDataFlag = forceGetDataFlag;
+}
+
+std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannel(std::shared_ptr<SeSelector> seSelector) 
+{
                             std::vector<char> atr = getATR();
                             bool selectionHasMatched = true;
                             std::shared_ptr<SelectionStatus> selectionStatus;
@@ -189,10 +191,10 @@ void AbstractLocalReader::cardRemoved()
                                 }
 
                                 if (logger->isTraceEnabled()) {
-                                    logger->trace("[{}] openLogicalChannel => ATR = {}", this->getName(), ByteArrayUtil::toHex(atr));
+                                    logger->trace("[%s] openLogicalChannel => ATR = %s", this->getName(), ByteArrayUtil::toHex(atr));
                                 }
                                 if (!seSelector->getAtrFilter()->atrMatches(atr)) {
-                                    logger->info("[{}] openLogicalChannel => ATR didn't match. SELECTOR = {}, ATR = {}", this->getName(), seSelector, ByteArrayUtil::toHex(atr));
+                                    logger->info("[%s] openLogicalChannel => ATR didn't match. SELECTOR = %s, ATR = %s", this->getName(), seSelector, ByteArrayUtil::toHex(atr));
                                     selectionHasMatched = false;
                                 }
                             }
@@ -225,9 +227,10 @@ void AbstractLocalReader::cardRemoved()
                                 selectionStatus = std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr), std::make_shared<ApduResponse>(empty, nullptr), selectionHasMatched);
                             }
                             return selectionStatus;
-                        }
+}
 
-                        std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector) throw(KeypleChannelStateException, KeypleIOReaderException, KeypleApplicationSelectionException) {
+std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector)
+{
 
     std::shared_ptr<SelectionStatus> selectionStatus;
 

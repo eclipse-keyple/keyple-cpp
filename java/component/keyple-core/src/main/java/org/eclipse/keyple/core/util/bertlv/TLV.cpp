@@ -2,7 +2,7 @@
 #include "Tag.h"
 #include "ByteArrayUtil.h"
 
-#include "StringHelper.h"
+#include "stringhelper.h"
 #include "System.h"
 
 namespace org {

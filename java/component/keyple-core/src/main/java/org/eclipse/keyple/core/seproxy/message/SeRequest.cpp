@@ -23,7 +23,7 @@ SeRequest::SeRequest(std::shared_ptr<SeSelector> seSelector, std::vector<std::sh
 }
 
 SeRequest::SeRequest(std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState)
-: seSelector(this->seSelector)
+: seSelector(nullptr)
 {
     this->apduRequests = apduRequests;
     this->channelState = channelState;
