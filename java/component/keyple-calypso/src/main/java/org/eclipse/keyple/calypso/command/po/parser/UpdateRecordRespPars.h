@@ -31,7 +31,7 @@ namespace org {
                             /**
                              * Update Record response parser. See specs: Calypso / page 96 / 9.4.11 - Update Record
                              */
-                            class UpdateRecordRespPars final : public AbstractApduResponseParser {
+                            class UpdateRecordRespPars final : public AbstractPoResponseParser {
 
                             private:
                                 static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
@@ -53,11 +53,11 @@ namespace org {
                                  * Instantiates a new UpdateRecordRespPars.
                                  */
                             public:
-                                UpdateRecordRespPars();
+                                UpdateRecordRespPars(std::shared_ptr<ApduResponse> response);
 
 protected:
                                 std::shared_ptr<UpdateRecordRespPars> shared_from_this() {
-                                    return std::static_pointer_cast<UpdateRecordRespPars>(AbstractApduResponseParser::shared_from_this());
+                                    return std::static_pointer_cast<UpdateRecordRespPars>(AbstractPoResponseParser::shared_from_this());
                                 }
                             };
 

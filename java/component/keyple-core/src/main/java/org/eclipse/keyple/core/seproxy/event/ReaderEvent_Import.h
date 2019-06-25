@@ -10,17 +10,19 @@
 * SPDX-License-Identifier: EPL-2.0
 ********************************************************************************/
 
-#pragma once
+#ifndef KEYPLE_SEPROXY_READER_EVENT_H
+#define KEYPLE_SEPROXY_READER_EVENT_H
 
 #include <string>
 #include <vector>
 #include <memory>
 
-/* Core */
-#include "SelectionResponse.h"
-
 /* Common */
 #include "Export.h"
+
+/* Core */
+#include "AbstractDefaultSelectionsResponse.h"
+#include "DefaultSelectionsResponse.h"
 
 namespace org {
 namespace eclipse {
@@ -28,14 +30,32 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 namespace event {
-
-using SelectionResponse = org::eclipse::keyple::core::seproxy::event::SelectionResponse;
+using DefaultSelectionsResponse = org::eclipse::keyple::core::seproxy::message::DefaultSelectionsResponse;
 
 /**
     * ReaderEvent used to notify changes at reader level
     */
 class IMPORT ReaderEvent final : public std::enable_shared_from_this<ReaderEvent> {
-    public:
+    /**
+     * The name of the plugin handling the reader that produced the event
+     */
+private:
+    const std::string pluginName;
+    
+    /**
+     * The name of the reader that produced the event
+     */
+    const std::string readerName;
+    
+    /**
+     * The response to the selection request
+     */
+    const std::shared_ptr<DefaultSelectionsResponse> defaultResponseSet;
+    
+    /**
+     * The different types of reader event
+     */
+public:
     class IMPORT EventType final {
         /**
             * An io error occurred.
@@ -58,17 +78,17 @@ class IMPORT ReaderEvent final : public std::enable_shared_from_this<ReaderEvent
             */
         static EventType SE_REMOVAL;
 
-        private:
+    private:
         static std::vector<EventType> valueList;
 
         class StaticConstructor {
-            public:
+        public:
             StaticConstructor();
         };
 
         static StaticConstructor staticConstructor;
 
-        public:
+    public:
         enum class InnerEnum
         {
             IO_ERROR,
@@ -78,26 +98,24 @@ class IMPORT ReaderEvent final : public std::enable_shared_from_this<ReaderEvent
         };
 
         const InnerEnum innerEnumValue;
-
-        private:
+    private:
         const std::string nameValue;
         const int ordinalValue;
         static int nextOrdinal;
 
         /** The event name. */
-        private:
+    private:
         std::string name;
 
-        public:
-        EventType(const std::string &nameValue, InnerEnum innerEnum,
-                    const std::string &name);
+    public:
+        EventType(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
 
         virtual std::string getName();
 
-        public:
-        bool operator==(const EventType &other);
+    public:
+        bool operator == (const EventType &other);
 
-        bool operator!=(const EventType &other);
+        bool operator != (const EventType &other);
 
         static std::vector<EventType> values();
 
@@ -109,42 +127,23 @@ class IMPORT ReaderEvent final : public std::enable_shared_from_this<ReaderEvent
     };
 
     /**
-        * The name of the plugin handling the reader that produced the event
-        */
-    private:
-    const std::string pluginName;
-
-    /**
-        * The name of the reader that produced the event
-        */
-    const std::string readerName;
-
-    /**
         * The type of event
         */
+                        private:
     const EventType eventType;
 
     /**
-        * The response to the selection request
-        */
-    const std::shared_ptr<SelectionResponse> defaultResponseSet;
+     * ReaderEvent constructor for simple insertion notification mode
+     *
+     * @param pluginName the name of the current plugin
+     * @param readerName the name of the current reader
+     * @param eventType the type of event
+     * @param defaultSelectionsResponse the response to the default DefaultSelectionsRequest (may be
+     *        null)
+     */
+public:
+    ReaderEvent(const std::string &pluginName, const std::string &readerName, EventType eventType, std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse);
 
-    /**
-        * The different types of reader event
-        */
-
-    /**
-        * ReaderEvent constructor for simple insertion notification mode
-        *
-        * @param pluginName the name of the current plugin
-        * @param readerName the name of the current reader
-        * @param eventType the type of event
-        * @param selectionResponse the response to the default {@link SelectionRequest} (may be null)
-        */
-    public:
-    ReaderEvent(const std::string &pluginName, const std::string &readerName,
-                EventType eventType,
-                std::shared_ptr<SelectionResponse> selectionResponse);
 
     std::string getPluginName();
 
@@ -152,13 +151,14 @@ class IMPORT ReaderEvent final : public std::enable_shared_from_this<ReaderEvent
 
     EventType getEventType();
 
-    std::shared_ptr<SelectionResponse> getDefaultSelectionResponse();
+    std::shared_ptr<AbstractDefaultSelectionsResponse> getDefaultSelectionsResponse();
 };
 
-} // namespace event
-}     // namespace seproxy
-}         // namespace keyple
-}             // namespace eclipse
-} // namespace org
+}
+}
+}
+}
+}
 }
 
+#endif

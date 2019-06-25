@@ -44,16 +44,15 @@ class EXPORT AbstractSelectionLocalReader : public AbstractLocalReader { //, pub
 protected:
     AbstractSelectionLocalReader(const std::string &pluginName, const std::string &readerName);
 
-                        /** ==== ATR filtering and application selection by AID ================ */
-
     /**
-                         * Build a select application command, transmit it to the SE and deduct the SelectionStatus.
+                             * Executes the selection application command and returns the requested data according to
+                             * AidSelector attributes.
      *
-                         * @param seSelector the targeted application SE selector
-                         * @return the SelectionStatus
+                             * @param aidSelector the selection parameters
+                             * @return the response to the select application command
                          * @throws KeypleIOReaderException if a reader error occurs
      */
-                        std::shared_ptr<SelectionStatus> openLogicalChannel(std::shared_ptr<SeSelector> seSelector) override;
+                            std::shared_ptr<ApduResponse> openChannelForAid(std::shared_ptr<SeSelector::AidSelector> aidSelector) override;
 
 protected:
                         std::shared_ptr<AbstractSelectionLocalReader> shared_from_this() {

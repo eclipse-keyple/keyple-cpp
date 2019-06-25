@@ -20,7 +20,7 @@
 #include "Export.h"
 
 /* Core */
-#include "DefaultSelectionRequest.h"
+#include "AbstractDefaultSelectionsRequest.h"
 #include "Observable.h"
 #include "ReaderEvent_Import.h"
 #include "SeReader.h"
@@ -33,7 +33,7 @@ namespace seproxy {
 namespace event {
 
 using org::eclipse::keyple::core::seproxy::SeReader;
-using org::eclipse::keyple::core::seproxy::event::DefaultSelectionRequest;
+using org::eclipse::keyple::core::seproxy::event::AbstractDefaultSelectionsRequest;
 
 class EXPORT ObservableReader : public virtual SeReader {
 public:
@@ -99,13 +99,22 @@ public:
 
         virtual std::string getName();
 
-        // ****** Reverse Lookup Implementation************//
+                                /**
+                                 * Reverse Lookup Implementation
+                                 * <p>
+                                 * The purpose of the lookup Map and its associated method is to allow the serialization and
+                                 * deserialization of the enum of the notification mode, especially in remote context.
+                                 */
 
-        // Lookup table
+                                /**
+                                 * Lookup table
+                                 */
         private:
         static const std::unordered_map<std::string, NotificationMode> lookup;
 
-        // Populate the lookup table on loading time
+                                /**
+                                 * Populating the lookup table on loading time
+                                 */
         //JAVA TO C++ CONVERTER TODO TASK: Java to C++ Converter does not convert types within enums:
         private:
         class StaticConstructor {
@@ -147,7 +156,7 @@ public:
     virtual void notifyObservers(std::shared_ptr<ReaderEvent> event) { (void)event; }
 
     virtual void
-    setDefaultSelectionRequest(std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest, NotificationMode notificationMode) = 0;
+    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest, NotificationMode notificationMode) = 0;
 };
 
 } // namespace event

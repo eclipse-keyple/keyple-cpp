@@ -26,9 +26,10 @@
 #include "System.h"
 
 /* Core */
+#include "AbstractDefaultSelectionsRequest.h"
 #include "AbstractObservableReader.h"
 #include "ApduResponse.h"
-#include "ByteArrayUtils.h"
+#include "ByteArrayUtil.h"
 #include "KeypleApplicationSelectionException.h"
 #include "ObservableReader.h"
 #include "SelectionStatus.h"
@@ -40,6 +41,7 @@ namespace core {
 namespace seproxy {
 namespace plugin {
 
+using AbstractDefaultSelectionsRequest    = org::eclipse::keyple::core::seproxy::event::AbstractDefaultSelectionsRequest;
 using ApduResponse                        = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 using ObservableReader                    = org::eclipse::keyple::core::seproxy::event::ObservableReader;
 using KeypleApplicationSelectionException = org::eclipse::keyple::core::seproxy::exception::KeypleApplicationSelectionException;
@@ -48,7 +50,7 @@ using KeypleIOReaderException             = org::eclipse::keyple::core::seproxy:
 using KeypleReaderException               = org::eclipse::keyple::core::seproxy::exception::KeypleReaderException;
 using SeProtocol                          = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
 using SeProtocolSetting                   = org::eclipse::keyple::core::seproxy::protocol::SeProtocolSetting;
-using ByteArrayUtils                      = org::eclipse::keyple::core::util::ByteArrayUtils;
+using ByteArrayUtil                       = org::eclipse::keyple::core::util::ByteArrayUtil;
 using SelectionStatus                     = org::eclipse::keyple::core::seproxy::message::SelectionStatus;
 using Logger                              = org::eclipse::keyple::common::Logger;
 using LoggerFactory                       = org::eclipse::keyple::common::LoggerFactory;
@@ -69,8 +71,10 @@ private:
     /** logical channel status flag */
     bool logicalChannelIsOpen = false;
 
+                            bool forceGetDataFlag = false;
+
     /** current AID if any */
-    std::vector<char> aidCurrentlySelected;
+                            std::shared_ptr<SeSelector::AidSelector::IsoAid> aidCurrentlySelected;
 
     /** current selection status */
     std::shared_ptr<SelectionStatus> currentSelectionStatus;
@@ -140,7 +144,7 @@ protected:
         * <li>SE_MATCHED: if a default selection request was defined in any mode and a SE matched the
         * selection</li>
         * <li>SE_INSERTED: if a default selection request was defined in ALWAYS mode but no SE matched
-        * the selection (the SelectionResponse is however transmitted)</li>
+                             * the selection (the DefaultSelectionsResponse is however transmitted)</li>
         * </ul>
         * <p>
         * It will do nothing if a default selection is defined in MATCHED_ONLY mode but no SE matched
@@ -172,6 +176,48 @@ protected:
         */
     virtual std::vector<char> getATR() = 0;
 
+
+                            /**
+                             * This abstract method must be implemented by the derived class in order to proceed to the
+                             * application selection
+                             * <p>
+                             * Gets application selection data according to
+                             * {@link org.eclipse.keyple.core.seproxy.SeSelector.AidSelector} attributes.
+                             *
+                             * @return a ApduResponse containing the FCI or similar data output from selection application
+                             * @throws KeypleIOReaderException if a reader error occurs
+                             */
+                            virtual std::shared_ptr<ApduResponse> openChannelForAid(std::shared_ptr<SeSelector::AidSelector> aidSelector) = 0;
+
+
+                            /**
+                             * This method is dedicated to the case where no FCI data is available in return for the select
+                             * command.
+                             * <p>
+                             * We force here selection without response and proceed to a get data command to get the
+                             * expected FCI.
+                             * 
+                             * @param aidSelector
+                             * @return a ApduResponse containing the FCI
+                             */
+                        private:
+                            std::shared_ptr<ApduResponse> openChannelForAidHackGetData(std::shared_ptr<SeSelector::AidSelector> aidSelector) throw(KeypleApplicationSelectionException, KeypleIOReaderException, KeypleChannelStateException);
+
+
+                            /**
+                             * Set the flag that enables the execution of the Get Data hack to get the FCI
+                             * <p>
+                             * This method should called by the reader plugins that need this specific behavior (ex. OMAPI)
+                             *
+                             * <p>
+                             * The default value for the forceGetDataFlag is false, thus only specific readers plugins
+                             * should call this method.
+                             * 
+                             * @param forceGetDataFlag true or false
+                             */
+                        protected:
+                            virtual void setForceGetDataFlag(bool forceGetDataFlag);
+
     /**
         * This abstract method must be implemented by the derived class in order to provide a selection
         * and ATR filtering mechanism.
@@ -180,8 +226,17 @@ protected:
         * Selection and ATR matching process and build the resulting SelectionStatus.
         *
         * @param seSelector the SE selector
+                             * @return the SelectionStatus
+                             */
+                            /** ==== ATR filtering and application selection by AID ================ */
+
+                            /**
+                             * Build a select application command, transmit it to the SE and deduct the SelectionStatus.
+                             *
+                             * @param seSelector the targeted application SE selector
         * @return the SelectionStatus containing the actual selection result (ATR and/or FCI and the
         *         matching status flag).
+                             * @throws KeypleIOReaderException if a reader error occurs
         */
     virtual std::shared_ptr<SelectionStatus> openLogicalChannel(std::shared_ptr<SeSelector> seSelector) = 0;
 
@@ -245,7 +300,7 @@ public:
     /**
         * Close the logical channel.
         */
-protected:
+                        private:
     void closeLogicalChannel();
 
     /** ==== Protocol management =========================================== */
@@ -264,10 +319,18 @@ protected:
         * Defines the protocol setting Map to allow SE to be differentiated according to their
         * communication protocol.
         *
-        * @param seProtocolSetting the protocol setting to be added to the plugin internal list
+                             * @param seProtocol the protocol key identifier to be added to the plugin internal list
+                             * @param protocolRule a string use to define how to identify the protocol
         */
 public:
-    void addSeProtocolSetting(std::shared_ptr<SeProtocolSetting> seProtocolSetting) override;
+    void addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol, const std::string &protocolRule) override;
+
+    /**
+        * Complete the current setting map with the provided map
+        * 
+        * @param protocolSetting
+        */
+    virtual void setSeProtocolSetting(std::unordered_map<std::shared_ptr<SeProtocol>, std::string> &protocolSetting);
 
     /**
         * Test if the current protocol matches the provided protocol flag.
@@ -382,12 +445,12 @@ protected:
         * Depending on the notification mode, the observer will be notified whenever an SE is inserted,
         * regardless of the selection status, or only if the current SE matches the selection criteria.
         *
-        * @param defaultSelectionRequest the {@link DefaultSelectionRequest} to be executed when a SE
-        *        is inserted
+                             * @param defaultSelectionsRequest the {@link AbstractDefaultSelectionsRequest} to be executed
+                             *        when a SE is inserted
         * @param notificationMode the notification mode enum (ALWAYS or MATCHED_ONLY)
         */
 public:
-    virtual void setDefaultSelectionRequest(std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest, ObservableReader::NotificationMode notificationMode) override;
+    virtual void setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionRequest, ObservableReader::NotificationMode notificationMode) override;
 
 protected:
     std::shared_ptr<AbstractLocalReader> shared_from_this() {

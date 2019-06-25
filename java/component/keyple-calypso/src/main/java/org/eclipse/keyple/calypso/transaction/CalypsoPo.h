@@ -56,9 +56,25 @@ namespace org {
                      */
                     class CalypsoPo final : public MatchingSe {
                     private:
-                        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CalypsoPo));
-
-                        const std::shared_ptr<PoSelectionRequest> poSelectionRequest;
+                        static const std::shared_ptr<Logger> logger;
+                        const char bufferSizeIndicator;
+                        const int bufferSizeValue;
+                        const char platform;
+                        const char applicationType;
+//JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
+                        const bool isRev3_2ModeAvailable_Renamed;
+//JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
+                        const bool isRatificationCommandRequired_Renamed;
+//JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
+                        const bool hasCalypsoStoredValue_Renamed;
+//JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
+                        const bool hasCalypsoPin_Renamed;
+                        const char applicationSubtypeByte;
+                        const char softwareIssuerByte;
+                        const char softwareVersion;
+                        const char softwareRevision;
+//JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
+                        const bool isDfInvalidated_Renamed;
                         std::vector<char> applicationSerialNumber;
                         PoRevision revision = static_cast<PoRevision>(0);
                         std::vector<char> dfName;
@@ -73,12 +89,14 @@ namespace org {
                         CalypsoPo(std::shared_ptr<PoSelectionRequest> poSelectionRequest);
 
                         /**
-                         * Retains the selection response and analyses its relevant information to determine the
-                         * characteristics of the PO required to process it correctly.
+                         * Constructor.
                          * 
-                         * @param selectionResponse the received response to the selection request
+                         * @param selectionResponse the response to the selection application command
+                         * @param transmissionMode the current {@link TransmissionMode} (contacts or contactless)
+                         * @param extraInfo information string
                          */
-                        void setSelectionResponse(std::shared_ptr<SeResponse> selectionResponse) override;
+                    public:
+                        CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo);
 
                         PoRevision getRevision();
 
@@ -92,6 +110,32 @@ namespace org {
 
                         int getModificationsCounter();
 
+                        char getBufferSizeIndicator();
+
+                        int getBufferSizeValue();
+
+                        char getPlatformByte();
+
+                        char getApplicationTypeByte();
+
+                        bool isRev3_2ModeAvailable();
+
+                        bool isRatificationCommandRequired();
+
+                        bool hasCalypsoStoredValue();
+
+                        bool hasCalypsoPin();
+
+                        char getApplicationSubtypeByte();
+
+                        char getSoftwareIssuerByte();
+
+                        char getSoftwareVersionByte();
+
+                        char getSoftwareRevisionByte();
+
+                        bool isDfInvalidated();
+
                         /**
                          * @return the PO class determined from the PO revision
                          */
@@ -102,7 +146,7 @@ namespace org {
 
 protected:
                         std::shared_ptr<CalypsoPo> shared_from_this() {
-                            return std::static_pointer_cast<CalypsoPo>(MatchingSe::shared_from_this());
+                            return std::static_pointer_cast<CalypsoPo>(AbstractMatchingSe::shared_from_this());
                         }
                     };
 

@@ -31,15 +31,16 @@ namespace org {
                     namespace po {
                         namespace parser {
 
-                            using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
+                            using AbstractPoResponseParser = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
+                            using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
                             /**
                              * Decrease (0030) response parser. See specs: Calypso / page 83 / 9.4.2 Decrease
                              */
-                            class DecreaseRespPars final : public AbstractApduResponseParser {
+                            class DecreaseRespPars final : public AbstractPoResponseParser {
 
                             private:
-                                static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                static const std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
                                 private:
                                     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
@@ -52,20 +53,20 @@ namespace org {
 
 
                             protected:
-                                std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
+                                std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
                                 /**
                                  * Instantiates a new DecreaseRespPars.
                                  */
                             public:
-                                DecreaseRespPars();
+                                DecreaseRespPars(std::shared_ptr<ApduResponse> response);
 
                                 /**
                                  * Returns the new counter value as an int between 0
                                  *
                                  * @return the new value
-                                 * @throws java.lang.IllegalStateException - if the counter value is not available from the
-                                 *         command response.
+                                 * @throws IllegalStateException - if the counter value is not available from the command
+                                 *         response.
                                  */
                                 int getNewValue();
 

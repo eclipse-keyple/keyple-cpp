@@ -1,6 +1,6 @@
 #include "ObservableReader.h"
 #include "ReaderEvent_Import.h"
-#include "DefaultSelectionRequest.h"
+#include "AbstractDefaultSelectionsRequest.h"
 
 namespace org {
 namespace eclipse {

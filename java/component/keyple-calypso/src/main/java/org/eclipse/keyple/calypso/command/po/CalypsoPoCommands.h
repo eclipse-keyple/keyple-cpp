@@ -73,6 +73,9 @@ namespace org {
                             /** The po decrease counter. */
                             static CalypsoPoCommands SELECT_FILE;
 
+                            /* The po change key */
+                            static CalypsoPoCommands CHANGE_KEY;
+
                         private:
                             static std::vector<CalypsoPoCommands> valueList;
 
@@ -97,7 +100,8 @@ namespace org {
                                 GET_CHALLENGE,
                                 INCREASE,
                                 DECREASE,
-                                SELECT_FILE
+                                SELECT_FILE,
+                                CHANGE_KEY
                             };
 
                             const InnerEnum innerEnumValue;
@@ -113,22 +117,14 @@ namespace org {
                             /** The instruction byte. */
                             const char instructionbyte;
 
-                            /** The command builder class. */
-                            const std::type_info& commandBuilderClass;
-
-                            /** The response parser class. */
-                            const std::type_info& responseParserClass;
-
                             /**
                              * The generic constructor of CalypsoCommands.
                              *
                              * @param name the name
                              * @param instructionByte the instruction byte
-                             * @param commandBuilderClass the command builder class
-                             * @param responseParserClass the response parser class
                              */
                         public:
-                            CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte, const std::type_info& commandBuilderClass, const std::type_info& responseParserClass);
+                            CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte);
 
 
                             /**
@@ -144,21 +140,6 @@ namespace org {
                              * @return the value of INS byte
                              */
                             virtual char getInstructionByte();
-
-                            /**
-                             * Gets the command builder class.
-                             *
-                             * @return the corresponding command builder class
-                             */
-                            virtual const std::type_info& getCommandBuilderClass();
-
-                            /**
-                             * Gets the response parser class.
-                             *
-                             * @return the corresponding response parser class
-                             */
-                            virtual const std::type_info& getResponseParserClass();
-
 
                             /**
                              * Get the right open-session command for a given {@link PoRevision}

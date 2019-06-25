@@ -55,7 +55,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/command
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/transaction
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/selection
 	
 
 	/* Helpers */
@@ -69,8 +69,10 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/SendableInSession.cpp
 
 	# calypso - command - po
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/AbstractPoCommandBuilder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/AbstractPoResponseParser.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/CalypsoPoCommands.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/PoCommandBuilder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/PoBuilderParser.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/PoCustomModificationCommandBuilder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/PoCustomReadCommandBuilder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/PoModificationCommand.cpp
@@ -88,6 +90,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
 	# calypso - command - po - builder - security
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/builder/security/AbstractOpenSessionCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/builder/security/ChangeKeyCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/builder/security/CloseSessionCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/builder/security/OpenSession10CmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/builder/security/OpenSession24CmdBuild.cpp
@@ -107,6 +110,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
 	# calypso - command - po - parser - security
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/parser/security/AbstractOpenSessionRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/parser/security/ChangeKeyRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/parser/security/CloseSessionRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/parser/security/OpenSession10RespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/parser/security/OpenSession24RespPars.cpp
@@ -115,43 +119,50 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/parser/security/PoGetChallengeRespPars.cpp
 
 	# calypso - command - sam
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/AbstractSamCommandBuilder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/AbstractSamResponseParser.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/CalypsoSamCommands.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/SamCommandBuilder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/SamBuilderParser.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/SamRevision.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/SamSendableInSession.cpp
 
 	# calypso - command - sam - builder - security
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder/security/CardGenerateKeyCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder/security/DigestAuthenticateCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder/security/DigestCloseCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder/security/DigestInitCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder/security/DigestUpdateCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder/security/DigestUpdateMultipleCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder/security/GiveRandomCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder/security/SamGetChallengeCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/builder/security/SelectDiversifierCmdBuild.cpp
 
 	# calypso - command - sam - parser - security
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/parser/security/CardGenerateKeyRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/parser/security/DigestAuthenticateRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/parser/security/DigestCloseRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/parser/security/DigestInitRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/parser/security/DigestUpdateMultipleRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/parser/security/DigestUpdateRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/parser/security/GiveRandomRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/parser/security/SamGetChallengeRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/sam/parser/security/SelectDiversifierRespPars.cpp
 
 	# calypso - transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/CalypsoPo.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/CalypsoSam.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/PoResource.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/PoSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/PoSelector.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/PoTransaction.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/SamResource.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/SamSelectionRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/SamSelector.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/SecuritySettings.cpp
 
 	# calypso - transaction - exception
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/exception/KeypleCalypsoSecureSessionException.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/exception/KeypleCalypsoSecureSessionUnauthorizedKvcException.cpp
-
-	# calypso - transaction - sam
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/sam/CalypsoSam.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/sam/SamSelectionRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/transaction/sam/SamSelector.cpp
 )
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} keyplecore)

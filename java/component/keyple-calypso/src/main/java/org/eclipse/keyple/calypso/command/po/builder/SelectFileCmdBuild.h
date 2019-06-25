@@ -1,74 +1,90 @@
 #pragma once
 
-#include "../PoCommandBuilder.h"
+#include "../AbstractPoCommandBuilder.h"
+#include "../PoSendableInSession.h"
 #include "../CalypsoPoCommands.h"
 #include "../../PoClass.h"
 #include <vector>
+#include "exceptionhelper.h"
 #include <memory>
 
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class SelectFileRespPars; } } } } } } }
+namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
+
 /********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace calypso {
-                namespace command {
-                    namespace po {
-                        namespace builder {
+namespace eclipse {
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace po {
+namespace builder {
 
-                            using PoClass = org::eclipse::keyple::calypso::command::PoClass;
-                            using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
-                            using PoCommandBuilder = org::eclipse::keyple::calypso::command::po::PoCommandBuilder;
+using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
+using AbstractPoCommandBuilder = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
+using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
+using PoSendableInSession      = org::eclipse::keyple::calypso::command::po::PoSendableInSession;
+using SelectFileRespPars       = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
+using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
-                            /**
-                             * This class provides the dedicated constructor to build the Select File APDU commands.
-                             *
-                             */
-                            class SelectFileCmdBuild final : public PoCommandBuilder {
+/**
+ * This class provides the dedicated constructor to build the Select File APDU commands.
+ *
+ */
+class SelectFileCmdBuild final : public AbstractPoCommandBuilder<SelectFileRespPars>, public PoSendableInSessio {
 
-                            private:
-                                const CalypsoPoCommands command = CalypsoPoCommands::SELECT_FILE;
+private:
+    const CalypsoPoCommands command = CalypsoPoCommands::SELECT_FILE;
 
-                            public:
-                                enum class SelectControl {
-                                    MF,
-                                    PATH_FROM_MF,
-                                    PATH_FROM_CURRENT_DF
-                                };
+public:
+    enum class SelectControl {
+        FIRST,
+        NEXT,
+        CURRENT_DF
+    };
 
-                            public:
-                                enum class SelectOptions {
-                                    FCI,
-                                    FCP
-                                };
+    /**
+     * Instantiates a new SelectFileCmdBuild to select the first, next or current file in the
+     * current DF.
+     *
+     * @param poClass indicates which CLA byte should be used for the Apdu
+     * @param selectControl the selection mode control: FIRST, NEXT or CURRENT
+     */
+public:
+    SelectFileCmdBuild(PoClass poClass, SelectControl selectControl);
 
-                                /**
-                                 * Instantiates a new SelectFileCmdBuild.
-                                 *
-                                 * @param poClass indicates which CLA byte should be used for the Apdu
-                                 */
-                            public:
-                                SelectFileCmdBuild(PoClass poClass, SelectControl selectControl, SelectOptions selectOptions, std::vector<char> &selectData);
+    /**
+     * Instantiates a new SelectFileCmdBuild to select the first, next or current file in the
+     * current DF.
+     *
+     * @param poClass indicates which CLA byte should be used for the Apdu
+     * @param selectionPath the file identifier path
+     */
+    SelectFileCmdBuild(PoClass poClass, std::vector<char> &selectionPath);
+
+    std::shared_ptr<SelectFileRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-                                std::shared_ptr<SelectFileCmdBuild> shared_from_this() {
-                                    return std::static_pointer_cast<SelectFileCmdBuild>(PoCommandBuilder::shared_from_this());
-                                }
-                            };
-
-                        }
-                    }
-                }
-            }
-        }
+    std::shared_ptr<SelectFileCmdBuild> shared_from_this() {
+        return std::static_pointer_cast<SelectFileCmdBuild>(AbstractPoCommandBuilder<SelectFileRespPars>::shared_from_this());
     }
+};
+
+}
+}
+}
+}
+}
+}
 }

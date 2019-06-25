@@ -26,7 +26,7 @@ namespace org {
                 namespace command {
                     namespace sam {
 
-                        class SamSendableInSession : public org::eclipse::keyple::calypso::command::SendableInSession<SamCommandBuilder> {
+                        class SamSendableInSession : public org::eclipse::keyple::calypso::command::SendableInSession<AbstractSamCommandBuilder> {
                         };
 
                     }

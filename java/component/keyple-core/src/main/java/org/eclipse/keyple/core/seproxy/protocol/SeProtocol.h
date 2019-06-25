@@ -15,6 +15,8 @@
 #include <string>
 #include <iostream>
 
+#include "TransmissionMode.h"
+
 /* Common */
 #include "Export.h"
 
@@ -25,16 +27,28 @@ namespace core {
 namespace seproxy {
 namespace protocol {
 
+using TransmissionMode = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
+
 class EXPORT SeProtocol {
 public:
-    virtual std::string getName()
-    {
-        return "";
-    }
+    /**
+     * Protocol name
+     * 
+     * @return String
+     */
+
+    virtual std::string getName() = 0;
 
     /**
-        *
-        */
+     * Transmission mode: CONTACTS or CONTACTLESS
+     * 
+     * @return a TransmissionMode enum value
+     */
+    virtual TransmissionMode getTransmissionMode() = 0;
+    
+    /**
+     *
+     */
     friend std::ostream &operator<<(std::ostream &os, SeProtocol &se)
     {
         os << "name: " << se.getName();

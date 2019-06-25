@@ -21,18 +21,15 @@ namespace org {
                     using MatchingSe = org::eclipse::keyple::transaction::MatchingSe;
                     using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 
-                    CalypsoPo::CalypsoPo(std::shared_ptr<PoSelectionRequest> poSelectionRequest) : org::eclipse::keyple::transaction::MatchingSe(poSelectionRequest), poSelectionRequest(poSelectionRequest) {
-                    }
+                    CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo) : org::eclipse::keyple::core::selection::AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo) {
 
-                    void CalypsoPo::setSelectionResponse(std::shared_ptr<SeResponse> selectionResponse) {
-                        MatchingSe::setSelectionResponse(selectionResponse);
-                        /* Update the parser objects with the responses obtained */
-                        poSelectionRequest->updateParsersWithResponses(selectionResponse);
+                        poAtr = selectionResponse->getSelectionStatus()->getAtr()->getBytes();
 
                         /* The selectionSeResponse may not include a FCI field (e.g. old PO Calypso Rev 1) */
                         if (selectionResponse->getSelectionStatus()->getFci()->isSuccessful()) {
+                            std::shared_ptr<ApduResponse> fci = selectionResponse->getSelectionStatus()->getFci();
                             /* Parse PO FCI - to retrieve Calypso Revision, Serial Number, &amp; DF Name (AID) */
-                            std::shared_ptr<GetDataFciRespPars> poFciRespPars = std::make_shared<GetDataFciRespPars>(selectionResponse->getSelectionStatus()->getFci());
+                            std::shared_ptr<GetDataFciRespPars> poFciRespPars = std::make_shared<GetDataFciRespPars>(fci);
 
                             /*
                              * Resolve the PO revision from the application type byte:
@@ -44,7 +41,6 @@ namespace org {
                              * <code>%00100---</code>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV3.1</li>
                              * <li>otherwise&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV2.4</li> </ul>
                              */
-                            // TODO Improve this code by taking into account the startup information and the atr
                             char applicationTypeByte = poFciRespPars->getApplicationTypeByte();
                             if ((applicationTypeByte & (1 << 7)) != 0) {
                                 /* CLAP */
@@ -64,7 +60,6 @@ namespace org {
 
                             this->applicationSerialNumber = poFciRespPars->getApplicationSerialNumber();
 
-                            // TODO review this to take into consideration the type and subtype
                             if (this->revision == PoRevision::REV2_4) {
                                 /* old cards have their modification counter in number of commands */
                                 modificationCounterIsInBytes = false;
@@ -73,17 +68,29 @@ namespace org {
                             else {
                                 this->modificationsCounterMax = poFciRespPars->getBufferSizeValue();
                             }
+                            this->bufferSizeIndicator = poFciRespPars->getBufferSizeIndicator();
+                            this->bufferSizeValue = poFciRespPars->getBufferSizeValue();
+                            this->platform = poFciRespPars->getPlatformByte();
+                            this->applicationType = poFciRespPars->getApplicationTypeByte();
+                            this->isRev3_2ModeAvailable_Renamed = poFciRespPars->isRev3_2ModeAvailable();
+                            this->isRatificationCommandRequired_Renamed = poFciRespPars->isRatificationCommandRequired();
+                            this->hasCalypsoStoredValue_Renamed = poFciRespPars->hasCalypsoStoredValue();
+                            this->hasCalypsoPin_Renamed = poFciRespPars->hasCalypsoPin();
+                            this->applicationSubtypeByte = poFciRespPars->getApplicationSubtypeByte();
+                            this->softwareIssuerByte = poFciRespPars->getSoftwareIssuerByte();
+                            this->softwareVersion = poFciRespPars->getSoftwareVersionByte();
+                            this->softwareRevision = poFciRespPars->getSoftwareRevisionByte();
+                            this->isDfInvalidated_Renamed = poFciRespPars->isDfInvalidated();
                         }
                         else {
                             /*
                              * FCI is not provided: we consider it is Calypso PO rev 1, it's serial number is
                              * provided in the ATR
                              */
-                            poAtr = selectionResponse->getSelectionStatus()->getAtr()->getBytes();
 
                             /* basic check: we expect to be here following a selection based on the ATR */
                             if (poAtr.size() != PO_REV1_ATR_LENGTH) {
-                                throw std::make_shared<IllegalStateException>("Unexpected ATR length: " + ByteArrayUtils::toHex(poAtr));
+                                throw std::make_shared<IllegalStateException>("Unexpected ATR length: " + ByteArrayUtil::toHex(poAtr));
                             }
 
                             this->revision = PoRevision::REV1_0;
@@ -91,11 +98,25 @@ namespace org {
                             this->applicationSerialNumber = std::vector<char>(8);
                             /* old cards have their modification counter in number of commands */
                             this->modificationCounterIsInBytes = false;
-                            this->modificationsCounterMax = REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
                             /*
                              * the array is initialized with 0 (cf. default value for primitive types)
                              */
                             System::arraycopy(poAtr, 12, this->applicationSerialNumber, 4, 4);
+                            this->modificationsCounterMax = REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
+
+                            this->bufferSizeIndicator = 0;
+                            this->bufferSizeValue = REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
+                            this->platform = poAtr[6];
+                            this->applicationType = poAtr[7];
+                            this->applicationSubtypeByte = poAtr[8];
+                            this->isRev3_2ModeAvailable_Renamed = false;
+                            this->isRatificationCommandRequired_Renamed = true;
+                            this->hasCalypsoStoredValue_Renamed = false;
+                            this->hasCalypsoPin_Renamed = false;
+                            this->softwareIssuerByte = poAtr[9];
+                            this->softwareVersion = poAtr[10];
+                            this->softwareRevision = poAtr[11];
+                            this->isDfInvalidated_Renamed = false;
                         }
                         if (logger->isTraceEnabled()) {
                             logger->trace("REVISION = %s, SERIALNUMBER = %s, DFNAME = %s", static_cast<int>(this->revision), ByteArrayUtils::toHex(this->applicationSerialNumber), ByteArrayUtils::toHex(this->dfName));
@@ -126,6 +147,58 @@ namespace org {
                         return modificationsCounterMax;
                     }
 
+                    char CalypsoPo::getBufferSizeIndicator() {
+                        return bufferSizeIndicator;
+                    }
+
+                    int CalypsoPo::getBufferSizeValue() {
+                        return bufferSizeValue;
+                    }
+
+                    char CalypsoPo::getPlatformByte() {
+                        return platform;
+                    }
+
+                    char CalypsoPo::getApplicationTypeByte() {
+                        return applicationType;
+                    }
+
+                    bool CalypsoPo::isRev3_2ModeAvailable() {
+                        return isRev3_2ModeAvailable_Renamed;
+                    }
+
+                    bool CalypsoPo::isRatificationCommandRequired() {
+                        return isRatificationCommandRequired_Renamed;
+                    }
+
+                    bool CalypsoPo::hasCalypsoStoredValue() {
+                        return hasCalypsoStoredValue_Renamed;
+                    }
+
+                    bool CalypsoPo::hasCalypsoPin() {
+                        return hasCalypsoPin_Renamed;
+                    }
+
+                    char CalypsoPo::getApplicationSubtypeByte() {
+                        return applicationSubtypeByte;
+                    }
+
+                    char CalypsoPo::getSoftwareIssuerByte() {
+                        return softwareIssuerByte;
+                    }
+
+                    char CalypsoPo::getSoftwareVersionByte() {
+                        return softwareVersion;
+                    }
+
+                    char CalypsoPo::getSoftwareRevisionByte() {
+                        return softwareRevision;
+                    }
+
+                    bool CalypsoPo::isDfInvalidated() {
+                        return isDfInvalidated_Renamed;
+                    }
+
                     PoClass CalypsoPo::getPoClass() {
                         /* Rev1 and Rev2 expects the legacy class byte while Rev3 expects the ISO class byte */
                         if (revision == PoRevision::REV1_0 || revision == PoRevision::REV2_4) {
@@ -140,13 +213,6 @@ namespace org {
                             }
                             return PoClass::ISO;
                         }
-                    }
-
-                    void CalypsoPo::reset() {
-                        MatchingSe::reset();
-                        applicationSerialNumber.clear();
-                        poAtr.clear();
-                        dfName.clear();
                     }
                 }
             }

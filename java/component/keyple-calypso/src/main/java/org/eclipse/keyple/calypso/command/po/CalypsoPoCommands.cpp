@@ -98,13 +98,15 @@ CalypsoPoCommands::StaticConstructor::StaticConstructor() {
     valueList.push_back(INCREASE);
     valueList.push_back(DECREASE);
     valueList.push_back(SELECT_FILE);
+    valueList.push_back(CHANGE_KEY);
 }
 
 CalypsoPoCommands::StaticConstructor CalypsoPoCommands::staticConstructor;
 int CalypsoPoCommands::nextOrdinal = 0;
 
-                        CalypsoPoCommands::CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte, const std::type_info& commandBuilderClass, const std::type_info& responseParserClass)
-                        : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name), instructionbyte(instructionByte), commandBuilderClass(commandBuilderClass), responseParserClass(responseParserClass) {
+                        CalypsoPoCommands::CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte)
+                        : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name), instructionbyte(instructionByte)
+{
                             
                         }
 
@@ -114,14 +116,6 @@ int CalypsoPoCommands::nextOrdinal = 0;
 
                         char CalypsoPoCommands::getInstructionByte() {
                             return instructionbyte;
-                        }
-
-                        const std::type_info& CalypsoPoCommands::getCommandBuilderClass() {
-                            return commandBuilderClass;
-                        }
-
-                        const std::type_info& CalypsoPoCommands::getResponseParserClass() {
-                            return responseParserClass;
                         }
 
                         CalypsoPoCommands CalypsoPoCommands::getOpenSessionForRev(PoRevision rev) {

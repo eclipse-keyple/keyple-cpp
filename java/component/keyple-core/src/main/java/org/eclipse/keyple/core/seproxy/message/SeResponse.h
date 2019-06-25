@@ -52,6 +52,11 @@ public:
 private:
     bool channelPreviouslyOpen = false;
 
+                            /**
+                             * true if the channel is open
+                             */
+                            const bool logicalChannelIsOpen;
+
     const std::shared_ptr<SelectionStatus> selectionStatus;
 
     /**
@@ -63,12 +68,13 @@ private:
     /**
         * the constructor called by a ProxyReader during the processing of the ‘transmit’ method.
         *
+                             * @param logicalChannelIsOpen the current channel status
         * @param channelPreviouslyOpen the channel previously open
         * @param selectionStatus the SE selection status
         * @param apduResponses the apdu responses
         */
 public:
-    SeResponse(bool channelPreviouslyOpen, std::shared_ptr<SelectionStatus> selectionStatus, std::vector<std::shared_ptr<ApduResponse>> &apduResponses);
+                            SeResponse(bool logicalChannelIsOpen, bool channelPreviouslyOpen, std::shared_ptr<SelectionStatus> selectionStatus, std::vector<std::shared_ptr<ApduResponse>> &apduResponses);
 
     /**
         * Was channel previously open.
@@ -78,6 +84,13 @@ public:
     bool wasChannelPreviouslyOpen();
 
     /**
+                             * Get the logical channel status
+                             * 
+                             * @return true if the logical channel is open
+                             */
+                            bool isLogicalChannelOpen();
+
+                            /**
         * Gets the selection status and its associated data.
         *
         * @return a {@link SelectionStatus} object.

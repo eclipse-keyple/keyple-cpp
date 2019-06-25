@@ -3,7 +3,7 @@
 #include "SeSelector.h"
 #include "ApduRequest.h"
 #include "SeProtocol.h"
-#include "ByteArrayUtils.h"
+#include "ByteArrayUtil.h"
 #include "SeRequest.h"
 
 namespace org {
@@ -12,48 +12,180 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 
-using ByteArrayUtils = org::eclipse::keyple::core::util::ByteArrayUtils;
-using AidSelector    = org::eclipse::keyple::core::seproxy::SeSelector::AidSelector;
-using AtrFilter      = org::eclipse::keyple::core::seproxy::SeSelector::AtrFilter;
+using SeProtocol             = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
+using ByteArrayUtil          = org::eclipse::keyple::core::util::ByteArrayUtil;
+using FileOccurrence         = org::eclipse::keyple::core::seproxy::SeSelector::AidSelector::FileOccurrence;
+using FileControlInformation = org::eclipse::keyple::core::seproxy::SeSelector::AidSelector::FileControlInformation;
+using IsoAid                 = org::eclipse::keyple::core::seproxy::SeSelector::AidSelector::IsoAid;
+using AidSelector            = org::eclipse::keyple::core::seproxy::SeSelector::AidSelector;
+using AtrFilter              = org::eclipse::keyple::core::seproxy::SeSelector::AtrFilter;
+
+FileOccurrence FileOccurrence::FIRST("FIRST", InnerEnum::FIRST, static_cast<char>(0x00));
+FileOccurrence FileOccurrence::LAST("LAST", InnerEnum::LAST, static_cast<char>(0x01));
+FileOccurrence FileOccurrence::NEXT("NEXT", InnerEnum::NEXT, static_cast<char>(0x02));
+FileOccurrence FileOccurrence::PREVIOUS("PREVIOUS", InnerEnum::PREVIOUS, static_cast<char>(0x03));
+
+std::vector<FileOccurrence> FileOccurrence::valueList;
+
+FileOccurrence::StaticConstructor::StaticConstructor() {
+    valueList.push_back(FIRST);
+    valueList.push_back(LAST);
+    valueList.push_back(NEXT);
+    valueList.push_back(PREVIOUS);
+}
+
+FileOccurrence::StaticConstructor FileOccurrence::staticConstructor;
+int FileOccurrence::nextOrdinal = 0;
+
+SeSelector::AidSelector::FileOccurrence::FileOccurrence(const std::string &name, InnerEnum innerEnum, char isoBitMask) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
+                        
+    this->isoBitMask = isoBitMask;
+}
+
+char SeSelector::AidSelector::FileOccurrence::getIsoBitMask() {
+    return this->isoBitMask;
+}
+
+bool FileOccurrence::operator == (const FileOccurrence &other) {
+    return this->ordinalValue == other.ordinalValue;
+}
+
+bool FileOccurrence::operator != (const FileOccurrence &other) {
+    return this->ordinalValue != other.ordinalValue;
+}
+
+std::vector<FileOccurrence> FileOccurrence::values() {
+    return valueList;
+}
+
+int FileOccurrence::ordinal() {
+    return ordinalValue;
+}
+
+std::string FileOccurrence::toString() {
+    return nameValue;
+}
+
+FileOccurrence FileOccurrence::valueOf(const std::string &name) {
+    for (auto enumInstance : FileOccurrence::valueList) {
+        if (enumInstance.nameValue == name) {
+            return enumInstance;
+        }
+    }
+
+    /* Make compiler happy */
+    return FileOccurrence::valueList.front();
+}
+
+FileControlInformation FileControlInformation::FCI("FCI", InnerEnum::FCI, (static_cast<char>(0x00)));
+FileControlInformation FileControlInformation::FCP("FCP", InnerEnum::FCP, (static_cast<char>(0x04)));
+FileControlInformation FileControlInformation::FMD("FMD", InnerEnum::FMD, (static_cast<char>(0x08)));
+FileControlInformation FileControlInformation::NO_RESPONSE("NO_RESPONSE", InnerEnum::NO_RESPONSE, (static_cast<char>(0x0C)));
+
+std::vector<FileControlInformation> FileControlInformation::valueList;
+
+FileControlInformation::StaticConstructor::StaticConstructor() {
+    valueList.push_back(FCI);
+    valueList.push_back(FCP);
+    valueList.push_back(FMD);
+    valueList.push_back(NO_RESPONSE);
+}
+
+FileControlInformation::StaticConstructor FileControlInformation::staticConstructor;
+int FileControlInformation::nextOrdinal = 0;
+
+SeSelector::AidSelector::FileControlInformation::FileControlInformation(const std::string &name, InnerEnum innerEnum, char isoBitMask) : nameValue(name), ordinalValue(nextOrdinal++), innerEnumValue(innerEnum) {
+    
+    this->isoBitMask = isoBitMask;
+}
+
+char SeSelector::AidSelector::FileControlInformation::getIsoBitMask() {
+    return this->isoBitMask;
+}
+
+bool FileControlInformation::operator == (const FileControlInformation &other) {
+    return this->ordinalValue == other.ordinalValue;
+}
+
+bool FileControlInformation::operator != (const FileControlInformation &other) {
+    return this->ordinalValue != other.ordinalValue;
+}
+
+std::vector<FileControlInformation> FileControlInformation::values() {
+    return valueList;
+}
+
+int FileControlInformation::ordinal() {
+    return ordinalValue;
+}
+
+std::string FileControlInformation::toString() {
+    return nameValue;
+    }
+
+FileControlInformation FileControlInformation::valueOf(const std::string &name) {
+    for (auto enumInstance : FileControlInformation::valueList) {
+        if (enumInstance.nameValue == name) {
+            return enumInstance;
+        }
+    }
+}
+
+                    SeSelector::AidSelector::IsoAid::IsoAid(std::vector<char> &aid) {
+                        if (aid.size() < AID_MIN_LENGTH || aid.size() > AID_MAX_LENGTH) {
+                            value.clear();
+                            throw std::invalid_argument("Bad AID length: " + std::to_string(aid.size()) + ". The AID length should be " + "between 5 and 15.");
+                        }
+                        else {
+                            value = aid;
+                        }
+                    }
+
+                    SeSelector::AidSelector::IsoAid::IsoAid(const std::string &aid) : IsoAid(ByteArrayUtil::fromHex(aid)) {
+                    }
+
+                    std::vector<char> SeSelector::AidSelector::IsoAid::getValue() {
+                        return value;
+                    }
+
+                    bool SeSelector::AidSelector::IsoAid::startsWith(std::shared_ptr<IsoAid> aid) {
+                        if (this->value.size() > aid->getValue().size()) {
+                            return false;
+                        }
+
+                        for (int i = 0; i < (int)aid->getValue().size(); i++) {
+                            if (this->value[i] != aid->getValue()[i]) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
 
 SeSelector::AidSelector::AidSelector(
-                 std::vector<char> &aidToSelect,
+                 std::shared_ptr<IsoAid> aidToSelect,
                  std::shared_ptr<std::set<int>> successfulSelectionStatusCodes,
                  FileOccurrence fileOccurrence,
                  FileControlInformation fileControlInformation)
+: fileOccurrence(fileOccurrence),
+  fileControlInformation(fileControlInformation)
 {
-    if (aidToSelect.empty() ||
-        aidToSelect.size() < AID_MIN_LENGTH ||
-        aidToSelect.size() > AID_MAX_LENGTH) {
-        throw std::invalid_argument("Bad AID value: must be between " +
-                                    std::to_string(AID_MIN_LENGTH) +
-                                    " and " +
-                                    std::to_string(AID_MIN_LENGTH) +
-                                    " bytes.");
-    }
-
     this->aidToSelect = aidToSelect;
     this->successfulSelectionStatusCodes = successfulSelectionStatusCodes;
-    this->fileOccurrence = fileOccurrence;
-    this->fileControlInformation = fileControlInformation;
 }
 
-SeSelector::AidSelector::AidSelector(
-                 std::vector<char> &aidToSelect,
-                 std::shared_ptr<std::set<int>> successfulSelectionStatusCodes)
-: AidSelector(aidToSelect, successfulSelectionStatusCodes,
-              FileOccurrence::FIRST, FileControlInformation::FCI)
-{
+SeSelector::AidSelector::AidSelector(std::shared_ptr<IsoAid> aidToSelect, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes) : AidSelector(aidToSelect, successfulSelectionStatusCodes, FileOccurrence::FIRST, FileControlInformation::FCI) {
 }
 
-std::vector<char> SeSelector::AidSelector::getAidToSelect()
-{
+                    std::shared_ptr<IsoAid> SeSelector::AidSelector::getAidToSelect() {
     return aidToSelect;
 }
 
-bool SeSelector::AidSelector::isSelectNext()
-{
-    return fileOccurrence == FileOccurrence::NEXT;
+                    SeSelector::AidSelector::FileOccurrence SeSelector::AidSelector::getFileOccurrence() {
+                        return fileOccurrence;
+                    }
+
+                    SeSelector::AidSelector::FileControlInformation SeSelector::AidSelector::getFileControlInformation() {
+                        return fileControlInformation;
 }
 
 std::shared_ptr<std::set<int>> SeSelector::AidSelector::getSuccessfulSelectionStatusCodes()
@@ -63,8 +195,8 @@ std::shared_ptr<std::set<int>> SeSelector::AidSelector::getSuccessfulSelectionSt
 
 std::string SeSelector::AidSelector::toString()
 {
-    return StringHelper::formatSimple("AID:%s", aidToSelect.empty() ? "null" :
-                                      ByteArrayUtils::toHex(aidToSelect));
+    return StringHelper::formatSimple("AID:%s", aidToSelect == nullptr ? "null" :
+                                      ByteArrayUtil::toHex(aidToSelect->getValue()));
 }
 
 SeSelector::AtrFilter::AtrFilter(const std::string &atrRegex)
@@ -88,7 +220,7 @@ bool SeSelector::AtrFilter::atrMatches(std::vector<char> &atr)
 
     if (atrRegex.length() != 0) {
         Pattern *p = Pattern::compile(atrRegex);
-        std::string atrString = ByteArrayUtils::toHex(atr);
+        std::string atrString = ByteArrayUtil::toHex(atr);
         m = p->matcher(atrString)->matches();
     } else {
             m = true;
@@ -103,29 +235,35 @@ std::string SeSelector::AtrFilter::toString()
                                       atrRegex : "empty");
 }
 
-SeSelector::SeSelector(std::shared_ptr<AidSelector> aidSelector,
+SeSelector::SeSelector(std::shared_ptr<SeProtocol> seProtocol,
                        std::shared_ptr<AtrFilter> atrFilter,
+                       std::shared_ptr<AidSelector> aidSelector,
                        const std::string &extraInfo)
 : aidSelector(aidSelector), atrFilter(atrFilter), extraInfo(extraInfo)
 {
     if (logger->isTraceEnabled()) {
         logger->trace("Selection data: AID = %s ATRREGEX = %s, EXTRAINFO" \
                       "= %s\n", this->aidSelector == nullptr ? "null" :
-                      ByteArrayUtils::toHex(this->aidSelector->getAidToSelect()),
+                      ByteArrayUtil::toHex(this->aidSelector->getAidToSelect()->getValue()),
                       this->atrFilter == nullptr ? "null" :
                       this->atrFilter->getAtrRegex(), extraInfo);
     }
 }
 
-std::shared_ptr<AidSelector> SeSelector::getAidSelector()
+std::shared_ptr<SeProtocol> SeSelector::getSeProtocol()
 {
-    return aidSelector;
-}   
+    return seProtocol;
+}
 
 std::shared_ptr<AtrFilter> SeSelector::getAtrFilter()
 {
     return atrFilter;
 }
+
+std::shared_ptr<AidSelector> SeSelector::getAidSelector()
+{
+    return aidSelector;
+} 
 
 std::string SeSelector::getExtraInfo()
 {

@@ -26,7 +26,8 @@ namespace org {
             namespace calypso {
                 namespace transaction {
 
-                    using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
+                    using SeSelector = org::eclipse::keyple::core::seproxy::SeSelector;
+                    using SeProtocol = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
 
                     /**
                      * The {@link PoSelector} class extends {@link SeSelector} to handle specific PO features such as
@@ -37,13 +38,25 @@ namespace org {
                          * Indicates if an invalidated PO should be selected or not.
                          * <p>
                          * The acceptance of an invalid PO is determined with the additional successful status codes
-                         * specified in the {@link org.eclipse.keyple.seproxy.SeSelector.AidSelector}
+                         * specified in the {@link AidSelector}
                          */
                     public:
                         enum class InvalidatedPo {
                             REJECT,
                             ACCEPT
                         };
+
+                        /**
+                         * Create a PoSelector to perform the PO selection. See {@link SeSelector}
+                         *
+                         * @param seProtocol the SE communication protocol
+                         * @param poAtrFilter the ATR filter
+                         * @param poAidSelector the AID selection data
+                         * @param extraInfo information string (to be printed in logs)
+                         */
+                    public:
+                        PoSelector(std::shared_ptr<SeProtocol> seProtocol, std::shared_ptr<PoAtrFilter> poAtrFilter, std::shared_ptr<PoAidSelector> poAidSelector, const std::string &extraInfo);
+
                                                 /**
                          * PoAidSelector embedding the Calypo PO additional successful codes list
                          */
@@ -68,22 +81,22 @@ namespace org {
                              * @param invalidatedPo an enum value to indicate if an invalidated PO should be accepted or
                              *        not
                              * @param fileOccurrence the ISO7816-4 file occurrence parameter (see
-                             *        {@link org.eclipse.keyple.seproxy.SeSelector.AidSelector.FileOccurrence})
+                             *        {@link FileOccurrence})
                              * @param fileControlInformation the ISO7816-4 file control information parameter (see
-                             *        {@link org.eclipse.keyple.seproxy.SeSelector.AidSelector.FileControlInformation})
+                             *        {@link FileControlInformation})
                              */
                         public:
-                            PoAidSelector(std::vector<char> &aidToSelect, InvalidatedPo invalidatedPo, FileOccurrence fileOccurrence, FileControlInformation fileControlInformation);
+                            PoAidSelector(std::shared_ptr<IsoAid> aidToSelect, InvalidatedPo invalidatedPo, FileOccurrence fileOccurrence, FileControlInformation fileControlInformation);
 
                             /**
                              * Simplified constructor with default values for the FileOccurrence and
-                             * FileControlInformation (see {@link org.eclipse.keyple.seproxy.SeSelector.AidSelector})
+                             * FileControlInformation (see {@link AidSelector})
                              * 
                              * @param aidToSelect the application identifier
                              * @param invalidatedPo an enum value to indicate if an invalidated PO should be accepted or
                              *        not
                              */
-                            PoAidSelector(std::vector<char> &aidToSelect, InvalidatedPo invalidatedPo);
+                            PoAidSelector(std::shared_ptr<IsoAid> aidToSelect, InvalidatedPo invalidatedPo);
 
 protected:
                             std::shared_ptr<PoAidSelector> shared_from_this() {
@@ -113,19 +126,6 @@ protected:
                             }
                         };
                         
-
-                        /**
-                         * Create a PoSelector to perform the PO selection. See {@link SeSelector}
-                         * 
-                         * @param poAidSelector the AID selection data
-                         * @param poAtrFilter the ATR filter
-                         * @param extraInfo information string (to be printed in logs)
-                         */
-                    public:
-                        PoSelector(std::shared_ptr<PoAidSelector> poAidSelector, std::shared_ptr<PoAtrFilter> poAtrFilter, const std::string &extraInfo);
-
-
-
 protected:
                         std::shared_ptr<PoSelector> shared_from_this() {
                             return std::static_pointer_cast<PoSelector>(SeSelector::shared_from_this());

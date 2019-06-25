@@ -1,5 +1,5 @@
 #include "ApduResponse.h"
-#include "ByteArrayUtils.h"
+#include "ByteArrayUtil.h"
 #include "Arrays.h"
 
 namespace org {
@@ -9,7 +9,7 @@ namespace core {
 namespace seproxy {
 namespace message {
 
-using ByteArrayUtils = org::eclipse::keyple::core::util::ByteArrayUtils;
+using ByteArrayUtil = org::eclipse::keyple::core::util::ByteArrayUtil;
 
 ApduResponse::ApduResponse(std::vector<char> &buffer, std::shared_ptr<std::set<int>> successfulStatusCodes)
 : bytes(buffer)
@@ -80,7 +80,7 @@ std::vector<char> ApduResponse::getDataOut()
 std::string ApduResponse::toString()
 {
     std::string status = isSuccessful() ? "SUCCESS" : "FAILURE";
-    return "ApduResponse: " + status + ", RAWDATA = " + ByteArrayUtils::toHex(this->bytes);
+    return "ApduResponse: " + status + ", RAWDATA = " + ByteArrayUtil::toHex(this->bytes);
 }
 
 bool ApduResponse::equals(std::shared_ptr<void> o)

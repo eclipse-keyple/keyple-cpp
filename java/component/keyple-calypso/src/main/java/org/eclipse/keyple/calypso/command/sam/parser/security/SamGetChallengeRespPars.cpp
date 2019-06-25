@@ -2,27 +2,32 @@
 #include "ApduResponse.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace calypso {
-                namespace command {
-                    namespace sam {
-                        namespace parser {
-                            namespace security {
-                                using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                                using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
+namespace eclipse {
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace sam {
+namespace parser {
+namespace security {
 
-                                SamGetChallengeRespPars::SamGetChallengeRespPars(std::shared_ptr<ApduResponse> response) : AbstractApduResponseParser(response) {
-                                }
+using AbstractSamResponseParser = org::eclipse::keyple::calypso::command::sam::AbstractSamResponseParser;
+using ApduResponse              = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
-                                std::vector<char> SamGetChallengeRespPars::getChallenge() {
-                                    return isSuccessful() ? response->getDataOut() : std::vector<char>();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+SamGetChallengeRespPars::SamGetChallengeRespPars(std::shared_ptr<ApduResponse> response)
+: AbstractSamResponseParser(response)
+{
+}
+
+std::vector<char> SamGetChallengeRespPars::getChallenge()
+{
+    return isSuccessful() ? response->getDataOut() : std::vector<char>();
+}
+
+}
+}
+}
+}
+}
+}
+}
 }

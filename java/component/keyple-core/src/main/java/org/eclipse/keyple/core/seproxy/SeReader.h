@@ -15,10 +15,11 @@
 #include <memory>
 
 #include "Configurable.h"
-#include "Nameable.h"
-#include "TransmissionMode.h"
-#include "NoStackTraceThrowable.h"
 #include "Comparable.h"
+#include "Nameable.h"
+#include "SeProtocol.h"
+#include "NoStackTraceThrowable.h"
+#include "TransmissionMode.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace protocol { class SeProtocolSetting; } } } } } }
@@ -29,13 +30,13 @@ namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
-
-
-using NoStackTraceThrowable = org::eclipse::keyple::core::seproxy::exception::NoStackTraceThrowable;
-using SeProtocolSetting     = org::eclipse::keyple::core::seproxy::protocol::SeProtocolSetting;
-using TransmissionMode      = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
+    
 using Configurable          = org::eclipse::keyple::core::util::Configurable;
 using Nameable              = org::eclipse::keyple::core::util::Nameable;
+using NoStackTraceThrowable = org::eclipse::keyple::core::seproxy::exception::NoStackTraceThrowable;
+using SeProtocol            = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
+using SeProtocolSetting     = org::eclipse::keyple::core::seproxy::protocol::SeProtocolSetting;
+using TransmissionMode      = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
 
 
 /**
@@ -60,8 +61,8 @@ public:
     virtual bool isSePresent() = 0;
 
     /**
-        * A protocol setting is a map that establish the link between a protocol identifier and a
-        * String that defines how a particular SE may match this protocol.
+                         * A protocol setting is an association that establish the link between a protocol identifier
+                         * and a String that defines how a particular SE may match this protocol.
         * <p>
         * For example:
         * <p>
@@ -76,7 +77,15 @@ public:
         * A reader plugin will handle a list of protocol settings in order to target multiple types of
         * SE.
         *
-        * @param seProtocolSetting the protocol setting to be added to the plugin internal list
+        * @param seProtocol the protocol key identifier to be added to the plugin internal list
+        * @param protocolRule a string use to define how to identify the protocol
+        */
+        virtual void addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol, const std::string &protocolRule) = 0;
+
+       /**
+        * Complete the current setting map with the provided map
+        * 
+        * @param protocolSetting
         */
     virtual void addSeProtocolSetting(std::shared_ptr<SeProtocolSetting> seProtocolSetting) = 0;
 

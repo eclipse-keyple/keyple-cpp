@@ -33,22 +33,23 @@ namespace org {
                     namespace po {
                         namespace parser {
 
-                            using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                            using ApduResponse               = org::eclipse::keyple::seproxy::message::ApduResponse;
-                            using Logger                     = org::eclipse::keyple::common::Logger;
-                            using LoggerFactory              = org::eclipse::keyple::common::LoggerFactory;
+                            using AbstractPoResponseParser = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
+                            using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+                            using Tag                      = org::eclipse::keyple::core::util::bertlv::Tag;
+                            using Logger                   = org::eclipse::keyple::common::Logger;
+                            using LoggerFactory            = org::eclipse::keyple::common::LoggerFactory;
 
                             /**
                              * Extracts information from the FCI data returned is response to the selection application command.
                              * <p>
                              * Provides getter methods for all relevant information.
                              */
-                            class GetDataFciRespPars final : public AbstractApduResponseParser {
+                            class GetDataFciRespPars final : public AbstractPoResponseParser {
                             protected:
                                 const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(GetDataFciRespPars));
 
                             private:
-                                static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+                                static std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
                             private:
                                 class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
@@ -69,23 +70,22 @@ namespace org {
 
                                 /* BER-TLV tags definitions */
                                 /* FCI Template: application class, constructed, tag number Fh => tag field 6Fh */
-                                static constexpr int TAG_FCI_TEMPLATE = 0x6F;
-
+                                static const std::shared_ptr<Tag> TAG_FCI_TEMPLATE;
                                 /* DF Name: context-specific class, primitive, tag number 4h => tag field 84h */
-                                static constexpr int TAG_DF_NAME = 0x84;
+                                static const std::shared_ptr<Tag> TAG_DF_NAME;
                                 /*
                                  * FCI Proprietary Template: context-specific class, constructed, tag number 5h => tag field A5h
                                  */
-                                static constexpr int TAG_FCI_PROPRIETARY_TEMPLATE = 0xA5;
+                                static const std::shared_ptr<Tag> TAG_FCI_PROPRIETARY_TEMPLATE;
                                 /*
                                  * FCI Issuer Discretionary Data: context-specific class, constructed, tag number Ch => tag
                                  * field BF0Ch
                                  */
-                                static constexpr int TAG_FCI_ISSUER_DISCRETIONARY_DATA = 0xBF0C;
+                                static const std::shared_ptr<Tag> TAG_FCI_ISSUER_DISCRETIONARY_DATA;
                                 /* Application Serial Number: private class, primitive, tag number 7h => tag field C7h */
-                                static constexpr int TAG_APPLICATION_SERIAL_NUMBER = 0xC7;
+                                static const std::shared_ptr<Tag> TAG_APPLICATION_SERIAL_NUMBER;
                                 /* Discretionary Data: application class, primitive, tag number 13h => tag field 53h */
-                                static constexpr int TAG_DISCRETIONARY_DATA = 0x53;
+                                static const std::shared_ptr<Tag> TAG_DISCRETIONARY_DATA;
 
                                 /** attributes result of th FCI parsing */
 //JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
@@ -95,7 +95,6 @@ namespace org {
                                 bool isValidCalypsoFCI_Renamed = false;
                                 std::vector<char> dfName;
                                 std::vector<char> applicationSN;
-                                std::vector<char> discretionaryData;
                                 char siBufferSizeIndicator = 0;
                                 char siPlatform = 0;
                                 char siApplicationType = 0;
@@ -132,9 +131,8 @@ namespace org {
                                  * <p>
                                  * All fields are pre-initialized to handle the case where the parsing fails.
                                  * <p>
-                                 * The TLV processing is done with a standard ASN.1 BerDecoder.
                                  * 
-                                 * @param selectApplicationResponse the selectApplicationResponse from Get Data APDU commmand
+                                 * @param selectApplicationResponse the select application response from Get Data APDU command
                                  */
                             public:
                                 GetDataFciRespPars(std::shared_ptr<ApduResponse> selectApplicationResponse);
@@ -174,7 +172,7 @@ namespace org {
 
 protected:
                                 std::shared_ptr<GetDataFciRespPars> shared_from_this() {
-                                    return std::static_pointer_cast<GetDataFciRespPars>(AbstractApduResponseParser::shared_from_this());
+                                    return std::static_pointer_cast<GetDataFciRespPars>(AbstractPoResponseParser::shared_from_this());
                                 }
                             };
 

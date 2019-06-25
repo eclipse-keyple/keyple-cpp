@@ -8,11 +8,11 @@ namespace org {
                     namespace sam {
                         namespace builder {
                             namespace security {
+                                using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
                                 using CalypsoSamCommands = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-                                using SamCommandBuilder = org::eclipse::keyple::calypso::command::sam::SamCommandBuilder;
                                 using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
-                                DigestCloseCmdBuild::DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength) : SamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr) 
+                                DigestCloseCmdBuild::DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength) : AbstractSamCommandBuilder(command), nullptr) 
                                 {
                                     this->defaultRevision = revision;
 
@@ -20,7 +20,7 @@ namespace org {
                                         throw std::invalid_argument(StringHelper::formatSimple("Bad digest length! Expected 4 or 8, got %s", expectedResponseLength));
                                     }
 
-                                    char cla = SamRevision::S1D == (this->defaultRevision) ? static_cast<char>(0x94) : static_cast<char>(0x80);
+                                    char cla = this->defaultRevision.getClassByte();
                                     char p1 = 0x00;
                                     char p2 = static_cast<char>(0x00);
 

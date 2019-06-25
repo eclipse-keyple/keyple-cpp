@@ -1,24 +1,28 @@
 #include "SelectDiversifierRespPars.h"
-#include "../../../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ApduResponse.h"
+#include "ApduResponse.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace calypso {
-                namespace command {
-                    namespace sam {
-                        namespace parser {
-                            namespace security {
-                                using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                                using ApduResponse = org::eclipse::keyple::seproxy::message::ApduResponse;
+namespace eclipse {
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace sam {
+namespace parser {
+namespace security {
 
-                                SelectDiversifierRespPars::SelectDiversifierRespPars(std::shared_ptr<ApduResponse> response) : org::eclipse::keyple::command::AbstractApduResponseParser(response) {
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+using AbstractSamResponseParser = org::eclipse::keyple::calypso::command::sam::AbstractSamResponseParser;
+using ApduResponse              = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+
+SelectDiversifierRespPars::SelectDiversifierRespPars(std::shared_ptr<ApduResponse> response)
+: AbstractSamResponseParser(response)
+{
+}
+
+}
+}
+}
+}
+}
+}
+}
 }

@@ -21,7 +21,8 @@
 #include "Export.h"
 
 /* Core */
-#include "SelectionResponse.h"
+#include "AbstractDefaultSelectionsResponse.h"
+#include "DefaultSelectionsResponse.h"
 
 namespace org {
 namespace eclipse {
@@ -29,11 +30,31 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 namespace event {
+using DefaultSelectionsResponse = org::eclipse::keyple::core::seproxy::message::DefaultSelectionsResponse;
 
 /**
     * ReaderEvent used to notify changes at reader level
     */
 class EXPORT ReaderEvent final : public std::enable_shared_from_this<ReaderEvent> {
+    /**
+     * The name of the plugin handling the reader that produced the event
+     */
+private:
+    const std::string pluginName;
+    
+    /**
+     * The name of the reader that produced the event
+     */
+    const std::string readerName;
+    
+    /**
+     * The response to the selection request
+     */
+    const std::shared_ptr<DefaultSelectionsResponse> defaultResponseSet;
+    
+    /**
+     * The different types of reader event
+     */
 public:
     class EXPORT EventType final {
         /**
@@ -106,41 +127,22 @@ public:
     };
 
     /**
-        * The name of the plugin handling the reader that produced the event
-        */
-private:
-    const std::string pluginName;
-
-    /**
-        * The name of the reader that produced the event
-        */
-    const std::string readerName;
-
-    /**
         * The type of event
         */
+                        private:
     const EventType eventType;
 
     /**
-        * The response to the selection request
-        */
-    const std::shared_ptr<SelectionResponse> defaultResponseSet;
-
-    /**
-        * The different types of reader event
-        */
-
-    /**
-        * ReaderEvent constructor for simple insertion notification mode
-        *
-        * @param pluginName the name of the current plugin
-        * @param readerName the name of the current reader
-        * @param eventType the type of event
-        * @param selectionResponse the response to the default {@link DefaultSelectionRequest} (may be
-        *        null)
-        */
+     * ReaderEvent constructor for simple insertion notification mode
+     *
+     * @param pluginName the name of the current plugin
+     * @param readerName the name of the current reader
+     * @param eventType the type of event
+     * @param defaultSelectionsResponse the response to the default DefaultSelectionsRequest (may be
+     *        null)
+     */
 public:
-    ReaderEvent(const std::string &pluginName, const std::string &readerName, EventType eventType, std::shared_ptr<SelectionResponse> selectionResponse);
+    ReaderEvent(const std::string &pluginName, const std::string &readerName, EventType eventType, std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse);
 
 
     std::string getPluginName();
@@ -149,7 +151,7 @@ public:
 
     EventType getEventType();
 
-    std::shared_ptr<SelectionResponse> getDefaultSelectionResponse();
+    std::shared_ptr<AbstractDefaultSelectionsResponse> getDefaultSelectionsResponse();
 };
 
 }

@@ -1,12 +1,3 @@
-#pragma once
-
-#include "../../SamCommandBuilder.h"
-#include "../../CalypsoSamCommands.h"
-#include "../../SamRevision.h"
-#include <vector>
-#include <stdexcept>
-#include <memory>
-
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -18,6 +9,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <vector>
+#include <stdexcept>
+#include <memory>
+
+#include "AbstractSamCommandBuilder.h"
+#include "CalypsoSamCommands.h"
+#include "SamRevision.h"
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -28,8 +30,8 @@ namespace org {
                             namespace security {
 
 
+                                using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
                                 using CalypsoSamCommands = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-                                using SamCommandBuilder = org::eclipse::keyple::calypso::command::sam::SamCommandBuilder;
                                 using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
                                 // TODO: Auto-generated Javadoc
@@ -37,7 +39,7 @@ namespace org {
                                  * This class provides the dedicated constructor to build the SAM Select Diversifier APDU command.
                                  *
                                  */
-                                class SelectDiversifierCmdBuild : public SamCommandBuilder {
+                                class SelectDiversifierCmdBuild : public AbstractSamCommandBuilder {
 
                                     /** The command. */
                                 private:
@@ -48,15 +50,15 @@ namespace org {
                                      *
                                      * @param revision the SAM revision
                                      * @param diversifier the application serial number
-                                     * @throws java.lang.IllegalArgumentException - if the diversifier is null or has a wrong length
-                                     * @throws java.lang.IllegalArgumentException - if the request is inconsistent
+                                     * @throws IllegalArgumentException - if the diversifier is null or has a wrong length
+                                     * @throws IllegalArgumentException - if the request is inconsistent
                                      */
                                 public:
                                     SelectDiversifierCmdBuild(SamRevision revision, std::vector<char> &diversifier);
 
 protected:
                                     std::shared_ptr<SelectDiversifierCmdBuild> shared_from_this() {
-                                        return std::static_pointer_cast<SelectDiversifierCmdBuild>(SamCommandBuilder::shared_from_this());
+                                        return std::static_pointer_cast<SelectDiversifierCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
                                     }
                                 };
 

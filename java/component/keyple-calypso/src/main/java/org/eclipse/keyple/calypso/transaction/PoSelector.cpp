@@ -1,27 +1,31 @@
 #include "PoSelector.h"
+#include "SeProtocol.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace calypso {
-                namespace transaction {
-                    using SeSelector = org::eclipse::keyple::seproxy::SeSelector;
+namespace eclipse {
+namespace keyple {
+namespace calypso {
+namespace transaction {
 
-                    PoSelector::PoSelector(std::shared_ptr<PoAidSelector> poAidSelector, std::shared_ptr<PoAtrFilter> poAtrFilter, const std::string &extraInfo) : org::eclipse::keyple::seproxy::SeSelector(poAidSelector, poAtrFilter, extraInfo) {
-                    }
+using SeSelector = org::eclipse::keyple::core::seproxy::SeSelector;
+using SeProtocol = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
 
-                    const std::shared_ptr<std::set<int>> PoSelector::PoAidSelector::successfulSelectionStatusCodes = std::make_shared<std::set<int>>();
+PoSelector::PoSelector(std::shared_ptr<SeProtocol> seProtocol, std::shared_ptr<PoAtrFilter> poAtrFilter, std::shared_ptr<PoAidSelector> poAidSelector, const std::string &extraInfo) : org::eclipse::keyple::core::seproxy::SeSelector(seProtocol, poAtrFilter, poAidSelector, extraInfo) {
+}
 
-                    PoSelector::PoAidSelector::PoAidSelector(std::vector<char> &aidToSelect, InvalidatedPo invalidatedPo, FileOccurrence fileOccurrence, FileControlInformation fileControlInformation) : org::eclipse::keyple::seproxy::SeSelector::AidSelector(aidToSelect, invalidatedPo == InvalidatedPo::ACCEPT ? successfulSelectionStatusCodes : nullptr, fileOccurrence, fileControlInformation) {
-                    }
+const std::shared_ptr<java::util::Set<Integer>> PoSelector::PoAidSelector::successfulSelectionStatusCodes = std::make_shared<HashSetAnonymousInnerClass>();
 
-                    PoSelector::PoAidSelector::PoAidSelector(std::vector<char> &aidToSelect, InvalidatedPo invalidatedPo) : org::eclipse::keyple::seproxy::SeSelector::AidSelector(aidToSelect, invalidatedPo == InvalidatedPo::ACCEPT ? successfulSelectionStatusCodes : nullptr) {
-                    }
+PoSelector::PoAidSelector::PoAidSelector(std::shared_ptr<IsoAid> aidToSelect, InvalidatedPo invalidatedPo, FileOccurrence fileOccurrence, FileControlInformation fileControlInformation) : AidSelector(aidToSelect, invalidatedPo == InvalidatedPo::ACCEPT ? successfulSelectionStatusCodes : nullptr, fileOccurrence, fileControlInformation) {
+}
 
-                    PoSelector::PoAtrFilter::PoAtrFilter(const std::string &atrRegex) : org::eclipse::keyple::seproxy::SeSelector::AtrFilter(atrRegex) {
-                    }
-                }
-            }
-        }
-    }
+PoSelector::PoAidSelector::PoAidSelector(std::shared_ptr<IsoAid> aidToSelect, InvalidatedPo invalidatedPo) : AidSelector(aidToSelect, invalidatedPo == InvalidatedPo::ACCEPT ? successfulSelectionStatusCodes : nullptr) {
+}
+
+PoSelector::PoAtrFilter::PoAtrFilter(const std::string &atrRegex) : AtrFilter(atrRegex) {
+}
+
+}
+}
+}
+}
 }

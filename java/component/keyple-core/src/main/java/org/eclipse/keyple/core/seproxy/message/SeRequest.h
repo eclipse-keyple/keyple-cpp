@@ -19,7 +19,6 @@
 #include "stringhelper.h"
 
 /* Core */
-#include "Protocol.h"
 #include "ChannelState.h"
 #include "SeSelector.h"
 #include "ApduRequest.h"
@@ -35,10 +34,9 @@ namespace core {
 namespace seproxy {
 namespace message {
 
-using org::eclipse::keyple::core::seproxy::ChannelState;
-using org::eclipse::keyple::core::seproxy::protocol::Protocol;
-using org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
-using org::eclipse::keyple::core::seproxy::SeSelector;
+using ChannelState = org::eclipse::keyple::core::seproxy::ChannelState;
+using SeProtocol   = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
+using SeSelector   = org::eclipse::keyple::core::seproxy::SeSelector;
 
 /**
     * List of APDU requests that will result in a {@link SeResponse}
@@ -63,17 +61,13 @@ private:
 
 
     /**
-        * the protocol flag is used to target specific SE technologies for a given request
-        */
-    std::shared_ptr<SeProtocol> protocolFlag = std::dynamic_pointer_cast<SeProtocol>(std::make_shared<Protocol>(Protocol::ANY));
-
-    /**
         * the final logical channel status: the SE reader may kept active the logical channel of the SE
         * application after processing the group of APDU commands otherwise the SE reader will close
         * the logical channel of the SE application after processing the group of APDU commands (i.e.
         * after the receipt of the last APDU response).
         */
     ChannelState channelState = static_cast<ChannelState>(0);
+
 
     /**
         * The constructor called by a ProxyReader in order to open a logical channel, to send a set of
@@ -85,11 +79,9 @@ private:
         *        selection process
         * @param channelState the channel management parameter allowing to close or keep the channel
         *        open after the request execution
-        * @param protocolFlag the expected protocol for the SE (may be set to Protocol.ANY if no check
-        *        is needed)
         */
 public:
-    SeRequest(std::shared_ptr<SeSelector> seSelector, std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState, std::shared_ptr<SeProtocol> protocolFlag);
+                            SeRequest(std::shared_ptr<SeSelector> seSelector, std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState);
 
     /**
         * Constructor to be used when the SE is already selected (without {@link SeSelector})
@@ -122,13 +114,6 @@ public:
         * @return If the channel should be kept open
         */
     bool isKeepChannelOpen();
-
-    /**
-        * Gets the protocol flag of the request
-        *
-        * @return protocolFlag
-        */
-    std::shared_ptr<SeProtocol> getProtocolFlag();
 
     std::string toString() override;
 };

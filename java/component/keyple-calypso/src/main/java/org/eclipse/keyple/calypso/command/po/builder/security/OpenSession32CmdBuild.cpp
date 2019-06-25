@@ -3,9 +3,11 @@
 
 /* Calypso */
 #include "OpenSession32CmdBuild.h"
+#include "OpenSession32RespPars.h"
 #include "PoClass.h"
 #include "CalypsoPoCommands.h"
 #include "PoRevision.h"
+#include "ApduResponse.h"
 
 namespace org {
     namespace eclipse {
@@ -15,12 +17,15 @@ namespace org {
                     namespace po {
                         namespace builder {
                             namespace security {
-                                using PoClass = org::eclipse::keyple::calypso::command::PoClass;
-                                using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
-                                using PoRevision = org::eclipse::keyple::calypso::command::po::PoRevision;
+
+                                using PoClass               = org::eclipse::keyple::calypso::command::PoClass;
+                                using CalypsoPoCommands     = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
+                                using PoRevision            = org::eclipse::keyple::calypso::command::po::PoRevision;
+                                using OpenSession32RespPars = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession32RespPars;
+                                using ApduResponse          = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
                                 OpenSession32CmdBuild::OpenSession32CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo)
-                                : AbstractOpenSessionCmdBuild(PoRevision::REV3_2)
+                                : AbstractOpenSessionCmdBuild<OpenSession32RespPars>(PoRevision::REV3_2)
                                 {
 
                                     char p1 = static_cast<char>((recordNumberToRead * 8) + keyIndex);
@@ -39,6 +44,10 @@ namespace org {
                                     if (extraInfo != "") {
                                         this->addSubName(extraInfo);
                                     }
+                                }
+
+                                std::shared_ptr<OpenSession32RespPars> OpenSession32CmdBuild::createResponseParser(std::shared_ptr<ApduResponse> apduResponse) {
+                                    return std::make_shared<OpenSession32RespPars>(apduResponse);
                                 }
                             }
                         }

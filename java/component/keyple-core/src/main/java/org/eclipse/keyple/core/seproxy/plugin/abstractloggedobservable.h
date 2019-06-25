@@ -96,7 +96,7 @@ class AbstractLoggedObservable
     /**
         * Add an observer. This will allow to be notified about all readers or plugins events.
         *
-        * @param observer Observer to notiy
+                             * @param observer Observer to notify
         */
     virtual void addObserver(std::shared_ptr<org::eclipse::keyple::core::util::Observer<T>> observer) override
     {

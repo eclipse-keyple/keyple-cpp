@@ -1,5 +1,6 @@
 #include "ReaderEvent.h"
-#include "SelectionResponse.h"
+#include "DefaultSelectionsResponse.h"
+#include "AbstractDefaultSelectionsResponse.h"
 
 namespace org {
 namespace eclipse {
@@ -8,7 +9,7 @@ namespace core {
 namespace seproxy {
 namespace event {
 
-using SelectionResponse = org::eclipse::keyple::core::seproxy::event::SelectionResponse;
+using DefaultSelectionsResponse = org::eclipse::keyple::core::seproxy::message::DefaultSelectionsResponse;
 using EventType         = org::eclipse::keyple::core::seproxy::event::ReaderEvent::EventType;
 
 EventType EventType::IO_ERROR("IO_ERROR", InnerEnum::IO_ERROR, "SE Reader IO Error");
@@ -81,9 +82,9 @@ EventType EventType::valueOf(const std::string &name)
 
 ReaderEvent::ReaderEvent(const std::string &pluginName,
                          const std::string &readerName, EventType eventType,
-                         std::shared_ptr<SelectionResponse> selectionResponse)
+                         std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
 : pluginName(pluginName), readerName(readerName), eventType(eventType),
-  defaultResponseSet(selectionResponse)
+  defaultResponseSet(std::static_pointer_cast<DefaultSelectionsResponse>(defaultSelectionsResponse))
 {
 }
 
@@ -102,7 +103,7 @@ ReaderEvent::EventType ReaderEvent::getEventType()
     return eventType;
 }
 
-std::shared_ptr<SelectionResponse> ReaderEvent::getDefaultSelectionResponse()
+std::shared_ptr<AbstractDefaultSelectionsResponse> ReaderEvent::getDefaultSelectionsResponse()
 {
     return defaultResponseSet;
 }

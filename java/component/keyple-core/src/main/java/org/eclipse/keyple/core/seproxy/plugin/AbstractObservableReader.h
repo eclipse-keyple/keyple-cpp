@@ -22,12 +22,12 @@
 
 /* Core */
 #include "AbstractLoggedObservable.h"
+#include "DefaultSelectionsRequest.h"
 #include "KeypleChannelStateException.h"
 #include "KeypleIOReaderException.h"
 #include "KeypleReaderException.h"
 #include "ObservableReader.h"
 #include "ProxyReader.h"
-#include "DefaultSelectionRequest.h"
 
 /* Namespace */
 namespace org {
@@ -38,6 +38,7 @@ namespace seproxy {
 namespace plugin {
 
 /* Using */
+using DefaultSelectionsRequest    = org::eclipse::keyple::core::seproxy::message::DefaultSelectionsRequest;
 using SeReader                    = org::eclipse::keyple::core::seproxy::SeReader;
 using ObservableReader            = org::eclipse::keyple::core::seproxy::event::ObservableReader;
 using ReaderEvent                 = org::eclipse::keyple::core::seproxy::event::ReaderEvent;
@@ -51,7 +52,6 @@ using SeResponse                  = org::eclipse::keyple::core::seproxy::message
 using SeResponseSet               = org::eclipse::keyple::core::seproxy::message::SeResponseSet;
 using LoggerFactory               = org::eclipse::keyple::common::LoggerFactory;
 using Logger                      = org::eclipse::keyple::common::Logger;
-using DefaultSelectionRequest     = org::eclipse::keyple::core::seproxy::event::DefaultSelectionRequest;
 
 /**
     * Abstract definition of an observable reader.
@@ -76,8 +76,8 @@ private:
 protected:
     const std::string pluginName;
 
-    /** The default DefaultSelectionRequest to be executed upon SE insertion */
-    std::shared_ptr<DefaultSelectionRequest> defaultSelectionRequest;
+                            /** The default DefaultSelectionsRequest to be executed upon SE insertion */
+                            std::shared_ptr<DefaultSelectionsRequest> defaultSelectionsRequest;
 
     /** Indicate if all SE detected should be notified or only matching SE */
     ObservableReader::NotificationMode notificationMode;

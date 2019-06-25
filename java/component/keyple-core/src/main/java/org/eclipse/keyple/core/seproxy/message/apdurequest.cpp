@@ -1,5 +1,5 @@
 #include "ApduRequest.h"
-#include "ByteArrayUtils.h"
+#include "ByteArrayUtil.h"
 #include "stringhelper.h"
 
 namespace org {
@@ -9,7 +9,7 @@ namespace core {
 namespace seproxy {
 namespace message {
 
-using ByteArrayUtils = org::eclipse::keyple::core::util::ByteArrayUtils;
+using ByteArrayUtil = org::eclipse::keyple::core::util::ByteArrayUtil;
 
 ApduRequest::ApduRequest(std::vector<char> &buffer, bool case4, std::shared_ptr<std::set<int>> successfulStatusCodes) : case4(case4), successfulStatusCodes(successfulStatusCodes) {
     this->bytes = buffer;
@@ -48,7 +48,7 @@ std::vector<char> ApduRequest::getBytes() {
 
 std::string ApduRequest::toString() {
     std::shared_ptr<StringBuilder> string;
-    string = std::make_shared<StringBuilder>("ApduRequest: NAME = \"" + this->getName() + "\", RAWDATA = " + ByteArrayUtils::toHex(bytes));
+    string = std::make_shared<StringBuilder>("ApduRequest: NAME = \"" + this->getName() + "\", RAWDATA = " + ByteArrayUtil::toHex(bytes));
     if (isCase4()) {
         string->append(", case4");
     }

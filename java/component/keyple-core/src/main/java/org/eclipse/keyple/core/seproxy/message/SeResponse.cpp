@@ -1,7 +1,7 @@
 #include "SeResponse.h"
 #include "SelectionStatus.h"
 #include "ApduResponse.h"
-#include "ByteArrayUtils.h"
+#include "ByteArrayUtil.h"
 #include "stringhelper.h"
 
 namespace org {
@@ -11,9 +11,9 @@ namespace core {
 namespace seproxy {
 namespace message {
 
-using ByteArrayUtils = org::eclipse::keyple::core::util::ByteArrayUtils;
+using ByteArrayUtil = org::eclipse::keyple::core::util::ByteArrayUtil;
 
-SeResponse::SeResponse(bool channelPreviouslyOpen, std::shared_ptr<SelectionStatus> selectionStatus, std::vector<std::shared_ptr<ApduResponse>> &apduResponses) : selectionStatus(selectionStatus) {
+SeResponse::SeResponse(bool logicalChannelIsOpen, bool channelPreviouslyOpen, std::shared_ptr<SelectionStatus> selectionStatus, std::vector<std::shared_ptr<ApduResponse>> &apduResponses) : logicalChannelIsOpen(logicalChannelIsOpen), selectionStatus(selectionStatus) {
     this->channelPreviouslyOpen = channelPreviouslyOpen;
     this->apduResponses = apduResponses;
 }
@@ -21,6 +21,10 @@ SeResponse::SeResponse(bool channelPreviouslyOpen, std::shared_ptr<SelectionStat
 bool SeResponse::wasChannelPreviouslyOpen() {
     return channelPreviouslyOpen;
 }
+
+                        bool SeResponse::isLogicalChannelOpen() {
+                            return logicalChannelIsOpen;
+                        }
 
 std::shared_ptr<SelectionStatus> SeResponse::getSelectionStatus() {
     return this->selectionStatus;
@@ -38,7 +42,7 @@ std::string SeResponse::toString() {
         */
     std::string string;
     if (selectionStatus != nullptr) {
-        string = StringHelper::formatSimple("SeResponse:{RESPONSES = %s, ATR = %s, FCI = %s, HASMATCHED = %b CHANNELWASOPEN = %b}", "to fix!" /*getApduResponses()*/, selectionStatus->getAtr()->getBytes().empty() ? "null" : ByteArrayUtils::toHex(selectionStatus->getAtr()->getBytes()), ByteArrayUtils::toHex(selectionStatus->getFci()->getBytes()), selectionStatus->hasMatched(), wasChannelPreviouslyOpen());
+        string = StringHelper::formatSimple("SeResponse:{RESPONSES = %s, ATR = %s, FCI = %s, HASMATCHED = %b CHANNELWASOPEN = %b}", "to fix!" /*getApduResponses()*/, selectionStatus->getAtr()->getBytes().empty() ? "null" : ByteArrayUtil::toHex(selectionStatus->getAtr()->getBytes()), ByteArrayUtil::toHex(selectionStatus->getFci()->getBytes()), selectionStatus->hasMatched(), wasChannelPreviouslyOpen());
     }
     else {
         string = StringHelper::formatSimple("SeResponse:{RESPONSES = %s, ATR = null, FCI = null, HASMATCHED = false CHANNELWASOPEN = %b}", "to fix!" /*getApduResponses()*/, wasChannelPreviouslyOpen());
@@ -55,16 +59,18 @@ bool SeResponse::equals(std::shared_ptr<void> o) {
     }
 
     std::shared_ptr<SeResponse> seResponse = std::static_pointer_cast<SeResponse>(o);
-    return seResponse->getSelectionStatus()->equals(selectionStatus) &&
-            (seResponse->getApduResponses().empty() ? apduResponses.empty() : seResponse->getApduResponses() == apduResponses) &&
-            seResponse->wasChannelPreviouslyOpen() == channelPreviouslyOpen;
+
+    return seResponse->getSelectionStatus() == (selectionStatus) &&
+           (seResponse->getApduResponses().empty() ? apduResponses.empty() : seResponse->getApduResponses() == (apduResponses)) &&
+           seResponse->isLogicalChannelOpen() == logicalChannelIsOpen && seResponse->wasChannelPreviouslyOpen() == channelPreviouslyOpen;
 }
 
 int SeResponse::hashCode() {
     int hash = 17;
     hash = 31 * hash + (selectionStatus->getAtr() == nullptr ? 0 : selectionStatus->getAtr()->hashCode());
-    hash = 7 * hash + (apduResponses.empty() ? 0 : 1); // FIXME: std::hash<std::shared_ptr>(this->apduResponses));
+    hash = 7 * hash + (apduResponses.empty() ? 0 : 1);//this->apduResponses.hashCode());
     hash = 29 * hash + (this->channelPreviouslyOpen ? 1 : 0);
+    hash = 37 * hash + (this->logicalChannelIsOpen ? 1 : 0);
     return hash;
 }
 

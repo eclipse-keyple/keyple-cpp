@@ -17,8 +17,10 @@ namespace org {
                     namespace po {
                         namespace parser {
 
-                            using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-                            using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+                            using AbstractPoResponseParser = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
+                            using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
+                            using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+                            using ByteArrayUtil = org::eclipse::keyple::core::util::ByteArrayUtil;
 
                             std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> ReadRecordsRespPars::STATUS_TABLE;
 
