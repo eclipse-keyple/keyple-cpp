@@ -35,7 +35,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/java/org/eclipse/keyple/common
 
 	# Core
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/util
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/util
 	
 	# PC/SC (Linux / macOS) 
 	/usr/include/PCSC	
@@ -58,6 +58,7 @@ IF(WIN32)
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
 	SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
 	SET(WINSCARD winscard.lib)
+	SET(PTHREAD "")
 ENDIF(WIN32)
 
 IF(APPLE)
@@ -65,8 +66,13 @@ IF(APPLE)
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
 	SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
 	SET(WINSCARD "-framework PCSC")
+	SET(PTHREAD pthread)
 ENDIF(APPLE)
 
-SET(LINK_LIBS ${WINSCARD} keyplecore pthread)
+If(UNIX)
+	SET(PTHREAD pthread)
+ENDIF(UNIX)
+
+SET(LINK_LIBS ${WINSCARD} keyplecore ${PTHREAD})
 
 TARGET_LINK_LIBRARIES(keyplesmartcardio ${LINK_LIBS})

@@ -1,121 +1,84 @@
 /********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
 
 #pragma once
 
+#include <set>
 #include <string>
-#include <vector>
-
-/* Core */
-#include "ContactlessProtocols_Import.h"
-#include "SeProtocolSettingList.h"
+#include <unordered_map>
+#include <memory>
 
 /* Common */
 #include "Export.h"
 
+/* Core */
+#include "SeCommonProtocols_Import.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace protocol { class SeProtocol; } } } } } }
+
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace plugin {
-                namespace pcsc {
+namespace eclipse {
+namespace keyple {
+namespace plugin {
+namespace pcsc {
 
-                    using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
-                    using SeProtocol            = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-                    using ContactlessProtocols  = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
+using SeCommonProtocols = org::eclipse::keyple::core::seproxy::protocol::SeCommonProtocols;
+using SeProtocol        = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
 
-                    /**
-                     * These objects are used by the application to build the SeProtocolsMap
-                     */
-                    class IMPORT PcscProtocolSetting final : public SeProtocolSettingList {
+/**
+ * This class contains all the parameters to identify the communication protocols supported by PC/SC
+ * readers.
+ * <p>
+ * The application can choose to add all parameters or only a subset.
+*/
+class IMPORT PcscProtocolSetting : public std::enable_shared_from_this<PcscProtocolSetting> {
 
-                      public:
-                        static PcscProtocolSetting SETTING_PROTOCOL_ISO14443_4;
-                        static PcscProtocolSetting SETTING_PROTOCOL_B_PRIME;
-                        static PcscProtocolSetting SETTING_PROTOCOL_MIFARE_UL;
-                        static PcscProtocolSetting SETTING_PROTOCOL_MIFARE_CLASSIC;
-                        static PcscProtocolSetting SETTING_PROTOCOL_MIFARE_DESFIRE;
-                        static PcscProtocolSetting SETTING_PROTOCOL_MEMORY_ST25;
+public:
+    static std::unordered_map<SeCommonProtocols, std::string> PCSC_PROTOCOL_SETTING;
 
-                      private:
-                        static std::vector<PcscProtocolSetting> valueList;
+/**
+* Associates a protocol and a string defining how to identify it (here a regex to be applied on
+* the ATR)
+*/
+private:
+    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    public:
+        StaticConstructor();
+    };
 
-                        class StaticConstructor {
-                          public:
-                            StaticConstructor();
-                        };
+private:
+    static PcscProtocolSetting::StaticConstructor staticConstructor;
 
-                        static StaticConstructor staticConstructor;
 
-                      public:
-                        enum class InnerEnum
-                        {
-                            SETTING_PROTOCOL_ISO14443_4,
-                            SETTING_PROTOCOL_B_PRIME,
-                            SETTING_PROTOCOL_MIFARE_UL,
-                            SETTING_PROTOCOL_MIFARE_CLASSIC,
-                            SETTING_PROTOCOL_MIFARE_DESFIRE,
-                            SETTING_PROTOCOL_MEMORY_ST25
-                        };
+/**
+     * Return a subset of the settings map
+     * 
+     * @param specificProtocols
+     * @return a settings map
+*/
+public:
+    static std::unordered_map<SeCommonProtocols, std::string>& getSpecificSettings(std::set<SeCommonProtocols>& specificProtocols);
 
-                        const InnerEnum innerEnumValue;
+    /**
+     * Return the whole settings map
+     * 
+     * @return a settings map
+     */
+    static std::unordered_map<SeCommonProtocols, std::string>& getAllSettings();
+};
 
-                      private:
-                        const std::string nameValue;
-                        const int ordinalValue;
-                        static int nextOrdinal;
-
-                        /**
-                         * Regular expressions to match ATRs produced by PcSc readers
-                         */
-                      public:
-                        class IMPORT ProtocolSetting {
-                          public:
-                            static const std::string REGEX_PROTOCOL_ISO14443_4;
-                            static const std::string REGEX_PROTOCOL_B_PRIME;
-                            static const std::string REGEX_PROTOCOL_MIFARE_UL;
-                            static const std::string REGEX_PROTOCOL_MIFARE_CLASSIC;
-                            static const std::string REGEX_PROTOCOL_MIFARE_DESFIRE;
-                            static const std::string REGEX_PROTOCOL_MEMORY_ST25;
-                        };
-
-                        /* the protocol flag */
-                      public:
-                        ContactlessProtocols flag;
-
-                        /* the protocol setting value */
-                        std::string value;
-
-                        PcscProtocolSetting(const std::string &name, InnerEnum innerEnum, ContactlessProtocols &flag, const std::string &value);
-
-                        std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> getFlag() override;
-
-                        std::string getValue() override;
-
-                      public:
-                        bool operator==(const PcscProtocolSetting &other);
-
-                        bool operator!=(const PcscProtocolSetting &other);
-
-                        static std::vector<PcscProtocolSetting> values();
-
-                        int ordinal();
-
-                        std::string toString();
-
-                        static PcscProtocolSetting valueOf(const std::string &name);
-                    };
-
-                } // namespace pcsc
-            }     // namespace plugin
-        }         // namespace keyple
-    }             // namespace eclipse
-} // namespace org
+}
+}
+}
+}
+}

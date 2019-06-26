@@ -46,13 +46,13 @@ namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using SeReader                         = org::eclipse::keyple::seproxy::SeReader;
-using KeypleBaseException              = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-using KeypleReaderException            = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-using KeypleReaderNotFoundException    = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
-using AbstractObservableReader         = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
-using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
-using PluginEvent                      = org::eclipse::keyple::seproxy::event::PluginEvent;
+using SeReader                         = org::eclipse::keyple::core::seproxy::SeReader;
+using KeypleBaseException              = org::eclipse::keyple::core::seproxy::exception::KeypleBaseException;
+using KeypleReaderException            = org::eclipse::keyple::core::seproxy::exception::KeypleReaderException;
+using KeypleReaderNotFoundException    = org::eclipse::keyple::core::seproxy::exception::KeypleReaderNotFoundException;
+using AbstractObservableReader         = org::eclipse::keyple::core::seproxy::plugin::AbstractObservableReader;
+using AbstractThreadedObservablePlugin = org::eclipse::keyple::core::seproxy::plugin::AbstractThreadedObservablePlugin;
+using PluginEvent                      = org::eclipse::keyple::core::seproxy::event::PluginEvent;
 using LoggerFactory                    = org::eclipse::keyple::common::LoggerFactory;
 using Logger                           = org::eclipse::keyple::common::Logger;
 
@@ -205,8 +205,7 @@ protected:
 
     /**
      * Fetch connected native readers (from smartcard.io) and returns a list of corresponding
-     * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader}
-     * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader} are new instances.
+                         * {@link AbstractObservableReader} {@link AbstractObservableReader} are new instances.
      *
      * @return the list of AbstractObservableReader objects.
      * @throws KeypleReaderException if a reader error occurs

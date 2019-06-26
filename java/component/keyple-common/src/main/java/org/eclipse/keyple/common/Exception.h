@@ -60,7 +60,7 @@ public:
      */
     friend std::ostream& operator<<(std::ostream &os, const Exception &e)
     {
-        os << "message: " << e.getMessage() << ", cause: " << e.getCause().what();
+        os << "message: " << e.getMessage().c_str() << ", cause: " << e.getCause().what();
         return os;
     }
 

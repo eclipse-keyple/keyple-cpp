@@ -32,7 +32,7 @@ using namespace org::eclipse::keyple::core::seproxy::protocol;
 //JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
 //                        import static org.eclipse.keyple.core.seproxy.protocol.TransmissionMode.*;
 
-class EXPORT SeCommonProtocols final : public SeProtocol {
+class IMPORT SeCommonProtocols final : public SeProtocol {
 
     /* ---- contactless standard / NFC compliant ------------- */
 public:

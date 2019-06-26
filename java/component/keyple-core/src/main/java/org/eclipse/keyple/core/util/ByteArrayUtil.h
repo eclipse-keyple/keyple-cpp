@@ -17,6 +17,8 @@
 #include <stdexcept>
 #include <memory>
 
+/* Common */
+#include "Export.h"
 #include "stringbuilder.h"
 #include "Pattern.h"
 
@@ -29,7 +31,7 @@ namespace util {
 /**
     * Utils around byte arrays
     */
-class ByteArrayUtil : public std::enable_shared_from_this<ByteArrayUtil> {
+class EXPORT ByteArrayUtil : public std::enable_shared_from_this<ByteArrayUtil> {
     /* byte to hex string conversion table */
 private:
     static std::vector<std::string> const byteToHex;

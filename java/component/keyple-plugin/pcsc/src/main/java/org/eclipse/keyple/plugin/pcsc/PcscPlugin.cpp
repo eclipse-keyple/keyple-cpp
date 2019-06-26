@@ -18,17 +18,17 @@ namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using AbstractObservableReader         = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
-using AbstractThreadedObservablePlugin = org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin;
+using AbstractObservableReader         = org::eclipse::keyple::core::seproxy::plugin::AbstractObservableReader;
+using AbstractThreadedObservablePlugin = org::eclipse::keyple::core::seproxy::plugin::AbstractThreadedObservablePlugin;
 using CardException                    = org::eclipse::keyple::smartcardio::CardException;
 using CardTerminals                    = org::eclipse::keyple::smartcardio::CardTerminals;
 using CardTerminal                     = org::eclipse::keyple::smartcardio::CardTerminal;
-using KeypleBaseException              = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-using KeypleReaderException            = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
+using KeypleBaseException              = org::eclipse::keyple::core::seproxy::exception::KeypleBaseException;
+using KeypleReaderException            = org::eclipse::keyple::core::seproxy::exception::KeypleReaderException;
 
 std::shared_ptr<TerminalFactory> PcscPlugin::factory;
 
-PcscPlugin::PcscPlugin() : org::eclipse::keyple::seproxy::plugin::AbstractThreadedObservablePlugin("PcscPlugin")
+PcscPlugin::PcscPlugin() : org::eclipse::keyple::core::seproxy::plugin::AbstractThreadedObservablePlugin("PcscPlugin")
 {
     logger->debug("constructor\n");
 }

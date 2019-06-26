@@ -61,7 +61,7 @@ public:
         * (ISO/IEC 7816-4.2)
         */
     public:
-        class FileOccurrence final {
+        class EXPORT FileOccurrence final {
 
         public:
             static FileOccurrence FIRST;
@@ -122,7 +122,7 @@ public:
                     * (ISO/IEC 7816-4.2)
         */
     public:
-        class FileControlInformation final {
+        class EXPORT FileControlInformation final {
         public:
             static FileControlInformation FCI;
             static FileControlInformation FCP;
@@ -176,7 +176,7 @@ public:
         };
 
     public:
-        class IsoAid : public std::enable_shared_from_this<IsoAid> {
+        class EXPORT IsoAid : public std::enable_shared_from_this<IsoAid> {
         public:
             static constexpr int AID_MIN_LENGTH = 5;
             static constexpr int AID_MAX_LENGTH = 16;

@@ -10,10 +10,10 @@
 #include "PcscPlugin.h"
 
 using ObservableReaderNotificationEngine = org::eclipse::keyple::example::generic::common::ObservableReaderNotificationEngine;
-using PcscPlugin = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
-using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
-using ReaderPlugin = org::eclipse::keyple::seproxy::ReaderPlugin;
-using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
+using PcscPlugin                         = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
+using SeProxyService                     = org::eclipse::keyple::core::seproxy::SeProxyService;
+using ReaderPlugin                       = org::eclipse::keyple::core::seproxy::ReaderPlugin;
+using ObservablePlugin                   = org::eclipse::keyple::core::seproxy::event::ObservablePlugin;
 
 int main(int argc, char **argv)
 {

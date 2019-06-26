@@ -69,14 +69,14 @@ TransmissionMode SeCommonProtocols::getTransmissionMode()
     return transmissionMode;
 }
 
-bool SeCommonProtocols::operator == (const SeCommonProtocols &other)
+bool SeCommonProtocols::operator==(const SeCommonProtocols &other) const
 {
-return this->ordinalValue == other.ordinalValue;
+    return this->ordinalValue == other.ordinalValue;
 }
 
-bool SeCommonProtocols::operator != (const SeCommonProtocols &other)
+bool SeCommonProtocols::operator!=(const SeCommonProtocols &other)
 {
-return this->ordinalValue != other.ordinalValue;
+    return this->ordinalValue != other.ordinalValue;
 }
 
 std::vector<SeCommonProtocols> SeCommonProtocols::values()

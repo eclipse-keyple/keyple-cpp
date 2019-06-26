@@ -7,7 +7,7 @@
  */
 
 /* Core */
-#include "ByteArrayUtils.h"
+#include "ByteArrayUtil.h"
 
 /* Common */
 #include "exceptionhelper.h"
@@ -30,7 +30,7 @@ namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+using ByteArrayUtil  = org::eclipse::keyple::core::util::ByteArrayUtil;
 using Card           = org::eclipse::keyple::smartcardio::Card;
 using CardException  = org::eclipse::keyple::smartcardio::CardException;
 
@@ -62,10 +62,10 @@ CardChannel::transmit(std::shared_ptr<CommandAPDU> command)
     logger->debug("transmit - getting command bytes\n");
     std::vector<char> commandBytes = command->getBytes();
     logger->debug("transmit - command: %s\n",
-                  ByteArrayUtils::toHex(commandBytes));
+                  ByteArrayUtil::toHex(commandBytes));
     std::vector<char> responseBytes = doTransmit(commandBytes);
     logger->debug("transmit - response: %s\n",
-                  ByteArrayUtils::toHex(responseBytes));
+                  ByteArrayUtil::toHex(responseBytes));
     return std::make_shared<ResponseAPDU>(responseBytes);
 }
 
@@ -107,7 +107,7 @@ void CardChannel::close()
         std::vector<char> res(r_apdu, r_apdu + dwRecv);
         if (isOK(res) == false) {
             throw CardException("close() failed: " +
-                                ByteArrayUtils::toHex(res));
+                                ByteArrayUtil::toHex(res));
         }
     } catch (PCSCException e) {
         card->handleError(e);

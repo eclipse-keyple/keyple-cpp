@@ -15,6 +15,7 @@
 #include "CardTerminal.h"
 
 /* Common */
+#include "Export.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
 
@@ -26,7 +27,7 @@ namespace smartcardio {
 using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 using Logger        = org::eclipse::keyple::common::Logger;
 
-class CardTerminals {
+class EXPORT CardTerminals {
 protected:
     /**
 	 *

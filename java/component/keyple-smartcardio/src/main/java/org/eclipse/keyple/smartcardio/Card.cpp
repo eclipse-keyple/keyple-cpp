@@ -17,7 +17,7 @@
 #include "exceptionhelper.h"
 
 /* Core */
-#include "ByteArrayUtils.h"
+#include "ByteArrayUtil.h"
 
 namespace org {
 namespace eclipse {
@@ -25,7 +25,7 @@ namespace keyple {
 namespace smartcardio {
 
 using ATR            = org::eclipse::keyple::smartcardio::ATR;
-using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+using ByteArrayUtil  = org::eclipse::keyple::core::util::ByteArrayUtil;
 using CardTerminal   = org::eclipse::keyple::smartcardio::CardTerminal;
 using Logger         = org::eclipse::keyple::common::Logger;
 using PCSCException  = org::eclipse::keyple::smartcardio::PCSCException;
@@ -89,7 +89,7 @@ Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
     } else {
         std::vector<char> __atr(_atr, _atr + atrLen);
         logger->debug("constructor - atr: %s\n",
-                      ByteArrayUtils::toHex(__atr));
+                      ByteArrayUtil::toHex(__atr));
         atr = new ATR(__atr);
     }
 }
@@ -145,7 +145,7 @@ CardChannel* Card::openLogicalChannel()
         std::vector<char> response(r_apdu, r_apdu + dwRecv);
         if ((response.size() != 3) || (getSW(response) != 0x9000))
             throw CardException("openLogicalChannel() failed, card response: "
-                                + ByteArrayUtils::toHex(response));
+                                + ByteArrayUtil::toHex(response));
 
         return new CardChannel(this, response[0]);
     } catch (PCSCException e) {

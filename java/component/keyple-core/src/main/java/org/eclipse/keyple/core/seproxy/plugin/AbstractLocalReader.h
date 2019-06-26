@@ -238,7 +238,7 @@ protected:
         *         matching status flag).
                              * @throws KeypleIOReaderException if a reader error occurs
         */
-    virtual std::shared_ptr<SelectionStatus> openLogicalChannel(std::shared_ptr<SeSelector> seSelector) = 0;
+    virtual std::shared_ptr<SelectionStatus> openLogicalChannel(std::shared_ptr<SeSelector> seSelector);
 
 
 /**
