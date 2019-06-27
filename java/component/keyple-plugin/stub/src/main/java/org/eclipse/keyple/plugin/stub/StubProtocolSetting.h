@@ -1,122 +1,85 @@
 /********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
 
 #pragma once
 
+#include <set>
 #include <string>
-#include <vector>
-
-/* Core */
-#include "ContactlessProtocols_Import.h"
-#include "SeProtocolSettingList.h"
+#include <unordered_map>
+#include <memory>
 
 /* Common */
 #include "Export.h"
 
+/* Core */
+#include "SeCommonProtocols_Import.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace protocol { class SeProtocol; } } } } } }
+
+
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace plugin {
-                namespace stub {
+namespace eclipse {
+namespace keyple {
+namespace plugin {
+namespace stub {
 
-                    using SeProtocolSettingList = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
-                    using ContactlessProtocols  = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
+using SeCommonProtocols = org::eclipse::keyple::core::seproxy::protocol::SeCommonProtocols;
+using SeProtocol = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
 
-                    /**
-                     * These objects are used by the application to build the SeProtocolsMap
-                     */
-                    class EXPORT StubProtocolSetting final : public SeProtocolSettingList {
-
-public:
-                        static StubProtocolSetting SETTING_PROTOCOL_ISO14443_4;
-                        static StubProtocolSetting SETTING_PROTOCOL_B_PRIME;
-                        static StubProtocolSetting SETTING_PROTOCOL_MIFARE_UL;
-                        static StubProtocolSetting SETTING_PROTOCOL_MIFARE_CLASSIC;
-                        static StubProtocolSetting SETTING_PROTOCOL_MIFARE_DESFIRE;
-                        static StubProtocolSetting SETTING_PROTOCOL_MEMORY_ST25;
-
-private:
-                        static std::vector<StubProtocolSetting> valueList;
-
-                        class StaticConstructor {
-                        public:
-                            StaticConstructor();
-                        };
-
-                        static StaticConstructor staticConstructor;
+/**
+    * This class contains all the parameters to identify the communication protocols supported by STUB
+    * readers.
+    * <p>
+    * The application can choose to add all parameters or only a subset.
+    */
+class EXPORT StubProtocolSetting : public std::enable_shared_from_this<StubProtocolSetting> {
 
 public:
-                        enum class InnerEnum {
-                            SETTING_PROTOCOL_ISO14443_4,
-                            SETTING_PROTOCOL_B_PRIME,
-                            SETTING_PROTOCOL_MIFARE_UL,
-                            SETTING_PROTOCOL_MIFARE_CLASSIC,
-                            SETTING_PROTOCOL_MIFARE_DESFIRE,
-                            SETTING_PROTOCOL_MEMORY_ST25
-                        };
+    static std::unordered_map<SeCommonProtocols, std::string> STUB_PROTOCOL_SETTING;
 
-                        const InnerEnum innerEnumValue;
+    /**
+        * Associates a protocol and a string defining how to identify it (here a regex to be applied on
+        * the ATR)
+        */
 private:
-                        const std::string nameValue;
-                        const int ordinalValue;
-                        static int nextOrdinal;
+    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    public:
+        StaticConstructor();
+    };
+
+private:
+    static StubProtocolSetting::StaticConstructor staticConstructor;
 
                         
-                      public:
-                        /**
-                         * Regular expressions to match ATRs produced by Stub readers
-                         * <p>
-                         * To be compared with the StubSE protocol
-                         */
-                        class EXPORT ProtocolSetting
-                        {
-                          public:
-                            static const std::string REGEX_PROTOCOL_ISO14443_4;
-                            static const std::string REGEX_PROTOCOL_B_PRIME;
-                            static const std::string REGEX_PROTOCOL_MIFARE_UL;
-                            static const std::string REGEX_PROTOCOL_MIFARE_CLASSIC;
-                            static const std::string REGEX_PROTOCOL_MIFARE_DESFIRE;
-                            static const std::string REGEX_PROTOCOL_MEMORY_ST25;
-                        };
-
-                        /* the protocol flag */
-                    public:
-                        ContactlessProtocols flag;
-
-                        /* the protocol setting value */
-                        std::string value;
-
-                        StubProtocolSetting(const std::string &name, InnerEnum innerEnum, ContactlessProtocols& flag, const std::string &value);
-
-                        std::shared_ptr<org::eclipse::keyple::seproxy::protocol::SeProtocol> getFlag() override;
-
-                        std::string getValue() override;
-
+    /**
+        * Return a subset of the settings map
+        *
+        * @param specificProtocols
+        * @return a settings map
+        */
 public:
-                        bool operator == (const StubProtocolSetting &other);
+    static std::unordered_map<SeCommonProtocols, std::string> getSpecificSettings(std::set<SeCommonProtocols> specificProtocols);
 
-                        bool operator != (const StubProtocolSetting &other);
+    /**
+        * Return the whole settings map
+        *
+        * @return a settings map
+        */
+    static std::unordered_map<SeCommonProtocols, std::string> getAllSettings();
+};
 
-                        static std::vector<StubProtocolSetting> values();
-
-                        int ordinal();
-
-                        std::string toString();
-
-                        static StubProtocolSetting valueOf(const std::string &name);
-                    };
-
-                }
-            }
-        }
-    }
+}
+}
+}
+}
 }

@@ -25,7 +25,7 @@ SET(CMAKE_CXX_STANDARD 11)
 SET(LIBRARY_NAME keyplepluginstub)
 
 IF(WIN32)
-	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
+	ADD_COMPILE_OPTIONS(/wd4275 /wd4251 /wd4290 /wd4250)
 ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
@@ -33,14 +33,14 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
 
 	# Core
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/util
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/transaction
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/core/util
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/message
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/protocol
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/java/org/eclipse/keyple/core/transaction
 
 	# Helpers
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main/java/org/eclipse/keyple/common

@@ -300,7 +300,7 @@ public:
     /**
         * Close the logical channel.
         */
-                        private:
+protected:
     void closeLogicalChannel();
 
     /** ==== Protocol management =========================================== */
