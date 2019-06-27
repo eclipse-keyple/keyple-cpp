@@ -48,7 +48,7 @@ Card* CardTerminal::connect(std::string protocol)
     }
     try {
         return new Card(this, protocol);
-    } catch (PCSCException e) {
+    } catch (PCSCException& e) {
         if (e.code == SCARD_W_REMOVED_CARD ||
             e.code == SCARD_E_NO_SMARTCARD) {
             throw CardNotPresentException("No card present");
@@ -100,7 +100,7 @@ bool CardTerminal::isCardPresent()
         SCardDisconnect(hCard, SCARD_LEAVE_CARD);
 
         return (state & SCARD_PRESENT || state & SCARD_POWERED) != 0;
-    } catch (PCSCException e) {
+    } catch (PCSCException& e) {
         throw CardException("isCardPresent() failed"); //, e);
     }
 }
@@ -179,7 +179,7 @@ bool CardTerminal::waitForCard(bool wantPresent, long timeout)
 
 	    Thread::sleep(50);
         }
-    } catch (PCSCException e) {
+    } catch (PCSCException& e) {
         if (e.code == SCARD_E_TIMEOUT) {
             return false;
         } else {

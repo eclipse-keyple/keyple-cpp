@@ -109,7 +109,7 @@ void CardChannel::close()
             throw CardException("close() failed: " +
                                 ByteArrayUtil::toHex(res));
         }
-    } catch (PCSCException e) {
+    } catch (PCSCException& e) {
         card->handleError(e);
         throw new CardException("Could not close channel"); //, e);
     }
@@ -281,7 +281,7 @@ std::vector<char> CardChannel::doTransmit(std::vector<char> command)
             break;
         }
         return result;
-    } catch (PCSCException e) {
+    } catch (PCSCException& e) {
         card->handleError(e);
         throw CardException(""); //e);
     }

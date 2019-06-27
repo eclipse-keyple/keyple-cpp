@@ -148,7 +148,7 @@ CardChannel* Card::openLogicalChannel()
                                 + ByteArrayUtil::toHex(response));
 
         return new CardChannel(this, response[0]);
-    } catch (PCSCException e) {
+    } catch (PCSCException& e) {
         handleError(e);
         throw CardException("openLogicalChannel() failed"); //, e);
     }
@@ -165,7 +165,7 @@ void Card::beginExclusive()
 
     try {
         SCardBeginTransaction(this->cardhdl);
-    } catch (PCSCException e) {
+    } catch (PCSCException& e) {
         handleError(e);
         throw CardException("beginExclusive() failed"); //, e);
     }
@@ -184,7 +184,7 @@ void Card::endExclusive()
 
     try {
         SCardEndTransaction(this->cardhdl, SCARD_LEAVE_CARD);
-    } catch (PCSCException e) {
+    } catch (PCSCException& e) {
         handleError(e);
         throw CardException("endExclusive() failed"); //, e);
     }
@@ -203,7 +203,7 @@ void Card::disconnect(bool reset)
     checkExclusive();
     try {
         SCardDisconnect(this->cardhdl, (reset ? SCARD_LEAVE_CARD:SCARD_RESET_CARD));
-    } catch (PCSCException e) {
+    } catch (PCSCException& e) {
         throw CardException("disconnect() failed"); //, e);
     }
 
@@ -226,7 +226,7 @@ bool Card::isValid()
                     &cch, &state, &protocol,
                     attr, &b);
         return true;
-    } catch (PCSCException e) {
+    } catch (PCSCException& e) {
         state = State::REMOVED;
         return false;
     }

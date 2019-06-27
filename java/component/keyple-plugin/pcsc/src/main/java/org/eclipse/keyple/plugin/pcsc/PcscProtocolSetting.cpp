@@ -28,11 +28,11 @@ PcscProtocolSetting::StaticConstructor::StaticConstructor()
 
 PcscProtocolSetting::StaticConstructor PcscProtocolSetting::staticConstructor;
 
-std::unordered_map<SeCommonProtocols, std::string>& 
+std::unordered_map<SeCommonProtocols, std::string>
 PcscProtocolSetting::getSpecificSettings(std::set<SeCommonProtocols>& specificProtocols)
 {
     std::unordered_map<SeCommonProtocols, std::string> map;
-    
+
     for (auto seCommonProtocols : specificProtocols) {
         map.emplace(std::make_pair(seCommonProtocols, PCSC_PROTOCOL_SETTING[seCommonProtocols]));
     }
@@ -40,7 +40,7 @@ PcscProtocolSetting::getSpecificSettings(std::set<SeCommonProtocols>& specificPr
     return map;
 }
 
-std::unordered_map<SeCommonProtocols, std::string>& PcscProtocolSetting::getAllSettings()
+std::unordered_map<SeCommonProtocols, std::string> PcscProtocolSetting::getAllSettings()
 {
     return PCSC_PROTOCOL_SETTING;
 }
