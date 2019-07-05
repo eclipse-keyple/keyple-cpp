@@ -31,7 +31,7 @@ namespace security {
 
 
 using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse              = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 /**
  * Close Secure Session (008E) response parser. See specs: Calypso / page 104 / 9.5.2 - Close Secure

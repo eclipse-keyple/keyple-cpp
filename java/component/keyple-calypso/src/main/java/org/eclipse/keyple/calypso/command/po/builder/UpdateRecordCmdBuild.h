@@ -18,14 +18,12 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
+#include "CalypsoPoCommands.h"
 #include "PoModificationCommand.h"
 #include "PoSendableInSession.h"
-#include "CalypsoPoCommands.h"
 #include "PoClass.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class UpdateRecordRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
+#include "SelectFileRespPars.h"
+#include "UpdateRecordRespPars.h"
 
 namespace org {
 namespace eclipse {
@@ -35,18 +33,21 @@ namespace command {
 namespace po {
 namespace builder {
 
+using namespace org::eclipse::keyple::calypso::command::po;
 
 using PoClass              = org::eclipse::keyple::calypso::command::PoClass;
 using UpdateRecordRespPars = org::eclipse::keyple::calypso::command::po::parser::UpdateRecordRespPars;
 using ApduResponse         = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using SelectFileResPars    = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class UpdateRecordCmdBuild. This class provides the dedicated constructor to build the Update
  * Record APDU command.
  *
  */
-class UpdateRecordCmdBuild final : public AbstractPoCommandBuilder<UpdateRecordRespPars>, public PoSendableInSession, public PoModificationCommand {
+class UpdateRecordCmdBuild final
+: public AbstractPoCommandBuilder<UpdateRecordRespPars>, public PoSendableInSession,
+  public PoModificationCommand {
 
     /** The command. */
 private:

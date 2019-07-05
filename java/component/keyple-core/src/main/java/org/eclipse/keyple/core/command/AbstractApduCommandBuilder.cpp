@@ -9,6 +9,7 @@ namespace core {
 namespace command {
 
 using ApduRequest = org::eclipse::keyple::core::seproxy::message::ApduRequest;
+using CommandsTable = org::eclipse::keyple::core::command::CommandsTable;
 
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
                                std::shared_ptr<CommandsTable> commandReference,

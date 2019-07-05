@@ -23,6 +23,7 @@
 
 /* Calypso */
 #include "ReadDataStructure.h"
+#include "AbstractPoResponseParser.h"
 
 /* Common */
 #include "exceptionhelper.h"
@@ -37,8 +38,8 @@ namespace command {
 namespace po {
 namespace parser {
 
-using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-
+using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
+using AbstractPoResponseParser   = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
 /**
  * Read Records (00B2) response parser. See specs: Calypso / page 89 / 9.4.7 Read Records The
  * {@link ReadRecordsRespPars} class holds the data resulting from a Read Records command. It

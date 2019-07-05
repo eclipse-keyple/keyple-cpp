@@ -18,12 +18,8 @@
 
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommands.h"
+#include "ChangeKeyRespPars.h"
 #include "PoClass.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { namespace security { class ChangeKeyRespPars; } } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
-
 
 namespace org {
 namespace eclipse {
@@ -34,15 +30,16 @@ namespace po {
 namespace builder {
 namespace security {
 
-using PoClass = org::eclipse::keyple::calypso::command::PoClass;
-using AbstractPoCommandBuilder = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
+using namespace org::eclipse::keyple::calypso::command::po;
+
+using PoClass           = org::eclipse::keyple::calypso::command::PoClass;
 using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
 using ChangeKeyRespPars = org::eclipse::keyple::calypso::command::po::parser::security::ChangeKeyRespPars;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using ApduResponse      = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
-class ChangeKeyCmdBuild : public AbstractPoCommandBuilder<std::shared_ptr<ChangeKeyRespPars>> {
+class ChangeKeyCmdBuild : public AbstractPoCommandBuilder<ChangeKeyRespPars> {
 private:
-    static constexpr CalypsoPoCommands command = CalypsoPoCommands::CHANGE_KEY;
+    const CalypsoPoCommands command = CalypsoPoCommands::CHANGE_KEY;
 
     /**
         * Change Key Calypso command
@@ -58,7 +55,7 @@ public:
 
 protected:
     std::shared_ptr<ChangeKeyCmdBuild> shared_from_this() {
-        return std::static_pointer_cast<ChangeKeyCmdBuild>(org.eclipse.keyple.calypso.command.po.AbstractPoCommandBuilder<org.eclipse.keyple.calypso.command.po.parser.security.ChangeKeyRespPars>::shared_from_this());
+        return std::static_pointer_cast<ChangeKeyCmdBuild>(AbstractPoCommandBuilder<ChangeKeyRespPars>::shared_from_this());
     }
 };
 

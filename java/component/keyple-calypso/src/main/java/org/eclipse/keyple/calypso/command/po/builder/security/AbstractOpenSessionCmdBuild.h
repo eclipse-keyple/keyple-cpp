@@ -21,11 +21,6 @@
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommands.h"
 #include "PoRevision.h"
-#include "OpenSession10CmdBuild.h"
-#include "OpenSession24CmdBuild.h"
-#include "OpenSession31CmdBuild.h"
-#include "OpenSession32CmdBuild.h"
-
 
 namespace org {
 namespace eclipse {
@@ -36,9 +31,8 @@ namespace po {
 namespace builder {
 namespace security{
 
+using namespace org::eclipse::keyple::calypso::command::po;
 
-
-using AbstractPoCommandBuilder   = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
 using PoRevision                 = org::eclipse::keyple::calypso::command::po::PoRevision;
 using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
 
@@ -58,7 +52,11 @@ class AbstractOpenSessionCmdBuild : public AbstractPoCommandBuilder<T> {
      * @throws IllegalArgumentException - if the request is inconsistent
      */
 public:
-    AbstractOpenSessionCmdBuild(PoRevision revision) : AbstractPoCommandBuilder<T>(CalypsoPoCommands::getOpenSessionForRev(revision), nullptr) {
+    AbstractOpenSessionCmdBuild(PoRevision revision)
+    : AbstractPoCommandBuilder<T>(std::make_shared<CalypsoPoCommands>(
+                                                CalypsoPoCommands::getOpenSessionForRev(revision)),
+                                  nullptr)
+    {
     }
 
     static std::shared_ptr<AbstractOpenSessionCmdBuild> create(PoRevision revision, char debitKeyIndex, std::vector<char> &sessionTerminalChallenge, char sfi, char recordNb, const std::string &extraInfo) {

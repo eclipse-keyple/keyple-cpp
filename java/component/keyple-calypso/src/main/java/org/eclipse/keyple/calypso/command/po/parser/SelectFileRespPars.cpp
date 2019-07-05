@@ -1,4 +1,11 @@
+/* Core */
+#include "ByteArrayUtil.h"
+
+/* Calypso */
 #include "SelectFileRespPars.h"
+
+/* Common */
+#include "system.h"
 
 namespace org {
 namespace eclipse {
@@ -8,7 +15,8 @@ namespace command {
 namespace po {
 namespace parser {
 
-using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
+using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
+using ByteArrayUtil              = org::eclipse::keyple::core::util::ByteArrayUtil;
 
 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> SelectFileRespPars::STATUS_TABLE;
 
@@ -36,7 +44,7 @@ void SelectFileRespPars::parseResponse() {
 
     // Check File TLV Tag and length
     if (inFileParameters[iter++] != static_cast<char>(0x85) || inFileParameters[iter++] != static_cast<char>(0x17)) {
-        throw std::make_shared<IllegalStateException>("Unexpected FCI format: " + ByteArrayUtil::toHex(inFileParameters));
+        throw IllegalStateException("Unexpected FCI format: " + ByteArrayUtil::toHex(inFileParameters));
     }
 
     fileBinaryData = std::vector<char>(inFileParameters.size());

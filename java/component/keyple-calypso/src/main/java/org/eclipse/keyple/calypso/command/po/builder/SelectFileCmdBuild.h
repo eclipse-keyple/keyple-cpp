@@ -1,17 +1,3 @@
-#pragma once
-
-#include "../AbstractPoCommandBuilder.h"
-#include "../PoSendableInSession.h"
-#include "../CalypsoPoCommands.h"
-#include "../../PoClass.h"
-#include <vector>
-#include "exceptionhelper.h"
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class SelectFileRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
-
 /********************************************************************************
 * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
 *
@@ -23,6 +9,20 @@ namespace org { namespace eclipse { namespace keyple { namespace core { namespac
 *
 * SPDX-License-Identifier: EPL-2.0
 ********************************************************************************/
+
+#pragma once
+
+#include <memory>
+#include <vector>
+
+#include "AbstractPoCommandBuilder.h"
+#include "CalypsoPoCommands.h"
+#include "PoClass.h"
+#include "PoSendableInSession.h"
+#include "SelectFileRespPars.h"
+
+#include "exceptionhelper.h"
+
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -31,8 +31,9 @@ namespace command {
 namespace po {
 namespace builder {
 
+using namespace org::eclipse::keyple::calypso::command::po;
+
 using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
-using AbstractPoCommandBuilder = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
 using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
 using PoSendableInSession      = org::eclipse::keyple::calypso::command::po::PoSendableInSession;
 using SelectFileRespPars       = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
@@ -42,7 +43,8 @@ using ApduResponse             = org::eclipse::keyple::core::seproxy::message::A
  * This class provides the dedicated constructor to build the Select File APDU commands.
  *
  */
-class SelectFileCmdBuild final : public AbstractPoCommandBuilder<SelectFileRespPars>, public PoSendableInSessio {
+class SelectFileCmdBuild final
+: public AbstractPoCommandBuilder<SelectFileRespPars>, public PoSendableInSession {
 
 private:
     const CalypsoPoCommands command = CalypsoPoCommands::SELECT_FILE;

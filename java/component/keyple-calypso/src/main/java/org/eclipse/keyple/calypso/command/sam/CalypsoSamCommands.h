@@ -1,14 +1,14 @@
 /********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
 
 #pragma once
 
@@ -20,134 +20,142 @@
 #include "CommandsTable.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace calypso {
-                namespace command {
-                    namespace sam {
+namespace eclipse {
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace sam {
 
-                        using CommandsTable = org::eclipse::keyple::command::CommandsTable;
+using CommandsTable = org::eclipse::keyple::core::command::CommandsTable;
 
-                        class CalypsoSamCommands final : public CommandsTable {
+class CalypsoSamCommands final : public CommandsTable {
 
-                            /** The sam select diversifier. */
-                        public:
-                            static CalypsoSamCommands SELECT_DIVERSIFIER;
+    /** The sam select diversifier. */
+public:
+    static CalypsoSamCommands SELECT_DIVERSIFIER;
 
-                            /** The sam get challenge. */
-                            static CalypsoSamCommands GET_CHALLENGE;
+    /** The sam get challenge. */
+    static CalypsoSamCommands GET_CHALLENGE;
 
-                            /** The sam digest init. */
-                            static CalypsoSamCommands DIGEST_INIT;
+    /** The sam digest init. */
+    static CalypsoSamCommands DIGEST_INIT;
 
-                            /** The sam digest update. */
-                            static CalypsoSamCommands DIGEST_UPDATE;
+    /** The sam digest update. */
+    static CalypsoSamCommands DIGEST_UPDATE;
 
-                            /** The sam digest update multiple. */
-                            static CalypsoSamCommands DIGEST_UPDATE_MULTIPLE;
+    /** The sam digest update multiple. */
+    static CalypsoSamCommands DIGEST_UPDATE_MULTIPLE;
 
-                            /** The sam digest close. */
-                            static CalypsoSamCommands DIGEST_CLOSE;
+    /** The sam digest close. */
+    static CalypsoSamCommands DIGEST_CLOSE;
 
-                            /** The sam digest authenticate. */
-                            static CalypsoSamCommands DIGEST_AUTHENTICATE;
+    /** The sam digest authenticate. */
+    static CalypsoSamCommands DIGEST_AUTHENTICATE;
 
-                        private:
-                            static std::vector<CalypsoSamCommands> valueList;
+    /** The sam digest authenticate. */
+    static CalypsoSamCommands GIVE_RANDOM;
 
-                            class StaticConstructor {
-                            public:
-                                StaticConstructor();
-                            };
+    /** The sam digest authenticate. */
+    static CalypsoSamCommands CARD_GENERATE_KEY;
 
-                            static StaticConstructor staticConstructor;
+private:
+    static std::vector<CalypsoSamCommands> valueList;
 
-                        public:
-                            enum class InnerEnum {
-                                SELECT_DIVERSIFIER,
-                                GET_CHALLENGE,
-                                DIGEST_INIT,
-                                DIGEST_UPDATE,
-                                DIGEST_UPDATE_MULTIPLE,
-                                DIGEST_CLOSE,
-                                DIGEST_AUTHENTICATE
-                            };
+    class StaticConstructor {
+    public:
+        StaticConstructor();
+    };
 
-                            const InnerEnum innerEnumValue;
-                        private:
-                            const std::string nameValue;
-                            const int ordinalValue;
-                            static int nextOrdinal;
+    static StaticConstructor staticConstructor;
 
-                            /** The name. */
-                        private:
-                            const std::string name;
+public:
+    enum class InnerEnum {
+        SELECT_DIVERSIFIER,
+        GET_CHALLENGE,
+        DIGEST_INIT,
+        DIGEST_UPDATE,
+        DIGEST_UPDATE_MULTIPLE,
+        DIGEST_CLOSE,
+        DIGEST_AUTHENTICATE,
+        GIVE_RANDOM,
+        CARD_GENERATE_KEY
+    };
 
-                            /** The instruction byte. */
-                            const char instructionbyte;
+    const InnerEnum innerEnumValue;
+private:
+    const std::string nameValue;
+    const int ordinalValue;
+    static int nextOrdinal;
 
-                            /** The command builder class. */
-                            const std::type_info& commandBuilderClass;
+    /** The name. */
+private:
+    const std::string name;
 
-                            /** The response parser class. */
-                            const std::type_info& responseParserClass;
+    /** The instruction byte. */
+    const char instructionbyte;
 
-                            /**
-                             * The generic constructor of CalypsoCommands.
-                             *
-                             * @param name the name
-                             * @param instructionByte the instruction byte
-                             * @param commandBuilderClass the command builder class
-                             * @param responseParserClass the response parser class
-                             */
-                        public:
-                            CalypsoSamCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte, const std::type_info& commandBuilderClass, const std::type_info& responseParserClass);
+    /** The command builder class. */
+    const std::type_info& commandBuilderClass;
 
-                            /**
-                             * Gets the name.
-                             *
-                             * @return the command name
-                             */
-                            virtual std::string getName();
+    /** The response parser class. */
+    const std::type_info& responseParserClass;
 
-                            /**
-                             * Gets the instruction byte.
-                             *
-                             * @return the value of INS byte
-                             */
-                            virtual char getInstructionByte();
+    /**
+        * The generic constructor of CalypsoCommands.
+        *
+        * @param name the name
+        * @param instructionByte the instruction byte
+        * @param commandBuilderClass the command builder class
+        * @param responseParserClass the response parser class
+        */
+public:
+    CalypsoSamCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte, const std::type_info& commandBuilderClass, const std::type_info& responseParserClass);
 
-                            /**
-                             * Gets the command builder class.
-                             *
-                             * @return the corresponding command builder class
-                             */
-                            virtual const std::type_info& getCommandBuilderClass();
+    /**
+        * Gets the name.
+        *
+        * @return the command name
+        */
+    virtual std::string getName();
 
-                            /**
-                             * Gets the response parser class.
-                             *
-                             * @return the corresponding response parser class
-                             */
-                            virtual const std::type_info& getResponseParserClass();
+    /**
+        * Gets the instruction byte.
+        *
+        * @return the value of INS byte
+        */
+    virtual char getInstructionByte();
 
-                        public:
-                            bool operator == (const CalypsoSamCommands &other);
+    /**
+        * Gets the command builder class.
+        *
+        * @return the corresponding command builder class
+        */
+    virtual const std::type_info& getCommandBuilderClass();
 
-                            bool operator != (const CalypsoSamCommands &other);
+    /**
+        * Gets the response parser class.
+        *
+        * @return the corresponding response parser class
+        */
+    virtual const std::type_info& getResponseParserClass();
 
-                            static std::vector<CalypsoSamCommands> values();
+public:
+    bool operator == (const CalypsoSamCommands &other);
 
-                            int ordinal();
+    bool operator != (const CalypsoSamCommands &other);
 
-                            std::string toString();
+    static std::vector<CalypsoSamCommands> values();
 
-                            static CalypsoSamCommands valueOf(const std::string &name);
-                        };
+    int ordinal();
 
-                    }
-                }
-            }
-        }
-    }
+    std::string toString();
+
+    static CalypsoSamCommands valueOf(const std::string &name);
+};
+
+}
+}
+}
+}
+}
 }

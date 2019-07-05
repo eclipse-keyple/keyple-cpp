@@ -14,10 +14,7 @@
 
 #include <memory>
 
-#include "AbstractApduResponseParser.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
+#include "AbstractApduResponseParser_Import.h"
 
 namespace org {
 namespace eclipse {
@@ -40,7 +37,7 @@ public:
 
 protected:
     std::shared_ptr<AbstractPoResponseParser> shared_from_this() {
-        return std::static_pointer_cast<AbstractPoResponseParser>(org.eclipse.keyple.core.command.AbstractApduResponseParser::shared_from_this());
+        return std::static_pointer_cast<AbstractPoResponseParser>(AbstractApduResponseParser::shared_from_this());
     }
 };
 

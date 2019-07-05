@@ -12,14 +12,15 @@ namespace command {
 namespace po {
 namespace parser {
 
-using AbstractPoResponseParser = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
+using AbstractPoResponseParser   = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
 using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using StatusProperties           = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser::StatusProperties;
 
-std::unordered_map<Integer, std::shared_ptr<StatusProperties>> AppendRecordRespPars::STATUS_TABLE;
+std::unordered_map<int, std::shared_ptr<StatusProperties>> AppendRecordRespPars::STATUS_TABLE;
 
 AppendRecordRespPars::StaticConstructor::StaticConstructor() {
-    std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
+    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
     m.emplace(0x6B00, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "P1 or P2 vaue not supported."));
     m.emplace(0x6700, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Lc value not supported."));
     m.emplace(0x6400, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Too many modifications in session."));
@@ -37,7 +38,7 @@ AppendRecordRespPars::AppendRecordRespPars(std::shared_ptr<ApduResponse> respons
 : AbstractPoResponseParser(response) {
 }
 
-std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> AppendRecordRespPars::getStatusTable() {
+std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> AppendRecordRespPars::getStatusTable() {
     return STATUS_TABLE;
 }
 

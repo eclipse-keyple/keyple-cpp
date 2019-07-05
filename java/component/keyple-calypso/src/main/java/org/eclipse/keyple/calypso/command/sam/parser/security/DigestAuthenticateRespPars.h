@@ -17,6 +17,9 @@
 /* Core */
 #include "AbstractApduResponseParser_Import.h"
 
+/* Calypso */
+#include "AbstractSamResponseParser.h"
+
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -26,7 +29,7 @@ namespace sam {
 namespace parser {
 namespace security {
 
-using AbstractSamResponseParser = org::eclipse::keyple::calypso::command::sam::AbstractApduResponseParser;
+using AbstractSamResponseParser  = org::eclipse::keyple::calypso::command::sam::AbstractSamResponseParser;
 using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 /**

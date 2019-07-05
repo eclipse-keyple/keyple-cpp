@@ -21,11 +21,6 @@
 #include "AbstractApduCommandBuilder.h"
 #include "Export.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace command { class CommandsTable; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduRequest; } } } } } }
-
-
 namespace org {
 namespace eclipse {
 namespace keyple {

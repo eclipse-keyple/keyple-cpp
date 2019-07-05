@@ -17,7 +17,9 @@
 #include <stdexcept>
 #include <memory>
 
-#include "SeSelectionRequest.h"
+/* Core */
+#include "AbstractMatchingSe.h"
+#include "AbstractSeSelectionRequest.h"
 #include "PoClass.h"
 #include "ChannelState.h"
 #include "ReadDataStructure.h"
@@ -30,9 +32,12 @@
 
 /* Core */
 #include "AbstractApduResponseParser_Import.h"
+#include "SeProtocol.h"
 
 /* Calypso */
+#include "PoSelector.h"
 #include "ReadRecordsRespPars.h"
+#include "SelectFileCmdBuild.h"
 #include "SelectFileRespPars.h"
 
 namespace org {
@@ -41,19 +46,17 @@ namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using PoClass                    = org::eclipse::keyple::calypso::command::PoClass;
-using ReadDataStructure          = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
-using ReadRecordsRespPars        = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
-using SelectFileRespPars         = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
-using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-using ChannelState               = org::eclipse::keyple::seproxy::ChannelState;
-using SeSelector                 = org::eclipse::keyple::seproxy::SeSelector;
-using ApduRequest                = org::eclipse::keyple::seproxy::message::ApduRequest;
-using SeResponse                 = org::eclipse::keyple::seproxy::message::SeResponse;
-using SeProtocol                 = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-using SeSelectionRequest         = org::eclipse::keyple::transaction::SeSelectionRequest;
-using Logger                     = org::eclipse::keyple::common::Logger;
-using LoggerFactory              = org::eclipse::keyple::common::LoggerFactory;
+using namespace org::eclipse::keyple::common;
+using namespace org::eclipse::keyple::core;
+using namespace org::eclipse::keyple::core::command;
+using namespace org::eclipse::keyple::core::selection;
+using namespace org::eclipse::keyple::core::seproxy;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace org::eclipse::keyple::calypso::command;
+using namespace org::eclipse::keyple::calypso::command::po;
+using namespace org::eclipse::keyple::calypso::command::po::builder;
+using namespace org::eclipse::keyple::calypso::command::po::parser;
+using namespace org::eclipse::keyple::calypso::transaction;
 
 /**
  * Specialized selection request to manage the specific characteristics of Calypso POs
@@ -64,10 +67,10 @@ class PoSelectionRequest final : public AbstractSeSelectionRequest {
 
     int commandIndex = 0;
     std::vector<std::type_info> parsingClassList = std::vector<std::type_info>();
-    std::unordered_map<Integer, Byte> readRecordFirstRecordNumberMap = std::unordered_map<Integer, Byte>();
-    std::unordered_map<Integer, ReadDataStructure> readRecordDataStructureMap = std::unordered_map<Integer, ReadDataStructure>();
+    std::unordered_map<int, char> readRecordFirstRecordNumberMap = std::unordered_map<int, char>();
+    std::unordered_map<int, ReadDataStructure> readRecordDataStructureMap = std::unordered_map<int, ReadDataStructure>();
 
-    const PoClass poClass;
+    PoClass poClass;
 
     /**
      * Constructor.
@@ -188,8 +191,9 @@ class PoSelectionRequest final : public AbstractSeSelectionRequest {
      * @return a {@link CalypsoPo}
      */
 protected:
-    std::shared_ptr<CalypsoPo> parse(std::shared_ptr<SeResponse> seResponse) override;
-
+    //std::shared_ptr<CalypsoPo> parse(std::shared_ptr<SeResponse> seResponse) override;
+    std::shared_ptr<AbstractMatchingSe> parse(std::shared_ptr<SeResponse> seResponse) override;
+    
   protected:
     std::shared_ptr<PoSelectionRequest> shared_from_this()
 {

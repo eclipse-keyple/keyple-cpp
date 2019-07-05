@@ -14,7 +14,7 @@
 
 #include <type_traits>
 
-#include "AbstractApduResponseParser.h"
+#include "AbstractApduResponseParser_Import.h"
 #include "AbstractIso7816CommandBuilder.h"
 
 namespace org {
@@ -23,20 +23,23 @@ namespace keyple {
 namespace calypso {
 namespace command {
 
-using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
-using AbstractIso7816CommandBuilder = org::eclipse::keyple::command::AbstractIso7816CommandBuilder;
+using AbstractApduResponseParser    = org::eclipse::keyple::core::command::AbstractApduResponseParser;
+using AbstractIso7816CommandBuilder = org::eclipse::keyple::core::command::AbstractIso7816CommandBuilder;
 
 template<typename B, typename P>
 class CalypsoBuilderParser {
-    static_assert(std::is_base_of<org.eclipse.keyple.core.command.AbstractApduResponseParser, P>::value, "P must inherit from org.eclipse.keyple.core.command.AbstractApduResponseParser");
-    static_assert(std::is_base_of<org.eclipse.keyple.core.command.AbstractIso7816CommandBuilder, B>::value, "B must inherit from org.eclipse.keyple.core.command.AbstractIso7816CommandBuilder");
-
+    /*
+    static_assert(std::is_base_of>AbstractApduResponseParser, P>::value,
+                  "P must inherit from org.eclipse.keyple.core.command.AbstractApduResponseParser");
+    static_assert(std::is_base_of<AbstractIso7816CommandBuilder, B>::value,
+                  "B must inherit from org.eclipse.keyple.core.command.AbstractIso7816CommandBuilder");
+     */
 public:
-    virtual B getCommandBuilder() = 0;
+    virtual std::shared_ptr<B> getCommandBuilder() = 0;
 
-    virtual P getResponseParser() = 0;
+    virtual std::shared_ptr<P> getResponseParser() = 0;
 
-    virtual void setResponseParser(P parser) = 0;
+    virtual void setResponseParser(std::shared_ptr<P> parser) = 0;
 };
 
 }

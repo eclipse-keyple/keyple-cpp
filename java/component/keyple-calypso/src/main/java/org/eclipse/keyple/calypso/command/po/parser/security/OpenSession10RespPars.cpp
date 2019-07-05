@@ -13,7 +13,7 @@ namespace po {
 namespace parser {
 namespace security {
 
-using PoRevision = org::eclipse::keyple::calypso::command::po::PoRevision;
+using PoRevision   = org::eclipse::keyple::calypso::command::po::PoRevision;
 using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 OpenSession10RespPars::OpenSession10RespPars(std::shared_ptr<ApduResponse> response) : AbstractOpenSessionRespPars(response, PoRevision::REV1_0) {
@@ -57,13 +57,18 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession10RespPar
             previousSessionRatified = false;
             break;
         default:
-            throw std::make_shared<IllegalStateException>("Bad response length to Open Secure Session: " + std::to_string(apduResponseData.size()));
+            throw IllegalStateException("Bad response length to Open Secure Session: " +
+                                        std::to_string(apduResponseData.size()));
     }
 
     /* KVC doesn't exist and is set to null for this type of PO */
     std::vector<char> emptyVector;
-    return std::make_shared<SecureSession>(Arrays::copyOfRange(apduResponseData, 1, 4), Arrays::copyOfRange(apduResponseData, 4, 5), previousSessionRatified, false, -1, emptyVector, apduResponseData);
+    return std::make_shared<SecureSession>(Arrays::copyOfRange(apduResponseData, 1, 4),
+                                           Arrays::copyOfRange(apduResponseData, 4, 5),
+                                           previousSessionRatified, false, nullptr, emptyVector,
+                                           apduResponseData);
 }
+
 }
 }
 }

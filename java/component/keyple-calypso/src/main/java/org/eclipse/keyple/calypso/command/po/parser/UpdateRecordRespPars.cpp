@@ -8,7 +8,7 @@ namespace command {
 namespace po {
 namespace parser {
 
-using AbstractApduResponseParser = org::eclipse::keyple::command::AbstractApduResponseParser;
+using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
 
 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> UpdateRecordRespPars::STATUS_TABLE;
 

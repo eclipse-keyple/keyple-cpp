@@ -1,19 +1,24 @@
-#include "PoResource.h"
 #include "CalypsoPo.h"
-#include "../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/SeReader.h"
+#include "PoResource.h"
+#include "SeReader.h"
+#include "SeResource.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace calypso {
-                namespace transaction {
-                    using SeResource = org::eclipse::keyple::core::selection::SeResource;
-                    using SeReader = org::eclipse::keyple::core::seproxy::SeReader;
+namespace eclipse {
+namespace keyple {
+namespace calypso {
+namespace transaction {
 
-                    PoResource::PoResource(std::shared_ptr<SeReader> seReader, std::shared_ptr<CalypsoPo> calypsoPo) : org::eclipse::keyple::core::selection::SeResource<CalypsoPo>(seReader, calypsoPo) {
-                    }
-                }
-            }
-        }
-    }
+using namespace org::eclipse::keyple::core::selection;
+using namespace org::eclipse::keyple::core::seproxy;
+
+PoResource::PoResource(std::shared_ptr<SeReader> seReader, std::shared_ptr<CalypsoPo> calypsoPo)
+: SeResource<CalypsoPo>(seReader, calypsoPo)
+{
+}
+
+}
+}
+}
+}
 }

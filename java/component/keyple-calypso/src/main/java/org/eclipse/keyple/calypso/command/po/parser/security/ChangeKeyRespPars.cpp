@@ -1,5 +1,5 @@
 #include "ChangeKeyRespPars.h"
-#include "AbstractApduResponseParser.h"
+#include "AbstractApduResponseParser_Import.h"
 #include "ApduResponse.h"
 
 namespace org {
@@ -15,11 +15,11 @@ using AbstractPoResponseParser   = org::eclipse::keyple::calypso::command::po::A
 using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
 using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
-std::unordered_map<Integer, std::shared_ptr<StatusProperties>> ChangeKeyRespPars::STATUS_TABLE;
+std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> ChangeKeyRespPars::STATUS_TABLE;
 
 ChangeKeyRespPars::StaticConstructor::StaticConstructor()
 {
-    std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
+    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
     m.emplace(0x6700, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, std::string("Lc value not supported (not 04h, 10h, 18h, 20h or 18h not ") + "supported)."));
     m.emplace(0x6900, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Transaction Counter is 0."));
     m.emplace(0x6982, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Security conditions not fulfilled (Get Challenge not done: challenge unavailable)."));
@@ -40,7 +40,7 @@ ChangeKeyRespPars::ChangeKeyRespPars(std::shared_ptr<ApduResponse> response)
 
 }
 
-std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> ChangeKeyRespPars::getStatusTable()
+std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> ChangeKeyRespPars::getStatusTable()
 {
     return STATUS_TABLE;
 }

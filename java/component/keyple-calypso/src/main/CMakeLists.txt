@@ -30,6 +30,7 @@ ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/calypso/command/po/builder
@@ -46,16 +47,17 @@ INCLUDE_DIRECTORIES(
 
 	/* Core */
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/util
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/event
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/command
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/selection
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/util
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/util/bertlv
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/message
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/message
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/seproxy/protocol
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/command
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/java/org/eclipse/keyple/core/selection
 	
 
 	/* Helpers */

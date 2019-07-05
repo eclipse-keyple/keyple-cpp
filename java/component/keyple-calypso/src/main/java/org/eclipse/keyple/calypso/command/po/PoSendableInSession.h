@@ -14,11 +14,9 @@
 
 #include <memory>
 
+#include "AbstractPoCommandBuilder.h"
+#include "AbstractPoResponseParser.h"
 #include "SendableInSession.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { class PoCommandBuilder; } } } } } }
-
 
 namespace org {
 namespace eclipse {
@@ -27,7 +25,11 @@ namespace calypso {
 namespace command {
 namespace po {
 
-class PoSendableInSession : public org::eclipse::keyple::calypso::command::SendableInSession<AbstractPoCommandBuilder> {
+using namespace org::eclipse::keyple::calypso::command;
+using namespace org::eclipse::keyple::calypso::command::po;
+
+class PoSendableInSession
+: public SendableInSession<AbstractPoCommandBuilder<AbstractPoResponseParser>> {
 };
 
 }

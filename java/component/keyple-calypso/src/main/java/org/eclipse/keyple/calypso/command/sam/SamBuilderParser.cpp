@@ -3,30 +3,33 @@
 #include "AbstractSamResponseParser.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace calypso {
-                namespace command {
-                    namespace sam {
-                        using CalypsoBuilderParser = org::eclipse::keyple::calypso::command::CalypsoBuilderParser;
+namespace eclipse {
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace sam {
 
-                        SamBuilderParser::SamBuilderParser(std::shared_ptr<AbstractSamCommandBuilder> samCommandBuilder) : samCommandBuilder(samCommandBuilder) {
-                        }
+using namespace org::eclipse::keyple::calypso::command;
 
-                        std::shared_ptr<AbstractSamCommandBuilder> SamBuilderParser::getCommandBuilder() {
-                            return samCommandBuilder;
-                        }
+SamBuilderParser::SamBuilderParser(std::shared_ptr<AbstractSamCommandBuilder> samCommandBuilder)
+: samCommandBuilder(samCommandBuilder) {
+}
 
-                        std::shared_ptr<AbstractSamResponseParser> SamBuilderParser::getResponseParser() {
-                            return samResponseParser;
-                        }
+std::shared_ptr<AbstractSamCommandBuilder> SamBuilderParser::getCommandBuilder() {
+    return samCommandBuilder;
+}
 
-                        void SamBuilderParser::setResponseParser(std::shared_ptr<AbstractSamResponseParser> poResponseParser) {
-                            this->samResponseParser = poResponseParser;
-                        }
-                    }
-                }
-            }
-        }
-    }
+std::shared_ptr<AbstractSamResponseParser> SamBuilderParser::getResponseParser() {
+    return samResponseParser;
+}
+
+void SamBuilderParser::setResponseParser(std::shared_ptr<AbstractSamResponseParser> poResponseParser) {
+    this->samResponseParser = poResponseParser;
+}
+
+}
+}
+}
+}
+}
 }

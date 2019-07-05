@@ -1,6 +1,8 @@
 #include "AbstractIso7816CommandBuilder.h"
-#include "CommandsTable.h"
 #include "ApduRequest.h"
+
+/* Core */
+#include "CommandsTable.h"
 
 /* Common */
 #include "System.h"
@@ -11,7 +13,8 @@ namespace keyple {
 namespace core {
 namespace command {
 
-using ApduRequest = org::eclipse::keyple::core::seproxy::message::ApduRequest;
+using ApduRequest   = org::eclipse::keyple::core::seproxy::message::ApduRequest;
+using CommandsTable = org::eclipse::keyple::core::command::CommandsTable;
 
 AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(std::shared_ptr<CommandsTable> commandReference, std::shared_ptr<ApduRequest> request) : AbstractApduCommandBuilder(commandReference, request) {
 }

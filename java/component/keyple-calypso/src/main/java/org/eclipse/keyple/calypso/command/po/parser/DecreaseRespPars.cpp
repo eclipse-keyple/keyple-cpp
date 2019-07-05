@@ -1,5 +1,3 @@
-#include "AbstractApduResponseParser.h
-#include "ApduResponse.h"
 #include "DecreaseRespPars.h"
 
 #include "stringhelper.h"
@@ -9,15 +7,19 @@ namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
+namespace po {
+namespace parser {
+
 using AbstractPoResponseParser   = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
 using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
 using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using StatusProperties           = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser::StatusProperties;
 
-std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> DecreaseRespPars::STATUS_TABLE;
+std::unordered_map<int, std::shared_ptr<StatusProperties>> DecreaseRespPars::STATUS_TABLE;
 
 DecreaseRespPars::StaticConstructor::StaticConstructor()
 {
-    std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
+    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
     m.emplace(0x6400, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Too many modifications in session."));
     m.emplace(0x6700, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Lc value not supported."));
     m.emplace(0x6981, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "The current EF is not a Counters or Simulated Counter EF."));
@@ -34,12 +36,13 @@ DecreaseRespPars::StaticConstructor::StaticConstructor()
 
 DecreaseRespPars::StaticConstructor DecreaseRespPars::staticConstructor;
 
-std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> DecreaseRespPars::getStatusTable() {
+std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> DecreaseRespPars::getStatusTable() {
     return STATUS_TABLE;
 }
 
 DecreaseRespPars::DecreaseRespPars(std::shared_ptr<ApduResponse> response)
-: AbstractPoResponseParser(response) {
+: AbstractPoResponseParser(response)
+{
 }
 
 int DecreaseRespPars::getNewValue()

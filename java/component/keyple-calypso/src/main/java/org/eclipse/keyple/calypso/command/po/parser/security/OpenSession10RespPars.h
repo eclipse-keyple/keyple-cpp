@@ -18,10 +18,6 @@
 #include "AbstractOpenSessionRespPars.h"
 #include "exceptionhelper.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduResponse; } } } } }
-
-
 namespace org {
 namespace eclipse {
 namespace keyple {

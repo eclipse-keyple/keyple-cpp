@@ -1,5 +1,4 @@
 #include "PoSendableInSession.h"
-#include "PoCommandBuilder.h"
 
 namespace org {
 namespace eclipse {

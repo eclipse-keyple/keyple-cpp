@@ -17,11 +17,6 @@
 
 #include "AbstractPoResponseParser.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace command { class AbstractApduResponseParser; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace command { class StatusProperties; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
-
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -39,7 +34,7 @@ using ApduResponse             = org::eclipse::keyple::core::seproxy::message::A
 class AppendRecordRespPars final : public AbstractPoResponseParser {
 
 private:
-    static const std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
 private:
     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
@@ -63,11 +58,11 @@ public:
      * @return Status table
      */
 protected:
-    std::unordered_map<Integer, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
+    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
 protected:
     std::shared_ptr<AppendRecordRespPars> shared_from_this() {
-        return std::static_pointer_cast<AppendRecordRespPars>(org.eclipse.keyple.calypso.command.po.AbstractPoResponseParser::shared_from_this());
+        return std::static_pointer_cast<AppendRecordRespPars>(AbstractPoResponseParser::shared_from_this());
     }
 };
 

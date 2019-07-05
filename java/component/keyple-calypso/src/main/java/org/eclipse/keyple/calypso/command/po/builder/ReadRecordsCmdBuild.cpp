@@ -1,6 +1,7 @@
+#include "AbstractPoCommandBuilder.h"
+#include "ApduResponse.h"
 #include "ReadRecordsCmdBuild.h"
 #include "ReadRecordsRespPars.h"
-#include "ApduResponse.h"
 
 namespace org {
 namespace eclipse {
@@ -10,16 +11,23 @@ namespace command {
 namespace po {
 namespace builder {
 
+using namespace org::eclipse::keyple::calypso::command::po;
+
 using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
-using AbstractPoCommandBuilder = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
 using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
 using PoSendableInSession      = org::eclipse::keyple::calypso::command::po::PoSendableInSession;
 using ReadDataStructure        = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
 using ReadRecordsRespPars      = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
 using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
-ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi, ReadDataStructure readDataStructure, char firstRecordNumber, bool readJustOneRecord, char expectedLength, const std::string &extraInfo)
-: AbstractPoCommandBuilder<ReadRecordsRespPars>(command, nullptr) {
+ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi,
+                                         ReadDataStructure readDataStructure,
+                                         char firstRecordNumber, bool readJustOneRecord,
+                                         char expectedLength, const std::string &extraInfo)
+: AbstractPoCommandBuilder<ReadRecordsRespPars>(std::make_shared<CalypsoPoCommands>(command),
+                                                nullptr),
+  firstRecordNumber(firstRecordNumber), readDataStructure(readDataStructure)
+{
 
     if (firstRecordNumber < 1) {
         throw std::invalid_argument("Bad record number (< 1)");

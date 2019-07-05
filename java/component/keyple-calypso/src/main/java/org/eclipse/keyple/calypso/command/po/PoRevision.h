@@ -23,6 +23,8 @@ namespace org {
                          * Calypso revisions
                          */
                         enum class PoRevision {
+                            /* Default value */
+                            NO_REV,
 
                             /**
                              * Calypso Revision 1 (CLA 0x94)

@@ -14,7 +14,7 @@ using AbstractSamResponseParser = org::eclipse::keyple::calypso::command::sam::A
 using ApduResponse              = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 DigestUpdateMultipleRespPars::DigestUpdateMultipleRespPars(std::shared_ptr<ApduResponse> response)
-: org::eclipse::keyple::command::AbstractSamResponseParser(response)
+: AbstractSamResponseParser(response)
 {
 }
 

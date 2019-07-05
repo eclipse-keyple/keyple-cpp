@@ -17,15 +17,11 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
+#include "AppendRecordRespPars.h"
 #include "PoModificationCommand.h"
 #include "PoSendableInSession.h"
 #include "CalypsoPoCommands.h"
 #include "PoClass.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class AppendRecordRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
-
 
 namespace org {
 namespace eclipse {
@@ -38,7 +34,7 @@ namespace builder {
 
 using PoClass              = org::eclipse::keyple::calypso::command::PoClass;
 using AppendRecordRespPars = org::eclipse::keyple::calypso::command::po::parser::AppendRecordRespPars;
-using ApduResponse        = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using ApduResponse         = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -46,7 +42,9 @@ using ApduResponse        = org::eclipse::keyple::core::seproxy::message::ApduRe
 * Record APDU command.
 *
 */
-class AppendRecordCmdBuild final : public AbstractPoCommandBuilder<AppendRecordRespPars>, public PoSendableInSession, public PoModificationCommand {
+class AppendRecordCmdBuild final
+: public AbstractPoCommandBuilder<AppendRecordRespPars>, public PoSendableInSession,
+  public PoModificationCommand {
 
 /** The command. */
 private:

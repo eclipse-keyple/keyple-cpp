@@ -11,13 +11,15 @@ namespace po {
 namespace builder {
 namespace security {
 
+using namespace org::eclipse::keyple::calypso::command::po;
+
 using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
-using AbstractPoCommandBuilder = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
 using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
 using ChangeKeyRespPars        = org::eclipse::keyple::calypso::command::po::parser::security::ChangeKeyRespPars;
 using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
-ChangeKeyCmdBuild::ChangeKeyCmdBuild(PoClass poClass, char keyIndex, std::vector<char> &cryptogram) : org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder<org::eclipse::keyple::calypso::command::po::parser::security::ChangeKeyRespPars>(command, nullptr) {
+ChangeKeyCmdBuild::ChangeKeyCmdBuild(PoClass poClass, char keyIndex, std::vector<char> &cryptogram)
+: AbstractPoCommandBuilder<ChangeKeyRespPars>(std::make_shared<CalypsoPoCommands>(command), nullptr) {
 
     if (cryptogram.empty() || (cryptogram.size() != 0x18 && cryptogram.size() != 0x20)) {
         throw std::invalid_argument("Bad cryptogram value.");
@@ -27,7 +29,8 @@ ChangeKeyCmdBuild::ChangeKeyCmdBuild(PoClass poClass, char keyIndex, std::vector
     char p1 = static_cast<char>(0x00);
     char p2 = keyIndex;
 
-    this->request = setApduRequest(cla, command, p1, p2, cryptogram, nullptr);
+    this->request = setApduRequest(cla, std::make_shared<CalypsoPoCommands>(command), p1, p2,
+                                   cryptogram, -1);
     this->addSubName("Change Key");
 }
 

@@ -17,10 +17,7 @@
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommands.h"
 #include "PoClass.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { namespace security { class PoGetChallengeRespPars; } } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
+#include "PoGetChallengeRespPars.h"
 
 namespace org {
 namespace eclipse {
@@ -31,11 +28,12 @@ namespace po {
 namespace builder {
 namespace security {
 
-using PoClass = org::eclipse::keyple::calypso::command::PoClass;
-using AbstractPoCommandBuilder = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
-using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
+using namespace org::eclipse::keyple::calypso::command::po;
+
+using PoClass                = org::eclipse::keyple::calypso::command::PoClass;
+using CalypsoPoCommands      = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
 using PoGetChallengeRespPars = org::eclipse::keyple::calypso::command::po::parser::security::PoGetChallengeRespPars;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using ApduResponse           = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 /**
  * The Class PoGetChallengeCmdBuild. This class provides the dedicated constructor to build the PO

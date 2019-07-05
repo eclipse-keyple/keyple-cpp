@@ -30,8 +30,8 @@ namespace calypso {
 namespace command {
 namespace po {
 
-using AbstractIso7816CommandBuilder = org::eclipse::keyple::command::AbstractIso7816CommandBuilder;
-using ApduRequest                   = org::eclipse::keyple::seproxy::message::ApduRequest;
+using AbstractIso7816CommandBuilder = org::eclipse::keyple::core::command::AbstractIso7816CommandBuilder;
+using ApduRequest                   = org::eclipse::keyple::core::seproxy::message::ApduRequest;
 
 /**
  * Class to build custom (non-referenced) modification PO commands

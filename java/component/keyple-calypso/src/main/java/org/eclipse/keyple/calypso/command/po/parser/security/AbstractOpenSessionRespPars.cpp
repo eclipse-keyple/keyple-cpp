@@ -1,5 +1,6 @@
+#include "AbstractPoResponseParser.h"
 #include "AbstractOpenSessionRespPars.h"
-#include "AbstractApduResponseParser.h"
+#include "AbstractApduResponseParser_Import.h"
 #include "ApduResponse.h"
 #include "OpenSession10RespPars.h"
 #include "OpenSession24RespPars.h"
@@ -17,10 +18,10 @@ namespace po {
 namespace parser {
 namespace security {
 
-using AbstractPoResponseParser = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
-using PoRevision = org::eclipse::keyple::calypso::command::po::PoRevision;
+using AbstractPoResponseParser   = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
+using PoRevision                 = org::eclipse::keyple::calypso::command::po::PoRevision;
 using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> AbstractOpenSessionRespPars::STATUS_TABLE;
 
@@ -47,7 +48,7 @@ std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProper
 }
 
 AbstractOpenSessionRespPars::AbstractOpenSessionRespPars(std::shared_ptr<ApduResponse> response, PoRevision revision)
-: org::eclipse::keyple::command::AbstractApduResponseParser(response), revision(revision)
+: AbstractPoResponseParser(response), revision(revision)
 {
     std::vector<char> data = response->getDataOut();
     this->secureSession = toSecureSession(data);
@@ -90,7 +91,7 @@ char AbstractOpenSessionRespPars::getSelectedKif() {
     return secureSession->getKIF();
 }
 
-char AbstractOpenSessionRespPars::getSelectedKvc() {
+std::shared_ptr<Byte> AbstractOpenSessionRespPars::getSelectedKvc() {
     return secureSession->getKVC();
 }
 
@@ -98,10 +99,35 @@ std::vector<char> AbstractOpenSessionRespPars::getRecordDataRead() {
     return secureSession->getOriginalData();
 }
 
-AbstractOpenSessionRespPars::SecureSession::SecureSession(std::vector<char> &challengeTransactionCounter, std::vector<char> &challengeRandomNumber, bool previousSessionRatified, bool manageSecureSessionAuthorized, char kif, char kvc, std::vector<char> &originalData, std::vector<char> &secureSessionData) : challengeTransactionCounter(challengeTransactionCounter), challengeRandomNumber(challengeRandomNumber), previousSessionRatified(previousSessionRatified), manageSecureSessionAuthorized(manageSecureSessionAuthorized), kif(kif), kvc(kvc), originalData(originalData), secureSessionData(secureSessionData) {
+AbstractOpenSessionRespPars::SecureSession::SecureSession(
+                                                    std::vector<char> &challengeTransactionCounter,
+                                                    std::vector<char> &challengeRandomNumber,
+                                                    bool previousSessionRatified,
+                                                    bool manageSecureSessionAuthorized, char kif,
+                                                    std::shared_ptr<Byte> kvc,
+                                                    std::vector<char> &originalData,
+                                                    std::vector<char> &secureSessionData)
+: challengeTransactionCounter(challengeTransactionCounter),
+  challengeRandomNumber(challengeRandomNumber),
+  previousSessionRatified(previousSessionRatified),
+  manageSecureSessionAuthorized(manageSecureSessionAuthorized),
+  kif(kif), kvc(kvc), originalData(originalData), secureSessionData(secureSessionData)
+{
 }
 
-AbstractOpenSessionRespPars::SecureSession::SecureSession(std::vector<char> &challengeTransactionCounter, std::vector<char> &challengeRandomNumber, bool previousSessionRatified, bool manageSecureSessionAuthorized, Byte *kvc, std::vector<char> &originalData, std::vector<char> &secureSessionData) : challengeTransactionCounter(challengeTransactionCounter), challengeRandomNumber(challengeRandomNumber), previousSessionRatified(previousSessionRatified), manageSecureSessionAuthorized(manageSecureSessionAuthorized), kif(static_cast<char>(0xFF)), kvc(kvc), originalData(originalData), secureSessionData(secureSessionData) {
+AbstractOpenSessionRespPars::SecureSession::SecureSession(
+                                                    std::vector<char> &challengeTransactionCounter,
+                                                    std::vector<char> &challengeRandomNumber,
+                                                    bool previousSessionRatified,
+                                                    bool manageSecureSessionAuthorized,
+                                                    std::shared_ptr<Byte> kvc,
+                                                    std::vector<char> &originalData,
+                                                    std::vector<char> &secureSessionData)
+: challengeTransactionCounter(challengeTransactionCounter),
+  challengeRandomNumber(challengeRandomNumber), previousSessionRatified(previousSessionRatified),
+  manageSecureSessionAuthorized(manageSecureSessionAuthorized), kif(static_cast<char>(0xFF)),
+  kvc(kvc), originalData(originalData), secureSessionData(secureSessionData)
+{
 }
 
 std::vector<char> AbstractOpenSessionRespPars::SecureSession::getChallengeTransactionCounter() {
@@ -124,7 +150,8 @@ char AbstractOpenSessionRespPars::SecureSession::getKIF() {
     return kif;
 }
 
-char AbstractOpenSessionRespPars::SecureSession::getKVC() {
+std::shared_ptr<Byte> AbstractOpenSessionRespPars::SecureSession::getKVC()
+{
     return kvc;
 }
 

@@ -36,7 +36,7 @@ class SeResource : public std::enable_shared_from_this<SeResource<T>> {
 
 private:
     const std::shared_ptr<SeReader> seReader;
-    const T matchingSe;
+    const std::shared_ptr<T> matchingSe;
 
     /**
         * Constructor
@@ -45,7 +45,9 @@ private:
         * @param matchingSe the {@link AbstractMatchingSe} information structure
         */
 protected:
-    SeResource(std::shared_ptr<SeReader> seReader, T matchingSe) : seReader(seReader), matchingSe(matchingSe) {
+    SeResource(std::shared_ptr<SeReader> seReader, std::shared_ptr<T> matchingSe)
+    : seReader(seReader), matchingSe(matchingSe)
+    {
     }
 
     /**
@@ -57,9 +59,10 @@ public:
     }
 
     /**
-        * @return the {@link AbstractMatchingSe}
-        */
-    virtual T getMatchingSe() {
+     * @return the {@link AbstractMatchingSe}
+     */
+    virtual std::shared_ptr<T> getMatchingSe()
+    {
         return matchingSe;
     }
 };

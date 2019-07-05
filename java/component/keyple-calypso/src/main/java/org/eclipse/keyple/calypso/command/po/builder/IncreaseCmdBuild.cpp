@@ -15,7 +15,7 @@ using IncreaseRespPars = org::eclipse::keyple::calypso::command::po::parser::Inc
 using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int incValue, const std::string &extraInfo)
-: AbstractPoCommandBuilder<IncreaseRespPars>(command, nullptr)
+: AbstractPoCommandBuilder<IncreaseRespPars>(std::make_shared<CalypsoPoCommands>(command), nullptr)
 {
 
 // only counter number >= 1 are allowed

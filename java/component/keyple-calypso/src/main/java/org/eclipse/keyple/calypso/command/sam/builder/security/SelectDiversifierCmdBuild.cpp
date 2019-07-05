@@ -13,7 +13,8 @@ using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::A
 using CalypsoSamCommands        = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
 using SamRevision               = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
-SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(SamRevision revision, std::vector<char> &diversifier) : AbstractSamCommandBuilder(command, nullptr)
+SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(SamRevision revision, std::vector<char> &diversifier)
+: AbstractSamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr)
 {
     this->defaultRevision = revision;
 
@@ -24,7 +25,7 @@ SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(SamRevision revision, std::
     char p1 = 0x00;
     char p2 = 0x00;
 
-    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, diversifier, nullptr);
+    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, diversifier, -1);
 
 }
 }

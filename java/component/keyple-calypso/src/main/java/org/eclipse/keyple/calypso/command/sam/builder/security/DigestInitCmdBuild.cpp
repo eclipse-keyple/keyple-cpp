@@ -52,7 +52,9 @@ DigestInitCmdBuild::DigestInitCmdBuild(SamRevision revision, bool verificationMo
     }
     // CalypsoRequest calypsoRequest = new CalypsoRequest(cla, CalypsoCommands.SAM_DIGEST_INIT,
     // p1, p2, dataIn);
-    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(CalypsoSamCommands::DIGEST_INIT), p1, p2, dataIn, nullptr);
+    request = setApduRequest(cla,
+                             std::make_shared<CalypsoSamCommands>(CalypsoSamCommands::DIGEST_INIT),
+                             p1, p2, dataIn, -1);
 
 }
 

@@ -2,6 +2,8 @@
 #include "SelectFileRespPars.h"
 #include "ApduResponse.h"
 
+#include "stringhelper.h"
+
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -10,15 +12,17 @@ namespace command {
 namespace po {
 namespace builder {
 
+using namespace org::eclipse::keyple::calypso::command::po;
+
 using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
-using AbstractPoCommandBuilder = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
 using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
 using PoSendableInSession      = org::eclipse::keyple::calypso::command::po::PoSendableInSession;
 using SelectFileRespPars       = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
 using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
-
+using SelectControl            = org::eclipse::keyple::calypso::command::po::builder::SelectFileCmdBuild::SelectControl;
 SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, SelectControl selectControl)
-: AbstractPoCommandBuilder<SelectFileRespPars>(command, nullptr)
+: AbstractPoCommandBuilder<SelectFileRespPars>(std::make_shared<CalypsoPoCommands>(command),
+                                               nullptr)
 {
     char p1;
     char p2;
@@ -37,19 +41,29 @@ SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, SelectControl selectCont
             p2 = static_cast<char>(0x00);
             break;
         default:
-            throw std::make_shared<IllegalStateException>("Unsupported selectControl parameter " + selectControl.toString());
+            throw IllegalStateException(StringHelper::formatSimple(
+                                                          "Unsupported selectControl parameter %s",
+                                                          ""));//selectControl.toString()));
     }
 
-    request = setApduRequest(poClass.getValue(), command, p1, p2, selectData, static_cast<char>(0x00));
+    request = setApduRequest(poClass.getValue(), std::make_shared<CalypsoPoCommands>(command), p1, p2, selectData, static_cast<char>(0x00));
 }
 
-SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, std::vector<char> &selectionPath) : org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder<org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars>(command, nullptr) {
-    request = setApduRequest(poClass.getValue(), command, static_cast<char>(0x09), static_cast<char>(0x00), selectionPath, static_cast<char>(0x00));
-    }
+SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, std::vector<char> &selectionPath)
+: AbstractPoCommandBuilder<SelectFileRespPars>(std::make_shared<CalypsoPoCommands>(command),
+                                               nullptr)
+{
+    request = setApduRequest(poClass.getValue(), std::make_shared<CalypsoPoCommands>(command),
+                             static_cast<char>(0x09), static_cast<char>(0x00), selectionPath,
+                             static_cast<char>(0x00));
+}
 
-std::shared_ptr<SelectFileRespPars> SelectFileCmdBuild::createResponseParser(std::shared_ptr<ApduResponse> apduResponse) {
+std::shared_ptr<SelectFileRespPars> SelectFileCmdBuild::createResponseParser(
+                                                        std::shared_ptr<ApduResponse> apduResponse)
+{
     return std::make_shared<SelectFileRespPars>(apduResponse);
 }
+
 }
 }
 }

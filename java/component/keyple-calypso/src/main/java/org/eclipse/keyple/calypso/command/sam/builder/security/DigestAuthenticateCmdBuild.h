@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include <memory>
 
-#include "SamCommandBuilder.h"
+#include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommands.h"
 #include "SamRevision.h"
 
@@ -29,7 +29,6 @@ namespace command {
 namespace sam {
 namespace builder {
 namespace security {
-
 
 using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
 using CalypsoSamCommands = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;

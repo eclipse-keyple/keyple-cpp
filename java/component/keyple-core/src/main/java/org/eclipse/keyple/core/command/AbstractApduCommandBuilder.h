@@ -19,10 +19,11 @@
 /* Common */
 #include "Export.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduRequest; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace command { class CommandsTable; } } } } }
+/* Core */
+#include "ApduRequest.h"
 
+/* Calypso */
+#include "CommandsTable.h"
 
 namespace org {
 namespace eclipse {
@@ -31,6 +32,7 @@ namespace core {
 namespace command {
 
 using ApduRequest = org::eclipse::keyple::core::seproxy::message::ApduRequest;
+using CommandsTable = org::eclipse::keyple::core::command::CommandsTable;
 
     /**
      * Generic APDU command builder.

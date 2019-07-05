@@ -12,12 +12,13 @@
 
 #pragma once
 
-#include "AbstractOpenSessionCmdBuild.h"
 #include <string>
 #include <vector>
 #include <stdexcept>
 #include <memory>
 
+#include "AbstractOpenSessionCmdBuild.h"
+#include "OpenSession10RespPars.h"
 
 namespace org {
 namespace eclipse {
@@ -30,7 +31,7 @@ namespace security {
 
 
 using OpenSession10RespPars = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession10RespPars;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using ApduResponse          = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 class OpenSession10CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSession10RespPars> {
     /**

@@ -14,7 +14,7 @@ using CalypsoSamCommands        = org::eclipse::keyple::calypso::command::sam::C
 using SamRevision               = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
 SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(SamRevision revision, char expectedResponseLength)
-: AbstractSamCommandBuilder(command, nullptr)
+: AbstractSamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr)
 {
     this->defaultRevision = revision;
 

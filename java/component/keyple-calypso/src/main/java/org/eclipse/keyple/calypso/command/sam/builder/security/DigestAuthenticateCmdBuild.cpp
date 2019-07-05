@@ -13,7 +13,10 @@ using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::A
 using CalypsoSamCommands        = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
 using SamRevision               = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
-DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(SamRevision revision, std::vector<char> &signature) : AbstractSamCommandBuilder(command, nullptr)
+DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(SamRevision revision,
+                                                       std::vector<char> &signature)
+ : AbstractSamCommandBuilder(std::make_shared<CalypsoSamCommands>(command),
+                             nullptr)
  {
     this->defaultRevision = revision;
 
@@ -29,7 +32,7 @@ DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(SamRevision revision, std
     char p1 = 0x00;
     char p2 = static_cast<char>(0x00);
 
-    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, signature, nullptr);
+    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, signature, -1);
 }
 
 }

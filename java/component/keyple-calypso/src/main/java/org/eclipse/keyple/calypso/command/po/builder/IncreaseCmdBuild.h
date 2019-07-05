@@ -18,14 +18,11 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
+#include "CalypsoPoCommands.h"
+#include "IncreaseRespPars.h"
 #include "PoModificationCommand.h"
 #include "PoSendableInSession.h"
-#include "CalypsoPoCommands.h"
 #include "PoClass.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class IncreaseRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
 
 namespace org {
 namespace eclipse {
@@ -35,6 +32,7 @@ namespace command {
 namespace po {
 namespace builder {
 
+using namespace org::eclipse::keyple::calypso::command::po;
 
 using PoClass          = org::eclipse::keyple::calypso::command::PoClass;
 using IncreaseRespPars = org::eclipse::keyple::calypso::command::po::parser::IncreaseRespPars;
@@ -45,7 +43,9 @@ using ApduResponse     = org::eclipse::keyple::core::seproxy::message::ApduRespo
  * APDU command.
  *
  */
-class IncreaseCmdBuild final : public AbstractPoCommandBuilder<IncreaseRespPars>, public PoSendableInSession, public PoModificationCommand {
+class IncreaseCmdBuild final
+: public AbstractPoCommandBuilder<IncreaseRespPars>, public PoSendableInSession,
+  public PoModificationCommand {
 
     /** The command. */
 private:

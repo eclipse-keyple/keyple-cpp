@@ -14,8 +14,9 @@
 
 #include <memory>
 
-#include "PoCommandBuilder.h"
+#include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommands.h"
+#include "GetDataFciRespPars.h"
 #include "PoClass.h"
 
 namespace org {
@@ -27,7 +28,6 @@ namespace po {
 namespace builder {
 
 using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
-using AbstractPoCommandBuilder = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
 using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
 using GetDataFciRespPars       = org::eclipse::keyple::calypso::command::po::parser::GetDataFciRespPars;
 using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
@@ -39,10 +39,11 @@ using ApduResponse             = org::eclipse::keyple::core::seproxy::message::A
 * and thus make calculation of the digest impossible.
 *
 */
-class EXPORT GetDataFciCmdBuild final : public AbstractPoCommandBuilder<GetDataFciRespPars> {
+class EXPORT GetDataFciCmdBuild final
+: public org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder<GetDataFciRespPars> {
 
 private:
-static const CalypsoPoCommands command;
+    static const std::shared_ptr<CalypsoPoCommands> command;
 
 /**
  * Instantiates a new GetDataFciCmdBuild.

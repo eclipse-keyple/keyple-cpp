@@ -138,8 +138,8 @@ public:
      */
     bool equals(std::shared_ptr<void> o) override
     {
-        if (std::dynamic_pointer_cast<Byte>(o))
-            return value == std::dynamic_pointer_cast<Byte>(o)->byteValue();
+        if (std::reinterpret_pointer_cast<Byte>(o))
+            return value == std::reinterpret_pointer_cast<Byte>(o)->byteValue();
 
         return false;
     }
@@ -150,5 +150,12 @@ public:
     unsigned char byteValue()
     {
         return value;
+    }
+
+    /*
+     *
+     */
+    void finalize() override
+    {
     }
 };

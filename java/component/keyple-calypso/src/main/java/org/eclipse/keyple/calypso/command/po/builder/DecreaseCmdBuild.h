@@ -18,15 +18,11 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
+#include "CalypsoPoCommands.h"
+#include "DecreaseRespPars.h"
 #include "PoModificationCommand.h"
 #include "PoSendableInSession.h"
-#include "CalypsoPoCommands.h"
 #include "PoClass.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { class DecreaseRespPars; } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
-
 
 namespace org {
 namespace eclipse {
@@ -36,17 +32,20 @@ namespace command {
 namespace po {
 namespace builder {
 
+using namespace org::eclipse::keyple::calypso::command::po;
 
-using PoClass = org::eclipse::keyple::calypso::command::PoClass;
+using PoClass          = org::eclipse::keyple::calypso::command::PoClass;
 using DecreaseRespPars = org::eclipse::keyple::calypso::command::po::parser::DecreaseRespPars;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using ApduResponse     = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 /**
 * The Class DecreaseCmdBuild. This class provides the dedicated constructor to build the Decrease
 * APDU command.
 *
 */
-class DecreaseCmdBuild final : public AbstractPoCommandBuilder<DecreaseRespPars>, public PoSendableInSession, public PoModificationCommand {
+class DecreaseCmdBuild final
+: public AbstractPoCommandBuilder<DecreaseRespPars>, public PoSendableInSession,
+  public PoModificationCommand {
 
 /** The command. */
 private:

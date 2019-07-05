@@ -18,11 +18,7 @@
 #include <memory>
 
 #include "AbstractOpenSessionCmdBuild.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { namespace security { class OpenSession24RespPars; } } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
-
+#include "OpenSession24RespPars.h"
 
 namespace org {
 namespace eclipse {
@@ -33,9 +29,8 @@ namespace po {
 namespace builder {
 namespace security {
 
-
 using OpenSession24RespPars = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession24RespPars;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using ApduResponse          = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 class OpenSession24CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSession24RespPars> {
     /**

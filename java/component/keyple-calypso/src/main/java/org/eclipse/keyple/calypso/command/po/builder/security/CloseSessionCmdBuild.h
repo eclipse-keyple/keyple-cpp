@@ -19,12 +19,8 @@
 
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommands.h"
+#include "CloseSessionRespPars.h"
 #include "PoClass.h"
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace calypso { namespace command { namespace po { namespace parser { namespace security { class CloseSessionRespPars; } } } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
-
 
 namespace org {
 namespace eclipse {
@@ -35,12 +31,12 @@ namespace po {
 namespace builder {
 namespace security{
 
+using namespace org::eclipse::keyple::calypso::command::po;
 
-using PoClass = org::eclipse::keyple::calypso::command::PoClass;
-using AbstractPoCommandBuilder = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
-using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
-using CloseSessionRespPars = org::eclipse::keyple::calypso::command::po::parser::security::CloseSessionRespPars;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
+using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
+using CloseSessionRespPars     = org::eclipse::keyple::calypso::command::po::parser::security::CloseSessionRespPars;
+using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 // TODO: Auto-generated Javadoc
 /**

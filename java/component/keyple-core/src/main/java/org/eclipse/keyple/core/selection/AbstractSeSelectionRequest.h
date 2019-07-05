@@ -46,7 +46,7 @@ using SeResponse                 = org::eclipse::keyple::core::seproxy::message:
     * This class may also be extended to add particular features specific to a SE family.
     */
 class AbstractSeSelectionRequest : public std::enable_shared_from_this<AbstractSeSelectionRequest> {
-protected:
+public:
     const std::shared_ptr<SeSelector> seSelector;
 
     /** optional apdu requests list to be executed following the selection process */

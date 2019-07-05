@@ -14,20 +14,23 @@ namespace po {
 namespace builder {
 namespace security {
 
+using namespace org::eclipse::keyple::calypso::command::po;
+
 using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
-using AbstractPoCommandBuilder = org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder;
 using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
 using CloseSessionRespPars     = org::eclipse::keyple::calypso::command::po::parser::security::CloseSessionRespPars;
 using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 using ByteArrayUtil            = org::eclipse::keyple::core::util::ByteArrayUtil;
 
-CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass, bool ratificationAsked, std::vector<char> &terminalSessionSignature)
-: AbstractPoCommandBuilder<CloseSessionRespPars>(command, nullptr)
+CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass, bool ratificationAsked,
+                                           std::vector<char> &terminalSessionSignature)
+: AbstractPoCommandBuilder<CloseSessionRespPars>(std::make_shared<CalypsoPoCommands>(command),
+                                                 nullptr)
 {
     // The optional parameter terminalSessionSignature could contain 4 or 8
     // bytes.
     if (terminalSessionSignature.size() > 0 && terminalSessionSignature.size() != 4 && terminalSessionSignature.size() != 8) {
-        throw std::invalid_argument("Invalid terminal sessionSignature: " + ByteArrayUtils::toHex(terminalSessionSignature));
+        throw std::invalid_argument("Invalid terminal sessionSignature: " + ByteArrayUtil::toHex(terminalSessionSignature));
     }
 
     char p1 = ratificationAsked ? static_cast<char>(0x80) : static_cast<char>(0x00);
@@ -40,10 +43,14 @@ CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass, bool ratificationAsk
     request = setApduRequest(poClass.getValue(), std::make_shared<CalypsoPoCommands>(command), p1, static_cast<char>(0x00), terminalSessionSignature, le);
 }
 
-CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass) : AbstractPoCommandBuilder<CloseSessionRespPars>(command), nullptr)
+CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass)
+ : AbstractPoCommandBuilder<CloseSessionRespPars>(std::make_shared<CalypsoPoCommands>(command), nullptr)
 {
     std::vector<char> emptyVector;
-    request = setApduRequest(poClass.getValue(), std::make_shared<CalypsoPoCommands>(command), static_cast<char>(0x00), static_cast<char>(0x00), nullptr, static_cast<char>(0));
+    request = setApduRequest(poClass.getValue(), std::make_shared<CalypsoPoCommands>(command),
+                             static_cast<char>(0x00), static_cast<char>(0x00), emptyVector,
+                             static_cast<char>(0));
+
     /* Add "Abort session" to command name for logging purposes */
     this->addSubName("Abort session");
 }
