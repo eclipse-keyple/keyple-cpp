@@ -1,5 +1,5 @@
 /* Common */
-#include "byte.h"
+#include "Byte.h"
 
 /* Calypso */
 #include "KeypleCalypsoSecureSessionUnauthorizedKvcException.h"
@@ -12,29 +12,38 @@ namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using KeypleCalypsoSecureSessionUnauthorizedKvcException = org::eclipse::keyple::calypso::transaction::exception::KeypleCalypsoSecureSessionUnauthorizedKvcException;
+using namespace org::eclipse::keyple::calypso::transaction::exception;
 
-SecuritySettings::SecuritySettings() {
-    keySettings->put(DefaultKeyInfo::SAM_DEFAULT_KIF_PERSO, DEFAULT_KIF_PERSO);
-    keySettings->put(DefaultKeyInfo::SAM_DEFAULT_KIF_LOAD, DEFAULT_KIF_LOAD);
-    keySettings->put(DefaultKeyInfo::SAM_DEFAULT_KIF_DEBIT, DEFAULT_KIF_DEBIT);
-    keySettings->put(DefaultKeyInfo::SAM_DEFAULT_KEY_RECORD_NUMBER, DEFAULT_KEY_RECORD_NUMER);
+SecuritySettings::SecuritySettings()
+{
+    keySettings.insert(std::pair<DefaultKeyInfo, Byte>(DefaultKeyInfo::SAM_DEFAULT_KIF_PERSO, Byte(DEFAULT_KIF_PERSO)));
+    keySettings.insert(std::pair<DefaultKeyInfo, Byte>(DefaultKeyInfo::SAM_DEFAULT_KIF_LOAD, Byte(DEFAULT_KIF_LOAD)));
+    keySettings.insert(std::pair<DefaultKeyInfo, Byte>(DefaultKeyInfo::SAM_DEFAULT_KIF_DEBIT, Byte(DEFAULT_KIF_DEBIT)));
+    keySettings.insert(std::pair<DefaultKeyInfo, Byte>(DefaultKeyInfo::SAM_DEFAULT_KEY_RECORD_NUMBER, Byte(DEFAULT_KEY_RECORD_NUMER)));
 }
 
-char SecuritySettings::putKeyInfo(DefaultKeyInfo keyInfo, Byte value) {
-    return keySettings->put(keyInfo, value);
+char SecuritySettings::putKeyInfo(DefaultKeyInfo keyInfo, Byte value)
+{
+    char old = keySettings[keyInfo].byteValue();
+
+    keySettings.insert(std::pair<DefaultKeyInfo, Byte>(keyInfo, value));
+
+    return old;
 }
 
-char SecuritySettings::getKeyInfo(DefaultKeyInfo keyInfo) {
-    return keySettings->get(keyInfo);
+char SecuritySettings::getKeyInfo(DefaultKeyInfo keyInfo)
+{
+    return keySettings[keyInfo].byteValue();
 }
 
-void SecuritySettings::setAuthorizedKvcList(std::vector<Byte> &authorizedKvcList) {
+void SecuritySettings::setAuthorizedKvcList(std::vector<Byte> &authorizedKvcList)
+{
     this->authorizedKvcList = authorizedKvcList;
 }
 
-bool SecuritySettings::isAuthorizedKvc(char kvc) {
-    return authorizedKvcList.empty() || std::find(authorizedKvcList.begin(), authorizedKvcList.end(), kvc) != authorizedKvcList.end();
+bool SecuritySettings::isAuthorizedKvc(char kvc)
+{
+    return authorizedKvcList.empty() || std::find(authorizedKvcList.begin(), authorizedKvcList.end(), Byte(kvc)) != authorizedKvcList.end();
 }
 
 }

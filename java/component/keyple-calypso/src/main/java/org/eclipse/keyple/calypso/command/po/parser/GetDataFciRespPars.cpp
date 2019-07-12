@@ -74,7 +74,8 @@ GetDataFciRespPars::GetDataFciRespPars(std::shared_ptr<ApduResponse> selectAppli
     /* parse the raw data with the help of the TLV class */
     try {
         /* init TLV object with the raw data and extract the FCI Template */
-        tlv = std::make_shared<TLV>(static_cast<std::vector<char>>(response));
+        std::vector<char> vec = static_cast<std::vector<char>>(response);
+        tlv = std::make_shared<TLV>(vec);
 
         /* Get the FCI template */
         if (!tlv->parse(TAG_FCI_TEMPLATE, 0)) {

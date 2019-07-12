@@ -21,6 +21,7 @@
 
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
+#include "CalypsoBuilderParser.h"
 #include "ChannelState.h"
 #include "PoBuilderParser.h"
 #include "PoTransaction.h"
@@ -106,12 +107,12 @@ public:
          * Session Access Level used for personalization purposes.
          */
         static SessionAccessLevel SESSION_LVL_PERSO;
-        
+
         /**
          * Session Access Level used for reloading purposes
          */
         static SessionAccessLevel SESSION_LVL_LOAD;
-        
+
         /**
          * Session Access Level used for validating and debiting purposes
          */
@@ -131,17 +132,17 @@ public:
         /**
          *
          */
-        const InnerEnum innerEnumValue;
+        InnerEnum innerEnumValue;
 
         /**
          *
          */
-        const std::string nameValue;
+        std::string nameValue;
 
         /**
          *
          */
-        const int ordinalValue;
+        int ordinalValue;
 
         /**
          *
@@ -151,20 +152,20 @@ public:
         /**
          *
          */
-        const std::string name;
-        
+        std::string name;
+
         /**
          *
          */
-        const char sessionKey;
+        char sessionKey;
 
     public:
         /**
          * DEfault constructor
          */
         SessionAccessLevel()
-        : ordinalValue(0), name("session lvl perso"), sessionKey(0),
-          innerEnumValue(SESSION_LVL_PERSO)
+        : innerEnumValue(SESSION_LVL_PERSO.innerEnumValue), ordinalValue(0),
+          name("session lvl perso"), sessionKey(0)
         {
         }
 
@@ -172,7 +173,7 @@ public:
          * Constructor
          */
         SessionAccessLevel(const std::string &nameValue, InnerEnum innerEnum,
-                           std::shared_ptr<PoTransaction> outerInstance, const std::string &name,
+                           const std::string &name,
                            char sessionKey);
 
         /**
@@ -194,6 +195,11 @@ public:
          *
          */
         bool operator != (const SessionAccessLevel &other);
+
+        /**
+         *
+         */
+        SessionAccessLevel& operator=(const SessionAccessLevel &other);
 
         /**
          *
@@ -234,7 +240,7 @@ public:
         MULTIPLE
     };
 
-private:
+public:
     /**
      * This class embeds all the resources to manage the secure session digest computation.
      *
@@ -254,7 +260,7 @@ private:
          * PO command/response pairs
          */
     private:
-        static const std::vector<std::vector<char>> poDigestDataCache;
+        static std::vector<std::vector<char>> poDigestDataCache;
         static SamRevision samRevision;
         static PoRevision poRevision;
         static bool encryption;
@@ -267,7 +273,7 @@ private:
         /**
          *
          */
-        const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(DigestProcessor));
+        static const std::shared_ptr<Logger> logger;
 
         /**
          * Initializes the digest computation process
@@ -283,7 +289,9 @@ private:
          * @param digestData a first bunch of data to digest.
          */
     public:
-        static void initialize(PoRevision poRev, SamRevision samRev, bool sessionEncryption, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif, char workKeyKVC, std::vector<char> &digestData);
+        static void initialize(PoRevision poRev, SamRevision samRev, bool sessionEncryption,
+                               bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber,
+                               char workKeyKif, char workKeyKVC, std::vector<char> &digestData);
 
         /**
          * Appends a full PO exchange (request and response) to the digest data cache.
@@ -291,7 +299,8 @@ private:
          * @param request PO request
          * @param response PO response
          */
-        static void pushPoExchangeData(std::shared_ptr<ApduRequest> request, std::shared_ptr<ApduResponse> response);
+        static void pushPoExchangeData(std::shared_ptr<ApduRequest> request,
+                                       std::shared_ptr<ApduResponse> response);
 
         /**
          * Get a unique SAM request for the whole digest computation process.
@@ -316,6 +325,7 @@ private:
             const std::shared_ptr<ApduRequest> apduRequest;
             const std::shared_ptr<ApduResponse> apduResponse;
 
+
         public:
             CommandResponse(std::shared_ptr<ApduRequest> apduRequest, std::shared_ptr<ApduResponse> apduResponse);
 
@@ -323,6 +333,11 @@ private:
 
             virtual std::shared_ptr<ApduResponse> getApduResponse();
         };
+
+        /**
+         *
+         */
+        static const std::shared_ptr<Logger> logger;
 
         /**
          * A Map of SFI and Commands/Responses
@@ -346,6 +361,7 @@ private:
          std::vector<std::shared_ptr<ApduRequest>> &apduRequests,
          std::vector<std::shared_ptr<ApduResponse>> &apduResponses, bool skipFirstItem);
 
+    public:
         /**
          * Establish the anticipated responses to commands provided in poModificationCommands.
          * <p>
@@ -363,7 +379,6 @@ private:
          * @return the anticipated responses.
          * @throws KeypleCalypsoSecureSessionException if an response can't be determined.
          */
-    protected:
         static std::vector<std::shared_ptr<ApduResponse>> getResponses(
         std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
                                                    AbstractPoResponseParser>>>> &poBuilderParsers);
@@ -386,9 +401,9 @@ private:
     static constexpr int OFFSET_DATA = 5;
 
     /** Ratification command APDU for rev <= 2.4 */
-    static std::vector<char> const ratificationCmdApduLegacy;
+    static std::vector<char> ratificationCmdApduLegacy;
     /** Ratification command APDU for rev > 2.4 */
-    static std::vector<char> const ratificationCmdApdu;
+    static std::vector<char> ratificationCmdApdu;
 
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PoTransaction));
 
@@ -401,7 +416,7 @@ private:
     /** The security settings. */
     std::shared_ptr<SecuritySettings> securitySettings;
     /** The PO serial number extracted from FCI */
-    std::vector<char> const poCalypsoInstanceSerial;
+    std::vector<char> poCalypsoInstanceSerial;
     /** The current CalypsoPo */
     const std::shared_ptr<CalypsoPo> calypsoPo;
     /** the type of the notified event. */
@@ -422,7 +437,7 @@ private:
     /** The data read at opening */
     std::vector<char> openRecordDataRead;
     /** The list to contain the prepared commands and their parsers */
-    const std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
+    std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
         AbstractPoResponseParser>>>> poBuilderParserList =
             std::vector<std::shared_ptr<PoBuilderParser<
                 AbstractPoCommandBuilder<AbstractPoResponseParser>>>>();
@@ -514,11 +529,11 @@ public:
      * @param poOrSamCommandsInsideSession a po or sam commands list to be sent in session
      * @return the ApduRequest list
      */
-    template<typename T1>
 //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ template equivalent to this generic constraint:
 //ORIGINAL LINE: private List<ApduRequest> getApduRequestsToSendInSession(List<? extends org.eclipse.keyple.calypso.command.CalypsoBuilderParser> poOrSamCommandsInsideSession)
     std::vector<std::shared_ptr<ApduRequest>> getApduRequestsToSendInSession(
-                                                     std::vector<T1> poOrSamCommandsInsideSession);
+                    std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
+                                        AbstractPoResponseParser>>>> poOrSamCommandsInsideSession);
 
     /**
      * Process PO commands in a Secure Session.

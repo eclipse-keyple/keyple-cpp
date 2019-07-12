@@ -66,7 +66,7 @@ class PoSelectionRequest final : public AbstractSeSelectionRequest {
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PoSelectionRequest));
 
     int commandIndex = 0;
-    std::vector<std::type_info> parsingClassList = std::vector<std::type_info>();
+    std::vector<std::string> parsingClassList = std::vector<std::string>();
     std::unordered_map<int, char> readRecordFirstRecordNumberMap = std::unordered_map<int, char>();
     std::unordered_map<int, ReadDataStructure> readRecordDataStructureMap = std::unordered_map<int, ReadDataStructure>();
 

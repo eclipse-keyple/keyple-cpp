@@ -77,7 +77,7 @@ int PoSelectionRequest::prepareReadRecordsCmdInternal(char sfi,
     readRecordDataStructureMap.emplace(commandIndex, readDataStructureEnum);
 
     /* set the parser for the response of this command */
-    parsingClassList.push_back(typeid(ReadRecordsRespPars));
+    parsingClassList.push_back(typeid(ReadRecordsRespPars).name());
 
     /* return and post increment the command index */
     return commandIndex++;
@@ -109,13 +109,15 @@ int PoSelectionRequest::prepareReadRecordsCmd(char sfi, ReadDataStructure readDa
 
 int PoSelectionRequest::prepareSelectFileCmd(std::vector<char> &path, const std::string &extraInfo)
 {
+    (void)extraInfo;
+
     addApduRequest((std::make_shared<SelectFileCmdBuild>(poClass, path))->getApduRequest());
     if (logger->isTraceEnabled()) {
         logger->trace("Select File: PATH = %s", ByteArrayUtil::toHex(path));
     }
 
     /* set the parser for the response of this command */
-    parsingClassList.push_back(typeid(SelectFileRespPars));
+    parsingClassList.push_back(typeid(SelectFileRespPars).name());
 
     /* return and post increment the command index */
     return commandIndex++;
@@ -124,14 +126,16 @@ int PoSelectionRequest::prepareSelectFileCmd(std::vector<char> &path, const std:
 int PoSelectionRequest::prepareSelectFileCmd(SelectFileCmdBuild::SelectControl selectControl,
                                              const std::string &extraInfo)
 {
+    (void)extraInfo;
+
     addApduRequest(
                  (std::make_shared<SelectFileCmdBuild>(poClass, selectControl))->getApduRequest());
     if (logger->isTraceEnabled()) {
-        logger->trace("Navigate: CONTROL = {}", selectControl);
+        logger->trace("Navigate: CONTROL = %d", static_cast<int>(selectControl));
     }
 
     /* set the parser for the response of this command */
-    parsingClassList.push_back(typeid(SelectFileRespPars));
+    parsingClassList.push_back(typeid(SelectFileRespPars).name());
 
     /* return and post increment the command index */
     return commandIndex++;
@@ -168,13 +172,13 @@ std::shared_ptr<AbstractApduResponseParser> PoSelectionRequest::getCommandParser
     if (seResponse->getApduResponses().size() != parsingClassList.size()) {
         throw std::invalid_argument("The number of responses and commands doesn't match.");
     }
-    const std::type_info& parsingClass = parsingClassList[commandIndex];
+    const std::string& parsingClass = parsingClassList[commandIndex];
     std::shared_ptr<AbstractApduResponseParser> parser;
-    if (parsingClass == typeid(ReadRecordsRespPars)) {
+    if (parsingClass == typeid(ReadRecordsRespPars).name()) {
        parser = std::make_shared<ReadRecordsRespPars>(seResponse->getApduResponses()[commandIndex],
                                                       readRecordDataStructureMap[commandIndex],
                                                       readRecordFirstRecordNumberMap[commandIndex]);
-    } else if (parsingClass == typeid(SelectFileRespPars)) {
+    } else if (parsingClass == typeid(SelectFileRespPars).name()) {
        parser = std::make_shared<SelectFileRespPars>(seResponse->getApduResponses()[commandIndex]);
     } else {
         throw std::invalid_argument("No parser available for this command.");
@@ -196,3 +200,4 @@ std::shared_ptr<AbstractMatchingSe> PoSelectionRequest::parse(std::shared_ptr<Se
 }
 }
 }
+

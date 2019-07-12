@@ -39,6 +39,16 @@ private:
 
 public:
     /*
+     * 
+     *
+     *
+     */
+    Byte()
+    {
+        this->value = 0;
+    }
+
+    /*
      * Constructor
      * 
      * Constructs a newly allocated Byte object that represents the specified
@@ -138,8 +148,8 @@ public:
      */
     bool equals(std::shared_ptr<void> o) override
     {
-        if (std::reinterpret_pointer_cast<Byte>(o))
-            return value == std::reinterpret_pointer_cast<Byte>(o)->byteValue();
+        if (std::static_pointer_cast<Byte>(o))
+            return value == std::static_pointer_cast<Byte>(o)->byteValue();
 
         return false;
     }
@@ -157,5 +167,13 @@ public:
      */
     void finalize() override
     {
+    }
+
+    /*
+     *
+     */
+    bool operator==(const Byte& other)
+    {
+        return this->value == other.value;
     }
 };

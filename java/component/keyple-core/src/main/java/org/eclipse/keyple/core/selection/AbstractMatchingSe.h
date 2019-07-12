@@ -42,34 +42,34 @@ private:
     std::shared_ptr<SelectionStatus> selectionStatus;
     const std::string selectionExtraInfo;
 
+public:
     /**
-        * Constructor.
-        */
-protected:
-    AbstractMatchingSe(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo);
+     * Constructor.
+     */
+    AbstractMatchingSe(std::shared_ptr<SeResponse> selectionResponse,
+                       TransmissionMode transmissionMode, const std::string &extraInfo);
 
     /**
-        * Indicates whether the current SE has been identified as selected: the logical channel is open
-        * and the selection process returned either a FCI or an ATR
-        * 
-        * @return true or false
-        */
-public:
+     * Indicates whether the current SE has been identified as selected: the logical channel is open
+     * and the selection process returned either a FCI or an ATR
+     * 
+     * @return true or false
+     */
     bool isSelected();
 
     /**
-        * @return the SE {@link SelectionStatus}
-        */
+     * @return the SE {@link SelectionStatus}
+     */
     virtual std::shared_ptr<SelectionStatus> getSelectionStatus();
 
     /**
-        * @return the SE {@link TransmissionMode} (contacts or contactless)
-        */
+     * @return the SE {@link TransmissionMode} (contacts or contactless)
+     */
     virtual TransmissionMode getTransmissionMode();
 
     /**
-        * @return the selection extra info string
-        */
+     * @return the selection extra info string
+     */
     virtual std::string getSelectionExtraInfo();
 };
 

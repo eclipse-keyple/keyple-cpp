@@ -30,10 +30,11 @@ namespace builder {
 namespace security {
 
 
-using OpenSession10RespPars = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession10RespPars;
-using ApduResponse          = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace org::eclipse::keyple::calypso::command::po::parser::security;
+using namespace org::eclipse::keyple::core::seproxy::message;
 
 class OpenSession10CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSession10RespPars> {
+public:
     /**
      * Instantiates a new AbstractOpenSessionCmdBuild.
      *
@@ -45,14 +46,17 @@ class OpenSession10CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSessi
      * @throws IllegalArgumentException - if key index is 0 (rev 1.0)
      * @throws IllegalArgumentException - if the request is inconsistent
      */
-public:
-    OpenSession10CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo) throw(std::invalid_argument);
+    OpenSession10CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect,
+                          char recordNumberToRead, const std::string &extraInfo);
 
-    std::shared_ptr<OpenSession10RespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<OpenSession10RespPars>
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<OpenSession10CmdBuild> shared_from_this() {
-        return std::static_pointer_cast<OpenSession10CmdBuild>(AbstractOpenSessionCmdBuild<OpenSession10RespPars>::shared_from_this());
+    std::shared_ptr<OpenSession10CmdBuild> shared_from_this()
+    {
+        return std::static_pointer_cast<OpenSession10CmdBuild>(
+                   AbstractOpenSessionCmdBuild<OpenSession10RespPars>::shared_from_this());
     }
 };
 

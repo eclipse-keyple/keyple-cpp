@@ -30,7 +30,6 @@ namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
-namespace sam {
 
 using namespace org::eclipse::keyple::calypso::command::sam;
 using namespace org::eclipse::keyple::calypso::transaction;
@@ -40,10 +39,10 @@ using namespace org::eclipse::keyple::core::seproxy::protocol;
 using namespace org::eclipse::keyple::core::seproxy::message;
 
 /**
-    * Specialized selection request to manage the specific characteristics of Calypso SAMs
-    */
+ * Specialized selection request to manage the specific characteristics of Calypso SAMs
+ */
 class SamSelectionRequest : public AbstractSeSelectionRequest {
-/**
+   /**
     * Create a {@link SamSelectionRequest}
     * 
     * @param samSelector the SAM selector
@@ -52,28 +51,25 @@ class SamSelectionRequest : public AbstractSeSelectionRequest {
 public:
     SamSelectionRequest(std::shared_ptr<SamSelector> samSelector, ChannelState channelState);
 
-/**
+protected:
+   /**
     * Create a CalypsoSam object containing the selection data received from the plugin
     *
     * @param seResponse the SE response received
     * @return a {@link CalypsoSam}
     */
-protected:
     std::shared_ptr<AbstractMatchingSe> parse(std::shared_ptr<SeResponse> seResponse) override;
 
 public:
-    std::shared_ptr<AbstractSamResponseParser> getCommandParser(
-                                std::shared_ptr<SeResponse> seResponse, int commandIndex) override;
+    std::shared_ptr<AbstractApduResponseParser> getCommandParser(std::shared_ptr<SeResponse> seResponse, int commandIndex) override;
 
 protected:
     std::shared_ptr<SamSelectionRequest> shared_from_this()
     {
-        return std::static_pointer_cast<SamSelectionRequest>(
-                                                   AbstractSeSelectionRequest::shared_from_this());
+        return std::static_pointer_cast<SamSelectionRequest>(AbstractSeSelectionRequest::shared_from_this());
     }
 };
 
-}
 }
 }
 }

@@ -194,7 +194,16 @@ public:
 
     static std::shared_ptr<AbstractOpenSessionRespPars> create(std::shared_ptr<ApduResponse> response, PoRevision revision);
 
-    virtual std::shared_ptr<SecureSession> toSecureSession(std::vector<char> &apduResponseData) = 0;
+    /*
+     * C++: This method is called from the class constructor. It *cannot* be pure virtual. Let's
+     *      make it simply virtual for now see what happens.
+     */
+    virtual std::shared_ptr<SecureSession> toSecureSession(std::vector<char> &apduResponseData)
+    {
+        (void)apduResponseData;
+
+        return nullptr;
+    }
 
     virtual std::vector<char> getPoChallenge();
 

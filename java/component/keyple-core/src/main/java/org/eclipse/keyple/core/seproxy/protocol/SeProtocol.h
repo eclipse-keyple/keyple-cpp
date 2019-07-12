@@ -45,7 +45,7 @@ public:
      * @return a TransmissionMode enum value
      */
     virtual TransmissionMode getTransmissionMode() = 0;
-    
+
     /**
      *
      */

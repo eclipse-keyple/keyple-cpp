@@ -12,7 +12,7 @@ SET(CMAKE_LEGACY_CYGWIN_WIN32 0)
 SET(CMAKE_CXX_STANDARD 11)
 
 IF(UNIX OR APPLE)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -Wextra -Wdeprecated -Wno-overloaded-virtual -pedantic -pedantic-errors -std=c++11")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -Wextra -Wdeprecated -Wno-overloaded-virtual -pedantic -pedantic-errors -std=c++11 -fmax-errors=10")
 ENDIF(UNIX OR APPLE)
 
 IF(WIN32)

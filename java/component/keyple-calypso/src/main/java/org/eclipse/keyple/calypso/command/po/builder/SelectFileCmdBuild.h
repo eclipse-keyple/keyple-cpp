@@ -43,8 +43,7 @@ using ApduResponse             = org::eclipse::keyple::core::seproxy::message::A
  * This class provides the dedicated constructor to build the Select File APDU commands.
  *
  */
-class SelectFileCmdBuild final
-: public AbstractPoCommandBuilder<SelectFileRespPars>, public PoSendableInSession {
+class SelectFileCmdBuild final : public AbstractPoCommandBuilder<SelectFileRespPars>, public PoSendableInSession {
 
 private:
     const CalypsoPoCommands command = CalypsoPoCommands::SELECT_FILE;

@@ -62,7 +62,7 @@ private:
     std::vector<Byte> authorizedKvcList;
 
     /** Enummap containing the key information */
-    const std::shared_ptr<std::map<DefaultKeyInfo, Byte>> keySettings = std::make_shared<std::map<DefaultKeyInfo, Byte>>(typeid(DefaultKeyInfo));
+    std::map<DefaultKeyInfo, Byte> keySettings;
 
     /**
         * Constructor.

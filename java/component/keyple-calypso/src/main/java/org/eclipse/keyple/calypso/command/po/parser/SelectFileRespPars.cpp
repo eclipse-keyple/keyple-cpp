@@ -5,7 +5,7 @@
 #include "SelectFileRespPars.h"
 
 /* Common */
-#include "system.h"
+#include "System.h"
 
 namespace org {
 namespace eclipse {

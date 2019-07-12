@@ -29,8 +29,8 @@ namespace po {
 namespace builder {
 namespace security {
 
-using OpenSession24RespPars = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession24RespPars;
-using ApduResponse          = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace org::eclipse::keyple::calypso::command::po::parser::security;
+using namespace org::eclipse::keyple::core::seproxy::message;
 
 class OpenSession24CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSession24RespPars> {
     /**

@@ -23,8 +23,7 @@ namespace keyple {
 namespace calypso {
 namespace command {
 
-using AbstractApduResponseParser    = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using AbstractIso7816CommandBuilder = org::eclipse::keyple::core::command::AbstractIso7816CommandBuilder;
+using namespace org::eclipse::keyple::core::command;
 
 template<typename B, typename P>
 class CalypsoBuilderParser {
