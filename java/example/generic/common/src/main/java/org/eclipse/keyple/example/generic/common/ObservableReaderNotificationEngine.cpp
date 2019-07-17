@@ -10,23 +10,15 @@
 #include "ObservableReaderNotificationEngine.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace example {
-                namespace generic {
-                    namespace common {
+namespace eclipse {
+namespace keyple {
+namespace example {
+namespace generic {
+namespace common {
 
-                        using ReaderPlugin     = org::eclipse::keyple::seproxy::ReaderPlugin;
-                        using SeProxyService   = org::eclipse::keyple::seproxy::SeProxyService;
-                        using SeReader         = org::eclipse::keyple::seproxy::SeReader;
-                        using ObservablePlugin = org::eclipse::keyple::seproxy::event::ObservablePlugin;
-                        using ObservableReader = org::eclipse::keyple::seproxy::event::ObservableReader;
-                        using PluginEvent      = org::eclipse::keyple::seproxy::event::PluginEvent;
-                        using ReaderEvent      = org::eclipse::keyple::seproxy::event::ReaderEvent;
-                        using KeyplePluginNotFoundException =
-                            org::eclipse::keyple::seproxy::exception::KeyplePluginNotFoundException;
-                        using KeypleReaderNotFoundException =
-                            org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
+using namespace org::eclipse::keyple::core::seproxy;
+using namespace org::eclipse::keyple::core::seproxy::event;
+using namespace org::eclipse::keyple::core::seproxy::exception;
 
                         ObservableReaderNotificationEngine::ObservableReaderNotificationEngine()
                         {

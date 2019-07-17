@@ -129,12 +129,15 @@ protected:
     bool isLogicalChannelOpenTestProxy();
 
 
-
-    /*
-        * STATE CONTROLLERS FOR INSERTING AND REMOVING SECURE ELEMENT
-        */
+public:
+    /**
+     * STATE CONTROLLERS FOR INSERTING AND REMOVING SECURE ELEMENT
+     */
     void insertSe(std::shared_ptr<StubSecureElement> _se);
 
+    /**
+     *
+     */
     void removeSe();
 
     /**
