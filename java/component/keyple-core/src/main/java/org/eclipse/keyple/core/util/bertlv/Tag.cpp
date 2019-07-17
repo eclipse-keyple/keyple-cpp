@@ -9,6 +9,11 @@ namespace core {
 namespace util {
 namespace bertlv {
 
+const char Tag::UNIVERSAL = static_cast<char>(0x00);
+const char Tag::APPLICATION = static_cast<char>(0x01);
+const char Tag::CONTEXT = static_cast<char>(0x02);
+const char Tag::PRIVATE = static_cast<char>(0x03);
+
 Tag::Tag(int tagNumber, char tagClass, TagType tagType) : tagNumber(tagNumber), tagClass(tagClass), tagType(tagType) {
     //if (tagType == nullptr) {
     //    throw std::invalid_argument("TLV Tag: type is null.");

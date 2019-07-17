@@ -30,9 +30,8 @@ namespace builder {
 namespace security {
 
 using namespace org::eclipse::keyple::calypso::command::po::builder::security;
-
-using OpenSession31RespPars = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession31RespPars;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace org::eclipse::keyple::calypso::command::po::parser::security;
+using namespace org::eclipse::keyple::core::seproxy::message;
 
 class OpenSession31CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSession31RespPars> {
     /**

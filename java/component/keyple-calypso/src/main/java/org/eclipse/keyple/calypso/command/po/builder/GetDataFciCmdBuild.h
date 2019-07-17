@@ -14,10 +14,14 @@
 
 #include <memory>
 
+/* Calypso */
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommands.h"
 #include "GetDataFciRespPars.h"
 #include "PoClass.h"
+
+/* Common */
+#include "Export.h"
 
 namespace org {
 namespace eclipse {
@@ -45,20 +49,20 @@ class EXPORT GetDataFciCmdBuild final
 private:
     static const std::shared_ptr<CalypsoPoCommands> command;
 
-/**
- * Instantiates a new GetDataFciCmdBuild.
- *
- * @param poClass indicates which CLA byte should be used for the Apdu
- */
+    /**
+     * Instantiates a new GetDataFciCmdBuild.
+     *
+     * @param poClass indicates which CLA byte should be used for the Apdu
+     */
 public:
-GetDataFciCmdBuild(PoClass poClass);
+    GetDataFciCmdBuild(PoClass poClass);
 
-std::shared_ptr<GetDataFciRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<GetDataFciRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-std::shared_ptr<GetDataFciCmdBuild> shared_from_this() {
-    return std::static_pointer_cast<GetDataFciCmdBuild>(AbstractPoCommandBuilder<GetDataFciRespPars>::shared_from_this());
-}
+    std::shared_ptr<GetDataFciCmdBuild> shared_from_this() {
+         return std::static_pointer_cast<GetDataFciCmdBuild>(AbstractPoCommandBuilder<GetDataFciRespPars>::shared_from_this());
+    }
 };
 
 }

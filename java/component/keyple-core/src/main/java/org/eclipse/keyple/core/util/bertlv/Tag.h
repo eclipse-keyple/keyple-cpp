@@ -17,6 +17,9 @@
 #include <stdexcept>
 #include <memory>
 
+/* Common */
+#include "Export.h"
+
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -29,7 +32,7 @@ namespace bertlv {
     * <p>
     * (ITU-T X.690 / ISO 8825)
     */
-class Tag : public std::enable_shared_from_this<Tag> {
+class EXPORT Tag : public std::enable_shared_from_this<Tag> {
 public:
     enum class TagType {
         PRIMITIVE,
@@ -44,10 +47,10 @@ private:
 
     /* the tag class */
 public:
-    static const char UNIVERSAL = static_cast<char>(0x00);
-    static const char APPLICATION = static_cast<char>(0x01);
-    static const char CONTEXT = static_cast<char>(0x02);
-    static const char PRIVATE = static_cast<char>(0x03);
+    static const char UNIVERSAL;
+    static const char APPLICATION;
+    static const char CONTEXT;
+    static const char PRIVATE;
 
     /**
         * Creates a tag from its attributes.

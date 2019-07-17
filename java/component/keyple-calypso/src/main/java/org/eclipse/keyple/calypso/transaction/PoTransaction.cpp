@@ -66,6 +66,14 @@ using namespace org::eclipse::keyple::calypso::command::sam;
 using namespace org::eclipse::keyple::calypso::command::sam::parser;
 using namespace org::eclipse::keyple::calypso::command::sam::parser::security;
 
+const char PoTransaction::CHALLENGE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
+const char PoTransaction::CHALLENGE_LENGTH_REV32      = static_cast<char>(0x08);
+const char PoTransaction::SIGNATURE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
+const char PoTransaction::SIGNATURE_LENGTH_REV32 = static_cast<char>(0x08);
+
+std::vector<char> PoTransaction::ratificationCmdApduLegacy;
+std::vector<char> PoTransaction::ratificationCmdApdu;
+
 PoTransaction::PoTransaction(std::shared_ptr<PoResource> poResource,
                              std::shared_ptr<SamResource> samResource,
                              std::shared_ptr<SecuritySettings> securitySettings)
@@ -806,7 +814,8 @@ bool PoTransaction::DigestProcessor::revMode = false;
 char PoTransaction::DigestProcessor::keyRecordNumber = 0;
 char PoTransaction::DigestProcessor::keyKIF = 0;
 char PoTransaction::DigestProcessor::keyKVC = 0;
-static const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PoTransaction::DigestProcessor));
+const std::shared_ptr<Logger> PoTransaction::DigestProcessor::logger =
+    LoggerFactory::getLogger(typeid(PoTransaction::DigestProcessor));
 
 void PoTransaction::DigestProcessor::initialize(PoRevision poRev, SamRevision samRev,
                                                 bool sessionEncryption, bool verificationMode,

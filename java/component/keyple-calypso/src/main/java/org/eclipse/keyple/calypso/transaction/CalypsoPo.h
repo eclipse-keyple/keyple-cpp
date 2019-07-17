@@ -53,7 +53,7 @@ using TransmissionMode   = org::eclipse::keyple::core::seproxy::protocol::Transm
     */
 class CalypsoPo final : public AbstractMatchingSe {
 private:
-    static const std::shared_ptr<Logger> logger;
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CalypsoPo));
     char bufferSizeIndicator;
     int bufferSizeValue;
     char platform;

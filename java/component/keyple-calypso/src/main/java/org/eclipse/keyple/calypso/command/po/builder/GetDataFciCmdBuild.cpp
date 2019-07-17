@@ -12,13 +12,12 @@ namespace command {
 namespace po {
 namespace builder {
 
-    
+using namespace org::eclipse::keyple::calypso::command;
 using namespace org::eclipse::keyple::calypso::command::po;
-
-using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
-using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
-using GetDataFciRespPars       = org::eclipse::keyple::calypso::command::po::parser::GetDataFciRespPars;
-using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace org::eclipse::keyple::calypso::command::po::parser;
+using namespace org::eclipse::keyple::core::seproxy::message;
+ 
+const std::shared_ptr<CalypsoPoCommands> GetDataFciCmdBuild::command = nullptr;
 
 GetDataFciCmdBuild::GetDataFciCmdBuild(PoClass poClass)
 : AbstractPoCommandBuilder<GetDataFciRespPars>(command, nullptr)

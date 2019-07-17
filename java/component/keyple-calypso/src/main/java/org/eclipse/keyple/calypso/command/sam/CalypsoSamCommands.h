@@ -19,6 +19,9 @@
 /* Core */
 #include "CommandsTable.h"
 
+/* Common */
+#include "Export.h"
+
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -28,7 +31,7 @@ namespace sam {
 
 using CommandsTable = org::eclipse::keyple::core::command::CommandsTable;
 
-class CalypsoSamCommands final : public CommandsTable {
+class EXPORT CalypsoSamCommands final : public CommandsTable {
 
     /** The sam select diversifier. */
 public:

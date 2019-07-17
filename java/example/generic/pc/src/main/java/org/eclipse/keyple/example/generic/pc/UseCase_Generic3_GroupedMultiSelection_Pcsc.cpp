@@ -1,43 +1,36 @@
 #include "ApduResponse.h"
-#include "ByteArrayUtils.h"
+#include "ByteArrayUtil.h"
 #include "ChannelState.h"
-#include "ContactlessProtocols_Import.h"
+#include "GenericSeSelectionRequest.h"
 #include "KeypleBaseException.h"
-#include "MatchingSe.h"
+#include "MatchingSelection.h"
 #include "NoStackTraceThrowable.h"
 #include "PcscPlugin.h"
 #include "ReaderUtilities.h"
+#include "SeCommonProtocols.h"
+#include "SelectionsResult.h"
 #include "SelectionStatus.h"
 #include "SeProtocol.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 #include "SeResponse.h"
-#include "SeSelector.h"
 #include "SeSelection.h"
-#include "SeSelectionRequest.h"
+#include "SeSelector.h"
 
 /* Examples */
 #include "ReaderUtilities.h"
 
-using ApduResponse          = org::eclipse::keyple::seproxy::message::ApduResponse;
-using ByteArrayUtils        = org::eclipse::keyple::util::ByteArrayUtils;
-using ChannelState          = org::eclipse::keyple::seproxy::ChannelState;
-using ContactlessProtocols  = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
-using KeypleBaseException   = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-using Logger                = org::eclipse::keyple::common::Logger;
-using LoggerFactory         = org::eclipse::keyple::common::LoggerFactory;
-using MatchingSe            = org::eclipse::keyple::transaction::MatchingSe;
-using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
-using PcscPlugin            = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
-using ReaderUtilities       = org::eclipse::keyple::example::generic::pc::ReaderUtilities;
-using SelectionStatus       = org::eclipse::keyple::seproxy::message::SelectionStatus;
-using SeProtocol            = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-using SeProxyService        = org::eclipse::keyple::seproxy::SeProxyService;
-using SeReader              = org::eclipse::keyple::seproxy::SeReader;
-using SeResponse            = org::eclipse::keyple::seproxy::message::SeResponse;
-using SeSelector            = org::eclipse::keyple::seproxy::SeSelector;
-using SeSelection           = org::eclipse::keyple::transaction::SeSelection;
-using SeSelectionRequest    = org::eclipse::keyple::transaction::SeSelectionRequest;
+using namespace org::eclipse::keyple::common;
+using namespace org::eclipse::keyple::core::selection;
+using namespace org::eclipse::keyple::core::seproxy;
+using namespace org::eclipse::keyple::core::seproxy::exception;
+using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
+//using namespace org::eclipse::keyple::core::transaction;
+using namespace org::eclipse::keyple::core::util;
+using namespace org::eclipse::keyple::plugin::pcsc;
+using namespace org::eclipse::keyple::example::generic::common;
+using namespace org::eclipse::keyple::example::generic::pc;
 
 class UseCase_Generic3_GroupedMultiSelection_Pcsc {
 
@@ -73,52 +66,76 @@ int main(int argc, char **argv)
     logger->info("=============== UseCase Generic #3: AID based grouped explicit multiple selection ==================\n");
     logger->info("= SE Reader  NAME = %s\n", seReader->getName());
 
-    std::vector<std::shared_ptr<MatchingSe>> matchingSeTable(3);
-
     /* Check if a SE is present in the reader */
     if (seReader->isSePresent()) {
 
         /* CLOSE_AFTER pour assurer la sélection de toutes les applications */
-        std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(seReader);
+        std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>();
 
         /* operate SE selection (change the AID here to adapt it to the SE used for the test) */
         //std::string seAidPrefix = "A000000404012509";
-	std::string seAidPrefix = "304554502E494341";
+        std::string seAidPrefix = "304554502E494341";
 
-        /* AID based selection */
-        std::vector<char> aid = ByteArrayUtils::fromHex(seAidPrefix);
-        std::shared_ptr<SeSelector::AidSelector> shared_aid = std::make_shared<SeSelector::AidSelector>(aid, nullptr);
-        matchingSeTable[0] = seSelection->prepareSelection(std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(shared_aid, nullptr, "Initial selection #1"), ChannelState::CLOSE_AFTER, std::dynamic_pointer_cast<SeProtocol>(std::shared_ptr<ContactlessProtocols>(&ContactlessProtocols::PROTOCOL_ISO14443_4))));
+        /* AID based selection (1st selection, later indexed 0 */
+        {
+        std::vector<char> aid = ByteArrayUtil::fromHex(seAidPrefix);
+        std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
+        std::shared_ptr<SeSelector::AidSelector> aidSelector  = 
+            std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::FIRST,
+                                                      SeSelector::AidSelector::FileControlInformation::FCI);
+        std::shared_ptr<SeSelector> seSelector =
+            std::make_shared<SeSelector>(std::shared_ptr<SeCommonProtocols>(&SeCommonProtocols::PROTOCOL_ISO14443_4), nullptr, aidSelector,
+                                         "Initial selection #1");
+        std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
+            std::make_shared<GenericSeSelectionRequest>(seSelector, ChannelState::CLOSE_AFTER);
+        seSelection->prepareSelection(genericSeSelectionRequest);
+        }
+
+        /* next selection (2nd selection, later indexed 1) */
+        {
+        std::vector<char> aid = ByteArrayUtil::fromHex(seAidPrefix);
+        std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
+        std::shared_ptr<SeSelector::AidSelector> aidSelector  = 
+            std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,
+                                                      SeSelector::AidSelector::FileControlInformation::FCI);
+        std::shared_ptr<SeSelector> seSelector =
+            std::make_shared<SeSelector>(std::shared_ptr<SeCommonProtocols>(&SeCommonProtocols::PROTOCOL_ISO14443_4), nullptr, aidSelector,
+                                         "Initial selection #2");
+        std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
+            std::make_shared<GenericSeSelectionRequest>(seSelector, ChannelState::CLOSE_AFTER);
+        seSelection->prepareSelection(genericSeSelectionRequest);
+        }
         /* next selection */
-        matchingSeTable[1] = seSelection->prepareSelection(std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(shared_aid, nullptr, "Next selection #2"), ChannelState::CLOSE_AFTER, std::dynamic_pointer_cast<SeProtocol>(std::shared_ptr<ContactlessProtocols>(&ContactlessProtocols::PROTOCOL_ISO14443_4))));
-        /* next selection */
-        matchingSeTable[2] = seSelection->prepareSelection(std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(shared_aid, nullptr, "Next selection #3"), ChannelState::CLOSE_AFTER, std::dynamic_pointer_cast<SeProtocol>(std::shared_ptr<ContactlessProtocols>(&ContactlessProtocols::PROTOCOL_ISO14443_4))));
+        {
+        std::vector<char> aid = ByteArrayUtil::fromHex(seAidPrefix);
+        std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
+        std::shared_ptr<SeSelector::AidSelector> aidSelector  = 
+            std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,
+                                                      SeSelector::AidSelector::FileControlInformation::FCI);
+        std::shared_ptr<SeSelector> seSelector =
+            std::make_shared<SeSelector>(std::shared_ptr<SeCommonProtocols>(&SeCommonProtocols::PROTOCOL_ISO14443_4), nullptr, aidSelector,
+                                         "Initial selection #3");
+        std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
+            std::make_shared<GenericSeSelectionRequest>(seSelector, ChannelState::CLOSE_AFTER);
+        seSelection->prepareSelection(genericSeSelectionRequest);
+        }
+
         /*
-            * Actual SE communication: operate through a single request the SE selection
-            */
-        if (seSelection->processExplicitSelection()) {
-
-            int matchedSelection = 0;
-            /* Count the number of SE that matched the selection */
-            for (int i = 0; i < (int)matchingSeTable.size(); i++) {
-                if (matchingSeTable[i]->getSelectionSeResponse() != nullptr) {
-                    matchedSelection++;
-                }
+         * Actual SE communication: operate through a single request the SE selection
+         */
+        std::shared_ptr<SelectionsResult> selectionsResult = seSelection->processExplicitSelection(seReader);
+        if (selectionsResult->getMatchingSelections().size() > 0) {
+            for (auto matchingSelection : selectionsResult->getMatchingSelections()) {
+                std::shared_ptr<AbstractMatchingSe> matchingSe = matchingSelection->getMatchingSe();
+                logger->info("Selection status for selection \"%s\" (indexed %d): \n\t\tATR: %s\n\t\tFCI: %s",
+                             matchingSelection->getExtraInfo(), matchingSelection->getSelectionIndex(),
+                             ByteArrayUtil::toHex(matchingSe->getSelectionStatus()->getAtr()->getBytes()),
+                             ByteArrayUtil::toHex(matchingSe->getSelectionStatus()->getFci()->getDataOut()));
             }
-            logger->info("The hed %d time(s) the selection\n", matchedSelection);
-
-            for (int i = 0; i < (int)matchingSeTable.size(); i++) {
-
-                if (matchingSeTable[i]->getSelectionSeResponse() != nullptr) {
-                    logger->info("Selection status for case %d: \n\t\tATR: %s\n\t\tFCI: %s\n", i + 1, ByteArrayUtils::toHex(matchingSeTable[i]->getSelectionSeResponse()->getSelectionStatus()->getAtr()->getBytes()), ByteArrayUtils::toHex(matchingSeTable[i]->getSelectionSeResponse()->getSelectionStatus()->getFci()->getDataOut()));
-                }
-            }
+        } else {
+            logger->info("No SE matched the selection\n");
         }
-        else {
-            logger->info("The selection process did not return any selected SE\n");
-        }
-    }
-    else {
+    } else {
         logger->error("No SE were detected\n");
     }
 

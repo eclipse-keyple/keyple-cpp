@@ -36,6 +36,9 @@
 #include "SeRequest.h"
 #include "TransmissionMode.h"
 
+/* Common */
+#include "Export.h"
+
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -63,7 +66,7 @@ using namespace org::eclipse::keyple::calypso::transaction::exception;
  *
  * @author Calypso Networks Association
  */
-class PoTransaction final : public std::enable_shared_from_this<PoTransaction> {
+class EXPORT PoTransaction final : public std::enable_shared_from_this<PoTransaction> {
 private:
     /**
      * The PO Transaction State defined with the elements: ‘IOError’, ‘SEInserted’ and ‘SERemoval’.
@@ -388,10 +391,10 @@ public:
 private:
     static const char KIF_UNDEFINED = static_cast<char>(0xFF);
 
-    static const char CHALLENGE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
-    static const char CHALLENGE_LENGTH_REV32      = static_cast<char>(0x08);
-    static const char SIGNATURE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
-    static const char SIGNATURE_LENGTH_REV32 = static_cast<char>(0x08);
+    static const char CHALLENGE_LENGTH_REV_INF_32;
+    static const char CHALLENGE_LENGTH_REV32;
+    static const char SIGNATURE_LENGTH_REV_INF_32;
+    static const char SIGNATURE_LENGTH_REV32;
 
     static constexpr int OFFSET_CLA  = 0;
     static constexpr int OFFSET_INS  = 1;

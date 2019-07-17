@@ -42,15 +42,11 @@ namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using AbstractThreadedLocalReader = org::eclipse::keyple::seproxy::plugin::AbstractThreadedLocalReader;
-using Card                        = org::eclipse::keyple::smartcardio::Card;
-using CardChannel                 = org::eclipse::keyple::smartcardio::CardChannel;
-using CardTerminal                = org::eclipse::keyple::smartcardio::CardTerminal;
-using SeProtocol                  = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-using TransmissionMode            = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-using ReaderEvent                 = org::eclipse::keyple::seproxy::event::ReaderEvent;
-using LoggerFactory               = org::eclipse::keyple::common::LoggerFactory;
-using Logger                      = org::eclipse::keyple::common::Logger;
+using namespace org::eclipse::keyple::common;
+using namespace org::eclipse::keyple::core::seproxy::event;
+using namespace org::eclipse::keyple::core::seproxy::plugin;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace org::eclipse::keyple::smartcardio;
 
 class IMPORT PcscReader : public AbstractThreadedLocalReader {
 public:

@@ -25,8 +25,8 @@ namespace calypso {
 namespace command {
 namespace sam {
 
-using AbstractIso7816CommandBuilder = org::eclipse::keyple::core::command::AbstractIso7816CommandBuilder;
-using ApduRequest                   = org::eclipse::keyple::core::seproxy::message::ApduRequest;
+using namespace org::eclipse::keyple::core::command;
+using namespace org::eclipse::keyple::core::seproxy::message;
 
 /**
     * Superclass for all SAM command builders.
@@ -39,11 +39,11 @@ protected:
     SamRevision defaultRevision = SamRevision::S1D; // 94
 
 public:
-    AbstractSamCommandBuilder(std::shared_ptr<CalypsoSamCommands> reference,
-                              std::shared_ptr<ApduRequest> request);
+    AbstractSamCommandBuilder(std::shared_ptr<CalypsoSamCommands> reference, std::shared_ptr<ApduRequest> request);
 
 protected:
-    std::shared_ptr<AbstractSamCommandBuilder> shared_from_this() {
+    std::shared_ptr<AbstractSamCommandBuilder> shared_from_this()
+    {
         return std::static_pointer_cast<AbstractSamCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());
     }
 };

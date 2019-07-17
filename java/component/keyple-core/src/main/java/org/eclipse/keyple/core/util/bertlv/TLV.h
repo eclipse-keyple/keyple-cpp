@@ -1,13 +1,3 @@
-#pragma once
-
-#include <string>
-#include <vector>
-#include <stdexcept>
-#include <memory>
-
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace util { namespace bertlv { class Tag; } } } } } }
-
 /********************************************************************************
  * Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
  *
@@ -19,6 +9,20 @@ namespace org { namespace eclipse { namespace keyple { namespace core { namespac
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
+
+#pragma once
+
+#include <string>
+#include <vector>
+#include <stdexcept>
+#include <memory>
+
+/* Common */
+#include "Export.h"
+
+//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
+namespace org { namespace eclipse { namespace keyple { namespace core { namespace util { namespace bertlv { class Tag; } } } } } }
+
 namespace org {
     namespace eclipse {
         namespace keyple {
@@ -32,7 +36,7 @@ namespace org {
                          * <p>
                          * (ITU-T X.690 / ISO 8825)
                          */
-                        class TLV : public std::enable_shared_from_this<TLV> {
+                        class EXPORT TLV : public std::enable_shared_from_this<TLV> {
                         private:
                             std::shared_ptr<Tag> tag;
                             int length = 0;

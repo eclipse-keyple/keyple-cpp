@@ -23,6 +23,9 @@
 #include "CalypsoPoCommands.h"
 #include "PoRevision.h"
 
+/* Common */
+#include "Export.h"
+
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -41,7 +44,7 @@ using namespace org::eclipse::keyple::core::command;
  *
  */
 template<typename T>
-class AbstractOpenSessionCmdBuild : public AbstractPoCommandBuilder<T> {
+class EXPORT AbstractOpenSessionCmdBuild : public AbstractPoCommandBuilder<T> {
 
     /**
      * Instantiates a new AbstractOpenSessionCmdBuild.
@@ -56,9 +59,10 @@ public:
     {
     }
 
-    static std::shared_ptr<AbstractOpenSessionCmdBuild> create(PoRevision revision, char debitKeyIndex,
-                                                               std::vector<char> &sessionTerminalChallenge, char sfi, char recordNb,
-                                                               const std::string &extraInfo);
+    static std::shared_ptr<AbstractOpenSessionCmdBuild<T>> create(PoRevision revision, char debitKeyIndex,
+                                                                  std::vector<char> &sessionTerminalChallenge, char sfi,
+                                                                  char recordNb, const std::string &extraInfo);
+
 protected:
     std::shared_ptr<AbstractOpenSessionCmdBuild> shared_from_this()
     {

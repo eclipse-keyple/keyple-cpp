@@ -1,18 +1,20 @@
 #include "CalypsoSamCommands.h"
+#include "CardGenerateKeyCmdBuild.h"
 #include "SelectDiversifierCmdBuild.h"
 #include "SelectDiversifierRespPars.h"
-#include "SamGetChallengeCmdBuild.h"
-#include "DigestInitCmdBuild.h"
-#include "DigestUpdateCmdBuild.h"
-#include "DigestUpdateMultipleCmdBuild.h"
 #include "DigestAuthenticateCmdBuild.h"
-#include "DigestCloseCmdBuild.h"
-#include "SamGetChallengeRespPars.h"
-#include "SamGetChallengeRespPars.h"
-#include "DigestUpdateRespPars.h"
-#include "DigestUpdateMultipleRespPars.h"
-#include "DigestCloseRespPars.h"
 #include "DigestAuthenticateRespPars.h"
+#include "DigestCloseRespPars.h"
+#include "DigestCloseCmdBuild.h"
+#include "DigestInitCmdBuild.h"
+#include "DigestInitRespPars.h"
+#include "DigestUpdateCmdBuild.h"
+#include "DigestUpdateRespPars.h"
+#include "DigestUpdateMultipleCmdBuild.h"
+#include "DigestUpdateMultipleRespPars.h"
+#include "GiveRandomCmdBuild.h"
+#include "SamGetChallengeCmdBuild.h"
+#include "SamGetChallengeRespPars.h"
 
 namespace org {
 namespace eclipse {
@@ -21,24 +23,9 @@ namespace calypso {
 namespace command {
 namespace sam {
 
-using SelectDiversifierCmdBuild    = org::eclipse::keyple::calypso::command::sam::builder::security::SelectDiversifierCmdBuild;
-using SelectDiversifierRespPars    = org::eclipse::keyple::calypso::command::sam::parser::security::SelectDiversifierRespPars;
-using AbstractApduCommandBuilder   = org::eclipse::keyple::core::command::AbstractApduCommandBuilder;
-using AbstractApduResponseParser   = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using CommandsTable                = org::eclipse::keyple::core::command::CommandsTable;
-using SamGetChallengeCmdBuild      = org::eclipse::keyple::calypso::command::sam::builder::security::SamGetChallengeCmdBuild;
-using DigestInitCmdBuild           = org::eclipse::keyple::calypso::command::sam::builder::security::DigestInitCmdBuild;
-using DigestUpdateCmdBuild         = org::eclipse::keyple::calypso::command::sam::builder::security::DigestUpdateCmdBuild;
-using DigestUpdateMultipleCmdBuild = org::eclipse::keyple::calypso::command::sam::builder::security::DigestUpdateMultipleCmdBuild;
-using DigestCloseCmdBuild          = org::eclipse::keyple::calypso::command::sam::builder::security::DigestCloseCmdBuild;
-using DigestAuthenticateCmdBuild   = org::eclipse::keyple::calypso::command::sam::builder::security::DigestAuthenticateCmdBuild;
-using SelectDiversifierRespPars    = org::eclipse::keyple::calypso::command::sam::parser::security::SelectDiversifierRespPars;
-using SamGetChallengeRespPars      = org::eclipse::keyple::calypso::command::sam::parser::security::SamGetChallengeRespPars;
-using DigestInitRespPars           = org::eclipse::keyple::calypso::command::sam::parser::security::SamGetChallengeRespPars;
-using DigestUpdateRespPars         = org::eclipse::keyple::calypso::command::sam::parser::security::DigestUpdateRespPars;
-using DigestUpdateMultipleRespPars = org::eclipse::keyple::calypso::command::sam::parser::security::DigestUpdateMultipleRespPars;
-using DigestCloseRespPars          = org::eclipse::keyple::calypso::command::sam::parser::security::DigestCloseRespPars;
-using DigestAuthenticateRespPars   = org::eclipse::keyple::calypso::command::sam::parser::security::DigestAuthenticateRespPars;
+using namespace org::eclipse::keyple::calypso::command::sam::builder::security;
+using namespace org::eclipse::keyple::calypso::command::sam::parser::security;
+using namespace org::eclipse::keyple::core::command;
 
 CalypsoSamCommands CalypsoSamCommands::SELECT_DIVERSIFIER(    "SELECT_DIVERSIFIER",     InnerEnum::SELECT_DIVERSIFIER,     "Select Diversifier",     static_cast<char>(0x14), typeid(SelectDiversifierCmdBuild),    typeid(SelectDiversifierRespPars));
 CalypsoSamCommands CalypsoSamCommands::GET_CHALLENGE(         "GET_CHALLENGE",          InnerEnum::GET_CHALLENGE,          "Get Challenge",          static_cast<char>(0x84), typeid(SamGetChallengeCmdBuild),      typeid(SamGetChallengeRespPars));
@@ -47,6 +34,8 @@ CalypsoSamCommands CalypsoSamCommands::DIGEST_UPDATE(         "DIGEST_UPDATE",  
 CalypsoSamCommands CalypsoSamCommands::DIGEST_UPDATE_MULTIPLE("DIGEST_UPDATE_MULTIPLE", InnerEnum::DIGEST_UPDATE_MULTIPLE, "Digest Update Multiple", static_cast<char>(0x8C), typeid(DigestUpdateMultipleCmdBuild), typeid(DigestUpdateMultipleRespPars));
 CalypsoSamCommands CalypsoSamCommands::DIGEST_CLOSE(          "DIGEST_CLOSE",           InnerEnum::DIGEST_CLOSE,           "Digest Close",           static_cast<char>(0x8E), typeid(DigestCloseCmdBuild),          typeid(DigestCloseRespPars));
 CalypsoSamCommands CalypsoSamCommands::DIGEST_AUTHENTICATE(   "DIGEST_AUTHENTICATE",    InnerEnum::DIGEST_AUTHENTICATE,    "Digest Authenticate",    static_cast<char>(0x82), typeid(DigestAuthenticateCmdBuild),   typeid(DigestAuthenticateRespPars));
+CalypsoSamCommands CalypsoSamCommands::GIVE_RANDOM(           "GIVE_RANDOM",            InnerEnum::GIVE_RANDOM,            "Give Random",            static_cast<char>(0x86), typeid(GiveRandomCmdBuild),           typeid(GiveRandomCmdBuild));
+CalypsoSamCommands CalypsoSamCommands::CARD_GENERATE_KEY(     "CARD_GENERATE_KEY",      InnerEnum::CARD_GENERATE_KEY,      "Card Generate Key",      static_cast<char>(0x12), typeid(CardGenerateKeyCmdBuild),      typeid(CardGenerateKeyCmdBuild));
 
 std::vector<CalypsoSamCommands> CalypsoSamCommands::valueList;
 
