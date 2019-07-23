@@ -1,43 +1,32 @@
-#include "ByteArrayUtils.h"
-#include "ContactlessProtocols_Import.h"
+#include "AbstractMatchingSe.h"
+#include "ByteArrayUtil.h"
+#include "ChannelState.h"
+#include "GenericSeSelectionRequest.h"
 #include "KeypleBaseException.h"
+#include "MatchingSelection.h"
+#include "NoStackTraceThrowable.h"
+#include "ObservableReader.h"
 #include "PcscPlugin.h"
-#include "ReaderEvent_Import.h"
 #include "ReaderUtilities.h"
-#include "SeSelector.h"
-#include "SeSelection.h"
-#include "SeSelectionRequest.h"
+#include "SeCommonProtocols.h"
+#include "SelectionStatus.h"
 #include "SeProtocol.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
+#include "SeSelection.h"
+#include "SeSelector.h"
 
-/* Common */
-#include "Logger.h"
-#include "LoggerFactory.h"
-
-/* Smartcard I/O */
-#include "ChannelState.h"
-
-/* Examples */
-#include "ReaderUtilities.h"
-
-using ByteArrayUtils       = org::eclipse::keyple::util::ByteArrayUtils;
-using ChannelState         = org::eclipse::keyple::seproxy::ChannelState;
-using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
-using KeypleBaseException  = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-using Logger               = org::eclipse::keyple::common::Logger;
-using LoggerFactory        = org::eclipse::keyple::common::LoggerFactory;
-using ObservableReader     = org::eclipse::keyple::seproxy::event::ObservableReader;
-using PcscPlugin           = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
-using ReaderEvent          = org::eclipse::keyple::seproxy::event::ReaderEvent;
-using ReaderObserver       = org::eclipse::keyple::seproxy::event::ObservableReader::ReaderObserver;
-using ReaderUtilities      = org::eclipse::keyple::example::generic::pc::ReaderUtilities;
-using SeProxyService       = org::eclipse::keyple::seproxy::SeProxyService;
-using SeReader             = org::eclipse::keyple::seproxy::SeReader;
-using SeSelector           = org::eclipse::keyple::seproxy::SeSelector;
-using SeSelection          = org::eclipse::keyple::transaction::SeSelection;
-using SeSelectionRequest   = org::eclipse::keyple::transaction::SeSelectionRequest;
-using SeProtocol           = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+using namespace org::eclipse::keyple::common;
+using namespace org::eclipse::keyple::core::selection;
+using namespace org::eclipse::keyple::core::seproxy;
+using namespace org::eclipse::keyple::core::seproxy::event;
+using namespace org::eclipse::keyple::core::seproxy::exception;
+using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace org::eclipse::keyple::core::util;
+using namespace org::eclipse::keyple::plugin::pcsc;
+using namespace org::eclipse::keyple::example::generic::common;
+using namespace org::eclipse::keyple::example::generic::pc;
 
 class UseCase_Generic2_DefaultSelectionNotification_Pcsc
 : public std::enable_shared_from_this<UseCase_Generic2_DefaultSelectionNotification_Pcsc>, public ObservableReader::ReaderObserver  {
@@ -81,7 +70,7 @@ public:
         /*
          * Prepare a SE selection
          */
-        seSelection = std::make_shared<SeSelection>(seReader);
+        seSelection = std::make_shared<SeSelection>();
 
         /*
          * Setting of an AID based selection
@@ -94,15 +83,18 @@ public:
          * Generic selection: configures a SeSelector with all the desired attributes to make the
          * selection
          */
-        std::vector<char> aid = ByteArrayUtils::fromHex(seAid);
-        std::shared_ptr<SeSelector::AidSelector> shared_aid = std::make_shared<SeSelector::AidSelector>(aid, nullptr);
-        std::shared_ptr<SeSelector> shared_selector = std::make_shared<SeSelector>(shared_aid, nullptr, "AID: " + seAid);
-        std::shared_ptr<SeSelectionRequest> seSelector = std::make_shared<SeSelectionRequest>(shared_selector, ChannelState::KEEP_OPEN, std::dynamic_pointer_cast<SeProtocol>(std::shared_ptr<ContactlessProtocols>(&ContactlessProtocols::PROTOCOL_ISO14443_4)));
-
+        std::vector<char> aid = ByteArrayUtil::fromHex(seAid);
+        std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
+        std::shared_ptr<SeSelector::AidSelector> aidSelector  =
+                    std::make_shared<SeSelector::AidSelector>(isoAid, nullptr);
+        std::shared_ptr<SeSelector> seSelector =
+            std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector, "AID:" + seAid);
+        std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
+            std::make_shared<GenericSeSelectionRequest>(seSelector, ChannelState::KEEP_OPEN);
         /*
          * Add the selection case to the current selection (we could have added other cases here)
          */
-        seSelection->prepareSelection(seSelector);
+        seSelection->prepareSelection(genericSeSelectionRequest);
 
         /*
          * Provide the SeReader with the selection operation to be processed when a SE is inserted.
@@ -128,7 +120,8 @@ public:
     void update(std::shared_ptr<ReaderEvent> event)
     {
         if (event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
-            if (seSelection->processDefaultSelection(event->getDefaultSelectionResponse())) {
+            /* the selection has one target, get the result at index 0 */
+            if (seSelection->processDefaultSelection(event->getDefaultSelectionsResponse())->getActiveSelection()->getMatchingSe()) {
                 //std::shared_ptr<MatchingSe> selectedSe = seSelection->getSelectedSe(); Alex: unused?
 
                 logger->info("Observer notification: the selection of the SE has succeeded\n");

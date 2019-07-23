@@ -47,7 +47,7 @@ INCLUDE_DIRECTORIES(
 ADD_EXECUTABLE(usecase_generic1_explicitselectionaid_pcsc
 
 	# Example - Common
-	
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/GenericSeSelectionRequest.cpp
 
 	# Example - PC
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/UseCase_Generic1_ExplicitSelectionAid_Pcsc.cpp

@@ -26,7 +26,6 @@ using namespace org::eclipse::keyple::core::seproxy;
 using namespace org::eclipse::keyple::core::seproxy::exception;
 using namespace org::eclipse::keyple::core::seproxy::message;
 using namespace org::eclipse::keyple::core::seproxy::protocol;
-//using namespace org::eclipse::keyple::core::transaction;
 using namespace org::eclipse::keyple::core::util;
 using namespace org::eclipse::keyple::plugin::pcsc;
 using namespace org::eclipse::keyple::example::generic::common;
