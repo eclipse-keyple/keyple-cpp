@@ -42,7 +42,8 @@ std::shared_ptr<SelectionStatus> AbstractMatchingSe::getSelectionStatus() {
     return selectionStatus;
 }
 
-TransmissionMode AbstractMatchingSe::getTransmissionMode() {
+TransmissionMode AbstractMatchingSe::getTransmissionMode() const
+{
     return transmissionMode;
 }
 

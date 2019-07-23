@@ -48,14 +48,12 @@ SeCommonProtocols::StaticConstructor::StaticConstructor()
 }
 
 SeCommonProtocols::StaticConstructor SeCommonProtocols::staticConstructor;
-int SeCommonProtocols::nextOrdinal = 0;
 
 SeCommonProtocols::SeCommonProtocols(const std::string &nameValue,
                                      InnerEnum innerEnum,
                                      const std::string &name,
                                      TransmissionMode transmissionMode)
-: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), 
-  name(name), transmissionMode(transmissionMode)
+: innerEnumValue(innerEnum), nameValue(nameValue), name(name), transmissionMode(transmissionMode)
 {
 }
 
@@ -64,19 +62,9 @@ std::string SeCommonProtocols::getName()
     return name;
 }
 
-TransmissionMode SeCommonProtocols::getTransmissionMode()
+TransmissionMode SeCommonProtocols::getTransmissionMode() const
 {
     return transmissionMode;
-}
-
-bool SeCommonProtocols::operator==(const SeCommonProtocols &other) const
-{
-    return this->ordinalValue == other.ordinalValue;
-}
-
-bool SeCommonProtocols::operator!=(const SeCommonProtocols &other)
-{
-    return this->ordinalValue != other.ordinalValue;
 }
 
 std::vector<SeCommonProtocols> SeCommonProtocols::values()

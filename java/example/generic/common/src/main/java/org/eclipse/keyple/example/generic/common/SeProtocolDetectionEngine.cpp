@@ -1,12 +1,16 @@
+/* Example */
+#include "GenericSeSelectionRequest.h"
 #include "SeProtocolDetectionEngine.h"
 
 /* Core */
+#include "AbstractDefaultSelectionsRequest.h"
+#include "ApduRequest.h"
+#include "ByteArrayUtil.h"
 #include "ChannelState.h"
-#include "ContactlessProtocols_Import.h"
+#include "MatchingSelection.h"
+#include "SeCommonProtocols.h"
 #include "SeReader.h"
 #include "SeSelector.h"
-#include "ByteArrayUtils.h"
-#include "ApduRequest.h"
 
 /* Calypso */
 #include "PoSelector.h"
@@ -14,98 +18,106 @@
 #include "PoSelectionRequest.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace example {
-                namespace generic {
-                    namespace common {
-                        using ReadDataStructure = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
-                        using PoSelectionRequest = org::eclipse::keyple::calypso::transaction::PoSelectionRequest;
-                        using namespace org::eclipse::keyple::seproxy;
-                        using DefaultSelectionRequest = org::eclipse::keyple::seproxy::event::DefaultSelectionRequest;
-                        using SelectionResponse = org::eclipse::keyple::seproxy::event::SelectionResponse;
-                        using ApduRequest = org::eclipse::keyple::seproxy::message::ApduRequest;
-                        using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
-                        using namespace org::eclipse::keyple::transaction;
-                        using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+namespace eclipse {
+namespace keyple {
+namespace example {
+namespace generic {
+namespace common {
 
-                        SeProtocolDetectionEngine::SeProtocolDetectionEngine() : AbstractReaderObserverEngine() {
-                        }
+using namespace org::eclipse::keyple::calypso::command::po::parser;
+using namespace org::eclipse::keyple::calypso::transaction;
+using namespace org::eclipse::keyple::core::seproxy;
+using namespace org::eclipse::keyple::core::seproxy::event;
+using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace org::eclipse::keyple::core::util;
 
-                        void SeProtocolDetectionEngine::setReader(std::shared_ptr<SeReader> poReader) {
-                            this->poReader = poReader;
-                        }
+SeProtocolDetectionEngine::SeProtocolDetectionEngine() : AbstractReaderObserverEngine() {
+}
 
-                        std::shared_ptr<DefaultSelectionRequest> SeProtocolDetectionEngine::prepareSeSelection() {
+void SeProtocolDetectionEngine::setReader(std::shared_ptr<SeReader> poReader) {
+    this->poReader = poReader;
+}
 
-                            seSelection = std::make_shared<SeSelection>(poReader);
+std::shared_ptr<AbstractDefaultSelectionsRequest> SeProtocolDetectionEngine::prepareSeSelection() {
 
-                            // process SDK defined protocols
-                            for (ContactlessProtocols protocol : ContactlessProtocols::values()) {
-                                switch (protocol.innerEnumValue) {
-                                    case ContactlessProtocols::InnerEnum::PROTOCOL_ISO14443_4: {
-                                        /* Add a Hoplink selector */
-                                        std::string HoplinkAID = "A000000291A000000191";
-                                        //char SFI_T2Usage = static_cast<char>(0x1A);
-                                        char SFI_T2Environment = static_cast<char>(0x14);
-					
-                                        std::vector<char> aid = ByteArrayUtils::fromHex(HoplinkAID);
-                                        std::shared_ptr<PoSelectionRequest> poSelectionRequest = std::make_shared<PoSelectionRequest>(std::make_shared<SeSelector>(std::make_shared<SeSelector::AidSelector>(aid, nullptr), nullptr, "Hoplink selector"),
-                                                                                                                                      ChannelState::KEEP_OPEN,
-                                                                                                                                      std::make_shared<ContactlessProtocols>(ContactlessProtocols::PROTOCOL_ISO14443_4));
+    seSelection = std::make_shared<SeSelection>();
 
-                                        std::vector<char> apdu = ByteArrayUtils::fromHex("FFCA000000");
-                                        poSelectionRequest->preparePoCustomReadCmd("Standard Get Data", std::make_shared<ApduRequest>(apdu, false));
+    // process SDK defined protocols
+    for (SeCommonProtocols protocol : SeCommonProtocols::values()) {
+        switch (protocol.innerEnumValue) {
+        case SeCommonProtocols::InnerEnum::PROTOCOL_ISO14443_4: {
+            /* Add a Hoplink selector */
+            std::string HoplinkAID = "A000000291A000000191";
+            //char SFI_T2Usage = static_cast<char>(0x1A);
+            char SFI_T2Environment = static_cast<char>(0x14);
 
-                                        poSelectionRequest->prepareReadRecordsCmd(SFI_T2Environment, ReadDataStructure::SINGLE_RECORD_DATA, static_cast<char>(0x01), "Hoplink T2 Environment");
+            std::vector<char> aid = ByteArrayUtil::fromHex(HoplinkAID);
+            std::shared_ptr<PoSelectionRequest> poSelectionRequest = 
+                std::make_shared<PoSelectionRequest>(
+                    std::make_shared<PoSelector>(SeCommonProtocols::PROTOCOL_ISO14443_3A, nullptr,
+                                                 std::make_shared<PoSelector::PoAidSelector>(
+                                                     std::make_shared<SeSelector::AidSelector::IsoAid>(aid),
+                                                     PoSelector::InvalidatedPo::REJECT),
+                                                 "Hoplink selector"),
+                    ChannelState::KEEP_OPEN);
 
-                                        seSelection->prepareSelection(poSelectionRequest);
-
-                                        break;
-                                    }
-                                    case ContactlessProtocols::InnerEnum::PROTOCOL_ISO14443_3A:
-                                    case ContactlessProtocols::InnerEnum::PROTOCOL_ISO14443_3B:
-                                        // not handled in this demo code
-                                        break;
-                                    case ContactlessProtocols::InnerEnum::PROTOCOL_MIFARE_DESFIRE:
-                                    case ContactlessProtocols::InnerEnum::PROTOCOL_B_PRIME:
-                                        // intentionally ignored for demo purpose
-                                        break;
-                                    default:
-                                        /* Add a generic selector */
-                                        seSelection->prepareSelection(std::make_shared<SeSelectionRequest>(std::make_shared<SeSelector>(nullptr, std::make_shared<SeSelector::AtrFilter>(".*"), "Default selector"),
-                                                                                                           ChannelState::KEEP_OPEN,
-                                                                                                           std::make_shared<ContactlessProtocols>(ContactlessProtocols::PROTOCOL_ISO14443_4)));
-                                        break;
-                                }
-                            }
-                            return seSelection->getSelectionOperation();
-                        }
-
-                        void SeProtocolDetectionEngine::processSeMatch(std::shared_ptr<SelectionResponse> selectionResponse) {
-                            if (seSelection->processDefaultSelection(selectionResponse)) {
-                                std::shared_ptr<MatchingSe> selectedSe = seSelection->getSelectedSe();
-                                std::cout << "Selector: " << selectedSe->getExtraInfo() << ", selection status = " << selectedSe->isSelected() << std::endl;
-                            }
-                            else {
-                                std::cout << "No selection matched!" << std::endl;
-                            }
-                        }
-
-                        void SeProtocolDetectionEngine::processSeInsertion() {
-                            std::cout << "Unexpected SE insertion event" << std::endl;
-                        }
-
-                        void SeProtocolDetectionEngine::processSeRemoval() {
-                            std::cout << "SE removal event" << std::endl;
-                        }
-
-                        void SeProtocolDetectionEngine::processUnexpectedSeRemoval() {
-                            std::cout << "Unexpected SE removal event" << std::endl;
-                        }
-                    }
-                }
+                std::vector<char> apdu = ByteArrayUtil::fromHex("FFCA000000");
+                poSelectionRequest->preparePoCustomReadCmd("Standard Get Data", apdu);
+                poSelectionRequest->prepareReadRecordsCmd(SFI_T2Environment, ReadDataStructure::SINGLE_RECORD_DATA, static_cast<char>(0x01), "Hoplink T2 Environment");
+                seSelection->prepareSelection(poSelectionRequest);
+                break;
             }
+            case SeCommonProtocols::InnerEnum::PROTOCOL_ISO14443_3A:
+            case SeCommonProtocols::InnerEnum::PROTOCOL_ISO14443_3B:
+                // not handled in this demo code
+                break;
+            case SeCommonProtocols::InnerEnum::PROTOCOL_MIFARE_DESFIRE:
+            case SeCommonProtocols::InnerEnum::PROTOCOL_B_PRIME:
+                // intentionally ignored for demo purpose
+                break;
+            default:
+                /* Add a generic selector */
+                seSelection->prepareSelection(
+                    std::make_shared<GenericSeSelectionRequest>(
+                        std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_3A,
+                                                     std::make_shared<SeSelector::AtrFilter>(".*"),
+                                                     nullptr,
+                                                     "Default selector"),
+                        ChannelState::KEEP_OPEN));
+                break;
         }
     }
+
+    return seSelection->getSelectionOperation();
+}
+
+void SeProtocolDetectionEngine::processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
+{
+    std::shared_ptr<SelectionsResult> selectionsResult = seSelection->processDefaultSelection(defaultSelectionsResponse);
+    /* get the SE that matches one of the two selection targets */
+    std::shared_ptr<AbstractMatchingSe> selectedSe = selectionsResult->getActiveSelection()->getMatchingSe();
+    if (selectedSe != nullptr) {
+        std::cout << "Selector: " << selectedSe->getSelectionExtraInfo() << ", selection status = " << selectedSe->isSelected() << std::endl;
+    } else {
+        std::cout << "No selection matched!" << std::endl;
+    }
+}
+
+void SeProtocolDetectionEngine::processSeInsertion() {
+    std::cout << "Unexpected SE insertion event" << std::endl;
+}
+
+void SeProtocolDetectionEngine::processSeRemoval() {
+    std::cout << "SE removal event" << std::endl;
+}
+
+void SeProtocolDetectionEngine::processUnexpectedSeRemoval() {
+    std::cout << "Unexpected SE removal event" << std::endl;
+}
+}
+}
+}
+}
+}
 }

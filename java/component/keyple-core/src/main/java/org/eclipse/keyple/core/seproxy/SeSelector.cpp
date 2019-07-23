@@ -246,9 +246,7 @@ std::string SeSelector::AtrFilter::toString()
                                       atrRegex : "empty");
 }
 
-SeSelector::SeSelector(std::shared_ptr<SeProtocol> seProtocol,
-                       std::shared_ptr<AtrFilter> atrFilter,
-                       std::shared_ptr<AidSelector> aidSelector,
+SeSelector::SeSelector(SeProtocol& seProtocol, std::shared_ptr<AtrFilter> atrFilter, std::shared_ptr<AidSelector> aidSelector,
                        const std::string &extraInfo)
 : seProtocol(seProtocol), aidSelector(aidSelector), atrFilter(atrFilter),
   extraInfo(extraInfo)
@@ -262,7 +260,7 @@ SeSelector::SeSelector(std::shared_ptr<SeProtocol> seProtocol,
     }
 }
 
-std::shared_ptr<SeProtocol> SeSelector::getSeProtocol()
+const SeProtocol& SeSelector::getSeProtocol()
 {
     return seProtocol;
 }

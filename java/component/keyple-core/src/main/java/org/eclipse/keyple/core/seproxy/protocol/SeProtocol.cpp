@@ -7,6 +7,8 @@ namespace core {
 namespace seproxy {
 namespace protocol {
 
+int SeProtocol::nextOrdinal = 0;
+
 }
 }
 }

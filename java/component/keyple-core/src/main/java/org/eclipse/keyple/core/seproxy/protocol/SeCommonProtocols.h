@@ -102,10 +102,6 @@ public:
     const InnerEnum innerEnumValue;
 private:
     const std::string nameValue;
-public:
-    const int ordinalValue;
-private:
-    static int nextOrdinal;
 
 private:
     const std::string name;
@@ -119,13 +115,9 @@ public:
 
     std::string getName() override;
 
-    TransmissionMode getTransmissionMode() override;
+    TransmissionMode getTransmissionMode() const override;
 
 public:
-    bool operator==(const SeCommonProtocols &other) const;
-
-    bool operator!=(const SeCommonProtocols &other);
-
     static std::vector<SeCommonProtocols> values();
 
     int ordinal();
@@ -144,7 +136,7 @@ public:
 
 namespace std {
 
-using SeCommonProtocols = org::eclipse::keyple::core::seproxy::protocol::SeCommonProtocols;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
 
 template<> struct hash<SeCommonProtocols>
 {

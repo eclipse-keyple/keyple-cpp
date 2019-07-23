@@ -47,61 +47,76 @@ using SeResponse                 = org::eclipse::keyple::core::seproxy::message:
     */
 class AbstractSeSelectionRequest : public std::enable_shared_from_this<AbstractSeSelectionRequest> {
 public:
+    /**
+     *
+     */
     const std::shared_ptr<SeSelector> seSelector;
 
-    /** optional apdu requests list to be executed following the selection process */
-private:
-    std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList = std::vector<std::shared_ptr<ApduRequest>>();
-
     /**
-        * the channelState may be accessed from derived classes. Let it with the protected access
-        * level.
-        */
+     * the channelState may be accessed from derived classes. Let it with the protected access
+     * level.
+     */
     const ChannelState channelState;
 
-public:
+    /**
+     *
+     */
     AbstractSeSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState);
 
     /**
-        * Returns a selection SeRequest built from the information provided in the constructor and
-        * possibly completed with the seSelectionApduRequestList
-        *
-        * @return the selection SeRequest
-        */
+     *
+     */
+    virtual ~AbstractSeSelectionRequest();
+
+    /**
+     * Returns a selection SeRequest built from the information provided in the constructor and
+     * possibly completed with the seSelectionApduRequestList
+     *
+     * @return the selection SeRequest
+     */
     std::shared_ptr<SeRequest> getSelectionRequest();
 
+    /**
+     *
+     */
     virtual std::shared_ptr<SeSelector> getSeSelector();
 
     /**
-        * Add an additional {@link ApduRequest} to be executed after the selection process if it
-        * succeeds.
-        * <p>
-        * If more than one {@link ApduRequest} is added, all will be executed in the order in which
-        * they were added.
-        *
-        * @param apduRequest an {@link ApduRequest}
-        */
-protected:
-    void addApduRequest(std::shared_ptr<ApduRequest> apduRequest);
-
-    /**
-        * Return the parser corresponding to the command whose index is provided.
-        *
-        * @param seResponse the received SeResponse containing the commands raw responses
-        * @param commandIndex the command index
-        * @return a parser of the type matching the command
-        */
-public:
+     * Return the parser corresponding to the command whose index is provided.
+     *
+     * @param seResponse the received SeResponse containing the commands raw responses
+     * @param commandIndex the command index
+     * @return a parser of the type matching the command
+     */
     virtual std::shared_ptr<AbstractApduResponseParser> getCommandParser(std::shared_ptr<SeResponse> seResponse, int commandIndex);
 
     /**
-        * Virtual parse method
-        * 
-        * @param seResponse the SE response received
-        * @return a {@link AbstractMatchingSe}
-        */
-public:
+     * Virtual parse method
+     *
+     * @param seResponse the SE response received
+     * @return a {@link AbstractMatchingSe}
+     */
     virtual std::shared_ptr<AbstractMatchingSe> parse(std::shared_ptr<SeResponse> seResponse) = 0;
+
+protected:
+    /**
+     * Add an additional {@link ApduRequest} to be executed after the selection process if it
+     * succeeds.
+     * <p>
+     * If more than one {@link ApduRequest} is added, all will be executed in the order in which
+     * they were added.
+     *
+     * @param apduRequest an {@link ApduRequest}
+     */
+    void addApduRequest(std::shared_ptr<ApduRequest> apduRequest);
+
+
+    /**
+     * Optional apdu requests list to be executed following the selection process
+     */
+private:
+    std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList = std::vector<std::shared_ptr<ApduRequest>>();
+
 };
 
 }

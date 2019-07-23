@@ -84,8 +84,7 @@ int main(int argc, char **argv)
             std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::FIRST,
                                                       SeSelector::AidSelector::FileControlInformation::FCI);
         std::shared_ptr<SeSelector> seSelector =
-            std::make_shared<SeSelector>(std::shared_ptr<SeCommonProtocols>(&SeCommonProtocols::PROTOCOL_ISO14443_4), nullptr, aidSelector,
-                                         "Initial selection #1");
+            std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector, "Initial selection #1");
         std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
             std::make_shared<GenericSeSelectionRequest>(seSelector, ChannelState::CLOSE_AFTER);
         seSelection->prepareSelection(genericSeSelectionRequest);
@@ -99,8 +98,7 @@ int main(int argc, char **argv)
             std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,
                                                       SeSelector::AidSelector::FileControlInformation::FCI);
         std::shared_ptr<SeSelector> seSelector =
-            std::make_shared<SeSelector>(std::shared_ptr<SeCommonProtocols>(&SeCommonProtocols::PROTOCOL_ISO14443_4), nullptr, aidSelector,
-                                         "Initial selection #2");
+            std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector, "Initial selection #2");
         std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
             std::make_shared<GenericSeSelectionRequest>(seSelector, ChannelState::CLOSE_AFTER);
         seSelection->prepareSelection(genericSeSelectionRequest);
@@ -113,8 +111,7 @@ int main(int argc, char **argv)
             std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,
                                                       SeSelector::AidSelector::FileControlInformation::FCI);
         std::shared_ptr<SeSelector> seSelector =
-            std::make_shared<SeSelector>(std::shared_ptr<SeCommonProtocols>(&SeCommonProtocols::PROTOCOL_ISO14443_4), nullptr, aidSelector,
-                                         "Initial selection #3");
+            std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector, "Initial selection #3");
         std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
             std::make_shared<GenericSeSelectionRequest>(seSelector, ChannelState::CLOSE_AFTER);
         seSelection->prepareSelection(genericSeSelectionRequest);

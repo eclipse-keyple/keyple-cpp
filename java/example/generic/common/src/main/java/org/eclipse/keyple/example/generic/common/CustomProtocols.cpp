@@ -1,56 +1,64 @@
 #include "CustomProtocols.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace example {
-                namespace generic {
-                    namespace common {
+namespace eclipse {
+namespace keyple {
+namespace example {
+namespace generic {
+namespace common {
 
-                        using SeProtocol = org::eclipse::keyple::seproxy::protocol::SeProtocol;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
 
-CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_B_PRIME("CUSTOM_PROTOCOL_B_PRIME", InnerEnum::CUSTOM_PROTOCOL_B_PRIME, "Custom Old Calypso B prime");
-CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_MIFARE_DESFIRE("CUSTOM_PROTOCOL_MIFARE_DESFIRE", InnerEnum::CUSTOM_PROTOCOL_MIFARE_DESFIRE, "Custom Mifare DESFire");
+CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_B_PRIME("CUSTOM_PROTOCOL_B_PRIME", InnerEnum::CUSTOM_PROTOCOL_B_PRIME, "Custom Old Calypso B prime", TransmissionMode::CONTACTLESS);
+CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_MIFARE_DESFIRE("CUSTOM_PROTOCOL_MIFARE_DESFIRE", InnerEnum::CUSTOM_PROTOCOL_MIFARE_DESFIRE, "Custom Mifare DESFire", TransmissionMode::CONTACTLESS);
 
 std::vector<CustomProtocols> CustomProtocols::valueList;
+CustomProtocols::StaticConstructor CustomProtocols::staticConstructor;
+int CustomProtocols::nextOrdinal = 0;
 
-CustomProtocols::StaticConstructor::StaticConstructor() {
+CustomProtocols::StaticConstructor::StaticConstructor()
+{
     valueList.push_back(CUSTOM_PROTOCOL_B_PRIME);
     valueList.push_back(CUSTOM_PROTOCOL_MIFARE_DESFIRE);
 }
 
-CustomProtocols::StaticConstructor CustomProtocols::staticConstructor;
-int CustomProtocols::nextOrdinal = 0;
+CustomProtocols::CustomProtocols(const std::string& nameValue, InnerEnum innerEnum, const std::string& name, TransmissionMode transmissionMode)
+: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name), transmissionMode(transmissionMode) 
+{
+}
 
-                        CustomProtocols::CustomProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name) : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++) {
-                            this->name = name;
-                        }
+std::string CustomProtocols::getName()
+{
+    return name;
+}
 
-                        std::string CustomProtocols::getName() {
-                            return name;
-                        }
-
-bool CustomProtocols::operator == (const CustomProtocols &other) {
+bool CustomProtocols::operator == (const CustomProtocols &other)
+{
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool CustomProtocols::operator != (const CustomProtocols &other) {
+bool CustomProtocols::operator != (const CustomProtocols &other)
+{
     return this->ordinalValue != other.ordinalValue;
 }
 
-std::vector<CustomProtocols> CustomProtocols::values() {
+std::vector<CustomProtocols> CustomProtocols::values()
+{
     return valueList;
 }
 
-int CustomProtocols::ordinal() {
+int CustomProtocols::ordinal()
+{
     return ordinalValue;
 }
 
-std::string CustomProtocols::toString() {
+std::string CustomProtocols::toString()
+{
     return nameValue;
 }
 
-CustomProtocols CustomProtocols::valueOf(const std::string &name) {
+CustomProtocols CustomProtocols::valueOf(const std::string &name)
+{
     for (auto enumInstance : CustomProtocols::valueList) {
         if (enumInstance.nameValue == name) {
             return enumInstance;
@@ -61,9 +69,14 @@ CustomProtocols CustomProtocols::valueOf(const std::string &name) {
     return valueList.front();
 }
 
-                    }
-                }
-            }
-        }
-    }
+TransmissionMode CustomProtocols::getTransmissionMode() const
+{
+    return transmissionMode;
+}
+
+}
+}
+}
+}
+}
 }

@@ -191,7 +191,7 @@ std::shared_ptr<AbstractApduResponseParser> PoSelectionRequest::getCommandParser
 std::shared_ptr<AbstractMatchingSe> PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
 {
     return std::make_shared<AbstractMatchingSe>(seResponse,
-                                                seSelector->getSeProtocol()->getTransmissionMode(),
+                                                seSelector->getSeProtocol().getTransmissionMode(),
                                                 seSelector->getExtraInfo());
 }
 

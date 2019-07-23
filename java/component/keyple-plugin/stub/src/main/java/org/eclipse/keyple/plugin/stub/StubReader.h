@@ -105,9 +105,9 @@ public:
     std::vector<char> transmitApdu(std::vector<char> &apduIn) override;
 
 protected:
-    bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag)  override;
+    bool protocolFlagMatches(const SeProtocol& protocolFlag)  override;
 
-                      
+
         bool checkSePresence() override;
 
         void setParameter(const std::string &name, const std::string &value)  override;
@@ -142,7 +142,7 @@ public:
 
     /**
         * This method is called by the monitoring thread to check SE presence
-        * 
+        *
         * @param timeout the delay in millisecond we wait for a card insertion
         * @return true if the SE is present
         * @throws NoStackTraceThrowable in case of unplugging the reader
@@ -152,7 +152,7 @@ protected:
 
     /**
         * This method is called by the monitoring thread to check SE absence
-        * 
+        *
         * @param timeout the delay in millisecond we wait for a card withdrawing
         * @return true if the SE is absent
         * @throws NoStackTraceThrowable in case of unplugging the reader

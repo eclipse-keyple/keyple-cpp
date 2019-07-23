@@ -119,13 +119,9 @@ public:
 
     std::string getName() override;
 
-    TransmissionMode getTransmissionMode() override;
+    TransmissionMode getTransmissionMode() const override;
 
 public:
-    bool operator==(const SeCommonProtocols &other) const;
-
-    bool operator!=(const SeCommonProtocols &other);
-
     static std::vector<SeCommonProtocols> values();
 
     int ordinal();

@@ -27,24 +27,70 @@ namespace core {
 namespace seproxy {
 namespace protocol {
 
-using TransmissionMode = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
 
 class EXPORT SeProtocol {
 public:
+    /**
+     *
+     */
+    const int ordinalValue;
+
+    /**
+     *
+     */
+    static int nextOrdinal;
+
+    /**
+     *
+     */
+    SeProtocol() : ordinalValue(nextOrdinal++)
+    {
+    }
+
     /**
      * Protocol name
      * 
      * @return String
      */
-
-    virtual std::string getName() = 0;
+    virtual std::string getName()
+    {
+        return "";
+    }
 
     /**
      * Transmission mode: CONTACTS or CONTACTLESS
      * 
      * @return a TransmissionMode enum value
      */
-    virtual TransmissionMode getTransmissionMode() = 0;
+    virtual TransmissionMode getTransmissionMode() const
+    {
+        return TransmissionMode::NO_MODE;
+    }
+
+    /**
+     *
+     */
+    virtual bool operator==(const SeProtocol &other) const
+    {
+        return this->ordinalValue == other.ordinalValue;
+    }
+
+    /**
+     *
+     */
+    virtual bool operator!=(const SeProtocol &other) const
+    {
+        return this->ordinalValue != other.ordinalValue;
+    }
+
+    /**
+     *
+     */
+    virtual bool operator<(const SeProtocol &other) const
+    {
+        return this->ordinalValue < other.ordinalValue;
+    }
 
     /**
      *
@@ -63,3 +109,20 @@ public:
 }
 }
 }
+
+namespace std {
+
+using namespace org::eclipse::keyple::core::seproxy::protocol;
+
+template<> struct hash<SeProtocol>
+{
+    size_t operator()(const SeProtocol& obj) const
+    {
+        (void)obj;
+
+        return hash<int>()(obj.ordinalValue);
+    }
+};
+
+}
+

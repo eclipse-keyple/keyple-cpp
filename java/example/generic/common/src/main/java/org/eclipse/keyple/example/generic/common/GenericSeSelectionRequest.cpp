@@ -27,10 +27,14 @@ GenericSeSelectionRequest::GenericMatchingSe::GenericMatchingSe(std::shared_ptr<
 {
 }
 
+GenericSeSelectionRequest::GenericMatchingSe::~GenericMatchingSe()
+{
+}
+
 GenericSeSelectionRequest::GenericSeSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState)
 : AbstractSeSelectionRequest(seSelector, channelState)
 {
-    transmissionMode = seSelector->getSeProtocol()->getTransmissionMode();
+    transmissionMode = seSelector->getSeProtocol().getTransmissionMode();
 }
 
 std::shared_ptr<AbstractMatchingSe> GenericSeSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)

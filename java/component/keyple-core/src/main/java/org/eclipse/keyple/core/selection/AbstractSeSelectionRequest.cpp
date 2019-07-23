@@ -19,10 +19,12 @@ using ApduRequest                = org::eclipse::keyple::core::seproxy::message:
 using SeRequest                  = org::eclipse::keyple::core::seproxy::message::SeRequest;
 using SeResponse                 = org::eclipse::keyple::core::seproxy::message::SeResponse;
 
-AbstractSeSelectionRequest::AbstractSeSelectionRequest(
-                                         std::shared_ptr<SeSelector> seSelector,
-                                         ChannelState channelState)
+AbstractSeSelectionRequest::AbstractSeSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState)
 : seSelector(seSelector), channelState(channelState)
+{
+}
+
+AbstractSeSelectionRequest::~AbstractSeSelectionRequest()
 {
 }
 
@@ -41,10 +43,8 @@ void AbstractSeSelectionRequest::addApduRequest(std::shared_ptr<ApduRequest> apd
     seSelectionApduRequestList.push_back(apduRequest);
 }
 
-std::shared_ptr<AbstractApduResponseParser>
-AbstractSeSelectionRequest::getCommandParser(
-                                         std::shared_ptr<SeResponse> seResponse,
-                                         int commandIndex)
+std::shared_ptr<AbstractApduResponseParser> AbstractSeSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse,
+                                                                                         int commandIndex)
 {
     (void)seResponse;
     (void)commandIndex;

@@ -1,12 +1,9 @@
 /* Core */
-#include "ContactlessProtocols_Import.h"
-#include "CustomProtocolSetting.h"
 #include "KeypleReaderNotFoundException.h"
 #include "ObservableReader.h"
 #include "ReaderPlugin.h"
+#include "SeCommonProtocols_Import.h"
 #include "SeProxyService.h"
-#include "SeProtocolSetting.h"
-#include "SeProtocolSettingList.h"
 #include "SeProtocol.h"
 #include "SeReader.h"
 #include "StubReader.h"
@@ -24,23 +21,13 @@
 /* Common */
 #include "Thread.h"
 
-using CustomProtocolSetting         = org::eclipse::keyple::example::generic::common::CustomProtocolSetting;
-using SeProtocolDetectionEngine     = org::eclipse::keyple::example::generic::common::SeProtocolDetectionEngine;
-using StubPlugin                    = org::eclipse::keyple::plugin::stub::StubPlugin;
-using StubProtocolSetting           = org::eclipse::keyple::plugin::stub::StubProtocolSetting;
-using StubReader                    = org::eclipse::keyple::plugin::stub::StubReader;
-using ReaderPlugin                  = org::eclipse::keyple::seproxy::ReaderPlugin;
-using SeProxyService                = org::eclipse::keyple::seproxy::SeProxyService;
-using SeReader                      = org::eclipse::keyple::seproxy::SeReader;
-using ObservableReader              = org::eclipse::keyple::seproxy::event::ObservableReader;
-using KeypleReaderNotFoundException = org::eclipse::keyple::seproxy::exception::KeypleReaderNotFoundException;
-using ContactlessProtocols          = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
-using SeProtocol                    = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-using SeProtocolSetting             = org::eclipse::keyple::seproxy::protocol::SeProtocolSetting;
-using SeProtocolSettingList         = org::eclipse::keyple::seproxy::protocol::SeProtocolSettingList;
-using StubMifareClassic             = org::eclipse::keyple::example::generic::pc::stub::se::StubMifareClassic;
-using StubMifareDesfire             = org::eclipse::keyple::example::generic::pc::stub::se::StubMifareDesfire;
-using StubMifareUL                  = org::eclipse::keyple::example::generic::pc::stub::se::StubMifareUL;
+using namespace org::eclipse::keyple::example::generic::common;
+using namespace org::eclipse::keyple::plugin::stub;
+using namespace org::eclipse::keyple::core::seproxy;
+using namespace org::eclipse::keyple::core::seproxy::event;
+using namespace org::eclipse::keyple::core::seproxy::exception;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace org::eclipse::keyple::example::generic::pc::stub::se;
 
 int main(int argc, char **argv)
 {
@@ -83,31 +70,30 @@ int main(int argc, char **argv)
 
     // Protocol detection settings.
     // add 8 expected protocols with three different methods:
-    // - using addSeProtocolSetting
     // - using a custom enum
-    // - using a protocol map and addSeProtocolSetting
+    // - adding protocols individually
     // A real application should use only one method.
 
     // Method 1
-    // add protocols individually
-    poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(std::static_pointer_cast<SeProtocolSettingList>(std::make_shared <StubProtocolSetting>(StubProtocolSetting::SETTING_PROTOCOL_MEMORY_ST25))));
-    poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(std::static_pointer_cast<SeProtocolSettingList>(std::make_shared <StubProtocolSetting>(StubProtocolSetting::SETTING_PROTOCOL_ISO14443_4))));
+    // add several settings at once with setting an unordered set
+    //std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolSetting;
+    //protocolSetting.insert(std::pair<std::shared_ptr<SeProtocol>, std::string>();
+    std::set<SeCommonProtocols> commonProtocols {SeCommonProtocols::PROTOCOL_MIFARE_CLASSIC, SeCommonProtocols::PROTOCOL_MIFARE_UL};
+    std::unordered_map<SeProtocol, std::string> map;
+    std::unordered_map<SeCommonProtocols, std::string> specificSettings = StubProtocolSetting::getSpecificSettings(commonProtocols);
+    for (auto pair : specificSettings)
+         map.insert(std::pair<SeProtocol, std::string>(pair.first, pair.second));
+    poReader->setSeProtocolSetting(map);
 
     // Method 2
-    // add all settings at once with setting enum
-    poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(CustomProtocolSetting::values()));
+    // append protocols individually
+    poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_MEMORY_ST25,
+                                   StubProtocolSetting::STUB_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_MEMORY_ST25]);
 
-    // Method 3
-    // create and fill a protocol map
-    std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap;
-
-    protocolsMap.emplace(std::pair<std::shared_ptr<SeProtocol>, std::string>(std::make_shared<SeProtocol>(ContactlessProtocols::PROTOCOL_MIFARE_CLASSIC), StubProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_CLASSIC));
-
-    protocolsMap.emplace(std::pair<std::shared_ptr<SeProtocol>, std::string>(std::make_shared<SeProtocol>(ContactlessProtocols::PROTOCOL_MIFARE_UL), StubProtocolSetting::ProtocolSetting::REGEX_PROTOCOL_MIFARE_UL));
-
-    // provide the reader with the map
-    poReader->addSeProtocolSetting(std::make_shared<SeProtocolSetting>(protocolsMap));
-
+    // regiex extended
+    poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO14443_4,
+                                   StubProtocolSetting::STUB_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO14443_4] + "|3B8D.*");
+    
     // Set terminal as Observer of the first reader
     (std::static_pointer_cast<ObservableReader>(poReader))->addObserver(observer);
 

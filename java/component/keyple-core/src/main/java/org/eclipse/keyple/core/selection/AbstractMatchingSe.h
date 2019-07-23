@@ -65,7 +65,7 @@ public:
     /**
      * @return the SE {@link TransmissionMode} (contacts or contactless)
      */
-    virtual TransmissionMode getTransmissionMode();
+    virtual TransmissionMode getTransmissionMode() const;
 
     /**
      * @return the selection extra info string

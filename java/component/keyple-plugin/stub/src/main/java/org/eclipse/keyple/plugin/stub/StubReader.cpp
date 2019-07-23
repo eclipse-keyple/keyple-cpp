@@ -86,11 +86,11 @@ std::vector<char> StubReader::transmitApdu(std::vector<char> &apduIn)
     return se->processApdu(apduIn);
 }
 
-bool StubReader::protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) 
+bool StubReader::protocolFlagMatches(const SeProtocol& protocolFlag) 
 {
     bool result;
     // Test protocolFlag to check if ATR based protocol filtering is required
-    if (protocolFlag != nullptr) {
+    //if (protocolFlag != nullptr) {
         if (!isPhysicalChannelOpen())
         {
             openPhysicalChannel();
@@ -116,12 +116,13 @@ bool StubReader::protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag)
                             this->getName(), protocolFlag);
             result = true;
         }
-    }
-    else
-    {
-        // no protocol defined returns true
-        result = true;
-    }
+    //}
+    //else
+    //{
+    //    // no protocol defined returns true
+    //    result = true;
+    //}
+
     return result;
 }
 

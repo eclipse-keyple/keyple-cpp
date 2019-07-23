@@ -10,7 +10,7 @@ namespace transaction {
 using SeSelector = org::eclipse::keyple::core::seproxy::SeSelector;
 using SeProtocol = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
 
-PoSelector::PoSelector(std::shared_ptr<SeProtocol> seProtocol,
+PoSelector::PoSelector(SeProtocol& seProtocol,
                        std::shared_ptr<PoAtrFilter> poAtrFilter,
                        std::shared_ptr<PoAidSelector> poAidSelector, const std::string &extraInfo)
 : SeSelector(seProtocol, poAtrFilter, poAidSelector, extraInfo)

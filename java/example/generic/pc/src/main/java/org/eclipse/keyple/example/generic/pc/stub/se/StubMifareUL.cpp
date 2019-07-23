@@ -2,38 +2,43 @@
 #include "StubMifareUL.h"
 
 /* Core */
-#include "ByteArrayUtils.h"
+#include "ByteArrayUtil.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace example {
-                namespace generic {
-                    namespace pc {
-                        namespace stub {
-                            namespace se {
-                                using StubSecureElement = org::eclipse::keyple::plugin::stub::StubSecureElement;
-                                using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+namespace eclipse {
+namespace keyple {
+namespace example {
+namespace generic {
+namespace pc {
+namespace stub {
+namespace se {
 
-                                const std::string StubMifareUL::seProtocol = "PROTOCOL_MIFARE_UL";
+using namespace org::eclipse::keyple::plugin::stub;
+using namespace org::eclipse::keyple::core::util;
 
-                                StubMifareUL::StubMifareUL() {
-                                    /* Get data */
-                                    addHexCommand("FFCA 000000", "223344556677889000");
-                                }
+const std::string StubMifareUL::seProtocol = "PROTOCOL_MIFARE_UL";
 
-                                std::vector<char> StubMifareUL::getATR() {
-                                    return ByteArrayUtils::fromHex(ATR_HEX);
-                                }
+StubMifareUL::StubMifareUL()
+{
+    /* Get data */
+    addHexCommand("FFCA 000000", "223344556677889000");
+}
 
-                                std::string StubMifareUL::getSeProcotol() {
-                                    return seProtocol;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+std::vector<char> StubMifareUL::getATR()
+{
+    return ByteArrayUtil::fromHex(ATR_HEX);
+}
+
+std::string StubMifareUL::getSeProcotol()
+{
+    return seProtocol;
+}
+
+}
+}
+}
+}
+}
+}
     }
 }

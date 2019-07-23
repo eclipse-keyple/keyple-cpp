@@ -49,7 +49,7 @@ public:
         ACCEPT
     };
 
-    
+
                             /**
         * PoAidSelector embedding the Calypo PO additional successful codes list
         */
@@ -69,7 +69,7 @@ public:
         /**
             * Create a {@link PoAidSelector} to select a Calypso PO with an AID through a select
             * application command.
-            * 
+            *
             * @param aidToSelect the application identifier
             * @param invalidatedPo an enum value to indicate if an invalidated PO should be accepted or
             *        not
@@ -84,7 +84,7 @@ public:
         /**
             * Simplified constructor with default values for the FileOccurrence and
             * FileControlInformation (see {@link AidSelector})
-            * 
+            *
             * @param aidToSelect the application identifier
             * @param invalidatedPo an enum value to indicate if an invalidated PO should be accepted or
             *        not
@@ -119,17 +119,18 @@ protected:
         }
     };
 
-    /**
-        * Create a PoSelector to perform the PO selection. See {@link SeSelector}
-        *
-        * @param seProtocol the SE communication protocol
-        * @param poAtrFilter the ATR filter
-        * @param poAidSelector the AID selection data
-        * @param extraInfo information string (to be printed in logs)
-        */
 public:
-    PoSelector(std::shared_ptr<SeProtocol> seProtocol, std::shared_ptr<PoAtrFilter> poAtrFilter, std::shared_ptr<PoAidSelector> poAidSelector, const std::string &extraInfo);
-                        
+    /**
+     * Create a PoSelector to perform the PO selection. See {@link SeSelector}
+     *
+     * @param seProtocol the SE communication protocol
+     * @param poAtrFilter the ATR filter
+     * @param poAidSelector the AID selection data
+     * @param extraInfo information string (to be printed in logs)
+     */
+    PoSelector(SeProtocol& seProtocol, std::shared_ptr<PoAtrFilter> poAtrFilter, std::shared_ptr<PoAidSelector> poAidSelector,
+               const std::string &extraInfo);
+
 protected:
     std::shared_ptr<PoSelector> shared_from_this() {
         return std::static_pointer_cast<PoSelector>(SeSelector::shared_from_this());

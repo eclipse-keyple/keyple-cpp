@@ -79,7 +79,14 @@ public:
      * @param seProtocol the protocol key identifier to be added to the plugin internal list
      * @param protocolRule a string use to define how to identify the protocol
      */
-    virtual void addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol, const std::string &protocolRule) = 0;
+    virtual void addSeProtocolSetting(SeProtocol& seProtocol, const std::string &protocolRule) = 0;
+
+    /**
+     * Complete the current setting map with the provided map
+     *
+     * @param protocolSetting
+     */
+    virtual void setSeProtocolSetting(std::unordered_map<SeProtocol, std::string>& protocolSetting) = 0;
 
     /**
      * @return the transmission mode in use with this SE reader

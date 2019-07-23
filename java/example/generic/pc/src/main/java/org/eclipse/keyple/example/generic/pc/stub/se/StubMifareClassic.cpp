@@ -2,38 +2,43 @@
 #include "StubMifareClassic.h"
 
 /* Core */
-#include "ByteArrayUtils.h"
+#include "ByteArrayUtil.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace example {
-                namespace generic {
-                    namespace pc {
-                        namespace stub {
-                            namespace se {
-                                using StubSecureElement = org::eclipse::keyple::plugin::stub::StubSecureElement;
-                                using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+namespace eclipse {
+namespace keyple {
+namespace example {
+namespace generic {
+namespace pc {
+namespace stub {
+namespace se {
 
-                                const std::string StubMifareClassic::seProtocol = "PROTOCOL_MIFARE_CLASSIC";
+using namespace org::eclipse::keyple::plugin::stub;
+using namespace org::eclipse::keyple::core::util;
 
-                                StubMifareClassic::StubMifareClassic() {
-                                    /* Get data */
-                                    addHexCommand("FFCA 000000", "112233449000");
-                                }
+const std::string StubMifareClassic::seProtocol = "PROTOCOL_MIFARE_CLASSIC";
 
-                                std::vector<char> StubMifareClassic::getATR() {
-                                    return ByteArrayUtils::fromHex(ATR_HEX);
-                                }
+StubMifareClassic::StubMifareClassic()
+{
+    /* Get data */
+    addHexCommand("FFCA 000000", "112233449000");
+}
 
-                                std::string StubMifareClassic::getSeProcotol() {
-                                    return seProtocol;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+std::vector<char> StubMifareClassic::getATR()
+{
+    return ByteArrayUtil::fromHex(ATR_HEX);
+}
+
+std::string StubMifareClassic::getSeProcotol()
+{
+    return seProtocol;
+}
+
+}
+}
+}
+}
+}
+}
     }
 }

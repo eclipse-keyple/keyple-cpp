@@ -34,19 +34,40 @@ using namespace org::eclipse::keyple::core::seproxy::protocol;
  * Create a new class extending AbstractSeSelectionRequest
  */
 class GenericSeSelectionRequest : public AbstractSeSelectionRequest {
-private:
-    TransmissionMode transmissionMode;
-
-    class GenericMatchingSe : public AbstractMatchingSe {
-    public:
-        GenericMatchingSe(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, std::string& extraInfo);
-    };
-
 public:
+    /**
+     *
+     */
     GenericSeSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState);
 
 protected:
+    /**
+     *
+     */
     std::shared_ptr<AbstractMatchingSe> parse(std::shared_ptr<SeResponse> seResponse) override;
+
+private:
+    /**
+     *
+     */
+    TransmissionMode transmissionMode;
+
+    /**
+     *
+     */
+    class GenericMatchingSe : public AbstractMatchingSe {
+    public:
+        /**
+         * Constructor
+         */
+        GenericMatchingSe(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, std::string& extraInfo);
+
+        /**
+         * Virtual destructor
+         */
+        virtual ~GenericMatchingSe();
+
+    };
 };
 
 }

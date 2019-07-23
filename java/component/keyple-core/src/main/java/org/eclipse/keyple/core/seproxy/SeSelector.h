@@ -358,7 +358,7 @@ public:
 private:
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelector));
 
-    const std::shared_ptr<SeProtocol> seProtocol;
+    const SeProtocol seProtocol;
     const std::shared_ptr<AidSelector> aidSelector;
     const std::shared_ptr<AtrFilter> atrFilter;
     const std::string extraInfo;
@@ -391,14 +391,14 @@ private:
      * @param extraInfo information string (to be printed in logs)
      */
 public:
-    SeSelector(std::shared_ptr<SeProtocol> seProtocol, std::shared_ptr<AtrFilter> atrFilter, std::shared_ptr<AidSelector> aidSelector, const std::string &extraInfo);
+    SeSelector(SeProtocol& seProtocol, std::shared_ptr<AtrFilter> atrFilter, std::shared_ptr<AidSelector> aidSelector, const std::string &extraInfo);
 
     /**
      * Getter
      *
      * @return the {@link SeProtocol} provided at construction time
      */
-    virtual std::shared_ptr<SeProtocol> getSeProtocol();
+    virtual const SeProtocol& getSeProtocol();
 
     /**
      * Getter

@@ -313,7 +313,7 @@ protected:
         * plugins, technology name for Nfc plugins, etc).
         */
 protected:
-    std::unordered_map<std::shared_ptr<SeProtocol>, std::string> protocolsMap;
+    std::unordered_map<SeProtocol, std::string> protocolsMap;
 
     /**
         * Defines the protocol setting Map to allow SE to be differentiated according to their
@@ -323,14 +323,16 @@ protected:
                              * @param protocolRule a string use to define how to identify the protocol
         */
 public:
-    void addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol, const std::string &protocolRule) override;
+    void addSeProtocolSetting(SeProtocol& seProtocol, const std::string &protocolRule) override;
 
     /**
-        * Complete the current setting map with the provided map
-        * 
-        * @param protocolSetting
-        */
-    virtual void setSeProtocolSetting(std::unordered_map<std::shared_ptr<SeProtocol>, std::string> &protocolSetting);
+      * Complete the current setting map with the provided map
+      * 
+      * @param protocolSetting
+      *
+      * Alex: removed that function to avoid using a shared_ptr to SeProtocol (astract class, therefore cannot be used in a set/map)
+      */
+    virtual void setSeProtocolSetting(std::unordered_map<SeProtocol, std::string> &protocolSetting);
 
     /**
         * Test if the current protocol matches the provided protocol flag.
@@ -347,7 +349,7 @@ public:
         * @throws KeypleReaderException in case of a reader exception
         */
 protected:
-    virtual bool protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) = 0;
+    virtual bool protocolFlagMatches(const SeProtocol& protocolFlag) = 0;
 
     /** ==== SeRequestSe and SeRequest transmission management ============= */
 

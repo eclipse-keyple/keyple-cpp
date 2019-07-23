@@ -65,7 +65,7 @@ PcscReader::PcscReader(const std::string &pluginName, std::shared_ptr<CardTermin
 
     this->card = nullptr;
     this->channel = nullptr;
-    this->protocolsMap = std::unordered_map<std::shared_ptr<SeProtocol>, std::string>();
+    this->protocolsMap = std::unordered_map<SeProtocol, std::string>();
 
     // Using null values to use the standard method for defining default values
     try {
@@ -168,12 +168,12 @@ std::vector<char> PcscReader::transmitApdu(std::vector<char> &apduIn)
     return apduResponseData->getBytes();
 }
 
-bool PcscReader::protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag)
+bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
 {
     bool result;
 
     // Test protocolFlag to check if ATR based protocol filtering is required
-    if (protocolFlag != nullptr) {
+    //if (protocolFlag != nullptr) {
         if (!isPhysicalChannelOpen()) {
             openPhysicalChannel();
         }
@@ -198,11 +198,12 @@ bool PcscReader::protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag)
                           this->getName(), protocolFlag);
             result = true;
         }
-    } else {
-        // no protocol defined returns true
-        result = true;
-    }
-return result;
+    //} else {
+    //    // no protocol defined returns true
+    //    result = true;
+    //}
+
+    return result;
 }
 
 void PcscReader::setParameter(const std::string &name, const std::string &value)

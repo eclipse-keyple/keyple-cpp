@@ -256,24 +256,28 @@ std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannelAndSelec
     return selectionStatus;
 }
 
-bool AbstractLocalReader::isLogicalChannelOpen() {
+bool AbstractLocalReader::isLogicalChannelOpen()
+{
     return logicalChannelIsOpen;
 }
 
-void AbstractLocalReader::closeLogicalChannel() {
+void AbstractLocalReader::closeLogicalChannel()
+{
     logger->trace("[%s] closeLogicalChannel => Closing of the logical channel\n", AbstractLoggedObservable<ReaderEvent>::getName());
     logicalChannelIsOpen = false;
     aidCurrentlySelected.reset();
     currentSelectionStatus.reset();
 }
 
-                        void AbstractLocalReader::addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol, const std::string &protocolRule) {
-                            this->protocolsMap.emplace(seProtocol, protocolRule);
+void AbstractLocalReader::addSeProtocolSetting(SeProtocol& seProtocol, const std::string &protocolRule)
+{
+    this->protocolsMap.emplace(seProtocol, protocolRule);
 }
 
-void AbstractLocalReader::setSeProtocolSetting(std::unordered_map<std::shared_ptr<SeProtocol>, std::string> &protocolSetting) {
-                            this->protocolsMap.insert(protocolSetting.begin(), protocolSetting.end());
-                        }
+void AbstractLocalReader::setSeProtocolSetting(std::unordered_map<SeProtocol, std::string> &protocolSetting)
+{
+    this->protocolsMap.insert(protocolSetting.begin(), protocolSetting.end());
+}
 
 std::shared_ptr<SeResponseSet> AbstractLocalReader::processSeRequestSet(std::shared_ptr<SeRequestSet> requestSet)
 {

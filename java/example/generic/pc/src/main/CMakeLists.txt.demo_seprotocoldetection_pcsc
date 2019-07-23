@@ -49,7 +49,7 @@ ADD_EXECUTABLE(demo_seprotocoldetection_pcsc
 	# Example - Common
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/AbstractReaderObserverEngine.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/CustomProtocols.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/CustomProtocolSetting.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/GenericSeSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/java/org/eclipse/keyple/example/generic/common/SeProtocolDetectionEngine.cpp
 
 	# Example - PC
