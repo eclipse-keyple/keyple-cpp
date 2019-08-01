@@ -25,7 +25,8 @@ private:
      * will match at these "hard" boundaries. Changing the region
      * changes these values.
      */
-    int from, to;
+    int from;
+    //int to;
 
     /**
      * Matcher state used by the last node. NOANCHOR is used when a
@@ -33,8 +34,8 @@ private:
      * the mode used for matching all the input.
      */
     int ENDANCHOR = 1;
-    int NOANCHOR = 0;
-    int acceptMode = NOANCHOR;
+    //int NOANCHOR = 0;
+    //int acceptMode = NOANCHOR;
 
     /**
      * The range of string that last matched the pattern. If the last
@@ -42,12 +43,12 @@ private:
      * holds the index of the end of the last match (which is where the
      * next search starts).
      */
-    int first = -1, last = 0;
+    //int first = -1, last = 0;
 
     /**
      * The end index of what matched in the last match operation.
      */
-    int oldLast = -1;
+    //int oldLast = -1;
 
     /**
      * Boolean indicating whether or not more input could change
@@ -62,7 +63,7 @@ private:
      * If hitEnd is false and a match was not found, then more
      * input will not cause a match to be found.
      */
-    bool hitEnd;
+    //bool hitEnd;
 
     /**
      * Boolean indicating whether or not more input could change
@@ -74,7 +75,7 @@ private:
      * input might change the match but the match won't be lost.
      * If a match was not found, then requireEnd has no meaning.
      */
-    bool requireEnd;
+    //bool requireEnd;
 
     /**
      * The storage used by groups. They may contain invalid values if

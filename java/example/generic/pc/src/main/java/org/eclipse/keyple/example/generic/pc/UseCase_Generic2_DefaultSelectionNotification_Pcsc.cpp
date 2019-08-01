@@ -102,6 +102,10 @@ public:
         (std::dynamic_pointer_cast<ObservableReader>(seReader))->setDefaultSelectionRequest(seSelection->getSelectionOperation(), ObservableReader::NotificationMode::MATCHED_ONLY);
     }
 
+    virtual ~UseCase_Generic2_DefaultSelectionNotification_Pcsc()
+    {
+    }
+
     void doSomething() 
     {
         /* Set the current class as Observer of the first reader */

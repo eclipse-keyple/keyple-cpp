@@ -39,6 +39,7 @@ using ApduResponse                  = org::eclipse::keyple::core::seproxy::messa
  */
 template<typename T>
 class AbstractPoCommandBuilder : public AbstractIso7816CommandBuilder {
+public:
     /*
     static_assert(std::is_base_of<AbstractApduResponseParser, T>::value, "T must inherit from org.eclipse.keyple.core.command.AbstractApduResponseParser");
     */
@@ -49,9 +50,15 @@ class AbstractPoCommandBuilder : public AbstractIso7816CommandBuilder {
      * @param reference a command reference from the Calypso command table
      * @param request the ApduRequest (the instruction byte will be overwritten)
      */
-public:
-    AbstractPoCommandBuilder(std::shared_ptr<CalypsoPoCommands> reference, std::shared_ptr<ApduRequest> request) : AbstractIso7816CommandBuilder(reference, request) {
+    AbstractPoCommandBuilder(std::shared_ptr<CalypsoPoCommands> reference, std::shared_ptr<ApduRequest> request)
+    : AbstractIso7816CommandBuilder(reference, request)
+    {
     }
+
+    /**
+     *
+     */
+    virtual ~AbstractPoCommandBuilder() {}
 
     /**
      * Create the response parser matching the builder
@@ -62,7 +69,11 @@ public:
     virtual std::shared_ptr<T> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) = 0;
 
 protected:
-    std::shared_ptr<AbstractPoCommandBuilder> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<AbstractPoCommandBuilder> shared_from_this()
+    {
         return std::static_pointer_cast<AbstractPoCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());
     }
 };

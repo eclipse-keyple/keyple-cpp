@@ -52,32 +52,48 @@ class AbstractOpenSessionRespPars : public AbstractPoResponseParser {
      */
 public:
     class SecureSession : public std::enable_shared_from_this<SecureSession> {
-
-        /** Challenge transaction counter */
-      private:
+    private:
+        /**
+         * Challenge transaction counter
+         */
         std::vector<char> const challengeTransactionCounter;
 
-        /** Challenge random number */
+        /**
+         * Challenge random number
+         */
         std::vector<char> const challengeRandomNumber;
 
-        /** The previous session ratified boolean. */
+        /**
+         * The previous session ratified boolean
+         */
         const bool previousSessionRatified;
 
-        /** The manage secure session authorized boolean. */
+        /**
+         * The manage secure session authorized boolean
+         */
         const bool manageSecureSessionAuthorized;
 
-        /** The kif. */
+        /**
+         * The kif
+         */
         const char kif;
 
-        /** The kvc (may be null if it doesn't exist in the considered PO [rev 1.0]). */
+        /**
+         * The kvc (may be null if it doesn't exist in the considered PO [rev 1.0])
+         */
         const std::shared_ptr<Byte> kvc;
 
-        /** The original data. */
+        /**
+         * The original data
+         */
         std::vector<char> const originalData;
 
-        /** The secure session data. */
+        /**
+         * The secure session data
+         */
         std::vector<char> const secureSessionData;
 
+    public:
         /**
          * Instantiates a new SecureSession for a Calypso application revision 3
          *
@@ -92,7 +108,6 @@ public:
          * @param secureSessionData the secure session data from the response of open secure session
          *        APDU command
          */
-      public:
         SecureSession(std::vector<char> &challengeTransactionCounter,
                       std::vector<char> &challengeRandomNumber, bool previousSessionRatified,
                       bool manageSecureSessionAuthorized, char kif, std::shared_ptr<Byte> kvc,
@@ -116,8 +131,19 @@ public:
                       bool manageSecureSessionAuthorized, std::shared_ptr<Byte> kvc,
                       std::vector<char> &originalData, std::vector<char> &secureSessionData);
 
+        /**
+         *
+         */
+        virtual ~SecureSession() {}
+
+        /**
+         *
+         */
         virtual std::vector<char> getChallengeTransactionCounter();
 
+        /**
+         *
+         */
         virtual std::vector<char> getChallengeRandomNumber();
 
         /**
@@ -162,26 +188,42 @@ public:
          */
         virtual std::vector<char> getSecureSessionData();
     };
+
 private:
+    /**
+     *
+     */
     static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
-private:
+
+    /**
+     *
+     */
     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
     public:
         StaticConstructor();
     };
 
-private:
+    /**
+     *
+     */
     static AbstractOpenSessionRespPars::StaticConstructor staticConstructor;
 
-
 protected:
+    /**
+     *
+     */
     std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
 private:
-    const PoRevision revision;
+    /**
+     *
+     */
+    //const PoRevision revision;
 
-    /** The secure session. */
 public:
+    /**
+     * The secure session
+     */
     std::shared_ptr<SecureSession> secureSession;
 
     /**
@@ -192,6 +234,9 @@ public:
      */
     AbstractOpenSessionRespPars(std::shared_ptr<ApduResponse> response, PoRevision revision);
 
+    /**
+     *
+     */
     static std::shared_ptr<AbstractOpenSessionRespPars> create(std::shared_ptr<ApduResponse> response, PoRevision revision);
 
     /*
@@ -205,24 +250,45 @@ public:
         return nullptr;
     }
 
+    /**
+     *
+     */
     virtual std::vector<char> getPoChallenge();
 
-
+    /**
+     *
+     */
     virtual int getTransactionCounterValue();
 
+    /**
+     *
+     */
     virtual bool wasRatified();
 
+    /**
+     *
+     */
     virtual bool isManageSecureSessionAuthorized();
 
+    /**
+     *
+     */
     virtual char getSelectedKif();
 
+    /**
+     *
+     */
     virtual std::shared_ptr<Byte> getSelectedKvc();
 
+    /**
+     *
+     */
     virtual std::vector<char> getRecordDataRead();
 
-
-
-  protected:
+protected:
+    /**
+     *
+     */
     std::shared_ptr<AbstractOpenSessionRespPars> shared_from_this()
     {
         return std::static_pointer_cast<AbstractOpenSessionRespPars>(AbstractApduResponseParser::shared_from_this());

@@ -55,8 +55,22 @@ ADD_EXECUTABLE(usecase_generic1_explicitselectionaid_pcsc
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/generic/pc/ReaderUtilities.cpp
 )
 
+IF(WIN32)
+    SET(CMAKE_FIND_LIBRARY_PREFIXES "")
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
+    SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
+    SET(WINSCARD winscard.lib)
+ENDIF(WIN32)
+
 IF(APPLE)
-	SET(SPEC_LIBS pcsclite)
+    SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
+    SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
+    SET(WINSCARD "-framework PCSC")
 ENDIF(APPLE)
 
-TARGET_LINK_LIBRARIES(usecase_generic1_explicitselectionaid_pcsc keyplepluginpcsc keyplecalypso keyplecore keyplesmartcardio ${SPEC_LIBS})
+IF(UNIX)
+    FIND_LIBRARY(WINSCARD pcsclite)
+ENDIF(UNIX)
+
+TARGET_LINK_LIBRARIES(usecase_generic1_explicitselectionaid_pcsc keyplepluginpcsc keyplecalypso keyplecore keyplesmartcardio ${WINSCARD})

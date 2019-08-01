@@ -40,12 +40,13 @@ using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
  * received
  */
 class DigestUpdateCmdBuild : public AbstractSamCommandBuilder {
-
-    /** The command reference. */
-
 private:
+    /**
+     * The command reference
+     */
     const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_UPDATE;
 
+public:
     /**
      * Instantiates a new DigestUpdateCmdBuild.
      *
@@ -55,11 +56,19 @@ private:
      * @throws IllegalArgumentException - if the digest data is null or has a length &gt; 255
      * @throws IllegalArgumentException - if the request is inconsistent
      */
-public:
     DigestUpdateCmdBuild(SamRevision revision, bool encryptedSession, std::vector<char> &digestData);
 
+    /**
+     *
+     */
+    virtual ~DigestUpdateCmdBuild() {}
+
 protected:
-    std::shared_ptr<DigestUpdateCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<DigestUpdateCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<DigestUpdateCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
 };

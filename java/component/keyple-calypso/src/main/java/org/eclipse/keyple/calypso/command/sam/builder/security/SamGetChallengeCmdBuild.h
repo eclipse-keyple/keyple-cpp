@@ -40,10 +40,13 @@ using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
  */
 class SamGetChallengeCmdBuild : public AbstractSamCommandBuilder {
 
-    /** The command reference. */
 private:
+    /**
+     * The command reference
+     */
     const CalypsoSamCommands command = CalypsoSamCommands::GET_CHALLENGE;
 
+public:
     /**
      * Instantiates a new SamGetChallengeCmdBuild.
      *
@@ -51,11 +54,19 @@ private:
      * @param expectedResponseLength the expected response length
      * @throws IllegalArgumentException - if the expected response length has wrong value.
      */
-public:
     SamGetChallengeCmdBuild(SamRevision revision, char expectedResponseLength);
 
+    /**
+     *
+     */
+    virtual ~SamGetChallengeCmdBuild() {}
+
 protected:
-    std::shared_ptr<SamGetChallengeCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<SamGetChallengeCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<SamGetChallengeCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
 };

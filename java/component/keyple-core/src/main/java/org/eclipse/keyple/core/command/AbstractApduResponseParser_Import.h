@@ -41,36 +41,44 @@ class IMPORT AbstractApduResponseParser : public std::enable_shared_from_this<Ab
         */
 public:
     class IMPORT StatusProperties : public std::enable_shared_from_this<StatusProperties> {
-
-        /** The successful. */
     private:
+        /**
+         * The successful
+         */
         const bool successful;
 
-        /** The information. */
+        /**
+         * The information
+         */
         const std::string information;
 
-        /**
-            * A map with the double byte of a status as key, and the successful property and ASCII text
-            * information as data.
-            *
-            * @param successful set successful status
-            * @param information additional information
-            */
     public:
+        /**
+         * A map with the double byte of a status as key, and the successful property and ASCII text
+         * information as data.
+         *
+         * @param successful set successful status
+         * @param information additional information
+         */
         StatusProperties(bool successful, const std::string &information);
 
         /**
-            * Gets the successful.
-            *
-            * @return the successful
-            */
+         *
+         */
+        virtual ~StatusProperties() {}
+
+        /**
+         * Gets the successful.
+         *
+         * @return the successful
+         */
         virtual bool isSuccessful();
 
         /**
-            * Gets the information.
-            *
-            * @return the information
-            */
+         * Gets the information.
+         *
+         * @return the information
+         */
         virtual std::string getInformation();
 
     };

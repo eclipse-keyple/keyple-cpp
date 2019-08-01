@@ -34,13 +34,18 @@ using ApduResponse              = org::eclipse::keyple::core::seproxy::message::
  * SAM get challenge. See specs: Calypso / Page 108 / 9.5.4 - Get challenge
  */
 class SamGetChallengeRespPars : public AbstractSamResponseParser {
+public:
     /**
      * Instantiates a new SamGetChallengeRespPars .
      *
      * @param response of the SamGetChallengeCmdBuild
      */
-  public:
     SamGetChallengeRespPars(std::shared_ptr<ApduResponse> response);
+
+    /**
+     *
+     */
+    virtual ~SamGetChallengeRespPars() {}
 
     /**
      * Gets the challenge.
@@ -49,7 +54,10 @@ class SamGetChallengeRespPars : public AbstractSamResponseParser {
      */
     virtual std::vector<char> getChallenge();
 
-  protected:
+protected:
+    /**
+     *
+     */
     std::shared_ptr<SamGetChallengeRespPars> shared_from_this()
     {
         return std::static_pointer_cast<SamGetChallengeRespPars>(AbstractSamResponseParser::shared_from_this());

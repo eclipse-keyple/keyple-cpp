@@ -23,8 +23,10 @@ CustomProtocols::StaticConstructor::StaticConstructor()
 }
 
 CustomProtocols::CustomProtocols(const std::string& nameValue, InnerEnum innerEnum, const std::string& name, TransmissionMode transmissionMode)
-: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name), transmissionMode(transmissionMode) 
+: /*innerEnumValue(innerEnum), */nameValue(nameValue), ordinalValue(nextOrdinal++), name(name), transmissionMode(transmissionMode)
 {
+    /* innerEnumValue is not used, commented it out in class def. */
+    (void)innerEnum;
 }
 
 std::string CustomProtocols::getName()

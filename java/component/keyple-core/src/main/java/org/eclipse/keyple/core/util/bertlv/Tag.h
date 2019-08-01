@@ -34,55 +34,98 @@ namespace bertlv {
     */
 class EXPORT Tag : public std::enable_shared_from_this<Tag> {
 public:
+    /**
+     *
+     */
     enum class TagType {
         PRIMITIVE,
         CONSTRUCTED
     };
 
 private:
+    /**
+     *
+     */
     int tagNumber;
+
+    /**
+     *
+     */
     char tagClass;
+
+    /**
+     *
+     */
     TagType tagType;
+
+    /**
+     *
+     */
     int size;
 
-    /* the tag class */
 public:
+    /**
+     * The tag class
+     */
     static const char UNIVERSAL;
     static const char APPLICATION;
     static const char CONTEXT;
     static const char PRIVATE;
 
-    /**
-        * Creates a tag from its attributes.
-        * <p>
-        * 
-        * @param tagNumber the tag value.
-        * @param tagClass the tag class.
-        * @param tagType constructed or primitive
-        */
 public:
+    /**
+     * Creates a tag from its attributes.
+     * <p>
+     *
+     * @param tagNumber the tag value.
+     * @param tagClass the tag class.
+     * @param tagType constructed or primitive
+     */
     Tag(int tagNumber, char tagClass, TagType tagType);
 
     /**
-        * Create a tag from a binary stream.
-        * <p>
-        * 
-        * @param binary the byte array containing the TLV data
-        * @param offset the start offset in the byte array
-        * @throws IndexOutOfBoundsException if the offset is too large
-        */
+     * Create a tag from a binary stream.
+     * <p>
+     *
+     * @param binary the byte array containing the TLV data
+     * @param offset the start offset in the byte array
+     * @throws IndexOutOfBoundsException if the offset is too large
+     */
     Tag(std::vector<char> &binary, int offset);
 
+    /**
+     *
+     */
+    virtual ~Tag() {}
+
+    /**
+     *
+     */
     virtual int getTagNumber();
 
+    /**
+     *
+     */
     virtual char getTagClass();
 
+    /**
+     *
+     */
     virtual TagType getTagType();
 
+    /**
+     *
+     */
     virtual int getSize();
 
+    /**
+     *
+     */
     virtual bool equals(std::shared_ptr<Tag> tag);
 
+    /**
+     *
+     */
     std::string toString();
 };
 

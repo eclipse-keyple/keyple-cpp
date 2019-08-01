@@ -55,8 +55,24 @@ SeCommonProtocols::SeCommonProtocols(const std::string &nameValue, InnerEnum inn
 {
 }
 
+SeCommonProtocols::SeCommonProtocols(const SeCommonProtocols& s)
+: innerEnumValue(s.innerEnumValue), nameValue(s.nameValue), name(s.name), transmissionMode(s.transmissionMode)
+{
+
+}
+
 SeCommonProtocols::~SeCommonProtocols()
 {
+}
+
+SeCommonProtocols& SeCommonProtocols::operator=(const SeCommonProtocols& s)
+{
+    this->innerEnumValue = s.innerEnumValue;
+    this->nameValue = s.nameValue;
+    this->name = s.name;
+    this->transmissionMode = s.transmissionMode;
+
+    return *this;
 }
 
 std::string SeCommonProtocols::getName()

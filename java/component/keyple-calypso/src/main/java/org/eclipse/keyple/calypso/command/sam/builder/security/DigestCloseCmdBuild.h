@@ -39,11 +39,13 @@ using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
  * Builder for the SAM Digest Close APDU command.
  */
 class DigestCloseCmdBuild : public AbstractSamCommandBuilder {
-
-    /** The command. */
 private:
+    /**
+     * The command
+     */
     const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_CLOSE;
 
+public:
     /**
      * Instantiates a new DigestCloseCmdBuild .
      *
@@ -51,11 +53,19 @@ private:
      * @param expectedResponseLength the expected response length
      * @throws IllegalArgumentException - if the expected response length is wrong.
      */
-public:
     DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength);
 
+    /**
+     *
+     */
+    virtual ~DigestCloseCmdBuild() {}
+
 protected:
-    std::shared_ptr<DigestCloseCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<DigestCloseCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<DigestCloseCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
 };

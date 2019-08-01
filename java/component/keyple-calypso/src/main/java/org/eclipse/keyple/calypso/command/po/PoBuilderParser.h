@@ -33,28 +33,53 @@ using namespace org::eclipse::keyple::calypso::command;
     * A setter allows to associate the parser object.
     */
 template<typename T>
-class PoBuilderParser
-: public std::enable_shared_from_this<PoBuilderParser<T>>,
-  public CalypsoBuilderParser<T, AbstractPoResponseParser> {
+class PoBuilderParser : public std::enable_shared_from_this<PoBuilderParser<T>>, public CalypsoBuilderParser<T, AbstractPoResponseParser> {
 private:
+    /**
+     *
+     */
     const std::shared_ptr<T> poCommandBuilder;
+
+    /**
+     *
+     */
     std::shared_ptr<AbstractPoResponseParser> poResponseParser;
 
 public:
+    /**
+     *
+     */
     PoBuilderParser(std::shared_ptr<T> poCommandBuilder)
     : poCommandBuilder(poCommandBuilder)
     {
     }
 
-    virtual std::shared_ptr<T> getCommandBuilder() {
+    /**
+     *
+     */
+    virtual ~PoBuilderParser() {}
+
+    /**
+     *
+     */
+    virtual std::shared_ptr<T> getCommandBuilder()
+    {
         return poCommandBuilder;
     }
 
-    virtual std::shared_ptr<AbstractPoResponseParser> getResponseParser() {
+    /**
+     *
+     */
+    virtual std::shared_ptr<AbstractPoResponseParser> getResponseParser()
+    {
         return poResponseParser;
     }
 
-    virtual void setResponseParser(std::shared_ptr<AbstractPoResponseParser> poResponseParser) {
+    /**
+     *
+     */
+    virtual void setResponseParser(std::shared_ptr<AbstractPoResponseParser> poResponseParser)
+    {
         this->poResponseParser = poResponseParser;
     }
 };

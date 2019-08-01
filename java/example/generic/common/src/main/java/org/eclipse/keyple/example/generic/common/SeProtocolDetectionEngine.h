@@ -52,15 +52,35 @@ using namespace org::eclipse::keyple::core::selection;
  */
 class SeProtocolDetectionEngine : public AbstractReaderObserverEngine {
 private:
+    /**
+     *
+     */
     std::shared_ptr<SeReader> poReader;
+
+    /**
+     *
+     */
     std::shared_ptr<SeSelection> seSelection;
 
 public:
+    /**
+     *
+     */
     SeProtocolDetectionEngine();
 
-    /* Assign reader to the transaction engine */
+    /**
+     *
+     */
+    virtual ~SeProtocolDetectionEngine() {}
+
+    /**
+     * Assign reader to the transaction engine
+     */
     virtual void setReader(std::shared_ptr<SeReader> poReader);
 
+    /**
+     *
+     */
     virtual std::shared_ptr<AbstractDefaultSelectionsRequest> prepareSeSelection();
 
     /**
@@ -70,15 +90,28 @@ public:
      */
     void processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse> selectionResponse) override;
 
+    /**
+     *
+     */
     void processSeInsertion() override;
 
+    /**
+     *
+     */
     void processSeRemoval() override;
 
+    /**
+     *
+     */
     void processUnexpectedSeRemoval() override;
 
 protected:
-    std::shared_ptr<SeProtocolDetectionEngine> shared_from_this() {
-	return std::static_pointer_cast<SeProtocolDetectionEngine>(AbstractReaderObserverEngine::shared_from_this());
+    /**
+     *
+     */
+    std::shared_ptr<SeProtocolDetectionEngine> shared_from_this()
+    {
+        return std::static_pointer_cast<SeProtocolDetectionEngine>(AbstractReaderObserverEngine::shared_from_this());
     }
 };
 

@@ -87,31 +87,74 @@ public:
                 PREVIOUS
             };
 
+            /**
+             *
+             */
             const InnerEnum innerEnumValue;
+
         private:
+            /**
+             *
+             */
             const std::string nameValue;
+
+            /**
+             *
+             */
             const int ordinalValue;
+
+            /**
+             *
+             */
             static int nextOrdinal;
 
         private:
+            /**
+             *
+             */
             char isoBitMask;
 
         public:
+            /**
+             *
+             */
             FileOccurrence(const std::string &name, InnerEnum innerEnum, char isoBitMask);
 
+            /**
+             *
+             */
             virtual char getIsoBitMask();
 
+
         public:
+            /**
+             *
+             */
             bool operator == (const FileOccurrence &other);
 
+            /**
+             *
+             */
             bool operator != (const FileOccurrence &other);
 
+            /**
+             *
+             */
             static std::vector<FileOccurrence> values();
 
+            /**
+             *
+             */
             int ordinal();
 
+            /**
+             *
+             */
             std::string toString();
 
+            /**
+             *
+             */
             static FileOccurrence valueOf(const std::string &name);
         };
 
@@ -157,51 +200,90 @@ public:
             char isoBitMask;
 
         public:
+            /**
+             *
+             */
             FileControlInformation(const std::string &name, InnerEnum innerEnum, char isoBitMask);
 
+            /**
+             *
+             */
             virtual char getIsoBitMask();
 
         public:
+            /**
+             *
+             */
             bool operator == (const FileControlInformation &other);
 
+            /**
+             *
+             */
             bool operator != (const FileControlInformation &other);
 
+            /**
+             *
+             */
             static std::vector<FileControlInformation> values();
 
+            /**
+             *
+             */
             int ordinal();
 
+            /**
+             *
+             */
             std::string toString();
 
+            /**
+             *
+             */
             static FileControlInformation valueOf(const std::string &name);
         };
 
     public:
+        /**
+         *
+         */
         class EXPORT IsoAid : public std::enable_shared_from_this<IsoAid> {
         public:
+            /**
+             *
+             */
             static constexpr int AID_MIN_LENGTH = 5;
             static constexpr int AID_MAX_LENGTH = 16;
+
         private:
+            /**
+             *
+             */
             std::vector<char> value;
 
-            /**
-                * Build an IsoAid and check length from a byte array
-                * 
-                * @param aid byte array containing the AID value
-                * @throws IllegalArgumentException if the byte length array is not within the allowed
-                *         range.
-                */
         public:
+            /**
+             * Build an IsoAid and check length from a byte array
+             *
+             * @param aid byte array containing the AID value
+             * @throws IllegalArgumentException if the byte length array is not within the allowed
+             *         range.
+             */
             IsoAid(std::vector<char> aid);
 
 
             /**
-                * Build an IsoAid and check length from an hex string
-                *
-                * @param aid hex string containing the AID value
-                * @throws IllegalArgumentException if the byte length array is not within the allowed
-                *         range.
-                */
+             * Build an IsoAid and check length from an hex string
+             *
+             * @param aid hex string containing the AID value
+             * @throws IllegalArgumentException if the byte length array is not within the allowed
+             *         range.
+             */
             IsoAid(const std::string &aid);
+
+            /**
+             *
+             */
+            virtual ~IsoAid() {}
 
             /**
                 * @return the AID value as a byte array
@@ -220,86 +302,99 @@ public:
         };
 
     private:
+        /**
+         *
+         */
         FileOccurrence fileOccurrence = FileOccurrence::FIRST;
+
+        /**
+         *
+         */
         FileControlInformation fileControlInformation = FileControlInformation::FCI;
 
         /**
-                    * - AID’s bytes of the SE application to select. In case the SE application is currently
-        * not selected, a logical channel is established and the corresponding SE application is
-        * selected by the SE reader, otherwise keep the current channel.
-        *
-                    * - Could be missing when operating SE which don’t support the Select Application command
-        * (as it is the case for SAM).
-        */
+         * - AID’s bytes of the SE application to select. In case the SE application is currently
+         * not selected, a logical channel is established and the corresponding SE application is
+         * selected by the SE reader, otherwise keep the current channel.
+         *
+         * - Could be missing when operating SE which don’t support the Select Application command
+         * (as it is the case for SAM).
+         */
         std::shared_ptr<IsoAid> aidToSelect;
 
         /**
-        * List of status codes in response to the select application command that should be
-        * considered successful although they are different from 9000
-        */
+         * List of status codes in response to the select application command that should be
+         * considered successful although they are different from 9000
+         */
         std::shared_ptr<std::set<int>> successfulSelectionStatusCodes = std::make_shared<std::set<int>>();
 
-        /**
-        * AidSelector with additional select application successful status codes, file occurrence
-        * and file control information.
-        * <p>
-        * The fileOccurrence parameter defines the selection options P2 of the SELECT command
-        * message
-        * <p>
-        * The fileControlInformation parameter defines the expected command output template.
-        * <p>
-        * Refer to ISO7816-4.2 for detailed information about these parameters
-        *
-                    * @param aidToSelect IsoAid
-        * @param successfulSelectionStatusCodes list of successful status codes for the select
-        *        application response
-        */
     public:
-        AidSelector(std::shared_ptr<IsoAid> aidToSelect, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes, FileOccurrence fileOccurrence, FileControlInformation fileControlInformation);
+        /**
+          * AidSelector with additional select application successful status codes, file occurrence
+         * and file control information.
+         * <p>
+         * The fileOccurrence parameter defines the selection options P2 of the SELECT command
+         * message
+         * <p>
+         * The fileControlInformation parameter defines the expected command output template.
+         * <p>
+         * Refer to ISO7816-4.2 for detailed information about these parameters
+         *
+         * @param aidToSelect IsoAid
+         * @param successfulSelectionStatusCodes list of successful status codes for the select
+         *        application response
+         */
+        AidSelector(std::shared_ptr<IsoAid> aidToSelect, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes,
+                    FileOccurrence fileOccurrence, FileControlInformation fileControlInformation);
 
         /**
-        * AidSelector with additional select application successful status codes
-        * <p>
-        * The fileOccurrence field is set by default to FIRST
-        * <p>
-        * The fileControlInformation field is set by default to FCI
-        *
-                    * @param aidToSelect IsoAid
-        * @param successfulSelectionStatusCodes list of successful status codes for the select
-        *        application response
-        */
+         * AidSelector with additional select application successful status codes
+         * <p>
+         * The fileOccurrence field is set by default to FIRST
+         * <p>
+         * The fileControlInformation field is set by default to FCI
+         *
+         * @param aidToSelect IsoAid
+         * @param successfulSelectionStatusCodes list of successful status codes for the select
+         *        application response
+         */
         AidSelector(std::shared_ptr<IsoAid> aidToSelect, std::shared_ptr<std::set<int>> successfulSelectionStatusCodes);
 
         /**
-        * Getter for the AID provided at construction time
-        *
-        * @return byte array containing the AID
-        */
+         * Destructor
+         */
+        virtual ~AidSelector() {}
+
+        /**
+         * Getter for the AID provided at construction time
+         *
+         * @return byte array containing the AID
+         */
         virtual std::shared_ptr<IsoAid> getAidToSelect();
 
         /**
-            * @return the file occurrence parameter
-            */
+         * @return the file occurrence parameter
+         */
         virtual FileOccurrence getFileOccurrence();
 
         /**
-            * @return the file control information parameter
-        */
+         * @return the file control information parameter
+         */
         virtual FileControlInformation getFileControlInformation();
 
         /**
-        * Gets the list of successful selection status codes
-        *
-        * @return the list of status codes
-        */
+         * Gets the list of successful selection status codes
+         *
+         * @return the list of status codes
+         */
         virtual std::shared_ptr<std::set<int>> getSuccessfulSelectionStatusCodes();
 
 
         /**
-        * Print out the AID in hex
-        *
-        * @return a string
-        */
+         * Print out the AID in hex
+         *
+         * @return a string
+         */
         virtual std::string toString();
     };
 
@@ -314,13 +409,18 @@ public:
     private:
         std::string atrRegex;
 
+    public:
         /**
          * Regular expression based filter
          *
          * @param atrRegex String hex regular expression
          */
-    public:
         AtrFilter(const std::string &atrRegex);
+
+        /**
+         *
+         */
+        virtual ~AtrFilter() {};
 
         /**
          * Setter for the regular expression provided at construction time
@@ -354,15 +454,33 @@ public:
         virtual std::string toString();
     };
 
-    /** logger */
 private:
+    /**
+     * Logger
+     */
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelector));
 
+    /**
+     *
+     */
     const SeProtocol seProtocol;
+
+    /**
+     *
+     */
     const std::shared_ptr<AidSelector> aidSelector;
+
+    /**
+     *
+     */
     const std::shared_ptr<AtrFilter> atrFilter;
+
+    /**
+     *
+     */
     const std::string extraInfo;
 
+public:
     /**
      * Create a SeSelector to perform the SE selection
      * <p>
@@ -390,8 +508,12 @@ private:
      * @param aidSelector the AID selection data
      * @param extraInfo information string (to be printed in logs)
      */
-public:
     SeSelector(SeProtocol& seProtocol, std::shared_ptr<AtrFilter> atrFilter, std::shared_ptr<AidSelector> aidSelector, const std::string &extraInfo);
+
+    /**
+     *
+     */
+    virtual ~SeSelector() {}
 
     /**
      * Getter

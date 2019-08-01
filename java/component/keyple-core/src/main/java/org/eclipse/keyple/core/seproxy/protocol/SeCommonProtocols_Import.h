@@ -133,7 +133,17 @@ public:
     /**
      *
      */
+    SeCommonProtocols(const SeCommonProtocols& s);
+
+    /**
+     *
+     */
     virtual ~SeCommonProtocols();
+
+    /**
+     *
+     */
+    SeCommonProtocols& operator=(const SeCommonProtocols& s);
 
     /**
      *

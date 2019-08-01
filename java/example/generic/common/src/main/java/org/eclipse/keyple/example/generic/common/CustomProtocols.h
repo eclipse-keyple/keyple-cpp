@@ -56,7 +56,7 @@ private:
     /**
      *
      */
-    const InnerEnum innerEnumValue;
+    //const InnerEnum innerEnumValue;
 
     /**
      *

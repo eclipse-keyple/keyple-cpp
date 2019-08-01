@@ -61,6 +61,29 @@ public:
         this->value = value;
     }
 
+    /**
+     *
+     */
+    Byte(const Byte& b)
+    {
+        this->value = b.value;
+    }
+
+    /**
+     *
+     */
+    virtual ~Byte() {}
+
+    /**
+     *
+     */
+    Byte& operator=(Byte other)
+    {
+        this->value = other.value;
+
+        return *this;
+    }
+
     /*
      * Returns a Byte instance representing the specified value.
      * 

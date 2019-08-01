@@ -31,15 +31,12 @@ AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name)
 void AbstractObservablePlugin::initReaders()
 {
     logger->debug("readers: %p\n", readers);
-    if (readers == nullptr)
-    {
-        try
-        {
+    if (readers == nullptr) {
+        try {
             logger->debug("initializing native readers\n");
             readers = initNativeReaders();
             logger->debug("readers: %p\n", readers);
-        } catch (KeypleReaderException &e)
-        {
+        } catch (KeypleReaderException &e) {
             logger->debug("KeypleReaderException\n");
             e.printStackTrace();
         }
@@ -51,10 +48,12 @@ std::shared_ptr<std::set<std::shared_ptr<SeReader>>> AbstractObservablePlugin::g
     if (readers == nullptr) {
         throw std::make_shared<KeypleReaderException>("List of readers has not been initialized");
     }
+
     return readers;
 }
 
-std::shared_ptr<std::set<std::string>> AbstractObservablePlugin::getReaderNames() {
+std::shared_ptr<std::set<std::string>> AbstractObservablePlugin::getReaderNames()
+{
     std::shared_ptr<std::set<std::string>> readerNames = std::make_shared<std::set<std::string>>();
     for (auto reader : *readers) {
         readerNames->insert(reader->getName());

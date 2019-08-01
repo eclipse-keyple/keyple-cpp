@@ -106,23 +106,23 @@ public:
     /**
      *
      */
-    const InnerEnum innerEnumValue;
+    InnerEnum innerEnumValue;
 
 private:
     /**
      *
      */
-    const std::string nameValue;
+    std::string nameValue;
 
     /**
      *
      */
-    const std::string name;
+    std::string name;
 
     /**
      *
      */
-    const TransmissionMode transmissionMode;
+    TransmissionMode transmissionMode;
 
 public:
     /**
@@ -133,7 +133,17 @@ public:
     /**
      *
      */
+    SeCommonProtocols(const SeCommonProtocols& s);
+
+    /**
+     *
+     */
     virtual ~SeCommonProtocols();
+
+    /**
+     *
+     */
+    SeCommonProtocols& operator=(const SeCommonProtocols& s);
 
     /**
      *

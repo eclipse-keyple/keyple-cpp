@@ -767,17 +767,6 @@ bool PoTransaction::SessionAccessLevel::operator != (const PoTransaction::Sessio
     return this->ordinalValue != other.ordinalValue;
 }
 
-PoTransaction::SessionAccessLevel& PoTransaction::SessionAccessLevel::operator=(const PoTransaction::SessionAccessLevel &other)
-{
-    this->name = other.name;
-    this->sessionKey = other.sessionKey;
-    this->ordinalValue = other.ordinalValue;
-    this->nameValue = other.nameValue;
-    this->innerEnumValue = other.innerEnumValue;
-
-    return *this;
-}
-
 std::vector<PoTransaction::SessionAccessLevel> PoTransaction::SessionAccessLevel::values()
 {
     return valueList;

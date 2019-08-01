@@ -42,19 +42,25 @@ AbstractOpenSessionRespPars::StaticConstructor::StaticConstructor() {
 
 AbstractOpenSessionRespPars::StaticConstructor AbstractOpenSessionRespPars::staticConstructor;
 
-std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> AbstractOpenSessionRespPars::getStatusTable() {
+std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> AbstractOpenSessionRespPars::getStatusTable()
+{
     // At this stage, the status table is the same for everyone
     return STATUS_TABLE;
 }
 
 AbstractOpenSessionRespPars::AbstractOpenSessionRespPars(std::shared_ptr<ApduResponse> response, PoRevision revision)
-: AbstractPoResponseParser(response), revision(revision)
+: AbstractPoResponseParser(response) //, revision(revision)
 {
+    /* Alex: this member is (was) declared in the class but not used. Commenting it until it is necessary. */
+    (void)revision;
+
     std::vector<char> data = response->getDataOut();
     this->secureSession = toSecureSession(data);
 }
 
-std::shared_ptr<AbstractOpenSessionRespPars> AbstractOpenSessionRespPars::create(std::shared_ptr<ApduResponse> response, PoRevision revision) {
+std::shared_ptr<AbstractOpenSessionRespPars>
+AbstractOpenSessionRespPars::create(std::shared_ptr<ApduResponse> response, PoRevision revision)
+{
     switch (revision) {
         case PoRevision::REV1_0:
             return std::make_shared<OpenSession10RespPars>(response);
@@ -70,11 +76,13 @@ std::shared_ptr<AbstractOpenSessionRespPars> AbstractOpenSessionRespPars::create
     }
 }
 
-std::vector<char> AbstractOpenSessionRespPars::getPoChallenge() {
+std::vector<char> AbstractOpenSessionRespPars::getPoChallenge()
+{
     return secureSession->getChallengeRandomNumber();
 }
 
-int AbstractOpenSessionRespPars::getTransactionCounterValue() {
+int AbstractOpenSessionRespPars::getTransactionCounterValue()
+{
     std::vector<char> counter = secureSession->getChallengeTransactionCounter();
     return counter[0] << 24 | counter[1] << 16 | counter[2] << 8 | counter[3];
 }
@@ -83,19 +91,23 @@ bool AbstractOpenSessionRespPars::wasRatified() {
     return secureSession->isPreviousSessionRatified();
 }
 
-bool AbstractOpenSessionRespPars::isManageSecureSessionAuthorized() {
+bool AbstractOpenSessionRespPars::isManageSecureSessionAuthorized()
+{
     return secureSession->isManageSecureSessionAuthorized();
 }
 
-char AbstractOpenSessionRespPars::getSelectedKif() {
+char AbstractOpenSessionRespPars::getSelectedKif()
+{
     return secureSession->getKIF();
 }
 
-std::shared_ptr<Byte> AbstractOpenSessionRespPars::getSelectedKvc() {
+std::shared_ptr<Byte> AbstractOpenSessionRespPars::getSelectedKvc()
+{
     return secureSession->getKVC();
 }
 
-std::vector<char> AbstractOpenSessionRespPars::getRecordDataRead() {
+std::vector<char> AbstractOpenSessionRespPars::getRecordDataRead()
+{
     return secureSession->getOriginalData();
 }
 
@@ -130,23 +142,28 @@ AbstractOpenSessionRespPars::SecureSession::SecureSession(
 {
 }
 
-std::vector<char> AbstractOpenSessionRespPars::SecureSession::getChallengeTransactionCounter() {
+std::vector<char> AbstractOpenSessionRespPars::SecureSession::getChallengeTransactionCounter()
+{
     return challengeTransactionCounter;
 }
 
-std::vector<char> AbstractOpenSessionRespPars::SecureSession::getChallengeRandomNumber() {
+std::vector<char> AbstractOpenSessionRespPars::SecureSession::getChallengeRandomNumber()
+{
     return challengeRandomNumber;
 }
 
-bool AbstractOpenSessionRespPars::SecureSession::isPreviousSessionRatified() {
+bool AbstractOpenSessionRespPars::SecureSession::isPreviousSessionRatified()
+{
     return previousSessionRatified;
 }
 
-bool AbstractOpenSessionRespPars::SecureSession::isManageSecureSessionAuthorized() {
+bool AbstractOpenSessionRespPars::SecureSession::isManageSecureSessionAuthorized()
+{
     return manageSecureSessionAuthorized;
 }
 
-char AbstractOpenSessionRespPars::SecureSession::getKIF() {
+char AbstractOpenSessionRespPars::SecureSession::getKIF()
+{
     return kif;
 }
 
@@ -155,11 +172,13 @@ std::shared_ptr<Byte> AbstractOpenSessionRespPars::SecureSession::getKVC()
     return kvc;
 }
 
-std::vector<char> AbstractOpenSessionRespPars::SecureSession::getOriginalData() {
+std::vector<char> AbstractOpenSessionRespPars::SecureSession::getOriginalData()
+{
     return originalData;
 }
 
-std::vector<char> AbstractOpenSessionRespPars::SecureSession::getSecureSessionData() {
+std::vector<char> AbstractOpenSessionRespPars::SecureSession::getSecureSessionData()
+{
     return secureSessionData;
 }
 

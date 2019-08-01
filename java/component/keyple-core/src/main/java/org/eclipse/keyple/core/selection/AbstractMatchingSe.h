@@ -50,6 +50,11 @@ public:
                        TransmissionMode transmissionMode, const std::string &extraInfo);
 
     /**
+     *
+     */
+    virtual ~AbstractMatchingSe() {}
+
+    /**
      * Indicates whether the current SE has been identified as selected: the logical channel is open
      * and the selection process returned either a FCI or an ATR
      * 

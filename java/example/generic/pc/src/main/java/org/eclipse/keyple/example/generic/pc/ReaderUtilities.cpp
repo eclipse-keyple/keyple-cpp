@@ -65,8 +65,18 @@ void ReaderUtilities::setContactlessSettings(std::shared_ptr<SeReader> reader)
     reader->setParameter(PcscReader::SETTING_KEY_MODE, PcscReader::SETTING_MODE_SHARED);
 
     /* Set the PO reader protocol flag */
+    std::unordered_map<SeCommonProtocols, std::string>::iterator it = PcscProtocolSetting::PCSC_PROTOCOL_SETTING.begin();
+    while(it != PcscProtocolSetting::PCSC_PROTOCOL_SETTING.end()) {
+        SeCommonProtocols p = it->first;
+        std::cout << "available protocol: " << p.getName() << "(" << p.ordinalValue << ") - " << it->second << std::endl;
+        it++;
+    }
+
+    SeCommonProtocols pp = SeCommonProtocols::PROTOCOL_ISO14443_4;
+    std::cout << "looking for protocol: " << pp.getName() << "(" << pp.ordinalValue << ")" << std::endl;
+
     reader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO14443_4,
-              PcscProtocolSetting::PCSC_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO14443_4]);
+                                 PcscProtocolSetting::PCSC_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO14443_4]);
 
 }
 

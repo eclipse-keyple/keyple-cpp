@@ -35,16 +35,25 @@ using ApduResponse              = org::eclipse::keyple::core::seproxy::message::
  * Digest update response parser. See specs: Calypso / page 54 / 7.4.2 - Session MAC computation
  */
 class DigestUpdateRespPars : public AbstractSamResponseParser {
+public:
     /**
      * Instantiates a new DigestUpdateRespPars.
      *
      * @param response the response
      */
-public:
     DigestUpdateRespPars(std::shared_ptr<ApduResponse> response);
 
+    /**
+     *
+     */
+    virtual ~DigestUpdateRespPars() {}
+
 protected:
-    std::shared_ptr<DigestUpdateRespPars> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<DigestUpdateRespPars> shared_from_this()
+    {
         return std::static_pointer_cast<DigestUpdateRespPars>(AbstractSamResponseParser::shared_from_this());
     }
 };

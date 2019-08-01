@@ -50,8 +50,7 @@ int CardChannel::getChannelNumber()
     return channel;
 }
 
-std::shared_ptr<ResponseAPDU>
-CardChannel::transmit(std::shared_ptr<CommandAPDU> command)
+std::shared_ptr<ResponseAPDU> CardChannel::transmit(std::shared_ptr<CommandAPDU> command)
 {
     logger->debug("transmit\n");
 
@@ -60,17 +59,17 @@ CardChannel::transmit(std::shared_ptr<CommandAPDU> command)
     logger->debug("transmit - checking exclusive\n");
     card->checkExclusive();
     logger->debug("transmit - getting command bytes\n");
+
     std::vector<char> commandBytes = command->getBytes();
-    logger->debug("transmit - command: %s\n",
-                  ByteArrayUtil::toHex(commandBytes));
+    logger->debug("transmit - command: %s\n", ByteArrayUtil::toHex(commandBytes));
+
     std::vector<char> responseBytes = doTransmit(commandBytes);
-    logger->debug("transmit - response: %s\n",
-                  ByteArrayUtil::toHex(responseBytes));
+    logger->debug("transmit - response: %s\n", ByteArrayUtil::toHex(responseBytes));
+
     return std::make_shared<ResponseAPDU>(responseBytes);
 }
 
-int CardChannel::transmit(std::vector<char>& command,
-                          std::vector<char>& response)
+int CardChannel::transmit(std::vector<char>& command, std::vector<char>& response)
 {
     checkClosed();
     card->checkExclusive();
@@ -106,8 +105,7 @@ void CardChannel::close()
                       com.size(), NULL, (LPBYTE)r_apdu, &dwRecv);
         std::vector<char> res(r_apdu, r_apdu + dwRecv);
         if (isOK(res) == false) {
-            throw CardException("close() failed: " +
-                                ByteArrayUtil::toHex(res));
+            throw CardException("close() failed: " + ByteArrayUtil::toHex(res));
         }
     } catch (PCSCException& e) {
         card->handleError(e);
@@ -125,7 +123,7 @@ std::string CardChannel::toString()
 int CardChannel::getSW(std::vector<char> res)
 {
     if (res.size() < 2)
-        throw CardException("Invalid response length: " + res.size());
+        throw CardException(StringHelper::formatSimple("Invalid response length: %d", res.size()));
 
     int sw1 = res[res.size() - 2] & 0xff;
     int sw2 = res[res.size() - 1] & 0xff;
@@ -190,7 +188,7 @@ void CardChannel::setChannel(std::vector<char> com)
         com[0] |= 0x40;
         com[0] |= (channel - 4);
     } else {
-        throw std::runtime_error("Unsupported channel number: " + channel);
+        throw std::runtime_error(StringHelper::formatSimple("Unsupported channel number: %d", channel));
     }
 }
 

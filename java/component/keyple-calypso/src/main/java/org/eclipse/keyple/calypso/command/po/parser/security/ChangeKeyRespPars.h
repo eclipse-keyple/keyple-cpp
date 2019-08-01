@@ -32,29 +32,50 @@ using ApduResponse             = org::eclipse::keyple::core::seproxy::message::A
 
 class ChangeKeyRespPars : public AbstractPoResponseParser {
 private:
+    /**
+     *
+     */
     static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
-private:
+    /**
+     *
+     */
     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
     public:
+        /**
+         *
+         */
         StaticConstructor();
     };
 
-private:
+    /**
+     *
+     */
     static ChangeKeyRespPars::StaticConstructor staticConstructor;
 
-
-    /**
-        * Instantiates a new ChangeKeyRespPars
-        */
 public:
+    /**
+     * Instantiates a new ChangeKeyRespPars
+     */
     ChangeKeyRespPars(std::shared_ptr<ApduResponse> response);
 
+    /**
+     *
+     */
+    virtual ~ChangeKeyRespPars() {}
+
 protected:
+    /**
+     *
+     */
     std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
 protected:
-    std::shared_ptr<ChangeKeyRespPars> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<ChangeKeyRespPars> shared_from_this()
+    {
         return std::static_pointer_cast<ChangeKeyRespPars>(AbstractPoResponseParser::shared_from_this());
     }
 };

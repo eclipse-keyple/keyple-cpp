@@ -332,7 +332,7 @@ public:
       *
       * Alex: removed that function to avoid using a shared_ptr to SeProtocol (astract class, therefore cannot be used in a set/map)
       */
-    virtual void setSeProtocolSetting(std::unordered_map<SeProtocol, std::string> &protocolSetting);
+    virtual void setSeProtocolSetting(std::unordered_map<SeProtocol, std::string> &protocolSetting) override;
 
     /**
         * Test if the current protocol matches the provided protocol flag.

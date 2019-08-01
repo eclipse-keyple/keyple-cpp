@@ -30,39 +30,62 @@ namespace sam {
     *
     */
 class EXPORT SamRevision final {
-
-    /** The revision of C1 and S1E SAM. CLA 0x00 or 0x80 */
 public:
+    /**
+     * The revision of C1 and S1E SAM. CLA 0x00 or 0x80
+     */
     static SamRevision C1;
 
-    /** The revision of S1E SAM. CLA 0x00 or 0x80 */
+    /**
+     * The revision of S1E SAM. CLA 0x00 or 0x80
+     */
     static SamRevision S1E;
 
-    /** The revision of S1D SAM SAM. CLA 0x94 */
+    /**
+     * The revision of S1D SAM SAM. CLA 0x94
+     */
     static SamRevision S1D;
 
+    /**
+     *
+     */
     static SamRevision NO_REV;
 
     /**
-        * Joker value matching any application type.
-        * <p>
-        * Used as an argument in SamSelector.
-        * <p>
-        * The actual revision will be retrieved from the ATR historical bytes.
-        */
+     * Joker value matching any application type.
+     * <p>
+     * Used as an argument in SamSelector.
+     * <p>
+     * The actual revision will be retrieved from the ATR historical bytes.
+     */
     static SamRevision AUTO;
 
 private:
+    /**
+     *
+     */
     static std::vector<SamRevision> valueList;
 
+    /**
+     *
+     */
     class StaticConstructor {
     public:
+        /**
+         *
+         */
         StaticConstructor();
     };
 
+    /**
+     *
+     */
     static StaticConstructor staticConstructor;
 
 public:
+    /**
+     *
+     */
     enum class InnerEnum {
         NO_REV,
         C1,
@@ -71,40 +94,91 @@ public:
         AUTO
     };
 
+    /**
+     *
+     */
     InnerEnum innerEnumValue;
-private:
-    std::string nameValue;
-    int ordinalValue;
-    static int nextOrdinal;
 
 private:
+    /**
+     *
+     */
+    std::string nameValue;
+
+    /**
+     *
+     */
+    int ordinalValue;
+
+    /**
+     *
+     */
+    static int nextOrdinal;
+
+    /**
+     *
+     */
     std::string name;
+
+    /**
+     *
+     */
     std::string applicationTypeMask;
+
+    /**
+     *
+     */
     char classByte;
 
 public:
+    /**
+     *
+     */
     SamRevision(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, const std::string &applicationTypeMask, char classByte);
 
+    /**
+     *
+     */
     virtual std::string getName();
 
+    /**
+     *
+     */
     virtual std::string getApplicationTypeMask();
 
+    /**
+     *
+     */
     virtual char getClassByte();
 
-public:
+    /**
+     *
+     */
     bool operator==(const SamRevision &other);
 
+    /**
+     *
+     */
     bool operator!=(const SamRevision &other);
 
-    SamRevision& operator=(const SamRevision &other);
-
-
+    /**
+     *
+     */
     static std::vector<SamRevision> values();
 
+    /**
+     *
+     */
     int ordinal();
 
+    /**
+     *
+     */
     std::string toString();
 
+    /**
+     *
+     */
     static SamRevision valueOf(const std::string &name);
 };
 

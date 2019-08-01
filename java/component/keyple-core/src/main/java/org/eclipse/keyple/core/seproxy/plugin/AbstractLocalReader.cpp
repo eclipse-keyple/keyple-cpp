@@ -77,7 +77,8 @@ void AbstractLocalReader::cardInserted()
         logger->debug("defaultSelectionRequest is null\n");
 
         /* no default request is defined, just notify the SE insertion */
-        AbstractLoggedObservable::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED, nullptr));
+        AbstractLoggedObservable::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name,
+                                                                                ReaderEvent::EventType::SE_INSERTED, nullptr));
         presenceNotified = true;
     } else {
         logger->debug("defaultSelectionRequest is not null\n");
@@ -99,7 +100,9 @@ void AbstractLocalReader::cardInserted()
             if (notificationMode == ObservableReader::NotificationMode::MATCHED_ONLY) {
                 /* notify only if a SE matched the selection, just ignore if not */
                 if (aSeMatched) {
-                    AbstractLoggedObservable::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_MATCHED, std::make_shared<DefaultSelectionsResponse>(seResponseSet)));
+                    AbstractLoggedObservable::notifyObservers(
+                            std::make_shared<ReaderEvent>(this->pluginName, this->name,ReaderEvent::EventType::SE_MATCHED,
+                                                          std::make_shared<DefaultSelectionsResponse>(seResponseSet)));
                     presenceNotified = true;
                 }
                 else {
@@ -110,14 +113,18 @@ void AbstractLocalReader::cardInserted()
             else {
                 if (aSeMatched) {
                     /* The SE matched, notify an SE_MATCHED event with the received response */
-                    AbstractLoggedObservable::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_MATCHED, std::make_shared<DefaultSelectionsResponse>(seResponseSet)));
+                    AbstractLoggedObservable::notifyObservers(
+                            std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_MATCHED,
+                                                          std::make_shared<DefaultSelectionsResponse>(seResponseSet)));
                 }
                 else {
                     /*
                         * The SE didn't match, notify an SE_INSERTED event with the received
                         * response
                         */
-                    AbstractLoggedObservable::notifyObservers(std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED, std::make_shared<DefaultSelectionsResponse>(seResponseSet)));
+                    AbstractLoggedObservable::notifyObservers(
+                            std::make_shared<ReaderEvent>(this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED,
+                                                          std::make_shared<DefaultSelectionsResponse>(seResponseSet)));
                 }
                 presenceNotified = true;
             }
@@ -276,11 +283,15 @@ void AbstractLocalReader::closeLogicalChannel()
 
 void AbstractLocalReader::addSeProtocolSetting(SeProtocol& seProtocol, const std::string &protocolRule)
 {
+    logger->debug("setSeProcotolSetting - adding 1 protocol to map: %s-%s\n", seProtocol.getName(), protocolRule);
+
     this->protocolsMap.emplace(seProtocol, protocolRule);
 }
 
 void AbstractLocalReader::setSeProtocolSetting(std::unordered_map<SeProtocol, std::string> &protocolSetting)
 {
+    logger->debug("setSeProcotolSetting - adding %d protocols to map\n", protocolSetting.size());
+
     this->protocolsMap.insert(protocolSetting.begin(), protocolSetting.end());
 }
 

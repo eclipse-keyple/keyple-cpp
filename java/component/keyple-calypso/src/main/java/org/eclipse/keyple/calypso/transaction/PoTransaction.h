@@ -202,11 +202,6 @@ public:
         /**
          *
          */
-        SessionAccessLevel& operator=(const SessionAccessLevel &other);
-
-        /**
-         *
-         */
         static std::vector<SessionAccessLevel> values();
 
         /**
@@ -325,15 +320,36 @@ public:
     private:
         class CommandResponse : public std::enable_shared_from_this<CommandResponse> {
         private:
+            /**
+             *
+             */
             const std::shared_ptr<ApduRequest> apduRequest;
+
+            /**
+             *
+             */
             const std::shared_ptr<ApduResponse> apduResponse;
 
 
         public:
+            /**
+             *
+             */
             CommandResponse(std::shared_ptr<ApduRequest> apduRequest, std::shared_ptr<ApduResponse> apduResponse);
 
+            /**
+             *
+             */
+            virtual ~CommandResponse() {}
+
+            /**
+             *
+             */
             virtual std::shared_ptr<ApduRequest> getApduRequest();
 
+            /**
+             *
+             */
             virtual std::shared_ptr<ApduResponse> getApduResponse();
         };
 
@@ -342,12 +358,13 @@ public:
          */
         static const std::shared_ptr<Logger> logger;
 
+    private:
         /**
          * A Map of SFI and Commands/Responses
          */
-    private:
         static std::unordered_map<char, std::shared_ptr<CommandResponse>> sfiCommandResponseHashMap;
 
+    public:
         /**
          * Store all Read Record exchanges in a Map whose key is the SFI.
          * 
@@ -357,12 +374,10 @@ public:
          * @param skipFirstItem a flag to indicate if the first apduRequest/apduResponse pair has to
          *        be ignored or not.
          */
-    public:
         static void storeCommandResponse(
-         std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
-                                                    AbstractPoResponseParser>>>> &poBuilderParsers,
-         std::vector<std::shared_ptr<ApduRequest>> &apduRequests,
-         std::vector<std::shared_ptr<ApduResponse>> &apduResponses, bool skipFirstItem);
+                        std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>> &poBuilderParsers,
+                        std::vector<std::shared_ptr<ApduRequest>> &apduRequests,
+                        std::vector<std::shared_ptr<ApduResponse>> &apduResponses, bool skipFirstItem);
 
     public:
         /**
@@ -383,8 +398,7 @@ public:
          * @throws KeypleCalypsoSecureSessionException if an response can't be determined.
          */
         static std::vector<std::shared_ptr<ApduResponse>> getResponses(
-        std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
-                                                   AbstractPoResponseParser>>>> &poBuilderParsers);
+                       std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>> &poBuilderParsers);
     };
 
     /* private constants */

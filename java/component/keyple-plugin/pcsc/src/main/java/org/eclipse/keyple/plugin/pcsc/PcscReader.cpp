@@ -178,6 +178,13 @@ bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
             openPhysicalChannel();
         }
 
+        std::unordered_map<SeProtocol, std::string>::iterator it = protocolsMap.begin();
+        while(it != protocolsMap.end()) {
+            SeProtocol p = it->first;
+            logger->debug("available protocol: %s - %s", p.getName(), it->second);
+            it++;
+        }
+
         /*
          * The requestSet will be executed only if the protocol match the
          * requestElement.

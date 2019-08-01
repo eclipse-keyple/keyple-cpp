@@ -41,13 +41,14 @@ SeSelection::SeSelection() {
 int SeSelection::prepareSelection(std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest)
 {
 
-    logger->trace("SELECTORREQUEST = %s, EXTRAINFO = %s", seSelectionRequest->getSelectionRequest(),
+    logger->trace("SELECTORREQUEST = %s, EXTRAINFO = %s\n", seSelectionRequest->getSelectionRequest(),
                   seSelectionRequest->getSeSelector()->getExtraInfo());
 
     /* build the SeRequest set transmitted to the SE */
     selectionRequestSet->add(seSelectionRequest->getSelectionRequest());
     /* keep the selection request */
     seSelectionRequestList.push_back(seSelectionRequest);
+
     /* return and post increment the selection index */
     return selectionIndex++;
 }

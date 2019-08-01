@@ -38,11 +38,13 @@ using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
  * Builder for the Digest Authenticate APDU command.
  */
 class DigestAuthenticateCmdBuild : public AbstractSamCommandBuilder {
-
-    /** The command. */
 private:
+    /**
+     * The command
+     */
     const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_AUTHENTICATE;
 
+public:
     /**
      * Instantiates a new DigestAuthenticateCmdBuild .
      *
@@ -50,11 +52,19 @@ private:
      * @param signature the signature
      * @throws IllegalArgumentException - if the signature is null or has a wrong length.
      */
-public:
     DigestAuthenticateCmdBuild(SamRevision revision, std::vector<char> &signature);
 
+    /**
+     *
+     */
+    virtual ~DigestAuthenticateCmdBuild() {}
+
 protected:
-    std::shared_ptr<DigestAuthenticateCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<DigestAuthenticateCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<DigestAuthenticateCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
 };

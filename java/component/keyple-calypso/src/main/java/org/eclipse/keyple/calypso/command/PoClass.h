@@ -1,14 +1,14 @@
 /********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
 
 #pragma once
 
@@ -19,68 +19,123 @@
 #include "Export.h"
 
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace calypso {
-                namespace command {
+namespace eclipse {
+namespace keyple {
+namespace calypso {
+namespace command {
 
-                    /* Class for the Calypso command: LEGACY for REV1 / BPRIME type PO, ISO for REV2/3 / B type */
-                    class EXPORT PoClass final {
+/* Class for the Calypso command: LEGACY for REV1 / BPRIME type PO, ISO for REV2/3 / B type */
+class EXPORT PoClass final {
+public:
+    /**
+     *
+     */
+    static PoClass LEGACY;
 
-                      public:
-                        static PoClass LEGACY;
-                        static PoClass ISO;
+    /**
+     *
+     */
+    static PoClass ISO;
 
-                      private:
-                        static std::vector<PoClass> valueList;
+private:
+    /**
+     *
+     */
+    static std::vector<PoClass> valueList;
 
-                        class StaticConstructor {
-                          public:
-                            StaticConstructor();
-                        };
+    /**
+     *
+     */
+    class StaticConstructor {
+      public:
+        StaticConstructor();
+    };
 
-                        static StaticConstructor staticConstructor;
+    /**
+     *
+     */
+    static StaticConstructor staticConstructor;
 
-                      public:
-                        enum class InnerEnum
-                        {
-                            LEGACY,
-                            ISO
-                        };
+public:
+    /**
+     *
+     */
+    enum class InnerEnum
+    {
+        LEGACY,
+        ISO
+    };
 
-                        InnerEnum innerEnumValue;
+    /**
+     *
+     */
+    InnerEnum innerEnumValue;
 
-                      private:
-                        std::string nameValue;
-                        int ordinalValue;
-                        static int nextOrdinal;
+private:
+    /**
+     *
+     */
+    std::string nameValue;
 
-                      private:
-                        char cla;
+    /**
+     *
+     */
+    int ordinalValue;
 
-                      public:
-                        virtual char getValue();
+    /**
+     *
+     */
+    static int nextOrdinal;
 
-                        PoClass(const std::string &name, InnerEnum innerEnum, char cla);
+    /**
+     *
+     */
+    char cla;
 
-                      public:
-                        bool operator==(const PoClass &other);
+public:
+    /**
+     *
+     */
+    virtual char getValue();
 
-                        bool operator!=(const PoClass &other);
+    /**
+     *
+     */
+    PoClass(const std::string &name, InnerEnum innerEnum, char cla);
 
-                        void operator=(const PoClass &other);
+    /**
+     *
+     */
+    bool operator==(const PoClass &other);
 
-                        static std::vector<PoClass> values();
+    /**
+     *
+     */
+    bool operator!=(const PoClass &other);
 
-                        int ordinal();
+    /**
+     *
+     */
+    static std::vector<PoClass> values();
 
-                        std::string toString();
+    /**
+     *
+     */
+    int ordinal();
 
-                        static PoClass valueOf(const std::string &name);
-                    };
+    /**
+     *
+     */
+    std::string toString();
 
-                } // namespace command
-            }     // namespace calypso
-        }         // namespace keyple
-    }             // namespace eclipse
+    /**
+     *
+     */
+    static PoClass valueOf(const std::string &name);
+};
+
+} // namespace command
+}     // namespace calypso
+}         // namespace keyple
+}             // namespace eclipse
 } // namespace org

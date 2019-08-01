@@ -38,13 +38,13 @@ using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
  * Builder for the SAM Digest Init APDU command.
  */
 class DigestInitCmdBuild : public AbstractSamCommandBuilder {
-
+private:
     /**
      * The command.
      */
-private:
     const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_INIT;
 
+public:
     /**
      * Instantiates a new DigestInitCmdBuild.
      *
@@ -55,15 +55,24 @@ private:
      * @param workKeyKif from the AbstractOpenSessionCmdBuild response
      * @param workKeyKVC from the AbstractOpenSessionCmdBuild response
      * @param digestData all data out from the AbstractOpenSessionCmdBuild response
-                                     * @throws IllegalArgumentException - if the work key record number
-                                     * @throws IllegalArgumentException - if the digest data is null
-                                     * @throws IllegalArgumentException - if the request is inconsistent
+     * @throws IllegalArgumentException - if the work key record number
+     * @throws IllegalArgumentException - if the digest data is null
+     * @throws IllegalArgumentException - if the request is inconsistent
      */
-public:
-    DigestInitCmdBuild(SamRevision revision, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif, char workKeyKVC, std::vector<char> &digestData);
+    DigestInitCmdBuild(SamRevision revision, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif,
+                       char workKeyKVC, std::vector<char> &digestData);
+
+    /**
+     *
+     */
+    virtual ~DigestInitCmdBuild() {}
 
 protected:
-    std::shared_ptr<DigestInitCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<DigestInitCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<DigestInitCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
 };

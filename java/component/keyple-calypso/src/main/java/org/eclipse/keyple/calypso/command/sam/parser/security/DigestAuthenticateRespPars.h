@@ -37,15 +37,23 @@ using ApduResponse               = org::eclipse::keyple::core::seproxy::message:
  * computation
  */
 class DigestAuthenticateRespPars : public AbstractSamResponseParser {
+public:
     /**
      * Instantiates a new DigestAuthenticateRespPars.
      *
      * @param response from the SAM DigestAuthenticateCmdBuild
      */
-  public:
     DigestAuthenticateRespPars(std::shared_ptr<ApduResponse> response);
 
-  protected:
+    /**
+     *
+     */
+    virtual ~DigestAuthenticateRespPars() {}
+
+protected:
+    /**
+     *
+     */
     std::shared_ptr<DigestAuthenticateRespPars> shared_from_this()
     {
         return std::static_pointer_cast<DigestAuthenticateRespPars>(AbstractSamResponseParser::shared_from_this());

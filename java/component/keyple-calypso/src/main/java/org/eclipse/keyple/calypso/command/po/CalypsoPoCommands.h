@@ -133,14 +133,14 @@ public:
         *
         * @return the command name
         */
-    virtual std::string getName();
+    virtual std::string getName() override;
 
     /**
         * Gets the instruction byte.
         *
         * @return the value of INS byte
         */
-    virtual char getInstructionByte();
+    virtual char getInstructionByte() override;
 
     /**
         * Get the right open-session command for a given {@link PoRevision}
@@ -173,7 +173,7 @@ public:
         return typeid(this);
     }
 
-    const std::type_info& getResponseParserClass()
+    const std::type_info& getResponseParserClass() override
     {
         /* Fixe me! */
         return typeid(this);

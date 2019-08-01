@@ -39,8 +39,12 @@ using ApduRequest                   = org::eclipse::keyple::core::seproxy::messa
 class PoCustomModificationCommandBuilder : public AbstractIso7816CommandBuilder, public PoModificationCommand {
 
 protected:
+    /**
+     *
+     */
     PoRevision defaultRevision = PoRevision::REV3_1;
 
+public:
     /**
      * Constructor dedicated to the construction of user-defined commands.
      *
@@ -56,11 +60,19 @@ protected:
      * @param name the name of the command (will appear in the ApduRequest log)
      * @param request the ApduRequest (the correct instruction byte must be provided)
      */
-public:
     PoCustomModificationCommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request);
 
+    /**
+     *
+     */
+    virtual ~PoCustomModificationCommandBuilder() {}
+
 protected:
-    std::shared_ptr<PoCustomModificationCommandBuilder> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<PoCustomModificationCommandBuilder> shared_from_this()
+    {
         return std::static_pointer_cast<PoCustomModificationCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());
     }
 };
