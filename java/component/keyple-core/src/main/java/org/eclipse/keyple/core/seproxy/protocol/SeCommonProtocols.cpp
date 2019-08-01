@@ -49,11 +49,13 @@ SeCommonProtocols::StaticConstructor::StaticConstructor()
 
 SeCommonProtocols::StaticConstructor SeCommonProtocols::staticConstructor;
 
-SeCommonProtocols::SeCommonProtocols(const std::string &nameValue,
-                                     InnerEnum innerEnum,
-                                     const std::string &name,
+SeCommonProtocols::SeCommonProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name,
                                      TransmissionMode transmissionMode)
 : innerEnumValue(innerEnum), nameValue(nameValue), name(name), transmissionMode(transmissionMode)
+{
+}
+
+SeCommonProtocols::~SeCommonProtocols()
 {
 }
 
@@ -69,17 +71,17 @@ TransmissionMode SeCommonProtocols::getTransmissionMode() const
 
 std::vector<SeCommonProtocols> SeCommonProtocols::values()
 {
-return valueList;
+    return valueList;
 }
 
 int SeCommonProtocols::ordinal()
 {
-return ordinalValue;
+    return ordinalValue;
 }
 
 std::string SeCommonProtocols::toString()
 {
-return nameValue;
+    return nameValue;
 }
 
 SeCommonProtocols SeCommonProtocols::valueOf(const std::string &name)

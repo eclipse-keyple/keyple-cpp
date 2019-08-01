@@ -38,10 +38,12 @@ SeSelection::SeSelection() {
     selectionIndex = 0;
 }
 
-int SeSelection::prepareSelection(std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest) {
-    if (logger->isTraceEnabled()) {
-        logger->trace("SELECTORREQUEST = {}, EXTRAINFO = {}", seSelectionRequest->getSelectionRequest(), seSelectionRequest->getSeSelector()->getExtraInfo());
-    }
+int SeSelection::prepareSelection(std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest)
+{
+
+    logger->trace("SELECTORREQUEST = %s, EXTRAINFO = %s", seSelectionRequest->getSelectionRequest(),
+                  seSelectionRequest->getSeSelector()->getExtraInfo());
+
     /* build the SeRequest set transmitted to the SE */
     selectionRequestSet->add(seSelectionRequest->getSelectionRequest());
     /* keep the selection request */
@@ -50,7 +52,8 @@ int SeSelection::prepareSelection(std::shared_ptr<AbstractSeSelectionRequest> se
     return selectionIndex++;
 }
 
-std::shared_ptr<SelectionsResult> SeSelection::processSelection(std::shared_ptr<DefaultSelectionsResponse> defaultSelectionsResponse) {
+std::shared_ptr<SelectionsResult> SeSelection::processSelection(std::shared_ptr<DefaultSelectionsResponse> defaultSelectionsResponse)
+{
     std::shared_ptr<SelectionsResult> selectionsResult = std::make_shared<SelectionsResult>();
 
     /* null pointer exception protection */
@@ -71,7 +74,8 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(std::shared_ptr<
                     */
                 std::shared_ptr<AbstractMatchingSe> matchingSe = seSelectionRequestList[selectionIndex]->parse(seResponse);
 
-                selectionsResult->addMatchingSelection(std::make_shared<MatchingSelection>(selectionIndex, seSelectionRequestList[selectionIndex], matchingSe, seResponse));
+                selectionsResult->addMatchingSelection(std::make_shared<MatchingSelection>(selectionIndex,
+                                                       seSelectionRequestList[selectionIndex], matchingSe, seResponse));
             }
         }
         selectionIndex++;
@@ -79,9 +83,13 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(std::shared_ptr<
     return selectionsResult;
 }
 
-std::shared_ptr<SelectionsResult> SeSelection::processDefaultSelection(std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse) {
+std::shared_ptr<SelectionsResult>
+SeSelection::processDefaultSelection(std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
+{
     if (logger->isTraceEnabled()) {
-        logger->trace("Process default SELECTIONRESPONSE ({} response(s))", (std::static_pointer_cast<DefaultSelectionsResponse>(defaultSelectionsResponse))->getSelectionSeResponseSet()->getResponses().size());
+        logger->trace("Process default SELECTIONRESPONSE (%s response(s))",
+                      (std::static_pointer_cast<DefaultSelectionsResponse>(defaultSelectionsResponse))->
+                         getSelectionSeResponseSet()->getResponses().size());
     }
 
     return processSelection(std::static_pointer_cast<DefaultSelectionsResponse>(defaultSelectionsResponse));
@@ -93,8 +101,7 @@ std::shared_ptr<SelectionsResult> SeSelection::processExplicitSelection(std::sha
      * Removed 'if (logger-isTraceEnabled())', that check will be done in the
      * trace function already.
      */
-    logger->trace("Transmit SELECTIONREQUEST (%d request(s))\n",
-                  selectionRequestSet->getRequests()->size());
+    logger->trace("Transmit SELECTIONREQUEST (%d request(s))\n", selectionRequestSet->getRequests()->size());
 
     /* Communicate with the SE to do the selection */
     std::shared_ptr<SeResponseSet> seResponseSet = 
@@ -103,7 +110,8 @@ std::shared_ptr<SelectionsResult> SeSelection::processExplicitSelection(std::sha
     return processSelection(std::make_shared<DefaultSelectionsResponse>(seResponseSet));
 }
 
-std::shared_ptr<AbstractDefaultSelectionsRequest> SeSelection::getSelectionOperation() {
+std::shared_ptr<AbstractDefaultSelectionsRequest> SeSelection::getSelectionOperation()
+{
     return std::static_pointer_cast<AbstractDefaultSelectionsRequest>(std::make_shared<DefaultSelectionsRequest>(selectionRequestSet));
 }
 

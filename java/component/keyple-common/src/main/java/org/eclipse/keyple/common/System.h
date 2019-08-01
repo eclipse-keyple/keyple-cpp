@@ -24,7 +24,7 @@ public:
 #endif
 	}
 
-	static void arraycopy(std::vector<char> src, int srcPos, std::vector<char> dest, int destPos, int length)
+	static void arraycopy(const std::vector<char>& src, int srcPos, std::vector<char>& dest, int destPos, int length)
 	{
 		for (int i = 0; i < length; i++) {
 			dest[destPos + i] = src[srcPos + i];

@@ -33,35 +33,24 @@ using namespace org::eclipse::keyple::core::seproxy::protocol;
 //                        import static org.eclipse.keyple.core.seproxy.protocol.TransmissionMode.*;
 
 class EXPORT SeCommonProtocols final : public SeProtocol {
-
-    /* ---- contactless standard / NFC compliant ------------- */
 public:
+    /* ---- contactless standard / NFC compliant ------------- */
     static SeCommonProtocols PROTOCOL_ISO14443_4;
-
     static SeCommonProtocols PROTOCOL_ISO15693;
 
     /* ---- contactless proprietary NFC compliant ------------ */
     static SeCommonProtocols PROTOCOL_ISO14443_3A;
-
     static SeCommonProtocols PROTOCOL_ISO14443_3B;
-
     static SeCommonProtocols PROTOCOL_JIS_6319_4;
-
     static SeCommonProtocols PROTOCOL_NDEF;
-
     static SeCommonProtocols PROTOCOL_NDEF_FORMATABLE;
-
     static SeCommonProtocols PROTOCOL_NFC_BARCODE;
-
     static SeCommonProtocols PROTOCOL_MIFARE_UL;
-
     static SeCommonProtocols PROTOCOL_MIFARE_CLASSIC;
-
     static SeCommonProtocols PROTOCOL_MIFARE_DESFIRE;
 
     /* ---- contactless proprietary not NFC compliant -------- */
     static SeCommonProtocols PROTOCOL_B_PRIME;
-
     static SeCommonProtocols PROTOCOL_MEMORY_ST25;
 
     /* ---- contacts ISO standard ---------------------------- */
@@ -71,16 +60,31 @@ public:
     static SeCommonProtocols PROTOCOL_HSP;
 
 private:
+    /**
+     *
+     */
     static std::vector<SeCommonProtocols> valueList;
 
+    /**
+     *
+     */
     class StaticConstructor {
     public:
+        /**
+         *
+         */
         StaticConstructor();
     };
 
+    /**
+     *
+     */
     static StaticConstructor staticConstructor;
 
 public:
+    /**
+     *
+     */
     enum class InnerEnum {
         PROTOCOL_ISO14443_4,
         PROTOCOL_ISO15693,
@@ -99,31 +103,66 @@ public:
         PROTOCOL_HSP
     };
 
+    /**
+     *
+     */
     const InnerEnum innerEnumValue;
+
 private:
+    /**
+     *
+     */
     const std::string nameValue;
 
-private:
+    /**
+     *
+     */
     const std::string name;
-    const TransmissionMode transmissionMode;
 
     /**
-        * Constructor
-        */
+     *
+     */
+    const TransmissionMode transmissionMode;
+
 public:
+    /**
+     * Constructor
+     */
     SeCommonProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, TransmissionMode transmissionMode);
 
+    /**
+     *
+     */
+    virtual ~SeCommonProtocols();
+
+    /**
+     *
+     */
     std::string getName() override;
 
+    /**
+     *
+     */
     TransmissionMode getTransmissionMode() const override;
 
-public:
+    /**
+     *
+     */
     static std::vector<SeCommonProtocols> values();
 
+    /**
+     *
+     */
     int ordinal();
 
+    /**
+     *
+     */
     std::string toString();
 
+    /**
+     *
+     */
     static SeCommonProtocols valueOf(const std::string &name);
 };
 

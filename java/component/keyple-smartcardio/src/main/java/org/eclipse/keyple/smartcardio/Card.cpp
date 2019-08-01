@@ -112,7 +112,7 @@ std::string Card::getProtocol()
         return "T=1";
     default:
         // should never occur
-        return "Unknown protocol " + protocol;
+        return "Unknown protocol ";
     }
 }
 

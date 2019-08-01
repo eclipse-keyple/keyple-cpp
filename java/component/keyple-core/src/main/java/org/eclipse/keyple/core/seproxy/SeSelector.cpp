@@ -242,21 +242,18 @@ bool SeSelector::AtrFilter::atrMatches(std::vector<char> &atr)
 
 std::string SeSelector::AtrFilter::toString()
 {
-    return StringHelper::formatSimple("ATR regex:%s", atrRegex.length() != 0 ?
-                                      atrRegex : "empty");
+    return StringHelper::formatSimple("ATR regex:%s", atrRegex.length() != 0 ? atrRegex : "empty");
 }
 
 SeSelector::SeSelector(SeProtocol& seProtocol, std::shared_ptr<AtrFilter> atrFilter, std::shared_ptr<AidSelector> aidSelector,
                        const std::string &extraInfo)
-: seProtocol(seProtocol), aidSelector(aidSelector), atrFilter(atrFilter),
-  extraInfo(extraInfo)
+: seProtocol(seProtocol), aidSelector(aidSelector), atrFilter(atrFilter), extraInfo(extraInfo)
 {
     if (logger->isTraceEnabled()) {
-        logger->trace("Selection data: AID = %s ATRREGEX = %s, EXTRAINFO" \
-                      "= %s\n", this->aidSelector == nullptr ? "null" :
-                      ByteArrayUtil::toHex(this->aidSelector->getAidToSelect()->getValue()),
-                      this->atrFilter == nullptr ? "null" :
-                      this->atrFilter->getAtrRegex(), extraInfo);
+        logger->trace("Selection data: AID = %s ATRREGEX = %s, EXTRAINFO = %s\n",
+                      this->aidSelector == nullptr ? "null" : ByteArrayUtil::toHex(this->aidSelector->getAidToSelect()->getValue()),
+                      this->atrFilter == nullptr ? "null" : this->atrFilter->getAtrRegex(),
+                      extraInfo);
     }
 }
 

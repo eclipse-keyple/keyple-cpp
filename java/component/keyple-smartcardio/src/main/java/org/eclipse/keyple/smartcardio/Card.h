@@ -66,11 +66,6 @@ public:
 
 private:
     /**
-     * 
-     */
-    CardChannel* channel;
-
-    /**
      * ATR of this card
      */
     ATR* atr;

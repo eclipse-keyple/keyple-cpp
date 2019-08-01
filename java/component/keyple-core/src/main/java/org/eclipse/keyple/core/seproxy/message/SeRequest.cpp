@@ -15,7 +15,8 @@ using ChannelState = org::eclipse::keyple::core::seproxy::ChannelState;
 using SeSelector   = org::eclipse::keyple::core::seproxy::SeSelector;
 using SeProtocol   = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
 
-SeRequest::SeRequest(std::shared_ptr<SeSelector> seSelector, std::vector<std::shared_ptr<ApduRequest>> &apduRequests, ChannelState channelState)
+SeRequest::SeRequest(std::shared_ptr<SeSelector> seSelector, std::vector<std::shared_ptr<ApduRequest>> &apduRequests,
+                     ChannelState channelState)
 : seSelector(seSelector)
 {
     this->apduRequests = apduRequests;
@@ -46,7 +47,8 @@ bool SeRequest::isKeepChannelOpen()
 
 std::string SeRequest::toString()
 {
-    return StringHelper::formatSimple("SeRequest:{REQUESTS = %s, SELECTOR = %s, KEEPCHANNELOPEN = %s}", "to fix!" /*getApduRequests()*/, getSeSelector(), "to fix!" /*channelState*/);
+    return StringHelper::formatSimple("SeRequest:{REQUESTS = %s, SELECTOR = %s, KEEPCHANNELOPEN = %s}",
+                                      "to fix!" /*getApduRequests()*/, getSeSelector(), "to fix!" /*channelState*/);
 }
 
 }

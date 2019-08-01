@@ -7,7 +7,7 @@ namespace org {
                 namespace generic {
                     namespace pc {
 
-                        const std::string PcscReadersSettings::PO_READER_NAME_REGEX = ".*(ASK|ACS).*";
+                        const std::string PcscReadersSettings::PO_READER_NAME_REGEX = ".*(ASK|ACS|00 01).*";
                     }
                 }
             }

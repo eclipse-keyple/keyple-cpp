@@ -45,12 +45,12 @@ void doAndAnalyseSelection(std::shared_ptr<SeReader> seReader, std::shared_ptr<S
         std::shared_ptr<AbstractMatchingSe> matchingSe = selectionsResult->getMatchingSelection(index)->getMatchingSe();
         logger->info("The SE matched the selection %d.", index);
         logger->info("Selection status for case %d: \n\t\tATR: " \
-                         "%s\n\t\tFCI: %s", index,
+                         "%s\n\t\tFCI: %s\n", index,
                          ByteArrayUtil::toHex(matchingSe->getSelectionStatus()->getAtr()->getBytes()),
                          ByteArrayUtil::toHex(matchingSe->getSelectionStatus()->getFci()->getDataOut()));
     }
     else {
-        logger->info("The selection 2 process did not return any selected SE.");
+        logger->info("The selection 2 process did not return any selected SE\n");
     }
 }
 

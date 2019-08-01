@@ -153,7 +153,10 @@ void AbstractLocalReader::cardRemoved()
 
 std::shared_ptr<ApduResponse> AbstractLocalReader::openChannelForAidHackGetData(std::shared_ptr<SeSelector::AidSelector> aidSelector)
 {
-    std::shared_ptr<SeSelector::AidSelector> noResponseAidSelector = std::make_shared<SeSelector::AidSelector>(aidSelector->getAidToSelect(), aidSelector->getSuccessfulSelectionStatusCodes(), aidSelector->getFileOccurrence(), SeSelector::AidSelector::FileControlInformation::NO_RESPONSE);
+    std::shared_ptr<SeSelector::AidSelector> noResponseAidSelector =
+        std::make_shared<SeSelector::AidSelector>(aidSelector->getAidToSelect(), aidSelector->getSuccessfulSelectionStatusCodes(),
+                                                  aidSelector->getFileOccurrence(),
+                                                  SeSelector::AidSelector::FileControlInformation::NO_RESPONSE);
     std::shared_ptr<ApduResponse> fciResponse = openChannelForAid(noResponseAidSelector);
 
     if (fciResponse->isSuccessful()) {
@@ -164,7 +167,8 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::openChannelForAidHackGetData(
         getDataCommand[3] = static_cast<char>(0x6F); // P2: 0x6F FCI for the current DF
 
         /* The successful status codes list for this command is provided */
-        fciResponse = processApduRequest(std::make_shared<ApduRequest>("Internal Get Data", getDataCommand, false, aidSelector->getSuccessfulSelectionStatusCodes()));
+        fciResponse = processApduRequest(std::make_shared<ApduRequest>("Internal Get Data", getDataCommand, false,
+                                         aidSelector->getSuccessfulSelectionStatusCodes()));
         if (!fciResponse->isSuccessful()) {
             logger->trace("[%s] openChannelForAidHackGetData => Get data failed. SELECTOR = %s", this->getName(), aidSelector);
         }
@@ -180,53 +184,54 @@ void AbstractLocalReader::setForceGetDataFlag(bool forceGetDataFlag)
 
 std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannel(std::shared_ptr<SeSelector> seSelector) 
 {
-                            std::vector<char> atr = getATR();
-                            bool selectionHasMatched = true;
-                            std::shared_ptr<SelectionStatus> selectionStatus;
+    std::vector<char> atr = getATR();
+    bool selectionHasMatched = true;
+    std::shared_ptr<SelectionStatus> selectionStatus;
 
-                            /** Perform ATR filtering if requested */
-                            if (seSelector->getAtrFilter() != nullptr) {
-                                if (atr.empty()) {
-                                    throw std::make_shared<KeypleIOReaderException>("Didn't get an ATR from the SE.");
-                                }
+    /** Perform ATR filtering if requested */
+    if (seSelector->getAtrFilter() != nullptr) {
+        if (atr.empty()) {
+            throw std::make_shared<KeypleIOReaderException>("Didn't get an ATR from the SE.");
+        }
 
-                                if (logger->isTraceEnabled()) {
-                                    logger->trace("[%s] openLogicalChannel => ATR = %s", this->getName(), ByteArrayUtil::toHex(atr));
-                                }
-                                if (!seSelector->getAtrFilter()->atrMatches(atr)) {
-                                    logger->info("[%s] openLogicalChannel => ATR didn't match. SELECTOR = %s, ATR = %s", this->getName(), seSelector, ByteArrayUtil::toHex(atr));
-                                    selectionHasMatched = false;
-                                }
-                            }
+        if (logger->isTraceEnabled()) {
+            logger->trace("[%s] openLogicalChannel => ATR = %s", this->getName(), ByteArrayUtil::toHex(atr));
+        }
+        if (!seSelector->getAtrFilter()->atrMatches(atr)) {
+            logger->info("[%s] openLogicalChannel => ATR didn't match. SELECTOR = %s, ATR = %s", this->getName(),
+                         seSelector, ByteArrayUtil::toHex(atr));
+            selectionHasMatched = false;
+        }
+    }
 
-                            /**
-                             * Perform application selection if requested and if ATR filtering matched or was not
-                             * requested
-                             */
-                            if (selectionHasMatched && seSelector->getAidSelector() != nullptr) {
-                                std::shared_ptr<ApduResponse> fciResponse;
-                                if (!forceGetDataFlag) {
-                                    fciResponse = openChannelForAid(seSelector->getAidSelector());
-                                }
-                                else {
-                                    fciResponse = openChannelForAidHackGetData(seSelector->getAidSelector());
-                                }
+    /**
+     * Perform application selection if requested and if ATR filtering matched or was not
+     * requested
+     */
+    if (selectionHasMatched && seSelector->getAidSelector() != nullptr) {
+        std::shared_ptr<ApduResponse> fciResponse;
+        if (!forceGetDataFlag) {
+            fciResponse = openChannelForAid(seSelector->getAidSelector());
+        } else {
+            fciResponse = openChannelForAidHackGetData(seSelector->getAidSelector());
+        }
 
-                                /*
-                                 * The ATR filtering matched or was not requested. The selection status is determined by
-                                 * the answer to the select application command.
-                                 */
-                                selectionStatus = std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr), fciResponse, fciResponse->isSuccessful());
-                            }
-                            else {
-                                /*
-                                 * The ATR filtering didn't match or no AidSelector was provided. The selection status
-                                 * is determined by the ATR filtering.
-                                 */
-                                std::vector<char> empty;
-                                selectionStatus = std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr), std::make_shared<ApduResponse>(empty, nullptr), selectionHasMatched);
-                            }
-                            return selectionStatus;
+        /*
+         * The ATR filtering matched or was not requested. The selection status is determined by
+         * the answer to the select application command.
+         */
+        selectionStatus = std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr), fciResponse, fciResponse->isSuccessful());
+    } else {
+        /*
+         * The ATR filtering didn't match or no AidSelector was provided. The selection status
+         * is determined by the ATR filtering.
+         */
+        std::vector<char> empty;
+        selectionStatus = std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr),
+                                                            std::make_shared<ApduResponse>(empty, nullptr), selectionHasMatched);
+    }
+
+    return selectionStatus;
 }
 
 std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector)
