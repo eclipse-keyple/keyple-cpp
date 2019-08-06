@@ -56,9 +56,8 @@ SeCommonProtocols::SeCommonProtocols(const std::string &nameValue, InnerEnum inn
 }
 
 SeCommonProtocols::SeCommonProtocols(const SeCommonProtocols& s)
-: innerEnumValue(s.innerEnumValue), nameValue(s.nameValue), name(s.name), transmissionMode(s.transmissionMode)
+: SeProtocol(s), innerEnumValue(s.innerEnumValue), nameValue(s.nameValue), name(s.name), transmissionMode(s.transmissionMode)
 {
-
 }
 
 SeCommonProtocols::~SeCommonProtocols()

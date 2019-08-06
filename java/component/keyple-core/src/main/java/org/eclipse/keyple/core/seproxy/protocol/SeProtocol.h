@@ -49,6 +49,19 @@ public:
     }
 
     /**
+     *
+     */
+    SeProtocol(const SeProtocol& other) : ordinalValue(other.ordinalValue)
+    {
+    }
+
+    /**
+     *
+     */
+    virtual ~SeProtocol() {}
+
+
+    /**
      * Protocol name
      * 
      * @return String
@@ -73,11 +86,7 @@ public:
      */
     virtual bool operator==(const SeProtocol &other) const
     {
-        /* Alex: bad stuff with 'const' keyword, can't use this and other directory */
-        SeProtocol t = *this;
-        SeProtocol o = other;
-
-        return !t.getName().compare(o.getName());
+        return this->ordinalValue == other.ordinalValue;
     }
 
     /**
