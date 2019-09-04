@@ -40,22 +40,31 @@ using ApduResponse           = org::eclipse::keyple::core::seproxy::message::Apd
  * Get Challenge.
  */
 class PoGetChallengeCmdBuild final : public AbstractPoCommandBuilder<PoGetChallengeRespPars> {
-
 private:
-    const CalypsoPoCommands command = CalypsoPoCommands::GET_CHALLENGE;
+    /**
+     *
+     */
+    CalypsoPoCommands& command = CalypsoPoCommands::GET_CHALLENGE;
 
+public:
     /**
      * Instantiates a new PoGetChallengeCmdBuild.
      *
      * @param poClass indicates which CLA byte should be used for the Apdu
      */
-public:
     PoGetChallengeCmdBuild(PoClass poClass);
 
+    /**
+     *
+     */
     std::shared_ptr<PoGetChallengeRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<PoGetChallengeCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<PoGetChallengeCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<PoGetChallengeCmdBuild>(AbstractPoCommandBuilder<PoGetChallengeRespPars>::shared_from_this());
     }
 };

@@ -31,37 +31,39 @@ namespace sam {
 namespace builder {
 namespace security {
 
-using KeyReference              = org::eclipse::keyple::calypso::KeyReference;
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
-using CalypsoSamCommands        = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-using SamRevision               = org::eclipse::keyple::calypso::command::sam::SamRevision;
+using namespace org::eclipse::keyple::calypso;
+using namespace org::eclipse::keyple::calypso::command::sam;
 
 /**
-    * Builder for the SAM Give Random APDU command.
-    */
+ * Builder for the SAM Give Random APDU command.
+ */
 class CardGenerateKeyCmdBuild : public AbstractSamCommandBuilder {
-    /** The command reference. */
 private:
-    const CalypsoSamCommands command = CalypsoSamCommands::CARD_GENERATE_KEY;
+    /** The command reference. */
+    CalypsoSamCommands& command = CalypsoSamCommands::CARD_GENERATE_KEY;
 
-    /**
-        * Instantiates a new DigestUpdateCmdBuild and generate the ciphered data for a key ciphered by
-        * another.
-        *
-        * <p>
-        * If the provided ciphering key reference is null, the source key is ciphered with the null
-        * key.
-        * 
-        * @param revision of the SAM
-        * @param cipheringKey the key used to ciphering the source key (the null key is used if this
-        *        reference is null)
-        * @param sourceKey the reference of the key to be loaded
-        */
 public:
+    /**
+     * Instantiates a new DigestUpdateCmdBuild and generate the ciphered data for a key ciphered by
+     * another.
+     *
+     * <p>
+     * If the provided ciphering key reference is null, the source key is ciphered with the null
+     * key.
+     *
+     * @param revision of the SAM
+     * @param cipheringKey the key used to ciphering the source key (the null key is used if this
+     *        reference is null)
+     * @param sourceKey the reference of the key to be loaded
+     */
     CardGenerateKeyCmdBuild(SamRevision revision, std::shared_ptr<KeyReference> cipheringKey, std::shared_ptr<KeyReference> sourceKey);
 
 protected:
-    std::shared_ptr<CardGenerateKeyCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<CardGenerateKeyCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<CardGenerateKeyCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
 };

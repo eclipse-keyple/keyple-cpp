@@ -50,7 +50,7 @@ public:
      * @param reference a command reference from the Calypso command table
      * @param request the ApduRequest (the instruction byte will be overwritten)
      */
-    AbstractPoCommandBuilder(std::shared_ptr<CalypsoPoCommands> reference, std::shared_ptr<ApduRequest> request)
+    AbstractPoCommandBuilder(CalypsoPoCommands& reference, std::shared_ptr<ApduRequest> request)
     : AbstractIso7816CommandBuilder(reference, request)
     {
     }

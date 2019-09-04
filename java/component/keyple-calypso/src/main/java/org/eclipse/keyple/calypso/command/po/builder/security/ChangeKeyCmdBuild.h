@@ -39,22 +39,32 @@ using ApduResponse      = org::eclipse::keyple::core::seproxy::message::ApduResp
 
 class ChangeKeyCmdBuild : public AbstractPoCommandBuilder<ChangeKeyRespPars> {
 private:
-    const CalypsoPoCommands command = CalypsoPoCommands::CHANGE_KEY;
-
     /**
-        * Change Key Calypso command
-        * 
-        * @param poClass indicates which CLA byte should be used for the Apdu
-        * @param keyIndex index of the key of the current DF to change
-        * @param cryptogram key encrypted with Issuer key (key #1)
-        */
+     *
+     */
+    CalypsoPoCommands& command = CalypsoPoCommands::CHANGE_KEY;
+
 public:
+    /**
+     * Change Key Calypso command
+     *
+     * @param poClass indicates which CLA byte should be used for the Apdu
+     * @param keyIndex index of the key of the current DF to change
+     * @param cryptogram key encrypted with Issuer key (key #1)
+     */
     ChangeKeyCmdBuild(PoClass poClass, char keyIndex, std::vector<char> &cryptogram);
 
+    /**
+     *
+     */
     std::shared_ptr<ChangeKeyRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<ChangeKeyCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<ChangeKeyCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<ChangeKeyCmdBuild>(AbstractPoCommandBuilder<ChangeKeyRespPars>::shared_from_this());
     }
 };

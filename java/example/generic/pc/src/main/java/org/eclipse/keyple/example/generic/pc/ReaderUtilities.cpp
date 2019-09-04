@@ -1,4 +1,3 @@
-#include "KeypleReaderException.h"
 #include "KeypleReaderNotFoundException.h"
 #include "KeypleBaseException.h"
 #include "PcscReadersSettings.h"
@@ -22,10 +21,10 @@ using namespace org::eclipse::keyple::core::seproxy;
 using namespace org::eclipse::keyple::core::seproxy::exception;
 using namespace org::eclipse::keyple::plugin::pcsc;
 
-std::shared_ptr<SeReader> ReaderUtilities::getReaderByName(std::shared_ptr<SeProxyService> seProxyService, const std::string &pattern)
+std::shared_ptr<SeReader> ReaderUtilities::getReaderByName(const std::string &pattern)
 {
     Pattern* p = Pattern::compile(pattern);
-    for (auto plugin : seProxyService->getPlugins()) {
+    for (auto plugin : SeProxyService::getInstance().getPlugins()) {
         for (auto reader : *plugin->getReaders()) {
             Matcher *matcher = p->matcher(reader->getName());
             if (matcher->matches()) {
@@ -36,9 +35,9 @@ std::shared_ptr<SeReader> ReaderUtilities::getReaderByName(std::shared_ptr<SePro
     throw std::make_shared<KeypleReaderNotFoundException>("Reader name pattern: " + pattern);
 }
 
-std::shared_ptr<SeReader> ReaderUtilities::getDefaultContactLessSeReader(std::shared_ptr<SeProxyService> seProxyService)
+std::shared_ptr<SeReader> ReaderUtilities::getDefaultContactLessSeReader()
 {
-    std::shared_ptr<SeReader> seReader = ReaderUtilities::getReaderByName(seProxyService, PcscReadersSettings::PO_READER_NAME_REGEX);
+    std::shared_ptr<SeReader> seReader = ReaderUtilities::getReaderByName(PcscReadersSettings::PO_READER_NAME_REGEX);
     ReaderUtilities::setContactlessSettings(seReader);
 
     return seReader;

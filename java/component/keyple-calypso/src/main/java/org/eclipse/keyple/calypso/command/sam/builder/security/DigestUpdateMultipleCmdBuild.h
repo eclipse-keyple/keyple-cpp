@@ -29,10 +29,7 @@ namespace sam {
 namespace builder {
 namespace security {
 
-
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
-using CalypsoSamCommands = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
+using namespace org::eclipse::keyple::calypso::command::sam;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,11 +38,13 @@ using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
  *
  */
 class DigestUpdateMultipleCmdBuild : public AbstractSamCommandBuilder {
-
-    /** The command. */
 private:
-    const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_UPDATE_MULTIPLE;
+    /**
+     * The command
+     */
+    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_UPDATE_MULTIPLE;
 
+public:
     /**
      * Instantiates a new DigestUpdateMultipleCmdBuild.
      *
@@ -53,11 +52,14 @@ private:
      * @param digestData the digest data
                                      * @throws IllegalArgumentException - if the request is inconsistent
      */
-public:
     DigestUpdateMultipleCmdBuild(SamRevision revision, std::vector<char> &digestData);
 
 protected:
-    std::shared_ptr<DigestUpdateMultipleCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<DigestUpdateMultipleCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<DigestUpdateMultipleCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
 };

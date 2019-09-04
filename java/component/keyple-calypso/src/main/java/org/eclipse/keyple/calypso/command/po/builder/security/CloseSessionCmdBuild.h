@@ -43,11 +43,13 @@ using ApduResponse             = org::eclipse::keyple::core::seproxy::message::A
  * This class provides the dedicated constructor to build the Close Secure Session APDU command.
  */
 class CloseSessionCmdBuild final : public AbstractPoCommandBuilder<CloseSessionRespPars> {
-
-    /** The command. */
 private:
-    const CalypsoPoCommands command = CalypsoPoCommands::CLOSE_SESSION;
+    /**
+     * The command
+     */
+    CalypsoPoCommands& command = CalypsoPoCommands::CLOSE_SESSION;
 
+public:
     /**
      * Instantiates a new CloseSessionCmdBuild depending of the revision of the PO.
      *
@@ -57,7 +59,6 @@ private:
      * @throws IllegalArgumentException - if the signature is null or has a wrong length
      * @throws IllegalArgumentException - if the command is inconsistent
      */
-public:
     CloseSessionCmdBuild(PoClass poClass, bool ratificationAsked, std::vector<char> &terminalSessionSignature);
 
     /**
@@ -68,10 +69,17 @@ public:
      */
     CloseSessionCmdBuild(PoClass poClass);
 
+    /**
+     *
+     */
     std::shared_ptr<CloseSessionRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<CloseSessionCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<CloseSessionCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<CloseSessionCmdBuild>(AbstractPoCommandBuilder<CloseSessionRespPars>::shared_from_this());
     }
 };

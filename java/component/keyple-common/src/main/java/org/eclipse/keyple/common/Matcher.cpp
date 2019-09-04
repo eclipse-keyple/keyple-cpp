@@ -3,7 +3,6 @@
 
 Matcher::Matcher(Pattern* parent, const std::string& text) : parentPattern(parent), text(text)
 {
-
 }
 
 bool Matcher::match(int from, int anchor)

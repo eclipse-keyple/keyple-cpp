@@ -41,55 +41,72 @@ using ReadRecordsRespPars      = org::eclipse::keyple::calypso::command::po::par
 using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
 /**
-    * The Class ReadRecordsCmdBuild. This class provides the dedicated constructor to build the Read
-    * Records APDU command.
-    */
+ * The Class ReadRecordsCmdBuild. This class provides the dedicated constructor to build the Read
+ * Records APDU command.
+ */
 class ReadRecordsCmdBuild final : public AbstractPoCommandBuilder<ReadRecordsRespPars>, public PoSendableInSession {
-
-    /** The command. */
 private:
-    const CalypsoPoCommands command = CalypsoPoCommands::READ_RECORDS;
-const char firstRecordNumber;
+    /**
+     * The command
+     */
+    CalypsoPoCommands& command = CalypsoPoCommands::READ_RECORDS;
+
+    /**
+     *
+     */
+    const char firstRecordNumber;
+
+    /**
+     *
+     */
     const ReadDataStructure readDataStructure;
 
-    /**
-        * Instantiates a new read records cmd build.
-        *
-        * @param poClass indicates which CLA byte should be used for the Apdu
-        * @param sfi the sfi top select
-        * @param readDataStructure file structure type (used to create the parser)
-        * @param firstRecordNumber the record number to read (or first record to read in case of
-        *        several records)
-        * @param readJustOneRecord the read just one record
-        * @param expectedLength the expected length of the record(s)
-        * @param extraInfo extra information included in the logs (can be null or empty)
-        * @throws IllegalArgumentException - if record number &lt; 1
-        * @throws IllegalArgumentException - if the request is inconsistent
-        */
 public:
-    ReadRecordsCmdBuild(PoClass poClass, char sfi, ReadDataStructure readDataStructure, char firstRecordNumber, bool readJustOneRecord, char expectedLength, const std::string &extraInfo);
+    /**
+     * Instantiates a new read records cmd build.
+     *
+     * @param poClass indicates which CLA byte should be used for the Apdu
+     * @param sfi the sfi top select
+     * @param readDataStructure file structure type (used to create the parser)
+     * @param firstRecordNumber the record number to read (or first record to read in case of
+     *        several records)
+     * @param readJustOneRecord the read just one record
+     * @param expectedLength the expected length of the record(s)
+     * @param extraInfo extra information included in the logs (can be null or empty)
+     * @throws IllegalArgumentException - if record number &lt; 1
+     * @throws IllegalArgumentException - if the request is inconsistent
+     */
+    ReadRecordsCmdBuild(PoClass poClass, char sfi, ReadDataStructure readDataStructure, char firstRecordNumber, bool readJustOneRecord,
+                        char expectedLength, const std::string &extraInfo);
 
     /**
-        * Instantiates a new read records cmd build without specifying the expected length. This
-        * constructor is allowed only in contactless mode.
-        *
-        * @param poClass indicates which CLA byte should be used for the Apdu
-        * @param readDataStructure file structure type
-        * @param sfi the sfi top select
-        * @param firstRecordNumber the record number to read (or first record to read in case of
-        *        several records)
-        * @param readJustOneRecord the read just one record
-        * @param extraInfo extra information included in the logs (can be null or empty)
-        * @throws IllegalArgumentException - if record number &lt; 1
-        * @throws IllegalArgumentException - if the request is inconsistent
-        */
-    ReadRecordsCmdBuild(PoClass poClass, char sfi, ReadDataStructure readDataStructure, char firstRecordNumber, bool readJustOneRecord, const std::string &extraInfo);
+     * Instantiates a new read records cmd build without specifying the expected length. This
+     * constructor is allowed only in contactless mode.
+     *
+     * @param poClass indicates which CLA byte should be used for the Apdu
+     * @param readDataStructure file structure type
+     * @param sfi the sfi top select
+     * @param firstRecordNumber the record number to read (or first record to read in case of
+     *        several records)
+     * @param readJustOneRecord the read just one record
+     * @param extraInfo extra information included in the logs (can be null or empty)
+     * @throws IllegalArgumentException - if record number &lt; 1
+     * @throws IllegalArgumentException - if the request is inconsistent
+     */
+    ReadRecordsCmdBuild(PoClass poClass, char sfi, ReadDataStructure readDataStructure, char firstRecordNumber, bool readJustOneRecord,
+                        const std::string &extraInfo);
     
+    /**
+     *
+     */
     std::shared_ptr<ReadRecordsRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
-
 protected:
-    std::shared_ptr<ReadRecordsCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<ReadRecordsCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<ReadRecordsCmdBuild>(AbstractPoCommandBuilder<ReadRecordsRespPars>::shared_from_this());
     }
 };

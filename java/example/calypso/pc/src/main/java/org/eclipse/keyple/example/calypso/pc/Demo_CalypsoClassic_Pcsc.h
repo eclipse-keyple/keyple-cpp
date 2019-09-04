@@ -36,7 +36,7 @@ namespace org {
                              * here).
                              */
                         private:
-                            static const std::shared_ptr<void> waitForEnd;
+
 
                             /**
                              * main program entry

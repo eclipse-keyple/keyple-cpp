@@ -89,8 +89,12 @@ int AbstractObservablePlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
     */
 std::shared_ptr<SeReader> AbstractObservablePlugin::getReader(const std::string &name)
 {
+    logger->debug("getReader - looking for reader: %s in list of %d readers", name, readers->size());
+
     for (auto reader : *readers)
     {
+        logger->debug("getReader - reader: %s", reader->getName());
+
         if (reader->getName() == name)
         {
             return std::shared_ptr<SeReader>(

@@ -15,7 +15,7 @@ using CalypsoSamCommands = org::eclipse::keyple::calypso::command::sam::CalypsoS
 using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
 DigestInitCmdBuild::DigestInitCmdBuild(SamRevision revision, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif, char workKeyKVC, std::vector<char> &digestData)
-: AbstractSamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr)
+: AbstractSamCommandBuilder(command, nullptr)
 {
     this->defaultRevision = revision;
 
@@ -52,9 +52,7 @@ DigestInitCmdBuild::DigestInitCmdBuild(SamRevision revision, bool verificationMo
     }
     // CalypsoRequest calypsoRequest = new CalypsoRequest(cla, CalypsoCommands.SAM_DIGEST_INIT,
     // p1, p2, dataIn);
-    request = setApduRequest(cla,
-                             std::make_shared<CalypsoSamCommands>(CalypsoSamCommands::DIGEST_INIT),
-                             p1, p2, dataIn, -1);
+    request = setApduRequest(cla, CalypsoSamCommands::DIGEST_INIT, p1, p2, dataIn, -1);
 
 }
 

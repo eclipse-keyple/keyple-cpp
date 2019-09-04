@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "AbstractApduCommandBuilder.h"
 #include "ApduRequest.h"
 #include "CommandsTable.h"
@@ -11,23 +13,21 @@ namespace command {
 using ApduRequest = org::eclipse::keyple::core::seproxy::message::ApduRequest;
 using CommandsTable = org::eclipse::keyple::core::command::CommandsTable;
 
-AbstractApduCommandBuilder::AbstractApduCommandBuilder(
-                               std::shared_ptr<CommandsTable> commandReference,
-                               std::shared_ptr<ApduRequest> request)
-: commandParserClass(commandReference->getResponseParserClass())
+AbstractApduCommandBuilder::AbstractApduCommandBuilder(CommandsTable& commandReference, std::shared_ptr<ApduRequest> request)
+: commandParserClass(commandReference.getCommandBuilderClass())
 {
-    this->name = commandReference->getName();
+    std::cout << "here we go.........." << std::endl;
+
+    this->name = commandReference.getName();
     this->request = request;
    
     // set APDU name for non null request
     if (request != nullptr) {
-        this->request->setName(commandReference->getName());
+        this->request->setName(commandReference.getName());
     }
 }
 
-AbstractApduCommandBuilder::AbstractApduCommandBuilder(
-                                          const std::string &name,
-                                          std::shared_ptr<ApduRequest> request)
+AbstractApduCommandBuilder::AbstractApduCommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request)
 : commandParserClass(typeid(AbstractApduCommandBuilder))
 {
     this->name = name;

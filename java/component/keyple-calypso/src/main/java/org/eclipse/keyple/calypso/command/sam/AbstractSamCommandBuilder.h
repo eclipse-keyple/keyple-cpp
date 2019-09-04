@@ -34,14 +34,27 @@ using namespace org::eclipse::keyple::core::seproxy::message;
     * Used directly, this class can serve as low level command builder.
     */
 class AbstractSamCommandBuilder : public AbstractIso7816CommandBuilder {
-
 protected:
+    /**
+     *
+     */
     SamRevision defaultRevision = SamRevision::S1D; // 94
 
 public:
-    AbstractSamCommandBuilder(std::shared_ptr<CalypsoSamCommands> reference, std::shared_ptr<ApduRequest> request);
+    /**
+     *
+     */
+    AbstractSamCommandBuilder(CalypsoSamCommands& reference, std::shared_ptr<ApduRequest> request);
+
+    /**
+     *
+     */
+    virtual ~AbstractSamCommandBuilder() {}
 
 protected:
+    /**
+     *
+     */
     std::shared_ptr<AbstractSamCommandBuilder> shared_from_this()
     {
         return std::static_pointer_cast<AbstractSamCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());

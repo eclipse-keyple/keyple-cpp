@@ -32,12 +32,11 @@ public:
     /**
      * Get the terminal which names match the expected pattern
      *
-     * @param seProxyService SE Proxy service
      * @param pattern Pattern
      * @return SeReader
      * @throws KeypleReaderException Readers are not initialized
      */
-    static std::shared_ptr<SeReader> getReaderByName(std::shared_ptr<SeProxyService> seProxyService, const std::string &pattern);
+    static std::shared_ptr<SeReader> getReaderByName(const std::string &pattern);
 
     /**
      * Get a fully configured contactless proxy reader
@@ -47,7 +46,7 @@ public:
      * @throws KeypleBaseException in case of an error while retrieving the reader or setting its
      *         parameters
      */
-    static std::shared_ptr<SeReader> getDefaultContactLessSeReader(std::shared_ptr<SeProxyService> seProxyService);
+    static std::shared_ptr<SeReader> getDefaultContactLessSeReader();
 
     /**
      * Sets the reader parameters for contactless secure elements

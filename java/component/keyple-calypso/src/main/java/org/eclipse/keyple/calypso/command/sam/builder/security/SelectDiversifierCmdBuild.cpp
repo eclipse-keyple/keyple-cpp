@@ -9,12 +9,10 @@ namespace sam {
 namespace builder {
 namespace security {
 
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
-using CalypsoSamCommands        = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-using SamRevision               = org::eclipse::keyple::calypso::command::sam::SamRevision;
+using namespace org::eclipse::keyple::calypso::command::sam;
 
 SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(SamRevision revision, std::vector<char> &diversifier)
-: AbstractSamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr)
+: AbstractSamCommandBuilder(command, nullptr)
 {
     this->defaultRevision = revision;
 
@@ -25,7 +23,7 @@ SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(SamRevision revision, std::
     char p1 = 0x00;
     char p2 = 0x00;
 
-    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, diversifier, -1);
+    request = setApduRequest(cla, command, p1, p2, diversifier, -1);
 
 }
 }

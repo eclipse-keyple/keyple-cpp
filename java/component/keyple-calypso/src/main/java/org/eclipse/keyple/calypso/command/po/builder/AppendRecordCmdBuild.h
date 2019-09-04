@@ -43,29 +43,36 @@ using ApduResponse         = org::eclipse::keyple::core::seproxy::message::ApduR
 *
 */
 class AppendRecordCmdBuild final
-: public AbstractPoCommandBuilder<AppendRecordRespPars>, public PoSendableInSession,
-  public PoModificationCommand {
-
-/** The command. */
+: public AbstractPoCommandBuilder<AppendRecordRespPars>, public PoSendableInSession, public PoModificationCommand {
 private:
-    const CalypsoPoCommands command = CalypsoPoCommands::APPEND_RECORD;
+    /**
+     * The command
+     */
+    CalypsoPoCommands& command = CalypsoPoCommands::APPEND_RECORD;
 
 public:
-/**
- * Instantiates a new UpdateRecordCmdBuild.
- *
- * @param poClass indicates which CLA byte should be used for the Apdu
- * @param sfi the sfi to select
- * @param newRecordData the new record data to write
- * @param extraInfo extra information included in the logs (can be null or empty)
- * @throws IllegalArgumentException - if the command is inconsistent
- */
+    /**
+     * Instantiates a new UpdateRecordCmdBuild.
+     *
+     * @param poClass indicates which CLA byte should be used for the Apdu
+     * @param sfi the sfi to select
+     * @param newRecordData the new record data to write
+     * @param extraInfo extra information included in the logs (can be null or empty)
+     * @throws IllegalArgumentException - if the command is inconsistent
+     */
     AppendRecordCmdBuild(PoClass poClass, char sfi, std::vector<char> &newRecordData, const std::string &extraInfo);
 
+    /**
+     *
+     */
     std::shared_ptr<AppendRecordRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<AppendRecordCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<AppendRecordCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<AppendRecordCmdBuild>(AbstractPoCommandBuilder<AppendRecordRespPars>::shared_from_this());
     }
 };

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "AbstractIso7816CommandBuilder.h"
 #include "ApduRequest.h"
 
@@ -13,16 +15,22 @@ namespace keyple {
 namespace core {
 namespace command {
 
-using ApduRequest   = org::eclipse::keyple::core::seproxy::message::ApduRequest;
-using CommandsTable = org::eclipse::keyple::core::command::CommandsTable;
+using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace org::eclipse::keyple::core::command;
 
-AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(std::shared_ptr<CommandsTable> commandReference, std::shared_ptr<ApduRequest> request) : AbstractApduCommandBuilder(commandReference, request) {
+AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(CommandsTable& commandReference, std::shared_ptr<ApduRequest> request)
+: AbstractApduCommandBuilder(commandReference, request)
+{
 }
 
-AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request) : AbstractApduCommandBuilder(name, request) {
+AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request)
+: AbstractApduCommandBuilder(name, request)
+{
 }
 
-std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(char cla, std::shared_ptr<CommandsTable> command, char p1, char p2, std::vector<char> &dataIn, char le) {
+std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(char cla, CommandsTable& command, char p1,
+                                                                           char p2, std::vector<char> &dataIn, char le)
+{
     bool case4;
     /* sanity check */
     if (dataIn.size() > 0 && le != -1 && le != 0) {
@@ -43,7 +51,7 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(char 
 
     /* Build APDU buffer from provided arguments */
     apdu[0] = cla;
-    apdu[1] = command->getInstructionByte();
+    apdu[1] = command.getInstructionByte();
     apdu[2] = p1;
     apdu[3] = p2;
 
@@ -77,7 +85,7 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(char 
         case4 = false;
     }
 
-    return std::make_shared<ApduRequest>(command->getName(), apdu, case4);
+    return std::make_shared<ApduRequest>(command.getName(), apdu, case4);
 }
 }
 }

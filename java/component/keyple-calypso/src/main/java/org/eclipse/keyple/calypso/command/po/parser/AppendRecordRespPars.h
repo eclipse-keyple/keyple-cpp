@@ -25,43 +25,56 @@ namespace command {
 namespace po {
 namespace parser {
 
-using AbstractPoResponseParser = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
-using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace org::eclipse::keyple::calypso::command::po;
+using namespace org::eclipse::keyple::core::seproxy::message;
 
 /**
  * Update records response parser. See specs: Calypso / page 96 / 9.4.1.1 - Update record
  */
 class AppendRecordRespPars final : public AbstractPoResponseParser {
-
 private:
+    /**
+     *
+     */
     static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
 private:
+    /**
+     *
+     */
     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
     public:
+        /**
+         *
+         */
         StaticConstructor();
     };
 
 private:
+    /**
+     *
+     */
     static AppendRecordRespPars::StaticConstructor staticConstructor;
 
-
+public:
     /**
      * Instantiates a new AppendRecordRespPars.
      */
-public:
     AppendRecordRespPars(std::shared_ptr<ApduResponse> response);
 
+protected:
     /**
      * Get the internal status table
      *
      * @return Status table
      */
-protected:
     std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
 
-protected:
-    std::shared_ptr<AppendRecordRespPars> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<AppendRecordRespPars> shared_from_this()
+    {
         return std::static_pointer_cast<AppendRecordRespPars>(AbstractPoResponseParser::shared_from_this());
     }
 };

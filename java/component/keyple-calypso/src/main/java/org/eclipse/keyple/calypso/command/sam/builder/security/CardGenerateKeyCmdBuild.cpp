@@ -16,10 +16,9 @@ using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::A
 using CalypsoSamCommands        = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
 using SamRevision               = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
-CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(SamRevision revision,
-                                                 std::shared_ptr<KeyReference> cipheringKey,
+CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(SamRevision revision, std::shared_ptr<KeyReference> cipheringKey,
                                                  std::shared_ptr<KeyReference> sourceKey)
-: AbstractSamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr)
+: AbstractSamCommandBuilder(command, nullptr)
 {
     //if (revision != nullptr) {
         this->defaultRevision = revision;
@@ -55,7 +54,7 @@ CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(SamRevision revision,
         data[4] = static_cast<char>(0x90);
     }
 
-    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, data, -1);
+    request = setApduRequest(cla, command, p1, p2, data, -1);
 }
 
 }

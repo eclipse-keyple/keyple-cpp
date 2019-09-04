@@ -8,12 +8,10 @@ namespace command {
 namespace sam {
 namespace builder {
 namespace security {
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
-using CalypsoSamCommands        = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-using SamRevision               = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
-DigestCloseCmdBuild::DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength)
-: AbstractSamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr) 
+using namespace org::eclipse::keyple::calypso::command::sam;
+
+DigestCloseCmdBuild::DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength) : AbstractSamCommandBuilder(command, nullptr)
 {
     this->defaultRevision = revision;
 
@@ -28,7 +26,7 @@ DigestCloseCmdBuild::DigestCloseCmdBuild(SamRevision revision, char expectedResp
     // CalypsoRequest calypsoRequest = new CalypsoRequest(cla, command, p1, p2, null,
     // expectedResponseLength);
     std::vector<char> emptyVector;
-    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, emptyVector, expectedResponseLength);
+    request = setApduRequest(cla, command, p1, p2, emptyVector, expectedResponseLength);
 }
 
 }

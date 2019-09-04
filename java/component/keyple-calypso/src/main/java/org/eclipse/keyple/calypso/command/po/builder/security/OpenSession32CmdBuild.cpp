@@ -40,7 +40,9 @@ namespace org {
                                     dataIn[0] = static_cast<char>(0x00);
                                     System::arraycopy(samChallenge, 0, dataIn, 1, samChallenge.size());
 
-                                    this->request = setApduRequest(PoClass::ISO.getValue(), std::make_shared<CalypsoPoCommands>(CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV3_2)), p1, p2, dataIn, le);
+                                    this->request = setApduRequest(PoClass::ISO.getValue(),
+                                                                   CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV3_2), p1, p2,
+                                                                   dataIn, le);
                                     if (extraInfo != "") {
                                         this->addSubName(extraInfo);
                                     }

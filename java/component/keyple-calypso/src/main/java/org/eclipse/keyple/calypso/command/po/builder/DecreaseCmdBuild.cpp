@@ -10,14 +10,12 @@ namespace command {
 namespace po {
 namespace builder {
 
-using PoClass          = org::eclipse::keyple::calypso::command::PoClass; 
-using DecreaseRespPars = org::eclipse::keyple::calypso::command::po::parser::DecreaseRespPars;
-using ApduResponse     = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace org::eclipse::keyple::calypso::command;
+using namespace org::eclipse::keyple::calypso::command::po::parser;
+using namespace org::eclipse::keyple::core::seproxy::message;
 
-DecreaseCmdBuild::DecreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int decValue,
-                                   const std::string &extraInfo)
-: AbstractPoCommandBuilder<DecreaseRespPars>(std::make_shared<CalypsoPoCommands>(command),
-                                             nullptr) 
+DecreaseCmdBuild::DecreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int decValue, const std::string &extraInfo)
+: AbstractPoCommandBuilder<DecreaseRespPars>(command, nullptr)
 {
     // only counter number >= 1 are allowed
     if (counterNumber < 1) {
@@ -39,7 +37,7 @@ DecreaseCmdBuild::DecreaseCmdBuild(PoClass poClass, char sfi, char counterNumber
     char p2 = static_cast<char>(sfi * 8);
 
     /* this is a case4 command, we set Le = 0 */
-    this->request = setApduRequest(cla, std::make_shared<CalypsoPoCommands>(command), counterNumber, p2, decValueBuffer, static_cast<char>(0));
+    this->request = setApduRequest(cla, command, counterNumber, p2, decValueBuffer, static_cast<char>(0));
     if (extraInfo != "") {
         this->addSubName(extraInfo);
     }

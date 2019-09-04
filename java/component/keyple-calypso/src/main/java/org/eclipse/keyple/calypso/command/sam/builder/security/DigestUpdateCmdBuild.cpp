@@ -9,13 +9,10 @@ namespace sam {
 namespace builder {
 namespace security {
 
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
-using CalypsoSamCommands        = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-using SamRevision               = org::eclipse::keyple::calypso::command::sam::SamRevision;
+using namespace org::eclipse::keyple::calypso::command::sam;
 
-DigestUpdateCmdBuild::DigestUpdateCmdBuild(SamRevision revision, bool encryptedSession,
-                                           std::vector<char> &digestData)
-: AbstractSamCommandBuilder(std::make_shared<CalypsoSamCommands>(command), nullptr)
+DigestUpdateCmdBuild::DigestUpdateCmdBuild(SamRevision revision, bool encryptedSession, std::vector<char> &digestData)
+: AbstractSamCommandBuilder(command, nullptr)
 {
     this->defaultRevision = revision;
     char cla = this->defaultRevision.getClassByte();
@@ -30,7 +27,7 @@ DigestUpdateCmdBuild::DigestUpdateCmdBuild(SamRevision revision, bool encryptedS
     }
 
     // CalypsoRequest calypsoRequest = new CalypsoRequest(cla, command, p1, p2, digestData);
-    request = setApduRequest(cla, std::make_shared<CalypsoSamCommands>(command), p1, p2, digestData, -1);
+    request = setApduRequest(cla, command, p1, p2, digestData, -1);
 }
 
 }

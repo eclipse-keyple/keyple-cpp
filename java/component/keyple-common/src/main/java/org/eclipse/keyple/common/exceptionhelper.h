@@ -221,12 +221,12 @@ class JsonParseException : public std::exception {
     }
 };
 
-class FileNotFoundException : public std::exception {
+class FileNotFoundException : public Exception {
   private:
     std::string msg;
 
   public:
-    FileNotFoundException(const std::string &message = "") : msg(message)
+    FileNotFoundException(const std::string &message = "") : Exception(message)
     {
     }
 
@@ -257,6 +257,21 @@ class CardNotPresentException : public std::exception {
 
   public:
     CardNotPresentException(const std::string &message = "") : msg(message)
+    {
+    }
+
+    const char *what()
+    {
+        return msg.c_str();
+    }
+};
+
+class NumberFormatException : public std::exception {
+  private:
+    std::string msg;
+
+  public:
+    NumberFormatException(const std::string &message = "") : msg(message)
     {
     }
 

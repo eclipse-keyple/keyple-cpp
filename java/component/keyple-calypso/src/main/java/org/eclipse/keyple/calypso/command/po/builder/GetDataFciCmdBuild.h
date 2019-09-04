@@ -43,24 +43,32 @@ using ApduResponse             = org::eclipse::keyple::core::seproxy::message::A
 * and thus make calculation of the digest impossible.
 *
 */
-class EXPORT GetDataFciCmdBuild final
-: public org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder<GetDataFciRespPars> {
-
+class EXPORT GetDataFciCmdBuild final : public org::eclipse::keyple::calypso::command::po::AbstractPoCommandBuilder<GetDataFciRespPars> {
 private:
-    static const std::shared_ptr<CalypsoPoCommands> command;
+    /**
+     *
+     */
+    CalypsoPoCommands& command = CalypsoPoCommands::GET_DATA_FCI;
 
+public:
     /**
      * Instantiates a new GetDataFciCmdBuild.
      *
      * @param poClass indicates which CLA byte should be used for the Apdu
      */
-public:
     GetDataFciCmdBuild(PoClass poClass);
 
+    /**
+     *
+     */
     std::shared_ptr<GetDataFciRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<GetDataFciCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<GetDataFciCmdBuild> shared_from_this()
+    {
          return std::static_pointer_cast<GetDataFciCmdBuild>(AbstractPoCommandBuilder<GetDataFciRespPars>::shared_from_this());
     }
 };

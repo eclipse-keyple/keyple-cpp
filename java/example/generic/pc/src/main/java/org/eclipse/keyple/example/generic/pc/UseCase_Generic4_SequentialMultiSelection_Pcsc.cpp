@@ -66,13 +66,12 @@ int main(int argc, char **argv)
     /* Assign PcscPlugin to the SeProxyService */
     SeProxyService& seProxyService = SeProxyService::getInstance();
     seProxyService.addPlugin(std::make_shared<PcscPlugin>(pcscplugin));
-    std::shared_ptr<SeProxyService> shared_proxy = std::make_shared<SeProxyService>(seProxyService);
 
     /*
      * Get a SE reader ready to work with contactless SE. Use the getReader helper method from
      * the ReaderUtilities class.
      */
-    std::shared_ptr<SeReader> seReader = ReaderUtilities::getDefaultContactLessSeReader(shared_proxy);
+    std::shared_ptr<SeReader> seReader = ReaderUtilities::getDefaultContactLessSeReader();
 
     /* Check if the reader exists */
     if (seReader == nullptr) {

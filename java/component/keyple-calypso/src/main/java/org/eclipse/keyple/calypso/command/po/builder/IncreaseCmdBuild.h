@@ -33,10 +33,9 @@ namespace po {
 namespace builder {
 
 using namespace org::eclipse::keyple::calypso::command::po;
-
-using PoClass          = org::eclipse::keyple::calypso::command::PoClass;
-using IncreaseRespPars = org::eclipse::keyple::calypso::command::po::parser::IncreaseRespPars;
-using ApduResponse     = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace org::eclipse::keyple::calypso::command;
+using namespace org::eclipse::keyple::calypso::command::po::parser;
+using namespace org::eclipse::keyple::core::seproxy::message;
 
 /**
  * The Class IncreaseCmdBuild. This class provides the dedicated constructor to build the Increase
@@ -44,12 +43,14 @@ using ApduResponse     = org::eclipse::keyple::core::seproxy::message::ApduRespo
  *
  */
 class IncreaseCmdBuild final
-: public AbstractPoCommandBuilder<IncreaseRespPars>, public PoSendableInSession,
-  public PoModificationCommand {
+: public AbstractPoCommandBuilder<IncreaseRespPars>, public PoSendableInSession, public PoModificationCommand {
 
-    /** The command. */
+
 private:
-    const CalypsoPoCommands command = CalypsoPoCommands::INCREASE;
+    /**
+     * The command
+     */
+    CalypsoPoCommands command = CalypsoPoCommands::INCREASE;
 
     /**
      * Instantiates a new increase cmd build from command parameters.
@@ -66,10 +67,18 @@ private:
      */
 public:
     IncreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int incValue, const std::string &extraInfo);
-std::shared_ptr<IncreaseRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+
+    /**
+     *
+     */
+    std::shared_ptr<IncreaseRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<IncreaseCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<IncreaseCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<IncreaseCmdBuild>(AbstractPoCommandBuilder<IncreaseRespPars>::shared_from_this());
     }
 };

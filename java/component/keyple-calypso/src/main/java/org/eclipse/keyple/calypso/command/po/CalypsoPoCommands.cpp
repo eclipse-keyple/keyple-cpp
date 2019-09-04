@@ -38,35 +38,11 @@ namespace calypso {
 namespace command {
 namespace po {
 
-using AbstractApduCommandBuilder = org::eclipse::keyple::core::command::AbstractApduCommandBuilder;
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using CommandsTable              = org::eclipse::keyple::core::command::CommandsTable;
-using GetDataFciCmdBuild         = org::eclipse::keyple::calypso::command::po::builder::GetDataFciCmdBuild;
-using OpenSession10CmdBuild      = org::eclipse::keyple::calypso::command::po::builder::security::OpenSession10CmdBuild;
-using OpenSession24CmdBuild      = org::eclipse::keyple::calypso::command::po::builder::security::OpenSession24CmdBuild;
-using OpenSession31CmdBuild      = org::eclipse::keyple::calypso::command::po::builder::security::OpenSession31CmdBuild;
-using OpenSession32CmdBuild      = org::eclipse::keyple::calypso::command::po::builder::security::OpenSession32CmdBuild;
-using CloseSessionCmdBuild       = org::eclipse::keyple::calypso::command::po::builder::security::CloseSessionCmdBuild;
-using ReadRecordsCmdBuild        = org::eclipse::keyple::calypso::command::po::builder::ReadRecordsCmdBuild;
-using UpdateRecordCmdBuild       = org::eclipse::keyple::calypso::command::po::builder::UpdateRecordCmdBuild;
-using AppendRecordCmdBuild       = org::eclipse::keyple::calypso::command::po::builder::AppendRecordCmdBuild;                        
-using PoGetChallengeCmdBuild     = org::eclipse::keyple::calypso::command::po::builder::security::PoGetChallengeCmdBuild;
-using IncreaseCmdBuild           = org::eclipse::keyple::calypso::command::po::builder::IncreaseCmdBuild;
-using DecreaseCmdBuild           = org::eclipse::keyple::calypso::command::po::builder::DecreaseCmdBuild;
-using SelectFileCmdBuild         = org::eclipse::keyple::calypso::command::po::builder::SelectFileCmdBuild;
-using GetDataFciRespPars         = org::eclipse::keyple::calypso::command::po::parser::GetDataFciRespPars;
-using OpenSession10RespPars      = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession10RespPars;
-using OpenSession24RespPars      = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession24RespPars;
-using OpenSession31RespPars      = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession31RespPars;
-using OpenSession32RespPars      = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession32RespPars;
-using CloseSessionRespPars       = org::eclipse::keyple::calypso::command::po::parser::security::CloseSessionRespPars;
-using ReadRecordsRespPars        = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
-using UpdateRecordRespPars       = org::eclipse::keyple::calypso::command::po::parser::UpdateRecordRespPars;
-using AppendRecordRespPars       = org::eclipse::keyple::calypso::command::po::parser::AppendRecordRespPars;
-using PoGetChallengeRespPars     = org::eclipse::keyple::calypso::command::po::parser::security::PoGetChallengeRespPars;
-using IncreaseRespPars           = org::eclipse::keyple::calypso::command::po::parser::IncreaseRespPars;
-using DecreaseRespPars           = org::eclipse::keyple::calypso::command::po::parser::DecreaseRespPars;
-using SelectFileRespPars         = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
+using namespace org::eclipse::keyple::core::command;
+using namespace org::eclipse::keyple::calypso::command::po::builder;
+using namespace org::eclipse::keyple::calypso::command::po::builder::security;
+using namespace org::eclipse::keyple::calypso::command::po::parser;
+using namespace org::eclipse::keyple::calypso::command::po::parser::security;
 
 CalypsoPoCommands CalypsoPoCommands::GET_DATA_FCI("GET_DATA_FCI", InnerEnum::GET_DATA_FCI, "Get Data'FCI'", static_cast<char>(0xCA));
 CalypsoPoCommands CalypsoPoCommands::OPEN_SESSION_10("OPEN_SESSION_10", InnerEnum::OPEN_SESSION_10, "Open Secure Session V1", static_cast<char>(0x8A));
@@ -106,23 +82,23 @@ CalypsoPoCommands::StaticConstructor::StaticConstructor()
 CalypsoPoCommands::StaticConstructor CalypsoPoCommands::staticConstructor;
 int CalypsoPoCommands::nextOrdinal = 0;
 
-CalypsoPoCommands::CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum,
-                                     const std::string &name, char instructionByte)
-: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name),
-  instructionbyte(instructionByte)
+CalypsoPoCommands::CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte)
+: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name), instructionbyte(instructionByte)
 {
-                            
 }
 
-std::string CalypsoPoCommands::getName() {
+std::string CalypsoPoCommands::getName()
+{
     return name;
 }
 
-char CalypsoPoCommands::getInstructionByte() {
+char CalypsoPoCommands::getInstructionByte()
+{
     return instructionbyte;
 }
 
-CalypsoPoCommands CalypsoPoCommands::getOpenSessionForRev(PoRevision rev) {
+CalypsoPoCommands& CalypsoPoCommands::getOpenSessionForRev(PoRevision rev)
+{
     switch (rev) {
     case org::eclipse::keyple::calypso::command::po::PoRevision::REV1_0:
         return OPEN_SESSION_10;
@@ -174,6 +150,7 @@ CalypsoPoCommands CalypsoPoCommands::valueOf(const std::string &name)
     /* Compiler fix */
     return CalypsoPoCommands("Dummy", InnerEnum::APPEND_RECORD, "Dummy", 0);
 }
+
 }
 }
 }

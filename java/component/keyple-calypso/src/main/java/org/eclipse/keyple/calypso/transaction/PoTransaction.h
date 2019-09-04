@@ -22,8 +22,11 @@
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoBuilderParser.h"
+#include "CalypsoPo.h"
 #include "ChannelState.h"
 #include "PoBuilderParser.h"
+#include "PoModificationCommand.h"
+#include "PoResource.h"
 #include "PoTransaction.h"
 #include "SamResource.h"
 #include "SamRevision.h"
@@ -50,12 +53,12 @@ using namespace org::eclipse::keyple::calypso::command::po;
 using namespace org::eclipse::keyple::calypso::command::po::builder;
 using namespace org::eclipse::keyple::calypso::command::po::parser;
 using namespace org::eclipse::keyple::calypso::command::sam;
+using namespace org::eclipse::keyple::calypso::transaction;
 using namespace org::eclipse::keyple::common;
 using namespace org::eclipse::keyple::core::seproxy;
 using namespace org::eclipse::keyple::core::seproxy::message;
 using namespace org::eclipse::keyple::core::seproxy::protocol;
 using namespace org::eclipse::keyple::core::util;
-using namespace org::eclipse::keyple::calypso::command::sam::builder::security;
 using namespace org::eclipse::keyple::calypso::transaction::exception;
 
 /**

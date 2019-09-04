@@ -42,13 +42,12 @@ int main(int argc, char **argv)
     /* Get the instance of the SeProxyService (Singleton pattern) and assign PcscPlugin to the SeProxyService */
     SeProxyService& seProxyService = SeProxyService::getInstance();
     seProxyService.addPlugin(std::make_shared<PcscPlugin>(pcscplugin));
-    std::shared_ptr<SeProxyService> shared_seProxyService = std::make_shared<SeProxyService>(seProxyService);
 
     /*
      * Get a SE reader ready to work with generic SE. Use the getReader helper method from the
      * ReaderUtilities class.
      */
-    std::shared_ptr<SeReader> seReader = ReaderUtilities::getDefaultContactLessSeReader(shared_seProxyService);
+    std::shared_ptr<SeReader> seReader = ReaderUtilities::getDefaultContactLessSeReader();
 
     /* Check if the reader exists */
     if (seReader == nullptr) {

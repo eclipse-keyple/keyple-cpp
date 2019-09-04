@@ -104,63 +104,98 @@ public:
         CHANGE_KEY
     };
 
+    /**
+     *
+     */
     const InnerEnum innerEnumValue;
+
 private:
+    /**
+     *
+     */
     const std::string nameValue;
+
+    /**
+     *
+     */
     const int ordinalValue;
+
+    /**
+     *
+     */
     static int nextOrdinal;
 
-    /** The name. */
 private:
+    /**
+     * The name
+     */
     const std::string name;
 
-    /** The instruction byte. */
+    /**
+     * The instruction byte
+     */
     const char instructionbyte;
 
-    /**
-        * The generic constructor of CalypsoCommands.
-        *
-        * @param name the name
-        * @param instructionByte the instruction byte
-        */
 public:
-    CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name,
-                      char instructionByte);
-
+    /**
+     * The generic constructor of CalypsoCommands.
+     *
+     * @param name the name
+     * @param instructionByte the instruction byte
+     */
+    CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte);
 
     /**
-        * Gets the name.
-        *
-        * @return the command name
-        */
+     * Gets the name.
+     *
+     * @return the command name
+     */
     virtual std::string getName() override;
 
     /**
-        * Gets the instruction byte.
-        *
-        * @return the value of INS byte
-        */
+     * Gets the instruction byte.
+     *
+     * @return the value of INS byte
+     */
     virtual char getInstructionByte() override;
 
     /**
-        * Get the right open-session command for a given {@link PoRevision}
-        *
-        * @param rev Command revision
-        * @return Returned command
-        */
-    static CalypsoPoCommands getOpenSessionForRev(PoRevision rev);
+     * Get the right open-session command for a given {@link PoRevision}
+     *
+     * @param rev Command revision
+     * @return Returned command
+     */
+    static CalypsoPoCommands& getOpenSessionForRev(PoRevision rev);
 
 public:
+    /**
+     *
+     */
     bool operator == (const CalypsoPoCommands &other);
 
+    /**
+     *
+     */
     bool operator != (const CalypsoPoCommands &other);
 
+    /**
+     *
+     */
     static std::vector<CalypsoPoCommands> values();
 
+    /**
+     *
+     */
     int ordinal();
 
+    /**
+     *
+     */
     std::string toString();
 
+    /**
+     *
+     */
     static CalypsoPoCommands valueOf(const std::string &name);
 
     /*
@@ -169,10 +204,14 @@ public:
      */
     const std::type_info& getCommandBuilderClass() override
     {
+
         /* Fixme! */
         return typeid(this);
     }
 
+    /**
+     *
+     */
     const std::type_info& getResponseParserClass() override
     {
         /* Fixe me! */

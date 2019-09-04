@@ -52,48 +52,61 @@ CalypsoSamCommands::StaticConstructor::StaticConstructor() {
 CalypsoSamCommands::StaticConstructor CalypsoSamCommands::staticConstructor;
 int CalypsoSamCommands::nextOrdinal = 0;
 
-CalypsoSamCommands::CalypsoSamCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte, const std::type_info& commandBuilderClass, const std::type_info& responseParserClass)
-: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name), instructionbyte(instructionByte), commandBuilderClass(commandBuilderClass), responseParserClass(responseParserClass)
+CalypsoSamCommands::CalypsoSamCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte,
+                                       const std::type_info& commandBuilderClass, const std::type_info& responseParserClass)
+: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name), instructionbyte(instructionByte),
+  commandBuilderClass(commandBuilderClass), responseParserClass(responseParserClass)
 {
 }
 
-std::string CalypsoSamCommands::getName() {
+std::string CalypsoSamCommands::getName()
+{
     return name;
 }
 
-char CalypsoSamCommands::getInstructionByte() {
+char CalypsoSamCommands::getInstructionByte()
+{
     return instructionbyte;
 }
 
-const std::type_info& CalypsoSamCommands::getCommandBuilderClass() {
+const std::type_info& CalypsoSamCommands::getCommandBuilderClass()
+{
+    std::cout << "hey yooooo" << std::endl;
     return commandBuilderClass;
 }
 
-const std::type_info& CalypsoSamCommands::getResponseParserClass() {
+const std::type_info& CalypsoSamCommands::getResponseParserClass()
+{
     return responseParserClass;
 }
 
-bool CalypsoSamCommands::operator == (const CalypsoSamCommands &other) {
+bool CalypsoSamCommands::operator==(const CalypsoSamCommands &other)
+{
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool CalypsoSamCommands::operator != (const CalypsoSamCommands &other) {
+bool CalypsoSamCommands::operator!=(const CalypsoSamCommands &other)
+{
     return this->ordinalValue != other.ordinalValue;
 }
 
-std::vector<CalypsoSamCommands> CalypsoSamCommands::values() {
+std::vector<CalypsoSamCommands> CalypsoSamCommands::values()
+{
     return valueList;
 }
 
-int CalypsoSamCommands::ordinal() {
+int CalypsoSamCommands::ordinal()
+{
     return ordinalValue;
 }
 
-std::string CalypsoSamCommands::toString() {
+std::string CalypsoSamCommands::toString()
+{
     return nameValue;
 }
 
-CalypsoSamCommands CalypsoSamCommands::valueOf(const std::string &name) {
+CalypsoSamCommands CalypsoSamCommands::valueOf(const std::string &name)
+{
     for (auto enumInstance : CalypsoSamCommands::valueList) {
         if (enumInstance.nameValue == name) {
             return enumInstance;

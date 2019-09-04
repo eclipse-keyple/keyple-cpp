@@ -45,7 +45,7 @@ private:
     /**
      * The command
      */
-    const CalypsoSamCommands command = CalypsoSamCommands::SELECT_DIVERSIFIER;
+    CalypsoSamCommands& command = CalypsoSamCommands::SELECT_DIVERSIFIER;
 
 public:
     /**

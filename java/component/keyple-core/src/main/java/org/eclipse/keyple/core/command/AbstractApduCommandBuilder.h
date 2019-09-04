@@ -71,11 +71,12 @@ public:
     * @param commandReference command reference
     * @param request request
     */
-    AbstractApduCommandBuilder(std::shared_ptr<CommandsTable> commandReference,
-                               std::shared_ptr<ApduRequest> request);
+    AbstractApduCommandBuilder(CommandsTable& commandReference, std::shared_ptr<ApduRequest> request);
 
-    AbstractApduCommandBuilder(const std::string &name,
-                               std::shared_ptr<ApduRequest> request);
+    /**
+     *
+     */
+    AbstractApduCommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request);
 
     /**
     * Append a string to the current name

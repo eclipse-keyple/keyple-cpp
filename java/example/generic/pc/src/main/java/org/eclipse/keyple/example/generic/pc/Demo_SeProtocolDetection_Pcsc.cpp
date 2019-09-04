@@ -38,9 +38,7 @@ int main(int argc, char **argv)
     seProxyService.addPlugin(std::dynamic_pointer_cast<ReaderPlugin>(std::make_shared<PcscPlugin>(pcscPlugin)));
 
     /* attempt to get the SeReader (the right reader should be ready here) */
-    std::shared_ptr<SeReader> poReader = ReaderUtilities::getReaderByName(
-	std::make_shared<SeProxyService>(seProxyService),
-	PcscReadersSettings::PO_READER_NAME_REGEX);
+    std::shared_ptr<SeReader> poReader = ReaderUtilities::getReaderByName(PcscReadersSettings::PO_READER_NAME_REGEX);
 
     if (poReader == nullptr)
     {

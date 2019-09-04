@@ -30,9 +30,7 @@ namespace builder {
 namespace security {
 
 
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
-using CalypsoSamCommands = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
+using namespace org::eclipse::keyple::calypso::command::sam;
 
 /**
  * Builder for the SAM Digest Update APDU command. This command have to be sent twice for each
@@ -44,7 +42,7 @@ private:
     /**
      * The command reference
      */
-    const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_UPDATE;
+    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_UPDATE;
 
 public:
     /**

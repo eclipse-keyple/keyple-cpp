@@ -55,7 +55,7 @@ class EXPORT AbstractOpenSessionCmdBuild : public AbstractPoCommandBuilder<T> {
      */
 public:
     AbstractOpenSessionCmdBuild(PoRevision revision)
-    : AbstractPoCommandBuilder<T>(std::make_shared<CalypsoPoCommands>(CalypsoPoCommands::getOpenSessionForRev(revision)), nullptr)
+    : AbstractPoCommandBuilder<T>(CalypsoPoCommands::getOpenSessionForRev(revision), nullptr)
     {
     }
 

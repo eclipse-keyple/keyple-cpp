@@ -35,8 +35,16 @@ class AbstractPoResponseParser : public AbstractApduResponseParser {
 public:
     AbstractPoResponseParser(std::shared_ptr<ApduResponse> response);
 
+    /**
+     *
+     */
+    virtual ~AbstractPoResponseParser()
+    {
+    }
+
 protected:
-    std::shared_ptr<AbstractPoResponseParser> shared_from_this() {
+    std::shared_ptr<AbstractPoResponseParser> shared_from_this()
+    {
         return std::static_pointer_cast<AbstractPoResponseParser>(AbstractApduResponseParser::shared_from_this());
     }
 };

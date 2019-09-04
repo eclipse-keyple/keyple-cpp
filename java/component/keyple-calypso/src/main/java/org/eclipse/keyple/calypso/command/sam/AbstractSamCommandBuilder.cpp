@@ -8,11 +8,10 @@ namespace calypso {
 namespace command {
 namespace sam {
 
-using AbstractIso7816CommandBuilder = org::eclipse::keyple::core::command::AbstractIso7816CommandBuilder;
-using ApduRequest                   = org::eclipse::keyple::core::seproxy::message::ApduRequest;
+using namespace org::eclipse::keyple::core::command;
+using namespace org::eclipse::keyple::core::seproxy::message;
 
-AbstractSamCommandBuilder::AbstractSamCommandBuilder(std::shared_ptr<CalypsoSamCommands> reference,
-                                                     std::shared_ptr<ApduRequest> request)
+AbstractSamCommandBuilder::AbstractSamCommandBuilder(CalypsoSamCommands& reference, std::shared_ptr<ApduRequest> request)
 : AbstractIso7816CommandBuilder(reference, request)
 {
 }

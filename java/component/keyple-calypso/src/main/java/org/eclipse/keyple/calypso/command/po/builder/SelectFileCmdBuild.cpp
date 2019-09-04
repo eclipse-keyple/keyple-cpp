@@ -22,7 +22,7 @@ using ApduResponse             = org::eclipse::keyple::core::seproxy::message::A
 using SelectControl            = org::eclipse::keyple::calypso::command::po::builder::SelectFileCmdBuild::SelectControl;
 
 SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, SelectControl selectControl)
-: AbstractPoCommandBuilder<SelectFileRespPars>(std::make_shared<CalypsoPoCommands>(command), nullptr)
+: AbstractPoCommandBuilder<SelectFileRespPars>(command, nullptr)
 {
     char p1;
     char p2;
@@ -45,13 +45,13 @@ SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, SelectControl selectCont
                                                                    ""));//selectControl.toString()));
     }
 
-    request = setApduRequest(poClass.getValue(), std::make_shared<CalypsoPoCommands>(command), p1, p2, selectData, static_cast<char>(0x00));
+    request = setApduRequest(poClass.getValue(), command, p1, p2, selectData, static_cast<char>(0x00));
 }
 
 SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, std::vector<char> &selectionPath)
-: AbstractPoCommandBuilder<SelectFileRespPars>(std::make_shared<CalypsoPoCommands>(command), nullptr)
+: AbstractPoCommandBuilder<SelectFileRespPars>(command, nullptr)
 {
-    request = setApduRequest(poClass.getValue(), std::make_shared<CalypsoPoCommands>(command), static_cast<char>(0x09),
+    request = setApduRequest(poClass.getValue(), command, static_cast<char>(0x09),
                              static_cast<char>(0x00), selectionPath, static_cast<char>(0x00));
 }
 

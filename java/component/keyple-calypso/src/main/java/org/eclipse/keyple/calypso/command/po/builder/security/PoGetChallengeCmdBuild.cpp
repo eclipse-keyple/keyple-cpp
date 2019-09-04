@@ -18,9 +18,7 @@ using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::Cal
 using PoGetChallengeRespPars   = org::eclipse::keyple::calypso::command::po::parser::security::PoGetChallengeRespPars;
 using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
-PoGetChallengeCmdBuild::PoGetChallengeCmdBuild(PoClass poClass)
-: AbstractPoCommandBuilder<PoGetChallengeRespPars>(std::make_shared<CalypsoPoCommands>(command),
-                                                   nullptr)
+PoGetChallengeCmdBuild::PoGetChallengeCmdBuild(PoClass poClass) : AbstractPoCommandBuilder<PoGetChallengeRespPars>(command, nullptr)
 {
 
     char p1 = static_cast<char>(0x01);
@@ -28,13 +26,10 @@ PoGetChallengeCmdBuild::PoGetChallengeCmdBuild(PoClass poClass)
     char le = static_cast<char>(0x08);
     std::vector<char> emptyVector;
 
-    this->request = setApduRequest(poClass.getValue(),
-                                   std::make_shared<CalypsoPoCommands>(command), p1, p2,
-                                   emptyVector, le);
+    this->request = setApduRequest(poClass.getValue(), command, p1, p2, emptyVector, le);
 }
 
-std::shared_ptr<PoGetChallengeRespPars> PoGetChallengeCmdBuild::createResponseParser(
-                                                        std::shared_ptr<ApduResponse> apduResponse)
+std::shared_ptr<PoGetChallengeRespPars> PoGetChallengeCmdBuild::createResponseParser(std::shared_ptr<ApduResponse> apduResponse)
 {
     return std::make_shared<PoGetChallengeRespPars>(apduResponse);
 }

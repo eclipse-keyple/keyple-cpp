@@ -38,7 +38,7 @@ OpenSession10CmdBuild::OpenSession10CmdBuild(char keyIndex, std::vector<char> &s
      */
     char le = 0;
 
-    this->request = setApduRequest(PoClass::LEGACY.getValue(), std::make_shared<CalypsoPoCommands>(CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV1_0)), p1, p2, samChallenge, le);
+    this->request = setApduRequest(PoClass::LEGACY.getValue(), CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV1_0), p1, p2, samChallenge, le);
     if (extraInfo != "") {
         this->addSubName(extraInfo);
     }

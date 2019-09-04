@@ -31,22 +31,21 @@ namespace command {
 namespace po {
 namespace builder {
 
+using namespace org::eclipse::keyple::calypso::command;
 using namespace org::eclipse::keyple::calypso::command::po;
-
-using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
-using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
-using PoSendableInSession      = org::eclipse::keyple::calypso::command::po::PoSendableInSession;
-using SelectFileRespPars       = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
-using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace org::eclipse::keyple::calypso::command::po::parser;
+using namespace org::eclipse::keyple::core::seproxy::message;
 
 /**
  * This class provides the dedicated constructor to build the Select File APDU commands.
  *
  */
 class SelectFileCmdBuild final : public AbstractPoCommandBuilder<SelectFileRespPars>, public PoSendableInSession {
-
 private:
-    const CalypsoPoCommands command = CalypsoPoCommands::SELECT_FILE;
+    /**
+     *
+     */
+    CalypsoPoCommands& command = CalypsoPoCommands::SELECT_FILE;
 
 public:
     enum class SelectControl {

@@ -29,33 +29,36 @@ namespace sam {
 namespace builder {
 namespace security {
 
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
-using CalypsoSamCommands        = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-using SamRevision               = org::eclipse::keyple::calypso::command::sam::SamRevision;
+using namespace org::eclipse::keyple::calypso::command::sam;
 
 /**
-    * Builder for the SAM Give Random APDU command.
-    */
+ * Builder for the SAM Give Random APDU command.
+ */
 class GiveRandomCmdBuild : public AbstractSamCommandBuilder {
-
-    /** The command reference. */
 private:
-    const CalypsoSamCommands command = CalypsoSamCommands::GIVE_RANDOM;
-
     /**
-        * Instantiates a new DigestUpdateCmdBuild.
-        *
-        * @param revision of the SAM
-        * @param random the random data
-        * @throws IllegalArgumentException - if the random data is null or has a length not equal to 8
-        *
-        *         TODO implement specific settings for rev < 3
-        */
+     * The command reference
+     */
+    CalypsoSamCommands& command = CalypsoSamCommands::GIVE_RANDOM;
+
 public:
+    /**
+     * Instantiates a new DigestUpdateCmdBuild.
+     *
+     * @param revision of the SAM
+     * @param random the random data
+     * @throws IllegalArgumentException - if the random data is null or has a length not equal to 8
+     *
+     *         TODO implement specific settings for rev < 3
+     */
     GiveRandomCmdBuild(SamRevision revision, std::vector<char> &random);
 
 protected:
-    std::shared_ptr<GiveRandomCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<GiveRandomCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<GiveRandomCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
 };

@@ -30,9 +30,7 @@ namespace sam {
 namespace builder {
 namespace security {
 
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
-using CalypsoSamCommands = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
+using namespace org::eclipse::keyple::calypso::command::sam;
 
 /**
  * Builder for the Digest Authenticate APDU command.
@@ -42,7 +40,7 @@ private:
     /**
      * The command
      */
-    const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_AUTHENTICATE;
+    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_AUTHENTICATE;
 
 public:
     /**

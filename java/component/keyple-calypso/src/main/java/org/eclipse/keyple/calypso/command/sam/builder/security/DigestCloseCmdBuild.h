@@ -43,7 +43,7 @@ private:
     /**
      * The command
      */
-    const CalypsoSamCommands command = CalypsoSamCommands::DIGEST_CLOSE;
+    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_CLOSE;
 
 public:
     /**

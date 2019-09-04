@@ -33,12 +33,9 @@ namespace command {
 namespace po {
 namespace builder {
 
+using namespace org::eclipse::keyple::calypso::command;
 using namespace org::eclipse::keyple::calypso::command::po;
-
-using PoClass              = org::eclipse::keyple::calypso::command::PoClass;
-using UpdateRecordRespPars = org::eclipse::keyple::calypso::command::po::parser::UpdateRecordRespPars;
-using ApduResponse         = org::eclipse::keyple::core::seproxy::message::ApduResponse;
-using SelectFileResPars    = org::eclipse::keyple::calypso::command::po::parser::SelectFileRespPars;
+using namespace org::eclipse::keyple::calypso::command::po::parser;
 
 /**
  * The Class UpdateRecordCmdBuild. This class provides the dedicated constructor to build the Update
@@ -46,13 +43,14 @@ using SelectFileResPars    = org::eclipse::keyple::calypso::command::po::parser:
  *
  */
 class UpdateRecordCmdBuild final
-: public AbstractPoCommandBuilder<UpdateRecordRespPars>, public PoSendableInSession,
-  public PoModificationCommand {
-
-    /** The command. */
+: public AbstractPoCommandBuilder<UpdateRecordRespPars>, public PoSendableInSession, public PoModificationCommand {
 private:
-    const CalypsoPoCommands command = CalypsoPoCommands::UPDATE_RECORD;
+    /**
+     * The command
+     */
+    CalypsoPoCommands& command = CalypsoPoCommands::UPDATE_RECORD;
 
+public:
     /**
      * Instantiates a new UpdateRecordCmdBuild.
      *
@@ -64,12 +62,19 @@ private:
      * @throws IllegalArgumentException - if record number is &lt; 1
      * @throws IllegalArgumentException - if the request is inconsistent
      */
-public:
     UpdateRecordCmdBuild(PoClass poClass, char sfi, char recordNumber, std::vector<char> &newRecordData, const std::string &extraInfo);
-std::shared_ptr<UpdateRecordRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+
+    /**
+     *
+     */
+    std::shared_ptr<UpdateRecordRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<UpdateRecordCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<UpdateRecordCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<UpdateRecordCmdBuild>(AbstractPoCommandBuilder<UpdateRecordRespPars>::shared_from_this());
     }
 };
