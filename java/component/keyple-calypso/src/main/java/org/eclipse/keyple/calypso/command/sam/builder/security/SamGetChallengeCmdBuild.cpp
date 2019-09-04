@@ -12,7 +12,7 @@ namespace security {
 using namespace org::eclipse::keyple::calypso::command::sam;
 
 SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(SamRevision revision, char expectedResponseLength)
-: AbstractSamCommandBuilder(command, nullptr)
+: AbstractSamCommandBuilder(CalypsoSamCommands::GET_CHALLENGE, nullptr)
 {
     this->defaultRevision = revision;
 

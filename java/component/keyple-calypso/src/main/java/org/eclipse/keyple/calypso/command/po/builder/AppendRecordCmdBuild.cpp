@@ -15,7 +15,7 @@ using namespace org::eclipse::keyple::calypso::command::po::parser;
 using namespace org::eclipse::keyple::core::seproxy::message;
 
 AppendRecordCmdBuild::AppendRecordCmdBuild(PoClass poClass, char sfi, std::vector<char> &newRecordData, const std::string &extraInfo)
-: AbstractPoCommandBuilder<AppendRecordRespPars>(command, nullptr)
+: AbstractPoCommandBuilder<AppendRecordRespPars>(CalypsoPoCommands::APPEND_RECORD, nullptr)
 {
     char cla = poClass.getValue();
     char p1 = static_cast<char>(0x00);

@@ -22,7 +22,7 @@ using ApduResponse             = org::eclipse::keyple::core::seproxy::message::A
 using SelectControl            = org::eclipse::keyple::calypso::command::po::builder::SelectFileCmdBuild::SelectControl;
 
 SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, SelectControl selectControl)
-: AbstractPoCommandBuilder<SelectFileRespPars>(command, nullptr)
+: AbstractPoCommandBuilder<SelectFileRespPars>(CalypsoPoCommands::SELECT_FILE, nullptr)
 {
     char p1;
     char p2;
@@ -49,7 +49,7 @@ SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, SelectControl selectCont
 }
 
 SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass, std::vector<char> &selectionPath)
-: AbstractPoCommandBuilder<SelectFileRespPars>(command, nullptr)
+: AbstractPoCommandBuilder<SelectFileRespPars>(CalypsoPoCommands::SELECT_FILE, nullptr)
 {
     request = setApduRequest(poClass.getValue(), command, static_cast<char>(0x09),
                              static_cast<char>(0x00), selectionPath, static_cast<char>(0x00));

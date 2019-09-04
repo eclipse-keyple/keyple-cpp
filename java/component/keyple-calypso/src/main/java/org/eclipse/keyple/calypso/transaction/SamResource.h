@@ -26,23 +26,30 @@ namespace calypso {
 namespace transaction {
 
 using namespace org::eclipse::keyple::core::selection;
-
-using CalypsoSam = org::eclipse::keyple::calypso::transaction::CalypsoSam;
-
-using SeReader   = org::eclipse::keyple::core::seproxy::SeReader;
+using namespace org::eclipse::keyple::calypso::transaction;
+using namespace org::eclipse::keyple::core::seproxy;
 
 class SamResource : public SeResource<CalypsoSam> {
-    /**
-        * Constructor
-        *
-        * @param seReader the {@link SeReader} with which the SE is communicating
-        * @param calypsoSam the {@link CalypsoSam} information structure
-        */
 public:
+    /**
+     * Constructor
+     *
+     * @param seReader the {@link SeReader} with which the SE is communicating
+     * @param calypsoSam the {@link CalypsoSam} information structure
+     */
     SamResource(std::shared_ptr<SeReader> seReader, std::shared_ptr<CalypsoSam> calypsoSam);
 
+    /**
+     *
+     */
+    virtual ~SamResource() {}
+
 protected:
-    std::shared_ptr<SamResource> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<SamResource> shared_from_this()
+    {
         return std::static_pointer_cast<SamResource>(SeResource<CalypsoSam>::shared_from_this());
     }
 };

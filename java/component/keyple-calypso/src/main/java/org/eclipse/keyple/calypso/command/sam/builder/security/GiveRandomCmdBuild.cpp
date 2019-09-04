@@ -11,7 +11,8 @@ namespace security {
 
 using namespace org::eclipse::keyple::calypso::command::sam;
 
-GiveRandomCmdBuild::GiveRandomCmdBuild(SamRevision revision, std::vector<char> &random) : AbstractSamCommandBuilder(command, nullptr)
+GiveRandomCmdBuild::GiveRandomCmdBuild(SamRevision revision, std::vector<char> &random)
+: AbstractSamCommandBuilder(CalypsoSamCommands::GIVE_RANDOM, nullptr)
 {
     //if (revision != nullptr) {
         this->defaultRevision = revision;

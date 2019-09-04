@@ -18,7 +18,7 @@ using SamRevision               = org::eclipse::keyple::calypso::command::sam::S
 
 CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(SamRevision revision, std::shared_ptr<KeyReference> cipheringKey,
                                                  std::shared_ptr<KeyReference> sourceKey)
-: AbstractSamCommandBuilder(command, nullptr)
+: AbstractSamCommandBuilder(CalypsoSamCommands::CARD_GENERATE_KEY, nullptr)
 {
     //if (revision != nullptr) {
         this->defaultRevision = revision;

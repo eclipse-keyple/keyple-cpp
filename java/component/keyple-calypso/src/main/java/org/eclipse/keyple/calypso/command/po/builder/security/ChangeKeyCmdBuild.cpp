@@ -17,7 +17,7 @@ using namespace org::eclipse::keyple::calypso::command::po::parser;
 using namespace org::eclipse::keyple::core::seproxy::message;
 
 ChangeKeyCmdBuild::ChangeKeyCmdBuild(PoClass poClass, char keyIndex, std::vector<char> &cryptogram)
-: AbstractPoCommandBuilder<ChangeKeyRespPars>(command, nullptr) {
+: AbstractPoCommandBuilder<ChangeKeyRespPars>(CalypsoPoCommands::CHANGE_KEY, nullptr) {
 
     if (cryptogram.empty() || (cryptogram.size() != 0x18 && cryptogram.size() != 0x20)) {
         throw std::invalid_argument("Bad cryptogram value.");

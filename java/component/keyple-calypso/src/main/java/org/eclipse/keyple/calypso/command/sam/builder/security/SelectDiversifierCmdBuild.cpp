@@ -12,7 +12,7 @@ namespace security {
 using namespace org::eclipse::keyple::calypso::command::sam;
 
 SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(SamRevision revision, std::vector<char> &diversifier)
-: AbstractSamCommandBuilder(command, nullptr)
+: AbstractSamCommandBuilder(CalypsoSamCommands::SELECT_DIVERSIFIER, nullptr)
 {
     this->defaultRevision = revision;
 

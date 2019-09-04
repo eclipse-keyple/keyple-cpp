@@ -22,7 +22,7 @@ using namespace org::eclipse::keyple::core::seproxy::message;
 using namespace org::eclipse::keyple::core::util;
 
 CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass, bool ratificationAsked, std::vector<char> &terminalSessionSignature)
-: AbstractPoCommandBuilder<CloseSessionRespPars>(command, nullptr)
+: AbstractPoCommandBuilder<CloseSessionRespPars>(CalypsoPoCommands::CLOSE_SESSION, nullptr)
 {
     // The optional parameter terminalSessionSignature could contain 4 or 8
     // bytes.
@@ -40,7 +40,8 @@ CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass, bool ratificationAsk
     request = setApduRequest(poClass.getValue(), command, p1, static_cast<char>(0x00), terminalSessionSignature, le);
 }
 
-CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass) : AbstractPoCommandBuilder<CloseSessionRespPars>(command, nullptr)
+CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass)
+: AbstractPoCommandBuilder<CloseSessionRespPars>(CalypsoPoCommands::CLOSE_SESSION, nullptr)
 {
     std::vector<char> emptyVector;
     request = setApduRequest(poClass.getValue(), command, static_cast<char>(0x00), static_cast<char>(0x00), emptyVector,

@@ -11,7 +11,8 @@ namespace security {
 
 using namespace org::eclipse::keyple::calypso::command::sam;
 
-DigestCloseCmdBuild::DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength) : AbstractSamCommandBuilder(command, nullptr)
+DigestCloseCmdBuild::DigestCloseCmdBuild(SamRevision revision, char expectedResponseLength)
+: AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_CLOSE, nullptr)
 {
     this->defaultRevision = revision;
 

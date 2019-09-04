@@ -18,7 +18,8 @@ using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::Cal
 using PoGetChallengeRespPars   = org::eclipse::keyple::calypso::command::po::parser::security::PoGetChallengeRespPars;
 using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
-PoGetChallengeCmdBuild::PoGetChallengeCmdBuild(PoClass poClass) : AbstractPoCommandBuilder<PoGetChallengeRespPars>(command, nullptr)
+PoGetChallengeCmdBuild::PoGetChallengeCmdBuild(PoClass poClass)
+: AbstractPoCommandBuilder<PoGetChallengeRespPars>(CalypsoPoCommands::GET_CHALLENGE, nullptr)
 {
 
     char p1 = static_cast<char>(0x01);

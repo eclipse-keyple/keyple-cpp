@@ -12,7 +12,7 @@ namespace security {
 using namespace org::eclipse::keyple::calypso::command::sam;
 
 DigestUpdateCmdBuild::DigestUpdateCmdBuild(SamRevision revision, bool encryptedSession, std::vector<char> &digestData)
-: AbstractSamCommandBuilder(command, nullptr)
+: AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_UPDATE, nullptr)
 {
     this->defaultRevision = revision;
     char cla = this->defaultRevision.getClassByte();

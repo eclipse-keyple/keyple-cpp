@@ -146,6 +146,11 @@ public:
     CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte);
 
     /**
+     *
+     */
+    CalypsoPoCommands(const CalypsoPoCommands& other);
+
+    /**
      * Gets the name.
      *
      * @return the command name

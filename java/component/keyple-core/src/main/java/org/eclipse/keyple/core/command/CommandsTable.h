@@ -27,7 +27,21 @@ public:
     /**
      *
      */
+    CommandsTable() {}
+
+    /**
+     *
+     */
+    CommandsTable(const CommandsTable& other)
+    {
+        (void)other;
+    }
+
+    /**
+     *
+     */
     virtual ~CommandsTable() {}
+
     /**
      *
      */

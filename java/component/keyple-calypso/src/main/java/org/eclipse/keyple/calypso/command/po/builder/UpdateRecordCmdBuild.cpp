@@ -16,7 +16,7 @@ using namespace org::eclipse::keyple::core::seproxy::message;
 
 UpdateRecordCmdBuild::UpdateRecordCmdBuild(PoClass poClass, char sfi, char recordNumber, std::vector<char> &newRecordData,
                                            const std::string &extraInfo)
-: AbstractPoCommandBuilder<UpdateRecordRespPars>(command, nullptr)
+: AbstractPoCommandBuilder<UpdateRecordRespPars>(CalypsoPoCommands::UPDATE_RECORD, nullptr)
 {
     if (recordNumber < 1) {
         throw std::invalid_argument("Bad record number (< 1)");
@@ -29,7 +29,8 @@ UpdateRecordCmdBuild::UpdateRecordCmdBuild(PoClass poClass, char sfi, char recor
     }
 }
 
-std::shared_ptr<UpdateRecordRespPars> UpdateRecordCmdBuild::createResponseParser(std::shared_ptr<ApduResponse> apduResponse) {
+std::shared_ptr<UpdateRecordRespPars> UpdateRecordCmdBuild::createResponseParser(std::shared_ptr<ApduResponse> apduResponse)
+{
     return std::make_shared<UpdateRecordRespPars>(apduResponse);
 }
 

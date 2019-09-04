@@ -18,7 +18,7 @@ using namespace org::eclipse::keyple::calypso::command::po::parser;
 using namespace org::eclipse::keyple::core::seproxy::message;
 
 GetDataFciCmdBuild::GetDataFciCmdBuild(PoClass poClass)
-: AbstractPoCommandBuilder<GetDataFciRespPars>(command, nullptr)
+: AbstractPoCommandBuilder<GetDataFciRespPars>(CalypsoPoCommands::GET_DATA_FCI, nullptr)
 {
     std::vector<char> empty;
 

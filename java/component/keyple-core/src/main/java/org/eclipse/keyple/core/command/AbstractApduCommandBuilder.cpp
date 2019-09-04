@@ -16,11 +16,9 @@ using CommandsTable = org::eclipse::keyple::core::command::CommandsTable;
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(CommandsTable& commandReference, std::shared_ptr<ApduRequest> request)
 : commandParserClass(commandReference.getCommandBuilderClass())
 {
-    std::cout << "here we go.........." << std::endl;
-
     this->name = commandReference.getName();
     this->request = request;
-   
+
     // set APDU name for non null request
     if (request != nullptr) {
         this->request->setName(commandReference.getName());

@@ -15,7 +15,7 @@ using namespace org::eclipse::keyple::calypso::command::po::parser;
 using namespace org::eclipse::keyple::core::seproxy::message;
 
 DecreaseCmdBuild::DecreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int decValue, const std::string &extraInfo)
-: AbstractPoCommandBuilder<DecreaseRespPars>(command, nullptr)
+: AbstractPoCommandBuilder<DecreaseRespPars>(CalypsoPoCommands::DECREASE, nullptr)
 {
     // only counter number >= 1 are allowed
     if (counterNumber < 1) {

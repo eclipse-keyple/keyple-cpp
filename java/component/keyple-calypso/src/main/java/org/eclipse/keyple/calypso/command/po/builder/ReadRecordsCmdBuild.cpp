@@ -18,7 +18,7 @@ using namespace org::eclipse::keyple::core::seproxy::message;
 
 ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi, ReadDataStructure readDataStructure, char firstRecordNumber,
                                          bool readJustOneRecord, char expectedLength, const std::string& extraInfo)
-: AbstractPoCommandBuilder<ReadRecordsRespPars>(command, nullptr), firstRecordNumber(firstRecordNumber),
+: AbstractPoCommandBuilder<ReadRecordsRespPars>(CalypsoPoCommands::READ_RECORDS, nullptr), firstRecordNumber(firstRecordNumber),
 
   readDataStructure(readDataStructure)
 {
@@ -43,7 +43,6 @@ ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi, ReadDataStru
                                          bool readJustOneRecord, const std::string &extraInfo)
 : ReadRecordsCmdBuild(poClass, sfi, readDataStructure, firstRecordNumber, readJustOneRecord, 0x00, extraInfo)
 {
-    std::cout << "here we go.........." << std::endl;
 }
 
 std::shared_ptr<ReadRecordsRespPars> ReadRecordsCmdBuild::createResponseParser(std::shared_ptr<ApduResponse> apduResponse)

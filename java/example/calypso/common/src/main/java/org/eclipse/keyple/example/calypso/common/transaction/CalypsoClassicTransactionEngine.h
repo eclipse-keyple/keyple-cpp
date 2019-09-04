@@ -105,6 +105,11 @@ public:
     CalypsoClassicTransactionEngine();
 
     /**
+     *
+     */
+    virtual ~CalypsoClassicTransactionEngine() {}
+
+    /**
      * Assign readers to the transaction engine
      */
     virtual void setReaders(std::shared_ptr<SeReader> poReader, std::shared_ptr<SeReader> samReader);

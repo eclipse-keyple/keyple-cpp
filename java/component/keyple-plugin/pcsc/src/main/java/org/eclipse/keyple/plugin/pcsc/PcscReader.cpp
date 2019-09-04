@@ -181,7 +181,7 @@ bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
         std::unordered_map<SeProtocol, std::string>::iterator it = protocolsMap.begin();
         while(it != protocolsMap.end()) {
             SeProtocol p = it->first;
-            logger->debug("available protocol: %s - %s", p.getName(), it->second);
+            logger->debug("available protocol: %s - %s\n", p.getName(), it->second);
             it++;
         }
 

@@ -14,7 +14,7 @@ using CalypsoSamCommands        = org::eclipse::keyple::calypso::command::sam::C
 using SamRevision               = org::eclipse::keyple::calypso::command::sam::SamRevision;
 
 DigestUpdateMultipleCmdBuild::DigestUpdateMultipleCmdBuild(SamRevision revision, std::vector<char> &digestData)
- : AbstractSamCommandBuilder(command, nullptr)
+ : AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_UPDATE_MULTIPLE, nullptr)
  {
     this->defaultRevision = revision;
 
