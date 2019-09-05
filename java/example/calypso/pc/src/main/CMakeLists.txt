@@ -23,3 +23,4 @@ SET(CMAKE_MACOSX_RPATH 1)
 SET(CMAKE_CXX_STANDARD 11)
 
 INCLUDE(CMakeLists.txt.demo_calypsoclassic_pcsc)
+INCLUDE(CMakeLists.txt.demo_calypsoclassic_stub)

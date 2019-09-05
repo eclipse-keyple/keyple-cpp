@@ -37,11 +37,12 @@ void StubSecureElement::closePhysicalChannel()
 
 void StubSecureElement::addHexCommand(const std::string &command, const std::string &response)
 {
-    if (command.compare("") && response.compare(""))
-        //"command and response should not be null"));
+    if (!command.compare("") || !response.compare("")) {
+        logger->debug("either command or response is empty\n");
         return;
+    }
 
-    // add commands without space
+    /* Add commands without space */
     hexCommands.emplace(StringHelper::replace(command, " ", ""),
                         StringHelper::replace(response, " ", ""));
 }
@@ -64,6 +65,9 @@ std::vector<char> StubSecureElement::processApdu(std::vector<char> &apduIn)
 
     // convert apduIn to hexa
     std::string hexApdu = ByteArrayUtil::toHex(apduIn);
+
+    logger->debug("looking for r-apdu response to c-apdu: %s\n", hexApdu);
+    logger->debug("%d combinations available\n", hexCommands.size());
 
     // return matching hexa response if found
     if (hexCommands.find(hexApdu) != hexCommands.end()) {

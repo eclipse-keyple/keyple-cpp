@@ -88,7 +88,8 @@ CalypsoPoCommands::CalypsoPoCommands(const std::string &nameValue, InnerEnum inn
 }
 
 CalypsoPoCommands::CalypsoPoCommands(const CalypsoPoCommands& other)
-: innerEnumValue(other.innerEnumValue), nameValue(other.nameValue), ordinalValue(other.ordinalValue), name(other.name),
+: CommandsTable(),
+  innerEnumValue(other.innerEnumValue), nameValue(other.nameValue), ordinalValue(other.ordinalValue), name(other.name),
   instructionbyte(other.instructionbyte)
 {
 	(void)other;

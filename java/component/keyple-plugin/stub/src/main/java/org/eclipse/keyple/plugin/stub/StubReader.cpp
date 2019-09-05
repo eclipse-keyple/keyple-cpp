@@ -106,13 +106,13 @@ bool StubReader::protocolFlagMatches(const SeProtocol& protocolFlag)
         std::string protocol       = se->getSeProcotol();
         if (!p->matcher(protocol)->matches())
         {
-            logger->trace("[%s] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %s",
+            logger->trace("[%s] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %s\n",
                             this->getName(), protocolFlag);
             result = false;
         }
         else
         {
-            logger->trace("[%s] protocolFlagMatches => matching SE. PROTOCOLFLAG = %s",
+            logger->trace("[%s] protocolFlagMatches => matching SE. PROTOCOLFLAG = %s\n",
                             this->getName(), protocolFlag);
             result = true;
         }

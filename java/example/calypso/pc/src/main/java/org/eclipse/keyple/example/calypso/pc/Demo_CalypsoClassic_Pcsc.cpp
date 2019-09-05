@@ -28,12 +28,12 @@ using namespace org::eclipse::keyple::plugin::pcsc;
 class Demo_CalypsoClassic_Pcsc {
 };
 
+std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(Demo_CalypsoClassic_Pcsc));
+
 int main(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-
-    std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(Demo_CalypsoClassic_Pcsc));
 
      /* Get the instance of the PC/SC plugin */
     PcscPlugin pcscPlugin = PcscPlugin::getInstance();
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     std::shared_ptr<PcscPlugin> shared_plugin = std::shared_ptr<PcscPlugin>(&pcscPlugin);
 
     /* Assign PcscPlugin to the SeProxyService */
-    SeProxyService& seProxyService = SeProxyService::getInstance();
+    SeProxyService seProxyService = SeProxyService::getInstance();
     seProxyService.addPlugin(shared_plugin);
 
     /* Setting up the transaction engine (implements Observer) */
