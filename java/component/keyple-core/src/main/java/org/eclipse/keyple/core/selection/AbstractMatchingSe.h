@@ -27,9 +27,8 @@ namespace keyple {
 namespace core {
 namespace selection {
 
-using SeResponse = org::eclipse::keyple::core::seproxy::message::SeResponse;
-using SelectionStatus = org::eclipse::keyple::core::seproxy::message::SelectionStatus;
-using TransmissionMode = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
+using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
 
 /**
     * AbstractMatchingSe is the class to manage the elements of the result of a selection.
@@ -37,17 +36,31 @@ using TransmissionMode = org::eclipse::keyple::core::seproxy::protocol::Transmis
     */
 class AbstractMatchingSe : public std::enable_shared_from_this<AbstractMatchingSe> {
 private:
+    /**
+     *
+     */
     const std::shared_ptr<SeResponse> selectionResponse;
+
+    /**
+     *
+     */
     const TransmissionMode transmissionMode;
+
+    /**
+     *
+     */
     std::shared_ptr<SelectionStatus> selectionStatus;
+
+    /**
+     *
+     */
     const std::string selectionExtraInfo;
 
 public:
     /**
      * Constructor.
      */
-    AbstractMatchingSe(std::shared_ptr<SeResponse> selectionResponse,
-                       TransmissionMode transmissionMode, const std::string &extraInfo);
+    AbstractMatchingSe(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo);
 
     /**
      *

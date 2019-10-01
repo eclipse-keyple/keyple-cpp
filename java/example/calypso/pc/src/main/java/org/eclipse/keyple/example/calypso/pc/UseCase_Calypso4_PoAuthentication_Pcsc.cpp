@@ -1,200 +1,221 @@
-#include "UseCase_Calypso4_PoAuthentication_Pcsc.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleBaseException.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/NoStackTraceThrowable.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
-#include "../../../../../../../../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/SeReader.h"
-#include "../../../../../../../../../../common/src/main/java/org/eclipse/keyple/example/calypso/common/transaction/CalypsoUtilities.h"
-#include "../../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/PoSelector.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/ChannelState.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/ContactlessProtocols.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/transaction/SeSelector.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
-#include "../../../../../../../../../../common/src/main/java/org/eclipse/keyple/example/calypso/common/postructure/CalypsoClassicInfo.h"
-#include "../../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/CalypsoPo.h"
-#include "../../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/PoTransaction.h"
-#include "../../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/po/parser/ReadDataStructure.h"
-#include "../../../../../../../../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/command/po/parser/ReadRecordsRespPars.h"
-#include "../../../../../../../../../../../../component/keyple-core/src/main/java/org/eclipse/keyple/seproxy/protocol/TransmissionMode.h"
+#include "CalypsoClassicInfo.h"
+#include "CalypsoUtilities.h"
+#include "KeypleBaseException.h"
+#include "ReaderUtilities.h"
+#include "KeypleReaderNotFoundException.h"
+#include "Logger.h"
+#include "LoggerFactory.h"
+#include "MatchingSelection.h"
+#include "ObservableReader.h"
+#include "PcscPlugin.h"
+#include "PcscReader.h"
+#include "PcscReadersSettings.h"
+#include "PcscReaderSettings_Import.h"
+#include "PcscReadersSettings.h"
+#include "PcscProtocolSetting.h"
+#include "PcscReadersSettings.h"
+#include "PoSelectionRequest.h"
+#include "PoTransaction.h"
+#include "ReaderEvent_Import.h"
+#include "SamResource.h"
+#include "SeProxyService.h"
+#include "SeReader.h"
+#include "SeSelection.h"
 
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace example {
-                namespace calypso {
-                    namespace pc {
-                        using ReadDataStructure = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
-                        using ReadRecordsRespPars = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
-                        using CalypsoPo = org::eclipse::keyple::calypso::transaction::CalypsoPo;
-                        using PoSelector = org::eclipse::keyple::calypso::transaction::PoSelector;
-                        using PoTransaction = org::eclipse::keyple::calypso::transaction::PoTransaction;
-                        using CalypsoClassicInfo = org::eclipse::keyple::example::calypso::common::postructure::CalypsoClassicInfo;
-                        using CalypsoUtilities = org::eclipse::keyple::example::calypso::common::transaction::CalypsoUtilities;
-                        using PcscPlugin = org::eclipse::keyple::plugin::pcsc::PcscPlugin;
-                        using ChannelState = org::eclipse::keyple::seproxy::ChannelState;
-                        using SeProxyService = org::eclipse::keyple::seproxy::SeProxyService;
-                        using SeReader = org::eclipse::keyple::seproxy::SeReader;
-                        using KeypleBaseException = org::eclipse::keyple::seproxy::exception::KeypleBaseException;
-                        using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
-                        using ContactlessProtocols = org::eclipse::keyple::seproxy::protocol::ContactlessProtocols;
-                        using TransmissionMode = org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-                        using namespace org::eclipse::keyple::transaction;
-                        using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-                        using org::slf4j::Logger;
-                        using org::slf4j::LoggerFactory;
-const std::shared_ptr<org::slf4j::Logger> UseCase_Calypso4_PoAuthentication_Pcsc::logger = org::slf4j::LoggerFactory::getLogger(UseCase_Calypso4_PoAuthentication_Pcsc::typeid);
+/* Common */
+#include "ByteArrayUtil.h"
+#include "stringhelper.h"
 
-                        void UseCase_Calypso4_PoAuthentication_Pcsc::main(std::vector<std::string> &args) throw(KeypleBaseException, NoStackTraceThrowable) {
+using namespace org::eclipse::keyple::common;
+using namespace org::eclipse::keyple::core::seproxy;
+using namespace org::eclipse::keyple::core::seproxy::event;
+using namespace org::eclipse::keyple::core::seproxy::exception;
+using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace org::eclipse::keyple::example::calypso::common::postructure;
+using namespace org::eclipse::keyple::example::calypso::common::transaction;
+using namespace org::eclipse::keyple::example::calypso::pc;
+using namespace org::eclipse::keyple::example::generic::pc;
+using namespace org::eclipse::keyple::plugin::pcsc;
 
-                            /* Get the instance of the SeProxyService (Singleton pattern) */
-                            std::shared_ptr<SeProxyService> seProxyService = SeProxyService::getInstance();
+class UseCase_Calypso4_PoAuthentication_Pcsc {
+};
 
-                            /* Get the instance of the PC/SC plugin */
-                            std::shared_ptr<PcscPlugin> pcscPlugin = PcscPlugin::getInstance();
+const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(UseCase_Calypso4_PoAuthentication_Pcsc));
 
-                            /* Assign PcscPlugin to the SeProxyService */
-                            seProxyService->addPlugin(pcscPlugin);
+int main(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
 
-                            /*
-                             * Get a PO reader ready to work with Calypso PO. Use the getReader helper method from the
-                             * CalypsoUtilities class.
-                             */
-                            std::shared_ptr<SeReader> poReader = CalypsoUtilities::getDefaultPoReader(seProxyService);
+    /* Get the instance of the PC/SC plugin */
+    PcscPlugin pcscPlugin = PcscPlugin::getInstance();
+    pcscPlugin.initReaders();
+    std::shared_ptr<PcscPlugin> shared_plugin = std::shared_ptr<PcscPlugin>(&pcscPlugin);
 
+    /* Assign PcscPlugin to the SeProxyService */
+    SeProxyService& seProxyService = SeProxyService::getInstance();
+    seProxyService.addPlugin(shared_plugin);
 
-                            /*
-                             * Get a SAM reader ready to work with Calypso PO. Use the getReader helper method from the
-                             * CalypsoUtilities class.
-                             */
-                            std::shared_ptr<SeReader> samReader = CalypsoUtilities::getDefaultSamReader(seProxyService);
+    /*
+     * Get a PO reader ready to work with Calypso PO. Use the getReader helper method from the
+     * CalypsoUtilities class.
+     */
+    std::shared_ptr<SeReader> poReader = CalypsoUtilities::getDefaultPoReader();
 
-                            /* Check if the readers exists */
-                            if (poReader == nullptr || samReader == nullptr) {
-                                throw std::make_shared<IllegalStateException>("Bad PO or SAM reader setup");
-                            }
+    /*
+     * Get a SAM reader ready to work with Calypso PO. Use the getReader helper method from the
+     * CalypsoUtilities class.
+     */
+    std::shared_ptr<SamResource> samResource = CalypsoUtilities::getDefaultSamResource();
 
-                            logger->info("=============== UseCase Calypso #4: Po Authentication ==================");
-                            logger->info("= PO Reader  NAME = {}", poReader->getName());
-                            logger->info("= SAM Reader  NAME = {}", samReader->getName());
+    /* Check if the readers exists */
+    if (poReader == nullptr || samResource == nullptr) {
+        throw std::make_shared<IllegalStateException>("Bad PO or SAM reader setup");
+    }
 
-                            /* Check if a PO is present in the reader */
-                            if (poReader->isSePresent()) {
+    logger->info("=============== UseCase Calypso #4: Po Authentication ==================\n");
+    logger->info("= PO Reader  NAME = %s\n", poReader->getName());
+    logger->info("= SAM Reader  NAME = %s\n", samResource->getSeReader()->getName());
 
-                                logger->info("==================================================================================");
-                                logger->info("= 1st PO exchange: AID based selection with reading of Environment file.         =");
-                                logger->info("==================================================================================");
+    /* Check if a PO is present in the reader */
+    if (poReader->isSePresent()) {
 
-                                /*
-                                 * Prepare a Calypso PO selection
-                                 */
-                                std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>(poReader);
+        logger->info("==================================================================================");
+        logger->info("= 1st PO exchange: AID based selection with reading of Environment file.         =");
+        logger->info("==================================================================================");
 
-                                /*
-                                 * Setting of an AID based selection of a Calypso REV3 PO
-                                 *
-                                 * Select the first application matching the selection AID whatever the SE communication
-                                 * protocol keep the logical channel open after the selection
-                                 */
+        /*
+         * Prepare a Calypso PO selection
+         */
+        std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>();
 
-                                /*
-                                 * Calypso selection: configures a PoSelector with all the desired attributes to make
-                                 * the selection and read additional information afterwards
-                                 */
-                                std::shared_ptr<PoSelector> poSelector = std::make_shared<PoSelector>(ByteArrayUtils::fromHex(CalypsoClassicInfo::AID), SeSelector::SelectMode::FIRST, ChannelState::KEEP_OPEN, ContactlessProtocols::PROTOCOL_ISO14443_4, "AID: " + CalypsoClassicInfo::AID);
+        /*
+         * Setting of an AID based selection of a Calypso REV3 PO
+         *
+         * Select the first application matching the selection AID whatever the SE communication
+         * protocol keep the logical channel open after the selection
+         */
 
-                                /*
-                                 * Add the selection case to the current selection (we could have added other cases
-                                 * here)
-                                 */
-                                std::shared_ptr<CalypsoPo> calypsoPo = std::static_pointer_cast<CalypsoPo>(seSelection->prepareSelection(poSelector));
-
-                                /*
-                                 * Actual PO communication: operate through a single request the Calypso PO selection
-                                 * and the file read
-                                 */
-                                if (seSelection->processExplicitSelection()) {
-                                    logger->info("The selection of the PO has succeeded.");
-
-                                    std::shared_ptr<MatchingSe> selectedSe = seSelection->getSelectedSe();
-
-                                    /* Go on with the reading of the first record of the EventLog file */
-                                    logger->info("==================================================================================");
-                                    logger->info("= 2nd PO exchange: open and close a secure session to perform authentication.    =");
-                                    logger->info("==================================================================================");
-
-                                    std::shared_ptr<PoTransaction> poTransaction = std::make_shared<PoTransaction>(poReader, std::static_pointer_cast<CalypsoPo>(selectedSe), samReader, CalypsoUtilities::getSamSettings());
-
-                                    /*
-                                     * Prepare the reading order and keep the associated parser for later use once the
-                                     * transaction has been processed.
-                                     */
-                                    std::shared_ptr<ReadRecordsRespPars> readEventLogParser = poTransaction->prepareReadRecordsCmd(CalypsoClassicInfo::SFI_EventLog, ReadDataStructure::SINGLE_RECORD_DATA, CalypsoClassicInfo::RECORD_NUMBER_1, std::string::format("EventLog (SFI=%02X, recnbr=%d))", CalypsoClassicInfo::SFI_EventLog, CalypsoClassicInfo::RECORD_NUMBER_1));
+        /*
+         * Calypso selection: configures a PoSelector with all the desired attributes to make
+         * the selection and read additional information afterwards
+         */
+        std::shared_ptr<PoSelectionRequest> poSelectionRequest =
+            std::make_shared<PoSelectionRequest>(
+                std::make_shared<PoSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
+                    std::make_shared<PoSelector::PoAidSelector>(
+                        std::make_shared<SeSelector::AidSelector::IsoAid>(CalypsoClassicInfo::AID),
+                        PoSelector::InvalidatedPo::REJECT),
+                    StringHelper::formatSimple("AID: %s", CalypsoClassicInfo::AID)),
+                ChannelState::KEEP_OPEN);
 
 
-                                    /*
-                                     * Open Session for the debit key
-                                     */
-                                    bool poProcessStatus = poTransaction->processOpening(PoTransaction::ModificationMode::ATOMIC, PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT, static_cast<char>(0), static_cast<char>(0));
+        /*
+         * Add the selection case to the current selection (we could have added other cases
+         * here)
+         */
+        seSelection->prepareSelection(poSelectionRequest);
 
-                                    if (!poProcessStatus) {
-                                        throw std::make_shared<IllegalStateException>("processingOpening failure.");
-                                    }
+        /*
+         * Actual PO communication: operate through a single request the Calypso PO selection
+         * and the file read
+         */
+        std::shared_ptr<SelectionsResult> selectionResult = seSelection->processExplicitSelection(poReader);
 
-                                    if (!poTransaction->wasRatified()) {
-                                        logger->info("========= Previous Secure Session was not ratified. =====================");
-                                    }
-                                    /*
-                                     * Prepare the reading order and keep the associated parser for later use once the
-                                     * transaction has been processed.
-                                     */
-                                    std::shared_ptr<ReadRecordsRespPars> readEventLogParserBis = poTransaction->prepareReadRecordsCmd(CalypsoClassicInfo::SFI_EventLog, ReadDataStructure::SINGLE_RECORD_DATA, CalypsoClassicInfo::RECORD_NUMBER_1, std::string::format("EventLog (SFI=%02X, recnbr=%d))", CalypsoClassicInfo::SFI_EventLog, CalypsoClassicInfo::RECORD_NUMBER_1));
+        if (selectionResult->hasActiveSelection()) {
+            std::shared_ptr<MatchingSelection> matchingSelection = selectionResult->getActiveSelection();
 
-                                    poProcessStatus = poTransaction->processPoCommands(ChannelState::KEEP_OPEN);
+            std::shared_ptr<CalypsoPo> calypsoPo = std::static_pointer_cast<CalypsoPo>(matchingSelection->getMatchingSe());
+            logger->info("The selection of the PO has succeeded\n");
 
-                                    /*
-                                     * Retrieve the data read from the parser updated during the transaction process
-                                     */
-                                    std::vector<char> eventLog = (readEventLogParser->getRecords())->get(static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1));
 
-                                    /* Log the result */
-                                    logger->info("EventLog file data: {}", ByteArrayUtils::toHex(eventLog));
+            /* Go on with the reading of the first record of the EventLog file */
+            logger->info("==================================================================================\n");
+            logger->info("= 2nd PO exchange: open and close a secure session to perform authentication.    =\n");
+            logger->info("==================================================================================\n");
 
-                                    if (!poProcessStatus) {
-                                        throw std::make_shared<IllegalStateException>("processPoCommands failure.");
-                                    }
+            std::shared_ptr<PoTransaction> poTransaction =
+                    std::make_shared<PoTransaction>(std::make_shared<PoResource>(poReader, calypsoPo));
 
-                                    /*
-                                     * Close the Secure Session.
-                                     */
-                                    if (logger->isInfoEnabled()) {
-                                        logger->info("========= PO Calypso session ======= Closing ============================");
-                                    }
+            /*
+             * Prepare the reading order and keep the associated parser for later use once the
+             * transaction has been processed.
+             */
+            int readEventLogParserIndex =
+                poTransaction->prepareReadRecordsCmd(CalypsoClassicInfo::SFI_EventLog, ReadDataStructure::SINGLE_RECORD_DATA,
+                                                     CalypsoClassicInfo::RECORD_NUMBER_1,
+                                                     StringHelper::formatSimple("EventLog (SFI=%02X, recnbr=%d))",
+                                                                                CalypsoClassicInfo::SFI_EventLog,
+                                                                                CalypsoClassicInfo::RECORD_NUMBER_1));
 
-                                    /*
-                                     * A ratification command will be sent (CONTACTLESS_MODE).
-                                     */
-                                    poProcessStatus = poTransaction->processClosing(TransmissionMode::CONTACTLESS, ChannelState::CLOSE_AFTER);
+            (void)readEventLogParserIndex;
 
-                                    if (!poProcessStatus) {
-                                        throw std::make_shared<IllegalStateException>("processClosing failure.");
-                                    }
+            /*
+             * Open Session for the debit key
+             */
+            bool poProcessStatus = poTransaction->processOpening(PoTransaction::ModificationMode::ATOMIC,
+                                                                 PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT,
+                                                                 static_cast<char>(0), static_cast<char>(0));
 
-                                    logger->info("==================================================================================");
-                                    logger->info("= End of the Calypso PO processing.                                              =");
-                                    logger->info("==================================================================================");
-                                }
-                                else {
-                                    logger->error("The selection of the PO has failed.");
-                                }
-                            }
-                            else {
-                                logger->error("No PO were detected.");
-                            }
-                            exit(0);
-                        }
-                    }
-                }
+            if (!poProcessStatus) {
+                throw std::make_shared<IllegalStateException>("processingOpening failure.");
             }
+
+            if (!poTransaction->wasRatified()) {
+                logger->info("========= Previous Secure Session was not ratified. =====================\n");
+            }
+            /*
+             * Prepare the reading order and keep the associated parser for later use once the
+             * transaction has been processed.
+             */
+            int readEventLogParserIndexBis =
+                poTransaction->prepareReadRecordsCmd(CalypsoClassicInfo::SFI_EventLog, ReadDataStructure::SINGLE_RECORD_DATA,
+                                                     CalypsoClassicInfo::RECORD_NUMBER_1,
+                                                     StringHelper::formatSimple("EventLog (SFI=%02X, recnbr=%d))",
+                                                                                CalypsoClassicInfo::SFI_EventLog,
+                                                                                CalypsoClassicInfo::RECORD_NUMBER_1));
+
+            poProcessStatus = poTransaction->processPoCommandsInSession();
+
+            /*
+             * Retrieve the data read from the parser updated during the transaction process
+             */
+            std::shared_ptr<ReadRecordsRespPars> parser =
+                std::dynamic_pointer_cast<ReadRecordsRespPars>(poTransaction->getResponseParser(readEventLogParserIndexBis));
+            std::vector<char> eventLog = (*(parser->getRecords().get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
+
+
+            /* Log the result */
+            logger->info("EventLog file data: %s\n", ByteArrayUtil::toHex(eventLog));
+
+            if (!poProcessStatus) {
+                throw std::make_shared<IllegalStateException>("processPoCommandsInSession failure.");
+            }
+
+            /*
+             * Close the Secure Session.
+             */
+            logger->info("========= PO Calypso session ======= Closing ============================\n");
+
+            /*
+             * A ratification command will be sent (CONTACTLESS_MODE).
+             */
+            poProcessStatus = poTransaction->processClosing(ChannelState::CLOSE_AFTER);
+
+            if (!poProcessStatus) {
+                throw std::make_shared<IllegalStateException>("processClosing failure.");
+            }
+
+            logger->info("==================================================================================\n");
+            logger->info("= End of the Calypso PO processing.                                              =\n");
+            logger->info("==================================================================================\n");
+        }
+        else {
+            logger->error("The selection of the PO has failed\n");
         }
     }
+    else {
+        logger->error("No PO were detected\n");
+    }
+    exit(0);
 }

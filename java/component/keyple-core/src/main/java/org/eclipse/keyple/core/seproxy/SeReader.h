@@ -51,6 +51,11 @@ using TransmissionMode      = org::eclipse::keyple::core::seproxy::protocol::Tra
 class SeReader : public virtual Nameable, public Configurable, public Comparable<std::shared_ptr<SeReader>> {
 public:
     /**
+     *
+     */
+    virtual ~SeReader() {}
+
+    /**
      * Checks if is SE present.
      *
      * @return true if a Secure Element is present in the reader

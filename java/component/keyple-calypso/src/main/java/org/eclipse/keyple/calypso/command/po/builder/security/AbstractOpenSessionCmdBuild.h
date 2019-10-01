@@ -45,7 +45,7 @@ using namespace org::eclipse::keyple::core::command;
  */
 template<typename T>
 class EXPORT AbstractOpenSessionCmdBuild : public AbstractPoCommandBuilder<T> {
-
+public:
     /**
      * Instantiates a new AbstractOpenSessionCmdBuild.
      *
@@ -53,7 +53,6 @@ class EXPORT AbstractOpenSessionCmdBuild : public AbstractPoCommandBuilder<T> {
      * @throws IllegalArgumentException - if the key index is 0 and rev is 2.4
      * @throws IllegalArgumentException - if the request is inconsistent
      */
-public:
     AbstractOpenSessionCmdBuild(PoRevision revision)
     : AbstractPoCommandBuilder<T>(CalypsoPoCommands::getOpenSessionForRev(revision), nullptr)
     {

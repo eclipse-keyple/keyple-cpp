@@ -44,25 +44,36 @@ std::shared_ptr<AbstractOpenSessionCmdBuild<T>> AbstractOpenSessionCmdBuild<T>::
 {
     switch (revision) {
     case PoRevision::REV1_0:
-        return std::dynamic_pointer_cast<AbstractOpenSessionCmdBuild<T>>(
-                   std::make_shared<OpenSession10CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo));
+        {
+        std::shared_ptr<OpenSession10CmdBuild> cmd =
+            std::make_shared<OpenSession10CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo);
+        return std::shared_ptr<AbstractOpenSessionCmdBuild<T>>(cmd, reinterpret_cast<AbstractOpenSessionCmdBuild<T> *>(cmd.get()));
+        }
     case PoRevision::REV2_4:
-        return std::dynamic_pointer_cast<AbstractOpenSessionCmdBuild<T>>(
-                   std::make_shared<OpenSession24CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo));
+        {
+        std::shared_ptr<OpenSession24CmdBuild> cmd =
+            std::make_shared<OpenSession24CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo);
+        return std::shared_ptr<AbstractOpenSessionCmdBuild<T>>(cmd, reinterpret_cast<AbstractOpenSessionCmdBuild<T> *>(cmd.get()));
+        }
     case PoRevision::REV3_1:
     case PoRevision::REV3_1_CLAP:
-        return std::dynamic_pointer_cast<AbstractOpenSessionCmdBuild<T>>(
-                   std::make_shared<OpenSession31CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo));
+        {
+        std::shared_ptr<OpenSession31CmdBuild> cmd =
+            std::make_shared<OpenSession31CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo);
+        return std::shared_ptr<AbstractOpenSessionCmdBuild<T>>(cmd, reinterpret_cast<AbstractOpenSessionCmdBuild<T> *>(cmd.get()));
+        }
     case PoRevision::REV3_2:
-        return std::dynamic_pointer_cast<AbstractOpenSessionCmdBuild<T>>(
-                    std::make_shared<OpenSession32CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo));
+        {
+        std::shared_ptr<OpenSession32CmdBuild> cmd =
+            std::make_shared<OpenSession32CmdBuild>(debitKeyIndex, sessionTerminalChallenge, sfi, recordNb, extraInfo);
+        return std::shared_ptr<AbstractOpenSessionCmdBuild<T>>(cmd, reinterpret_cast<AbstractOpenSessionCmdBuild<T> *>(cmd.get()));
+        }
     default:
         throw std::invalid_argument(StringHelper::formatSimple("Revision %d isn't supported", static_cast<int>(revision)));
     }
 }
 
 template class AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>;
-
 
 }
 }

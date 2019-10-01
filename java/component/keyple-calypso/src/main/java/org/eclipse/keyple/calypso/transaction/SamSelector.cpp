@@ -15,7 +15,7 @@ using namespace org::eclipse::keyple::core::seproxy;
 using namespace org::eclipse::keyple::core::seproxy::protocol;
 
 SamSelector::SamSelector(SamRevision samRevision, const std::string &serialNumber, const std::string &extraInfo)
-: SeSelector(SeCommonProtocols::PROTOCOL_ISO7816_3, nullptr, nullptr, extraInfo)
+: SeSelector(SeCommonProtocols::PROTOCOL_ISO7816_3, std::make_shared<SeSelector::AtrFilter>(""), nullptr, extraInfo)
 {
     std::string atrRegex;
     std::string snRegex;

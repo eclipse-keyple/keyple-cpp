@@ -40,7 +40,7 @@ public:
         * @param apduResponseData the apdu response data
         * @return a SecureSession
         */
-    std::shared_ptr<SecureSession> toSecureSession(std::vector<char> &apduResponseData) override;
+    std::shared_ptr<SecureSession> toSecureSession(std::vector<char> &apduResponseData);
 
     static std::shared_ptr<SecureSession> createSecureSession(std::vector<char> &apduResponse);
 

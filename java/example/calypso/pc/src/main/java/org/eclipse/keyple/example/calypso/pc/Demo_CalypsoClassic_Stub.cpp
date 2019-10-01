@@ -77,6 +77,9 @@ int main(int argc, char **argv)
                                    StubProtocolSetting::STUB_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO14443_4]);
     poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_B_PRIME,
                                    StubProtocolSetting::STUB_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_B_PRIME]);
+    poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO7816_3,
+                                   StubProtocolSetting::STUB_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO7816_3]);
+
     /* Assign readers to the Hoplink transaction engine */
     transactionEngine->setReaders(poReader, samReader);
 

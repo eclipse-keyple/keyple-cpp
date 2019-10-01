@@ -42,6 +42,9 @@ CalypsoUtilities::StaticConstructor::StaticConstructor()
 
     std::ifstream inputStream;
     inputStream.open(propertiesFileName, std::ifstream::in);
+    if (!inputStream) {
+        std::cout << "error opening file" << std::endl;
+    }
 
     try {
         properties->load(inputStream);

@@ -41,17 +41,17 @@ class IMPORT ReaderEvent final : public std::enable_shared_from_this<ReaderEvent
      */
 private:
     const std::string pluginName;
-    
+
     /**
      * The name of the reader that produced the event
      */
     const std::string readerName;
-    
+
     /**
      * The response to the selection request
      */
     const std::shared_ptr<DefaultSelectionsResponse> defaultResponseSet;
-    
+
     /**
      * The different types of reader event
      */

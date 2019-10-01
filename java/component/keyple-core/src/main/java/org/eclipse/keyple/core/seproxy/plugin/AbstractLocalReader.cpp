@@ -177,7 +177,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::openChannelForAidHackGetData(
         fciResponse = processApduRequest(std::make_shared<ApduRequest>("Internal Get Data", getDataCommand, false,
                                          aidSelector->getSuccessfulSelectionStatusCodes()));
         if (!fciResponse->isSuccessful()) {
-            logger->trace("[%s] openChannelForAidHackGetData => Get data failed. SELECTOR = %s", this->getName(), aidSelector);
+            logger->trace("[%s] openChannelForAidHackGetData => Get data failed. SELECTOR = %s\n", this->getName(), aidSelector);
         }
     }
 
@@ -202,10 +202,10 @@ std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannel(std::sh
         }
 
         if (logger->isTraceEnabled()) {
-            logger->trace("[%s] openLogicalChannel => ATR = %s", this->getName(), ByteArrayUtil::toHex(atr));
+            logger->trace("[%s] openLogicalChannel => ATR = %s\n", this->getName(), ByteArrayUtil::toHex(atr));
         }
         if (!seSelector->getAtrFilter()->atrMatches(atr)) {
-            logger->info("[%s] openLogicalChannel => ATR didn't match. SELECTOR = %s, ATR = %s", this->getName(),
+            logger->info("[%s] openLogicalChannel => ATR didn't match. SELECTOR = %s, ATR = %s\n", this->getName(),
                          seSelector, ByteArrayUtil::toHex(atr));
             selectionHasMatched = false;
         }
@@ -552,6 +552,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(std::share
     logger->debug("processApduRequest - response: %s\n", ByteArrayUtil::toHex(rapdu));
     apduResponse = std::make_shared<ApduResponse>(rapdu, apduRequest->getSuccessfulStatusCodes());
 
+    logger->debug("apduResponse->getDataOut() ? %d\n", apduResponse->getDataOut().size());
     if (apduRequest->isCase4() && apduResponse->getDataOut().empty() && apduResponse->isSuccessful()) {
         // do the get response command but keep the original status code
         apduResponse = case4HackGetResponse(apduResponse->getStatusCode());

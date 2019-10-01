@@ -16,11 +16,16 @@ namespace security {
 using PoRevision   = org::eclipse::keyple::calypso::command::po::PoRevision;
 using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 
-OpenSession10RespPars::OpenSession10RespPars(std::shared_ptr<ApduResponse> response) : AbstractOpenSessionRespPars(response, PoRevision::REV1_0) {
+OpenSession10RespPars::OpenSession10RespPars(std::shared_ptr<ApduResponse> response)
+: AbstractOpenSessionRespPars(response, PoRevision::REV1_0)
+{
+    std::vector<char> data = response->getDataOut();
+    this->secureSession = toSecureSession(data);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession10RespPars::toSecureSession(std::vector<char> &apduResponseData)
 {
+    std::cout << "using overriden function" << std::endl;
     return createSecureSession(apduResponseData);
 }
 

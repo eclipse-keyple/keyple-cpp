@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 
 class Arrays {
 private:
@@ -30,8 +31,8 @@ public:
 
 	static std::vector<char> &copyOfRange(const std::vector<char> &original, int from, int to) {
 		static std::vector<char> privateArray;
-		privateArray.reserve(to - from);
-		std::copy(&original[from], &original[to], privateArray.begin());
+		privateArray.clear();
+		std::copy(original.begin() + from, original.begin() + to, std::back_inserter(privateArray));
 		return privateArray;
 	}
 };

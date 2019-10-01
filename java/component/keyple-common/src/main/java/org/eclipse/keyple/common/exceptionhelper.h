@@ -280,3 +280,18 @@ class NumberFormatException : public std::exception {
         return msg.c_str();
     }
 };
+
+class IndexOutOfBoundException : public std::exception {
+private:
+  std::string msg;
+
+public:
+  IndexOutOfBoundException(const std::string &message = "") : msg(message)
+  {
+  }
+
+  const char *what()
+  {
+      return msg.c_str();
+  }
+};

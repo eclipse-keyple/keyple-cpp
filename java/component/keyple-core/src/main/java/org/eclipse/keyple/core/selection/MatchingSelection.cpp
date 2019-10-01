@@ -11,26 +11,33 @@ namespace keyple {
 namespace core {
 namespace selection {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using SeSelector                 = org::eclipse::keyple::core::seproxy::SeSelector;
-using SeResponse                 = org::eclipse::keyple::core::seproxy::message::SeResponse;
+using namespace org::eclipse::keyple::core::command;
+using namespace org::eclipse::keyple::core::seproxy;
+using namespace org::eclipse::keyple::core::seproxy::message;
 
-MatchingSelection::MatchingSelection(int selectionIndex, std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest, std::shared_ptr<AbstractMatchingSe> matchingSe, std::shared_ptr<SeResponse> selectionSeResponse) : matchingSe(matchingSe), seSelectionRequest(seSelectionRequest), selectionSeResponse(selectionSeResponse), selectionIndex(selectionIndex) {
+MatchingSelection::MatchingSelection(int selectionIndex, std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
+                                     std::shared_ptr<AbstractMatchingSe> matchingSe, std::shared_ptr<SeResponse> selectionSeResponse)
+: matchingSe(matchingSe), seSelectionRequest(seSelectionRequest), selectionSeResponse(selectionSeResponse), selectionIndex(selectionIndex)
+{
 }
 
-std::shared_ptr<AbstractMatchingSe> MatchingSelection::getMatchingSe() {
+std::shared_ptr<AbstractMatchingSe> MatchingSelection::getMatchingSe()
+{
     return matchingSe;
 }
 
-std::shared_ptr<AbstractApduResponseParser> MatchingSelection::getResponseParser(int commandIndex) {
+std::shared_ptr<AbstractApduResponseParser> MatchingSelection::getResponseParser(int commandIndex)
+{
     return seSelectionRequest->getCommandParser(selectionSeResponse, commandIndex);
 }
 
-std::string MatchingSelection::getExtraInfo() {
+std::string MatchingSelection::getExtraInfo()
+{
     return seSelectionRequest->getSeSelector()->getExtraInfo();
 }
 
-int MatchingSelection::getSelectionIndex() {
+int MatchingSelection::getSelectionIndex()
+{
     return selectionIndex;
 }
 

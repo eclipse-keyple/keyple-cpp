@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Tag.h"
 
 #include "stringhelper.h"
@@ -39,9 +41,9 @@ Tag::Tag(int tagNumber, char tagClass, TagType tagType) : tagNumber(tagNumber), 
 }
 
 Tag::Tag(std::vector<char> &binary, int offset)
-: tagClass(static_cast<char>(static_cast<int>(static_cast<unsigned int>((binary[offset] & 0xC0)) >> 6)))
 {
     /* the 2 first bits (b7b6) of the first byte defines the class */
+    tagClass = static_cast<char>((binary[offset] & 0xC0) >> 6);
 
     /* the type bit is the third bit (b5) */
     if ((binary[offset] & static_cast<char>(0x20)) == static_cast<char>(0x20)) {
@@ -88,7 +90,8 @@ int Tag::getSize() {
     return size;
 }
 
-bool Tag::equals(std::shared_ptr<Tag> tag) {
+bool Tag::equals(std::shared_ptr<Tag> tag)
+{
     return ((this->tagNumber == tag->tagNumber) && (this->tagClass == tag->tagClass) && (this->tagType == tag->tagType));
 }
 

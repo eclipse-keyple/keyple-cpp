@@ -17,7 +17,11 @@ using PoRevision                  = org::eclipse::keyple::calypso::command::po::
 using ApduResponse                = org::eclipse::keyple::core::seproxy::message::ApduResponse;
 using AbstractOpenSessionRespPars = org::eclipse::keyple::calypso::command::po::parser::security::AbstractOpenSessionRespPars;
 
-OpenSession31RespPars::OpenSession31RespPars(std::shared_ptr<ApduResponse> response) : AbstractOpenSessionRespPars(response, PoRevision::REV3_1) {
+OpenSession31RespPars::OpenSession31RespPars(std::shared_ptr<ApduResponse> response)
+: AbstractOpenSessionRespPars(response, PoRevision::REV3_1)
+{
+    std::vector<char> data = response->getDataOut();
+    this->secureSession = toSecureSession(data);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession31RespPars::toSecureSession(std::vector<char> &apduResponseData) {

@@ -60,7 +60,9 @@ private:
      const std::type_info& commandParserClass;
 
 protected:
-    /** the byte array APDU request. */
+    /**
+     * The byte array APDU request
+     */
     std::shared_ptr<ApduRequest> request;
 
 public:

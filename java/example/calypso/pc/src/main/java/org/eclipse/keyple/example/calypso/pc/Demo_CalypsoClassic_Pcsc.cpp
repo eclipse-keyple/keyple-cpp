@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     std::shared_ptr<PcscPlugin> shared_plugin = std::shared_ptr<PcscPlugin>(&pcscPlugin);
 
     /* Assign PcscPlugin to the SeProxyService */
-    SeProxyService seProxyService = SeProxyService::getInstance();
+    SeProxyService& seProxyService = SeProxyService::getInstance();
     seProxyService.addPlugin(shared_plugin);
 
     /* Setting up the transaction engine (implements Observer) */

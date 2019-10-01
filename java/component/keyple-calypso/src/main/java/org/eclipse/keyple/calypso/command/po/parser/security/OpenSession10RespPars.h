@@ -34,7 +34,7 @@ class OpenSession10RespPars final : public AbstractOpenSessionRespPars {
 public:
     OpenSession10RespPars(std::shared_ptr<ApduResponse> response);
 
-    std::shared_ptr<SecureSession> toSecureSession(std::vector<char> &apduResponseData) override;
+    std::shared_ptr<SecureSession> toSecureSession(std::vector<char> &apduResponseData);
 
     static std::shared_ptr<SecureSession> createSecureSession(std::vector<char> &apduResponseData);
 

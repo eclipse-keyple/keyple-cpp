@@ -53,9 +53,6 @@ AbstractOpenSessionRespPars::AbstractOpenSessionRespPars(std::shared_ptr<ApduRes
 {
     /* Alex: this member is (was) declared in the class but not used. Commenting it until it is necessary. */
     (void)revision;
-
-    std::vector<char> data = response->getDataOut();
-    this->secureSession = toSecureSession(data);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars>

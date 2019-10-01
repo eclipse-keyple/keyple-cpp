@@ -59,7 +59,7 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(std::shared_ptr<
 
     /* null pointer exception protection */
     if (defaultSelectionsResponse == nullptr) {
-        logger->error("defaultSelectionsResponse shouldn't be null in processSelection.");
+        logger->error("defaultSelectionsResponse shouldn't be null in processSelection\n");
         return nullptr;
     }
     int selectionIndex = 0;
@@ -88,7 +88,7 @@ std::shared_ptr<SelectionsResult>
 SeSelection::processDefaultSelection(std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
 {
     if (logger->isTraceEnabled()) {
-        logger->trace("Process default SELECTIONRESPONSE (%s response(s))",
+        logger->trace("Process default SELECTIONRESPONSE (%s response(s))\n",
                       (std::static_pointer_cast<DefaultSelectionsResponse>(defaultSelectionsResponse))->
                          getSelectionSeResponseSet()->getResponses().size());
     }

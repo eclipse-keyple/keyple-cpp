@@ -14,8 +14,6 @@ using ByteArrayUtil = org::eclipse::keyple::core::util::ByteArrayUtil;
 ApduResponse::ApduResponse(std::vector<char> &buffer, std::shared_ptr<std::set<int>> successfulStatusCodes)
 : bytes(buffer)
 {
-    logger->debug("buffer size: %d\n", buffer.size());
-
     if (buffer.empty()) {
         logger->debug("empty response\n");
         this->successful = false;
@@ -35,8 +33,6 @@ ApduResponse::ApduResponse(std::vector<char> &buffer, std::shared_ptr<std::set<i
         } else {
             this->successful = statusCode == 0x9000;
         }
-
-        logger->debug("statusCode: %x\n", statusCode);
     }
 }
 
@@ -56,24 +52,25 @@ int ApduResponse::getStatusCode()
 
     int code = ((bytes[bytes.size() - 2] & 0x000000FF) << 8) +
                (bytes[bytes.size() - 1] & 0x000000FF);
-    
-    logger->debug("status code: 0x%x (%d)\n", code, code);
 
     return code;
 }
 
 std::vector<char> ApduResponse::getBytes() const
 {
+    logger->debug("getBytes - 'bytes' size is %d\n", this->bytes.size());
+
     return this->bytes;
 }
 
 std::vector<char> ApduResponse::getDataOut()
 {
-    logger->debug("apdu response size: %d\n", this->bytes.size());
+    logger->debug("getDataOut - byte size is %d\n", this->bytes.size());
 
     if (this->bytes.size() < 2)
         return std::vector<char>();
 
+    std::vector<char> test = Arrays::copyOfRange(this->bytes, 0, this->bytes.size() - 2);
     return Arrays::copyOfRange(this->bytes, 0, this->bytes.size() - 2);
 }
 

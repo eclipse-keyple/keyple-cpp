@@ -24,7 +24,8 @@ using SeResponse         = org::eclipse::keyple::core::seproxy::message::SeRespo
 using AbstractMatchingSe = org::eclipse::keyple::core::selection::AbstractMatchingSe;
 using ByteArrayUtil      = org::eclipse::keyple::core::util::ByteArrayUtil;
 
-CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo) : org::eclipse::keyple::core::selection::AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo) {
+CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo)
+: AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo) {
 
     poAtr = selectionResponse->getSelectionStatus()->getAtr()->getBytes();
 
@@ -35,15 +36,15 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, Transmission
         std::shared_ptr<GetDataFciRespPars> poFciRespPars = std::make_shared<GetDataFciRespPars>(fci);
 
         /*
-            * Resolve the PO revision from the application type byte:
-            *
-            * <ul> <li>if
-            * <code>%1-------</code>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;CLAP&nbsp;&nbsp;&rarr;&nbsp;&
-            * nbsp; REV3.1</li> <li>if
-            * <code>%00101---</code>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV3.2</li> <li>if
-            * <code>%00100---</code>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV3.1</li>
-            * <li>otherwise&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV2.4</li> </ul>
-            */
+         * Resolve the PO revision from the application type byte:
+         *
+         * <ul> <li>if
+         * <code>%1-------</code>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;CLAP&nbsp;&nbsp;&rarr;&nbsp;&
+         * nbsp; REV3.1</li> <li>if
+         * <code>%00101---</code>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV3.2</li> <li>if
+         * <code>%00100---</code>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV3.1</li>
+         * <li>otherwise&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV2.4</li> </ul>
+         */
         char applicationTypeByte = poFciRespPars->getApplicationTypeByte();
         if ((applicationTypeByte & (1 << 7)) != 0) {
             /* CLAP */
@@ -84,12 +85,11 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, Transmission
         this->softwareVersion = poFciRespPars->getSoftwareVersionByte();
         this->softwareRevision = poFciRespPars->getSoftwareRevisionByte();
         this->isDfInvalidated_Renamed = poFciRespPars->isDfInvalidated();
-    }
-    else {
+    } else {
         /*
-            * FCI is not provided: we consider it is Calypso PO rev 1, it's serial number is
-            * provided in the ATR
-            */
+         * FCI is not provided: we consider it is Calypso PO rev 1, it's serial number is
+         * provided in the ATR
+         */
 
         /* basic check: we expect to be here following a selection based on the ATR */
         if (poAtr.size() != PO_REV1_ATR_LENGTH) {
@@ -122,7 +122,7 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, Transmission
         this->isDfInvalidated_Renamed = false;
     }
     if (logger->isTraceEnabled()) {
-        logger->trace("REVISION = %s, SERIALNUMBER = %s, DFNAME = %s",
+        logger->trace("REVISION = %s, SERIALNUMBER = %s, DFNAME = %s\n",
                       static_cast<int>(this->revision),
                       ByteArrayUtil::toHex(this->applicationSerialNumber),
                       ByteArrayUtil::toHex(this->dfName));
@@ -137,7 +137,8 @@ std::vector<char> CalypsoPo::getDfName() {
     return dfName;
 }
 
-std::vector<char> CalypsoPo::getApplicationSerialNumber() {
+std::vector<char> CalypsoPo::getApplicationSerialNumber()
+{
     return applicationSerialNumber;
 }
 
@@ -209,13 +210,13 @@ PoClass CalypsoPo::getPoClass() {
     /* Rev1 and Rev2 expects the legacy class byte while Rev3 expects the ISO class byte */
     if (revision == PoRevision::REV1_0 || revision == PoRevision::REV2_4) {
         if (logger->isTraceEnabled()) {
-            logger->trace("PO revision = %d, PO class = %s", static_cast<int>(revision), "PoClass::LEGACY");
+            logger->trace("PO revision = %d, PO class = %s\n", static_cast<int>(revision), "PoClass::LEGACY");
         }
         return PoClass::LEGACY;
     }
     else {
         if (logger->isTraceEnabled()) {
-            logger->trace("PO revision = %d, PO class = %s", static_cast<int>(revision), "PoClass::ISO");
+            logger->trace("PO revision = %d, PO class = %s\n", static_cast<int>(revision), "PoClass::ISO");
         }
         return PoClass::ISO;
     }

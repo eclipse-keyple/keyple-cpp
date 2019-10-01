@@ -58,7 +58,6 @@ void StubSecureElement::removeHexCommand(const std::string &command)
 
 std::vector<char> StubSecureElement::processApdu(std::vector<char> &apduIn)
 {
-
     if (apduIn.empty()) {
         return apduIn;
     }
@@ -66,16 +65,13 @@ std::vector<char> StubSecureElement::processApdu(std::vector<char> &apduIn)
     // convert apduIn to hexa
     std::string hexApdu = ByteArrayUtil::toHex(apduIn);
 
-    logger->debug("looking for r-apdu response to c-apdu: %s\n", hexApdu);
-    logger->debug("%d combinations available\n", hexCommands.size());
-
     // return matching hexa response if found
     if (hexCommands.find(hexApdu) != hexCommands.end()) {
         return ByteArrayUtil::fromHex(hexCommands[hexApdu]);
     }
 
     // throw a KeypleIOReaderException if not found
-    throw std::make_shared<KeypleIOReaderException>("No response available for this request.");
+    throw KeypleIOReaderException("No response available for this request.");
 }
 
 }

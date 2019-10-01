@@ -71,7 +71,6 @@ char CalypsoSamCommands::getInstructionByte()
 
 const std::type_info& CalypsoSamCommands::getCommandBuilderClass()
 {
-    std::cout << "hey yooooo" << std::endl;
     return commandBuilderClass;
 }
 
