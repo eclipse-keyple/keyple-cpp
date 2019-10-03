@@ -61,7 +61,6 @@ int main(int argc, char **argv)
      * CalypsoUtilities class.
      */
     std::shared_ptr<SeReader> poReader = CalypsoUtilities::getDefaultPoReader();
-
     /*
      * Get a SAM reader ready to work with Calypso PO. Use the getReader helper method from the
      * CalypsoUtilities class.
@@ -80,9 +79,9 @@ int main(int argc, char **argv)
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
 
-        logger->info("==================================================================================");
-        logger->info("= 1st PO exchange: AID based selection with reading of Environment file.         =");
-        logger->info("==================================================================================");
+        logger->info("==================================================================================\n");
+        logger->info("= 1st PO exchange: AID based selection with reading of Environment file.         =\n");
+        logger->info("==================================================================================\n");
 
         /*
          * Prepare a Calypso PO selection
@@ -135,7 +134,8 @@ int main(int argc, char **argv)
             logger->info("==================================================================================\n");
 
             std::shared_ptr<PoTransaction> poTransaction =
-                    std::make_shared<PoTransaction>(std::make_shared<PoResource>(poReader, calypsoPo));
+                            std::make_shared<PoTransaction>(std::make_shared<PoResource>(poReader, calypsoPo), samResource,
+                                                            CalypsoUtilities::getSecuritySettings());
 
             /*
              * Prepare the reading order and keep the associated parser for later use once the

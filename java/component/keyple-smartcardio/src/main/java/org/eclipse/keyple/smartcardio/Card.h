@@ -42,13 +42,6 @@ using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
 class EXPORT Card {
 public:
-    /** */
-    enum State {
-        OK = 0,
-        REMOVED,
-        DISCONNECTED
-    };
-
     /** 
      * Protocol in use, one of SCARD_PROTOCOL_T0 and SCARD_PROTOCOL_T1 
      */
@@ -88,7 +81,7 @@ private:
     /**
      * State of this card connection
      */
-    State state;
+    long unsigned int state;
 
     /**
      * Thread holding exclusive access to the card, or null

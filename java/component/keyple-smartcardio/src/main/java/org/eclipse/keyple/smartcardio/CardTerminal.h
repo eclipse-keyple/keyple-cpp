@@ -32,23 +32,17 @@ using Logger        = org::eclipse::keyple::common::Logger;
 using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 
 class EXPORT CardTerminal {
-public:
-    /**
-     * Native SCARDCONTEXT
-     */
-    SCARDCONTEXT ctx;
-
+private:
     /**
      * The name of this terminal (native PC/SC name)
      */
-    std::string name;
+    const std::string name;
 
     /**
      * 
      */
     Card* card;
 
-private:
     /**
      *
      */
@@ -56,11 +50,16 @@ private:
 
 public:
     /**
+     * Native SCARDCONTEXT
+     */
+    SCARDCONTEXT ctx;
+
+    /**
      * Returns the unique name of this terminal.
      *
      * @return the unique name of this terminal.
      */
-    std::string getName();
+    const std::string& getName();
 
     /**
      * Establishes a connection to the card.

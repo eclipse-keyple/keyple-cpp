@@ -85,9 +85,8 @@ PoTransaction::PoTransaction(std::shared_ptr<PoResource> poResource, std::shared
     /* Serial Number of the selected Calypso instance. */
     sessionState = SessionState::SESSION_UNINITIALIZED;
     preparedCommandsProcessed = true;
+    std::shared_ptr<SeReader> seReader = samResource->getSeReader();
     samReader = std::dynamic_pointer_cast<ProxyReader>(samResource->getSeReader());
-    if (samReader == nullptr)
-        logger->error("samReader initialization failed (cast)\n");
     this->securitySettings = securitySettings;
     this->currentModificationMode = ModificationMode::ATOMIC;
 }
@@ -152,9 +151,10 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
     logger->debug("processAtomicOpening => identification: SAMSEREQUEST = %s\n", samSeRequest->toString());
 
     /*
-        * Transmit the SeRequest to the SAM and get back the SeResponse (list of ApduResponse)
-        */
-    std::shared_ptr<SeResponse> samSeResponse = samReader->transmit(samSeRequest);
+     * Transmit the SeRequest to the SAM and get back the SeResponse (list of ApduResponse)
+     */
+    logger->debug("processAtomicOpening - transmiting request on samReader (%p)\n", this->samReader);
+    std::shared_ptr<SeResponse> samSeResponse = this->samReader->transmit(samSeRequest);
 
     if (samSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;

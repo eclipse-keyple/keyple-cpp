@@ -24,7 +24,7 @@ namespace smartcardio {
 
 using Card           = org::eclipse::keyple::smartcardio::Card;
 
-std::string CardTerminal::getName()
+const std::string& CardTerminal::getName()
 {
     return name;
 }
@@ -33,20 +33,22 @@ Card* CardTerminal::connect(std::string protocol)
 {
     logger->debug("connect\n");
 
-    if (card != NULL) {
-        if (card->isValid()) {
+    if (this->card != NULL) {
+        logger->debug("connect - card instance already exists (%p)\n", card);
+        if (this->card->isValid()) {
             std::string cardProto = card->getProtocol();
             if (!protocol.compare("*") || !protocol.compare(cardProto)) {
-                return card;
+                return this->card;
             } else {
-                throw CardException("Cannot connect using " + protocol
-                    + ", connection already established using " + cardProto);
+                throw CardException("Cannot connect using " + protocol + ", connection already established using " + cardProto);
             }
         } else {
-            card = NULL;
+            this->card = NULL;
         }
     }
+
     try {
+        logger->debug("connect - creating new card instance\n");
         return new Card(this, protocol);
     } catch (PCSCException& e) {
         if (e.code == SCARD_W_REMOVED_CARD ||
@@ -123,9 +125,9 @@ std::string CardTerminal::toString()
 }
 
 CardTerminal::CardTerminal(SCARDCONTEXT ctx, const std::string& name)
-: ctx(ctx), name(name)
+: name(name), ctx(ctx)
 {
-
+    this->card = NULL;
 }
 
 bool CardTerminal::waitForCard(bool wantPresent, long timeout)
@@ -135,8 +137,7 @@ bool CardTerminal::waitForCard(bool wantPresent, long timeout)
     long start = System::currentTimeMillis();
     long current; 
 
-    logger->debug("waitForCard - wantPresent: %d, timeout: %dl\n", wantPresent,
-                  timeout);
+    logger->debug("waitForCard - wantPresent: %d, timeout: %dl\n", wantPresent, timeout);
 
     if (timeout < 0)
         throw new IllegalArgumentException("timeout must not be negative");
@@ -154,14 +155,12 @@ bool CardTerminal::waitForCard(bool wantPresent, long timeout)
          * Note: if executed properly SCardGetStatusChange blocks until the
          * current availability of the card changes.
          */
-        logger->debug("waitForCard - waiting for card status change on %s\n",
-                      this->name.c_str());
+        logger->debug("waitForCard - waiting for card status change on %s\n", this->name.c_str());
 
         while (wantPresent != present && timeout != 0) {
             LONG rv = SCardGetStatusChange(this->ctx, 50, status, 1);
             if (rv != SCARD_S_SUCCESS) {
-                logger->debug("waitForCard - error in SCardGetStatusChange " \
-                              "(%d)\n", rv);
+                logger->debug("waitForCard - error in SCardGetStatusChange (%d)\n", rv);
                 return false;
             }
 
@@ -194,4 +193,3 @@ bool CardTerminal::waitForCard(bool wantPresent, long timeout)
 }
 }
 }
-

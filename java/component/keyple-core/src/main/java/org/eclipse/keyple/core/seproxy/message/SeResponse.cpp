@@ -13,28 +13,36 @@ namespace message {
 
 using ByteArrayUtil = org::eclipse::keyple::core::util::ByteArrayUtil;
 
-SeResponse::SeResponse(bool logicalChannelIsOpen, bool channelPreviouslyOpen, std::shared_ptr<SelectionStatus> selectionStatus, std::vector<std::shared_ptr<ApduResponse>> &apduResponses) : logicalChannelIsOpen(logicalChannelIsOpen), selectionStatus(selectionStatus) {
+SeResponse::SeResponse(bool logicalChannelIsOpen, bool channelPreviouslyOpen, std::shared_ptr<SelectionStatus> selectionStatus,
+                       std::vector<std::shared_ptr<ApduResponse>> &apduResponses)
+: logicalChannelIsOpen(logicalChannelIsOpen), selectionStatus(selectionStatus)
+{
     this->channelPreviouslyOpen = channelPreviouslyOpen;
     this->apduResponses = apduResponses;
 }
 
-bool SeResponse::wasChannelPreviouslyOpen() {
+bool SeResponse::wasChannelPreviouslyOpen()
+{
     return channelPreviouslyOpen;
 }
 
-                        bool SeResponse::isLogicalChannelOpen() {
-                            return logicalChannelIsOpen;
-                        }
+bool SeResponse::isLogicalChannelOpen()
+{
+    return logicalChannelIsOpen;
+}
 
-std::shared_ptr<SelectionStatus> SeResponse::getSelectionStatus() {
+std::shared_ptr<SelectionStatus> SeResponse::getSelectionStatus()
+{
     return this->selectionStatus;
 }
 
-std::vector<std::shared_ptr<ApduResponse>> SeResponse::getApduResponses() {
+std::vector<std::shared_ptr<ApduResponse>> SeResponse::getApduResponses()
+{
     return apduResponses;
 }
 
-std::string SeResponse::toString() {
+std::string SeResponse::toString()
+{
     /*
         * getAtr() can return null, we must check it to avoid the call to getBytes() that would
         * raise an exception. In case of a null value, String.format prints "null" in the string,
@@ -50,7 +58,8 @@ std::string SeResponse::toString() {
     return string;
 }
 
-bool SeResponse::equals(std::shared_ptr<void> o) {
+bool SeResponse::equals(std::shared_ptr<void> o)
+{
     if (o == shared_from_this()) {
         return true;
     }
@@ -65,7 +74,8 @@ bool SeResponse::equals(std::shared_ptr<void> o) {
            seResponse->isLogicalChannelOpen() == logicalChannelIsOpen && seResponse->wasChannelPreviouslyOpen() == channelPreviouslyOpen;
 }
 
-int SeResponse::hashCode() {
+int SeResponse::hashCode()
+{
     int hash = 17;
     hash = 31 * hash + (selectionStatus->getAtr() == nullptr ? 0 : selectionStatus->getAtr()->hashCode());
     hash = 7 * hash + (apduResponses.empty() ? 0 : 1);//this->apduResponses.hashCode());

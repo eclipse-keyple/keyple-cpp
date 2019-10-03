@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "AbstractMatchingSe.h"
 #include "SeResponse.h"
 #include "SelectionStatus.h"
@@ -12,12 +14,9 @@ using SeResponse       = org::eclipse::keyple::core::seproxy::message::SeRespons
 using SelectionStatus  = org::eclipse::keyple::core::seproxy::message::SelectionStatus;
 using TransmissionMode = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
 
-AbstractMatchingSe::AbstractMatchingSe(
-                                 std::shared_ptr<SeResponse> selectionResponse,
-                                 TransmissionMode transmissionMode,
+AbstractMatchingSe::AbstractMatchingSe(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode,
                                  const std::string &extraInfo)
-: selectionResponse(selectionResponse), transmissionMode(transmissionMode),
-  selectionExtraInfo(extraInfo)
+: selectionResponse(selectionResponse), transmissionMode(transmissionMode), selectionExtraInfo(extraInfo)
 {
     if (selectionResponse != nullptr) {
         this->selectionStatus = selectionResponse->getSelectionStatus();
@@ -27,18 +26,21 @@ AbstractMatchingSe::AbstractMatchingSe(
     }
 }
 
-bool AbstractMatchingSe::isSelected() {
+bool AbstractMatchingSe::isSelected()
+{
     bool isSelected;
+
     if (selectionStatus != nullptr) {
         isSelected = selectionStatus->hasMatched() && selectionResponse->isLogicalChannelOpen();
-    }
-    else {
+    } else {
         isSelected = false;
     }
+
     return isSelected;
 }
 
-std::shared_ptr<SelectionStatus> AbstractMatchingSe::getSelectionStatus() {
+std::shared_ptr<SelectionStatus> AbstractMatchingSe::getSelectionStatus()
+{
     return selectionStatus;
 }
 
@@ -47,7 +49,8 @@ TransmissionMode AbstractMatchingSe::getTransmissionMode() const
     return transmissionMode;
 }
 
-std::string AbstractMatchingSe::getSelectionExtraInfo() {
+std::string AbstractMatchingSe::getSelectionExtraInfo()
+{
     return selectionExtraInfo;
 }
 }

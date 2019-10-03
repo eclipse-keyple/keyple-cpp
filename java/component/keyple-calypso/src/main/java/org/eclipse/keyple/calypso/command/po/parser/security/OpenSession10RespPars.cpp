@@ -25,7 +25,6 @@ OpenSession10RespPars::OpenSession10RespPars(std::shared_ptr<ApduResponse> respo
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession10RespPars::toSecureSession(std::vector<char> &apduResponseData)
 {
-    std::cout << "using overriden function" << std::endl;
     return createSecureSession(apduResponseData);
 }
 

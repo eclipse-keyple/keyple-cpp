@@ -77,4 +77,4 @@ ADD_EXECUTABLE(usecase_calypso2_defaultselectionnotification_stub
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/calypso/pc/UseCase_Calypso2_DefaultSelectionNotification_Stub.cpp
 )
 
-TARGET_LINK_LIBRARIES(usecase_calypso2_defaultselectionnotification_stub keyplepluginpcsc keyplepluginstub keyplecore keyplesmartcardio keyplecalypso)
+TARGET_LINK_LIBRARIES(usecase_calypso2_defaultselectionnotification_stub keyplepluginpcsc keyplepluginstub keyplecore keyplecalypso)

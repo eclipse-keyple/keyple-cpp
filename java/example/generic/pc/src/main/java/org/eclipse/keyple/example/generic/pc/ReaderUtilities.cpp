@@ -90,6 +90,10 @@ void ReaderUtilities::setContactsSettings(std::shared_ptr<SeReader> reader)
      * These two points will be addressed in a coming release of the Keyple PcSc reader plugin.
      */
     reader->setParameter(PcscReader::SETTING_KEY_MODE, PcscReader::SETTING_MODE_SHARED);
+
+    /* Set the SAM reader protocol flag */
+    reader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO7816_3,
+                                 PcscProtocolSetting::PCSC_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO7816_3]);
 }
 
 }

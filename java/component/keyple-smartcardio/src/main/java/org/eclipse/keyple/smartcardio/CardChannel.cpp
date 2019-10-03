@@ -54,11 +54,8 @@ std::shared_ptr<ResponseAPDU> CardChannel::transmit(std::shared_ptr<CommandAPDU>
 {
     logger->debug("transmit\n");
 
-    logger->debug("transmit - checking closed\n");
     checkClosed();
-    logger->debug("transmit - checking exclusive\n");
     card->checkExclusive();
-    logger->debug("transmit - getting command bytes\n");
 
     std::vector<char> commandBytes = command->getBytes();
     logger->debug("transmit - command: %s\n", ByteArrayUtil::toHex(commandBytes));
@@ -75,8 +72,7 @@ int CardChannel::transmit(std::vector<char>& command, std::vector<char>& respons
     card->checkExclusive();
 
     if (command.size() == 0 || command == response) {
-        throw new IllegalArgumentException
-                ("command and response must not be the same object");
+        throw new IllegalArgumentException("command and response must not be the same object");
     }
 
     std::vector<char> resp = doTransmit(command);
@@ -150,8 +146,7 @@ void CardChannel::checkManageChannel(std::vector<char> b)
     }
     
     if ((b[0] >= 0) && (b[1] == 0x70)) {
-        throw IllegalArgumentException("Manage channel command not allowed, use " \
-                                        "openLogicalChannel()");
+        throw IllegalArgumentException("Manage channel command not allowed, use openLogicalChannel()");
     }
 }
 

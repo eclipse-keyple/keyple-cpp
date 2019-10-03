@@ -98,16 +98,38 @@ std::shared_ptr<SamResource> CalypsoUtilities::checkSamAndOpenChannel(std::share
     std::shared_ptr<SamSelector> samSelector = std::make_shared<SamSelector>(SamRevision::C1, ".*", "Selection SAM C1");
 
     /* Prepare selector, ignore MatchingSe here */
-
     samSelection->prepareSelection(std::make_shared<SamSelectionRequest>(samSelector, ChannelState::KEEP_OPEN));
     std::shared_ptr<CalypsoSam> calypsoSam = nullptr;
 
     try {
-        calypsoSam = std::dynamic_pointer_cast<CalypsoSam>(
-                samSelection->processExplicitSelection(samReader)->getActiveSelection()->getMatchingSe());
+        std::cout << "here we are - calling processExplicitSelection" << std::endl;
+        std::shared_ptr<SelectionsResult> selectionResult = samSelection->processExplicitSelection(samReader);
+        if (!selectionResult) {
+            std::cout << "checkSamAndOpenChannel - error processing explicit selection" << std::endl;
+            throw IllegalStateException("Unable to open a logical channel for SAM!");
+        }
+
+        std::cout << "there we are" << std::endl;
+        std::shared_ptr<MatchingSelection> matchingSelection = selectionResult->getActiveSelection();
+        if (!matchingSelection) {
+            std::cout << "checkSamAndOpenChannel - error retrieving active selection" << std::endl;
+            throw IllegalStateException("Unable to open a logical channel for SAM!");
+        }
+
+        std::cout << "dhere we are" << std::endl;
+        std::shared_ptr<AbstractMatchingSe> amse = matchingSelection->getMatchingSe();
+        if (!amse) {
+            std::cout << "checkSamAndOpenChannel - error retrieving matching selection" << std::endl;
+            throw IllegalStateException("Unable to open a logical channel for SAM!");
+        }
+        std::cout << "se retrievied" << std::endl;
+        calypsoSam = std::dynamic_pointer_cast<CalypsoSam>(amse);
+        std::cout << "dynamic pointer cast performed" << std::endl;
+        if (!calypsoSam) {
+            std::cout << "blahhh" << std::endl;
+        }
         if (!calypsoSam->isSelected()) {
             throw IllegalStateException("Unable to open a logical channel for SAM!");
-        } else {
         }
     } catch (const KeypleReaderException &e) {
         throw IllegalStateException(StringHelper::formatSimple("Reader exception: %s", e.what()));

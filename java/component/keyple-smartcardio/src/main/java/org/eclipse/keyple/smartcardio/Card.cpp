@@ -36,10 +36,9 @@ Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
 {
     int sharingMode = SCARD_SHARE_SHARED;
     int connectProtocol;
-    DWORD state;
     BYTE _atr[33];
     DWORD atrLen = sizeof(_atr);
-    DWORD rLen = strlen(terminal->name.c_str()) + 1;
+    DWORD rLen = strlen(terminal->getName().c_str()) + 1;
     LONG rv;
 
     logger->debug("constructor\n");
@@ -64,7 +63,7 @@ Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
                   "sharing mode: %d\n", protocol, connectProtocol,
                   sharingMode);
 
-    rv = SCardConnect(terminal->ctx, terminal->name.c_str(), sharingMode,
+    rv = SCardConnect(terminal->ctx, terminal->getName().c_str(), sharingMode,
                       connectProtocol, &this->cardhdl, &this->protocol);
     if (rv != SCARD_S_SUCCESS) {
         logger->debug("constructor - error connecting to reader (%d)\n", rv);
@@ -80,17 +79,17 @@ Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
     }
 
     basicChannel = new CardChannel(this, 0);
-    this->state = State::OK;
+    this->state = SCARD_POWERED;
 
-    rv = SCardStatus(this->cardhdl, (LPSTR)terminal->name.c_str(),
-                     &rLen, &state, &this->protocol, _atr, &atrLen);
+    rv = SCardStatus(this->cardhdl, (LPSTR)terminal->getName().c_str(),
+                     &rLen, &this->state, &this->protocol, _atr, &atrLen);
     if (rv != SCARD_S_SUCCESS) {
         logger->debug("constructor - error retrieving status (%d)\n", rv);
     } else {
+        logger->debug("card state: %d\n", this->state);
         std::vector<char> __atr(_atr, _atr + atrLen);
-        logger->debug("constructor - atr: %s\n",
-                      ByteArrayUtil::toHex(__atr));
         atr = new ATR(__atr);
+        logger->debug("constructor - atr: %s\n", ByteArrayUtil::toHex(__atr));
     }
 }
 
@@ -123,7 +122,7 @@ CardChannel* Card::getBasicChannel()
     checkSecurity("getBasicChannel");
     checkState();
 
-    return basicChannel;
+    return this->basicChannel;
 }
 
 CardChannel* Card::openLogicalChannel()
@@ -197,7 +196,7 @@ void Card::disconnect(bool reset)
     if (reset)
         checkSecurity("reset");
 
-    if (state != State::OK)
+    if (state != SCARD_POWERED)
         return;
 
     checkExclusive();
@@ -207,27 +206,29 @@ void Card::disconnect(bool reset)
         throw CardException("disconnect() failed"); //, e);
     }
 
-    state = State::DISCONNECTED;
+    state = SCARD_PRESENT;
     exclusiveThread = NULL;
 }
 
 bool Card::isValid()
 {
-    if (state != State::OK)
+    logger->debug("isValid - checking card status on terminal (%p)\n", this->terminal);
+
+    if (this->state != SCARD_POWERED) {
+        logger->debug("isValid - card not powered (disconnected)\n");
         return false;
+    }
 
     /* Ping card via SCardStatus */
     try {
-        DWORD state, protocol;
         BYTE attr[32];
         DWORD b = 32;
-        DWORD cch = terminal->name.length();
-        SCardStatus(this->cardhdl, (LPSTR)terminal->name.c_str(),
-                    &cch, &state, &protocol,
-                    attr, &b);
+        DWORD cch = terminal->getName().length();
+        SCardStatus(this->cardhdl, (LPSTR)terminal->getName().c_str(), &cch, &this->state, &this->protocol, attr, &b);
         return true;
     } catch (PCSCException& e) {
-        state = State::REMOVED;
+        logger->error("isValid - PCSCException caught\n");
+        this->state = SCARD_ABSENT;
         return false;
     }
 }
@@ -251,16 +252,21 @@ void Card::checkExclusive()
 
 void Card::checkState()
 {
-    State s = state;
-    if (s == State::DISCONNECTED)
-        throw IllegalStateException("Card has been disconnected");
-    else if (s == State::REMOVED)
+    logger->debug("checkState: %d\n", this->state);
+
+    if (this->state == SCARD_ABSENT)
         throw IllegalStateException("Card has been removed");
+    else if (this->state == SCARD_PRESENT)
+        throw IllegalStateException("Card has been disconnected");
+
+    logger->debug("checkState: OK\n");
 }
 
 void Card::checkSecurity(std::string action)
 {
     (void)action;
+
+    logger->debug("checkSecurity - %s\n", action);
 
     /* Always good */
 }
@@ -268,7 +274,7 @@ void Card::checkSecurity(std::string action)
 void Card::handleError(PCSCException e)
 {
     if (e.code == SCARD_W_REMOVED_CARD)
-        this->state = State::REMOVED;
+        this->state = SCARD_ABSENT;
 }
 
 int Card::getSW(std::vector<char> b)

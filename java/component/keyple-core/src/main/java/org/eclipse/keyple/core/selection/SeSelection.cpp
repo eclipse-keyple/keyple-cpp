@@ -55,14 +55,17 @@ int SeSelection::prepareSelection(std::shared_ptr<AbstractSeSelectionRequest> se
 
 std::shared_ptr<SelectionsResult> SeSelection::processSelection(std::shared_ptr<DefaultSelectionsResponse> defaultSelectionsResponse)
 {
+
+    int selectionIndex = 0;
     std::shared_ptr<SelectionsResult> selectionsResult = std::make_shared<SelectionsResult>();
+
+    logger->debug("processSelection\n");
 
     /* null pointer exception protection */
     if (defaultSelectionsResponse == nullptr) {
         logger->error("defaultSelectionsResponse shouldn't be null in processSelection\n");
         return nullptr;
     }
-    int selectionIndex = 0;
 
     /* Check SeResponses */
     for (auto seResponse : defaultSelectionsResponse->getSelectionSeResponseSet()->getResponses()) {
@@ -81,17 +84,16 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(std::shared_ptr<
         }
         selectionIndex++;
     }
+
     return selectionsResult;
 }
 
 std::shared_ptr<SelectionsResult>
 SeSelection::processDefaultSelection(std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
 {
-    if (logger->isTraceEnabled()) {
-        logger->trace("Process default SELECTIONRESPONSE (%s response(s))\n",
+    logger->trace("Process default SELECTIONRESPONSE (%s response(s))\n",
                       (std::static_pointer_cast<DefaultSelectionsResponse>(defaultSelectionsResponse))->
-                         getSelectionSeResponseSet()->getResponses().size());
-    }
+                      getSelectionSeResponseSet()->getResponses().size());
 
     return processSelection(std::static_pointer_cast<DefaultSelectionsResponse>(defaultSelectionsResponse));
 }
@@ -105,10 +107,19 @@ std::shared_ptr<SelectionsResult> SeSelection::processExplicitSelection(std::sha
     logger->trace("Transmit SELECTIONREQUEST (%d request(s))\n", selectionRequestSet->getRequests()->size());
 
     /* Communicate with the SE to do the selection */
-    std::shared_ptr<SeResponseSet> seResponseSet = 
-        (std::dynamic_pointer_cast<ProxyReader>(seReader))->transmitSet(selectionRequestSet);
+    std::shared_ptr<SeResponseSet> seResponseSet = (std::dynamic_pointer_cast<ProxyReader>(seReader))->transmitSet(selectionRequestSet);
+    if (!seResponseSet) {
+        logger->error("processExplicitSelection - error retrieving seResponseSet\n");
+        return nullptr;
+    }
 
-    return processSelection(std::make_shared<DefaultSelectionsResponse>(seResponseSet));
+    std::shared_ptr<DefaultSelectionsResponse> defaultSelectionResponse = std::make_shared<DefaultSelectionsResponse>(seResponseSet);
+    if (!defaultSelectionResponse) {
+        logger->error("processExplicitSelection - error casting seResponseSet into defaultSelectionResponse\n");
+        return nullptr;
+    }
+
+    return processSelection(defaultSelectionResponse);
 }
 
 std::shared_ptr<AbstractDefaultSelectionsRequest> SeSelection::getSelectionOperation()

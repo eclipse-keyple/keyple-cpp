@@ -59,7 +59,8 @@ const std::string PcscReader::PROTOCOL_T1 = "T=1";
 const std::string PcscReader::PROTOCOL_T_CL = "T=CL";
 const std::string PcscReader::PROTOCOL_ANY = "T=0";
 
-PcscReader::PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal) : AbstractThreadedLocalReader(pluginName, terminal->getName()), terminal(terminal)
+PcscReader::PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal)
+: AbstractThreadedLocalReader(pluginName, terminal->getName()), terminal(terminal)
 {
     logger->debug("PcscReader::PcscReader pluginName: %s, terminal: %p\n", pluginName, terminal);
 
@@ -175,11 +176,13 @@ bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
     // Test protocolFlag to check if ATR based protocol filtering is required
     //if (protocolFlag != nullptr) {
         if (!isPhysicalChannelOpen()) {
+            logger->debug("protocolFlagMatches - physical channel not open, opening it\n");
             openPhysicalChannel();
         }
 
+        logger->debug("protocolFlagMatches - going through protocols map\n");
         std::unordered_map<SeProtocol, std::string>::iterator it = protocolsMap.begin();
-        while(it != protocolsMap.end()) {
+        while (it != protocolsMap.end()) {
             SeProtocol p = it->first;
             logger->debug("available protocol: %s - %s\n", p.getName(), it->second);
             it++;
@@ -190,6 +193,7 @@ bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
          * requestElement.
          */
         std::string selectionMask = protocolsMap[protocolFlag];
+        logger->debug("protocolFlagMatches - selectionMask: %s\n", selectionMask);
         if (selectionMask == "") {
             throw KeypleReaderException("Target selector mask not found!");// nullptr));
         }
@@ -363,26 +367,22 @@ bool PcscReader::isPhysicalChannelOpen()
 
 void PcscReader::openPhysicalChannel()
 {
-    // init of the physical SE channel: if not yet established, opening of a new physical
-    // channel
+    /* Init of the physical SE channel: if not yet established, opening of a new physical channel */
     try {
         if (card == nullptr) {
+            logger->debug("openPhysicalChannel - connecting to card\n");
             this->card = std::shared_ptr<Card>(this->terminal->connect(parameterCardProtocol));
             if (cardExclusiveMode) {
+                logger->debug("openPhysicalChannel - beginning exclusive\n");
                 card->beginExclusive();
-                if (logging) {
-                    logger->trace("[%s] Opening of a physical SE channel in exclusive mode\n", this->getName());
-                }
-            }
-            else {
-                if (logging) {
-                    logger->trace("[%s] Opening of a physical SE channel in shared mode\n", this->getName());
-                }
+                logger->trace("[%s] Opening of a physical SE channel in exclusive mode\n", this->getName());
+            } else {
+                logger->trace("[%s] Opening of a physical SE channel in shared mode\n", this->getName());
             }
         }
+
         this->channel = std::shared_ptr<CardChannel>(card->getBasicChannel());
-    }
-    catch (const CardException &e) {
+    } catch (const CardException &e) {
         (void)e;
         throw KeypleChannelStateException("Error while opening Physical Channel\n"); //, e));
     }
