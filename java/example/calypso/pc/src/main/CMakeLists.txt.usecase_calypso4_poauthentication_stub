@@ -96,4 +96,4 @@ ADD_EXECUTABLE(usecase_calypso4_poauthentication_stub
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/calypso/pc/UseCase_Calypso4_PoAuthentication_Stub.cpp
 )
 
-TARGET_LINK_LIBRARIES(usecase_calypso4_poauthentication_stub keyplepluginpcsc keyplepluginstub keyplecore keyplecalypso)
+TARGET_LINK_LIBRARIES(usecase_calypso4_poauthentication_stub keyplepluginpcsc keyplepluginstub keyplecore keyplecalypso ${WINSCARD})
