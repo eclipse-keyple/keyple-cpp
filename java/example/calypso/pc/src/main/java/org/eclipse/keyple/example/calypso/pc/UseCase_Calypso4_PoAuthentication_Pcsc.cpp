@@ -158,7 +158,7 @@ int main(int argc, char **argv)
                                                                  static_cast<char>(0), static_cast<char>(0));
 
             if (!poProcessStatus) {
-                throw std::make_shared<IllegalStateException>("processingOpening failure.");
+                throw IllegalStateException("processingOpening failure.");
             }
 
             if (!poTransaction->wasRatified()) {

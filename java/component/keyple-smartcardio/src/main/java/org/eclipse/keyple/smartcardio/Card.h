@@ -81,7 +81,7 @@ private:
     /**
      * State of this card connection
      */
-    long unsigned int state;
+    DWORD state;
 
     /**
      * Thread holding exclusive access to the card, or null
