@@ -61,6 +61,24 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/java/org/eclipse/keyple/calypso/transaction/exception
 )
 
+IF(WIN32)
+    SET(CMAKE_FIND_LIBRARY_PREFIXES "")
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
+    SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
+    SET(WINSCARD winscard.lib)
+ENDIF(WIN32)
+
+IF(APPLE)
+    SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
+    SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
+    SET(WINSCARD "-framework PCSC")
+ENDIF(APPLE)
+
+IF(UNIX)
+    FIND_LIBRARY(WINSCARD pcsclite)
+ENDIF(UNIX)
+
 ADD_EXECUTABLE(usecase_calypso1_explicitselectionaid_stub
 
 	# Example - Common
@@ -77,4 +95,4 @@ ADD_EXECUTABLE(usecase_calypso1_explicitselectionaid_stub
 	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/example/calypso/pc/UseCase_Calypso1_ExplicitSelectionAid_Stub.cpp
 )
 
-TARGET_LINK_LIBRARIES(usecase_calypso1_explicitselectionaid_stub keyplepluginpcsc keyplepluginstub keyplecore keyplesmartcardio keyplecalypso)
+TARGET_LINK_LIBRARIES(usecase_calypso1_explicitselectionaid_stub keyplepluginpcsc keyplepluginstub keyplecore keyplesmartcardio keyplecalypso ${WINSCARD})
