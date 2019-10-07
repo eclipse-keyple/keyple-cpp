@@ -140,7 +140,7 @@ int main(int argc, char **argv)
             /*
              * Open Session for the debit key
              */
-            bool poProcessStatus = poTransaction->processOpening(PoTransaction::ModificationMode::ATOMIC,
+            bool poProcessStatus = poTransaction->processOpening(PoTransaction::ModificationMode::MULTIPLE,
                                                                              PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT,
                                                                              static_cast<char>(0), static_cast<char>(0));
 
@@ -165,7 +165,7 @@ int main(int argc, char **argv)
 
             std::vector<int> appendRecordParsers(nbCommands);
 
-            logger->info("==== Send %d Append Record commands. Modifications buffer capacity = %d bytes i.e. %d 29-byte commands ====",
+            logger->info("==== Send %d Append Record commands. Modifications buffer capacity = %d bytes i.e. %d 29-byte commands ====\n",
                          nbCommands, modificationsBufferSize, modificationsBufferSize / 35);
 
             for (int i = 0; i < nbCommands; i++) {

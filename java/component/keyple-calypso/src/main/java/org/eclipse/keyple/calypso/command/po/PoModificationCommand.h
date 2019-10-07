@@ -18,11 +18,16 @@ namespace org {
                 namespace command {
                     namespace po {
 
-
                         /**
                          * Interface for commands that can modify the PO memory content
                          */
                         class PoModificationCommand {
+                        public:
+                            static const int MAGIC_VALUE = 12345678;
+                            /*
+                             * Magic number
+                             */
+                            const int magic = MAGIC_VALUE;
                         };
 
                     }

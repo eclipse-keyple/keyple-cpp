@@ -40,6 +40,7 @@
 
 /* Common */
 #include "Arrays.h"
+#include "Cast.h"
 #include "stringhelper.h"
 
 namespace org {
@@ -78,17 +79,17 @@ PoTransaction::PoTransaction(std::shared_ptr<PoResource> poResource, std::shared
                              std::shared_ptr<SecuritySettings> securitySettings)
 : PoTransaction::PoTransaction(poResource)
 {
-    poRevision = calypsoPo->getRevision();
-    poCalypsoInstanceAid = calypsoPo->getDfName();
-    modificationsCounterIsInBytes = calypsoPo->isModificationsCounterInBytes();
-    modificationsCounterMax = modificationsCounter = calypsoPo->getModificationsCounter();
-    /* Serial Number of the selected Calypso instance. */
-    sessionState = SessionState::SESSION_UNINITIALIZED;
-    preparedCommandsProcessed = true;
-    std::shared_ptr<SeReader> seReader = samResource->getSeReader();
+//    poRevision = calypsoPo->getRevision();
+//    poCalypsoInstanceAid = calypsoPo->getDfName();
+//    modificationsCounterIsInBytes = calypsoPo->isModificationsCounterInBytes();
+//    modificationsCounterMax = modificationsCounter = calypsoPo->getModificationsCounter();
+//    /* Serial Number of the selected Calypso instance. */
+//    sessionState = SessionState::SESSION_UNINITIALIZED;
+//    preparedCommandsProcessed = true;
+//    std::shared_ptr<SeReader> seReader = samResource->getSeReader();
     samReader = std::dynamic_pointer_cast<ProxyReader>(samResource->getSeReader());
     this->securitySettings = securitySettings;
-    this->currentModificationMode = ModificationMode::ATOMIC;
+//    this->currentModificationMode = ModificationMode::ATOMIC;
 }
 
 PoTransaction::PoTransaction(std::shared_ptr<PoResource> poResource)
@@ -1031,7 +1032,14 @@ bool PoTransaction::processOpening(ModificationMode modificationMode, SessionAcc
     /* create a sublist of PoBuilderParser to be sent atomically */
     std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>> poAtomicCommandList;
     for (auto poCommandElement : poBuilderParserList) {
-        if (!std::dynamic_pointer_cast<PoModificationCommand>(poCommandElement->getCommandBuilder())) {
+        /*
+         * Use a known AppendRecordCmdBuild derived class to verify its magic number. If the magic number is 12345678 then we can
+         * consider the opaque class is derived from PoModificationCommand.
+         */
+        std::shared_ptr<AppendRecordCmdBuild> poModificationCommand =
+            Cast::reinterpret_pointer_cast<AppendRecordCmdBuild>(poCommandElement->getCommandBuilder());
+
+        if (poModificationCommand->magic != PoModificationCommand::MAGIC_VALUE) {
             /* This command does not affect the PO modifications buffer */
             logger->debug("processOpening - cmd not affecting PO modifications buffer\n");
             logger->debug("processOpening - poCommandElement->getCommandBuilder(): %p\n", poCommandElement->getCommandBuilder());
@@ -1040,7 +1048,7 @@ bool PoTransaction::processOpening(ModificationMode modificationMode, SessionAcc
         } else {
             /* This command affects the PO modifications buffer */
             logger->debug("processOpening - cmd affecting PO modifications buffer\n");
-            if (willOverflowBuffer(std::dynamic_pointer_cast<PoModificationCommand>(poCommandElement->getCommandBuilder()))) {
+            if (willOverflowBuffer(poModificationCommand)) {
                 logger->debug("processOpening - cmd not fitting into PO modifications buffer\n");
 
                 if (currentModificationMode == ModificationMode::ATOMIC) {
@@ -1065,8 +1073,7 @@ bool PoTransaction::processOpening(ModificationMode modificationMode, SessionAcc
                  * Closes the session, resets the modifications buffer counters for the next
                  * round (set the contact mode to avoid the transmission of the ratification)
                  */
-                std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
-                                                           AbstractPoResponseParser>>>> emptyVector;
+                std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>> emptyVector;
                 processAtomicClosing(emptyVector, TransmissionMode::CONTACTS,
                                      ChannelState::KEEP_OPEN);
                 resetModificationsBufferCounter();
@@ -1081,7 +1088,7 @@ bool PoTransaction::processOpening(ModificationMode modificationMode, SessionAcc
                 /*
                  * just update modifications buffer usage counter, ignore result (always false)
                  */
-                willOverflowBuffer(std::dynamic_pointer_cast<PoModificationCommand>(poCommandElement->getCommandBuilder()));
+                willOverflowBuffer(poModificationCommand);
             } else {
                 /*
                  * The command fits in the PO modifications buffer, just add it to the list
@@ -1099,6 +1106,7 @@ bool PoTransaction::processOpening(ModificationMode modificationMode, SessionAcc
     }
 
     /* sets the flag indicating that the commands have been executed */
+    logger->debug("processOpening - setting preparedCommandsProcessed to true\n");
     preparedCommandsProcessed = true;
 
     return poProcessSuccess;
@@ -1122,6 +1130,7 @@ bool PoTransaction::processPoCommands(ChannelState channelState)
     }
 
     /* sets the flag indicating that the commands have been executed */
+    logger->debug("processPoCommands - setting preparedCommandsProcessed to true\n");
     preparedCommandsProcessed = true;
 
     return poProcessSuccess;
@@ -1129,6 +1138,7 @@ bool PoTransaction::processPoCommands(ChannelState channelState)
 
 bool PoTransaction::processPoCommandsInSession()
 {
+    logger->debug("processPoCommandsInSession\n");
 
     /** This method should be called only if a session was previously open */
     if (sessionState != SessionState::SESSION_OPEN) {
@@ -1136,10 +1146,12 @@ bool PoTransaction::processPoCommandsInSession()
     }
 
     /*
-        * clear the prepared command list if processed flag is still set (no new command prepared)
-        */
+     * clear the prepared command list if processed flag is still set (no new command prepared)
+     */
+    logger->debug("processPoCommandsInSession - preparedCommandsProcessed: %d\n", preparedCommandsProcessed);
     if (preparedCommandsProcessed) {
         poBuilderParserList.clear();
+        logger->debug("processPoCommandsInSession - setting preparedCommandsProcessed to false\n");
         preparedCommandsProcessed = false;
     }
 
@@ -1149,21 +1161,32 @@ bool PoTransaction::processPoCommandsInSession()
     std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>> poAtomicBuilderParserList;
 
     for (auto poBuilderParser : this->poBuilderParserList) {
-        if (!(std::dynamic_pointer_cast<PoModificationCommand>(poBuilderParser->getCommandBuilder()) != nullptr)) {
+        logger->debug("processPoCommandsInSession - checking poCommandElement from poBuilderParserList\n");
+
+        /*
+         * Use a known AppendRecordCmdBuild derived class to verify its magic number. If the magic number is 12345678 then we can
+         * consider the opaque class is derived from PoModificationCommand.
+         */
+        std::shared_ptr<AppendRecordCmdBuild> poModificationCommand =
+            Cast::reinterpret_pointer_cast<AppendRecordCmdBuild>(poBuilderParser->getCommandBuilder());
+
+        if (poModificationCommand->magic != PoModificationCommand::MAGIC_VALUE) {
             /* This command does not affect the PO modifications buffer */
+            logger->debug("processPoCommandsInSession - this command does not affect po modifications buffer\n");
             poAtomicBuilderParserList.push_back(poBuilderParser);
         }
         else {
             /* This command affects the PO modifications buffer */
-            if (willOverflowBuffer((std::dynamic_pointer_cast<PoModificationCommand>(poBuilderParser->getCommandBuilder())))) {
+            logger->debug("processPoCommandsInSession - this command does affect po modifications buffer\n");
+            if (willOverflowBuffer(poModificationCommand)) {
                 if (currentModificationMode == ModificationMode::ATOMIC) {
                     throw IllegalStateException("ATOMIC mode error! This command would overflow the PO modifications buffer: <fixme>poCommandBuilderElement->toString()");
                 }
                 /*
-                    * The current command would overflow the modifications buffer in the PO. We
-                    * send the current commands and update the parsers. The parsers Iterator is
-                    * kept all along the process.
-                    */
+                 * The current command would overflow the modifications buffer in the PO. We
+                 * send the current commands and update the parsers. The parsers Iterator is
+                 * kept all along the process.
+                 */
                 std::shared_ptr<SeResponse> seResponsePoCommands = processAtomicPoCommands(poAtomicBuilderParserList, ChannelState::KEEP_OPEN);
                 if (!createResponseParsers(seResponsePoCommands, poAtomicBuilderParserList)) {
                     poProcessSuccess = false;
@@ -1188,14 +1211,14 @@ bool PoTransaction::processPoCommandsInSession()
                 poAtomicBuilderParserList.clear();
                 poAtomicBuilderParserList.push_back(poBuilderParser);
                 /*
-                    * just update modifications buffer usage counter, ignore result (always false)
-                    */
-                willOverflowBuffer(std::dynamic_pointer_cast<PoModificationCommand>(poBuilderParser->getCommandBuilder()));
+                 * Just update modifications buffer usage counter, ignore result (always false)
+                 */
+                willOverflowBuffer(poModificationCommand);
             }
             else {
                 /*
-                    * The command fits in the PO modifications buffer, just add it to the list
-                    */
+                 * The command fits in the PO modifications buffer, just add it to the list
+                 */
                 poAtomicBuilderParserList.push_back(poBuilderParser);
             }
         }
@@ -1209,6 +1232,7 @@ bool PoTransaction::processPoCommandsInSession()
     }
 
     /* sets the flag indicating that the commands have been executed */
+    logger->debug("processPoCommandsInSession - setting preparedCommandsProcessed to true\n");
     preparedCommandsProcessed = true;
 
     return poProcessSuccess;
@@ -1225,14 +1249,24 @@ bool PoTransaction::processClosing(ChannelState channelState)
         */
     if (preparedCommandsProcessed) {
         poBuilderParserList.clear();
+        logger->debug("processClosing - setting preparedCommandsProcessed to false\n");
         preparedCommandsProcessed = false;
     }
 
     std::vector<std::shared_ptr<PoModificationCommand>> poModificationCommandList;
     std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>> poAtomicBuilderParserList;
     std::shared_ptr<SeResponse> seResponseClosing;
+
     for (auto poBuilderParser : poBuilderParserList) {
-        if (!(std::dynamic_pointer_cast<PoModificationCommand>(poBuilderParser) != nullptr)) {
+        /*
+         * Use a known AppendRecordCmdBuild derived class to verify its magic number. If the magic number is 12345678 then we can
+         * consider the opaque class is derived from PoModificationCommand.
+         */
+        std::shared_ptr<AppendRecordCmdBuild> poModificationCommand =
+            Cast::reinterpret_pointer_cast<AppendRecordCmdBuild>(poBuilderParser->getCommandBuilder());
+        logger->debug("processClosing - poModificationCommand magic number: %d\n", poModificationCommand->magic);
+
+        if (poModificationCommand->magic != PoModificationCommand::MAGIC_VALUE) {
             /*
                 * This command does not affect the PO modifications buffer. We will call
                 * processPoCommands first
@@ -1242,7 +1276,7 @@ bool PoTransaction::processClosing(ChannelState channelState)
         }
         else {
             /* This command affects the PO modifications buffer */
-            if (willOverflowBuffer(std::dynamic_pointer_cast<PoModificationCommand>(poBuilderParser->getCommandBuilder()))) {
+            if (willOverflowBuffer(poModificationCommand)) {
                 if (currentModificationMode == ModificationMode::ATOMIC) {
                     throw IllegalStateException(
                         StringHelper::formatSimple("ATOMIC mode error! This command would " \
@@ -1288,7 +1322,7 @@ bool PoTransaction::processClosing(ChannelState channelState)
                 /*
                     * just update modifications buffer usage counter, ignore result (always false)
                     */
-                willOverflowBuffer(std::dynamic_pointer_cast<PoModificationCommand>(poBuilderParser->getCommandBuilder()));
+                willOverflowBuffer(poModificationCommand);
             }
             else {
                 /*
@@ -1317,6 +1351,7 @@ bool PoTransaction::processClosing(ChannelState channelState)
     }
 
     /* sets the flag indicating that the commands have been executed */
+    logger->debug("processClosing - setting preparedCommandsProcessed to true\n");
     preparedCommandsProcessed = true;
 
     return poProcessSuccess;
@@ -1348,6 +1383,7 @@ bool PoTransaction::processCancel(ChannelState channelState) {
     logger->debug("processCancel => POSERESPONSE = %s", poSeResponse);
 
     /* sets the flag indicating that the commands have been executed */
+    logger->debug("processCancel - setting preparedCommandsProcessed to true\n");
     preparedCommandsProcessed = true;
 
     /*
@@ -1386,39 +1422,49 @@ bool PoTransaction::createResponseParsers(
     return allSuccessfulCommands;
 }
 
-bool PoTransaction::willOverflowBuffer(std::shared_ptr<PoModificationCommand> modificationCommand) {
+bool PoTransaction::willOverflowBuffer(std::shared_ptr<PoModificationCommand> modificationCommand)
+{
     bool willOverflow = false;
-    if (modificationsCounterIsInBytes) {
-        int bufferRequirement = (reinterpret_cast<AbstractApduCommandBuilder*>(modificationCommand.get()))->getApduRequest()->getBytes()[OFFSET_Lc] + 6;
 
+    if (modificationsCounterIsInBytes) {
+        /*
+         * Hackish...
+         * Cast into a PoModificationCommand derived class to access all required elements.
+         * Casting into an AbstractApduCommandBuilder fails and crashes...
+         */
+        std::shared_ptr<AppendRecordCmdBuild> poModificationCommand = std::static_pointer_cast<AppendRecordCmdBuild>(modificationCommand);
+        std::shared_ptr<ApduRequest> apduRequest = poModificationCommand->getApduRequest();
+        std::vector<char> bytes = apduRequest->getBytes();
+
+        int bufferRequirement = bytes[OFFSET_Lc] + 6;        logger->debug("hey\n");
+        logger->debug("willOverflowBuffer - bufferRequirement: %d\n", bufferRequirement);
+        logger->debug("willOverflowBuffer - modificationsCounter: %d\n", modificationsCounter);
         if (modificationsCounter - bufferRequirement > 0) {
             modificationsCounter = modificationsCounter - bufferRequirement;
-        }
-        else {
-            if (logger->isTraceEnabled()) {
-                logger->trace("Modifications buffer overflow! BYTESMODE, CURRENTCOUNTER = %s, REQUIREMENT = %s", modificationsCounter, bufferRequirement);
-            }
+        } else {
+            logger->trace("Modifications buffer overflow! BYTESMODE, CURRENTCOUNTER = %s, REQUIREMENT = %s\n",
+                          modificationsCounter, bufferRequirement);
             willOverflow = true;
         }
-    }
-    else {
+    } else {
         if (modificationsCounter > 0) {
             modificationsCounter--;
-        }
-        else {
-            if (logger->isTraceEnabled()) {
-                logger->trace("Modifications buffer overflow! COMMANDSMODE, CURRENTCOUNTER = %s, REQUIREMENT = %s", modificationsCounter, 1);
-            }
+        } else {
+            logger->trace("Modifications buffer overflow! COMMANDSMODE, CURRENTCOUNTER = %s, REQUIREMENT = %s\n",
+                          modificationsCounter, 1);
             willOverflow = true;
         }
     }
+
+    logger->debug("willOverflowBuffer - buffer will not overflow\n");
     return willOverflow;
 }
 
-void PoTransaction::resetModificationsBufferCounter() {
-    if (logger->isTraceEnabled()) {
-        logger->trace("Modifications buffer counter reset: PREVIOUSVALUE = %s, NEWVALUE = %s", modificationsCounter, modificationsCounterMax);
-    }
+void PoTransaction::resetModificationsBufferCounter()
+{
+    logger->trace("Modifications buffer counter reset: PREVIOUSVALUE = %s, NEWVALUE = %s\n",
+                  modificationsCounter, modificationsCounterMax);
+
     modificationsCounter = modificationsCounterMax;
 }
 
@@ -1427,6 +1473,7 @@ int PoTransaction::createAndStoreCommandBuilder(std::shared_ptr<AbstractPoComman
     /* reset the list when preparing the first command after last processing */
     if (preparedCommandsProcessed) {
         poBuilderParserList.clear();
+        logger->debug("createAndStoreCommandBuilder - setting preparedCommandsProcessed to false\n");
         preparedCommandsProcessed = false;
         preparedCommandIndex = 0;
     }
@@ -1522,14 +1569,15 @@ int PoTransaction::prepareReadRecordsCmd(char sfi, ReadDataStructure readDataStr
     return prepareReadRecordsCmdInternal(sfi, readDataStructureEnum, firstRecordNumber, 0, extraInfo);
 }
 
-int PoTransaction::prepareAppendRecordCmd(char sfi, std::vector<char> &newRecordData, const std::string &extraInfo) {
+int PoTransaction::prepareAppendRecordCmd(char sfi, std::vector<char> &newRecordData, const std::string &extraInfo)
+{
     /*
      * create and keep the PoBuilderParser, return the command index
      */
+
     std::shared_ptr<AppendRecordCmdBuild> ar = std::make_shared<AppendRecordCmdBuild>(calypsoPo->getPoClass(),sfi,newRecordData, extraInfo);
     std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>> abstract =
-            std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>(
-                    ar, reinterpret_cast<AbstractPoCommandBuilder<AbstractPoResponseParser> *>(ar.get()));
+        Cast::reinterpret_pointer_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>>(ar);
 
     return createAndStoreCommandBuilder(abstract);
 }
