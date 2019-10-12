@@ -27,8 +27,6 @@ void SelectionsResult::addMatchingSelection(std::shared_ptr<MatchingSelection> m
 
 std::shared_ptr<MatchingSelection> SelectionsResult::getActiveSelection()
 {
-    std::cout << "getActiveSelection" << std::endl;
-
     std::shared_ptr<MatchingSelection> activeSelection = nullptr;
 
     for (auto matchingSelection : matchingSelectionList) {

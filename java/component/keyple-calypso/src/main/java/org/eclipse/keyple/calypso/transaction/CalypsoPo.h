@@ -24,6 +24,7 @@
 #include "TransmissionMode.h"
 
 /* Common */
+#include "Export.h"
 #include "exceptionhelper.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
@@ -51,7 +52,7 @@ using TransmissionMode   = org::eclipse::keyple::core::seproxy::protocol::Transm
     * </ul>
     * TODO Complete with other PO features from the FCI and/or ATR
     */
-class CalypsoPo final : public AbstractMatchingSe {
+class EXPORT CalypsoPo final : public AbstractMatchingSe {
 private:
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CalypsoPo));
     char bufferSizeIndicator;

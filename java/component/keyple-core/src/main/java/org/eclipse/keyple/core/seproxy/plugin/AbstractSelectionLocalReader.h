@@ -24,7 +24,7 @@
 
 /* Core */
 #include "AbstractLocalReader.h"
-#include "ObservableReader.h"
+#include "ObservableReader_Import.h"
 
 namespace org {
 namespace eclipse {

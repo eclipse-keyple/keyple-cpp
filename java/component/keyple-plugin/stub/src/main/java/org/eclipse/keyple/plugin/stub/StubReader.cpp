@@ -2,7 +2,7 @@
 #include "KeypleChannelStateException.h"
 #include "KeypleIOReaderException.h"
 #include "KeypleReaderException.h"
-#include "SeProtocol.h"
+#include "SeProtocol_Import.h"
 #include "ApduRequest.h"
 #include "ApduResponse.h"
 #include "SeRequestSet.h"

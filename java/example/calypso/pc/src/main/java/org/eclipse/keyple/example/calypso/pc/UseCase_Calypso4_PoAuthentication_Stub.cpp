@@ -5,7 +5,7 @@
 #include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader.h"
+#include "ObservableReader_Import.h"
 #include "PoSelectionRequest.h"
 #include "PoSelector.h"
 #include "ReaderEvent_Import.h"

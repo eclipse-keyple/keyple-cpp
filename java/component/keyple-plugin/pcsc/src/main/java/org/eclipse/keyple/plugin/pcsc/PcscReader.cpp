@@ -6,7 +6,7 @@
 #include "KeypleReaderException.h"
 #include "NoStackTraceThrowable.h"
 #include "PcscReader.h"
-#include "SeProtocol.h"
+#include "SeProtocol_Import.h"
 
 /* Smartcard I/O */
 #include "ATR.h"

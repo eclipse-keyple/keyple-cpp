@@ -17,7 +17,7 @@
 #include "Configurable.h"
 #include "Comparable.h"
 #include "Nameable.h"
-#include "SeProtocol.h"
+#include "SeProtocol_Import.h"
 #include "NoStackTraceThrowable.h"
 #include "TransmissionMode.h"
 

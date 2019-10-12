@@ -14,6 +14,9 @@
 
 #include <memory>
 
+/* Common */
+#include "Export.h"
+
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SeRequestSet; } } } } } }
 
@@ -29,7 +32,7 @@ using SeRequestSet = org::eclipse::keyple::core::seproxy::message::SeRequestSet;
 /**
     * The {@link AbstractDefaultSelectionsRequest} class is dedicated to
     */
-class AbstractDefaultSelectionsRequest : public std::enable_shared_from_this<AbstractDefaultSelectionsRequest> {
+class EXPORT AbstractDefaultSelectionsRequest : public std::enable_shared_from_this<AbstractDefaultSelectionsRequest> {
     /** The {@link org.eclipse.keyple.core.seproxy.message.SeRequestSet} */
 protected:
     const std::shared_ptr<SeRequestSet> selectionSeRequestSet;

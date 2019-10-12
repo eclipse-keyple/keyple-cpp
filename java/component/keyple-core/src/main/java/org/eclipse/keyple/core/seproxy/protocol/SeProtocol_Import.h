@@ -29,7 +29,7 @@ namespace protocol {
 
 using namespace org::eclipse::keyple::core::seproxy::protocol;
 
-class EXPORT SeProtocol {
+class IMPORT SeProtocol {
 private:
 	/**
      *

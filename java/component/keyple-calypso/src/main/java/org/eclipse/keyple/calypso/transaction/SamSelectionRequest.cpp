@@ -1,6 +1,6 @@
 #include "SamSelectionRequest.h"
-#include "SeSelector.h"
-#include "SeProtocol.h"
+#include "SeSelector_Import.h"
+#include "SeProtocol_Import.h"
 #include "CalypsoSam.h"
 #include "SeResponse.h"
 #include "AbstractSamResponseParser.h"

@@ -83,7 +83,7 @@ std::string Matcher::group()
 
 bool Matcher::search(int from)
 {
-    std::string subs = text.substr(from, text.length() - from);
+    subs = text.substr(from, text.length() - from);
     std::regex word_regex(parentPattern->pattern);
 
     if (std::regex_search(subs, groups, word_regex))

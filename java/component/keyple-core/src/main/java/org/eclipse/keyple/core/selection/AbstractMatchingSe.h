@@ -17,6 +17,10 @@
 
 #include "TransmissionMode.h"
 
+/* Common */
+#include "Export.h"
+
+
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SeResponse; } } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SelectionStatus; } } } } } }
@@ -34,7 +38,7 @@ using namespace org::eclipse::keyple::core::seproxy::protocol;
     * AbstractMatchingSe is the class to manage the elements of the result of a selection.
     *
     */
-class AbstractMatchingSe : public std::enable_shared_from_this<AbstractMatchingSe> {
+class EXPORT AbstractMatchingSe : public std::enable_shared_from_this<AbstractMatchingSe> {
 private:
     /**
      *

@@ -2,7 +2,6 @@
 /* Core */
 #include "SeSelector.h"
 #include "ApduRequest.h"
-#include "SeProtocol.h"
 #include "ByteArrayUtil.h"
 #include "SeRequest.h"
 

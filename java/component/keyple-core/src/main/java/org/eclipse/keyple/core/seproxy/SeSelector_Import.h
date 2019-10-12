@@ -46,12 +46,12 @@ using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
 * The SeSelector class groups the information and methods used to select a particular secure
 * element
 */
-class EXPORT SeSelector : public std::enable_shared_from_this<SeSelector> {
+class IMPORT SeSelector : public std::enable_shared_from_this<SeSelector> {
     /**
     * Static nested class to hold the data elements used to perform an AID based selection
     */
 public:
-    class EXPORT AidSelector : public std::enable_shared_from_this<AidSelector> {
+    class IMPORT AidSelector : public std::enable_shared_from_this<AidSelector> {
 
         /**
         * FileOccurrence indicates how to carry out the file occurrence in accordance with
@@ -61,7 +61,7 @@ public:
         * (ISO/IEC 7816-4.2)
         */
     public:
-        class EXPORT FileOccurrence final {
+        class IMPORT FileOccurrence final {
 
         public:
             static FileOccurrence FIRST;
@@ -165,7 +165,7 @@ public:
                     * (ISO/IEC 7816-4.2)
         */
     public:
-        class EXPORT FileControlInformation final {
+        class IMPORT FileControlInformation final {
         public:
             static FileControlInformation FCI;
             static FileControlInformation FCP;
@@ -246,7 +246,7 @@ public:
         /**
          *
          */
-        class EXPORT IsoAid : public std::enable_shared_from_this<IsoAid> {
+        class IMPORT IsoAid : public std::enable_shared_from_this<IsoAid> {
         public:
             /**
              *
@@ -402,7 +402,7 @@ public:
      * Static nested class to hold the data elements used to perform an ATR based filtering
      */
 public:
-    class EXPORT AtrFilter : public std::enable_shared_from_this<AtrFilter> {
+    class IMPORT AtrFilter : public std::enable_shared_from_this<AtrFilter> {
         /**
          * Regular expression dedicated to handle SE logical channel opening based on ATR pattern
          */

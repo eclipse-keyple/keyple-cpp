@@ -112,26 +112,30 @@ protected:
 protected:
     virtual std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable();
 
-    /**
-        * the generic abstract constructor to build a parser of the APDU response.
-        *
-        * @param response response to parse
-        */
+	
 public:
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Deprecated public AbstractApduResponseParser(org.eclipse.keyple.seproxy.message.ApduResponse response)
+    /**
+     * the generic abstract constructor to build a parser of the APDU response.
+     *
+     * @param response response to parse
+     */
     AbstractApduResponseParser(std::shared_ptr<ApduResponse> response);
 
     /**
-        * Default constructor
-        */
+     * Default constructor
+     */
     AbstractApduResponseParser();
 
     /**
-        * Sets the Apdu response to parse
-        * 
-        * @param response the apdu response
-        */
+     *
+     */
+    virtual ~AbstractApduResponseParser() {}
+
+    /**
+     * Sets the Apdu response to parse
+     * 
+     * @param response the apdu response
+     */
     void setApduResponse(std::shared_ptr<ApduResponse> response);
 
     bool isInitialized();

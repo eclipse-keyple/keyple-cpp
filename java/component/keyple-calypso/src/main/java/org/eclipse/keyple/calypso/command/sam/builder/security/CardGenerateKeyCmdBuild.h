@@ -20,7 +20,7 @@
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommands.h"
 #include "KeyReference.h"
-#include "SamRevision.h"
+#include "SamRevision_Import.h"
 
 namespace org {
 namespace eclipse {

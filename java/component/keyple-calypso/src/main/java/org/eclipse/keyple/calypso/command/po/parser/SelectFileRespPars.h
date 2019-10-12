@@ -20,6 +20,7 @@
 #include "AbstractApduResponseParser_Import.h"
 
 /* Common */
+#include "Export.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
 
@@ -45,7 +46,7 @@ using LoggerFactory              = org::eclipse::keyple::common::LoggerFactory;
     * <p>
     * The FCI structure is analyzed and all subfields are made available through as many getters.
     */
-class SelectFileRespPars final : public AbstractPoResponseParser {
+class EXPORT SelectFileRespPars final : public AbstractPoResponseParser {
 
 private:
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SelectFileRespPars));

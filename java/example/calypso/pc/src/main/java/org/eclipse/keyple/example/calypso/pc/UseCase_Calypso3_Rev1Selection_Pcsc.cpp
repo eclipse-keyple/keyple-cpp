@@ -6,7 +6,7 @@
 #include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader.h"
+#include "ObservableReader_Import.h"
 #include "PcscPlugin.h"
 #include "PcscReader.h"
 #include "PcscReadersSettings.h"

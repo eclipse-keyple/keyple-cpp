@@ -5,16 +5,16 @@
 #include "KeypleBaseException.h"
 #include "MatchingSelection.h"
 #include "NoStackTraceThrowable.h"
-#include "ObservableReader.h"
+#include "ObservableReader_Import.h"
 #include "PcscPlugin.h"
 #include "ReaderUtilities.h"
-#include "SeCommonProtocols.h"
+#include "SeCommonProtocols_Import.h"
 #include "SelectionStatus.h"
-#include "SeProtocol.h"
+#include "SeProtocol_Import.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 #include "SeSelection.h"
-#include "SeSelector.h"
+#include "SeSelector_Import.h"
 
 using namespace org::eclipse::keyple::common;
 using namespace org::eclipse::keyple::core::selection;

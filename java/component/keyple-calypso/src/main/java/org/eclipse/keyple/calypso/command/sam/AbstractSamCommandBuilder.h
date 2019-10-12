@@ -15,7 +15,7 @@
 #include <memory>
 
 #include "AbstractIso7816CommandBuilder.h"
-#include "SamRevision.h"
+#include "SamRevision_Import.h"
 #include "CalypsoSamCommands.h"
 
 namespace org {

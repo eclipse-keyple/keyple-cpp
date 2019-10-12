@@ -21,6 +21,9 @@
 /* Calypso */
 #include "CalypsoPo.h"
 
+/* Common */
+#include "Export.h"
+
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -31,7 +34,7 @@ using namespace org::eclipse::keyple::core::selection;
 using namespace org::eclipse::keyple::calypso::transaction;
 using namespace org::eclipse::keyple::core::seproxy;
 
-class PoResource : public SeResource<CalypsoPo> {
+class EXPORT PoResource : public SeResource<CalypsoPo> {
 public:
     /**
      * Constructor

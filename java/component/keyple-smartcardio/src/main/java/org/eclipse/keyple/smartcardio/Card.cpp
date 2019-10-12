@@ -34,11 +34,11 @@ std::vector<char> commandOpenChannel = {0, 0x70, 0, 0, 1};
 
 Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
 {
-    int sharingMode = SCARD_SHARE_SHARED;
-    int connectProtocol;
+    DWORD sharingMode = SCARD_SHARE_SHARED;
+    DWORD connectProtocol;
     BYTE _atr[33];
     DWORD atrLen = sizeof(_atr);
-    DWORD rLen = strlen(terminal->getName().c_str()) + 1;
+    DWORD rLen = 200; //strlen(terminal->getName().c_str()) + 1;
     LONG rv;
 
     logger->debug("constructor\n");

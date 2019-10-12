@@ -14,6 +14,7 @@
 #include "SelectionStatus.h"
 #include "SeReader.h"
 #include "SeResponseSet.h"
+#include "SeSelector_Import.h"
 
 namespace org {
 namespace eclipse {

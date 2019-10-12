@@ -1,7 +1,7 @@
 #include "SeRequest.h"
 #include "SeSelector.h"
 #include "ApduRequest.h"
-#include "SeProtocol.h"
+#include "SeProtocol_Import.h"
 #include "Pattern.h"
 
 namespace org {

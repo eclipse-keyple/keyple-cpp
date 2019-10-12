@@ -15,6 +15,9 @@
 #include <string>
 #include <memory>
 
+/* Common */
+#include "Export.h"
+
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace core { namespace selection { class AbstractMatchingSe; } } } } }
 namespace org { namespace eclipse { namespace keyple { namespace core { namespace selection { class AbstractSeSelectionRequest; } } } } }
@@ -33,7 +36,7 @@ using SeResponse = org::eclipse::keyple::core::seproxy::message::SeResponse;
 /**
  * The MatchingSelection class holds the result of a single selection case.
  */
-class MatchingSelection final : public std::enable_shared_from_this<MatchingSelection> {
+class EXPORT MatchingSelection final : public std::enable_shared_from_this<MatchingSelection> {
 private:
     /**
      *

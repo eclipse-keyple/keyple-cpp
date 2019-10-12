@@ -16,7 +16,7 @@
 #include <string>
 
 /* Calypso */
-#include "PoTransaction.h"
+#include "PoTransaction_Import.h"
 
 /* Common */
 #include "exceptionhelper.h"

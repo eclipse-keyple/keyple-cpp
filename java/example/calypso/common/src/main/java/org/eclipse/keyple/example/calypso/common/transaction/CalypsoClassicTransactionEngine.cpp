@@ -10,15 +10,15 @@
 #include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
+#include "ObservableReader_Import.h"
 #include "PoResource.h"
 #include "PoSelectionRequest.h"
 #include "PoSelector.h"
-#include "PoTransaction.h"
 #include "ReadDataStructure.h"
 #include "ReadRecordsRespPars.h"
-#include "SeCommonProtocols.h"
+#include "SeCommonProtocols_Import.h"
 #include "SeReader.h"
-#include "SeSelector.h"
+#include "SeSelector_Import.h"
 #include "TransmissionMode.h"
 
 namespace org {

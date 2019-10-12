@@ -27,15 +27,15 @@
 #include "PoBuilderParser.h"
 #include "PoModificationCommand.h"
 #include "PoResource.h"
-#include "PoTransaction.h"
 #include "SamResource.h"
-#include "SamRevision.h"
+#include "SamRevision_Import.h"
 #include "SecuritySettings.h"
 #include "SelectFileCmdBuild.h"
 
 /* Core */
 #include "ProxyReader.h"
 #include "ReadDataStructure.h"
+#include "SeProtocol_Import.h"
 #include "SeRequest.h"
 #include "TransmissionMode.h"
 
@@ -88,7 +88,7 @@ public:
     /**
      * The PO Transaction Access Level: personalization, loading or debiting
      */
-    class SessionAccessLevel final {
+    class EXPORT SessionAccessLevel final {
     public:
         /**
          *
@@ -254,7 +254,7 @@ public:
      *
      * - checkPoSignature: Digest Authenticate, verify the PO part of the signature
      */
-    class DigestProcessor : public std::enable_shared_from_this<DigestProcessor> {
+    class EXPORT DigestProcessor : public std::enable_shared_from_this<DigestProcessor> {
         /*
          * The digest data cache stores all PO data to be send to SAM during a Secure Session. The
          * 1st buffer is the data buffer to be provided with Digest Init. The following buffers are
@@ -316,7 +316,7 @@ public:
     /**
      * The class handles the anticipated response computation.
      */
-    class AnticipatedResponseBuilder : public std::enable_shared_from_this<AnticipatedResponseBuilder> {
+    class EXPORT AnticipatedResponseBuilder : public std::enable_shared_from_this<AnticipatedResponseBuilder> {
         /**
          * A nested class to associate a request with a response
          */

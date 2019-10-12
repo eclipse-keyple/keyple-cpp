@@ -16,6 +16,9 @@
 #include <memory>
 
 #include "ChannelState.h"
+
+/* Common */
+#include "Export.h"
 #include "exceptionhelper.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
@@ -45,7 +48,7 @@ using SeResponse                 = org::eclipse::keyple::core::seproxy::message:
     * <p>
     * This class may also be extended to add particular features specific to a SE family.
     */
-class AbstractSeSelectionRequest : public std::enable_shared_from_this<AbstractSeSelectionRequest> {
+class EXPORT AbstractSeSelectionRequest : public std::enable_shared_from_this<AbstractSeSelectionRequest> {
 public:
     /**
      *

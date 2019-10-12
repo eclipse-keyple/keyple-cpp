@@ -1,6 +1,4 @@
 #include "PcscProtocolSetting.h"
-#include "SeCommonProtocols_Import.h"
-#include "SeProtocol.h"
 
 namespace org {
 namespace eclipse {

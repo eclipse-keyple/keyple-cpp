@@ -15,7 +15,7 @@
 #include "SeProxyService.h"
 #include "SeReader.h"
 #include "SeSelection.h"
-#include "SeSelector.h"
+#include "SeSelector_Import.h"
 
 namespace org {
 namespace eclipse {
@@ -38,13 +38,17 @@ CalypsoUtilities::StaticConstructor::StaticConstructor()
 {
     properties = std::make_shared<Properties>();
 
-    std::string propertiesFileName = "config.properties";
+	std::string propertiesFileName = "config.properties";
 
     std::ifstream inputStream;
-    inputStream.open(propertiesFileName, std::ifstream::in);
-    if (!inputStream) {
-        std::cout << "error opening file" << std::endl;
-    }
+	inputStream.exceptions(std::ifstream::failbit|std::ifstream::badbit);
+    try {
+        inputStream.open(propertiesFileName, std::ifstream::in);
+    } catch (int errorCode) {
+        std::cout << "ifstream::open() failed with error code: " << errorCode << std::endl;
+    } catch (std::ifstream::failure e) {
+		std::cout << "ifstream::open() raised an exception: " << std::strerror(errno) << std::endl;
+	}
 
     try {
         properties->load(inputStream);
@@ -102,33 +106,23 @@ std::shared_ptr<SamResource> CalypsoUtilities::checkSamAndOpenChannel(std::share
     std::shared_ptr<CalypsoSam> calypsoSam = nullptr;
 
     try {
-        std::cout << "here we are - calling processExplicitSelection" << std::endl;
         std::shared_ptr<SelectionsResult> selectionResult = samSelection->processExplicitSelection(samReader);
         if (!selectionResult) {
-            std::cout << "checkSamAndOpenChannel - error processing explicit selection" << std::endl;
             throw IllegalStateException("Unable to open a logical channel for SAM!");
         }
 
-        std::cout << "there we are" << std::endl;
         std::shared_ptr<MatchingSelection> matchingSelection = selectionResult->getActiveSelection();
         if (!matchingSelection) {
-            std::cout << "checkSamAndOpenChannel - error retrieving active selection" << std::endl;
             throw IllegalStateException("Unable to open a logical channel for SAM!");
         }
 
-        std::cout << "dhere we are" << std::endl;
         std::shared_ptr<AbstractMatchingSe> amse = matchingSelection->getMatchingSe();
         if (!amse) {
-            std::cout << "checkSamAndOpenChannel - error retrieving matching selection" << std::endl;
             throw IllegalStateException("Unable to open a logical channel for SAM!");
         }
-        std::cout << "se retrievied" << std::endl;
+
         calypsoSam = std::dynamic_pointer_cast<CalypsoSam>(amse);
-        std::cout << "dynamic pointer cast performed" << std::endl;
-        if (!calypsoSam) {
-            std::cout << "blahhh" << std::endl;
-        }
-        if (!calypsoSam->isSelected()) {
+        if (!calypsoSam || !calypsoSam->isSelected()) {
             throw IllegalStateException("Unable to open a logical channel for SAM!");
         }
     } catch (const KeypleReaderException &e) {

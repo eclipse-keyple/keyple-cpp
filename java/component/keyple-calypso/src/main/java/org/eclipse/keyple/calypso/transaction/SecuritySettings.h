@@ -17,7 +17,9 @@
 #include <map>
 #include <memory>
 
+/* Common */
 #include "Byte.h"
+#include "Export.h"
 
 namespace org {
 namespace eclipse {
@@ -34,7 +36,7 @@ namespace transaction {
     * <p>
     * The getKeyInfo method returns the specified setting value.
     */
-class SecuritySettings : public std::enable_shared_from_this<SecuritySettings> {
+class EXPORT SecuritySettings : public std::enable_shared_from_this<SecuritySettings> {
 public:
     /**
      * List of key information that can be provided when the secure session is created.

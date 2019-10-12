@@ -22,7 +22,7 @@ TLV::TLV(std::vector<char> &binary) : binary(binary)
     length = 0;
 }
 
-bool TLV::parse(std::shared_ptr<Tag> tag, int offset)
+bool TLV::parse(const std::shared_ptr<Tag> tag, int offset)
 {
     if (tag == nullptr) {
         throw std::invalid_argument("TLV parsing: tag can't be null.");

@@ -8,12 +8,12 @@
 #include "KeypleReaderNotFoundException.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
-#include "PcscReader.h"
+#include "PcscReader_Import.h"
 #include "PcscReaderSettings_Import.h"
 #include "PcscReadersSettings.h"
-#include "PcscProtocolSetting.h"
+#include "PcscProtocolSetting_Import.h"
 #include "PcscReadersSettings.h"
-#include "ObservableReader.h"
+#include "ObservableReader_Import.h"
 
 using namespace org::eclipse::keyple::common;
 using namespace org::eclipse::keyple::core::seproxy;

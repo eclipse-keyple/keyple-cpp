@@ -1,3 +1,5 @@
+#include <unordered_map>
+
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "CalypsoUtilities.h"
@@ -14,10 +16,10 @@
 #include "PcscReader.h"
 #include "PcscReaderSettings_Import.h"
 #include "PcscReadersSettings.h"
-#include "PcscProtocolSetting.h"
+#include "PcscProtocolSetting_Import.h"
 #include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "ObservableReader.h"
+#include "ObservableReader_Import.h"
 
 /* Common */
 #include "stringhelper.h"

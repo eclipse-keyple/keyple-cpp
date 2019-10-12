@@ -1,18 +1,24 @@
-{
+﻿{
   "configurations": [
     {
       "name": "build",
-      /*"generator": "Linux Makefile", */
-		  "codeAnalysisRuleset": "","generator": "Visual Studio 15 2017",
-      "configurationType" : "Debug",
-      "buildRoot":  "${projectDir}/${name}",
-      "cmakeCommandArgs":  "",
+      "codeAnalysisRuleset": "",
+      "generator": "Visual Studio 16 2019",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}/build",
+      "cmakeCommandArgs": "",
       "buildCommandArgs": "",
-      "ctestCommandArgs":  "",
-      "variables": [{
-        "name": "TEST_VAR",
-        "value": "ON"
-        }]
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "TEST_VAR",
+          "value": "ON",
+          "type": "STRING"
+        }
+      ],
+      "inheritEnvironments": [],
+      "cmakeExecutable": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\",
+      "intelliSenseMode": "windows-msvc-x86"
     }
   ]
 }

@@ -67,14 +67,14 @@ private:
      * @return a settings map
 */
 public:
-    static std::unordered_map<SeCommonProtocols, std::string>& getSpecificSettings(std::set<SeCommonProtocols>& specificProtocols);
+    static std::unordered_map<SeCommonProtocols, std::string> getSpecificSettings(std::set<SeCommonProtocols>& specificProtocols);
 
     /**
      * Return the whole settings map
      * 
      * @return a settings map
      */
-    static std::unordered_map<SeCommonProtocols, std::string>& getAllSettings();
+    static std::unordered_map<SeCommonProtocols, std::string> getAllSettings();
 };
 
 }

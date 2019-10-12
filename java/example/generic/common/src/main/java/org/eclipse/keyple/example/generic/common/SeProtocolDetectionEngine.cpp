@@ -8,9 +8,9 @@
 #include "ByteArrayUtil.h"
 #include "ChannelState.h"
 #include "MatchingSelection.h"
-#include "SeCommonProtocols.h"
+#include "SeCommonProtocols_Import.h"
 #include "SeReader.h"
-#include "SeSelector.h"
+#include "SeSelector_Import.h"
 
 /* Calypso */
 #include "PoSelector.h"

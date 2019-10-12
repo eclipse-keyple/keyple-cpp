@@ -70,7 +70,7 @@ bool CardTerminal::isCardPresent()
         BYTE pbAtr[261];
         SCARDHANDLE hCard;
         DWORD atrLen = sizeof(pbAtr);
-        DWORD chReaderLen = strlen(name.c_str()) + 1;
+        DWORD chReaderLen = 200; //strlen(name.c_str()) + 1;
         LONG rv;
 
         logger->debug("isCardPresent - connecting to card\n");

@@ -7,7 +7,7 @@
 #include "KeypleChannelStateException.h"
 #include "KeypleIOReaderException.h"
 #include "SeRequest.h"
-#include "SeSelector.h"
+#include "SeSelector_Import.h"
 
 namespace org {
 namespace eclipse {

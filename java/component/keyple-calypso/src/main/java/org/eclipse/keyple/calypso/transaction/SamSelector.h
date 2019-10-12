@@ -17,10 +17,13 @@
 #include <memory>
 
 /* Core */
-#include "SeSelector.h"
+#include "SeSelector_Import.h"
 
 /* Calypso */
-#include "SamRevision.h"
+#include "SamRevision_Import.h"
+
+/* Common */
+#include "Export.h"
 
 namespace org {
 namespace eclipse {
@@ -35,7 +38,7 @@ using SeSelector = org::eclipse::keyple::core::seproxy::SeSelector;
  * The {@link SamSelector} class extends {@link SeSelector} to handle specific Calypso SAM needs
  * such as model identification.
  */
-class SamSelector : public SeSelector {
+class EXPORT SamSelector : public SeSelector {
     /**
      * Create a SeSelector to perform the SAM selection
      * <p>

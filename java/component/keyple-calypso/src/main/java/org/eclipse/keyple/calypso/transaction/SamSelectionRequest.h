@@ -22,8 +22,11 @@
 /* Core */
 #include "AbstractSeSelectionRequest.h"
 #include "ChannelState.h"
-#include "SeProtocol.h"
+#include "SeProtocol_Import.h"
 #include "SeResponse.h"
+
+/* Common */
+#include "Export.h"
 
 namespace org {
 namespace eclipse {
@@ -41,7 +44,7 @@ using namespace org::eclipse::keyple::core::seproxy::message;
 /**
  * Specialized selection request to manage the specific characteristics of Calypso SAMs
  */
-class SamSelectionRequest : public AbstractSeSelectionRequest {
+class EXPORT SamSelectionRequest : public AbstractSeSelectionRequest {
    /**
     * Create a {@link SamSelectionRequest}
     * 

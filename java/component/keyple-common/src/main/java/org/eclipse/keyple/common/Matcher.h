@@ -6,14 +6,14 @@
 
 #include "Export.h"
 
-class Pattern;  
+class Pattern;
 
 class EXPORT Matcher {
-private:
+  private:
     /**
      * The Pattern object that created this Matcher.
      */
-    Pattern* parentPattern;
+    Pattern *parentPattern;
 
     /**
      * The original string being matched.
@@ -33,8 +33,8 @@ private:
      * match does not have to consume all of the input. ENDANCHOR is
      * the mode used for matching all the input.
      */
-    int ENDANCHOR = 1;
-    int NOANCHOR = 0;
+    int ENDANCHOR  = 1;
+    int NOANCHOR   = 0;
     int acceptMode = NOANCHOR;
 
     /**
@@ -78,6 +78,16 @@ private:
     bool requireEnd;
 
     /**
+	 * Substring on which the regex_search is applied. It used to be a temp
+	 * variable whithin the Matcher::search() function but for some
+	 * reasons, on Windows, the 'groups' std::smatch doesn't keep its data
+	 * after leaving the Matcher::search() function (e.g. in other words, it's
+	 * very probable that std::match only provides references to specific
+	 * locations in an existing string).
+	 */
+    std::string subs;
+
+    /**
      * The storage used by groups. They may contain invalid values if
      * a group was skipped during the matching.
      */
@@ -95,11 +105,11 @@ private:
      */
     std::vector<int> locals;
 
-public:
+  public:
     /**
      * All matchers have the state used by Pattern during a match.
      */
-    Matcher(Pattern* parent, const std::string& text);
+    Matcher(Pattern *parent, const std::string &text);
 
     /**
      * Initiates a search for an anchored match to a Pattern within the given

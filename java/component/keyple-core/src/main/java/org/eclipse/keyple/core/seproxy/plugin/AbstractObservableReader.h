@@ -26,7 +26,7 @@
 #include "KeypleChannelStateException.h"
 #include "KeypleIOReaderException.h"
 #include "KeypleReaderException.h"
-#include "ObservableReader.h"
+#include "ObservableReader_Import.h"
 #include "ProxyReader.h"
 
 /* Namespace */

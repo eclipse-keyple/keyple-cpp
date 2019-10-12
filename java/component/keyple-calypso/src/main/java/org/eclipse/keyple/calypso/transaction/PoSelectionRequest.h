@@ -32,7 +32,7 @@
 
 /* Core */
 #include "AbstractApduResponseParser_Import.h"
-#include "SeProtocol.h"
+#include "SeProtocol_Import.h"
 
 /* Calypso */
 #include "PoSelector.h"
@@ -61,7 +61,7 @@ using namespace org::eclipse::keyple::calypso::transaction;
 /**
  * Specialized selection request to manage the specific characteristics of Calypso POs
  */
-class PoSelectionRequest final : public AbstractSeSelectionRequest {
+class EXPORT PoSelectionRequest final : public AbstractSeSelectionRequest {
   private:
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PoSelectionRequest));
 

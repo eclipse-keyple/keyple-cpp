@@ -1,5 +1,5 @@
 /* Core */
-#include "SeCommonProtocols.h"
+#include "SeCommonProtocols_Import.h"
 
 /* Calypso */
 #include "SamSelector.h"

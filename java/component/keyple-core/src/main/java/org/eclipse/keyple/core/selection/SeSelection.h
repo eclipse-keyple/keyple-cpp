@@ -25,6 +25,11 @@
 #include "SeRequest.h"
 #include "SeRequestSet.h"
 
+/* Common */
+#include "Export.h"
+#include "Logger.h"
+#include "LoggerFactory.h"
+
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -46,7 +51,7 @@ using LoggerFactory                     = org::eclipse::keyple::common::LoggerFa
     * <p>
     * It provides a way to do explicit SE selection or to post process a default SE selection.
     */
-class SeSelection final : public std::enable_shared_from_this<SeSelection> {
+class EXPORT SeSelection final : public std::enable_shared_from_this<SeSelection> {
 private:
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SeSelection));
 

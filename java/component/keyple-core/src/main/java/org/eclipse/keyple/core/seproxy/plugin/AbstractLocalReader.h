@@ -31,8 +31,9 @@
 #include "ApduResponse.h"
 #include "ByteArrayUtil.h"
 #include "KeypleApplicationSelectionException.h"
-#include "ObservableReader.h"
+#include "ObservableReader_Import.h"
 #include "SelectionStatus.h"
+#include "SeSelector_Import.h"
 
 namespace org {
 namespace eclipse {

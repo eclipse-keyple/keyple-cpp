@@ -23,7 +23,7 @@
 #include "LoggerFactory.h"
 
 /* Core */
-#include "Tag.h"
+#include "Tag_Import.h"
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"

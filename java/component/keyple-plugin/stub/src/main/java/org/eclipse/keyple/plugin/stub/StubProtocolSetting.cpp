@@ -1,5 +1,5 @@
 #include "StubProtocolSetting.h"
-#include "SeProtocol.h"
+#include "SeProtocol_Import.h"
 
 namespace org {
 namespace eclipse {

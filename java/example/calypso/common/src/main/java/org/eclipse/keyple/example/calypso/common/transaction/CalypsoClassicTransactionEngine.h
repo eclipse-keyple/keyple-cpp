@@ -18,7 +18,7 @@
 #include <memory>
 
 #include "AbstractReaderObserverEngine.h"
-#include "PoTransaction.h"
+#include "PoTransaction_Import.h"
 #include "SeSelection.h"
 
 namespace org {

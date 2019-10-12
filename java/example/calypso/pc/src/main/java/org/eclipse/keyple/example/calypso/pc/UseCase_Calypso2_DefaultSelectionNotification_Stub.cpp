@@ -4,7 +4,7 @@
 #include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader.h"
+#include "ObservableReader_Import.h"
 #include "PoSelectionRequest.h"
 #include "PoSelector.h"
 #include "ReaderEvent_Import.h"
@@ -14,7 +14,7 @@
 #include "SeProxyService.h"
 #include "StubCalypsoClassic.h"
 #include "StubSamCalypsoClassic.h"
-#include "StubProtocolSetting.h"
+#include "StubProtocolSetting_Import.h"
 #include "StubPlugin.h"
 #include "StubReader.h"
 

@@ -1,7 +1,7 @@
 /* Core */
 #include "KeypleBaseException.h"
-#include "ObservableReader.h"
-#include "SeProtocol.h"
+#include "ObservableReader_Import.h"
+#include "SeProtocol_Import.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 

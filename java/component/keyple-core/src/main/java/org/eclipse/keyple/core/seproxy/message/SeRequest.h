@@ -20,12 +20,15 @@
 
 /* Core */
 #include "ChannelState.h"
-#include "SeSelector.h"
 #include "ApduRequest.h"
+#include "SeProtocol_Import.h"
 
 /* Common */
 #include "Export.h"
 #include "Serializable.h"
+
+/* Forward declaration */
+namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { class SeSelector; }}}}}
 
 namespace org {
 namespace eclipse {
@@ -33,6 +36,7 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 namespace message {
+
 
 using ChannelState = org::eclipse::keyple::core::seproxy::ChannelState;
 using SeProtocol   = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;

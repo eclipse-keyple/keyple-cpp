@@ -12,13 +12,13 @@
 #include "NoStackTraceThrowable.h"
 #include "PcscPlugin.h"
 #include "ReaderUtilities.h"
-#include "SeCommonProtocols.h"
+#include "SeCommonProtocols_Import.h"
 #include "SelectionStatus.h"
-#include "SeProtocol.h"
+#include "SeProtocol_Import.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 #include "SeResponse.h"
-#include "SeSelector.h"
+#include "SeSelector_Import.h"
 #include "SeSelection.h"
 
 using namespace org::eclipse::keyple::common;

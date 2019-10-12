@@ -18,10 +18,10 @@
 #include <memory>
 
 /* Core */
-#include "SeSelector.h"
+#include "SeSelector_Import.h"
 
-/* Calypso */
-#include "PoSelector.h"
+/* Common */
+#include "Export.h"
 
 namespace org {
 namespace eclipse {
@@ -36,7 +36,7 @@ using SeProtocol    = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
     * The {@link PoSelector} class extends {@link SeSelector} to handle specific PO features such as
     * the additional successful status codes list (in response to a select application command)
     */
-class PoSelector final : public SeSelector {
+class EXPORT PoSelector final : public SeSelector {
     /**
         * Indicates if an invalidated PO should be selected or not.
         * <p>
@@ -54,7 +54,7 @@ public:
         * PoAidSelector embedding the Calypo PO additional successful codes list
         */
 public:
-    class PoAidSelector : public SeSelector::AidSelector {
+    class EXPORT PoAidSelector : public SeSelector::AidSelector {
 
     private:
         static const std::shared_ptr<std::set<int>> successfulSelectionStatusCodes;
@@ -103,7 +103,7 @@ protected:
         * Could be completed to handle Calypso specific ATR filtering process.
         */
 public:
-    class PoAtrFilter : public SeSelector::AtrFilter {
+    class EXPORT PoAtrFilter : public SeSelector::AtrFilter {
 
         /**
             * Regular expression based filter

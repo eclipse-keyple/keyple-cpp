@@ -22,9 +22,10 @@
 #include "TransmissionMode.h"
 
 /* Calypso */
-#include "SamRevision.h"
+#include "SamRevision_Import.h"
 
 /* Common */
+#include "Export.h"
 #include "exceptionhelper.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
@@ -44,7 +45,7 @@ using Logger             = org::eclipse::keyple::common::Logger;
 using LoggerFactory      = org::eclipse::keyple::common::LoggerFactory;
 using TransmissionMode   = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
 
-class CalypsoSam : public AbstractMatchingSe {
+class EXPORT CalypsoSam : public AbstractMatchingSe {
 private:
     const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CalypsoSam));
 

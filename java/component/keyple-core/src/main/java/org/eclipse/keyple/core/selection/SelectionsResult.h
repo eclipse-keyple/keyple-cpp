@@ -15,6 +15,8 @@
 #include <vector>
 #include <memory>
 
+#include "Export.h"
+
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org { namespace eclipse { namespace keyple { namespace core { namespace selection { class MatchingSelection; } } } } }
 
@@ -33,7 +35,7 @@ namespace selection {
     * provides a set of methods to retrieve the active selection (getActiveSelection) or a particular
     * selection specified by its index.
     */
-class SelectionsResult final : public std::enable_shared_from_this<SelectionsResult> {
+class EXPORT SelectionsResult final : public std::enable_shared_from_this<SelectionsResult> {
 private:
 //JAVA TO C++ CONVERTER NOTE: Fields cannot have the same name as methods:
     bool hasActiveSelection_Renamed = false;

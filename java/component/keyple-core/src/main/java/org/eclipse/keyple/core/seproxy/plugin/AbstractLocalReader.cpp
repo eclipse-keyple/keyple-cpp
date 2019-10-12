@@ -13,11 +13,12 @@
 #include "KeypleApplicationSelectionException.h"
 #include "ReaderEvent_Import.h"
 #include "SeRequest.h"
-#include "SeProtocol.h"
+#include "SeProtocol_Import.h"
 #include "SeResponse.h"
 #include "SeResponseSet.h"
 #include "SeRequestSet.h"
 #include "SeRequest.h"
+#include "SeSelector_Import.h"
 
 namespace org {
 namespace eclipse {
