@@ -36,7 +36,7 @@ using CardException  = org::eclipse::keyple::smartcardio::CardException;
 
 CardChannel::CardChannel(Card* card, int channel) : card(card), channel(channel)
 {
-    
+    this->isClosed = false;
 }
 
 Card* CardChannel::getCard()
