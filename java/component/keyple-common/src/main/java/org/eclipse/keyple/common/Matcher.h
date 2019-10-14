@@ -33,9 +33,9 @@ class EXPORT Matcher {
      * match does not have to consume all of the input. ENDANCHOR is
      * the mode used for matching all the input.
      */
-    int ENDANCHOR  = 1;
-    int NOANCHOR   = 0;
-    int acceptMode = NOANCHOR;
+    int ENDANCHOR = 1;
+    //int NOANCHOR = 0;
+    //int acceptMode = NOANCHOR;
 
     /**
      * The range of string that last matched the pattern. If the last
@@ -63,7 +63,7 @@ class EXPORT Matcher {
      * If hitEnd is false and a match was not found, then more
      * input will not cause a match to be found.
      */
-    bool hitEnd;
+    //bool hitEnd;
 
     /**
      * Boolean indicating whether or not more input could change
@@ -75,16 +75,16 @@ class EXPORT Matcher {
      * input might change the match but the match won't be lost.
      * If a match was not found, then requireEnd has no meaning.
      */
-    bool requireEnd;
+    //bool requireEnd;
 
     /**
-	 * Substring on which the regex_search is applied. It used to be a temp
-	 * variable whithin the Matcher::search() function but for some
-	 * reasons, on Windows, the 'groups' std::smatch doesn't keep its data
-	 * after leaving the Matcher::search() function (e.g. in other words, it's
-	 * very probable that std::match only provides references to specific
-	 * locations in an existing string).
-	 */
+     * Substring on which the regex_search is applied. It used to be a temp
+     * variable whithin the Matcher::search() function but for some
+     * reasons, on Windows, the 'groups' std::smatch doesn't keep its data
+     * after leaving the Matcher::search() function (e.g. in other words, it's
+     * very probable that std::match only provides references to specific
+     * locations in an existing string).
+     */
     std::string subs;
 
     /**
