@@ -1,0 +1,97 @@
+#
+# Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+#
+# All rights reserved. This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
+# available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
+#
+
+SET(CMAKE_MACOSX_RPATH 1)
+SET(CMAKE_CXX_STANDARD 11)
+
+IF(WIN32)
+	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
+ENDIF(WIN32)
+
+INCLUDE_DIRECTORIES(
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
+
+    # Example generic common
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/common/src/main
+    
+    # Example generic pc
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/pc/src/main
+    
+	# Example calypso common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/postructure
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/transaction
+
+	# Core
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main/java/org/eclipse/keyple/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/command
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/selection
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/exception
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/message
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/protocol
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util
+
+	# Plugin - PC/SC
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/pcsc/src/main
+
+	# Smartcard I/O
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main
+	
+	# Calypso
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po/builder
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po/parser
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/sam
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/sam/builder
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/sam/parser
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/transaction
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/transaction/exception
+
+	# pcsc (Linux / macOS)
+	/usr/include/PCSC
+)
+
+IF(WIN32)
+	SET(CMAKE_FIND_LIBRARY_PREFIXES "")
+	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
+	SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
+	SET(WINSCARD winscard.lib)
+ENDIF(WIN32)
+
+IF(APPLE)
+	SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
+	SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
+	SET(WINSCARD "-framework PCSC")
+ENDIF(APPLE)
+
+IF(UNIX)
+	FIND_LIBRARY(WINSCARD pcsclite)
+ENDIF(UNIX)
+
+ADD_EXECUTABLE(usecase_calypso4_poauthentication_pcsc
+
+	# Example - Common
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/common/src/main/AbstractReaderObserverEngine.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/pc/src/main/PcscReadersSettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/pc/src/main/ReaderUtilities.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/postructure/CalypsoClassicInfo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/transaction/CalypsoUtilities.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/transaction/CalypsoClassicTransactionEngine.cpp
+
+	# Example - PC
+    ${CMAKE_CURRENT_SOURCE_DIR}/PcscReadersSettings.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/UseCase_Calypso4_PoAuthentication_Pcsc.cpp
+)
+
+TARGET_LINK_LIBRARIES(usecase_calypso4_poauthentication_pcsc keyplepluginpcsc keyplecore keyplesmartcardio keyplecalypso ${WINSCARD})

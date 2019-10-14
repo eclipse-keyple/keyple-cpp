@@ -1,0 +1,58 @@
+#
+# Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+#
+# All rights reserved. This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
+# available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
+#
+
+SET(CMAKE_MACOSX_RPATH 1)
+SET(CMAKE_CXX_STANDARD 11)
+
+IF(WIN32)
+	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
+ENDIF(WIN32)
+
+INCLUDE_DIRECTORIES(
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/stub/se
+
+	# Example generic common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main
+
+	# Core
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/message
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/protocol
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/transaction
+
+	# Plugin - Stub
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/stub/src/main/plugin/stub
+)
+
+ADD_EXECUTABLE(demo_observablereadernotification_stub
+
+	# Example - Common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/ObservableReaderNotificationEngine.cpp
+
+	# Example - PC
+	${CMAKE_CURRENT_SOURCE_DIR}/stub/se/StubSe1.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/stub/se/StubSe2.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Demo_ObservableReaderNotification_Stub.cpp
+)
+
+IF(UNIX)
+	SET(SPEC_LIBS pthread)
+ENDIF(UNIX)
+
+IF(APPLE)
+	SET(SPEC_LIBS pthread)
+ENDIF(APPLE)
+
+TARGET_LINK_LIBRARIES(demo_observablereadernotification_stub keyplepluginstub ${SPEC_LIBS})
+
