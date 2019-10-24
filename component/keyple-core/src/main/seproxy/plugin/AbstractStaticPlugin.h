@@ -17,44 +17,57 @@
 
 #include "AbstractObservablePlugin.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace plugin {
 
 /**
-    * Abstract Observable Plugin class dedicated to static reader configurations
-    */
+ * Abstract Observable Plugin class dedicated to static reader configurations
+ */
 class AbstractStaticPlugin : public AbstractObservablePlugin {
+public:
+    /**
+     *
+     */
+    void addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
+
+    /**
+     *
+     */
+    void removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
+
+    /**
+     *
+     */
+    virtual ~AbstractStaticPlugin() {}
+
 protected:
+    /**
+     *
+     */
     AbstractStaticPlugin(const std::string &name);
 
     /**
-        * Empty start and stopObservation implementations to avoid implementation at the plugin level
-        * and remain in compliance with {@link AbstractObservablePlugin}.
-        */
-
+     * Empty start and stopObservation implementations to avoid implementation at the plugin level
+     * and remain in compliance with {@link AbstractObservablePlugin}.
+     */
     void startObservation() override final;
 
+    /**
+     *
+     */
     void stopObservation() override final;
 
-    /** Prevents the use of observers that are not available in a static reader context */
-
-public:
-    void addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
-
-    void removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
-
-protected:
-    std::shared_ptr<AbstractStaticPlugin> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<AbstractStaticPlugin> shared_from_this()
+    {
         return std::static_pointer_cast<AbstractStaticPlugin>(AbstractObservablePlugin::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

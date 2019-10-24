@@ -1,18 +1,29 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "UpdateRecordRespPars.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace parser {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
+using namespace keyple::core::command;
 
 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> UpdateRecordRespPars::STATUS_TABLE;
 
-UpdateRecordRespPars::StaticConstructor::StaticConstructor() {
+UpdateRecordRespPars::StaticConstructor::StaticConstructor()
+{
     std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
     m.emplace(0x6400, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Too many modifications in session"));
     m.emplace(0x6700, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Lc value not supported"));
@@ -29,16 +40,16 @@ UpdateRecordRespPars::StaticConstructor::StaticConstructor() {
 
 UpdateRecordRespPars::StaticConstructor UpdateRecordRespPars::staticConstructor;
 
-std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> UpdateRecordRespPars::getStatusTable() {
+std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> UpdateRecordRespPars::getStatusTable()
+{
     return STATUS_TABLE;
 }
 
 UpdateRecordRespPars::UpdateRecordRespPars(std::shared_ptr<ApduResponse> response)
-: AbstractPoResponseParser(response) {
+: AbstractPoResponseParser(response)
+{
 }
 
-}
-}
 }
 }
 }

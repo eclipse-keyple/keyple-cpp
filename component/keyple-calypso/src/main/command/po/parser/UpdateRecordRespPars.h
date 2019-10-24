@@ -20,53 +20,61 @@
 #include "AbstractPoResponseParser.h"
 #include "ApduResponse.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace parser {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using AbstractPoResponseParser   = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
-using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::core::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::seproxy::message;
 
 /**
-    * Update Record response parser. See specs: Calypso / page 96 / 9.4.11 - Update Record
-    */
+ * Update Record response parser. See specs: Calypso / page 96 / 9.4.11 - Update Record
+ */
 class UpdateRecordRespPars final : public AbstractPoResponseParser {
+public:
+    /**
+     * Instantiates a new UpdateRecordRespPars.
+     */
+    UpdateRecordRespPars(std::shared_ptr<ApduResponse> response);
+
+protected:
+    /**
+     *
+     */
+    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
+
+    /**
+     *
+     */
+    std::shared_ptr<UpdateRecordRespPars> shared_from_this()
+            {
+        return std::static_pointer_cast<UpdateRecordRespPars>(AbstractPoResponseParser::shared_from_this());
+    }
 
 private:
+    /**
+     *
+     */
     static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
-private:
+    /**
+     *
+     */
     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
     public:
         StaticConstructor();
     };
 
-private:
+    /**
+     *
+     */
     static UpdateRecordRespPars::StaticConstructor staticConstructor;
 
-
-protected:
-    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
-
-    /**
-        * Instantiates a new UpdateRecordRespPars.
-        */
-public:
-    UpdateRecordRespPars(std::shared_ptr<ApduResponse> response);
-
-protected:
-    std::shared_ptr<UpdateRecordRespPars> shared_from_this() {
-        return std::static_pointer_cast<UpdateRecordRespPars>(AbstractPoResponseParser::shared_from_this());
-    }
 };
 
-}
-}
 }
 }
 }

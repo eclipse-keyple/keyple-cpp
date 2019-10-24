@@ -20,18 +20,16 @@
 /* Common */
 #include "Export.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace util {
 namespace bertlv {
 
 /**
-    * This class represent a TAG as defined by the Basic Encoding Rules for ASN.1
-    * <p>
-    * (ITU-T X.690 / ISO 8825)
-    */
+ * This class represent a TAG as defined by the Basic Encoding Rules for ASN.1
+ * <p>
+ * (ITU-T X.690 / ISO 8825)
+ */
 class EXPORT Tag : public std::enable_shared_from_this<Tag> {
 public:
     /**
@@ -42,28 +40,6 @@ public:
         CONSTRUCTED
     };
 
-private:
-    /**
-     *
-     */
-    int tagNumber;
-
-    /**
-     *
-     */
-    char tagClass;
-
-    /**
-     *
-     */
-    TagType tagType;
-
-    /**
-     *
-     */
-    int size;
-
-public:
     /**
      * The tag class
      */
@@ -127,10 +103,29 @@ public:
      *
      */
     std::string toString();
+
+private:
+    /**
+     *
+     */
+    int tagNumber;
+
+    /**
+     *
+     */
+    char tagClass;
+
+    /**
+     *
+     */
+    TagType tagType;
+
+    /**
+     *
+     */
+    int size;
 };
 
-}
-}
 }
 }
 }

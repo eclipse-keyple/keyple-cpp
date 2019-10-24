@@ -1,10 +1,14 @@
-/*
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * All rights reserved. This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
- * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
- */
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
 
 #pragma once
 
@@ -20,34 +24,15 @@
 #include "Logger.h"
 #include "LoggerFactory.h"
 
-namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class Card; }}}}
+namespace keyple { namespace smartcardio { class Card; } }
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-using Card          = org::eclipse::keyple::smartcardio::Card;
-using Logger        = org::eclipse::keyple::common::Logger;
-using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+using namespace keyple::smartcardio;
+using namespace keyple::common;
 
 class EXPORT CardTerminal {
-private:
-    /**
-     * The name of this terminal (native PC/SC name)
-     */
-    const std::string name;
-
-    /**
-     * 
-     */
-    Card* card;
-
-    /**
-     *
-     */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardTerminal));
-
 public:
     /**
      * Native SCARDCONTEXT
@@ -145,13 +130,26 @@ public:
 
 private:
     /**
+     * The name of this terminal (native PC/SC name)
+     */
+    const std::string name;
+
+    /**
+     *
+     */
+    Card* card;
+
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardTerminal));
+
+    /**
      *
      */
     bool waitForCard(bool wantPresent, long timeout);
 };
 
-}
-}
 }
 }
 

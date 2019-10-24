@@ -2,6 +2,12 @@
 
 #include "Exception.h"
 
+namespace keyple {
+namespace common {
+
 class InterruptedException : public Exception {
 
 };
+
+}
+}

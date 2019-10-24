@@ -1,10 +1,16 @@
-/*
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* All rights reserved. This program and the accompanying materials are made available under the
-* terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
-* available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
-*/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 /* Smartcard I/O */
 #include "ATR.h"
@@ -19,16 +25,12 @@
 /* Core */
 #include "ByteArrayUtil.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-using ATR            = org::eclipse::keyple::smartcardio::ATR;
-using ByteArrayUtil  = org::eclipse::keyple::core::util::ByteArrayUtil;
-using CardTerminal   = org::eclipse::keyple::smartcardio::CardTerminal;
-using Logger         = org::eclipse::keyple::common::Logger;
-using PCSCException  = org::eclipse::keyple::smartcardio::PCSCException;
+using namespace keyple::smartcardio;
+using namespace keyple::core::util;
+using namespace keyple::common;
 
 std::vector<char> commandOpenChannel = {0, 0x70, 0, 0, 1};
 
@@ -288,7 +290,5 @@ int Card::getSW(std::vector<char> b)
     return (sw1 << 8) | sw2;
 }
 
-}
-}
 }
 }

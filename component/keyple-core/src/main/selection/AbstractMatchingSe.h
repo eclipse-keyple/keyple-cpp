@@ -21,45 +21,22 @@
 #include "Export.h"
 
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SeResponse; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SelectionStatus; } } } } } }
+/* Forward class declarations  */
+namespace keyple { namespace core { namespace seproxy { namespace message { class SeResponse; } } } }
+namespace keyple { namespace core { namespace seproxy { namespace message { class SelectionStatus; } } } }
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace selection {
 
-using namespace org::eclipse::keyple::core::seproxy::message;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::protocol;
 
 /**
-    * AbstractMatchingSe is the class to manage the elements of the result of a selection.
-    *
-    */
+ * AbstractMatchingSe is the class to manage the elements of the result of a selection.
+ *
+ */
 class EXPORT AbstractMatchingSe : public std::enable_shared_from_this<AbstractMatchingSe> {
-private:
-    /**
-     *
-     */
-    const std::shared_ptr<SeResponse> selectionResponse;
-
-    /**
-     *
-     */
-    const TransmissionMode transmissionMode;
-
-    /**
-     *
-     */
-    std::shared_ptr<SelectionStatus> selectionStatus;
-
-    /**
-     *
-     */
-    const std::string selectionExtraInfo;
-
 public:
     /**
      * Constructor.
@@ -93,10 +70,29 @@ public:
      * @return the selection extra info string
      */
     virtual std::string getSelectionExtraInfo();
+
+private:
+    /**
+     *
+     */
+    const std::shared_ptr<SeResponse> selectionResponse;
+
+    /**
+     *
+     */
+    const TransmissionMode transmissionMode;
+
+    /**
+     *
+     */
+    std::shared_ptr<SelectionStatus> selectionStatus;
+
+    /**
+     *
+     */
+    const std::string selectionExtraInfo;
 };
 
-}
-}
 }
 }
 }

@@ -20,8 +20,6 @@
 #include "AbstractOpenSessionCmdBuild.h"
 #include "OpenSession32RespPars.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -29,10 +27,11 @@ namespace po {
 namespace builder {
 namespace security {
 
-using OpenSession32RespPars = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession32RespPars;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::po::parser::security;
+using namespace keyple::core::seproxy::message;
 
 class OpenSession32CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSession32RespPars> {
+public:
     /**
      * Instantiates a new AbstractOpenSessionCmdBuild.
      *
@@ -43,19 +42,25 @@ class OpenSession32CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSessi
      * @param extraInfo extra information included in the logs (can be null or empty)
      * @throws IllegalArgumentException - if the request is inconsistent
      */
-public:
-    OpenSession32CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo);
-	std::shared_ptr<OpenSession32RespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    OpenSession32CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead,
+                          const std::string &extraInfo);
+
+    /**
+     *
+     */
+    std::shared_ptr<OpenSession32RespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 
 protected:
-    std::shared_ptr<OpenSession32CmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<OpenSession32CmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<OpenSession32CmdBuild>(AbstractOpenSessionCmdBuild<OpenSession32RespPars>::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

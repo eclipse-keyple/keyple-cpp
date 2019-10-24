@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #pragma once
 
 #include <string.h>
@@ -19,32 +31,12 @@
 #include "Logger.h"
 #include "LoggerFactory.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
-using Logger        = org::eclipse::keyple::common::Logger;
+using namespace keyple::common;
 
 class EXPORT CardTerminals {
-protected:
-    /**
-	 *
-	 */
-    SCARDCONTEXT ctx;
-
-private:
-    /**
-	 *
-	 */
-    std::vector<CardTerminal> terminals;
-
-    /**
-	 *
-	 */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardTerminals));
-
 public:
     /**
 	 * Returns an unmodifiable list of all available terminals.
@@ -70,9 +62,25 @@ public:
      * Destructor
      */
     ~CardTerminals();
+
+protected:
+    /**
+	 *
+	 */
+    SCARDCONTEXT ctx;
+
+private:
+    /**
+	 *
+	 */
+    std::vector<CardTerminal> terminals;
+
+    /**
+	 *
+	 */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardTerminals));
+
 };
 
-}
-}
 }
 }

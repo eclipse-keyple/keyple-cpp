@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "KeypleReaderNotFoundException.h"
 #include "KeypleBaseException.h"
 #include "PcscReadersSettings.h"
@@ -9,17 +21,15 @@
 #include "SeProxyService.h"
 #include "SeReader.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
 namespace pc {
 
-using namespace org::eclipse::keyple::core::seproxy::protocol;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::exception;
-using namespace org::eclipse::keyple::plugin::pcsc;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::plugin::pcsc;
 
 std::shared_ptr<SeReader> ReaderUtilities::getReaderByName(const std::string &pattern)
 {
@@ -96,8 +106,6 @@ void ReaderUtilities::setContactsSettings(std::shared_ptr<SeReader> reader)
                                  PcscProtocolSetting::PCSC_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO7816_3]);
 }
 
-}
-}
 }
 }
 }

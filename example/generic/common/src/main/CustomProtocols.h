@@ -18,41 +18,101 @@
 /* Core */
 #include "SeProtocol_Import.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
 namespace common {
 
-using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace keyple::core::seproxy::protocol;
 
 /**
  * Custom protocol definitions to illustrate the extension of the Keyple SDK definitions
  */
 class CustomProtocols final : public SeProtocol {
 public:
+    /**
+     *
+     */
     static CustomProtocols CUSTOM_PROTOCOL_B_PRIME;
 
+    /**
+     *
+     */
     static CustomProtocols CUSTOM_PROTOCOL_MIFARE_DESFIRE;
 
-private:
-    static std::vector<CustomProtocols> valueList;
-
-    class StaticConstructor {
-    public:
-        StaticConstructor();
-    };
-
-    static StaticConstructor staticConstructor;
-
-public:
+    /**
+     *
+     */
     enum class InnerEnum {
         CUSTOM_PROTOCOL_B_PRIME,
         CUSTOM_PROTOCOL_MIFARE_DESFIRE
     };
 
+public:
+    /**
+     *
+     */
+    CustomProtocols(const std::string& nameValue, InnerEnum innerEnum, const std::string& name, TransmissionMode transmissionMode);
+
+    /**
+     *
+     */
+    std::string getName() override;
+
+    /**
+     *
+     */
+    TransmissionMode getTransmissionMode() const override;
+
+    /**
+     *
+     */
+    bool operator == (const CustomProtocols &other);
+
+    /**
+     *
+     */
+    bool operator != (const CustomProtocols &other);
+
+    /**
+     *
+     */
+    static std::vector<CustomProtocols> values();
+
+    /**
+     *
+     */
+    int ordinal();
+
+    /**
+     *
+     */
+    std::string toString();
+
+    /**
+     *
+     */
+    static CustomProtocols valueOf(const std::string &name);
+
 private:
+    /**
+     *
+     */
+    static std::vector<CustomProtocols> valueList;
+
+    /**
+     *
+     */
+    class StaticConstructor {
+    public:
+        StaticConstructor();
+    };
+
+    /**
+     *
+     */
+    static StaticConstructor staticConstructor;
+
     /**
      *
      */
@@ -82,33 +142,8 @@ private:
      *
      */
     TransmissionMode transmissionMode;
-
-public:
-    CustomProtocols(const std::string& nameValue, InnerEnum innerEnum, const std::string& name, TransmissionMode transmissionMode);
-
-    std::string getName() override;
-
-    /**
-     *
-     */
-    TransmissionMode getTransmissionMode() const override;
-
-public:
-    bool operator == (const CustomProtocols &other);
-
-    bool operator != (const CustomProtocols &other);
-
-    static std::vector<CustomProtocols> values();
-
-    int ordinal();
-
-    std::string toString();
-
-    static CustomProtocols valueOf(const std::string &name);
 };
 
-}
-}
 }
 }
 }

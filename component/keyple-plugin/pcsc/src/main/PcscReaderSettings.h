@@ -16,8 +16,6 @@
 
 #include "Export.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace pcsc {
@@ -47,8 +45,6 @@ public:
     static const std::string SETTING_KEY_LOGGING;
 };
 
-}
-}
 }
 }
 }

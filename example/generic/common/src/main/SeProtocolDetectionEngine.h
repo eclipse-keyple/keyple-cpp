@@ -25,17 +25,15 @@
 #include "SeSelection.h"
 
 /* Forward class declarations */
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { class SeReader; } } } }
+namespace keyple { namespace seproxy { class SeReader; } }
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
 namespace common {
 
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::selection;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::selection;
 
 /**
  * This code demonstrates the multi-protocols capability of the Keyple SeProxy
@@ -51,17 +49,6 @@ using namespace org::eclipse::keyple::core::selection;
  * is mainly event driven through the observability.
  */
 class SeProtocolDetectionEngine : public AbstractReaderObserverEngine {
-private:
-    /**
-     *
-     */
-    std::shared_ptr<SeReader> poReader;
-
-    /**
-     *
-     */
-    std::shared_ptr<SeSelection> seSelection;
-
 public:
     /**
      *
@@ -113,10 +100,19 @@ protected:
     {
         return std::static_pointer_cast<SeProtocolDetectionEngine>(AbstractReaderObserverEngine::shared_from_this());
     }
+
+private:
+    /**
+     *
+     */
+    std::shared_ptr<SeReader> poReader;
+
+    /**
+     *
+     */
+    std::shared_ptr<SeSelection> seSelection;
 };
 
-}
-}
 }
 }
 }

@@ -23,8 +23,6 @@
 /* Plugin */
 #include "StubSecureElement.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace calypso {
@@ -32,19 +30,13 @@ namespace pc {
 namespace stub {
 namespace se {
 
-using namespace org::eclipse::keyple::plugin::stub;
-using namespace org::eclipse::keyple::common;
+using namespace keyple::plugin::stub;
+using namespace keyple::common;
 
 /**
  * This class is an example of a Stub SAM
  */
 class StubSamCalypsoClassic : public StubSecureElement {
-private:
-    /**
-     *
-     */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(StubSamCalypsoClassic));
-
 public:
     /**
      *
@@ -84,10 +76,14 @@ protected:
     {
         return std::static_pointer_cast<StubSamCalypsoClassic>(StubSecureElement::shared_from_this());
     }
+
+private:
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(StubSamCalypsoClassic));
 };
 
-}
-}
 }
 }
 }

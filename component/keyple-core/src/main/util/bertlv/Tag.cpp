@@ -1,22 +1,36 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include <iostream>
 
 #include "Tag.h"
 
 #include "stringhelper.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace util {
 namespace bertlv {
+
+using namespace keyple::common;
 
 const char Tag::UNIVERSAL = static_cast<char>(0x00);
 const char Tag::APPLICATION = static_cast<char>(0x01);
 const char Tag::CONTEXT = static_cast<char>(0x02);
 const char Tag::PRIVATE = static_cast<char>(0x03);
 
-Tag::Tag(int tagNumber, char tagClass, TagType tagType) : tagNumber(tagNumber), tagClass(tagClass), tagType(tagType) {
+Tag::Tag(int tagNumber, char tagClass, TagType tagType)
+: tagNumber(tagNumber), tagClass(tagClass), tagType(tagType)
+{
     //if (tagType == nullptr) {
     //    throw std::invalid_argument("TLV Tag: type is null.");
     //}
@@ -53,7 +67,10 @@ Tag::Tag(std::vector<char> &binary, int offset)
         tagType = TagType::PRIMITIVE;
     }
 
-    /* the tag number is defined in the following bits (b4-b0) and possibly following octets */
+    /*
+     * The tag number is defined in the following bits (b4-b0) and possibly
+     * following octets.
+     */
     int index = offset;
     int number = 0;
     if ((binary[index] & static_cast<char>(0x1F)) == static_cast<char>(0x1F)) {
@@ -92,10 +109,13 @@ int Tag::getSize() {
 
 bool Tag::equals(std::shared_ptr<Tag> tag)
 {
-    return ((this->tagNumber == tag->tagNumber) && (this->tagClass == tag->tagClass) && (this->tagType == tag->tagType));
+    return ((this->tagNumber == tag->tagNumber) &&
+            (this->tagClass == tag->tagClass)   &&
+            (this->tagType == tag->tagType));
 }
 
-std::string Tag::toString() {
+std::string Tag::toString()
+{
     std::string tagClassString;
     switch (tagClass) {
         case Tag::UNIVERSAL:
@@ -114,11 +134,12 @@ std::string Tag::toString() {
             tagClassString = "UNKWOWN";
             break;
     }
-    return StringHelper::formatSimple("TAG: size=%d Class=%s, Type=%s, Number=%X", size, tagClassString, "<tag type>", tagNumber);
+
+    return StringHelper::formatSimple("TAG: size=%d Class=%s, Type=%s, " \
+                                     "Number=%X", size, tagClassString,
+                                     "<tag type>", tagNumber);
 }
 
-}
-}
 }
 }
 }

@@ -20,8 +20,6 @@
 #include "AbstractOpenSessionCmdBuild.h"
 #include "OpenSession24RespPars.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -29,8 +27,8 @@ namespace po {
 namespace builder {
 namespace security {
 
-using namespace org::eclipse::keyple::calypso::command::po::parser::security;
-using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace keyple::calypso::command::po::parser::security;
+using namespace keyple::core::seproxy::message;
 
 class OpenSession24CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSession24RespPars> {
     /**
@@ -45,17 +43,24 @@ class OpenSession24CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSessi
      * @throws IllegalArgumentException - if the request is inconsistent
      */
 public:
-    OpenSession24CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo);
-	std::shared_ptr<OpenSession24RespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    OpenSession24CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead,
+                          const std::string &extraInfo);
+
+    /**
+     *
+     */
+    std::shared_ptr<OpenSession24RespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<OpenSession24CmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<OpenSession24CmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<OpenSession24CmdBuild>(AbstractOpenSessionCmdBuild<OpenSession24RespPars>::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

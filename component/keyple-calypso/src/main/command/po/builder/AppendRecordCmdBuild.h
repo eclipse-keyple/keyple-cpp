@@ -23,18 +23,15 @@
 #include "CalypsoPoCommands.h"
 #include "PoClass.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace builder {
 
-
-using PoClass              = org::eclipse::keyple::calypso::command::PoClass;
-using AppendRecordRespPars = org::eclipse::keyple::calypso::command::po::parser::AppendRecordRespPars;
-using ApduResponse         = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::core::seproxy::message;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -77,8 +74,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

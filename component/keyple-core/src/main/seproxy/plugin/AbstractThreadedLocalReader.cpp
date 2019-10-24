@@ -1,23 +1,41 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 /* Core */
 #include "AbstractThreadedLocalReader.h"
 #include "NoStackTraceThrowable.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace plugin {
 
-using NoStackTraceThrowable = org::eclipse::keyple::core::seproxy::exception::NoStackTraceThrowable;
+using namespace keyple::core::seproxy::exception;
 
-AbstractThreadedLocalReader::AbstractThreadedLocalReader(const std::string &pluginName, const std::string &readerName) : AbstractSelectionLocalReader(pluginName, readerName) {
+AbstractThreadedLocalReader::AbstractThreadedLocalReader(
+  const std::string &pluginName, const std::string &readerName)
+: AbstractSelectionLocalReader(pluginName, readerName)
+{
 }
 
 void AbstractThreadedLocalReader::startObservation()
 {
     logger->debug("starting observation\n");
-    thread = std::make_shared<EventThread>(shared_from_this(), this->getPluginName(), AbstractLoggedObservable<ReaderEvent>::getName());
+    thread = std::make_shared<EventThread>(
+                              shared_from_this(),
+                              this->getPluginName(),
+                              AbstractLoggedObservable<ReaderEvent>::getName());
     thread->start();
 }
 
@@ -33,8 +51,12 @@ void AbstractThreadedLocalReader::setThreadWaitTimeout(long long timeout)
     this->threadWaitTimeout = timeout;
 }
 
-AbstractThreadedLocalReader::EventThread::EventThread(std::shared_ptr<AbstractThreadedLocalReader> outerInstance, const std::string &pluginName, const std::string &readerName)
-: Thread("observable-reader-events-" + std::to_string(++(outerInstance->threadCount))), outerInstance(outerInstance), pluginName(pluginName), readerName(readerName)
+AbstractThreadedLocalReader::EventThread::EventThread(
+  std::shared_ptr<AbstractThreadedLocalReader> outerInstance,
+  const std::string &pluginName, const std::string &readerName)
+: Thread("observable-reader-events-" +
+         std::to_string(++(outerInstance->threadCount))),
+  outerInstance(outerInstance), pluginName(pluginName), readerName(readerName)
 {
     outerInstance->logger->debug("constructor\n");
 
@@ -53,8 +75,10 @@ void *AbstractThreadedLocalReader::EventThread::run()
     outerInstance->logger->debug("starting thread (run)\n");
 
     try {
-        // First thing we'll do is to notify that a card was inserted if one is already
-        // present.
+        /*
+         * First thing we'll do is to notify that a card was inserted if one is
+         * already present.
+         */
         outerInstance->logger->debug("checking if a SE is present...\n");
         if (outerInstance->isSePresent()) {
             outerInstance->logger->debug("notify card inserted\n");
@@ -67,7 +91,8 @@ void *AbstractThreadedLocalReader::EventThread::run()
             if (outerInstance->isSePresent()) {
                 // we will wait for it to disappear
                 outerInstance->logger->debug("waiting for card to be removed...\n");
-                if (outerInstance->waitForCardAbsent(outerInstance->threadWaitTimeout)) {
+                if (outerInstance->waitForCardAbsent(
+                        outerInstance->threadWaitTimeout)) {
                     // and notify about it.
                     outerInstance->logger->debug("notify card removed\n");
                     outerInstance->cardRemoved();
@@ -82,28 +107,30 @@ void *AbstractThreadedLocalReader::EventThread::run()
                     outerInstance->logger->debug("notify card inserted\n");
                     outerInstance->cardInserted();
                 }
-                // false means timeout, and we go back to the beginning of the loop
+                /*
+                 * False means timeout, and we go back to the beginning of the
+                 * loop
+                 */
             }
         }
     }
     catch (const NoStackTraceThrowable &e) {
-        outerInstance->logger->trace("[%s] exception occurred in monitoring thread: %s\n", readerName, e.what());
+        outerInstance->logger->trace("[%s] exception occurred in monitoring " \
+                                     "thread: %s\n", readerName, e.what());
     }
 
     return NULL;
 }
 
-//JAVA TO C++ CONVERTER WARNING: Unlike Java, there is no automatic call to this finalizer method in native C++:
 void AbstractThreadedLocalReader::finalize()
 {
     thread->end();
     thread.reset();
-    logger->trace("[%s] Observable Reader thread ended\n", AbstractLoggedObservable<ReaderEvent>::getName());
+    logger->trace("[%s] Observable Reader thread ended\n",
+                  AbstractLoggedObservable<ReaderEvent>::getName());
     //AbstractSelectionLocalReader::finalize();
 }
 
-}
-}
 }
 }
 }

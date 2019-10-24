@@ -1,11 +1,21 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 /* Calypso */
 #include "CardGenerateKeyRespPars.h"
 
 /* Core */
 #include "ApduResponse.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -13,11 +23,14 @@ namespace sam {
 namespace parser {
 namespace security {
 
-using AbstractSamResponseParser = org::eclipse::keyple::calypso::command::sam::AbstractSamResponseParser;
-using ApduResponse              = org::eclipse::keyple::core::seproxy::message::ApduResponse;
-using StatusProperties          = org::eclipse::keyple::core::command::AbstractApduResponseParser::StatusProperties;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::command;
 
-std::unordered_map<int, std::shared_ptr<StatusProperties>> CardGenerateKeyRespPars::STATUS_TABLE;
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
+
+std::unordered_map<int, std::shared_ptr<StatusProperties>>
+    CardGenerateKeyRespPars::STATUS_TABLE;
 
 CardGenerateKeyRespPars::StaticConstructor::StaticConstructor()
 {
@@ -31,22 +44,25 @@ CardGenerateKeyRespPars::StaticConstructor::StaticConstructor()
     STATUS_TABLE = m;
 }
 
-CardGenerateKeyRespPars::StaticConstructor CardGenerateKeyRespPars::staticConstructor;
+CardGenerateKeyRespPars::StaticConstructor
+    CardGenerateKeyRespPars::staticConstructor;
 
-std::unordered_map<int, std::shared_ptr<StatusProperties>> CardGenerateKeyRespPars::getStatusTable()
+std::unordered_map<int, std::shared_ptr<StatusProperties>>
+CardGenerateKeyRespPars::getStatusTable()
 {
     return STATUS_TABLE;
 }
 
-CardGenerateKeyRespPars::CardGenerateKeyRespPars(std::shared_ptr<ApduResponse> response) : org::eclipse::keyple::calypso::command::sam::AbstractSamResponseParser(response) {
+CardGenerateKeyRespPars::CardGenerateKeyRespPars(
+  std::shared_ptr<ApduResponse> response)
+: AbstractSamResponseParser(response) {
 }
 
-std::vector<char> CardGenerateKeyRespPars::getCipheredData() {
+std::vector<char> CardGenerateKeyRespPars::getCipheredData()
+{
     return isSuccessful() ? response->getDataOut() : std::vector<char>();
 }
 
-}
-}
 }
 }
 }

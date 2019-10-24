@@ -20,22 +20,14 @@
 /* Common */
 #include "Export.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace protocol {
 
-using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace keyple::core::seproxy::protocol;
 
 class EXPORT SeProtocol {
-private:
-	/**
-     *
-     */
-    static int nextOrdinal;
-
 public:
     /**
      *
@@ -115,18 +107,22 @@ public:
 
         return os;
     }
+
+private:
+	/**
+     *
+     */
+    static int nextOrdinal;
+
 };
 
 }
 }
 }
 }
-}
-}
-
 namespace std {
 
-using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace keyple::core::seproxy::protocol;
 
 template<> struct hash<SeProtocol>
 {

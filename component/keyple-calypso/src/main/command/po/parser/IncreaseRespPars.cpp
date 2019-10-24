@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "AbstractApduResponseParser_Import.h"
 #include "ApduResponse.h"
 #include "IncreaseRespPars.h"
@@ -5,21 +19,20 @@
 /* Common */
 #include "stringhelper.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace parser {
 
-using AbstractPoResponseParser = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> IncreaseRespPars::STATUS_TABLE;
 
-IncreaseRespPars::StaticConstructor::StaticConstructor() {
+IncreaseRespPars::StaticConstructor::StaticConstructor()
+{
     std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
     m.emplace(0x6400, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Too many modifications in session."));
     m.emplace(0x6700, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Lc value not supported."));
@@ -37,11 +50,16 @@ IncreaseRespPars::StaticConstructor::StaticConstructor() {
 
 IncreaseRespPars::StaticConstructor IncreaseRespPars::staticConstructor;
 
-IncreaseRespPars::IncreaseRespPars(std::shared_ptr<ApduResponse> response) : org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser(response) {
+IncreaseRespPars::IncreaseRespPars(std::shared_ptr<ApduResponse> response)
+: AbstractPoResponseParser(response)
+{
 }
 
 
-std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> IncreaseRespPars::getStatusTable() {
+std::unordered_map<int,
+    std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        IncreaseRespPars::getStatusTable()
+{
     return STATUS_TABLE;
 }
 
@@ -49,19 +67,21 @@ int IncreaseRespPars::getNewValue()
 {
     std::vector<char> newValueBuffer = getApduResponse()->getDataOut();
     if (newValueBuffer.size() == 3) {
-        return (newValueBuffer[0] << 16) + (newValueBuffer[1] << 8) + newValueBuffer[2];
+        return (newValueBuffer[0] << 16) +
+               (newValueBuffer[1] <<  8) +
+                newValueBuffer[2];
     }
     else {
-        throw std::make_shared<IllegalStateException>("No counter value available in response to the Increase command.");
+        throw IllegalStateException("No counter value available in response " \
+                                    "to the Increase command.");
     }
 }
 
-std::string IncreaseRespPars::toString() {
+std::string IncreaseRespPars::toString()
+{
     return StringHelper::formatSimple("New counter value: %d", getNewValue());
 }
 
-}
-}
 }
 }
 }

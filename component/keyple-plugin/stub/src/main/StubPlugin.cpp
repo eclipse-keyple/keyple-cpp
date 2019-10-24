@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 /* Plugin - Stub */
 #include "StubPlugin.h"
 #include "StubReader.h"
@@ -7,16 +19,12 @@
 #include "AbstractObservableReader.h"
 #include "KeypleReaderNotFoundException.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using KeypleReaderException            = org::eclipse::keyple::core::seproxy::exception::KeypleReaderException;
-using KeypleReaderNotFoundException    = org::eclipse::keyple::core::seproxy::exception::KeypleReaderNotFoundException;
-using AbstractObservableReader         = org::eclipse::keyple::core::seproxy::plugin::AbstractObservableReader;
-using AbstractThreadedObservablePlugin = org::eclipse::keyple::core::seproxy::plugin::AbstractThreadedObservablePlugin;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::plugin;
 
 std::shared_ptr<std::set<std::string>> StubPlugin::connectedStubNames = std::make_shared<std::set<std::string>>();
 std::shared_ptr<std::set<std::string>> StubPlugin::nativeStubReadersNames = std::make_shared<std::set<std::string>>();
@@ -196,8 +204,6 @@ std::shared_ptr<AbstractObservableReader> StubPlugin::fetchNativeReader(const st
     return reader;
 }
 
-}
-}
 }
 }
 }

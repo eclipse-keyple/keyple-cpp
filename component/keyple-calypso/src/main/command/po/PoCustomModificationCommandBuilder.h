@@ -19,31 +19,21 @@
 #include "AbstractIso7816CommandBuilder.h"
 #include "PoRevision.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
+/* Forward declaration */
+namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } }
 
-
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 
-using AbstractIso7816CommandBuilder = org::eclipse::keyple::core::command::AbstractIso7816CommandBuilder;
-using ApduRequest                   = org::eclipse::keyple::core::seproxy::message::ApduRequest;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 /**
  * Class to build custom (non-referenced) modification PO commands
  */
 class PoCustomModificationCommandBuilder : public AbstractIso7816CommandBuilder, public PoModificationCommand {
-
-protected:
-    /**
-     *
-     */
-    PoRevision defaultRevision = PoRevision::REV3_1;
-
 public:
     /**
      * Constructor dedicated to the construction of user-defined commands.
@@ -75,10 +65,13 @@ protected:
     {
         return std::static_pointer_cast<PoCustomModificationCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());
     }
+
+    /**
+     *
+     */
+    PoRevision defaultRevision = PoRevision::REV3_1;
 };
 
-}
-}
 }
 }
 }

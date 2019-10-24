@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "AbstractMatchingSe.h"
 #include "ApduResponse.h"
 #include "ByteArrayUtil.h"
@@ -21,16 +33,16 @@
 #include "SeSelector_Import.h"
 #include "SeSelection.h"
 
-using namespace org::eclipse::keyple::common;
-using namespace org::eclipse::keyple::core::selection;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::exception;
-using namespace org::eclipse::keyple::core::seproxy::message;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
-using namespace org::eclipse::keyple::core::util;
-using namespace org::eclipse::keyple::plugin::pcsc;
-using namespace org::eclipse::keyple::example::generic::common;
-using namespace org::eclipse::keyple::example::generic::pc;
+using namespace keyple::common;
+using namespace keyple::core::selection;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::core::util;
+using namespace keyple::plugin::pcsc;
+using namespace keyple::example::generic::common;
+using namespace keyple::example::generic::pc;
 
 class UseCase_Generic4_SequentialMultiSelection_Pcsc {
 

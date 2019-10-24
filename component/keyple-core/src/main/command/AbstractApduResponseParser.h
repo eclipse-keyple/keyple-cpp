@@ -23,35 +23,21 @@
 /* Core */
 #include "ApduResponse.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace command {
 
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::core::seproxy::message;
 
 /**
     * Base class for parsing APDU
     */
 class EXPORT AbstractApduResponseParser : public std::enable_shared_from_this<AbstractApduResponseParser> {
-
-    /**
-        * Status code properties
-        */
 public:
+    /**
+     * Status code properties
+     */
     class EXPORT StatusProperties : public std::enable_shared_from_this<StatusProperties> {
-    private:
-        /**
-         * The successful
-         */
-        const bool successful;
-
-        /**
-         * The information
-         * */
-        const std::string information;
-
     public:
         /**
          * A map with the double byte of a status as key, and the successful property and ASCII text
@@ -63,7 +49,7 @@ public:
         StatusProperties(bool successful, const std::string &information);
 
         /**
-         * Destructor
+         *
          */
         virtual ~StatusProperties() {}
 
@@ -81,38 +67,18 @@ public:
          */
         virtual std::string getInformation();
 
+    private:
+        /**
+         * The successful
+         */
+        const bool successful;
+
+        /**
+         * The information
+         */
+        const std::string information;
     };
-    /** the byte array APDU response. */
-protected:
-    std::shared_ptr<ApduResponse> response;
 
-    static std::unordered_map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
-                private:
-                    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-                    public:
-                        StaticConstructor();
-                    };
-
-                private:
-                    static AbstractApduResponseParser::StaticConstructor staticConstructor;
-
-
-    /** Indicates whether the ApduResponse has been provided or not */
-    bool initialized = false;
-
-    // Note: The conversion of all commands was done with:
-    // Input regex: new byte\[\] \{\(byte\) 0x([0-9A-Za-z]{2})\, \(byte\) 0x([0-9A-Za-z]{2})\}
-    // Output regex: 0x$1$2
-
-    /**
-        * Get the internal status table
-        * 
-        * @return Status table
-        */
-protected:
-    virtual std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable();
-
-public:
     /**
      * the generic abstract constructor to build a parser of the APDU response.
      *
@@ -149,18 +115,6 @@ public:
      */
     std::shared_ptr<ApduResponse> getApduResponse();
 
-private:
-    /**
-     *
-     */
-    int getStatusCode();
-
-    /**
-     *
-     */
-    std::shared_ptr<StatusProperties> getPropertiesForStatusCode();
-
-public:
     /**
      * Checks if is successful.
      *
@@ -176,11 +130,59 @@ public:
      */
     std::string getStatusInformation();
 
+protected:
+    /**
+     * The byte array APDU response
+     */
+    std::shared_ptr<ApduResponse> response;
 
+    /**
+     *
+     */
+    static std::unordered_map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+
+    /**
+     * Get the internal status table
+     *
+     * @return Status table
+     */
+    virtual std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable();
+
+private:
+    /**
+     *
+     */
+    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    public:
+        StaticConstructor();
+    };
+
+    /**
+     *
+     */
+    static AbstractApduResponseParser::StaticConstructor staticConstructor;
+
+
+    /**
+     * Indicates whether the ApduResponse has been provided or not
+     */
+    bool initialized = false;
+
+    // Note: The conversion of all commands was done with:
+    // Input regex: new byte\[\] \{\(byte\) 0x([0-9A-Za-z]{2})\, \(byte\) 0x([0-9A-Za-z]{2})\}
+    // Output regex: 0x$1$2
+
+    /**
+     *
+     */
+    int getStatusCode();
+
+    /**
+     *
+     */
+    std::shared_ptr<StatusProperties> getPropertiesForStatusCode();
 };
 
-}
-}
 }
 }
 }

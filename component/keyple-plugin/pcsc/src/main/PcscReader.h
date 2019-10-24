@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -36,21 +38,15 @@
 #include "CardChannel.h"
 #include "CardTerminal.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using AbstractThreadedLocalReader = org::eclipse::keyple::core::seproxy::plugin::AbstractThreadedLocalReader;
-using Card                        = org::eclipse::keyple::smartcardio::Card;
-using CardChannel                 = org::eclipse::keyple::smartcardio::CardChannel;
-using CardTerminal                = org::eclipse::keyple::smartcardio::CardTerminal;
-using SeProtocol                  = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
-using TransmissionMode            = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
-using ReaderEvent                 = org::eclipse::keyple::core::seproxy::event::ReaderEvent;
-using LoggerFactory               = org::eclipse::keyple::common::LoggerFactory;
-using Logger                      = org::eclipse::keyple::common::Logger;
+using namespace keyple::common;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::core::seproxy::plugin;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::smartcardio;
 
 class EXPORT PcscReader : public AbstractThreadedLocalReader {
 public:
@@ -76,77 +72,19 @@ public:
     static const std::string SETTING_KEY_THREAD_TIMEOUT;
     static const std::string SETTING_KEY_LOGGING;
 
-private:
-    /**
-     * 
-     */
-    static const std::string PROTOCOL_T0;
-    static const std::string PROTOCOL_T1;
-    static const std::string PROTOCOL_T_CL;
-    static const std::string PROTOCOL_ANY;
-
-    /**
-     * 
-     */
-    static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 5000;
-
-    /**
-     * 
-     */
-    const std::shared_ptr<CardTerminal> terminal;
-
-    /**
-     * 
-     */
-    std::string parameterCardProtocol;
-    
-    /**
-     * 
-     */
-    bool cardExclusiveMode            = false;
-    
-    /**
-     * 
-     */
-    bool cardReset                    = false;
-    
-    /**
-     * 
-     */
-    TransmissionMode transmissionMode = static_cast<TransmissionMode>(0);
-
-
-    /**
-     * 
-     */
-    std::shared_ptr<Card> card;
-    
-    /**
-     * 
-     */
-    std::shared_ptr<CardChannel> channel;
-
-    /**
-     * 
-     */
-    bool logging = false;
-
-    /**
-     * 
-     */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PcscReader));
 
 public:
     /**
-     * This constructor should only be called by PcscPlugin PCSC reader parameters are initialized
-     * with their default values as defined in setParameter. See
-     * {@link #setParameter(String, String)} for more details
+     * This constructor should only be called by PcscPlugin PCSC reader
+     * parameters are initialized with their default values as defined in
+     * setParameter. See {@link #setParameter(String, String)} for more details
      *
      * @param pluginName the name of the plugin
      * @param terminal the PC/SC terminal
      */
 
-    PcscReader(const std::string &pluginName, std::shared_ptr<CardTerminal> terminal);
+    PcscReader(const std::string &pluginName,
+               std::shared_ptr<CardTerminal> terminal);
 
     /**
      * 
@@ -179,18 +117,19 @@ public:
      * <li>eject: Eject</li>
      * </ul>
      * </li>
-     * <li><strong>thread_wait_timeout</strong>: Number of milliseconds to wait</li>
+     * <li><strong>thread_wait_timeout</strong>: Number of milliseconds towait</li>
      * </ul>
      *
      * @param name Parameter name
      * @param value Parameter value
-     * @throws KeypleBaseException This method can fail when disabling the exclusive mode as it's
-     *         executed instantly
+     * @throws KeypleBaseException This method can fail when disabling the
+     *         exclusive mode as it's executed instantly
      * @throws IllegalArgumentException when parameter is wrong
      *
      *
      */
-    void setParameter(const std::string &name, const std::string &value) override;
+    void setParameter(const std::string &name, const std::string &value)
+        override;
 
     /**
      *
@@ -198,9 +137,11 @@ public:
     std::unordered_map<std::string, std::string> getParameters() override;
 
      /**
-     * The transmission mode can set with setParameter(SETTING_KEY_TRANSMISSION_MODE, )
+     * The transmission mode can set with
+     * setParameter(SETTING_KEY_TRANSMISSION_MODE, )
      * <p>
-     * When the transmission mode has not explicitly set, it is deduced from the protocol:
+     * When the transmission mode has not explicitly set, it is deduced from the
+     * protocol:
      * <ul>
      * <li>T=0: contacts mode</li>
      * <li>T=1: contactless mode</li>
@@ -223,28 +164,33 @@ public:
     /**
      *
      */
-    void setParameters(std::unordered_map<std::string, std::string> &parameters) override;
+    void setParameters(std::unordered_map<std::string, std::string> &parameters)
+        override;
 
     /**
      *
      */
     void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
 
+protected:
     /**
      *
      */
-    std::string getName() override
-    {
-        return AbstractThreadedLocalReader::AbstractLoggedObservable<ReaderEvent>::getName();
-    }
-
-protected:
     void closePhysicalChannel() override;
 
+    /**
+     *
+     */
     bool checkSePresence() override;
 
+    /**
+     *
+     */
     bool waitForCardPresent(long long timeout) override;
 
+    /**
+     *
+     */
     bool waitForCardAbsent(long long timeout) override;
 
     /**
@@ -257,9 +203,10 @@ protected:
     std::vector<char> transmitApdu(std::vector<char> &apduIn) override;
 
     /**
-     * Tells if the current SE protocol matches the provided protocol flag. If the protocol flag is
-     * not defined (null), we consider here that it matches. An exception is returned when the
-     * provided protocolFlag is not found in the current protocolMap.
+     * Tells if the current SE protocol matches the provided protocol flag. If
+     * the protocol flag is not defined (null), we consider here that it
+     * matches. An exception is returned when the provided protocolFlag is not
+     * found in the current protocolMap.
      *
      * @param protocolFlag the protocol flag
      * @return true if the current SE matches the protocol flag
@@ -277,7 +224,8 @@ protected:
      * <p>
      * This status may be wrong if the card has been removed.
      * <p>
-     * The caller should test the card presence with isSePresent before calling this method.
+     * The caller should test the card presence with isSePresent before calling
+     * this method.
      *
      * @return true if the physical channel is open
      */
@@ -288,8 +236,9 @@ protected:
      *
      * The card access may be set to 'Exclusive' through the reader's settings.
      *
-     * In this case be aware that on some platforms (ex. Windows 8+), the exclusivity is granted for
-     * a limited time (ex. 5 seconds). After this delay, the card is automatically resetted.
+     * In this case be aware that on some platforms (ex. Windows 8+), the
+     * exclusivity is granted for a limited time (ex. 5 seconds). After this
+     * delay, the card is automatically resetted.
      *
      * @throws KeypleChannelStateException if a reader error occurs
      */
@@ -298,13 +247,73 @@ protected:
     /**
      *
      */
-    std::shared_ptr<PcscReader> shared_from_this() {
-        return std::static_pointer_cast<PcscReader>(AbstractThreadedLocalReader::shared_from_this());
+    std::shared_ptr<PcscReader> shared_from_this()
+    {
+        return std::static_pointer_cast<PcscReader>(
+                   AbstractThreadedLocalReader::shared_from_this());
     }
+
+private:
+    /**
+     *
+     */
+    static const std::string PROTOCOL_T0;
+    static const std::string PROTOCOL_T1;
+    static const std::string PROTOCOL_T_CL;
+    static const std::string PROTOCOL_ANY;
+
+    /**
+     *
+     */
+    static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 5000;
+
+    /**
+     *
+     */
+    const std::shared_ptr<CardTerminal> terminal;
+
+    /**
+     *
+     */
+    std::string parameterCardProtocol;
+
+    /**
+     *
+     */
+    bool cardExclusiveMode            = false;
+
+    /**
+     *
+     */
+    bool cardReset                    = false;
+
+    /**
+     *
+     */
+    TransmissionMode transmissionMode = static_cast<TransmissionMode>(0);
+
+    /**
+     *
+     */
+    std::shared_ptr<Card> card;
+
+    /**
+     *
+     */
+    std::shared_ptr<CardChannel> channel;
+
+    /**
+     *
+     */
+    bool logging = false;
+
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger =
+        LoggerFactory::getLogger(typeid(PcscReader));
 };
 
-}
-}
 }
 }
 }

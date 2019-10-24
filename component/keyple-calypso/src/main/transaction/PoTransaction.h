@@ -42,24 +42,22 @@
 /* Common */
 #include "Export.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using namespace org::eclipse::keyple::calypso::command;
-using namespace org::eclipse::keyple::calypso::command::po;
-using namespace org::eclipse::keyple::calypso::command::po::builder;
-using namespace org::eclipse::keyple::calypso::command::po::parser;
-using namespace org::eclipse::keyple::calypso::command::sam;
-using namespace org::eclipse::keyple::calypso::transaction;
-using namespace org::eclipse::keyple::common;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::message;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
-using namespace org::eclipse::keyple::core::util;
-using namespace org::eclipse::keyple::calypso::transaction::exception;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::transaction;
+using namespace keyple::common;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::core::util;
+using namespace keyple::calypso::transaction::exception;
 
 /**
  * Portable Object Secure Session.
@@ -1125,8 +1123,6 @@ public:
     std::shared_ptr<AbstractApduResponseParser> getResponseParser(int commandIndex);
 };
 
-}
-}
 }
 }
 }

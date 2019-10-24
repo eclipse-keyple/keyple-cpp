@@ -17,16 +17,13 @@
 #include "AbstractSamCommandBuilder.h"
 #include "SendableInSession.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace sam {
 
-using namespace org::eclipse::keyple::calypso::command;
-
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::sam;
 
 class SamSendableInSession : public SendableInSession<AbstractSamCommandBuilder>
 {
@@ -36,5 +33,4 @@ class SamSendableInSession : public SendableInSession<AbstractSamCommandBuilder>
 }
 }
 }
-}
-}
+

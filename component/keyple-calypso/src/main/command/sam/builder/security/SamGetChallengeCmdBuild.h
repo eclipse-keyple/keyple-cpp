@@ -22,8 +22,6 @@
 /* Common */
 #include "stringhelper.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -31,19 +29,12 @@ namespace sam {
 namespace builder {
 namespace security {
 
-using namespace org::eclipse::keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam;
 
 /**
  * Builder for the SAM Get Challenge APDU command.
  */
 class SamGetChallengeCmdBuild : public AbstractSamCommandBuilder {
-
-private:
-    /**
-     * The command reference
-     */
-    CalypsoSamCommands& command = CalypsoSamCommands::GET_CHALLENGE;
-
 public:
     /**
      * Instantiates a new SamGetChallengeCmdBuild.
@@ -67,10 +58,15 @@ protected:
     {
         return std::static_pointer_cast<SamGetChallengeCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
+
+private:
+    /**
+     * The command reference
+     */
+    CalypsoSamCommands& command = CalypsoSamCommands::GET_CHALLENGE;
+
 };
 
-}
-}
 }
 }
 }

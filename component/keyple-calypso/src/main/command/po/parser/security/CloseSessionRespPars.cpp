@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 /* Core */
 #include "ApduResponse.h"
 
@@ -7,8 +19,6 @@
 /* Common */
 #include "Arrays.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -16,8 +26,8 @@ namespace po {
 namespace parser {
 namespace security {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> CloseSessionRespPars::STATUS_TABLE;
 
@@ -33,7 +43,8 @@ CloseSessionRespPars::StaticConstructor::StaticConstructor() {
 
 CloseSessionRespPars::StaticConstructor CloseSessionRespPars::staticConstructor;
 
-std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> CloseSessionRespPars::getStatusTable() {
+std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> CloseSessionRespPars::getStatusTable()
+{
     return STATUS_TABLE;
 }
 
@@ -44,7 +55,8 @@ CloseSessionRespPars::CloseSessionRespPars(std::shared_ptr<ApduResponse> respons
     parse(data);
 }
 
-void CloseSessionRespPars::parse(std::vector<char> &response) {
+void CloseSessionRespPars::parse(std::vector<char> &response)
+{
     if (response.size() == 8) {
         signatureLo = Arrays::copyOfRange(response, 4, 8);
         postponedData = Arrays::copyOfRange(response, 0, 4);
@@ -59,16 +71,16 @@ void CloseSessionRespPars::parse(std::vector<char> &response) {
     }
 }
 
-std::vector<char> CloseSessionRespPars::getSignatureLo() {
+std::vector<char> CloseSessionRespPars::getSignatureLo()
+{
     return signatureLo;
 }
 
-std::vector<char> CloseSessionRespPars::getPostponedData() {
+std::vector<char> CloseSessionRespPars::getPostponedData()
+{
     return postponedData;
 }
 
-}
-}
 }
 }
 }

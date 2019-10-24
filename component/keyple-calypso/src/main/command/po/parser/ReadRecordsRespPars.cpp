@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include <algorithm>
 #include <functional>
 #include <iterator>
@@ -9,18 +23,16 @@
 #include "stringhelper.h"
 #include "Arrays.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace parser {
 
-using AbstractPoResponseParser = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
-using ByteArrayUtil = org::eclipse::keyple::core::util::ByteArrayUtil;
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::util;
 
 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> ReadRecordsRespPars::STATUS_TABLE;
 
@@ -129,12 +141,12 @@ std::string ReadRecordsRespPars::toString() {
     std::string string;
     if (isInitialized()) {
         switch (readDataStructure) {
-            case org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure::SINGLE_RECORD_DATA: {
+            case ReadDataStructure::SINGLE_RECORD_DATA: {
                 std::shared_ptr<std::map<int, std::vector<char>>> recordMap = getRecords();
                 string = StringHelper::formatSimple("Single record data: {RECORD = %d, DATA = %s}", recordMap->begin()->first, ByteArrayUtil::toHex(recordMap->begin()->second));
             }
                 break;
-            case org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure::MULTIPLE_RECORD_DATA: {
+            case ReadDataStructure::MULTIPLE_RECORD_DATA: {
                 std::shared_ptr<std::map<int, std::vector<char>>> recordMap = getRecords();
                 std::shared_ptr<StringBuilder> sb = std::make_shared<StringBuilder>();
                 sb->append("Multiple record data: ");
@@ -150,12 +162,12 @@ std::string ReadRecordsRespPars::toString() {
                 string = sb->toString();
             }
                 break;
-            case org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure::SINGLE_COUNTER: {
+            case ReadDataStructure::SINGLE_COUNTER: {
                 std::shared_ptr<std::map<int, int>> counterMap = getCounters();
                 string = StringHelper::formatSimple("Single counter: {COUNTER = %d, VALUE = %d}", counterMap->begin()->first, counterMap->begin()->second);
             }
                 break;
-            case org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure::MULTIPLE_COUNTER: {
+            case ReadDataStructure::MULTIPLE_COUNTER: {
                 std::shared_ptr<std::map<int, int>> counterMap = getCounters();
                 std::shared_ptr<StringBuilder> sb = std::make_shared<StringBuilder>();
                 sb->append("Multiple counter: ");
@@ -181,8 +193,6 @@ std::string ReadRecordsRespPars::toString() {
     return string;
 }
 
-}
-}
 }
 }
 }

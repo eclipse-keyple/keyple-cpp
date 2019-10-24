@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 /* Plugin - Stub */
 #include "StubSecureElement.h"
 
@@ -11,17 +25,15 @@
 /* Common */
 #include "stringhelper.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using KeypleChannelStateException  = org::eclipse::keyple::core::seproxy::exception::KeypleChannelStateException;
-using KeypleIOReaderException      = org::eclipse::keyple::core::seproxy::exception::KeypleIOReaderException;
-using ByteArrayUtil                = org::eclipse::keyple::core::util::ByteArrayUtil;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::util;
 
-bool StubSecureElement::isPhysicalChannelOpen() {
+bool StubSecureElement::isPhysicalChannelOpen()
+{
     return isPhysicalChannelOpen_Renamed;
 }
 
@@ -35,7 +47,8 @@ void StubSecureElement::closePhysicalChannel()
     isPhysicalChannelOpen_Renamed = false;
 }
 
-void StubSecureElement::addHexCommand(const std::string &command, const std::string &response)
+void StubSecureElement::addHexCommand(const std::string &command,
+                                      const std::string &response)
 {
     if (!command.compare("") || !response.compare("")) {
         logger->debug("either command or response is empty\n");
@@ -58,24 +71,26 @@ void StubSecureElement::removeHexCommand(const std::string &command)
 
 std::vector<char> StubSecureElement::processApdu(std::vector<char> &apduIn)
 {
-    if (apduIn.empty()) {
+    if (apduIn.empty())
         return apduIn;
-    }
 
-    // convert apduIn to hexa
+    /* Convert apduIn to hexa */
     std::string hexApdu = ByteArrayUtil::toHex(apduIn);
 
-    // return matching hexa response if found
+    logger->debug("processApdu - looking for response to %s\n", hexApdu);
+
+    /* Return matching hexa response if found */
     if (hexCommands.find(hexApdu) != hexCommands.end()) {
+        logger->debug("processApdu - response found: %s\n",
+                      hexCommands[hexApdu]);
         return ByteArrayUtil::fromHex(hexCommands[hexApdu]);
     }
 
-    // throw a KeypleIOReaderException if not found
+    /* Throw a KeypleIOReaderException if not found */
+    logger->debug("processApdu - response not found\n");
     throw KeypleIOReaderException("No response available for this request.");
 }
 
-}
-}
 }
 }
 }

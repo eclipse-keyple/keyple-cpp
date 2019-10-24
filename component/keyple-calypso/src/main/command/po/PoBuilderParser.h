@@ -18,33 +18,20 @@
 #include "AbstractPoResponseParser.h"
 #include "CalypsoBuilderParser.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 
-using namespace org::eclipse::keyple::calypso::command;
+using namespace keyple::calypso::command;
 
 /**
-    * The PoBuilderParser class contains the builder of a {@link PoSendableInSession} command
-    * <p>
-    * A setter allows to associate the parser object.
-    */
+ * The PoBuilderParser class contains the builder of a {@link PoSendableInSession} command
+ * <p>
+ * A setter allows to associate the parser object.
+ */
 template<typename T>
 class PoBuilderParser : public std::enable_shared_from_this<PoBuilderParser<T>>, public CalypsoBuilderParser<T, AbstractPoResponseParser> {
-private:
-    /**
-     *
-     */
-    const std::shared_ptr<T> poCommandBuilder;
-
-    /**
-     *
-     */
-    std::shared_ptr<AbstractPoResponseParser> poResponseParser;
-
 public:
     /**
      *
@@ -82,10 +69,19 @@ public:
     {
         this->poResponseParser = poResponseParser;
     }
+
+private:
+    /**
+     *
+     */
+    const std::shared_ptr<T> poCommandBuilder;
+
+    /**
+     *
+     */
+    std::shared_ptr<AbstractPoResponseParser> poResponseParser;
 };
 
-}
-}
 }
 }
 }

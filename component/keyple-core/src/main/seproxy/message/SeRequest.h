@@ -28,51 +28,22 @@
 #include "Serializable.h"
 
 /* Forward declaration */
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { class SeSelector; }}}}}
+namespace keyple { namespace core { namespace seproxy { class SeSelector; }}}
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace message {
 
-
-using ChannelState = org::eclipse::keyple::core::seproxy::ChannelState;
-using SeProtocol   = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
-using SeSelector   = org::eclipse::keyple::core::seproxy::SeSelector;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::protocol;
 
 /**
-    * List of APDU requests that will result in a {@link SeResponse}
-    *
-    * @see SeResponse
-    */
+ * List of APDU requests that will result in a {@link SeResponse}
+ *
+ * @see SeResponse
+ */
 class EXPORT SeRequest final : public std::enable_shared_from_this<SeRequest>, public Serializable {
-
-public:
-    static constexpr long long serialVersionUID = 6018469841127325812LL;
-
-
-private:
-    /**
-     * SE seSelector is either an AID or an ATR regular expression
-     */
-    std::shared_ptr<SeSelector> seSelector;
-
-    /**
-     * contains a group of APDUCommand to operate on the selected SE application by the SE reader.
-     */
-    std::vector<std::shared_ptr<ApduRequest>> apduRequests;
-
-
-    /**
-     * the final logical channel status: the SE reader may kept active the logical channel of the SE
-     * application after processing the group of APDU commands otherwise the SE reader will close
-     * the logical channel of the SE application after processing the group of APDU commands (i.e.
-     * after the receipt of the last APDU response).
-     */
-    ChannelState channelState = static_cast<ChannelState>(0);
-
 public:
     /**
      * The constructor called by a ProxyReader in order to open a logical channel, to send a set of
@@ -139,11 +110,28 @@ public:
         return os;
     }
 
+private:
+    /**
+     * SE seSelector is either an AID or an ATR regular expression
+     */
+    std::shared_ptr<SeSelector> seSelector;
+
+    /**
+     * contains a group of APDUCommand to operate on the selected SE application by the SE reader.
+     */
+    std::vector<std::shared_ptr<ApduRequest>> apduRequests;
+
+
+    /**
+     * the final logical channel status: the SE reader may kept active the logical channel of the SE
+     * application after processing the group of APDU commands otherwise the SE reader will close
+     * the logical channel of the SE application after processing the group of APDU commands (i.e.
+     * after the receipt of the last APDU response).
+     */
+    ChannelState channelState = static_cast<ChannelState>(0);
 
 };
 
-}
-}
 }
 }
 }

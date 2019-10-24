@@ -26,8 +26,6 @@
 /* Common */
 #include "Export.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -35,8 +33,8 @@ namespace po {
 namespace builder {
 namespace security{
 
-using namespace org::eclipse::keyple::calypso::command::po;
-using namespace org::eclipse::keyple::core::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::command;
 
 /**
  * The Class AbstractOpenSessionCmdBuild. This class provides the dedicated constructor to build the
@@ -69,8 +67,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

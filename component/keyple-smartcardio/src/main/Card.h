@@ -1,10 +1,16 @@
-/*
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* All rights reserved. This program and the accompanying materials are made available under the
-* terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
-* available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
-*/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -28,17 +34,14 @@
 #include <PCSC/wintypes.h>
 #endif
 
-namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class ATR; }}}}
-namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class CardChannel; }}}}
-namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class CardTerminal; }}}}
+namespace keyple { namespace smartcardio { class ATR; } }
+namespace keyple { namespace smartcardio { class CardChannel; } }
+namespace keyple { namespace smartcardio { class CardTerminal; } }
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-using Logger        = org::eclipse::keyple::common::Logger;
-using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+using namespace keyple::common;
 
 class EXPORT Card {
 public:
@@ -57,38 +60,6 @@ public:
      */
     SCARD_IO_REQUEST pioSendPCI;
 
-private:
-    /**
-     * ATR of this card
-     */
-    ATR* atr;
-
-    /**
-     * 
-     */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(Card));
-
-    /**
-     * The terminal that created this card
-     */
-    CardTerminal* terminal;
-
-    /**
-     * The basic logical channel (channel 0)
-     */
-    CardChannel* basicChannel;
-
-    /**
-     * State of this card connection
-     */
-    DWORD state;
-
-    /**
-     * Thread holding exclusive access to the card, or null
-     */
-    Thread *exclusiveThread;
-
-public:
     /**
      * Constructor
      *
@@ -202,12 +173,40 @@ public:
 
 private:
     /**
+     * ATR of this card
+     */
+    ATR* atr;
+
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(Card));
+
+    /**
+     * The terminal that created this card
+     */
+    CardTerminal* terminal;
+
+    /**
+     * The basic logical channel (channel 0)
+     */
+    CardChannel* basicChannel;
+
+    /**
+     * State of this card connection
+     */
+    DWORD state;
+
+    /**
+     * Thread holding exclusive access to the card, or null
+     */
+    Thread *exclusiveThread;
+
+    /**
      *
      */
     static int getSW(std::vector<char> b);
 };
 
-}
-}
 }
 }

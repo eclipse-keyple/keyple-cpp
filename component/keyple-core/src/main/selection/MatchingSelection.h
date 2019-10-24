@@ -18,20 +18,18 @@
 /* Common */
 #include "Export.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace selection { class AbstractMatchingSe; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace selection { class AbstractSeSelectionRequest; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SeResponse; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace command { class AbstractApduResponseParser; } } } } }
+/* Forward class declarations */
+namespace keyple { namespace core { namespace selection { class AbstractMatchingSe; } } }
+namespace keyple { namespace core { namespace selection { class AbstractSeSelectionRequest; } } }
+namespace keyple { namespace core { namespace seproxy { namespace message { class SeResponse; } } } }
+namespace keyple { namespace core { namespace command { class AbstractApduResponseParser; } } }
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace selection {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using SeResponse = org::eclipse::keyple::core::seproxy::message::SeResponse;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 /**
  * The MatchingSelection class holds the result of a single selection case.
@@ -95,8 +93,6 @@ public:
     int getSelectionIndex();
 };
 
-}
-}
 }
 }
 }

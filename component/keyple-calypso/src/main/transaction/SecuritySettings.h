@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -21,25 +23,27 @@
 #include "Byte.h"
 #include "Export.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
+using namespace keyple::common;
 
 /**
-    * A class dedicated to managing the security settings involved in managing secure sessions.
-    * <p>
-    * The object provides default values when instantiated, they can be modified with the putKeyInfo
-    * method.
-    * <p>
-    * The getKeyInfo method returns the specified setting value.
-    */
-class EXPORT SecuritySettings : public std::enable_shared_from_this<SecuritySettings> {
+ * A class dedicated to managing the security settings involved in managing
+ * secure sessions.
+ * <p>
+ * The object provides default values when instantiated, they can be modified
+ * with the putKeyInfo method.
+ * <p>
+ * The getKeyInfo method returns the specified setting value.
+ */
+class EXPORT SecuritySettings
+: public std::enable_shared_from_this<SecuritySettings> {
 public:
     /**
-     * List of key information that can be provided when the secure session is created.
+     * List of key information that can be provided when the secure session is
+     * created.
      */
     enum class DefaultKeyInfo {
         /** KIF for personalization used when not provided by the PO */
@@ -51,6 +55,69 @@ public:
         /** Key record number to use when KIF/KVC is unavailable */
         SAM_DEFAULT_KEY_RECORD_NUMBER
     };
+
+    /**
+     * Constructor.
+     * <p>
+     * Initialize default values
+     */
+    SecuritySettings();
+
+    /**
+     *
+     */
+    virtual ~SecuritySettings()
+    {
+    }
+
+    /**
+     * Associates the specified value with the specified key information in the
+     * keySettings map. If the map previously contained a mapping for this key,
+     * the old value is replaced.
+     *
+     * @param keyInfo - the keyInfo with which the specified value is to be
+     *        associated
+     * @param value - the value to be associated with the specified key
+     * @return the previous value associated with specified key, or null if
+     *         there was no mapping for key.
+     */
+    virtual char putKeyInfo(DefaultKeyInfo keyInfo, Byte value);
+
+    /**
+     * Returns the value to which the specified key is mapped, or null if this
+     * map contains no mapping for the key.
+     *
+     * @param keyInfo - the keyInfo whose associated value is to be returned
+     * @return the value to which the specified key is mapped, or null if this
+     *         map contains no mapping for the key
+     */
+    virtual char getKeyInfo(DefaultKeyInfo keyInfo);
+
+    /**
+     * Provides a list of authorized KVC
+     *
+     * If this method is not called, the list will remain empty and all KVCs
+     * will be accepted.
+     *
+     * If a list is provided and a PO with a KVC not belonging to this list is
+     * presented, a
+     * {@link KeypleCalypsoSecureSessionUnauthorizedKvcException} will be
+     * raised.
+     *
+     * @param authorizedKvcList the list of authorized KVCs
+     */
+    virtual void setAuthorizedKvcList(std::vector<Byte> &authorizedKvcList);
+
+    /**
+     * CHeck if the provided kvc value is authorized or not.
+     * <p>
+     * If no list of authorized kvc is defined (authorizedKvcList null), all kvc
+     * are authorized.
+     *
+     * @param kvc to be tested
+     * @return true if the kvc is authorized
+     */
+    virtual bool isAuthorizedKvc(char kvc);
 
 private:
     /**
@@ -82,69 +149,8 @@ private:
      * Enummap containing the key information
      */
     std::map<DefaultKeyInfo, Byte> keySettings;
-
-public:
-    /**
-     * Constructor.
-     * <p>
-     * Initialize default values
-     */
-
-    SecuritySettings();
-
-    /**
-     *
-     */
-    virtual ~SecuritySettings()
-    {
-    }
-
-    /**
-     * Associates the specified value with the specified key information in the keySettings map. If
-     * the map previously contained a mapping for this key, the old value is replaced.
-     *
-     * @param keyInfo - the keyInfo with which the specified value is to be associated
-     * @param value - the value to be associated with the specified key
-     * @return the previous value associated with specified key, or null if there was no mapping for
-     *         key.
-     */
-    virtual char putKeyInfo(DefaultKeyInfo keyInfo, Byte value);
-
-    /**
-     * Returns the value to which the specified key is mapped, or null if this map contains no
-     * mapping for the key.
-     *
-     * @param keyInfo - the keyInfo whose associated value is to be returned
-     * @return the value to which the specified key is mapped, or null if this map contains no
-     *         mapping for the key
-     */
-    virtual char getKeyInfo(DefaultKeyInfo keyInfo);
-
-    /**
-     * Provides a list of authorized KVC
-     *
-     * If this method is not called, the list will remain empty and all KVCs will be accepted.
-     *
-     * If a list is provided and a PO with a KVC not belonging to this list is presented, a
-     * {@link KeypleCalypsoSecureSessionUnauthorizedKvcException} will be raised.
-     *
-     * @param authorizedKvcList the list of authorized KVCs
-     */
-    virtual void setAuthorizedKvcList(std::vector<Byte> &authorizedKvcList);
-
-    /**
-     * CHeck if the provided kvc value is authorized or not.
-     * <p>
-     * If no list of authorized kvc is defined (authorizedKvcList null), all kvc are authorized.
-     *
-     * @param kvc to be tested
-     * @return true if the kvc is authorized
-     */
-    virtual bool isAuthorizedKvc(char kvc);
 };
 
-}
-}
 }
 }
 }

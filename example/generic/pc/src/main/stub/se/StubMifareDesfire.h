@@ -19,8 +19,6 @@
 /* Example */
 #include "StubSecureElement.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
@@ -29,7 +27,7 @@ namespace stub {
 namespace se {
 
 
-using StubSecureElement = org::eclipse::keyple::plugin::stub::StubSecureElement;
+using namespace keyple::plugin::stub;
 
 /**
  * Simple contact stub SE (no command)
@@ -76,8 +74,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

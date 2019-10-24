@@ -18,8 +18,6 @@
 /* Core */
 #include "AbstractSamResponseParser.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -27,8 +25,8 @@ namespace sam {
 namespace parser {
 namespace security {
 
-using AbstractSamResponseParser = org::eclipse::keyple::calypso::command::sam::AbstractSamResponseParser;
-using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::core::seproxy::message;
 
 /**
  * Digest close response parser. See specs: Calypso / page 54 / 7.4.2 - Session MAC computation
@@ -64,8 +62,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

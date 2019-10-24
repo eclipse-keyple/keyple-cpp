@@ -25,26 +25,23 @@
 /* Calypso */
 #include "CommandsTable.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace command {
 
-using ApduRequest = org::eclipse::keyple::core::seproxy::message::ApduRequest;
-using CommandsTable = org::eclipse::keyple::core::command::CommandsTable;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::command;
 
-    /**
-     * Generic APDU command builder.
-     * <p>
-     * It provides the generic getters to retrieve:
-     * <ul>
-     * <li>the name of the command,</li>
-     * <li>the built APDURequest,</li>
-     * <li>the corresponding AbstractApduResponseParser class.</li>
-     * </ul>
-     */
-
+/**
+ * Generic APDU command builder.
+ * <p>
+ * It provides the generic getters to retrieve:
+ * <ul>
+ * <li>the name of the command,</li>
+ * <li>the built APDURequest,</li>
+ * <li>the corresponding AbstractApduResponseParser class.</li>
+ * </ul>
+ */
 class EXPORT AbstractApduCommandBuilder
 : public std::enable_shared_from_this<AbstractApduCommandBuilder> {
 
@@ -110,8 +107,6 @@ public:
     std::shared_ptr<ApduRequest> getApduRequest();
 };
 
-}
-}
 }
 }
 }

@@ -1,22 +1,35 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "Arrays.h"
 #include "AnswerToReset.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace message {
 
-AnswerToReset::AnswerToReset(std::vector<char> &atrBytes) {
+AnswerToReset::AnswerToReset(std::vector<char> &atrBytes)
+{
     this->atrBytes = atrBytes;
 }
 
-std::vector<char> AnswerToReset::getBytes() {
+std::vector<char> AnswerToReset::getBytes()
+{
     return atrBytes;
 }
 
-bool AnswerToReset::equals(std::shared_ptr<void> o) {
+bool AnswerToReset::equals(std::shared_ptr<void> o)
+{
     if (o == shared_from_this()) {
         return true;
     }
@@ -28,7 +41,8 @@ bool AnswerToReset::equals(std::shared_ptr<void> o) {
     return Arrays::equals(atr->getBytes(), this->atrBytes);
 }
 
-int AnswerToReset::hashCode() {
+int AnswerToReset::hashCode()
+{
     int hash = 17;
     hash = 19 * hash + (atrBytes.empty() ? 0 : Arrays::hashCode(atrBytes));
     return hash;
@@ -36,11 +50,8 @@ int AnswerToReset::hashCode() {
 
 void AnswerToReset::finalize()
 {
-
 }
 
-}
-}
 }
 }
 }

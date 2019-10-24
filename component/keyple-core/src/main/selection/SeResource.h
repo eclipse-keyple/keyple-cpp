@@ -18,45 +18,19 @@
 #include "AbstractMatchingSe.h"
 #include "SeReader.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace selection {
 
-using AbstractMatchingSe = org::eclipse::keyple::core::selection::AbstractMatchingSe;
-using SeReader           = org::eclipse::keyple::core::seproxy::SeReader;
+using namespace keyple::core::selection;
+using namespace keyple::core::seproxy;
 
 /**
-    * The SeResource class groups a AbstractMatchingSe and its associated SeReader
-    */
+ * The SeResource class groups a AbstractMatchingSe and its associated SeReader
+ */
 template<typename T>
 class SeResource : public std::enable_shared_from_this<SeResource<T>> {
     static_assert(std::is_base_of<AbstractMatchingSe, T>::value, "T must inherit from AbstractMatchingSe");
-
-private:
-    /**
-     *
-     */
-    const std::shared_ptr<SeReader> seReader;
-
-    /**
-     *
-     */
-    const std::shared_ptr<T> matchingSe;
-
-protected:
-    /**
-     * Constructor
-     *
-     * @param seReader the {@link SeReader} with which the SE is communicating
-     * @param matchingSe the {@link AbstractMatchingSe} information structure
-     */
-    SeResource(std::shared_ptr<SeReader> seReader, std::shared_ptr<T> matchingSe)
-    : seReader(seReader), matchingSe(matchingSe)
-    {
-    }
-
 public:
     /**
      *
@@ -78,10 +52,31 @@ public:
     {
         return matchingSe;
     }
+
+protected:
+    /**
+     * Constructor
+     *
+     * @param seReader the {@link SeReader} with which the SE is communicating
+     * @param matchingSe the {@link AbstractMatchingSe} information structure
+     */
+    SeResource(std::shared_ptr<SeReader> seReader, std::shared_ptr<T> matchingSe)
+    : seReader(seReader), matchingSe(matchingSe)
+    {
+    }
+
+private:
+    /**
+     *
+     */
+    const std::shared_ptr<SeReader> seReader;
+
+    /**
+     *
+     */
+    const std::shared_ptr<T> matchingSe;
 };
 
-}
-}
 }
 }
 }

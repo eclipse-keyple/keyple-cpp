@@ -1,18 +1,36 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include <iostream>
 
 #include "PluginEvent.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace event {
 
-using EventType = org::eclipse::keyple::core::seproxy::event::PluginEvent::EventType;
+using namespace keyple::core::seproxy::event;
 
-const EventType EventType::READER_CONNECTED("READER_CONNECTED", InnerEnum::READER_CONNECTED, "Reader connected");
-const EventType EventType::READER_DISCONNECTED("READER_DISCONNECTED", InnerEnum::READER_DISCONNECTED, "Reader disconnected");
+using EventType = PluginEvent::EventType;
+
+const EventType EventType::READER_CONNECTED("READER_CONNECTED",
+                                            InnerEnum::READER_CONNECTED,
+                                            "Reader connected");
+const EventType EventType::READER_DISCONNECTED("READER_DISCONNECTED",
+                                               InnerEnum::READER_DISCONNECTED,
+                                               "Reader disconnected");
 
 std::vector<EventType> EventType::valueList;
 
@@ -25,15 +43,20 @@ EventType::StaticConstructor::StaticConstructor()
 EventType::StaticConstructor EventType::staticConstructor;
 int EventType::nextOrdinal = 0;
 
-PluginEvent::EventType::EventType(const std::string &nameValue,
-                                  InnerEnum innerEnum,
-                                  const std::string &name)
+EventType::EventType(const std::string &nameValue, InnerEnum innerEnum,
+                     const std::string &name)
 : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++)
 {
     this->name = name;
 }
 
-std::string PluginEvent::EventType::getName()
+EventType::EventType(const EventType& o)
+: innerEnumValue(o.innerEnumValue), nameValue(o.nameValue),
+  ordinalValue(o.ordinalValue)
+{
+}
+
+std::string EventType::getName()
 {
     return this->name;
 }
@@ -70,9 +93,8 @@ EventType EventType::valueOf(const std::string &name)
 }
 
 PluginEvent::PluginEvent(const std::string &pluginName,
-                         const std::string &readerName,
-                         EventType eventType)
-: pluginName(pluginName), readerName(readerName), eventType(eventType)
+                         const std::string &readerName, EventType eventType)
+: readerName(readerName), eventType(eventType), pluginName(pluginName)
 {
     this->readerNames->insert(readerName);
 }
@@ -80,7 +102,7 @@ PluginEvent::PluginEvent(const std::string &pluginName,
 PluginEvent::PluginEvent(const std::string &pluginName,
                          std::shared_ptr<std::set<std::string>> readerNames,
                          EventType eventType)
-: pluginName(pluginName), eventType(eventType)
+: eventType(eventType), pluginName(pluginName)
 {
     this->readerNames->insert(readerNames->begin(), readerNames->end());
 }
@@ -100,8 +122,6 @@ PluginEvent::EventType PluginEvent::getEventType()
     return eventType;
 }
 
-}
-}
 }
 }
 }

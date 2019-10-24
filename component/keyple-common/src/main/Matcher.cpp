@@ -1,7 +1,22 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "Matcher.h"
 #include "Pattern.h"
 #include "exceptionhelper.h"
 #include "stringhelper.h"
+
+namespace keyple {
+namespace common {
 
 Matcher::Matcher(Pattern* parent, const std::string& text) : parentPattern(parent), text(text)
 {
@@ -114,3 +129,7 @@ Matcher *Matcher::reset()
 
     return this;
 }
+
+}
+}
+

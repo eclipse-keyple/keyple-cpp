@@ -17,13 +17,11 @@
 #include "AbstractApduResponseParser_Import.h"
 #include "AbstractIso7816CommandBuilder.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 
-using namespace org::eclipse::keyple::core::command;
+using namespace keyple::core::command;
 
 template<typename B, typename P>
 class CalypsoBuilderParser {
@@ -33,16 +31,24 @@ class CalypsoBuilderParser {
     static_assert(std::is_base_of<AbstractIso7816CommandBuilder, B>::value,
                   "B must inherit from org.eclipse.keyple.core.command.AbstractIso7816CommandBuilder");
      */
+
 public:
+    /**
+     *
+     */
     virtual std::shared_ptr<B> getCommandBuilder() = 0;
 
+    /**
+     *
+     */
     virtual std::shared_ptr<P> getResponseParser() = 0;
 
+    /**
+     *
+     */
     virtual void setResponseParser(std::shared_ptr<P> parser) = 0;
 };
 
-}
-}
 }
 }
 }

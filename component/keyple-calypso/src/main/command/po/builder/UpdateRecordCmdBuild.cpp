@@ -1,18 +1,28 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "UpdateRecordCmdBuild.h"
 #include "UpdateRecordRespPars.h"
 #include "ApduResponse.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace builder {
 
-using namespace org::eclipse::keyple::calypso::command;
-using namespace org::eclipse::keyple::calypso::command::po::parser;
-using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::core::seproxy::message;
 
 UpdateRecordCmdBuild::UpdateRecordCmdBuild(PoClass poClass, char sfi, char recordNumber, std::vector<char> &newRecordData,
                                            const std::string &extraInfo)
@@ -34,8 +44,6 @@ std::shared_ptr<UpdateRecordRespPars> UpdateRecordCmdBuild::createResponseParser
     return std::make_shared<UpdateRecordRespPars>(apduResponse);
 }
 
-}
-}
 }
 }
 }

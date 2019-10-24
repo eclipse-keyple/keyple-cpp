@@ -1,17 +1,29 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 /* Core */
 #include "KeypleReaderException.h"
 
 /* Calypso */
 #include "KeypleCalypsoSecureSessionUnauthorizedKvcException.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 namespace exception {
 
-using namespace org::eclipse::keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::exception;
 
 KeypleCalypsoSecureSessionUnauthorizedKvcException
 ::KeypleCalypsoSecureSessionUnauthorizedKvcException(const std::string &message)
@@ -19,9 +31,15 @@ KeypleCalypsoSecureSessionUnauthorizedKvcException
 {
 }
 
+KeypleCalypsoSecureSessionUnauthorizedKvcException
+::KeypleCalypsoSecureSessionUnauthorizedKvcException(
+  const KeypleCalypsoSecureSessionUnauthorizedKvcException& o)
+: KeypleReaderException(o.getMessage())
+{
+}
+
 }
 }
 }
 }
-}
-}
+

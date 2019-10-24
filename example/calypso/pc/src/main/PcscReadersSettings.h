@@ -14,8 +14,6 @@
 
 #include <string>
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace calypso {
@@ -28,8 +26,6 @@ public:
     static const std::string SAM_READER_NAME_REGEX;
 };
 
-}
-}
 }
 }
 }

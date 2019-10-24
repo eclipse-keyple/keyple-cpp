@@ -1,15 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
-
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 #pragma once
 
 #include <string>
@@ -27,22 +28,15 @@
 #include "KeypleChannelStateException.h"
 #include "KeypleIOReaderException.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using namespace org::eclipse::keyple::core::seproxy::exception;
-using namespace org::eclipse::keyple::common;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::common;
 
-class EXPORT StubSecureElement : public std::enable_shared_from_this<StubSecureElement> {
-private:
-    /**
-     *
-     */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(StubSecureElement));
-
+class EXPORT StubSecureElement
+: public std::enable_shared_from_this<StubSecureElement> {
 public:
     /**
      *
@@ -85,7 +79,8 @@ public:
     /**
      *
      */
-    std::unordered_map<std::string, std::string> hexCommands = std::unordered_map<std::string, std::string>();
+    std::unordered_map<std::string, std::string> hexCommands =
+        std::unordered_map<std::string, std::string>();
 
     /**
      * Add more simulated commands to the Stub SE
@@ -93,7 +88,8 @@ public:
      * @param command : hexadecimal command to react to
      * @param response : hexadecimal response to be sent in reaction to command
      */
-    virtual void addHexCommand(const std::string &command, const std::string &response);
+    virtual void addHexCommand(const std::string &command,
+                               const std::string &response);
 
     /**
      * Remove simulated commands from the Stub SE
@@ -110,10 +106,15 @@ public:
      * @throws KeypleIOReaderException if the transmission fails
      */
     virtual std::vector<char> processApdu(std::vector<char> &apduIn);
+
+private:
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger =
+        LoggerFactory::getLogger(typeid(StubSecureElement));
 };
 
-}
-}
 }
 }
 }

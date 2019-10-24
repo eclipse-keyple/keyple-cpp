@@ -16,33 +16,33 @@
 
 #include "AbstractApduResponseParser_Import.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace sam {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 class AbstractSamResponseParser : public AbstractApduResponseParser {
-    /**
-        * Constructor to build a parser of the APDU response.
-        *
-        * @param response response to parse
-        */
 public:
+    /**
+     * Constructor to build a parser of the APDU response.
+     *
+     * @param response response to parse
+     */
     AbstractSamResponseParser(std::shared_ptr<ApduResponse> response);
 
 protected:
-    std::shared_ptr<AbstractSamResponseParser> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<AbstractSamResponseParser> shared_from_this()
+    {
         return std::static_pointer_cast<AbstractSamResponseParser>(AbstractApduResponseParser::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

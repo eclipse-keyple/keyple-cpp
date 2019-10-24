@@ -25,17 +25,15 @@
 #include "SelectFileRespPars.h"
 #include "UpdateRecordRespPars.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace builder {
 
-using namespace org::eclipse::keyple::calypso::command;
-using namespace org::eclipse::keyple::calypso::command::po;
-using namespace org::eclipse::keyple::calypso::command::po::parser;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::parser;
 
 /**
  * The Class UpdateRecordCmdBuild. This class provides the dedicated constructor to build the Update
@@ -79,8 +77,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

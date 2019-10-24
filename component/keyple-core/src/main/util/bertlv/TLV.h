@@ -20,11 +20,9 @@
 /* Common */
 #include "Export.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace util { namespace bertlv { class Tag; } } } } } }
+/* Forward class declarations */
+namespace keyple { namespace core { namespace util { namespace bertlv { class Tag; } } } }
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace util {
@@ -37,27 +35,6 @@ namespace bertlv {
  * (ITU-T X.690 / ISO 8825)
  */
 class EXPORT TLV : public std::enable_shared_from_this<TLV> {
-private:
-    /**
-     *
-     */
-    std::shared_ptr<Tag> tag;
-
-    /**
-     *
-     */
-    int length = 0;
-
-    /**
-     *
-     */
-    std::vector<char> binary;
-
-    /**
-     *
-     */
-    int position = 0;
-
 public:
     /**
      * Create a TLV object initialized with a byte array
@@ -101,11 +78,34 @@ public:
      */
     virtual int getPosition();
 
+    /**
+     *
+     */
     std::string toString();
+
+private:
+    /**
+     *
+     */
+    std::shared_ptr<Tag> tag;
+
+    /**
+     *
+     */
+    int length = 0;
+
+    /**
+     *
+     */
+    std::vector<char> binary;
+
+    /**
+     *
+     */
+    int position = 0;
+
 };
 
-}
-}
 }
 }
 }

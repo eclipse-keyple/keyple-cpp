@@ -17,36 +17,33 @@
 
 #include "KeyplePluginException.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace exception {
 
 /**
-    * Exception thrown when {@link org.eclipse.keyple.seproxy.ReaderPlugin} is not found
-    */
+ * Exception thrown when {@link org.eclipse.keyple.seproxy.ReaderPlugin} is not found
+ */
 class KeyplePluginNotFoundException : public KeyplePluginException {
-
-    /**
-        * Exception thrown when {@link org.eclipse.keyple.seproxy.ReaderPlugin} is not found
-        * 
-        * @param pluginName : pluginName that has not been found
-        */
 public:
+    /**
+     * Exception thrown when {@link org.eclipse.keyple.seproxy.ReaderPlugin} is not found
+     *
+     * @param pluginName : pluginName that has not been found
+     */
     KeyplePluginNotFoundException(const std::string &pluginName);
 
-
-
 protected:
-    std::shared_ptr<KeyplePluginNotFoundException> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<KeyplePluginNotFoundException> shared_from_this()
+    {
         return std::static_pointer_cast<KeyplePluginNotFoundException>(KeyplePluginException::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

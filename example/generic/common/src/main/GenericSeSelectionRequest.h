@@ -18,17 +18,15 @@
 #include "SeSelector_Import.h"
 #include "TransmissionMode.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
 namespace common {
 
-using namespace org::eclipse::keyple::core::selection;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::message;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace keyple::core::selection;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::protocol;
 
 /**
  * Create a new class extending AbstractSeSelectionRequest
@@ -70,8 +68,6 @@ private:
     };
 };
 
-}
-}
 }
 }
 }

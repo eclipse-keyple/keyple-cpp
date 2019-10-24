@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 /* Core */
 #include "AbstractThreadedObservablePlugin.h"
 #include "PluginEvent.h"
@@ -5,21 +19,21 @@
 #include "KeypleReaderException.h"
 #include "InterruptedException.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace plugin {
 
-using ObservablePlugin      = org::eclipse::keyple::core::seproxy::event::ObservablePlugin;
-using PluginEvent           = org::eclipse::keyple::core::seproxy::event::PluginEvent;
-using KeypleReaderException = org::eclipse::keyple::core::seproxy::exception::KeypleReaderException;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::core::seproxy::exception;
 
 std::set<std::string> _set;
-std::shared_ptr<std::set<std::string>> nativeReadersNames = std::make_shared<std::set<std::string>>(_set);
+std::shared_ptr<std::set<std::string>> nativeReadersNames =
+     std::make_shared<std::set<std::string>>(_set);
 
-AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(const std::string &name) : AbstractObservablePlugin(name)
+AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(
+  const std::string &name)
+: AbstractObservablePlugin(name)
 {
     logger->debug("constructor (name: %s)\n", name);
 }
@@ -27,7 +41,8 @@ AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(const std::st
 void AbstractThreadedObservablePlugin::startObservation()
 {
     logger->debug("starting observation\n");
-    thread = std::make_shared<AbstractThreadedObservablePlugin::EventThread>(shared_from_this(), this->getName());
+    thread = std::make_shared<AbstractThreadedObservablePlugin::EventThread>(
+                 shared_from_this(), this->getName());
     thread->start();
 }
 
@@ -39,10 +54,14 @@ void AbstractThreadedObservablePlugin::stopObservation()
     }
 }
 
-AbstractThreadedObservablePlugin::EventThread::EventThread(std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance, const std::string &pluginName)
+AbstractThreadedObservablePlugin::EventThread::EventThread(
+  std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance,
+  const std::string &pluginName)
 : outerInstance(outerInstance), pluginName(pluginName)
 {
-    outerInstance->logger->debug("constructor with outerInstance: %p, pluginName: %s (running: %d)\n", outerInstance, pluginName, running);
+    outerInstance->logger->debug("constructor with outerInstance: %p, " \
+                                 "pluginName: %s (running: %d)\n",
+                                 outerInstance, pluginName, running);
 }
 
 void AbstractThreadedObservablePlugin::EventThread::end()
@@ -57,31 +76,37 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
 {
     outerInstance->logger->debug("starting event thread\n");
 
-    std::shared_ptr<std::set<std::string>> changedReaderNames = std::make_shared<std::set<std::string>>();
+    std::shared_ptr<std::set<std::string>> changedReaderNames =
+        std::make_shared<std::set<std::string>>();
 
-    try
-    {
-        while (running)
-        {
-            /* retrieves the current readers names list */
+    try {
+        while (running) {
+            /* Retrieves the current readers names list */
             std::shared_ptr<std::set<std::string>> actualNativeReadersNames =
                 outerInstance->fetchNativeReadersNames();
 
-            /* Checks if it has changed this algorithm favors cases where nothing change */
-            if (outerInstance->nativeReadersNames != actualNativeReadersNames)
-            {
+            /*
+             * Checks if it has changed this algorithm favors cases where
+             * nothing changes.
+             */
+            if (outerInstance->nativeReadersNames != actualNativeReadersNames) {
                 /*
-                    * parse the current readers list, notify for disappeared readers, update
-                    * readers list
-                    */
+                 * Parse the current readers list, notify for disappeared
+                 * readers, update readers list
+                 */
+
                 /* build changed reader names list */
                 changedReaderNames->clear();
+
                 for (auto _it : (*outerInstance->readers)) {
-                        std::shared_ptr<AbstractObservableReader> it = std::dynamic_pointer_cast<AbstractObservableReader>(_it);
+                        std::shared_ptr<AbstractObservableReader> it =
+                            std::dynamic_pointer_cast<AbstractObservableReader>(
+                                _it);
                         if (actualNativeReadersNames->find(it->AbstractLoggedObservable<ReaderEvent>::getName()) == actualNativeReadersNames->end()) {
                         changedReaderNames->insert(it->AbstractLoggedObservable<ReaderEvent>::getName());
                     }
                 }
+
                 /* notify disconnections if any and update the reader list */
                 if (changedReaderNames->size() > 0) {
                     /* grouped notification */
@@ -146,8 +171,6 @@ void AbstractThreadedObservablePlugin::finalize()
 }
 
 }
-} // namespace plugin
-}     // namespace seproxy
-}         // namespace keyple
-}             // namespace eclipse
-} // namespace org
+}
+}
+}

@@ -1,18 +1,29 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "IncreaseCmdBuild.h"
 #include "IncreaseRespPars.h"
 #include "ApduResponse.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace builder {
-using PoClass = org::eclipse::keyple::calypso::command::PoClass;
-using namespace org::eclipse::keyple::calypso::command::po;
-using IncreaseRespPars = org::eclipse::keyple::calypso::command::po::parser::IncreaseRespPars;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::core::seproxy::message;
 
 IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int incValue, const std::string &extraInfo)
 : AbstractPoCommandBuilder<IncreaseRespPars>(command, nullptr)
@@ -46,8 +57,6 @@ IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi, char counterNumber
 std::shared_ptr<IncreaseRespPars> IncreaseCmdBuild::createResponseParser(std::shared_ptr<ApduResponse> apduResponse)
 {
     return std::make_shared<IncreaseRespPars>(apduResponse);
-}
-}
 }
 }
 }

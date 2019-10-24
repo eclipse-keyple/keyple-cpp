@@ -18,8 +18,6 @@
 /* Common */
 #include "Export.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -60,6 +58,89 @@ public:
      */
     static SamRevision AUTO;
 
+    /**
+     *
+     */
+    enum class InnerEnum {
+        NO_REV,
+        C1,
+        S1E,
+        S1D,
+        AUTO
+    };
+
+    /**
+     *
+     */
+    InnerEnum innerEnumValue;
+
+    /**
+     *
+     */
+    SamRevision(const std::string &nameValue, InnerEnum innerEnum,
+                const std::string &name, const std::string &applicationTypeMask,
+                char classByte);
+
+    /**
+     *
+     */
+    SamRevision(const SamRevision& o);
+
+    /**
+     *
+     */
+    virtual ~SamRevision() {}
+
+    /**
+     *
+     */
+    virtual std::string getName();
+
+    /**
+     *
+     */
+    virtual std::string getApplicationTypeMask();
+
+    /**
+     *
+     */
+    virtual char getClassByte();
+
+    /**
+     *
+     */
+    bool operator==(const SamRevision &other);
+
+    /**
+     *
+     */
+    bool operator!=(const SamRevision &other);
+
+    /**
+     *
+     */
+    SamRevision& operator=(SamRevision o);
+
+    /**
+     *
+     */
+    static std::vector<SamRevision> values();
+
+    /**
+     *
+     */
+    int ordinal();
+
+    /**
+     *
+     */
+    std::string toString();
+
+    /**
+     *
+     */
+    static SamRevision valueOf(const std::string &name);
+
 private:
     /**
      *
@@ -82,24 +163,6 @@ private:
      */
     static StaticConstructor staticConstructor;
 
-public:
-    /**
-     *
-     */
-    enum class InnerEnum {
-        NO_REV,
-        C1,
-        S1E,
-        S1D,
-        AUTO
-    };
-
-    /**
-     *
-     */
-    InnerEnum innerEnumValue;
-
-private:
     /**
      *
      */
@@ -130,60 +193,8 @@ private:
      */
     char classByte;
 
-public:
-    /**
-     *
-     */
-    SamRevision(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, const std::string &applicationTypeMask, char classByte);
-
-    /**
-     *
-     */
-    virtual std::string getName();
-
-    /**
-     *
-     */
-    virtual std::string getApplicationTypeMask();
-
-    /**
-     *
-     */
-    virtual char getClassByte();
-
-    /**
-     *
-     */
-    bool operator==(const SamRevision &other);
-
-    /**
-     *
-     */
-    bool operator!=(const SamRevision &other);
-
-    /**
-     *
-     */
-    static std::vector<SamRevision> values();
-
-    /**
-     *
-     */
-    int ordinal();
-
-    /**
-     *
-     */
-    std::string toString();
-
-    /**
-     *
-     */
-    static SamRevision valueOf(const std::string &name);
 };
 
-}
-}
 }
 }
 }

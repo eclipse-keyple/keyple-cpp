@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "KeypleReaderNotFoundException.h"
@@ -21,14 +33,14 @@
 /* Common */
 #include "Thread.h"
 
-using namespace org::eclipse::keyple::example::calypso::common::transaction;
-using namespace org::eclipse::keyple::example::calypso::common::postructure;
-using namespace org::eclipse::keyple::example::calypso::pc::stub::se;
-using namespace org::eclipse::keyple::plugin::stub;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::event;
-using namespace org::eclipse::keyple::core::seproxy::exception;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace keyple::example::calypso::common::transaction;
+using namespace keyple::example::calypso::common::postructure;
+using namespace keyple::example::calypso::pc::stub::se;
+using namespace keyple::plugin::stub;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::protocol;
 
 class UseCase_Calypso2_DefaultSelectionNotification_Stub
 : public std::enable_shared_from_this<UseCase_Calypso2_DefaultSelectionNotification_Stub>, public ObservableReader::ReaderObserver {

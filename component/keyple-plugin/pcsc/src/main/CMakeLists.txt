@@ -50,9 +50,10 @@ INCLUDE_DIRECTORIES(
 	/usr/include/PCSC	
 )
 
-ADD_LIBRARY(${LIBRARY_NAME} SHARED
+ADD_LIBRARY(
 
-	${CMAKE_CURRENT_SOURCE_DIR}/package-info.cpp
+    ${LIBRARY_NAME} SHARED
+
 	${CMAKE_CURRENT_SOURCE_DIR}/PcscPlugin.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/PcscProtocolSetting.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/PcscReaderSettings.cpp

@@ -20,8 +20,6 @@
 #include "CalypsoSamCommands.h"
 #include "SamRevision_Import.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -29,18 +27,12 @@ namespace sam {
 namespace builder {
 namespace security {
 
-using namespace org::eclipse::keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam;
 
 /**
  * Builder for the SAM Give Random APDU command.
  */
 class GiveRandomCmdBuild : public AbstractSamCommandBuilder {
-private:
-    /**
-     * The command reference
-     */
-    CalypsoSamCommands& command = CalypsoSamCommands::GIVE_RANDOM;
-
 public:
     /**
      * Instantiates a new DigestUpdateCmdBuild.
@@ -61,10 +53,15 @@ protected:
     {
         return std::static_pointer_cast<GiveRandomCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
+
+private:
+    /**
+     * The command reference
+     */
+    CalypsoSamCommands& command = CalypsoSamCommands::GIVE_RANDOM;
+
 };
 
-}
-}
 }
 }
 }

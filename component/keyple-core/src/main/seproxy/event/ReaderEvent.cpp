@@ -1,21 +1,39 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "ReaderEvent.h"
 #include "DefaultSelectionsResponse.h"
 #include "AbstractDefaultSelectionsResponse.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace event {
 
-using DefaultSelectionsResponse = org::eclipse::keyple::core::seproxy::message::DefaultSelectionsResponse;
-using EventType         = org::eclipse::keyple::core::seproxy::event::ReaderEvent::EventType;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::event;
 
-EventType EventType::IO_ERROR("IO_ERROR", InnerEnum::IO_ERROR, "SE Reader IO Error");
-EventType EventType::SE_INSERTED("SE_INSERTED", InnerEnum::SE_INSERTED, "SE insertion");
-EventType EventType::SE_MATCHED("SE_MATCHED", InnerEnum::SE_MATCHED, "SE matched");
-EventType EventType::SE_REMOVAL("SE_REMOVAL", InnerEnum::SE_REMOVAL, "SE removal");
+using EventType = ReaderEvent::EventType;
+
+EventType EventType::IO_ERROR("IO_ERROR", InnerEnum::IO_ERROR,
+                              "SE Reader IO Error");
+EventType EventType::SE_INSERTED("SE_INSERTED", InnerEnum::SE_INSERTED,
+                                 "SE insertion");
+EventType EventType::SE_MATCHED("SE_MATCHED", InnerEnum::SE_MATCHED,
+                                "SE matched");
+EventType EventType::SE_REMOVAL("SE_REMOVAL", InnerEnum::SE_REMOVAL,
+                                "SE removal");
 
 std::vector<EventType> EventType::valueList;
 
@@ -30,15 +48,20 @@ EventType::StaticConstructor::StaticConstructor()
 EventType::StaticConstructor EventType::staticConstructor;
 int EventType::nextOrdinal = 0;
 
-ReaderEvent::EventType::EventType(const std::string &nameValue,
-                                  InnerEnum innerEnum,
-                                  const std::string &name)
-: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++)
+EventType::EventType(const std::string &nameValue, InnerEnum innerEnum,
+                     const std::string &name)
+: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++),
+  name(name)
 {
-    this->name = name;
 }
 
-std::string ReaderEvent::EventType::getName()
+EventType::EventType(const EventType& o)
+: innerEnumValue(o.innerEnumValue), nameValue(o.nameValue),
+  ordinalValue(o.ordinalValue), name(o.name)
+{
+}
+
+std::string EventType::getName()
 {
     return this->name;
 }
@@ -81,11 +104,11 @@ EventType EventType::valueOf(const std::string &name)
 }
 
 ReaderEvent::ReaderEvent(const std::string &pluginName,
-                         const std::string &readerName, EventType eventType,
-                         std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
-: pluginName(pluginName), readerName(readerName), 
-  defaultResponseSet(std::static_pointer_cast<DefaultSelectionsResponse>(defaultSelectionsResponse)),
-  eventType(eventType)
+  const std::string &readerName, EventType eventType,
+  std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
+: eventType(eventType), pluginName(pluginName), readerName(readerName),
+  defaultResponseSet(std::static_pointer_cast<DefaultSelectionsResponse>(
+      defaultSelectionsResponse))
 {
 }
 
@@ -104,13 +127,12 @@ ReaderEvent::EventType ReaderEvent::getEventType()
     return eventType;
 }
 
-std::shared_ptr<AbstractDefaultSelectionsResponse> ReaderEvent::getDefaultSelectionsResponse()
+std::shared_ptr<AbstractDefaultSelectionsResponse>
+ReaderEvent::getDefaultSelectionsResponse()
 {
     return defaultResponseSet;
 }
 
-}
-}
 }
 }
 }

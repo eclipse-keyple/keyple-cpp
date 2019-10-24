@@ -20,8 +20,6 @@
 #include "CalypsoSamCommands.h"
 #include "SamRevision_Import.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -30,7 +28,7 @@ namespace builder {
 namespace security {
 
 
-using namespace org::eclipse::keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam;
 
 /**
  * Builder for the SAM Digest Update APDU command. This command have to be sent twice for each
@@ -38,12 +36,6 @@ using namespace org::eclipse::keyple::calypso::command::sam;
  * received
  */
 class DigestUpdateCmdBuild : public AbstractSamCommandBuilder {
-private:
-    /**
-     * The command reference
-     */
-    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_UPDATE;
-
 public:
     /**
      * Instantiates a new DigestUpdateCmdBuild.
@@ -69,10 +61,14 @@ protected:
     {
         return std::static_pointer_cast<DigestUpdateCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
+
+private:
+    /**
+     * The command reference
+     */
+    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_UPDATE;
 };
 
-}
-}
 }
 }
 }

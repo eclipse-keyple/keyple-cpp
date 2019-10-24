@@ -22,18 +22,15 @@
 /* Core */
 #include "KeypleReaderException.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace exception {
 
-    /**
-     * Exception thrown when IO operations failed in a {@link ProxyReader}
-     */
+/**
+ * Exception thrown when IO operations failed in a {@link ProxyReader}
+ */
 class EXPORT KeypleIOReaderException : public KeypleReaderException {
-
 public:
     /**
      * New exception to be thrown
@@ -43,11 +40,11 @@ public:
     KeypleIOReaderException(const std::string &message);
 
     /**
-        * Encapsulate a lower level reader exception
-        *
-        * @param message : message to add some context to the exception
-        * @param cause : lower level exception
-        */
+     * Encapsulate a lower level reader exception
+     *
+     * @param message : message to add some context to the exception
+     * @param cause : lower level exception
+     */
     KeypleIOReaderException(const std::string &message, std::runtime_error cause);
 
 protected:
@@ -60,8 +57,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

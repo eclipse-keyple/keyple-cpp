@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #pragma once
 
 #include <chrono>
@@ -5,33 +17,10 @@
 
 #include "Object.h"
 
+namespace keyple {
+namespace common {
+
 class Thread {
-private:
-    /**
-     * 
-     */
-    const std::string name;
-
-    /**
-     * 
-     */
-    bool interrupted;
-
-    /**
-     * 
-     */
-    std::thread *t;
-
-    /**
-     * 
-     */
-    int running;
-
-    /**
-     * 
-     */
-    int detached;
-
 public:
     /**
 	 * Constructor
@@ -41,7 +30,7 @@ public:
 	 * Automatically generated names are of the form "Thread-"+n, where n is an
 	 * integer.
 	 */
-    Thread() : name("Thread-x")
+    Thread() : name("Thread-x"), t(nullptr)
     {
         interrupted = false;
         detached = true;
@@ -56,7 +45,7 @@ public:
 	 *
 	 * @param name the name of the new thread
 	 */
-    Thread(const std::string &name) : name(name)
+    Thread(const std::string &name) : name(name), t(nullptr), running(false)
     {
         interrupted = false;
         detached = true;
@@ -65,7 +54,7 @@ public:
     /**
 	 * Destructor
 	 */
-    ~Thread()
+    virtual ~Thread()
     {
         if (running == 1 && detached == 0)
         {
@@ -255,4 +244,35 @@ public:
     {
         this->t = t;
     }
+
+private:
+    /**
+     *
+     */
+    const std::string name;
+
+    /**
+     *
+     */
+    bool interrupted;
+
+    /**
+     *
+     */
+    std::thread *t;
+
+    /**
+     *
+     */
+    int running;
+
+    /**
+     *
+     */
+    int detached;
+
 };
+
+}
+}
+

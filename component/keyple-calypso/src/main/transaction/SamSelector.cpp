@@ -1,18 +1,28 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 /* Core */
 #include "SeCommonProtocols_Import.h"
 
 /* Calypso */
 #include "SamSelector.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using namespace org::eclipse::keyple::calypso::command::sam;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::protocol;
 
 SamSelector::SamSelector(SamRevision samRevision, const std::string &serialNumber, const std::string &extraInfo)
 : SeSelector(SeCommonProtocols::PROTOCOL_ISO7816_3, std::make_shared<SeSelector::AtrFilter>(""), nullptr, extraInfo)
@@ -51,8 +61,6 @@ SamSelector::SamSelector(SamRevision samRevision, const std::string &serialNumbe
     this->getAtrFilter()->setAtrRegex(atrRegex);
 }
 
-}
-}
 }
 }
 }

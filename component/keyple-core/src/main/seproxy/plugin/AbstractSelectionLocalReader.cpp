@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "AbstractSelectionLocalReader.h"
 #include "AnswerToReset.h"
 #include "ApduResponse.h"
@@ -9,19 +21,15 @@
 #include "SeRequest.h"
 #include "SeSelector_Import.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace plugin {
 
-using AnswerToReset                       = org::eclipse::keyple::core::seproxy::message::AnswerToReset;
-using ByteArrayUtil                       = org::eclipse::keyple::core::util::ByteArrayUtil;
-using KeypleApplicationSelectionException = org::eclipse::keyple::core::seproxy::exception::KeypleApplicationSelectionException;
-using KeypleChannelStateException         = org::eclipse::keyple::core::seproxy::exception::KeypleChannelStateException;
-using KeypleIOReaderException             = org::eclipse::keyple::core::seproxy::exception::KeypleIOReaderException;
-using ObservableReader                    = org::eclipse::keyple::core::seproxy::event::ObservableReader;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::util;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::event;
 
 const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractSelectionLocalReader));
 
@@ -79,8 +87,6 @@ std::shared_ptr<ApduResponse> AbstractSelectionLocalReader::openChannelForAid(st
     }
 
     return fciResponse;
-}
-}
 }
 }
 }

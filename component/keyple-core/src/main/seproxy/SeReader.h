@@ -21,23 +21,16 @@
 #include "NoStackTraceThrowable.h"
 #include "TransmissionMode.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace protocol { class SeProtocolSetting; } } } } } }
+/* Forward class declarations */
+namespace keyple { namespace core { namespace seproxy { namespace protocol { class SeProtocolSetting; } } } }
 
-
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
     
-using Configurable          = org::eclipse::keyple::core::util::Configurable;
-using Nameable              = org::eclipse::keyple::core::util::Nameable;
-using NoStackTraceThrowable = org::eclipse::keyple::core::seproxy::exception::NoStackTraceThrowable;
-using SeProtocol            = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
-using SeProtocolSetting     = org::eclipse::keyple::core::seproxy::protocol::SeProtocolSetting;
-using TransmissionMode      = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
-
+using namespace keyple::core::util;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::protocol;
 
 /**
  * SeReader interface
@@ -99,8 +92,6 @@ public:
     virtual TransmissionMode getTransmissionMode() = 0;
 };
 
-}
-}
 }
 }
 }

@@ -22,8 +22,6 @@
 #include "KeyReference.h"
 #include "SamRevision_Import.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -31,17 +29,13 @@ namespace sam {
 namespace builder {
 namespace security {
 
-using namespace org::eclipse::keyple::calypso;
-using namespace org::eclipse::keyple::calypso::command::sam;
+using namespace keyple::calypso;
+using namespace keyple::calypso::command::sam;
 
 /**
  * Builder for the SAM Give Random APDU command.
  */
 class CardGenerateKeyCmdBuild : public AbstractSamCommandBuilder {
-private:
-    /** The command reference. */
-    CalypsoSamCommands& command = CalypsoSamCommands::CARD_GENERATE_KEY;
-
 public:
     /**
      * Instantiates a new DigestUpdateCmdBuild and generate the ciphered data for a key ciphered by
@@ -66,10 +60,14 @@ protected:
     {
         return std::static_pointer_cast<CardGenerateKeyCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
+
+private:
+    /**
+     * The command reference
+     */
+    CalypsoSamCommands& command = CalypsoSamCommands::CARD_GENERATE_KEY;
 };
 
-}
-}
 }
 }
 }

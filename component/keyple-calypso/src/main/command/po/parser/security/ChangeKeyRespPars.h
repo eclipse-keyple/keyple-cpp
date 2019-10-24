@@ -18,8 +18,6 @@
 
 #include "AbstractPoResponseParser.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -27,8 +25,8 @@ namespace po {
 namespace parser {
 namespace security {
 
-using AbstractPoResponseParser = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
-using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::seproxy::message;
 
 class ChangeKeyRespPars : public AbstractPoResponseParser {
 private:
@@ -80,8 +78,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

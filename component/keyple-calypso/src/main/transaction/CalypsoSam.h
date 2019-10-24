@@ -30,68 +30,129 @@
 #include "Logger.h"
 #include "LoggerFactory.h"
 
-
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using AbstractMatchingSe = org::eclipse::keyple::core::selection::AbstractMatchingSe;
-using SamRevision        = org::eclipse::keyple::calypso::command::sam::SamRevision;
-using SeResponse         = org::eclipse::keyple::core::seproxy::message::SeResponse;
-using MatchingSe         = org::eclipse::keyple::core::selection::AbstractMatchingSe;
-using Logger             = org::eclipse::keyple::common::Logger;
-using LoggerFactory      = org::eclipse::keyple::common::LoggerFactory;
-using TransmissionMode   = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
+using namespace keyple::core::selection;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::selection;
+using namespace keyple::common;
+using namespace keyple::core::seproxy::protocol;
 
 class EXPORT CalypsoSam : public AbstractMatchingSe {
-private:
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CalypsoSam));
-
-    SamRevision samRevision;
-    std::vector<char> serialNumber = std::vector<char>(4);
-    char platform = 0;
-    char applicationType = 0;
-    char applicationSubType = 0;
-    char softwareIssuer = 0;
-    char softwareVersion = 0;
-    char softwareRevision = 0;
+public:
+    /**
+     * Constructor.
+     *
+     * @param selectionResponse the selection response from the SAM
+     * @param transmissionMode the current {@link TransmissionMode} (contacts or contactless)
+     * @param extraInfo textual information
+     */
+    CalypsoSam(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo);
 
     /**
-    * Constructor.
-        * 
-    * @param selectionResponse the selection response from the SAM
-    * @param transmissionMode the current {@link TransmissionMode} (contacts or contactless)
-    * @param extraInfo textual information
-        */
-public:
-CalypsoSam(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo);
+     *
+     */
+    virtual ~CalypsoSam() {}
 
+    /**
+     *
+     */
     virtual SamRevision getSamRevision();
 
+    /**
+     *
+     */
     virtual std::vector<char> getSerialNumber();
 
+    /**
+     *
+     */
     virtual char getPlatform();
 
+    /**
+     *
+     */
     virtual char getApplicationType();
 
+    /**
+     *
+     */
     virtual char getApplicationSubType();
 
+    /**
+     *
+     */
     virtual char getSoftwareIssuer();
 
+    /**
+     *
+     */
     virtual char getSoftwareVersion();
 
+    /**
+     *
+     */
     virtual char getSoftwareRevision();
 
 protected:
-    std::shared_ptr<CalypsoSam> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<CalypsoSam> shared_from_this()
+    {
         return std::static_pointer_cast<CalypsoSam>(AbstractMatchingSe::shared_from_this());
     }
+
+private:
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CalypsoSam));
+
+    /**
+     *
+     */
+    SamRevision samRevision;
+
+    /**
+     *
+     */
+    std::vector<char> serialNumber = std::vector<char>(4);
+
+    /**
+     *
+     */
+    char platform = 0;
+
+    /**
+     *
+     */
+    char applicationType = 0;
+
+    /**
+     *
+     */
+    char applicationSubType = 0;
+
+    /**
+     *
+     */
+    char softwareIssuer = 0;
+
+    /**
+     *
+     */
+    char softwareVersion = 0;
+
+    /**
+     *
+     */
+    char softwareRevision = 0;
 };
 
-}
-}
 }
 }
 }

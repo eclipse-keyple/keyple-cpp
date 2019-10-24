@@ -29,8 +29,6 @@
 /* Common */
 #include "Byte.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -38,9 +36,8 @@ namespace po {
 namespace parser {
 namespace security {
 
-using AbstractPoResponseParser  = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
-using PoRevision                = org::eclipse::keyple::calypso::command::po::PoRevision;
-using ApduResponse              = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::seproxy::message;
 
 /**
  * Open session response parser. See specs: Calypso / page 100 / 9.5.1 - Open secure session
@@ -237,6 +234,11 @@ public:
     /**
      *
      */
+    virtual ~AbstractOpenSessionRespPars() {}
+
+    /**
+     *
+     */
     static std::shared_ptr<AbstractOpenSessionRespPars> create(std::shared_ptr<ApduResponse> response, PoRevision revision);
 
     /*
@@ -290,11 +292,9 @@ protected:
     }
 };
 
-} // namespace security
-}     // namespace parser
-}         // namespace po
-}             // namespace command
-}                 // namespace calypso
-}                     // namespace keyple
-}                         // namespace eclipse
-} // namespace org
+}
+}
+}
+}
+}
+}

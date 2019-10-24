@@ -21,20 +21,17 @@
 #include "CommandsTable.h"
 #include "PoRevision.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 
-using CommandsTable = org::eclipse::keyple::core::command::CommandsTable;
-using PoRevision    = org::eclipse::keyple::calypso::command::po::PoRevision;
+using namespace keyple::core::command;
+using namespace keyple::calypso::command::po;
 
 class CalypsoPoCommands final : public CommandsTable {
-
-    /** The po get data. */
 public:
+    /** The po get data. */
     static CalypsoPoCommands GET_DATA_FCI;
 
     /** The po open session. */
@@ -76,17 +73,9 @@ public:
     /* The po change key */
     static CalypsoPoCommands CHANGE_KEY;
 
-private:
-    static std::vector<CalypsoPoCommands> valueList;
-
-    class StaticConstructor {
-    public:
-        StaticConstructor();
-    };
-
-    static StaticConstructor staticConstructor;
-
-public:
+    /**
+     *
+     */
     enum class InnerEnum {
         GET_DATA_FCI,
         OPEN_SESSION_10,
@@ -109,34 +98,6 @@ public:
      */
     const InnerEnum innerEnumValue;
 
-private:
-    /**
-     *
-     */
-    const std::string nameValue;
-
-    /**
-     *
-     */
-    const int ordinalValue;
-
-    /**
-     *
-     */
-    static int nextOrdinal;
-
-private:
-    /**
-     * The name
-     */
-    const std::string name;
-
-    /**
-     * The instruction byte
-     */
-    const char instructionbyte;
-
-public:
     /**
      * The generic constructor of CalypsoCommands.
      *
@@ -172,7 +133,6 @@ public:
      */
     static CalypsoPoCommands& getOpenSessionForRev(PoRevision rev);
 
-public:
     /**
      *
      */
@@ -222,10 +182,53 @@ public:
         /* Fixe me! */
         return typeid(this);
     }
+
+private:
+    /**
+     *
+     */
+    static std::vector<CalypsoPoCommands> valueList;
+
+    /**
+     *
+     */
+    class StaticConstructor {
+    public:
+        StaticConstructor();
+    };
+
+    /**
+     *
+     */
+    static StaticConstructor staticConstructor;
+
+    /**
+     *
+     */
+    const std::string nameValue;
+
+    /**
+     *
+     */
+    const int ordinalValue;
+
+    /**
+     *
+     */
+    static int nextOrdinal;
+    /**
+     * The name
+     */
+    const std::string name;
+
+    /**
+     * The instruction byte
+     */
+    const char instructionbyte;
+
+
 };
 
-}
-}
 }
 }
 }

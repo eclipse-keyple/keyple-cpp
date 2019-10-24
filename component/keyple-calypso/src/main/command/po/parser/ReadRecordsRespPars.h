@@ -30,16 +30,14 @@
 #include "Export.h"
 #include "stringbuilder.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace parser {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using AbstractPoResponseParser   = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
+using namespace keyple::core::command;
+using namespace keyple::calypso::command::po;
 /**
  * Read Records (00B2) response parser. See specs: Calypso / page 89 / 9.4.7 Read Records The
  * {@link ReadRecordsRespPars} class holds the data resulting from a Read Records command. It
@@ -47,35 +45,13 @@ using AbstractPoResponseParser   = org::eclipse::keyple::calypso::command::po::A
  * command preparation step: SINGLE or MULTIPLE RECORD or COUNTER.
  */
 class EXPORT ReadRecordsRespPars final : public AbstractPoResponseParser {
-
-  private:
-    static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
-
-  private:
-    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-      public:
-        StaticConstructor();
-    };
-
-  private:
-    static ReadRecordsRespPars::StaticConstructor staticConstructor;
-
-  protected:
-    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
-
-    /** Type of data to parse: record data or counter, single or multiple */
-  private:
-    ReadDataStructure readDataStructure = static_cast<ReadDataStructure>(0);
-    /** Number of the first record read */
-    char recordNumber = 0;
-
+public:
     /**
      * Instantiates a new ReadRecordsRespPars.
      *
      * @param recordNumber the record number
      * @param readDataStructure the type of content in the response to parse
      */
-  public:
     ReadRecordsRespPars(std::shared_ptr<ApduResponse> apduResponse, ReadDataStructure readDataStructure, char recordNumber);
 
     /**
@@ -111,19 +87,59 @@ class EXPORT ReadRecordsRespPars final : public AbstractPoResponseParser {
      */
     std::shared_ptr<std::map<int, int>> getCounters();
 
+    /**
+     *
+     */
     std::string toString();
 
-  protected:
+protected:
+    /**
+     *
+     */
+    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
+
+    /**
+     *
+     */
     std::shared_ptr<ReadRecordsRespPars> shared_from_this()
     {
         return std::static_pointer_cast<ReadRecordsRespPars>(AbstractPoResponseParser::shared_from_this());
     }
+
+private:
+    /**
+     *
+     */
+    static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+
+    /**
+     *
+     */
+    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    public:
+        StaticConstructor();
+    };
+
+    /**
+     *
+     */
+    static ReadRecordsRespPars::StaticConstructor staticConstructor;
+
+    /**
+     * Type of data to parse: record data or counter, single or multiple
+     */
+    ReadDataStructure readDataStructure = static_cast<ReadDataStructure>(0);
+
+    /**
+     * Number of the first record read
+     */
+    char recordNumber = 0;
+
+
 };
 
-} // namespace parser
-}     // namespace po
-}         // namespace command
-}             // namespace calypso
-}                 // namespace keyple
-}                     // namespace eclipse
-} // namespace org
+}
+}
+}
+}
+}

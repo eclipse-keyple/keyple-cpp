@@ -1,11 +1,5 @@
-#pragma once
-
-#include <unordered_map>
-#include <vector>
-#include <memory>
-
 /********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
 *
 * See the NOTICE file(s) distributed with this work for additional information regarding copyright
 * ownership.
@@ -16,10 +10,14 @@
 * SPDX-License-Identifier: EPL-2.0
 ********************************************************************************/
 
+#pragma once
+
+#include <unordered_map>
+#include <vector>
+#include <memory>
+
 #include "AbstractSamResponseParser.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -27,49 +25,64 @@ namespace sam {
 namespace parser {
 namespace security {
 
-using AbstractSamResponseParser = org::eclipse::keyple::calypso::command::sam::AbstractSamResponseParser;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::core::seproxy::message;
 
 class CardGenerateKeyRespPars : public AbstractSamResponseParser {
-private:
-    static std::unordered_map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+public:
+    /**
+     * Instantiates a new CardGenerateKeyRespPars.
+     *
+     * @param response from the SAM
+     */
+    CardGenerateKeyRespPars(std::shared_ptr<ApduResponse> response);
+
+    /**
+     *
+     */
+    virtual ~CardGenerateKeyRespPars() {}
+
+    /**
+     * Gets the 32 bytes of ciphered data.
+     *
+     * @return the ciphered data byte array or null if the operation failed
+     */
+    virtual std::vector<char> getCipheredData();
+
+protected:
+    /**
+     *
+     */
+    std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable() override;
+
+    /**
+     *
+     */
+    std::shared_ptr<CardGenerateKeyRespPars> shared_from_this()
+    {
+        return std::static_pointer_cast<CardGenerateKeyRespPars>(AbstractSamResponseParser::shared_from_this());
+    }
 
 private:
+    /**
+     *
+     */
+    static std::unordered_map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+
+    /**
+     *
+     */
     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
     public:
         StaticConstructor();
     };
 
-private:
+    /**
+     *
+     */
     static CardGenerateKeyRespPars::StaticConstructor staticConstructor;
-
-
-protected:
-    std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable() override;
-
-    /**
-        * Instantiates a new CardGenerateKeyRespPars.
-        *
-        * @param response from the SAM
-        */
-public:
-    CardGenerateKeyRespPars(std::shared_ptr<ApduResponse> response);
-
-    /**
-        * Gets the 32 bytes of ciphered data.
-        *
-        * @return the ciphered data byte array or null if the operation failed
-        */
-    virtual std::vector<char> getCipheredData();
-
-protected:
-    std::shared_ptr<CardGenerateKeyRespPars> shared_from_this() {
-        return std::static_pointer_cast<CardGenerateKeyRespPars>(AbstractSamResponseParser::shared_from_this());
-    }
 };
 
-}
-}
 }
 }
 }

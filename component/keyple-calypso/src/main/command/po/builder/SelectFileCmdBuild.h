@@ -23,18 +23,16 @@
 
 #include "exceptionhelper.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace builder {
 
-using namespace org::eclipse::keyple::calypso::command;
-using namespace org::eclipse::keyple::calypso::command::po;
-using namespace org::eclipse::keyple::calypso::command::po::parser;
-using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::core::seproxy::message;
 
 /**
  * This class provides the dedicated constructor to build the Select File APDU commands.
@@ -48,6 +46,9 @@ private:
     CalypsoPoCommands& command = CalypsoPoCommands::SELECT_FILE;
 
 public:
+    /**
+     *
+     */
     enum class SelectControl {
         FIRST,
         NEXT,
@@ -73,16 +74,21 @@ public:
      */
     SelectFileCmdBuild(PoClass poClass, std::vector<char> &selectionPath);
 
+    /**
+     *
+     */
     std::shared_ptr<SelectFileRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<SelectFileCmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<SelectFileCmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<SelectFileCmdBuild>(AbstractPoCommandBuilder<SelectFileRespPars>::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

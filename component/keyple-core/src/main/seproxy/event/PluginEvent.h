@@ -23,8 +23,6 @@
 /* Core */
 #include "ReaderEvent_Import.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
@@ -44,127 +42,184 @@ namespace event {
 * However, only one type of event is notified at a time.
 */
 class EXPORT PluginEvent final : public std::enable_shared_from_this<PluginEvent> {
+public:
+    class EXPORT EventType final {
+    public:
+        /**
+         *
+         */
+        enum class InnerEnum {
+            READER_CONNECTED,
+            READER_DISCONNECTED
+        };
+
+        /**
+         * A reader has been connected.
+         */
+        static const EventType READER_CONNECTED;
+
+        /**
+         * A reader has been disconnected.
+         */
+        static const EventType READER_DISCONNECTED;
+
+        /**
+         *
+         */
+        const InnerEnum innerEnumValue;
+
+        /**
+         *
+         */
+        EventType(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
+
+        /**
+         *
+         */
+        EventType(const EventType& o);
+
+        /**
+         *
+         */
+        virtual ~EventType() {}
+
+        /**
+         *
+         */
+        virtual std::string getName();
+
+        /**
+         *
+         */
+        bool operator == (const EventType &other);
+
+        /**
+         *
+         */
+        bool operator != (const EventType &other);
+
+        /**
+         *
+         */
+        static std::vector<EventType> values();
+
+        /**
+         *
+         */
+        int ordinal();
+
+        /**
+         *
+         */
+        friend std::ostream &operator<<(std::ostream &os, const EventType &e)
+        {
+            os << "name: " << e.name;
+
+            return os;
+        }
+
+        /**
+         *
+         */
+        static EventType valueOf(const std::string &name);
+
+    private:
+        /**
+         *
+         */
+        static std::vector<EventType> valueList;
+
+        /**
+         *
+         */
+        class StaticConstructor {
+        public:
+            StaticConstructor();
+        };
+
+        /**
+         *
+         */
+        static StaticConstructor staticConstructor;
+
+        /**
+         *
+         */
+        const std::string nameValue;
+
+        /**
+         *
+         */
+        const int ordinalValue;
+
+        /**
+         *
+         */
+        static int nextOrdinal;
+
+        /**
+         * The event name
+         */
+        std::string name;
+    };
+
+    /**
+     * Create a PluginEvent for a single reader
+     *
+     * @param pluginName name of the plugin
+     * @param readerName name of the reader
+     * @param eventType type of the event, connection or disconnection
+     */
+    PluginEvent(const std::string &pluginName, const std::string &readerName, EventType eventType);
+
+    /**
+     * Create a PluginEvent for multiple readers
+     *
+     * @param pluginName name of the plugin
+     * @param readerNames list of reader names
+     * @param eventType type of the event, connection or disconnection
+     */
+    PluginEvent(const std::string &pluginName, std::shared_ptr<std::set<std::string>> readerNames, EventType eventType);
+
+    /**
+     *
+     */
+    std::string getPluginName();
+
+    /**
+     *
+     */
+    std::shared_ptr<std::set<std::string>> getReaderNames();
+
+    /**
+     *
+     */
+    EventType getEventType();
+
 private:
-/**
+
+    /**
+     * The name of the reader involved
+     */
+    const std::string readerName;
+
+    /**
+     * The type of event
+     */
+    const EventType eventType;
+
+
+   /**
     * The name of the plugin handling the reader that produced the event
     */
-const std::string pluginName;
+   const std::string pluginName;
 
-/**
+   /**
     * The name of the readers involved
     */
-std::shared_ptr<std::set<std::string>> readerNames = std::make_shared<std::set<std::string>>();
-
-public:
-class EXPORT EventType final {
-public:
-    enum class InnerEnum {
-        READER_CONNECTED,
-        READER_DISCONNECTED
-    };
-
-    /**
-        * A reader has been connected.
-        */
-    static const EventType READER_CONNECTED;
-
-    /**
-        * A reader has been disconnected.
-        */
-    static const EventType READER_DISCONNECTED;
-
-private:
-    static std::vector<EventType> valueList;
-
-    class StaticConstructor {
-    public:
-        StaticConstructor();
-    };
-
-    static StaticConstructor staticConstructor;
-
-public:
-    const InnerEnum innerEnumValue;
-private:
-    const std::string nameValue;
-    const int ordinalValue;
-    static int nextOrdinal;
-
-    /** The event name. */
-private:
-    std::string name;
-
-public:
-    EventType(const std::string &nameValue, InnerEnum innerEnum, const std::string &name);
-
-    virtual std::string getName();
-
-public:
-    bool operator == (const EventType &other);
-
-    bool operator != (const EventType &other);
-
-    static std::vector<EventType> values();
-
-    int ordinal();
-
-    /**
-        *
-        */
-    friend std::ostream &operator<<(std::ostream &os, const EventType &e)
-    {
-        os << "name: " << e.name;
-
-        return os;
-    }
-
-    static EventType valueOf(const std::string &name);
+   std::shared_ptr<std::set<std::string>> readerNames = std::make_shared<std::set<std::string>>();
 };
 
-public:
-/**
-    * Create a PluginEvent for a single reader
-    *
-    * @param pluginName name of the plugin
-    * @param readerName name of the reader
-    * @param eventType type of the event, connection or disconnection
-    */
-PluginEvent(const std::string &pluginName, const std::string &readerName, EventType eventType);
-
-/**
-    * Create a PluginEvent for multiple readers
-    *
-    * @param pluginName name of the plugin
-    * @param readerNames list of reader names
-    * @param eventType type of the event, connection or disconnection
-    */
-PluginEvent(const std::string &pluginName, std::shared_ptr<std::set<std::string>> readerNames, EventType eventType);
-
-std::string getPluginName();
-
-std::shared_ptr<std::set<std::string>> getReaderNames();
-
-EventType getEventType();
-
-private:
-
-/**
-    * The name of the reader involved
-    */
-const std::string readerName;
-
-/**
-    * The type of event
-    */
-const EventType eventType;
-
-/**
-    * The different types of reader event
-    */
-};
-
-}
-}
 }
 }
 }

@@ -22,8 +22,6 @@
 /* Common */
 #include "stringhelper.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -31,20 +29,12 @@ namespace sam {
 namespace builder {
 namespace security {
 
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
-using CalypsoSamCommands = org::eclipse::keyple::calypso::command::sam::CalypsoSamCommands;
-using SamRevision = org::eclipse::keyple::calypso::command::sam::SamRevision;
+using namespace keyple::calypso::command::sam;
 
 /**
  * Builder for the SAM Digest Close APDU command.
  */
 class DigestCloseCmdBuild : public AbstractSamCommandBuilder {
-private:
-    /**
-     * The command
-     */
-    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_CLOSE;
-
 public:
     /**
      * Instantiates a new DigestCloseCmdBuild .
@@ -68,10 +58,14 @@ protected:
     {
         return std::static_pointer_cast<DigestCloseCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
     }
+
+private:
+    /**
+     * The command
+     */
+    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_CLOSE;
 };
 
-}
-}
 }
 }
 }

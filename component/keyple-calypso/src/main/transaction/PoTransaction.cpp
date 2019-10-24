@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "AbstractApduCommandBuilder.h"
 #include "AbstractApduResponseParser_Import.h"
 #include "AbstractOpenSessionCmdBuild.h"
@@ -43,29 +57,28 @@
 #include "Cast.h"
 #include "stringhelper.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using namespace org::eclipse::keyple::core::command;
-using namespace org::eclipse::keyple::core::seproxy::exception;
-using namespace org::eclipse::keyple::core::seproxy::message;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
-using namespace org::eclipse::keyple::core::util;
-using namespace org::eclipse::keyple::calypso::command;
-using namespace org::eclipse::keyple::calypso::command::po;
-using namespace org::eclipse::keyple::calypso::command::po::builder;
-using namespace org::eclipse::keyple::calypso::command::po::builder::security;
-using namespace org::eclipse::keyple::calypso::command::po::parser;
-using namespace org::eclipse::keyple::calypso::command::po::parser::security;
-using namespace org::eclipse::keyple::calypso::command::sam;
-using namespace org::eclipse::keyple::calypso::command::sam::builder;
-using namespace org::eclipse::keyple::calypso::command::sam::builder::security;
-using namespace org::eclipse::keyple::calypso::command::sam;
-using namespace org::eclipse::keyple::calypso::command::sam::parser;
-using namespace org::eclipse::keyple::calypso::command::sam::parser::security;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::core::util;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
+using namespace keyple::calypso::command::po::builder::security;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::calypso::command::po::parser::security;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder;
+using namespace keyple::calypso::command::sam::builder::security;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser;
+using namespace keyple::calypso::command::sam::parser::security;
+using namespace keyple::calypso::transaction::exception;
 
 const char PoTransaction::CHALLENGE_LENGTH_REV_INF_32 = static_cast<char>(0x04);
 const char PoTransaction::CHALLENGE_LENGTH_REV32      = static_cast<char>(0x08);
@@ -75,30 +88,24 @@ const char PoTransaction::SIGNATURE_LENGTH_REV32 = static_cast<char>(0x08);
 std::vector<char> PoTransaction::ratificationCmdApduLegacy;
 std::vector<char> PoTransaction::ratificationCmdApdu;
 
-PoTransaction::PoTransaction(std::shared_ptr<PoResource> poResource, std::shared_ptr<SamResource> samResource,
+PoTransaction::PoTransaction(std::shared_ptr<PoResource> poResource,
+                             std::shared_ptr<SamResource> samResource,
                              std::shared_ptr<SecuritySettings> securitySettings)
 : PoTransaction::PoTransaction(poResource)
 {
-//    poRevision = calypsoPo->getRevision();
-//    poCalypsoInstanceAid = calypsoPo->getDfName();
-//    modificationsCounterIsInBytes = calypsoPo->isModificationsCounterInBytes();
-//    modificationsCounterMax = modificationsCounter = calypsoPo->getModificationsCounter();
-//    /* Serial Number of the selected Calypso instance. */
-//    sessionState = SessionState::SESSION_UNINITIALIZED;
-//    preparedCommandsProcessed = true;
-//    std::shared_ptr<SeReader> seReader = samResource->getSeReader();
     samReader = std::dynamic_pointer_cast<ProxyReader>(samResource->getSeReader());
     this->securitySettings = securitySettings;
-//    this->currentModificationMode = ModificationMode::ATOMIC;
 }
 
 PoTransaction::PoTransaction(std::shared_ptr<PoResource> poResource)
-: poReader(std::dynamic_pointer_cast<ProxyReader>(poResource->getSeReader())), calypsoPo(poResource->getMatchingSe())
+: poReader(std::dynamic_pointer_cast<ProxyReader>(poResource->getSeReader())),
+  calypsoPo(poResource->getMatchingSe())
 {
     poRevision = calypsoPo->getRevision();
     poCalypsoInstanceAid = calypsoPo->getDfName();
     modificationsCounterIsInBytes = calypsoPo->isModificationsCounterInBytes();
-    modificationsCounterMax = modificationsCounter = calypsoPo->getModificationsCounter();
+    modificationsCounterMax = modificationsCounter =
+        calypsoPo->getModificationsCounter();
     /* Serial Number of the selected Calypso instance. */
     sessionState = SessionState::SESSION_UNINITIALIZED;
     poCalypsoInstanceSerial = calypsoPo->getApplicationSerialNumber();
@@ -107,29 +114,39 @@ PoTransaction::PoTransaction(std::shared_ptr<PoResource> poResource)
 }
 
 std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
-                        PoTransaction::SessionAccessLevel accessLevel, char openingSfiToSelect, char openingRecordNumberToRead,
-                        std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>> &poBuilderParsers)
+    PoTransaction::SessionAccessLevel accessLevel, char openingSfiToSelect,
+    char openingRecordNumberToRead,
+    std::vector<std::shared_ptr<PoBuilderParser<
+        AbstractPoCommandBuilder<AbstractPoResponseParser>>>> &poBuilderParsers)
 {
     /*
-     * counts 'select diversifier' and 'get challenge' commands. At least get challenge is
-     * present
+     * Counts 'select diversifier' and 'get challenge' commands. At least get
+     * challenge is present
      */
     int numberOfSamCmd = 1;
 
-    /* SAM ApduRequest List to hold Select Diversifier and Get Challenge commands */
+    /*
+     * SAM ApduRequest List to hold Select Diversifier and Get Challenge
+     * commands
+     */
     std::vector<std::shared_ptr<ApduRequest>> samApduRequestList;
 
     if (logger->isDebugEnabled()) {
-        logger->debug("processAtomicOpening => Identification: DFNAME = %s, SERIALNUMBER = %s\n",
+        logger->debug("processAtomicOpening => Identification: DFNAME = %s, " \
+                      "SERIALNUMBER = %s\n",
                       ByteArrayUtil::toHex(poCalypsoInstanceAid),
                       ByteArrayUtil::toHex(poCalypsoInstanceSerial));
     }
 
     /* diversify only if this has not already been done. */
     if (!isDiversificationDone) {
-        /* Build the SAM Select Diversifier command to provide the SAM with the PO S/N */
+        /*
+         * Build the SAM Select Diversifier command to provide the SAM with the
+         * PO S/N
+         */
         std::shared_ptr<AbstractApduCommandBuilder> selectDiversifier =
-            std::make_shared<SelectDiversifierCmdBuild>(this->samRevision, poCalypsoInstanceSerial);
+            std::make_shared<SelectDiversifierCmdBuild>(
+                this->samRevision, poCalypsoInstanceSerial);
 
         samApduRequestList.push_back(selectDiversifier->getApduRequest());
 
@@ -140,29 +157,40 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
         isDiversificationDone = true;
     }
     /* Build the SAM Get Challenge command */
-    char challengeLength = poRevision == PoRevision::REV3_2 ? CHALLENGE_LENGTH_REV32 : CHALLENGE_LENGTH_REV_INF_32;
+    char challengeLength = poRevision == PoRevision::REV3_2 ?
+                           CHALLENGE_LENGTH_REV32 : CHALLENGE_LENGTH_REV_INF_32;
 
-    std::shared_ptr<AbstractSamCommandBuilder> samGetChallenge = std::make_shared<SamGetChallengeCmdBuild>(this->samRevision, challengeLength);
+    std::shared_ptr<AbstractSamCommandBuilder> samGetChallenge =
+        std::make_shared<SamGetChallengeCmdBuild>(this->samRevision,
+                                                  challengeLength);
 
     samApduRequestList.push_back(samGetChallenge->getApduRequest());
 
     /* Build a SAM SeRequest */
-    std::shared_ptr<SeRequest> samSeRequest = std::make_shared<SeRequest>(samApduRequestList, ChannelState::KEEP_OPEN);
+    std::shared_ptr<SeRequest> samSeRequest =
+        std::make_shared<SeRequest>(samApduRequestList,
+                                    ChannelState::KEEP_OPEN);
 
-    logger->debug("processAtomicOpening => identification: SAMSEREQUEST = %s\n", samSeRequest->toString());
+    logger->debug("processAtomicOpening => identification: SAMSEREQUEST = %s\n",
+                  samSeRequest->toString());
 
     /*
-     * Transmit the SeRequest to the SAM and get back the SeResponse (list of ApduResponse)
+     * Transmit the SeRequest to the SAM and get back the SeResponse (list of
+     * ApduResponse)
      */
-    logger->debug("processAtomicOpening - transmiting request on samReader (%p)\n", this->samReader);
-    std::shared_ptr<SeResponse> samSeResponse = this->samReader->transmit(samSeRequest);
+    logger->debug("processAtomicOpening - transmiting request on samReader" \
+                  "(%p)\n", this->samReader);
+    std::shared_ptr<SeResponse> samSeResponse =
+        this->samReader->transmit(samSeRequest);
 
     if (samSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
-        std::vector<std::shared_ptr<ApduRequest>> req = samSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("Null response received",
-                                                  KeypleCalypsoSecureSessionException::Type::SAM,
-                                                  req, emptyVector);
+        std::vector<std::shared_ptr<ApduRequest>> req =
+            samSeRequest->getApduRequests();
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "Null response received",
+                  KeypleCalypsoSecureSessionException::Type::SAM,
+                  req, emptyVector);
     }
 
     logger->debug("processAtomicOpening => identification: SAMSERESPONSE = %s\n", samSeResponse->toString());
@@ -183,9 +211,10 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
         }
     }
     else {
-        throw KeypleCalypsoSecureSessionException("Invalid message received",
-                                                  KeypleCalypsoSecureSessionException::Type::SAM,
-                                                  samApduRequestList, samApduResponseList);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "Invalid message received",
+                  KeypleCalypsoSecureSessionException::Type::SAM,
+                  samApduRequestList, samApduResponseList);
     }
 
     /* PO ApduRequest List to hold Open Secure Session and other optional commands */
@@ -223,17 +252,19 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
     if (poSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req = poSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("Null response received",
-                                                  KeypleCalypsoSecureSessionException::Type::PO,
-                                                  req, emptyVector);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                 "Null response received",
+                 KeypleCalypsoSecureSessionException::Type::PO,
+                 req, emptyVector);
     }
 
     if (poSeResponse->wasChannelPreviouslyOpen() == false) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req = poSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("The logical channel was not open",
-                                                  KeypleCalypsoSecureSessionException::Type::PO,
-                                                  req, emptyVector);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "The logical channel was not open",
+                  KeypleCalypsoSecureSessionException::Type::PO,
+                  req, emptyVector);
     }
 
     /* Retrieve and check the ApduResponses */
@@ -372,16 +403,21 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicPoCommands(
 
     if (poSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
-        std::vector<std::shared_ptr<ApduRequest>> req = poSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("Null response received", KeypleCalypsoSecureSessionException::Type::PO,
-                                                  req, emptyVector);
+        std::vector<std::shared_ptr<ApduRequest>> req =
+            poSeRequest->getApduRequests();
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "Null response received",
+                  KeypleCalypsoSecureSessionException::Type::PO,
+                  req, emptyVector);
     }
 
     if (poSeResponse->wasChannelPreviouslyOpen() == false) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req = poSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("The logical channel was not open", KeypleCalypsoSecureSessionException::Type::PO,
-                                                  req, emptyVector);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "The logical channel was not open",
+                  KeypleCalypsoSecureSessionException::Type::PO,
+                  req, emptyVector);
     }
 
     /* Retrieve and check the ApduResponses */
@@ -389,14 +425,18 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicPoCommands(
 
     /* Do some basic checks */
     if (poApduRequestList.size() != poApduResponseList.size()) {
-        throw KeypleCalypsoSecureSessionException("Inconsistent requests and responses", KeypleCalypsoSecureSessionException::Type::PO,
-                                                  poApduRequestList, poApduResponseList);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "Inconsistent requests and responses",
+                  KeypleCalypsoSecureSessionException::Type::PO,
+                  poApduRequestList, poApduResponseList);
     }
 
     for (auto apduR : poApduResponseList) {
         if (!apduR->isSuccessful()) {
-            throw KeypleCalypsoSecureSessionException("Invalid response", KeypleCalypsoSecureSessionException::Type::PO,
-                                                     poApduRequestList, poApduResponseList);
+            throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                      "Invalid response",
+                      KeypleCalypsoSecureSessionException::Type::PO,
+                      poApduRequestList, poApduResponseList);
         }
     }
 
@@ -444,9 +484,10 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
                 DigestProcessor::pushPoExchangeData(poApduRequestList[i], poAnticipatedResponses[i]);
             }
         } else {
-            throw KeypleCalypsoSecureSessionException("Inconsistent requests and anticipated responses",
-                                                      KeypleCalypsoSecureSessionException::Type::PO, poApduRequestList,
-                                                      poAnticipatedResponses);
+            throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                      "Inconsistent requests and anticipated responses",
+                      KeypleCalypsoSecureSessionException::Type::PO,
+                      poApduRequestList, poAnticipatedResponses);
         }
     }
 
@@ -464,15 +505,20 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
     if (samSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req = samSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("Null response received\n", KeypleCalypsoSecureSessionException::Type::SAM,
-                                                 req, emptyVector);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "Null response received\n",
+                  KeypleCalypsoSecureSessionException::Type::SAM,
+                  req, emptyVector);
     }
 
     if (samSeResponse->wasChannelPreviouslyOpen() == false) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
-        std::vector<std::shared_ptr<ApduRequest>> req = samSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("The logical channel was not open\n", KeypleCalypsoSecureSessionException::Type::PO,
-                                                  req, emptyVector);
+        std::vector<std::shared_ptr<ApduRequest>> req =
+            samSeRequest->getApduRequests();
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "The logical channel was not open\n",
+                  KeypleCalypsoSecureSessionException::Type::PO,
+                  req, emptyVector);
     }
 
     std::vector<std::shared_ptr<ApduResponse>> samApduResponseList = samSeResponse->getApduResponses();
@@ -574,15 +620,19 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
     if (poSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req = poSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("Null response received\n", KeypleCalypsoSecureSessionException::Type::PO,
-                                                  req, emptyVector);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "Null response received\n",
+                  KeypleCalypsoSecureSessionException::Type::PO,
+                  req, emptyVector);
     }
 
     if (poSeResponse->wasChannelPreviouslyOpen() == false) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req = poSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("The logical channel was not open\n", KeypleCalypsoSecureSessionException::Type::PO,
-                                                  req, emptyVector);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "The logical channel was not open\n",
+                  KeypleCalypsoSecureSessionException::Type::PO,
+                  req, emptyVector);
     }
 
     logger->debug("processAtomicClosing => POSERESPONSE = %s\n", poSeResponse);
@@ -594,8 +644,10 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
     std::shared_ptr<CloseSessionRespPars> poCloseSessionPars =
         std::make_shared<CloseSessionRespPars>(poApduResponseList[closeCommandIndex]);
     if (!poCloseSessionPars->isSuccessful()) {
-        throw KeypleCalypsoSecureSessionException("Didn't get a signature", KeypleCalypsoSecureSessionException::Type::PO,
-                                                  poApduRequestList, poApduResponseList);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "Didn't get a signature",
+                  KeypleCalypsoSecureSessionException::Type::PO,
+                  poApduRequestList, poApduResponseList);
     }
 
     /* Check the PO signature part with the SAM */
@@ -617,15 +669,19 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
     if (samSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req = samSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("Null response received", KeypleCalypsoSecureSessionException::Type::SAM, req,
-                                                  emptyVector);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "Null response received",
+                  KeypleCalypsoSecureSessionException::Type::SAM, req,
+                  emptyVector);
     }
 
     if (samSeResponse->wasChannelPreviouslyOpen() == false) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req = samSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException("The logical channel was not open\n", KeypleCalypsoSecureSessionException::Type::SAM, req,
-                                                  emptyVector);
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                  "The logical channel was not open\n",
+                  KeypleCalypsoSecureSessionException::Type::SAM, req,
+                  emptyVector);
     }
 
     /* Get transaction result parsing the response */
@@ -801,7 +857,7 @@ void PoTransaction::DigestProcessor::initialize(PoRevision poRev, SamRevision sa
         logger->debug("PoTransaction.DigestProcessor => initialize: POREVISION = %d, SAMREVISION = %d, SESSIONENCRYPTION = %d", static_cast<int>(poRev), static_cast<int>(samRev.ordinal()), securityEncryption, verificationMode);
         logger->debug("PoTransaction.DigestProcessor => initialize: VERIFICATIONMODE = %d, REV32MODE = %d KEYRECNUMBER = %d", verificationMode, rev3_2Mode, workKeyRecordNumber);
         logger->debug("PoTransaction.DigestProcessor => initialize: KIF = %s, KVC %ds DIGESTDATA = %s", StringHelper::formatSimple("%02X", workKeyKif),
-                        StringHelper::formatSimple("%02X", workKeyKVC), org::eclipse::keyple::util::ByteArrayUtil::toHex(digestData));
+                        StringHelper::formatSimple("%02X", workKeyKVC), keyple::util::ByteArrayUtil::toHex(digestData));
     }
     */
 
@@ -992,20 +1048,25 @@ std::vector<std::shared_ptr<ApduResponse>> PoTransaction::AnticipatedResponseBui
                         sfi, currentCounterValue, addSubtractValue, newCounterValue);
                 }
                 else {
-                    throw KeypleCalypsoSecureSessionException(
-                        StringHelper::formatSimple(
-                            "Anticipated response. COMMAND = %s. Unable to determine anticipated" \
-                            "counter value. SFI = %s\n",
-                            std::dynamic_pointer_cast<DecreaseCmdBuild>(poBuilderParser->getCommandBuilder()) !=
-                                nullptr ? "Decrease" : "Increase", std::to_string(sfi)),
-                        poBuilderParser->getCommandBuilder()->getApduRequest(),
-                        nullptr);
+                    throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                              StringHelper::formatSimple(
+                                 "Anticipated response. COMMAND = %s. Unable " \
+                                 "to determine anticipated counter value. SFI" \
+                                 "= %s\n",
+                                 std::dynamic_pointer_cast<DecreaseCmdBuild>(
+                                     poBuilderParser->getCommandBuilder()) !=
+                                     nullptr ? "Decrease" : "Increase",
+                                 std::to_string(sfi)),
+                                 poBuilderParser->getCommandBuilder()
+                                     ->getApduRequest(),
+                              nullptr);
                 }
             }
             else {
                 /* Append/Update/Write Record: response = 9000 */
                 std::vector<char> resp = ByteArrayUtil::fromHex("9000");
-                apduResponses.push_back(std::make_shared<ApduResponse>(resp, nullptr));
+                apduResponses.push_back(
+                    std::make_shared<ApduResponse>(resp, nullptr));
             }
         }
     }
@@ -1634,8 +1695,6 @@ std::shared_ptr<AbstractApduResponseParser> PoTransaction::getResponseParser(int
     return poBuilderParserList[commandIndex]->getResponseParser();
 }
 
-}
-}
 }
 }
 }

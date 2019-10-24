@@ -1,14 +1,16 @@
-/********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -27,46 +29,24 @@
 #include "Logger.h"
 #include "LoggerFactory.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace message {
 
+using namespace keyple::common;
+
 /**
-    * Single APDU response wrapper
-    */
-class EXPORT ApduResponse : public std::enable_shared_from_this<ApduResponse>, public Serializable, public Object {
-
-    using Logger = org::eclipse::keyple::common::Logger;
-    using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
-
+ * Single APDU response wrapper
+ */
+class EXPORT ApduResponse
+: public std::enable_shared_from_this<ApduResponse>, public Serializable, public Object {
 public:
     /**
      *
      */
     static constexpr long long serialVersionUID = 6418469841122636812LL;
 
-private:
-    /***
-     * the success result of the processed APDU command to allow chaining responses in a group of
-     * APDUs
-     */
-    bool successful;
-
-    /*
-     *
-     */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(ApduResponse));
-
-    /**
-     * apdu response data buffer (including sw1sw2)
-     */
-    std::vector<char> const bytes;
-
-
-public:
     /**
      * Create a new ApduResponse from the provided byte array
      *
@@ -142,10 +122,25 @@ protected:
      *
      */
     void finalize() override;
+
+private:
+    /***
+     * the success result of the processed APDU command to allow chaining responses in a group of
+     * APDUs
+     */
+    bool successful;
+
+    /*
+     *
+     */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(ApduResponse));
+
+    /**
+     * apdu response data buffer (including sw1sw2)
+     */
+    std::vector<char> const bytes;
 };
 
-}
-}
 }
 }
 }

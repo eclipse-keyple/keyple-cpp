@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "AppendRecordRespPars.h"
 #include "Byte.h"
 #include "ByteArrayUtil.h"
@@ -21,23 +33,21 @@
 #include "SeSelector_Import.h"
 #include "TransmissionMode.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace calypso {
 namespace common {
 namespace transaction {
 
-using namespace org::eclipse::keyple::calypso::command::po::parser;
-using namespace org::eclipse::keyple::calypso::transaction;
-using namespace org::eclipse::keyple::example::calypso::common::postructure;
-using namespace org::eclipse::keyple::example::generic::common;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::exception;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
-using namespace org::eclipse::keyple::core::util;
-using namespace org::eclipse::keyple::common;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::calypso::transaction;
+using namespace keyple::example::calypso::common::postructure;
+using namespace keyple::example::generic::common;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::core::util;
+using namespace keyple::common;
 
 std::shared_ptr<Logger> CalypsoClassicTransactionEngine::logger = LoggerFactory::getLogger(typeid(CalypsoClassicTransactionEngine));
 const std::shared_ptr<SecuritySettings> CalypsoClassicTransactionEngine::securitySettings;
@@ -309,8 +319,6 @@ void CalypsoClassicTransactionEngine::processSeRemoval()
 void CalypsoClassicTransactionEngine::processUnexpectedSeRemoval()
 {
     logger->trace("processUnexpectedSeRemoval - Unexpected SE removal event\n");
-}
-}
 }
 }
 }

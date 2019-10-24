@@ -20,8 +20,6 @@
 #include "AbstractOpenSessionCmdBuild.h"
 #include "OpenSession10RespPars.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -29,9 +27,8 @@ namespace po {
 namespace builder {
 namespace security {
 
-
-using namespace org::eclipse::keyple::calypso::command::po::parser::security;
-using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace keyple::calypso::command::po::parser::security;
+using namespace keyple::core::seproxy::message;
 
 class OpenSession10CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSession10RespPars> {
 public:
@@ -60,8 +57,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

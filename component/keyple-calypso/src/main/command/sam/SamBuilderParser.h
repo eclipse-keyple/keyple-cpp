@@ -18,38 +18,56 @@
 #include "AbstractSamResponseParser.h"
 #include "CalypsoBuilderParser.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace sam {
 
-using namespace org::eclipse::keyple::calypso::command;
-
-using AbstractSamCommandBuilder = org::eclipse::keyple::calypso::command::sam::AbstractSamCommandBuilder;
-using AbstractSamResponseParser = org::eclipse::keyple::calypso::command::sam::AbstractSamResponseParser;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::sam;
 
 class SamBuilderParser
 : public std::enable_shared_from_this<SamBuilderParser>,
-  public CalypsoBuilderParser<AbstractSamCommandBuilder, AbstractSamResponseParser>
-{
-private:
-    const std::shared_ptr<AbstractSamCommandBuilder> samCommandBuilder;
-    std::shared_ptr<AbstractSamResponseParser> samResponseParser;
-
+  public CalypsoBuilderParser<AbstractSamCommandBuilder, AbstractSamResponseParser>{
 public:
+    /**
+     *
+     */
     SamBuilderParser(std::shared_ptr<AbstractSamCommandBuilder> samCommandBuilder);
 
+    /**
+     *
+     */
+    virtual ~SamBuilderParser() {}
+
+    /**
+     *
+     */
     virtual std::shared_ptr<AbstractSamCommandBuilder> getCommandBuilder();
 
+    /**
+     *
+     */
     virtual std::shared_ptr<AbstractSamResponseParser> getResponseParser();
 
+    /**
+     *
+     */
     virtual void setResponseParser(std::shared_ptr<AbstractSamResponseParser> poResponseParser);
+
+private:
+    /**
+     *
+     */
+    const std::shared_ptr<AbstractSamCommandBuilder> samCommandBuilder;
+
+    /**
+     *
+     */
+    std::shared_ptr<AbstractSamResponseParser> samResponseParser;
+
 };
 
-}
-}
 }
 }
 }

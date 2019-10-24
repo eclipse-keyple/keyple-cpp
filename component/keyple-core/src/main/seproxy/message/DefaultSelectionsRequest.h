@@ -16,37 +16,42 @@
 
 #include "AbstractDefaultSelectionsRequest.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SeRequestSet; } } } } } }
+/* Forward class declarations */
+namespace keyple { namespace core { namespace seproxy { namespace message { class SeRequestSet; } } } }
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace message {
 
-using AbstractDefaultSelectionsRequest = org::eclipse::keyple::core::seproxy::event::AbstractDefaultSelectionsRequest;
+using namespace keyple::core::seproxy::event;
 
 /**
-    * Class containing the {@link org.eclipse.keyple.core.seproxy.message.SeRequestSet} used to make a
-    * default selection at the {@link ObservableReader} level.
-    */
+ * Class containing the {@link org.eclipse.keyple.core.seproxy.message.SeRequestSet} used to make a
+ * default selection at the {@link ObservableReader} level.
+ */
 class DefaultSelectionsRequest final : public AbstractDefaultSelectionsRequest {
-
 public:
+    /**
+     *
+     */
     DefaultSelectionsRequest(std::shared_ptr<SeRequestSet> selectionSeRequestSet);
 
+    /**
+     *
+     */
     std::shared_ptr<SeRequestSet> getSelectionSeRequestSet() override;
 
 protected:
-    std::shared_ptr<DefaultSelectionsRequest> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<DefaultSelectionsRequest> shared_from_this()
+    {
         return std::static_pointer_cast<DefaultSelectionsRequest>(AbstractDefaultSelectionsRequest::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

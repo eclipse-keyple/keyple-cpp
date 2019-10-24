@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 /* Calypso.h */
 #include "GetDataFciRespPars.h"
 #include "ApduResponse.h"
@@ -6,24 +20,22 @@
 /* Core */
 #include "ByteArrayUtil.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace parser {
 
-using AbstractPoResponseParser   = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
-using ByteArrayUtil              = org::eclipse::keyple::core::util::ByteArrayUtil;
-using TLV                        = org::eclipse::keyple::core::util::bertlv::TLV;
-using Tag                        = org::eclipse::keyple::core::util::bertlv::Tag;
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::util;
+using namespace keyple::core::util::bertlv;
 
 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> GetDataFciRespPars::STATUS_TABLE;
 
-GetDataFciRespPars::StaticConstructor::StaticConstructor() {
+GetDataFciRespPars::StaticConstructor::StaticConstructor()
+{
     std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
     m.emplace(0x6A88, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Data object not found (optional mode not available)."));
     m.emplace(0x6B00, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "P1 or P2 value not supported (<>004fh, 0062h, 006Fh, 00C0h, 00D0h, 0185h and 5F52h, according to availabl optional modes)."));
@@ -33,7 +45,8 @@ GetDataFciRespPars::StaticConstructor::StaticConstructor() {
 
 GetDataFciRespPars::StaticConstructor GetDataFciRespPars::staticConstructor;
 
-std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> GetDataFciRespPars::getStatusTable() {
+std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> GetDataFciRespPars::getStatusTable()
+{
     return STATUS_TABLE;
 }
 
@@ -57,7 +70,9 @@ const std::shared_ptr<Tag> GetDataFciRespPars::TAG_APPLICATION_SERIAL_NUMBER =
 const std::shared_ptr<Tag> GetDataFciRespPars::TAG_DISCRETIONARY_DATA =
     std::make_shared<Tag>(0x13, Tag::APPLICATION, Tag::TagType::PRIMITIVE);
 
-GetDataFciRespPars::GetDataFciRespPars(std::shared_ptr<ApduResponse> selectApplicationResponse) : org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser(selectApplicationResponse) {
+GetDataFciRespPars::GetDataFciRespPars(
+  std::shared_ptr<ApduResponse> selectApplicationResponse)
+: AbstractPoResponseParser(selectApplicationResponse) {
 
     const std::vector<char> response = selectApplicationResponse->getBytes();
     std::shared_ptr<TLV> tlv;
@@ -144,11 +159,13 @@ GetDataFciRespPars::GetDataFciRespPars(std::shared_ptr<ApduResponse> selectAppli
     }
 }
 
-bool GetDataFciRespPars::isValidCalypsoFCI() {
+bool GetDataFciRespPars::isValidCalypsoFCI()
+{
     return isValidCalypsoFCI_Renamed;
 }
 
-std::vector<char> GetDataFciRespPars::getDfName() {
+std::vector<char> GetDataFciRespPars::getDfName()
+{
     return dfName;
 }
 
@@ -157,60 +174,71 @@ std::vector<char> GetDataFciRespPars::getApplicationSerialNumber()
     return applicationSN;
 }
 
-char GetDataFciRespPars::getBufferSizeIndicator() {
+char GetDataFciRespPars::getBufferSizeIndicator()
+{
     return siBufferSizeIndicator;
 }
 
-int GetDataFciRespPars::getBufferSizeValue() {
+int GetDataFciRespPars::getBufferSizeValue()
+{
     return BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE[getBufferSizeIndicator()];
 }
 
-char GetDataFciRespPars::getPlatformByte() {
+char GetDataFciRespPars::getPlatformByte()
+{
     return siPlatform;
 }
 
-char GetDataFciRespPars::getApplicationTypeByte() {
+char GetDataFciRespPars::getApplicationTypeByte()
+{
     return siApplicationType;
 }
 
-bool GetDataFciRespPars::isRev3_2ModeAvailable() {
+bool GetDataFciRespPars::isRev3_2ModeAvailable()
+{
     return (siApplicationType & APP_TYPE_CALYPSO_REV_32_MODE) != 0;
 }
 
-bool GetDataFciRespPars::isRatificationCommandRequired() {
+bool GetDataFciRespPars::isRatificationCommandRequired()
+{
     return (siApplicationSubtype & APP_TYPE_RATIFICATION_COMMAND_REQUIRED) != 0;
 }
 
-bool GetDataFciRespPars::hasCalypsoStoredValue() {
+bool GetDataFciRespPars::hasCalypsoStoredValue()
+{
     return (siApplicationSubtype & APP_TYPE_WITH_CALYPSO_SV) != 0;
 }
 
-bool GetDataFciRespPars::hasCalypsoPin() {
+bool GetDataFciRespPars::hasCalypsoPin()
+{
     return (siApplicationSubtype & APP_TYPE_WITH_CALYPSO_PIN) != 0;
 }
 
-char GetDataFciRespPars::getApplicationSubtypeByte() {
+char GetDataFciRespPars::getApplicationSubtypeByte()
+{
     return siApplicationSubtype;
 }
 
-char GetDataFciRespPars::getSoftwareIssuerByte() {
+char GetDataFciRespPars::getSoftwareIssuerByte()
+{
     return siSoftwareIssuer;
 }
 
-char GetDataFciRespPars::getSoftwareVersionByte() {
+char GetDataFciRespPars::getSoftwareVersionByte()
+{
     return siSoftwareVersion;
 }
 
-char GetDataFciRespPars::getSoftwareRevisionByte() {
+char GetDataFciRespPars::getSoftwareRevisionByte()
+{
     return siSoftwareRevision;
 }
 
-bool GetDataFciRespPars::isDfInvalidated() {
+bool GetDataFciRespPars::isDfInvalidated()
+{
     return isDfInvalidated_Renamed;
 }
 
-}
-}
 }
 }
 }

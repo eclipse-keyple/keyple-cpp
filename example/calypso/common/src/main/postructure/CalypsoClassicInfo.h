@@ -15,9 +15,6 @@
 #include <string>
 #include <memory>
 
-
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace calypso {
@@ -63,8 +60,6 @@ public:
     static const std::string eventLog_dataFill;
 };
 
-}
-}
 }
 }
 }

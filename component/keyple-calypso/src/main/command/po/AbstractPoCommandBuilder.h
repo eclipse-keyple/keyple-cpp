@@ -21,17 +21,13 @@
 #include "ApduRequest.h"
 #include "ApduResponse.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 
-using AbstractApduResponseParser    = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using AbstractIso7816CommandBuilder = org::eclipse::keyple::core::command::AbstractIso7816CommandBuilder;
-using ApduRequest                   = org::eclipse::keyple::core::seproxy::message::ApduRequest;
-using ApduResponse                  = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 /**
  * Abstract class for all PO command builders.
@@ -78,8 +74,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

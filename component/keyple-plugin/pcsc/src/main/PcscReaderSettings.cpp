@@ -1,8 +1,17 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
 
 #include "PcscReaderSettings.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace pcsc {
@@ -26,8 +35,6 @@ const std::string PcscReaderSettings::SETTING_DISCONNECT_EJECT = "eject";
 const std::string PcscReaderSettings::SETTING_KEY_THREAD_TIMEOUT = "thread_wait_timeout";
 const std::string PcscReaderSettings::SETTING_KEY_LOGGING = "logging";
 
-}
-}
 }
 }
 }

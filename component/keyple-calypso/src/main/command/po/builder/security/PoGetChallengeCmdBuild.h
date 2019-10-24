@@ -19,8 +19,6 @@
 #include "PoClass.h"
 #include "PoGetChallengeRespPars.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -28,12 +26,10 @@ namespace po {
 namespace builder {
 namespace security {
 
-using namespace org::eclipse::keyple::calypso::command::po;
-
-using PoClass                = org::eclipse::keyple::calypso::command::PoClass;
-using CalypsoPoCommands      = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
-using PoGetChallengeRespPars = org::eclipse::keyple::calypso::command::po::parser::security::PoGetChallengeRespPars;
-using ApduResponse           = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::parser::security;
+using namespace keyple::core::seproxy::message;
 
 /**
  * The Class PoGetChallengeCmdBuild. This class provides the dedicated constructor to build the PO
@@ -69,8 +65,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

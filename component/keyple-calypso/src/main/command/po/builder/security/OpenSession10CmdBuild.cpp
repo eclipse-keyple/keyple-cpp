@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "OpenSession10CmdBuild.h"
 #include "OpenSession10RespPars.h"
 #include "PoClass.h"
@@ -7,8 +21,6 @@
 /* Core */
 #include "ApduResponse.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -16,13 +28,14 @@ namespace po {
 namespace builder {
 namespace security {
 
-using PoClass               = org::eclipse::keyple::calypso::command::PoClass;
-using CalypsoPoCommands     = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
-using PoRevision            = org::eclipse::keyple::calypso::command::po::PoRevision;
-using OpenSession10RespPars = org::eclipse::keyple::calypso::command::po::parser::security::OpenSession10RespPars;
-using ApduResponse          = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::parser::security;
+using namespace keyple::core::seproxy::message;
 
-OpenSession10CmdBuild::OpenSession10CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo)
+OpenSession10CmdBuild::OpenSession10CmdBuild(
+  char keyIndex, std::vector<char> &samChallenge, char sfiToSelect,
+  char recordNumberToRead, const std::string &extraInfo)
 : AbstractOpenSessionCmdBuild<OpenSession10RespPars>(PoRevision::REV1_0)
 {
 
@@ -33,23 +46,28 @@ OpenSession10CmdBuild::OpenSession10CmdBuild(char keyIndex, std::vector<char> &s
     char p1 = static_cast<char>((recordNumberToRead * 8) + keyIndex);
     char p2 = static_cast<char>(sfiToSelect * 8);
     /*
-     * case 4: this command contains incoming and outgoing data. We define le = 0, the actual
-     * length will be processed by the lower layers.
+     * case 4: this command contains incoming and outgoing data. We define
+     * le = 0, the actual length will be processed by the lower layers.
      */
     char le = 0;
 
-    this->request = setApduRequest(PoClass::LEGACY.getValue(), CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV1_0), p1, p2, samChallenge, le);
+    this->request =
+        setApduRequest(
+            PoClass::LEGACY.getValue(),
+            CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV1_0), p1, p2,
+            samChallenge, le);
     if (extraInfo != "") {
         this->addSubName(extraInfo);
     }
 }
 
-std::shared_ptr<OpenSession10RespPars> OpenSession10CmdBuild::createResponseParser(std::shared_ptr<ApduResponse> apduResponse) {
+std::shared_ptr<OpenSession10RespPars>
+OpenSession10CmdBuild::createResponseParser(
+    std::shared_ptr<ApduResponse> apduResponse)
+{
     return std::make_shared<OpenSession10RespPars>(apduResponse);
 }
 
-}
-}
 }
 }
 }

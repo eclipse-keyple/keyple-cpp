@@ -22,8 +22,6 @@
 /* Calypso */
 #include "AbstractOpenSessionRespPars.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -31,25 +29,35 @@ namespace po {
 namespace parser {
 namespace security {
 
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::core::seproxy::message;
 
 class OpenSession24RespPars final : public AbstractOpenSessionRespPars {
-
 public:
+    /**
+     *
+     */
     OpenSession24RespPars(std::shared_ptr<ApduResponse> response);
 
+    /**
+     *
+     */
     std::shared_ptr<SecureSession> toSecureSession(std::vector<char> &apduResponseData);
 
+    /**
+     *
+     */
     static std::shared_ptr<SecureSession> createSecureSession(std::vector<char> &apduResponseData);
 
 protected:
-    std::shared_ptr<OpenSession24RespPars> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<OpenSession24RespPars> shared_from_this()
+    {
         return std::static_pointer_cast<OpenSession24RespPars>(AbstractOpenSessionRespPars::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

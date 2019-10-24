@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 /* Core */
 #include "ByteArrayUtil.h"
 
@@ -7,16 +19,14 @@
 /* Common */
 #include "System.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace parser {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ByteArrayUtil              = org::eclipse::keyple::core::util::ByteArrayUtil;
+using namespace keyple::core::command;
+using namespace keyple::core::util;
 
 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> SelectFileRespPars::STATUS_TABLE;
 
@@ -122,84 +132,101 @@ void SelectFileRespPars::parseResponse() {
     selectionSuccessful = true;
 }
 
-SelectFileRespPars::SelectFileRespPars(std::shared_ptr<ApduResponse> response) : org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser(response) {
+SelectFileRespPars::SelectFileRespPars(std::shared_ptr<ApduResponse> response) : AbstractPoResponseParser(response)
+{
     parseResponse();
 }
 
-bool SelectFileRespPars::isSelectionSuccessful() {
+bool SelectFileRespPars::isSelectionSuccessful()
+{
     return selectionSuccessful;
 }
 
-int SelectFileRespPars::getLid() {
+int SelectFileRespPars::getLid()
+{
     return lid;
 }
 
-char SelectFileRespPars::getSfi() {
+char SelectFileRespPars::getSfi()
+{
     return sfi;
 }
 
-char SelectFileRespPars::getFileType() {
+char SelectFileRespPars::getFileType()
+{
     return fileType;
 }
 
-char SelectFileRespPars::getEfType() {
+char SelectFileRespPars::getEfType()
+{
     return efType;
 }
 
-int SelectFileRespPars::getRecSize() {
+int SelectFileRespPars::getRecSize()
+{
     return recSize;
 }
 
-char SelectFileRespPars::getNumRec() {
+char SelectFileRespPars::getNumRec()
+{
     return numRec;
 }
 
-std::vector<char> SelectFileRespPars::getAccessConditions() {
+std::vector<char> SelectFileRespPars::getAccessConditions()
+{
     return accessConditions;
 }
 
-std::vector<char> SelectFileRespPars::getKeyIndexes() {
+std::vector<char> SelectFileRespPars::getKeyIndexes()
+{
     return keyIndexes;
 }
 
-char SelectFileRespPars::getSimulatedCounterFileSfi() {
+char SelectFileRespPars::getSimulatedCounterFileSfi()
+{
     return simulatedCounterFileSfi;
 }
 
-char SelectFileRespPars::getSimulatedCounterNumber() {
+char SelectFileRespPars::getSimulatedCounterNumber()
+{
     return simulatedCounterNumber;
 }
 
-int SelectFileRespPars::getSharedEf() {
+int SelectFileRespPars::getSharedEf()
+{
     return sharedEf;
 }
 
-char SelectFileRespPars::getDfStatus() {
+char SelectFileRespPars::getDfStatus()
+{
     return dfStatus;
 }
 
-std::vector<char> SelectFileRespPars::getFileBinaryData() {
+std::vector<char> SelectFileRespPars::getFileBinaryData()
+{
     return fileBinaryData;
 }
 
-std::vector<char> SelectFileRespPars::getRfu() {
+std::vector<char> SelectFileRespPars::getRfu()
+{
     return rfu;
 }
 
-std::vector<char> SelectFileRespPars::getKvcInfo() {
+std::vector<char> SelectFileRespPars::getKvcInfo()
+{
     return kvcInfo;
 }
 
-std::vector<char> SelectFileRespPars::getKifInfo() {
+std::vector<char> SelectFileRespPars::getKifInfo()
+{
     return kifInfo;
 }
 
-std::vector<char> SelectFileRespPars::getSelectionData() {
+std::vector<char> SelectFileRespPars::getSelectionData()
+{
     return response->getDataOut();
 }
 
-}
-}
 }
 }
 }

@@ -23,22 +23,16 @@
 #include "ReadRecordsRespPars.h"
 #include "PoClass.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace builder {
 
-using namespace org::eclipse::keyple::calypso::command::po;
-
-using PoClass                  = org::eclipse::keyple::calypso::command::PoClass;
-using CalypsoPoCommands        = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
-using PoSendableInSession      = org::eclipse::keyple::calypso::command::po::PoSendableInSession;
-using ReadDataStructure        = org::eclipse::keyple::calypso::command::po::parser::ReadDataStructure;
-using ReadRecordsRespPars      = org::eclipse::keyple::calypso::command::po::parser::ReadRecordsRespPars;
-using ApduResponse             = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::core::seproxy::message;
 
 /**
  * The Class ReadRecordsCmdBuild. This class provides the dedicated constructor to build the Read
@@ -111,8 +105,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "SamSelectionRequest.h"
 #include "SeSelector_Import.h"
 #include "SeProtocol_Import.h"
@@ -5,16 +17,14 @@
 #include "SeResponse.h"
 #include "AbstractSamResponseParser.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using namespace org::eclipse::keyple::calypso::command::sam;
-using namespace org::eclipse::keyple::core::selection;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::core::selection;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::message;
 
 SamSelectionRequest::SamSelectionRequest(std::shared_ptr<SamSelector> samSelector, ChannelState channelState)
 : AbstractSeSelectionRequest(samSelector, channelState)
@@ -37,8 +47,6 @@ std::shared_ptr<AbstractApduResponseParser> SamSelectionRequest::getCommandParse
     throw std::make_shared<IllegalStateException>("No parsers available for this request.");
 }
 
-}
-}
 }
 }
 }

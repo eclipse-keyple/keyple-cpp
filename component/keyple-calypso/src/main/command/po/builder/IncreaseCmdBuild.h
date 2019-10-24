@@ -24,18 +24,16 @@
 #include "PoSendableInSession.h"
 #include "PoClass.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace builder {
 
-using namespace org::eclipse::keyple::calypso::command::po;
-using namespace org::eclipse::keyple::calypso::command;
-using namespace org::eclipse::keyple::calypso::command::po::parser;
-using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::core::seproxy::message;
 
 /**
  * The Class IncreaseCmdBuild. This class provides the dedicated constructor to build the Increase
@@ -83,8 +81,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

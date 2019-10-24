@@ -40,21 +40,15 @@
 #include "AbstractObservableReader.h"
 #include "KeypleReaderNotFoundException.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using SeReader                         = org::eclipse::keyple::core::seproxy::SeReader;
-using KeypleBaseException              = org::eclipse::keyple::core::seproxy::exception::KeypleBaseException;
-using KeypleReaderException            = org::eclipse::keyple::core::seproxy::exception::KeypleReaderException;
-using KeypleReaderNotFoundException    = org::eclipse::keyple::core::seproxy::exception::KeypleReaderNotFoundException;
-using AbstractObservableReader         = org::eclipse::keyple::core::seproxy::plugin::AbstractObservableReader;
-using AbstractThreadedObservablePlugin = org::eclipse::keyple::core::seproxy::plugin::AbstractThreadedObservablePlugin;
-using PluginEvent                      = org::eclipse::keyple::core::seproxy::event::PluginEvent;
-using LoggerFactory                    = org::eclipse::keyple::common::LoggerFactory;
-using Logger                           = org::eclipse::keyple::common::Logger;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::plugin;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::common;
 
 class EXPORT PcscPlugin : public AbstractThreadedObservablePlugin {
 public:
@@ -63,28 +57,6 @@ public:
      */
     std::set<std::string> nativeReadersNames;
 
-private:
-    /**
-     *
-     */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PcscPlugin));
-
-    /**
-     * 
-     */
-    static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 1000;
-
-    /**
-     * 
-     */
-    static std::shared_ptr<TerminalFactory> factory;
-
-    /**
-     * 
-     */
-    bool logging = false;
-
-public:
     /**
      * Constructor
      */
@@ -237,11 +209,28 @@ private:
     /**
      *
      */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PcscPlugin));
+
+    /**
+     *
+     */
+    static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 1000;
+
+    /**
+     *
+     */
+    static std::shared_ptr<TerminalFactory> factory;
+
+    /**
+     *
+     */
+    bool logging = false;
+    /**
+     *
+     */
     std::shared_ptr<CardTerminals> getCardTerminals();
 };
 
-} // namespace pcsc
-} // namespace plugin
-} // namespace keyple
-} // namespace eclipse
-} // namespace org
+}
+}
+}

@@ -18,28 +18,20 @@
 #include "SamRevision_Import.h"
 #include "CalypsoSamCommands.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace sam {
 
-using namespace org::eclipse::keyple::core::command;
-using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 /**
-    * Superclass for all SAM command builders.
-    * <p>
-    * Used directly, this class can serve as low level command builder.
-    */
+ * Superclass for all SAM command builders.
+ * <p>
+ * Used directly, this class can serve as low level command builder.
+ */
 class AbstractSamCommandBuilder : public AbstractIso7816CommandBuilder {
-protected:
-    /**
-     *
-     */
-    SamRevision defaultRevision = SamRevision::S1D; // 94
-
 public:
     /**
      *
@@ -55,14 +47,16 @@ protected:
     /**
      *
      */
+    SamRevision defaultRevision = SamRevision::S1D; // 94
+    /**
+     *
+     */
     std::shared_ptr<AbstractSamCommandBuilder> shared_from_this()
     {
         return std::static_pointer_cast<AbstractSamCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

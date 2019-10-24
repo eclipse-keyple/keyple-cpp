@@ -23,18 +23,15 @@
 /* Core */
 #include "SeCommonProtocols_Import.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace protocol { class SeProtocol; } } } } } }
+/* Forward class declarations */
+namespace keyple { namespace core { namespace seproxy { namespace protocol { class SeProtocol; } } } }
 
-
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using SeCommonProtocols = org::eclipse::keyple::core::seproxy::protocol::SeCommonProtocols;
-using SeProtocol = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::core::seproxy::protocol;
 
 /**
     * This class contains all the parameters to identify the communication protocols supported by STUB
@@ -43,43 +40,44 @@ using SeProtocol = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
     * The application can choose to add all parameters or only a subset.
     */
 class EXPORT StubProtocolSetting : public std::enable_shared_from_this<StubProtocolSetting> {
-
 public:
+    /**
+     *
+     */
     static std::unordered_map<SeCommonProtocols, std::string> STUB_PROTOCOL_SETTING;
 
     /**
-        * Associates a protocol and a string defining how to identify it (here a regex to be applied on
-        * the ATR)
-        */
+     * Return a subset of the settings map
+     *
+     * @param specificProtocols
+     * @return a settings map
+     */
+    static std::unordered_map<SeCommonProtocols, std::string> getSpecificSettings(std::set<SeCommonProtocols> specificProtocols);
+
+    /**
+     * Return the whole settings map
+     *
+     * @return a settings map
+     */
+    static std::unordered_map<SeCommonProtocols, std::string> getAllSettings();
+
 private:
+    /**
+     * Associates a protocol and a string defining how to identify it (here a regex to be applied on
+     * the ATR)
+     */
+
     class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
     public:
         StaticConstructor();
     };
 
-private:
+    /**
+     *
+     */
     static StubProtocolSetting::StaticConstructor staticConstructor;
-
-                        
-    /**
-        * Return a subset of the settings map
-        *
-        * @param specificProtocols
-        * @return a settings map
-        */
-public:
-    static std::unordered_map<SeCommonProtocols, std::string> getSpecificSettings(std::set<SeCommonProtocols> specificProtocols);
-
-    /**
-        * Return the whole settings map
-        *
-        * @return a settings map
-        */
-    static std::unordered_map<SeCommonProtocols, std::string> getAllSettings();
 };
 
-}
-}
 }
 }
 }

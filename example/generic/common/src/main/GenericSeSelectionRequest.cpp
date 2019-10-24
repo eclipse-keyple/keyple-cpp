@@ -12,14 +12,12 @@
 
 #include "GenericSeSelectionRequest.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
 namespace common {
 
-using namespace org::eclipse::keyple::example::generic::common;
+using namespace keyple::example::generic::common;
 
 GenericSeSelectionRequest::GenericMatchingSe::GenericMatchingSe(std::shared_ptr<SeResponse> selectionResponse,
                                                                 TransmissionMode transmissionMode, std::string& extraInfo)
@@ -42,8 +40,6 @@ std::shared_ptr<AbstractMatchingSe> GenericSeSelectionRequest::parse(std::shared
     return std::make_shared<AbstractMatchingSe>(seResponse, transmissionMode, "Generic Matching SE");
 }
 
-}
-}
 }
 }
 }

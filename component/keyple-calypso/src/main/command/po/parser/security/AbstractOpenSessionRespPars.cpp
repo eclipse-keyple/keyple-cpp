@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "AbstractPoResponseParser.h"
 #include "AbstractOpenSessionRespPars.h"
 #include "AbstractApduResponseParser_Import.h"
@@ -7,10 +19,9 @@
 #include "OpenSession31RespPars.h"
 #include "OpenSession32RespPars.h"
 
+/* Common */
 #include "stringhelper.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -18,10 +29,9 @@ namespace po {
 namespace parser {
 namespace security {
 
-using AbstractPoResponseParser   = org::eclipse::keyple::calypso::command::po::AbstractPoResponseParser;
-using PoRevision                 = org::eclipse::keyple::calypso::command::po::PoRevision;
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> AbstractOpenSessionRespPars::STATUS_TABLE;
 
@@ -179,8 +189,6 @@ std::vector<char> AbstractOpenSessionRespPars::SecureSession::getSecureSessionDa
     return secureSessionData;
 }
 
-}
-}
 }
 }
 }

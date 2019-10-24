@@ -1,50 +1,75 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "PcscProtocolSetting.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using SeCommonProtocols = org::eclipse::keyple::core::seproxy::protocol::SeCommonProtocols;
-using SeProtocol        = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
+using namespace keyple::core::seproxy::protocol;
 
-std::unordered_map<SeCommonProtocols, std::string> PcscProtocolSetting::PCSC_PROTOCOL_SETTING;
+std::unordered_map<SeCommonProtocols, std::string>
+PcscProtocolSetting::PCSC_PROTOCOL_SETTING;
 
 PcscProtocolSetting::StaticConstructor::StaticConstructor()
 {
-    std::unordered_map<SeCommonProtocols, std::string> map;
-    map.emplace(SeCommonProtocols::PROTOCOL_ISO14443_4, "3B8880....................|3B8C800150.*|.*4F4D4141544C4153.*");
-    map.emplace(SeCommonProtocols::PROTOCOL_B_PRIME, "3B8F8001805A0A0103200311........829000..");
-    map.emplace(SeCommonProtocols::PROTOCOL_MIFARE_UL, "3B8F8001804F0CA0000003060300030000000068");
-    map.emplace(SeCommonProtocols::PROTOCOL_MIFARE_CLASSIC, "3B8F8001804F0CA000000306030001000000006A");
-    map.emplace(SeCommonProtocols::PROTOCOL_MIFARE_DESFIRE, "3B8180018080");
-    map.emplace(SeCommonProtocols::PROTOCOL_MEMORY_ST25, "3B8F8001804F0CA000000306070007D0020C00B6");
-    map.emplace(SeCommonProtocols::PROTOCOL_ISO7816_3, "3.*");
-    PCSC_PROTOCOL_SETTING = map;
+    PCSC_PROTOCOL_SETTING.emplace(
+        SeCommonProtocols::PROTOCOL_ISO14443_4,
+        "3B8880....................|3B8C800150.*|.*4F4D4141544C4153.*");
+    PCSC_PROTOCOL_SETTING.emplace(
+        SeCommonProtocols::PROTOCOL_B_PRIME,
+        "3B8F8001805A0A0103200311........829000..");
+    PCSC_PROTOCOL_SETTING.emplace(
+        SeCommonProtocols::PROTOCOL_MIFARE_UL,
+        "3B8F8001804F0CA0000003060300030000000068");
+    PCSC_PROTOCOL_SETTING.emplace(
+        SeCommonProtocols::PROTOCOL_MIFARE_CLASSIC,
+        "3B8F8001804F0CA000000306030001000000006A");
+    PCSC_PROTOCOL_SETTING.emplace(
+        SeCommonProtocols::PROTOCOL_MIFARE_DESFIRE,
+        "3B8180018080");
+    PCSC_PROTOCOL_SETTING.emplace(
+        SeCommonProtocols::PROTOCOL_MEMORY_ST25,
+        "3B8F8001804F0CA000000306070007D0020C00B6");
+    PCSC_PROTOCOL_SETTING.emplace(
+        SeCommonProtocols::PROTOCOL_ISO7816_3,
+        "3.*");
 }
 
 PcscProtocolSetting::StaticConstructor PcscProtocolSetting::staticConstructor;
 
 std::unordered_map<SeCommonProtocols, std::string>
-PcscProtocolSetting::getSpecificSettings(std::set<SeCommonProtocols>& specificProtocols)
+PcscProtocolSetting::getSpecificSettings(
+    std::set<SeCommonProtocols>& specificProtocols)
 {
     std::unordered_map<SeCommonProtocols, std::string> map;
 
     for (auto seCommonProtocols : specificProtocols) {
-        map.emplace(std::make_pair(seCommonProtocols, PCSC_PROTOCOL_SETTING[seCommonProtocols]));
+        map.emplace(std::make_pair(seCommonProtocols,
+                                   PCSC_PROTOCOL_SETTING[seCommonProtocols]));
     }
 
     return map;
 }
 
-std::unordered_map<SeCommonProtocols, std::string> PcscProtocolSetting::getAllSettings()
+std::unordered_map<SeCommonProtocols, std::string>
+PcscProtocolSetting::getAllSettings()
 {
     return PCSC_PROTOCOL_SETTING;
 }
 
-}
-}
 }
 }
 }

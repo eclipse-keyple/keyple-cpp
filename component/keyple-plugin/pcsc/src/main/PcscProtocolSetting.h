@@ -23,17 +23,14 @@
 /* Core */
 #include "SeCommonProtocols_Import.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace protocol { class SeProtocol; } } } } } }
+/* Forward class declarations */
+namespace keyple { namespace core { namespace seproxy { namespace protocol { class SeProtocol; } } } }
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using SeCommonProtocols = org::eclipse::keyple::core::seproxy::protocol::SeCommonProtocols;
-using SeProtocol        = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
+using namespace keyple::core::seproxy::protocol;
 
 /**
  * This class contains all the parameters to identify the communication protocols supported by PC/SC
@@ -42,31 +39,18 @@ using SeProtocol        = org::eclipse::keyple::core::seproxy::protocol::SeProto
  * The application can choose to add all parameters or only a subset.
 */
 class EXPORT PcscProtocolSetting : public std::enable_shared_from_this<PcscProtocolSetting> {
-
 public:
+    /**
+     *
+     */
     static std::unordered_map<SeCommonProtocols, std::string> PCSC_PROTOCOL_SETTING;
 
-/**
-* Associates a protocol and a string defining how to identify it (here a regex to be applied on
-* the ATR)
-*/
-private:
-    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        StaticConstructor();
-    };
-
-private:
-    static PcscProtocolSetting::StaticConstructor staticConstructor;
-
-
-/**
+    /**
      * Return a subset of the settings map
      * 
      * @param specificProtocols
      * @return a settings map
-*/
-public:
+     */
     static std::unordered_map<SeCommonProtocols, std::string> getSpecificSettings(std::set<SeCommonProtocols>& specificProtocols);
 
     /**
@@ -75,10 +59,23 @@ public:
      * @return a settings map
      */
     static std::unordered_map<SeCommonProtocols, std::string> getAllSettings();
+
+private:
+    /**
+     * Associates a protocol and a string defining how to identify it (here a regex to be applied on
+     * the ATR)
+     */
+    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    public:
+        StaticConstructor();
+    };
+
+    /**
+     *
+     */
+    static PcscProtocolSetting::StaticConstructor staticConstructor;
 };
 
-}
-}
 }
 }
 }

@@ -40,64 +40,34 @@
 #include "SelectFileCmdBuild.h"
 #include "SelectFileRespPars.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using namespace org::eclipse::keyple::common;
-using namespace org::eclipse::keyple::core;
-using namespace org::eclipse::keyple::core::command;
-using namespace org::eclipse::keyple::core::selection;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
-using namespace org::eclipse::keyple::calypso::command;
-using namespace org::eclipse::keyple::calypso::command::po;
-using namespace org::eclipse::keyple::calypso::command::po::builder;
-using namespace org::eclipse::keyple::calypso::command::po::parser;
-using namespace org::eclipse::keyple::calypso::transaction;
+using namespace keyple::common;
+using namespace keyple::core;
+using namespace keyple::core::command;
+using namespace keyple::core::selection;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::calypso::transaction;
 
 /**
  * Specialized selection request to manage the specific characteristics of Calypso POs
  */
 class EXPORT PoSelectionRequest final : public AbstractSeSelectionRequest {
-  private:
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PoSelectionRequest));
-
-    int commandIndex = 0;
-    std::vector<std::string> parsingClassList = std::vector<std::string>();
-    std::unordered_map<int, char> readRecordFirstRecordNumberMap = std::unordered_map<int, char>();
-    std::unordered_map<int, ReadDataStructure> readRecordDataStructureMap = std::unordered_map<int, ReadDataStructure>();
-
-    PoClass poClass;
-
+public:
     /**
      * Constructor.
      *
      * @param poSelector the selector to target a particular SE
      * @param channelState tell if the channel is to be closed or not after the command
      */
-  public:
     PoSelectionRequest(std::shared_ptr<PoSelector> poSelector, ChannelState channelState);
-
-    /**
-     * Prepare one or more read record ApduRequest based on the target revision to be executed
-     * following the selection.
-     * <p>
-     * In the case of a mixed target (rev2 or rev3) two commands are prepared. The first one in rev3
-     * format, the second one in rev2 format (mainly class byte)
-     * 
-     * @param sfi the sfi top select
-     * @param readDataStructureEnum read mode enum to indicate a SINGLE, MULTIPLE or COUNTER read
-     * @param firstRecordNumber the record number to read (or first record to read in case of
-     *        several records)
-     * @param expectedLength the expected length of the record(s)
-     * @param extraInfo extra information included in the logs (can be null or empty)
-     * @return the command index indicating the order of the command in the command list
-     */
-  private:
-    int prepareReadRecordsCmdInternal(char sfi, ReadDataStructure readDataStructureEnum, char firstRecordNumber, int expectedLength, const std::string &extraInfo);
 
     /**
      * Prepare one or more read record ApduRequest based on the target revision to be executed
@@ -116,8 +86,8 @@ class EXPORT PoSelectionRequest final : public AbstractSeSelectionRequest {
      * @param extraInfo extra information included in the logs (can be null or empty)
      * @return the command index indicating the order of the command in the command list
      */
-  public:
-    int prepareReadRecordsCmd(char sfi, ReadDataStructure readDataStructureEnum, char firstRecordNumber, int expectedLength, const std::string &extraInfo);
+    int prepareReadRecordsCmd(char sfi, ReadDataStructure readDataStructureEnum, char firstRecordNumber, int expectedLength,
+                              const std::string &extraInfo);
 
     /**
      * Prepare one or more read record ApduRequest based on the target revision to be executed
@@ -184,25 +154,74 @@ class EXPORT PoSelectionRequest final : public AbstractSeSelectionRequest {
      */
     std::shared_ptr<AbstractApduResponseParser> getCommandParser(std::shared_ptr<SeResponse> seResponse, int commandIndex) override;
 
+protected:
     /**
      * Create a CalypsoPo object containing the selection data received from the plugin
      * 
      * @param seResponse the SE response received
      * @return a {@link CalypsoPo}
      */
-protected:
     //std::shared_ptr<CalypsoPo> parse(std::shared_ptr<SeResponse> seResponse) override;
     std::shared_ptr<AbstractMatchingSe> parse(std::shared_ptr<SeResponse> seResponse) override;
     
-  protected:
+    /**
+     *
+     */
     std::shared_ptr<PoSelectionRequest> shared_from_this()
-{
+    {
         return std::static_pointer_cast<PoSelectionRequest>(AbstractSeSelectionRequest::shared_from_this());
     }
+
+private:
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(PoSelectionRequest));
+
+    /**
+     *
+     */
+    int commandIndex = 0;
+
+    /**
+     *
+     */
+    std::vector<std::string> parsingClassList = std::vector<std::string>();
+
+    /**
+     *
+     */
+    std::unordered_map<int, char> readRecordFirstRecordNumberMap = std::unordered_map<int, char>();
+
+    /**
+     *
+     */
+    std::unordered_map<int, ReadDataStructure> readRecordDataStructureMap = std::unordered_map<int, ReadDataStructure>();
+
+    /**
+     *
+     */
+    PoClass poClass;
+
+    /**
+     * Prepare one or more read record ApduRequest based on the target revision to be executed
+     * following the selection.
+     * <p>
+     * In the case of a mixed target (rev2 or rev3) two commands are prepared. The first one in rev3
+     * format, the second one in rev2 format (mainly class byte)
+     *
+     * @param sfi the sfi top select
+     * @param readDataStructureEnum read mode enum to indicate a SINGLE, MULTIPLE or COUNTER read
+     * @param firstRecordNumber the record number to read (or first record to read in case of
+     *        several records)
+     * @param expectedLength the expected length of the record(s)
+     * @param extraInfo extra information included in the logs (can be null or empty)
+     * @return the command index indicating the order of the command in the command list
+     */
+    int prepareReadRecordsCmdInternal(char sfi, ReadDataStructure readDataStructureEnum, char firstRecordNumber, int expectedLength,
+                                      const std::string &extraInfo);
 };
 
-}
-}
 }
 }
 }

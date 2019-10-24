@@ -20,8 +20,6 @@
 #include "AbstractOpenSessionCmdBuild.h"
 #include "OpenSession31RespPars.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -29,11 +27,12 @@ namespace po {
 namespace builder {
 namespace security {
 
-using namespace org::eclipse::keyple::calypso::command::po::builder::security;
-using namespace org::eclipse::keyple::calypso::command::po::parser::security;
-using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace keyple::calypso::command::po::builder::security;
+using namespace keyple::calypso::command::po::parser::security;
+using namespace keyple::core::seproxy::message;
 
 class OpenSession31CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSession31RespPars> {
+public:
     /**
      * Instantiates a new AbstractOpenSessionCmdBuild.
      *
@@ -44,18 +43,24 @@ class OpenSession31CmdBuild final : public AbstractOpenSessionCmdBuild<OpenSessi
      * @param extraInfo extra information included in the logs (can be null or empty)
      * @throws IllegalArgumentException - if the request is inconsistent
      */
-public:
-    OpenSession31CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead, const std::string &extraInfo);
-std::shared_ptr<OpenSession31RespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    OpenSession31CmdBuild(char keyIndex, std::vector<char> &samChallenge, char sfiToSelect, char recordNumberToRead,
+                          const std::string &extraInfo);
+
+    /**
+     *
+     */
+    std::shared_ptr<OpenSession31RespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
-    std::shared_ptr<OpenSession31CmdBuild> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<OpenSession31CmdBuild> shared_from_this()
+    {
         return std::static_pointer_cast<OpenSession31CmdBuild>(AbstractOpenSessionCmdBuild<OpenSession31RespPars>::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

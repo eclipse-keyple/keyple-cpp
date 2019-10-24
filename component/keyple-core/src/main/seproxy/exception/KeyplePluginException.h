@@ -18,42 +18,41 @@
 
 #include "KeypleBaseException.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace exception {
 
 /**
-    * Base Exceptions thrown in a {@link org.eclipse.keyple.seproxy.ReaderPlugin} context
-    */
+ * Base Exceptions thrown in a {@link org.eclipse.keyple.seproxy.ReaderPlugin} context
+ */
 class KeyplePluginException : public KeypleBaseException {
-
-    /**
-        * New plugin exception to be thrown
-        * 
-        * @param message : message to identify the exception and the context
-        */
 public:
+    /**
+     * New plugin exception to be thrown
+     *
+     * @param message : message to identify the exception and the context
+     */
     KeyplePluginException(const std::string &message);
 
     /**
-        * Encapsulate a lower level plugin exception
-        * 
-        * @param message : message to add some context to the exception
-        * @param cause : lower level exception
-        */
+     * Encapsulate a lower level plugin exception
+     *
+     * @param message : message to add some context to the exception
+     * @param cause : lower level exception
+     */
     KeyplePluginException(const std::string &message, std::runtime_error cause);
 
 protected:
-    std::shared_ptr<KeyplePluginException> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<KeyplePluginException> shared_from_this()
+    {
         return std::static_pointer_cast<KeyplePluginException>(KeypleBaseException::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

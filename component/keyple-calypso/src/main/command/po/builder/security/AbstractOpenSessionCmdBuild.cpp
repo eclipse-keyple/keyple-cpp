@@ -17,8 +17,6 @@
 #include "OpenSession31CmdBuild.h"
 #include "OpenSession32CmdBuild.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -26,10 +24,10 @@ namespace po {
 namespace builder {
 namespace security{
 
-using namespace org::eclipse::keyple::calypso::command::po;
-using namespace org::eclipse::keyple::calypso::command::po::builder::security;
-using namespace org::eclipse::keyple::calypso::command::po::parser::security;
-using namespace org::eclipse::keyple::core::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder::security;
+using namespace keyple::calypso::command::po::parser::security;
+using namespace keyple::core::command;
 
 /* Forward declarations - those classes all need AbstractOpenSessionCommandBuild.h */
 class OpenSession10CmdBuild;
@@ -75,8 +73,6 @@ std::shared_ptr<AbstractOpenSessionCmdBuild<T>> AbstractOpenSessionCmdBuild<T>::
 
 template class AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>;
 
-}
-}
 }
 }
 }

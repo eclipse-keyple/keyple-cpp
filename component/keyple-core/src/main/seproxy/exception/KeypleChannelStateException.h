@@ -22,18 +22,15 @@
 /* Core */
 #include "KeypleReaderException.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace exception {
 
 /**
-    * Exception thrown when Channel Operations (open/close) failed in a {@link ProxyReader}
-    */
+ * Exception thrown when Channel Operations (open/close) failed in a {@link ProxyReader}
+ */
 class EXPORT KeypleChannelStateException : public KeypleReaderException {
-
 public:
     /**
      * New exception to be thrown
@@ -60,8 +57,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

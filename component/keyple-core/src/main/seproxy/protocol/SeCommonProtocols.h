@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -21,16 +23,12 @@
 /* Core */
 #include "SeProtocol_Import.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace protocol {
 
-using namespace org::eclipse::keyple::core::seproxy::protocol;
-//JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
-//                        import static org.eclipse.keyple.core.seproxy.protocol.TransmissionMode.*;
+using namespace keyple::core::seproxy::protocol;
 
 class EXPORT SeCommonProtocols final : public SeProtocol {
 public:
@@ -59,29 +57,6 @@ public:
     /* ---- contacts proprietary ---------------- */
     static SeCommonProtocols PROTOCOL_HSP;
 
-private:
-    /**
-     *
-     */
-    static std::vector<SeCommonProtocols> valueList;
-
-    /**
-     *
-     */
-    class StaticConstructor {
-    public:
-        /**
-         *
-         */
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static StaticConstructor staticConstructor;
-
-public:
     /**
      *
      */
@@ -106,29 +81,14 @@ public:
     /**
      *
      */
-    InnerEnum innerEnumValue;
+    const InnerEnum innerEnumValue;
 
-private:
-    /**
-     *
-     */
-    std::string nameValue;
-
-    /**
-     *
-     */
-    std::string name;
-
-    /**
-     *
-     */
-    TransmissionMode transmissionMode;
-
-public:
     /**
      * Constructor
      */
-    SeCommonProtocols(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, TransmissionMode transmissionMode);
+    SeCommonProtocols(const std::string &nameValue, InnerEnum innerEnum,
+                      const std::string &name,
+                      TransmissionMode transmissionMode);
 
     /**
      *
@@ -143,7 +103,7 @@ public:
     /**
      *
      */
-    SeCommonProtocols& operator=(const SeCommonProtocols& s);
+    //SeCommonProtocols& operator=(const SeCommonProtocols& s);
 
     /**
      *
@@ -174,10 +134,46 @@ public:
      *
      */
     static SeCommonProtocols valueOf(const std::string &name);
+
+private:
+    /**
+     *
+     */
+    static std::vector<SeCommonProtocols> valueList;
+
+    /**
+     *
+     */
+    class StaticConstructor {
+    public:
+        /**
+         *
+         */
+        StaticConstructor();
+    };
+
+    /**
+     *
+     */
+    static StaticConstructor staticConstructor;
+
+    /**
+     *
+     */
+    const std::string nameValue;
+
+    /**
+     *
+     */
+    const std::string name;
+
+    /**
+     *
+     */
+    const TransmissionMode transmissionMode;
+
 };
 
-}
-}
 }
 }
 }
@@ -185,7 +181,7 @@ public:
 
 namespace std {
 
-using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace keyple::core::seproxy::protocol;
 
 template<> struct hash<SeCommonProtocols>
 {

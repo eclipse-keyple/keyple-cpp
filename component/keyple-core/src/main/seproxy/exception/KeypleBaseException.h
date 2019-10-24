@@ -18,39 +18,42 @@
 
 #include "Exception.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace exception {
 
-/**
-    * Base Exception for all Keyple Checked Exception
-    */
-class KeypleBaseException : public std::enable_shared_from_this<KeypleBaseException>, public Exception {
-private:
-    static constexpr long long serialVersionUID = -500856379312027085LL;
+using namespace keyple::common;
 
-    /**
-        * New exception to be thrown
-        *
-        * @param message : message to identify the exception and the context
-        */
+/**
+ * Base Exception for all Keyple Checked Exception
+ */
+class KeypleBaseException : public std::enable_shared_from_this<KeypleBaseException>, public Exception {
 public:
+    /**
+     * New exception to be thrown
+     *
+     * @param message : message to identify the exception and the context
+     */
     KeypleBaseException(const std::string &message);
 
     /**
-        * Encapsulate a lower level exception (ie CardException, IOException, HostNotFoundException..)
-        *
-        * @param message : message to identify the exception and the context
-        * @param cause : lower level exception
-        */
+     * Encapsulate a lower level exception (ie CardException, IOException, HostNotFoundException..)
+     *
+     * @param message : message to identify the exception and the context
+     * @param cause : lower level exception
+     */
     KeypleBaseException(const std::string &message, std::runtime_error cause);
+
+private:
+    /**
+     *
+     */
+    static constexpr long long serialVersionUID = -500856379312027085LL;
+
+
 };
 
-}
-}
 }
 }
 }

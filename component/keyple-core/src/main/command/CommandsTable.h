@@ -15,9 +15,6 @@
 #include <string>
 #include <typeinfo>
 
-
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace command {
@@ -64,8 +61,6 @@ public:
 
 };
 
-}
-}
 }
 }
 }

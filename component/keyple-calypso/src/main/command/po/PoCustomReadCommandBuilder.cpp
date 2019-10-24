@@ -1,16 +1,26 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "AbstractIso7816CommandBuilder.h"
 #include "ApduRequest.h"
 #include "PoCustomReadCommandBuilder.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 
-using AbstractIso7816CommandBuilder = org::eclipse::keyple::core::command::AbstractIso7816CommandBuilder;
-using ApduRequest                   = org::eclipse::keyple::core::seproxy::message::ApduRequest;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 PoCustomReadCommandBuilder::PoCustomReadCommandBuilder(const std::string &name,
                                                        std::shared_ptr<ApduRequest> request)
@@ -18,8 +28,6 @@ PoCustomReadCommandBuilder::PoCustomReadCommandBuilder(const std::string &name,
 {
 }
 
-}
-}
 }
 }
 }

@@ -1,10 +1,14 @@
-/*
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * All rights reserved. This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
- * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
- */
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
 
 #include <algorithm>
 #include <cstring>
@@ -17,12 +21,10 @@
 #include "Card.h"
 #include "CardTerminal.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-using Card           = org::eclipse::keyple::smartcardio::Card;
+using namespace keyple::smartcardio;
 
 const std::string& CardTerminal::getName()
 {
@@ -125,7 +127,7 @@ std::string CardTerminal::toString()
 }
 
 CardTerminal::CardTerminal(SCARDCONTEXT ctx, const std::string& name)
-: name(name), ctx(ctx)
+: ctx(ctx), name(name)
 {
     this->card = NULL;
 }
@@ -189,7 +191,5 @@ bool CardTerminal::waitForCard(bool wantPresent, long timeout)
     return false;
 }
 
-}
-}
 }
 }

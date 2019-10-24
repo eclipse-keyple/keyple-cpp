@@ -17,8 +17,6 @@
 /* Core */
 #include "AbstractSamResponseParser.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -26,32 +24,32 @@ namespace sam {
 namespace parser {
 namespace security {
 
-
-using AbstractSamResponseParser = org::eclipse::keyple::calypso::command::sam::AbstractSamResponseParser;
-using ApduResponse              = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::core::seproxy::message;
 
 /**
-    * Select diversifier response parser. See specs: Calypso / page 54 / 7.4.2 - Session MAC
-    * computation
-    */
+ * Select diversifier response parser. See specs: Calypso / page 54 / 7.4.2 - Session MAC
+ * computation
+ */
 class SelectDiversifierRespPars : public AbstractSamResponseParser {
-
-    /**
-        * Instantiates a new SelectDiversifierRespPars.
-        *
-        * @param response the response
-        */
 public:
+    /**
+     * Instantiates a new SelectDiversifierRespPars.
+     *
+     * @param response the response
+     */
     SelectDiversifierRespPars(std::shared_ptr<ApduResponse> response);
 
 protected:
-    std::shared_ptr<SelectDiversifierRespPars> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<SelectDiversifierRespPars> shared_from_this()
+    {
         return std::static_pointer_cast<SelectDiversifierRespPars>(AbstractSamResponseParser::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

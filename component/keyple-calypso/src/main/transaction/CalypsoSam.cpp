@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 /* Calypso */
 #include "CalypsoSam.h"
 
@@ -16,16 +28,14 @@
 #include "stringhelper.h"
 #include "System.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using namespace org::eclipse::keyple::calypso::command::sam;
-using namespace org::eclipse::keyple::core::seproxy::message;
-using namespace org::eclipse::keyple::core::selection;
-using namespace org::eclipse::keyple::core::util;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::selection;
+using namespace keyple::core::util;
 
 CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
                        TransmissionMode transmissionMode, const std::string &extraInfo)
@@ -125,8 +135,6 @@ char CalypsoSam::getSoftwareRevision()
     return softwareRevision;
 }
 
-}
-}
 }
 }
 }

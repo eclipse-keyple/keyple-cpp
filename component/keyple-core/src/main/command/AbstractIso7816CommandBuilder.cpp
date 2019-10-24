@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include <iostream>
 
 #include "AbstractIso7816CommandBuilder.h"
@@ -9,14 +21,12 @@
 /* Common */
 #include "System.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace command {
 
-using namespace org::eclipse::keyple::core::seproxy::message;
-using namespace org::eclipse::keyple::core::command;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::command;
 
 AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(CommandsTable& commandReference, std::shared_ptr<ApduRequest> request)
 : AbstractApduCommandBuilder(commandReference, request)
@@ -86,8 +96,6 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(char 
     }
 
     return std::make_shared<ApduRequest>(command.getName(), apdu, case4);
-}
-}
 }
 }
 }

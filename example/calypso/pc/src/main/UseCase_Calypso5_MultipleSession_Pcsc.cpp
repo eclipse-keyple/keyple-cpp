@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "CalypsoClassicInfo.h"
 #include "CalypsoUtilities.h"
 #include "KeypleBaseException.h"
@@ -26,16 +38,16 @@
 #include "ByteArrayUtil.h"
 #include "stringhelper.h"
 
-using namespace org::eclipse::keyple::common;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::event;
-using namespace org::eclipse::keyple::core::seproxy::exception;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
-using namespace org::eclipse::keyple::example::calypso::common::postructure;
-using namespace org::eclipse::keyple::example::calypso::common::transaction;
-using namespace org::eclipse::keyple::example::calypso::pc;
-using namespace org::eclipse::keyple::example::generic::pc;
-using namespace org::eclipse::keyple::plugin::pcsc;
+using namespace keyple::common;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::example::calypso::common::postructure;
+using namespace keyple::example::calypso::common::transaction;
+using namespace keyple::example::calypso::pc;
+using namespace keyple::example::generic::pc;
+using namespace keyple::plugin::pcsc;
 
 class UseCase_Calypso5_MultipleSession_Pcsc {
 };

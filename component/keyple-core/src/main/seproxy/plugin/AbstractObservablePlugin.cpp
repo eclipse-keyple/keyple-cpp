@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "AbstractObservablePlugin.h"
 #include "PluginEvent.h"
 #include "AbstractObservableReader.h"
@@ -8,19 +22,15 @@
 
 #include "LoggerFactory.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace plugin {
 
-using ReaderPlugin                  = org::eclipse::keyple::core::seproxy::ReaderPlugin;
-using ObservablePlugin              = org::eclipse::keyple::core::seproxy::event::ObservablePlugin;
-using PluginEvent                   = org::eclipse::keyple::core::seproxy::event::PluginEvent;
-using KeypleReaderException         = org::eclipse::keyple::core::seproxy::exception::KeypleReaderException;
-using KeypleReaderNotFoundException = org::eclipse::keyple::core::seproxy::exception::KeypleReaderNotFoundException;
-using ProxyReader                   = org::eclipse::keyple::core::seproxy::message::ProxyReader;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::message;
 
 AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name)
 : AbstractLoggedObservable<PluginEvent>(name)
@@ -104,9 +114,7 @@ std::shared_ptr<SeReader> AbstractObservablePlugin::getReader(const std::string 
     throw std::make_shared<KeypleReaderNotFoundException>(name);
 }
 
-} // namespace plugin
-}     // namespace seproxy
-}         // namespace keyple
-}             // namespace eclipse
-} // namespace org
+}
+}
+}
 }

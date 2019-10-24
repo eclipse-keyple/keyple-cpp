@@ -1,11 +1,21 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "OpenSession24RespPars.h"
 #include "ApduResponse.h"
 #include "AbstractOpenSessionRespPars.h"
 
 #include "Arrays.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -13,9 +23,9 @@ namespace po {
 namespace parser {
 namespace security {
 
-using PoRevision                  = org::eclipse::keyple::calypso::command::po::PoRevision;
-using ApduResponse                = org::eclipse::keyple::core::seproxy::message::ApduResponse;
-using AbstractOpenSessionRespPars = org::eclipse::keyple::calypso::command::po::parser::security::AbstractOpenSessionRespPars;
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::calypso::command::po::parser::security;
 
 OpenSession24RespPars::OpenSession24RespPars(std::shared_ptr<ApduResponse> response)
 : AbstractOpenSessionRespPars(response, PoRevision::REV2_4)
@@ -24,11 +34,13 @@ OpenSession24RespPars::OpenSession24RespPars(std::shared_ptr<ApduResponse> respo
     this->secureSession = toSecureSession(data);
 }
 
-std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession24RespPars::toSecureSession(std::vector<char> &apduResponseData) {
+std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession24RespPars::toSecureSession(std::vector<char> &apduResponseData)
+{
     return createSecureSession(apduResponseData);
 }
 
-std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession24RespPars::createSecureSession(std::vector<char> &apduResponseData) {
+std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession24RespPars::createSecureSession(std::vector<char> &apduResponseData)
+{
     bool previousSessionRatified;
 
     /**
@@ -71,7 +83,8 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession24RespPar
             data = Arrays::copyOfRange(apduResponseData, 7, 36);
             break;
         default:
-            throw std::make_shared<IllegalStateException>("Bad response length to Open Secure Session: " + std::to_string(apduResponseData.size()));
+            throw std::make_shared<IllegalStateException>("Bad response length to Open Secure Session: " +
+                                                          std::to_string(apduResponseData.size()));
     }
 
     return std::make_shared<SecureSession>(Arrays::copyOfRange(apduResponseData, 1, 4),
@@ -81,8 +94,6 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession24RespPar
                                            apduResponseData);
 }
 
-}
-}
 }
 }
 }

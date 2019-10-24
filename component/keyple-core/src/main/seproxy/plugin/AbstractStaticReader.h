@@ -18,47 +18,54 @@
 
 #include "AbstractLocalReader.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace plugin {
 
 /**
-    * Abstract Observable Reader class dedicated to static reader configurations.
-    * <p>
-    * A static reader doesn't offer card insertion/removal mechanism (e.g. AndroidOmapiReader)
-    */
+ * Abstract Observable Reader class dedicated to static reader configurations.
+ * <p>
+ * A static reader doesn't offer card insertion/removal mechanism (e.g. AndroidOmapiReader)
+ */
 class AbstractStaticReader : public AbstractLocalReader {
-
-protected:
-    AbstractStaticReader(const std::string &pluginName, const std::string &readerName);
-
-    /**
-        * Empty start and stopObservation implementations to avoid implementation at the plugin level
-        * and remain in compliance with {@link AbstractLocalReader}.
-        */
-
-    void startObservation() override final;
-
-    void stopObservation() override final;
-
-    /** Prevents the use of observers that are not available in a static reader context */
-
 public:
+    /**
+     * Prevents the use of observers that are not available in a static reader context
+     */
     void addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) override;
 
+    /**
+     *
+     */
     void removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) override;
 
 protected:
-    std::shared_ptr<AbstractStaticReader> shared_from_this() {
+    /**
+     *
+     */
+    AbstractStaticReader(const std::string &pluginName, const std::string &readerName);
+
+    /**
+     * Empty start and stopObservation implementations to avoid implementation at the plugin level
+     * and remain in compliance with {@link AbstractLocalReader}.
+     */
+    void startObservation() override final;
+
+    /**
+     *
+     */
+    void stopObservation() override final;
+
+    /**
+     *
+     */
+    std::shared_ptr<AbstractStaticReader> shared_from_this()
+    {
         return std::static_pointer_cast<AbstractStaticReader>(AbstractLocalReader::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

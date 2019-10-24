@@ -7,14 +7,12 @@
 #include "stringhelper.h"
 #include "System.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace util {
 namespace bertlv {
 
-using ByteArrayUtil = org::eclipse::keyple::core::util::ByteArrayUtil;
+using namespace keyple::core::util;
 
 TLV::TLV(std::vector<char> &binary) : binary(binary)
 {
@@ -83,8 +81,6 @@ std::string TLV::toString() {
     return StringHelper::formatSimple("TAG: %s, LENGTH: %d, VALUE: %s", tag->toString(), length, ByteArrayUtil::toHex(getValue()));
 }
 
-}
-}
 }
 }
 }

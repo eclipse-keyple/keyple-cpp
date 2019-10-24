@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "ApduResponse.h"
 #include "CalypsoPo.h"
 #include "PoSelectionRequest.h"
@@ -10,19 +22,17 @@
 /* Common */
 #include "System.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using ApduResponse       = org::eclipse::keyple::core::seproxy::message::ApduResponse;
-using PoClass            = org::eclipse::keyple::calypso::command::PoClass;
-using PoRevision         = org::eclipse::keyple::calypso::command::po::PoRevision;
-using GetDataFciRespPars = org::eclipse::keyple::calypso::command::po::parser::GetDataFciRespPars;
-using SeResponse         = org::eclipse::keyple::core::seproxy::message::SeResponse;
-using AbstractMatchingSe = org::eclipse::keyple::core::selection::AbstractMatchingSe;
-using ByteArrayUtil      = org::eclipse::keyple::core::util::ByteArrayUtil;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::selection;
+using namespace keyple::core::util;
 
 CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo)
 : AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo) {
@@ -146,63 +156,78 @@ std::vector<char> CalypsoPo::getAtr() {
     return poAtr;
 }
 
-bool CalypsoPo::isModificationsCounterInBytes() {
+bool CalypsoPo::isModificationsCounterInBytes()
+{
     return modificationCounterIsInBytes;
 }
 
-int CalypsoPo::getModificationsCounter() {
+int CalypsoPo::getModificationsCounter()
+{
     return modificationsCounterMax;
 }
 
-char CalypsoPo::getBufferSizeIndicator() {
+char CalypsoPo::getBufferSizeIndicator()
+{
     return bufferSizeIndicator;
 }
 
-int CalypsoPo::getBufferSizeValue() {
+int CalypsoPo::getBufferSizeValue()
+{
     return bufferSizeValue;
 }
 
-char CalypsoPo::getPlatformByte() {
+char CalypsoPo::getPlatformByte()
+{
     return platform;
 }
 
-char CalypsoPo::getApplicationTypeByte() {
+char CalypsoPo::getApplicationTypeByte()
+{
     return applicationType;
 }
 
-bool CalypsoPo::isRev3_2ModeAvailable() {
+bool CalypsoPo::isRev3_2ModeAvailable()
+{
     return isRev3_2ModeAvailable_Renamed;
 }
 
-bool CalypsoPo::isRatificationCommandRequired() {
+bool CalypsoPo::isRatificationCommandRequired()
+{
     return isRatificationCommandRequired_Renamed;
 }
 
-bool CalypsoPo::hasCalypsoStoredValue() {
+bool CalypsoPo::hasCalypsoStoredValue()
+{
     return hasCalypsoStoredValue_Renamed;
 }
 
-bool CalypsoPo::hasCalypsoPin() {
+bool CalypsoPo::hasCalypsoPin()
+{
     return hasCalypsoPin_Renamed;
 }
 
-char CalypsoPo::getApplicationSubtypeByte() {
+char CalypsoPo::getApplicationSubtypeByte()
+{
     return applicationSubtypeByte;
 }
 
-char CalypsoPo::getSoftwareIssuerByte() {
+char CalypsoPo::getSoftwareIssuerByte()
+{
     return softwareIssuerByte;
 }
 
-char CalypsoPo::getSoftwareVersionByte() {
+char CalypsoPo::getSoftwareVersionByte()
+{
     return softwareVersion;
 }
 
-char CalypsoPo::getSoftwareRevisionByte() {
+char CalypsoPo::getSoftwareRevisionByte()
+{
     return softwareRevision;
 }
 
-bool CalypsoPo::isDfInvalidated() {
+bool CalypsoPo::isDfInvalidated()
+{
     return isDfInvalidated_Renamed;
 }
 
@@ -222,8 +247,6 @@ PoClass CalypsoPo::getPoClass() {
     }
 }
 
-}
-}
 }
 }
 }

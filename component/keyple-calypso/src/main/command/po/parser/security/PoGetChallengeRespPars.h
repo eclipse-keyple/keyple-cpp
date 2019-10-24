@@ -18,8 +18,6 @@
 /* Core */
 #include "AbstractApduResponseParser_Import.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -27,32 +25,36 @@ namespace po {
 namespace parser {
 namespace security {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse               = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 /**
-    * PO Get challenge response parser. See specs: Calypso / page 108 / 9.54 - Get challenge
-    */
+ * PO Get challenge response parser. See specs: Calypso / page 108 / 9.54 - Get challenge
+ */
 class PoGetChallengeRespPars final : public AbstractApduResponseParser {
-
-    /**
-        * Instantiates a new PoGetChallengeRespPars.
-        *
-        * @param response the response from PO Get Challenge APDU Command
-        */
 public:
+    /**
+     * Instantiates a new PoGetChallengeRespPars.
+     *
+     * @param response the response from PO Get Challenge APDU Command
+     */
     PoGetChallengeRespPars(std::shared_ptr<ApduResponse> response);
 
+    /**
+     *
+     */
     std::vector<char> getPoChallenge();
 
 protected:
-    std::shared_ptr<PoGetChallengeRespPars> shared_from_this() {
+    /**
+     *
+     */
+    std::shared_ptr<PoGetChallengeRespPars> shared_from_this()
+    {
         return std::static_pointer_cast<PoGetChallengeRespPars>(AbstractApduResponseParser::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

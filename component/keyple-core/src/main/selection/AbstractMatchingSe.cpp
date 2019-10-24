@@ -1,18 +1,27 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include <iostream>
 
 #include "AbstractMatchingSe.h"
 #include "SeResponse.h"
 #include "SelectionStatus.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace selection {
 
-using SeResponse       = org::eclipse::keyple::core::seproxy::message::SeResponse;
-using SelectionStatus  = org::eclipse::keyple::core::seproxy::message::SelectionStatus;
-using TransmissionMode = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::protocol;
 
 AbstractMatchingSe::AbstractMatchingSe(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode,
                                  const std::string &extraInfo)
@@ -52,8 +61,6 @@ TransmissionMode AbstractMatchingSe::getTransmissionMode() const
 std::string AbstractMatchingSe::getSelectionExtraInfo()
 {
     return selectionExtraInfo;
-}
-}
 }
 }
 }

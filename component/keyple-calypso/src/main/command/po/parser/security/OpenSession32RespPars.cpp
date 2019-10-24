@@ -4,8 +4,6 @@
 
 #include "Arrays.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -13,9 +11,9 @@ namespace po {
 namespace parser {
 namespace security {
 
-using PoRevision                  = org::eclipse::keyple::calypso::command::po::PoRevision;
-using ApduResponse                = org::eclipse::keyple::core::seproxy::message::ApduResponse;
-using AbstractOpenSessionRespPars = org::eclipse::keyple::calypso::command::po::parser::security::AbstractOpenSessionRespPars;
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::calypso::command::po::parser::security;
 
 OpenSession32RespPars::OpenSession32RespPars(std::shared_ptr<ApduResponse> response)
 : AbstractOpenSessionRespPars(response, PoRevision::REV3_2)
@@ -24,11 +22,13 @@ OpenSession32RespPars::OpenSession32RespPars(std::shared_ptr<ApduResponse> respo
     this->secureSession = toSecureSession(data);
 }
 
-std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession32RespPars::toSecureSession(std::vector<char> &apduResponseData) {
+std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession32RespPars::toSecureSession(std::vector<char> &apduResponseData)
+{
     return createSecureSession(apduResponseData);
 }
 
-std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession32RespPars::createSecureSession(std::vector<char> &apduResponse) {
+std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession32RespPars::createSecureSession(std::vector<char> &apduResponse)
+{
 
     char flag = apduResponse[8];
     // ratification: if the bit 0 of flag is set then the previous security has been ratified
@@ -47,8 +47,6 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession> OpenSession32RespPar
                                            data, apduResponse);
 }
 
-}
-}
 }
 }
 }

@@ -16,15 +16,13 @@
 
 #include "AbstractApduResponseParser_Import.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 class AbstractPoResponseParser : public AbstractApduResponseParser {
     /**
@@ -49,8 +47,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

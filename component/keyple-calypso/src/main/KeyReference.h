@@ -14,24 +14,23 @@
 
 #include <memory>
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 
 /**
-* The KeyReference class groups all information about a Calypso key
-*/
+ * The KeyReference class groups all information about a Calypso key
+ */
 class KeyReference : public std::enable_shared_from_this<KeyReference> {
-private:
-    /** key identifier */
-    const char kif;
-    /* key version */
-    const char kvc;
-
 public:
-    /* Constructor */
+    /**
+     * Constructor
+     */
     KeyReference(char kif, char kvc);
+
+    /**
+     *
+     */
+    virtual ~KeyReference() {}
 
     /**
      * @return the key identifier
@@ -42,9 +41,19 @@ public:
      * @return the key version
      */
     virtual char getKvc();
+
+private:
+    /**
+     * Key identifier
+     */
+    const char kif;
+
+    /*
+     * Key version
+     s*/
+    const char kvc;
+
 };
 
-}
-}
 }
 }

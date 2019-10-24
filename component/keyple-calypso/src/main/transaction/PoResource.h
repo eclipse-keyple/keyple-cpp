@@ -24,15 +24,13 @@
 /* Common */
 #include "Export.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using namespace org::eclipse::keyple::core::selection;
-using namespace org::eclipse::keyple::calypso::transaction;
-using namespace org::eclipse::keyple::core::seproxy;
+using namespace keyple::core::selection;
+using namespace keyple::calypso::transaction;
+using namespace keyple::core::seproxy;
 
 class EXPORT PoResource : public SeResource<CalypsoPo> {
 public:
@@ -59,8 +57,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

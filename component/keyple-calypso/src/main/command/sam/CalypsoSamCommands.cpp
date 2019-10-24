@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "CalypsoSamCommands.h"
 #include "CardGenerateKeyCmdBuild.h"
 #include "SelectDiversifierCmdBuild.h"
@@ -16,16 +28,14 @@
 #include "SamGetChallengeCmdBuild.h"
 #include "SamGetChallengeRespPars.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace sam {
 
-using namespace org::eclipse::keyple::calypso::command::sam::builder::security;
-using namespace org::eclipse::keyple::calypso::command::sam::parser::security;
-using namespace org::eclipse::keyple::core::command;
+using namespace keyple::calypso::command::sam::builder::security;
+using namespace keyple::calypso::command::sam::parser::security;
+using namespace keyple::core::command;
 
 CalypsoSamCommands CalypsoSamCommands::SELECT_DIVERSIFIER(    "SELECT_DIVERSIFIER",     InnerEnum::SELECT_DIVERSIFIER,     "Select Diversifier",     static_cast<char>(0x14), typeid(SelectDiversifierCmdBuild),    typeid(SelectDiversifierRespPars));
 CalypsoSamCommands CalypsoSamCommands::GET_CHALLENGE(         "GET_CHALLENGE",          InnerEnum::GET_CHALLENGE,          "Get Challenge",          static_cast<char>(0x84), typeid(SamGetChallengeCmdBuild),      typeid(SamGetChallengeRespPars));
@@ -116,8 +126,6 @@ CalypsoSamCommands CalypsoSamCommands::valueOf(const std::string &name)
     return CalypsoSamCommands("Dummy", InnerEnum::DIGEST_AUTHENTICATE, "Dummy", 0, typeid(CalypsoSamCommands), typeid(CalypsoSamCommands));
 }
 
-}
-}
 }
 }
 }

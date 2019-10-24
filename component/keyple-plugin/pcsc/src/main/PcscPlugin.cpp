@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 /* Core */
 #include "KeypleBaseException.h"
 #include "KeypleReaderException.h"
@@ -12,23 +26,17 @@
 #include "PcscReader.h"
 #include "PcscPlugin.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using AbstractObservableReader         = org::eclipse::keyple::core::seproxy::plugin::AbstractObservableReader;
-using AbstractThreadedObservablePlugin = org::eclipse::keyple::core::seproxy::plugin::AbstractThreadedObservablePlugin;
-using CardException                    = org::eclipse::keyple::smartcardio::CardException;
-using CardTerminals                    = org::eclipse::keyple::smartcardio::CardTerminals;
-using CardTerminal                     = org::eclipse::keyple::smartcardio::CardTerminal;
-using KeypleBaseException              = org::eclipse::keyple::core::seproxy::exception::KeypleBaseException;
-using KeypleReaderException            = org::eclipse::keyple::core::seproxy::exception::KeypleReaderException;
+using namespace keyple::core::seproxy::plugin;
+using namespace keyple::smartcardio;
+using namespace keyple::core::seproxy::exception;
 
 std::shared_ptr<TerminalFactory> PcscPlugin::factory;
 
-PcscPlugin::PcscPlugin() : org::eclipse::keyple::core::seproxy::plugin::AbstractThreadedObservablePlugin("PcscPlugin")
+PcscPlugin::PcscPlugin() : AbstractThreadedObservablePlugin("PcscPlugin")
 {
     logger->debug("constructor\n");
 }
@@ -173,8 +181,6 @@ std::shared_ptr<CardTerminals> PcscPlugin::getCardTerminals() {
     return factory->terminals();
 }
 
-}
-}
 }
 }
 }

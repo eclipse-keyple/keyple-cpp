@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -18,8 +20,6 @@
 /* Common */
 #include "Export.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -60,29 +60,6 @@ public:
      */
     static SamRevision AUTO;
 
-private:
-    /**
-     *
-     */
-    static std::vector<SamRevision> valueList;
-
-    /**
-     *
-     */
-    class StaticConstructor {
-    public:
-        /**
-         *
-         */
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static StaticConstructor staticConstructor;
-
-public:
     /**
      *
      */
@@ -99,42 +76,22 @@ public:
      */
     InnerEnum innerEnumValue;
 
-private:
     /**
      *
      */
-    std::string nameValue;
+    SamRevision(const std::string &nameValue, InnerEnum innerEnum,
+                const std::string &name, const std::string &applicationTypeMask,
+                char classByte);
 
     /**
      *
      */
-    int ordinalValue;
+    SamRevision(const SamRevision& o);
 
     /**
      *
      */
-    static int nextOrdinal;
-
-    /**
-     *
-     */
-    std::string name;
-
-    /**
-     *
-     */
-    std::string applicationTypeMask;
-
-    /**
-     *
-     */
-    char classByte;
-
-public:
-    /**
-     *
-     */
-    SamRevision(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, const std::string &applicationTypeMask, char classByte);
+    virtual ~SamRevision() {}
 
     /**
      *
@@ -164,6 +121,10 @@ public:
     /**
      *
      */
+    SamRevision& operator=(SamRevision o);
+    /**
+     *
+     */
     static std::vector<SamRevision> values();
 
     /**
@@ -180,10 +141,60 @@ public:
      *
      */
     static SamRevision valueOf(const std::string &name);
+
+private:
+    /**
+     *
+     */
+    static std::vector<SamRevision> valueList;
+
+    /**
+     *
+     */
+    class StaticConstructor {
+    public:
+        /**
+         *
+         */
+        StaticConstructor();
+    };
+
+    /**
+     *
+     */
+    static StaticConstructor staticConstructor;
+
+    /**
+     *
+     */
+    std::string nameValue;
+
+    /**
+     *
+     */
+    int ordinalValue;
+
+    /**
+     *
+     */
+    static int nextOrdinal;
+
+    /**
+     *
+     */
+    std::string name;
+
+    /**
+     *
+     */
+    std::string applicationTypeMask;
+
+    /**
+     *
+     */
+    char classByte;
 };
 
-}
-}
 }
 }
 }

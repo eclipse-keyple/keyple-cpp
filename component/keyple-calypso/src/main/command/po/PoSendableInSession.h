@@ -18,22 +18,18 @@
 #include "AbstractPoResponseParser.h"
 #include "SendableInSession.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 
-using namespace org::eclipse::keyple::calypso::command;
-using namespace org::eclipse::keyple::calypso::command::po;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
 
 class PoSendableInSession
 : public SendableInSession<AbstractPoCommandBuilder<AbstractPoResponseParser>> {
 };
 
-}
-}
 }
 }
 }

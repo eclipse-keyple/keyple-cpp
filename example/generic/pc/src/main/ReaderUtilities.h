@@ -18,14 +18,12 @@
 #include "SeProxyService.h"
 #include "SeReader.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
 namespace pc {
 
-using namespace org::eclipse::keyple::core::seproxy;
+using namespace keyple::core::seproxy;
 
 class ReaderUtilities : public std::enable_shared_from_this<ReaderUtilities> {
 public:
@@ -65,8 +63,6 @@ public:
     static void setContactsSettings(std::shared_ptr<SeReader> reader);
 };
 
-}
-}
 }
 }
 }

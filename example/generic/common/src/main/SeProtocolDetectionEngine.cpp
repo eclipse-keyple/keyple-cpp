@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 /* Example */
 #include "GenericSeSelectionRequest.h"
 #include "SeProtocolDetectionEngine.h"
@@ -17,20 +29,18 @@
 #include "ReadDataStructure.h"
 #include "PoSelectionRequest.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
 namespace common {
 
-using namespace org::eclipse::keyple::calypso::command::po::parser;
-using namespace org::eclipse::keyple::calypso::transaction;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::event;
-using namespace org::eclipse::keyple::core::seproxy::message;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
-using namespace org::eclipse::keyple::core::util;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::calypso::transaction;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::core::util;
 
 SeProtocolDetectionEngine::SeProtocolDetectionEngine() : AbstractReaderObserverEngine() {
 }
@@ -114,8 +124,6 @@ void SeProtocolDetectionEngine::processSeRemoval() {
 
 void SeProtocolDetectionEngine::processUnexpectedSeRemoval() {
     std::cout << "Unexpected SE removal event" << std::endl;
-}
-}
 }
 }
 }

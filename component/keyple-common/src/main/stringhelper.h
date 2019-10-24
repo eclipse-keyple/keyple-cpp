@@ -1,17 +1,25 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #pragma once
 
-//----------------------------------------------------------------------------------------
-//	Copyright © 2007 - 2018 Tangible Software Solutions, Inc.
-//	This class can be used by anyone provided that the copyright notice remains intact.
-//
-//	This class is used to replace some string methods, including
-//	conversions to or from strings.
-//----------------------------------------------------------------------------------------
 #include <string>
 #include <sstream>
 #include <vector>
 #include <exception>
 #include <cctype>
+
+namespace keyple {
+namespace common {
 
 class StringHelper {
   public:
@@ -550,3 +558,6 @@ class StringHelper {
         return ss.str();
     }
 };
+
+}
+}

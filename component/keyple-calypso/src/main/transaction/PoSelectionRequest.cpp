@@ -1,3 +1,15 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "AbstractApduResponseParser_Import.h"
 #include "AbstractMatchingSe.h"
 #include "ApduRequest.h"
@@ -15,21 +27,19 @@
 #include "SelectFileCmdBuild.h"
 #include "SeResponse.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using namespace org::eclipse::keyple::calypso::command;
-using namespace org::eclipse::keyple::calypso::command::po;
-using namespace org::eclipse::keyple::calypso::command::po::builder;
-using namespace org::eclipse::keyple::calypso::command::po::parser;
-using namespace org::eclipse::keyple::core::command;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::message;
-using namespace org::eclipse::keyple::core::seproxy::protocol;
-using namespace org::eclipse::keyple::core::util;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::core::util;
 
 PoSelectionRequest::PoSelectionRequest(std::shared_ptr<PoSelector> poSelector, ChannelState channelState)
 : AbstractSeSelectionRequest(poSelector, channelState), poClass(PoClass::LEGACY) /* Default constructor to please compiler */
@@ -194,8 +204,6 @@ std::shared_ptr<AbstractMatchingSe> PoSelectionRequest::parse(std::shared_ptr<Se
     return std::make_shared<CalypsoPo>(seResponse, seSelector->getSeProtocol().getTransmissionMode(), seSelector->getExtraInfo());
 }
 
-}
-}
 }
 }
 }

@@ -12,8 +12,6 @@
 
 #pragma once
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
@@ -25,8 +23,6 @@ enum class TransmissionMode {
     CONTACTLESS
 };
 
-}
-}
 }
 }
 }

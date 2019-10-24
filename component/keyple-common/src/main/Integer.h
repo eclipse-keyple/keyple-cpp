@@ -7,6 +7,9 @@
 #include "exceptionhelper.h"
 #include "stringhelper.h"
 
+namespace keyple {
+namespace common {
+
 class Integer {
 private:
     /*
@@ -175,3 +178,7 @@ public:
         return isNeg ? -val : val;
     }
 };
+
+}
+}
+

@@ -1,15 +1,16 @@
-/********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information
- * regarding copyright ownership.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -23,17 +24,16 @@
 #include "Logger.h"
 #include "LoggerFactory.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
 namespace common {
 
-using namespace org::eclipse::keyple::core::seproxy::event;
-using namespace org::eclipse::keyple::common;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::common;
 
-class ObservableReaderNotificationEngine : public std::enable_shared_from_this<ObservableReaderNotificationEngine> {
+class ObservableReaderNotificationEngine
+: public std::enable_shared_from_this<ObservableReaderNotificationEngine> {
 public:
     /**
      * Constructor
@@ -51,46 +51,48 @@ public:
     virtual void setPluginObserver();
 
     /**
-     * This method is called whenever a Reader event occurs (SE insertion/removal)
+     * This method is called whenever a Reader event occurs (SE
+     * insertion/removal)
      */
     class SpecificReaderObserver
     : public std::enable_shared_from_this<SpecificReaderObserver>,
       public ObservableReader::ReaderObserver {
-    private:
-        /**
-         *
-         */
-        ObservableReaderNotificationEngine *outerInstance;
-
-
     public:
         /**
          * Constructor
          */
-        SpecificReaderObserver(ObservableReaderNotificationEngine *outerInstance); //super();
+        SpecificReaderObserver(
+            ObservableReaderNotificationEngine *outerInstance); //super();
 
+        /**
+         *
+         */
         virtual ~SpecificReaderObserver() { }
 
         /**
          *
          */
         void update(std::shared_ptr<ReaderEvent> event); // override;
+
+        /**
+         *
+         */
         void update(ReaderEvent event); // override;
 
-    };
-
-    /**
-     * This method is called whenever a Plugin event occurs (reader insertion/removal)
-     */
-    class SpecificPluginObserver
-    : public std::enable_shared_from_this<SpecificPluginObserver>,
-      public ObservablePlugin::PluginObserver {
     private:
         /**
          *
          */
         ObservableReaderNotificationEngine *outerInstance;
+    };
 
+    /**
+     * This method is called whenever a Plugin event occurs (reader
+     * insertion/removal)
+     */
+    class SpecificPluginObserver
+    : public std::enable_shared_from_this<SpecificPluginObserver>,
+      public ObservablePlugin::PluginObserver {
     public:
         /**
          *
@@ -100,19 +102,38 @@ public:
         /**
          * Constructor
          */
-        SpecificPluginObserver(ObservableReaderNotificationEngine *outerInstance, std::shared_ptr<SpecificReaderObserver> readerObserver);
+        SpecificPluginObserver(
+            ObservableReaderNotificationEngine *outerInstance,
+            std::shared_ptr<SpecificReaderObserver> readerObserver);
 
+        /**
+         *
+         */
         virtual ~SpecificPluginObserver() { }
 
+        /**
+         *
+         */
         void update(std::shared_ptr<PluginEvent> event) override;
+
+        /**
+         *
+         */
         void update(PluginEvent event);
+
+    private:
+        /**
+         *
+         */
+        ObservableReaderNotificationEngine *outerInstance;
     };
 
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(ObservableReaderNotificationEngine));
+    const std::shared_ptr<Logger> logger =
+        LoggerFactory::getLogger(typeid(ObservableReaderNotificationEngine));
 
     /**
      *
@@ -120,8 +141,6 @@ private:
     std::shared_ptr<SpecificPluginObserver> pluginObserver;
 };
 
-}
-}
 }
 }
 }

@@ -14,8 +14,6 @@
 
 #include "Exception.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
@@ -36,7 +34,7 @@ public:
      * @param message : message to identify the exception and the context
      */
 
-    PCSCException(const std::string &message) : Exception(message)
+    PCSCException(const std::string &message) : Exception(message), code(0)
     {
 
     }
@@ -48,13 +46,11 @@ public:
      * @param cause : lower level exception
      */
     PCSCException(const std::string &message, std::runtime_error cause)
-    : Exception(message, cause)
+    : Exception(message, cause), code(0)
     {
 
     }
 };
 
-}
-}
 }
 }

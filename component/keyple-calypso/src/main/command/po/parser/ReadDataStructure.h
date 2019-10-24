@@ -12,8 +12,6 @@
 
 #pragma once
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -21,14 +19,14 @@ namespace po {
 namespace parser {
 
 /**
-    * Indicates whether the current ReadRecords operation operates on:
-    * <ul>
-    * <li>Single data record (even P2 value)</li>
-    * <li>Multiple data records (odd P2 value)</li>
-    * <li>Single counter record (depending on PO structure)</li>
-    * <li>Multiple counter records</li>
-    * </ul>
-    */
+ * Indicates whether the current ReadRecords operation operates on:
+ * <ul>
+ * <li>Single data record (even P2 value)</li>
+ * <li>Multiple data records (odd P2 value)</li>
+ * <li>Single counter record (depending on PO structure)</li>
+ * <li>Multiple counter records</li>
+ * </ul>
+ */
 enum class ReadDataStructure {
     SINGLE_RECORD_DATA,
     MULTIPLE_RECORD_DATA,
@@ -36,8 +34,6 @@ enum class ReadDataStructure {
     MULTIPLE_COUNTER
 };
 
-}
-}
 }
 }
 }

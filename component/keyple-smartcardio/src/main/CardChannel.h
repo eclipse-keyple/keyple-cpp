@@ -1,10 +1,14 @@
-/*
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * All rights reserved. This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
- * available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
- */
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
 
 #pragma once
 
@@ -20,40 +24,15 @@
 #include "CommandAPDU.h"
 #include "ResponseAPDU.h"
 
-namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class Card; }}}}
-namespace org { namespace eclipse { namespace keyple { namespace smartcardio { class CommandAPDU; }}}}
+namespace keyple { namespace smartcardio { class Card; } }
+namespace keyple { namespace smartcardio { class CommandAPDU; } }
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace smartcardio {
 
-using Logger        = org::eclipse::keyple::common::Logger;
-using LoggerFactory = org::eclipse::keyple::common::LoggerFactory;
+using namespace keyple::common;
 
 class EXPORT CardChannel {
-public:
-private:
-    /**
-     * The card this channel is associated with
-     */
-    Card* card;
-
-    /**
-     * The channel number, 0 for the basic logical channel
-     */
-    int channel;
-
-    /**
-     * Whether this channel has been closed. only logical channels can be
-     * closed
-     */
-    bool isClosed;
-
-    /**
-     *
-     */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardChannel));
 
 public:
     /*
@@ -181,6 +160,27 @@ public:
 
 private:
     /**
+     * The card this channel is associated with
+     */
+    Card* card;
+
+    /**
+     * The channel number, 0 for the basic logical channel
+     */
+    int channel;
+
+    /**
+     * Whether this channel has been closed. only logical channels can be
+     * closed
+     */
+    bool isClosed;
+
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CardChannel));
+
+    /**
      * 
      */
     static int getSW(std::vector<char> res);
@@ -216,7 +216,5 @@ private:
     std::vector<char> doTransmit(std::vector<char> command);
 };
 
-}
-}
 }
 }

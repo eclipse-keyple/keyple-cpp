@@ -1,20 +1,31 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "AbstractSamResponseParser.h"
 #include "ApduResponse.h"
 
-namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace calypso {
-                namespace command {
-                    namespace sam {
-                        using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-                        using ApduResponse = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace sam {
 
-                        AbstractSamResponseParser::AbstractSamResponseParser(std::shared_ptr<ApduResponse> response) : org::eclipse::keyple::core::command::AbstractApduResponseParser(response) {
-                        }
-                    }
-                }
-            }
-        }
-    }
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
+
+AbstractSamResponseParser::AbstractSamResponseParser(std::shared_ptr<ApduResponse> response) : AbstractApduResponseParser(response)
+{
+}
+
+}
+}
+}
 }

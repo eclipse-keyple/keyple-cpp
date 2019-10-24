@@ -18,21 +18,19 @@
 #include "KeypleReaderException.h"
 #include "SeRequest.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SeRequestSet; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SeResponseSet; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SeRequest; } } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class SeResponse; } } } } } }
+/* Forward class declarations */
+namespace keyple { namespace core { namespace seproxy { namespace message { class SeRequestSet; } } } }
+namespace keyple { namespace core { namespace seproxy { namespace message { class SeResponseSet; } } } }
+namespace keyple { namespace core { namespace seproxy { namespace message { class SeRequest; } } } }
+namespace keyple { namespace core { namespace seproxy { namespace message { class SeResponse; } } } }
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace message {
 
-using SeReader              = org::eclipse::keyple::core::seproxy::SeReader;
-using KeypleReaderException = org::eclipse::keyple::core::seproxy::exception::KeypleReaderException;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::exception;
 
 /**
  * ProxyReader interface
@@ -48,8 +46,12 @@ using KeypleReaderException = org::eclipse::keyple::core::seproxy::exception::Ke
  * This interface should be implemented by any specific reader plugin.
  */
 class ProxyReader : public virtual SeReader {
-
 public:
+    /**
+     *
+     */
+    virtual ~ProxyReader() {}
+
     /**
      * Transmits a {@link SeRequestSet} (list of {@link SeRequest}) to a SE application and get back
      * the corresponding {@link SeResponseSet} (list of {@link SeResponse}).
@@ -101,8 +103,6 @@ public:
     virtual std::shared_ptr<SeResponse> transmit(std::shared_ptr<SeRequest> seApplicationRequest) = 0;
 };
 
-}
-}
 }
 }
 }

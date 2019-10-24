@@ -27,40 +27,18 @@
 /* Core */
 #include "SeProxyService.h"
 
-
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace calypso {
 namespace common {
 namespace transaction {
 
-using namespace org::eclipse::keyple::calypso::transaction;
-using namespace org::eclipse::keyple::common;
-using namespace org::eclipse::keyple::core::seproxy;
-using namespace org::eclipse::keyple::core::seproxy::exception;
+using namespace keyple::calypso::transaction;
+using namespace keyple::common;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::exception;
 
 class CalypsoUtilities : public std::enable_shared_from_this<CalypsoUtilities> {
-private:
-    /**
-     *
-     */
-    static std::shared_ptr<Properties> properties;
-
-    /**
-     *
-     */
-    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static CalypsoUtilities::StaticConstructor staticConstructor;
-
 public:
     /**
      * Get the default reader for PO communications
@@ -93,10 +71,27 @@ public:
      * @param samReader the SAM reader
      */
     static std::shared_ptr<SamResource> checkSamAndOpenChannel(std::shared_ptr<SeReader> samReader);
+
+private:
+    /**
+     *
+     */
+    static std::shared_ptr<Properties> properties;
+
+    /**
+     *
+     */
+    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    public:
+        StaticConstructor();
+    };
+
+    /**
+     *
+     */
+    static CalypsoUtilities::StaticConstructor staticConstructor;
 };
 
-}
-}
 }
 }
 }

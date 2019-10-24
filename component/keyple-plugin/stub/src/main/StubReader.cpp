@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 /* Core */
 #include "KeypleChannelStateException.h"
 #include "KeypleIOReaderException.h"
@@ -17,23 +31,14 @@
 #include "Thread.h"
 #include "InterruptedException.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using KeypleChannelStateException = org::eclipse::keyple::core::seproxy::exception::KeypleChannelStateException;
-using KeypleIOReaderException = org::eclipse::keyple::core::seproxy::exception::KeypleIOReaderException;
-using KeypleReaderException = org::eclipse::keyple::core::seproxy::exception::KeypleReaderException;
-using NoStackTraceThrowable = org::eclipse::keyple::core::seproxy::exception::NoStackTraceThrowable;
-using ApduRequest   = org::eclipse::keyple::core::seproxy::message::ApduRequest;
-using ApduResponse  = org::eclipse::keyple::core::seproxy::message::ApduResponse;
-using SeRequestSet  = org::eclipse::keyple::core::seproxy::message::SeRequestSet;
-using SeResponseSet = org::eclipse::keyple::core::seproxy::message::SeResponseSet;
-using AbstractThreadedLocalReader = org::eclipse::keyple::core::seproxy::plugin::AbstractThreadedLocalReader;
-using SeProtocol       = org::eclipse::keyple::core::seproxy::protocol::SeProtocol;
-using TransmissionMode = org::eclipse::keyple::core::seproxy::protocol::TransmissionMode;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::plugin;
+using namespace keyple::core::seproxy::protocol;
 
 const std::string StubReader::ALLOWED_PARAMETER_1   = "parameter1";
 const std::string StubReader::ALLOWED_PARAMETER_2   = "parameter2";
@@ -42,7 +47,7 @@ const std::string StubReader::CONTACTS_PARAMETER    = "contacts";
 const std::string StubReader::pluginName            = "StubPlugin";
 
 StubReader::StubReader(const std::string &name)
-: org::eclipse::keyple::core::seproxy::plugin::AbstractThreadedLocalReader(pluginName, name)
+: AbstractThreadedLocalReader(pluginName, name)
 {
     logger->debug("constructor (pluginName: %s, name: %s)\n", pluginName, name);
     readerName                   = name;
@@ -267,8 +272,6 @@ void StubReader::setParameters(std::unordered_map<std::string, std::string> &par
     (void)parameters;
 }
 
-} // namespace stub
-}     // namespace plugin
-}         // namespace keyple
-}             // namespace eclipse
-} // namespace org
+}
+}
+}

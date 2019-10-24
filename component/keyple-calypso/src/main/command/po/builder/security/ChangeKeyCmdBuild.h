@@ -21,8 +21,6 @@
 #include "ChangeKeyRespPars.h"
 #include "PoClass.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -30,12 +28,10 @@ namespace po {
 namespace builder {
 namespace security {
 
-using namespace org::eclipse::keyple::calypso::command::po;
-
-using PoClass           = org::eclipse::keyple::calypso::command::PoClass;
-using CalypsoPoCommands = org::eclipse::keyple::calypso::command::po::CalypsoPoCommands;
-using ChangeKeyRespPars = org::eclipse::keyple::calypso::command::po::parser::security::ChangeKeyRespPars;
-using ApduResponse      = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::parser::security;
+using namespace keyple::core::seproxy::message;
 
 class ChangeKeyCmdBuild : public AbstractPoCommandBuilder<ChangeKeyRespPars> {
 private:
@@ -69,8 +65,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }

@@ -1,23 +1,28 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "AbstractSeSelectionRequest.h"
-#include "SeSelector.h"
 #include "ApduRequest.h"
 #include "SeRequest.h"
-#include "AbstractApduResponseParser.h"
 #include "SeResponse.h"
 #include "AbstractMatchingSe.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace selection {
 
-using AbstractApduResponseParser = org::eclipse::keyple::core::command::AbstractApduResponseParser;
-using ChannelState               = org::eclipse::keyple::core::seproxy::ChannelState;
-using SeSelector                 = org::eclipse::keyple::core::seproxy::SeSelector;
-using ApduRequest                = org::eclipse::keyple::core::seproxy::message::ApduRequest;
-using SeRequest                  = org::eclipse::keyple::core::seproxy::message::SeRequest;
-using SeResponse                 = org::eclipse::keyple::core::seproxy::message::SeResponse;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::message;
 
 AbstractSeSelectionRequest::AbstractSeSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState)
 : seSelector(seSelector), channelState(channelState)
@@ -54,8 +59,6 @@ std::shared_ptr<AbstractApduResponseParser> AbstractSeSelectionRequest::getComma
     throw std::make_shared<IllegalStateException>("No parsers available for this request.");
 }
 
-}
-}
 }
 }
 }

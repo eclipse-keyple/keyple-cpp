@@ -16,12 +16,9 @@
 
 #include "AbstractSamResponseParser.h"
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } } } }
+/* Forwards declaration */
+namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } }
 
-
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -30,8 +27,8 @@ namespace parser {
 namespace security {
 
 
-using AbstractSamResponseParser = org::eclipse::keyple::calypso::command::sam::AbstractSamResponseParser;
-using ApduResponse              = org::eclipse::keyple::core::seproxy::message::ApduResponse;
+using namespace keyple::calypso::command::sam;
+using namespace keyple::core::seproxy::message;
 
 /**
  * PO Give Random response parser.
@@ -39,23 +36,24 @@ using ApduResponse              = org::eclipse::keyple::core::seproxy::message::
  * No output data except status word
  */
 class GiveRandomRespPars : public AbstractSamResponseParser {
+public:
     /**
      * Instantiates a new GiveRandomRespPars.
      *
      * @param response the response
      */
-public:
     GiveRandomRespPars(std::shared_ptr<ApduResponse> response);
 
 protected:
+    /**
+     *
+     */
     std::shared_ptr<GiveRandomRespPars> shared_from_this()
     {
         return std::static_pointer_cast<GiveRandomRespPars>(AbstractSamResponseParser::shared_from_this());
     }
 };
 
-}
-}
 }
 }
 }

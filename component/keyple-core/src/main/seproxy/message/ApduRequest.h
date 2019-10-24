@@ -23,48 +23,23 @@
 #include "Pattern.h"
 #include "Serializable.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace message {
 
-/**
-    * Single APDU request wrapper
-    */
-class EXPORT ApduRequest final : public std::enable_shared_from_this<ApduRequest>, public Serializable {
+using namespace keyple::common;
 
+/**
+ * Single APDU request wrapper
+  */
+class EXPORT ApduRequest final : public std::enable_shared_from_this<ApduRequest>, public Serializable {
 public:
+    /**
+     *
+     */
     static constexpr long long serialVersionUID = 877369841119873812LL;
 
-
-private:
-    /**
-     * Buffer of the APDU Request
-     */
-    std::vector<char> bytes;
-
-    /**
-     * a ‘case 4’ flag in order to explicitly specify, if it’s expected that the APDU command
-     * returns data → this flag is required to manage revision 2.4 Calypso Portable Objects and
-     * ‘S1Dx’ SAMs that presents a behaviour not compliant with ISO 7816-3 in contacts mode (not
-     * returning the 61XYh status).
-     */
-    const bool case4;
-
-    /**
-     * List of status codes that should be considered successful although they are different from
-     * 9000
-     */
-    const std::shared_ptr<std::set<int>> successfulStatusCodes;
-
-    /**
-     * Name of the request being sent
-     */
-    std::string name;
-
-public:
     /**
      * the constructor called by a ticketing application in order to build the APDU command requests
      * to push to the ProxyReader.
@@ -159,10 +134,33 @@ public:
 
         return os;
     }
+
+private:
+    /**
+     * Buffer of the APDU Request
+     */
+    std::vector<char> bytes;
+
+    /**
+     * a ‘case 4’ flag in order to explicitly specify, if it’s expected that the APDU command
+     * returns data → this flag is required to manage revision 2.4 Calypso Portable Objects and
+     * ‘S1Dx’ SAMs that presents a behaviour not compliant with ISO 7816-3 in contacts mode (not
+     * returning the 61XYh status).
+     */
+    const bool case4;
+
+    /**
+     * List of status codes that should be considered successful although they are different from
+     * 9000
+     */
+    const std::shared_ptr<std::set<int>> successfulStatusCodes;
+
+    /**
+     * Name of the request being sent
+     */
+    std::string name;
 };
 
-}
-}
 }
 }
 }

@@ -1,16 +1,32 @@
+/********************************************************************************
+* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
+*
+* See the NOTICE file(s) distributed with this work for additional information regarding copyright
+* ownership.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+*
+* SPDX-License-Identifier: EPL-2.0
+********************************************************************************/
+
 #include "CustomProtocols.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
 namespace common {
 
-using namespace org::eclipse::keyple::core::seproxy::protocol;
+using namespace keyple::core::seproxy::protocol;
 
-CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_B_PRIME("CUSTOM_PROTOCOL_B_PRIME", InnerEnum::CUSTOM_PROTOCOL_B_PRIME, "Custom Old Calypso B prime", TransmissionMode::CONTACTLESS);
-CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_MIFARE_DESFIRE("CUSTOM_PROTOCOL_MIFARE_DESFIRE", InnerEnum::CUSTOM_PROTOCOL_MIFARE_DESFIRE, "Custom Mifare DESFire", TransmissionMode::CONTACTLESS);
+CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_B_PRIME("CUSTOM_PROTOCOL_B_PRIME",
+                                                         InnerEnum::CUSTOM_PROTOCOL_B_PRIME,
+                                                         "Custom Old Calypso B prime",
+                                                         TransmissionMode::CONTACTLESS);
+CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_MIFARE_DESFIRE("CUSTOM_PROTOCOL_MIFARE_DESFIRE",
+                                                                InnerEnum::CUSTOM_PROTOCOL_MIFARE_DESFIRE,
+                                                                "Custom Mifare DESFire",
+                                                                TransmissionMode::CONTACTLESS);
 
 std::vector<CustomProtocols> CustomProtocols::valueList;
 CustomProtocols::StaticConstructor CustomProtocols::staticConstructor;
@@ -76,8 +92,6 @@ TransmissionMode CustomProtocols::getTransmissionMode() const
     return transmissionMode;
 }
 
-}
-}
 }
 }
 }

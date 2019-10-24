@@ -23,15 +23,13 @@
 #include "Logger.h"
 #include "LoggerFactory.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace example {
 namespace generic {
 namespace common {
 
-using namespace org::eclipse::keyple::core::seproxy::event;
-using namespace org::eclipse::keyple::common;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::common;
 
 /**
  * This abstract class is intended to be extended by the applications classes in which the SE
@@ -39,28 +37,52 @@ using namespace org::eclipse::keyple::common;
  */
 class AbstractReaderObserverEngine
 : public std::enable_shared_from_this<AbstractReaderObserverEngine>, public ObservableReader::ReaderObserver {
-
-private:
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractReaderObserverEngine));
-
-protected:
-    virtual void processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse) = 0;
-
-    virtual void processSeInsertion() = 0; // alternative AID selection
-
-    virtual void processSeRemoval() = 0;
-
-    virtual void processUnexpectedSeRemoval() = 0;
-
-  public:
+public:
+    /**
+     *
+     */
     bool currentlyProcessingSe = false;
 
+    /**
+     *
+     */
+    virtual ~AbstractReaderObserverEngine() {}
+
+    /**
+     *
+     */
     virtual void update(std::shared_ptr<ReaderEvent> event);
+
+protected:
+    /**
+     *
+     */
+    virtual void processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse) = 0;
+
+    /**
+     *
+     */
+    virtual void processSeInsertion() = 0; // alternative AID selection
+
+    /**
+     *
+     */
+    virtual void processSeRemoval() = 0;
+
+    /**
+     *
+     */
+    virtual void processUnexpectedSeRemoval() = 0;
+
+ private:
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractReaderObserverEngine));
+
 };
 
-} // namespace common
-}     // namespace generic
-}         // namespace example
-}             // namespace keyple
-}                 // namespace eclipse
-} // namespace org
+}
+}
+}
+}

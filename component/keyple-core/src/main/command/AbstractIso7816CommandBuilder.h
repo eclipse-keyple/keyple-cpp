@@ -21,14 +21,12 @@
 #include "AbstractApduCommandBuilder.h"
 #include "Export.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
 namespace core {
 namespace command {
 
-using namespace org::eclipse::keyple::core::command;
-using namespace org::eclipse::keyple::core::seproxy::message;
+using namespace keyple::core::command;
+using namespace keyple::core::seproxy::message;
 
 /**
  * Iso7816 APDU command builder.
@@ -107,8 +105,6 @@ protected:
     }
 };
 
-}
-}
 }
 }
 }
