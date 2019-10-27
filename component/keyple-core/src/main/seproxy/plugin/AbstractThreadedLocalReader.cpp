@@ -86,24 +86,30 @@ void *AbstractThreadedLocalReader::EventThread::run()
         }
 
         while (running) {
-            // If we have a card,
+            /* If we have a card */
             outerInstance->logger->debug("checking if a SE is present...\n");
             if (outerInstance->isSePresent()) {
-                // we will wait for it to disappear
-                outerInstance->logger->debug("waiting for card to be removed...\n");
+                /* ... we will wait for it to disappear */
+                outerInstance->logger->debug(
+                    "waiting for card to be removed...\n");
                 if (outerInstance->waitForCardAbsent(
                         outerInstance->threadWaitTimeout)) {
-                    // and notify about it.
+                    /* ... and notify about it */
                     outerInstance->logger->debug("notify card removed\n");
                     outerInstance->cardRemoved();
                 }
-                // false means timeout, and we go back to the beginning of the loop
+                /*
+                 * False means timeout, and we go back to the beginning of the
+                 * loop.
+                 */
             }
-            // If we don't,
+            /* If we don't, */
             else {
-                // we will wait for it to appear
-                outerInstance->logger->debug("waiting for card to be inserted...\n");
-                if (outerInstance->waitForCardPresent(outerInstance->threadWaitTimeout)) {
+                /* ... we will wait for it to appear. */
+                outerInstance->logger->debug("waiting for card to be " \
+                                             "inserted...\n");
+                if (outerInstance->waitForCardPresent(
+                        outerInstance->threadWaitTimeout)) {
                     outerInstance->logger->debug("notify card inserted\n");
                     outerInstance->cardInserted();
                 }

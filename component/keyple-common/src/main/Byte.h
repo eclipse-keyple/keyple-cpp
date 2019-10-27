@@ -79,7 +79,7 @@ public:
     /**
      *
      */
-    Byte(const Byte& b)
+    Byte(const Byte& b) : Object()
     {
         this->value = b.value;
     }

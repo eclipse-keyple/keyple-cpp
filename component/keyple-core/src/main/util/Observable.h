@@ -61,7 +61,9 @@ public:
     /**
      *
      */
-    Observable(const Observable& o) : changed(o.changed), observers(o.observers)
+    Observable(const Observable& o)
+    : std::enable_shared_from_this<Observable<T>>(), changed(o.changed),
+      observers(o.observers)
     {
     }
 

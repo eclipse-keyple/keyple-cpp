@@ -58,7 +58,7 @@ public:
     /**
      *
      */
-    ObservablePlugin(const ObservablePlugin& o)
+    ObservablePlugin(const ObservablePlugin& o) : Nameable(), ReaderPlugin()
     {
         (void)o;
     }

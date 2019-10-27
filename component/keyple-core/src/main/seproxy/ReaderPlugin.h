@@ -54,6 +54,7 @@ public:
      *
      */
     ReaderPlugin(const ReaderPlugin& o)
+    : Nameable(), Configurable(), Comparable<ReaderPlugin>()
     {
         (void)o;
     }
