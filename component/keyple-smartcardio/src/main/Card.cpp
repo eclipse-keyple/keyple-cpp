@@ -40,7 +40,8 @@ Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
     DWORD connectProtocol;
     BYTE _atr[33];
     DWORD atrLen = sizeof(_atr);
-    DWORD rLen = 200; //strlen(terminal->getName().c_str()) + 1;
+    BYTE reader[200];
+    DWORD rLen = sizeof(reader);
     LONG rv;
 
     logger->debug("constructor\n");
@@ -83,8 +84,8 @@ Card::Card(CardTerminal* terminal, std::string protocol) : terminal(terminal)
     basicChannel = new CardChannel(this, 0);
     this->state = SCARD_POWERED;
 
-    rv = SCardStatus(this->cardhdl, (LPSTR)terminal->getName().c_str(),
-                     &rLen, &this->state, &this->protocol, _atr, &atrLen);
+    rv = SCardStatus(this->cardhdl, (LPSTR)reader, &rLen, &this->state,
+                     &this->protocol, _atr, &atrLen);
     if (rv != SCARD_S_SUCCESS) {
         logger->debug("constructor - error retrieving status (%d)\n", rv);
     } else {

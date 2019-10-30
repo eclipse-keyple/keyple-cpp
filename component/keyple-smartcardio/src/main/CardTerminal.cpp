@@ -72,7 +72,8 @@ bool CardTerminal::isCardPresent()
         BYTE pbAtr[261];
         SCARDHANDLE hCard;
         DWORD atrLen = sizeof(pbAtr);
-        DWORD chReaderLen = 200; //strlen(name.c_str()) + 1;
+        BYTE reader[200];
+        DWORD chReaderLen = sizeof(reader);
         LONG rv;
 
         logger->debug("isCardPresent - connecting to card\n");
@@ -88,7 +89,7 @@ bool CardTerminal::isCardPresent()
         logger->debug("isCardPresent - retrieving card status on %s\n",
                       name.c_str());
 
-        rv = SCardStatus(hCard, (LPSTR)name.c_str(), &chReaderLen,
+        rv = SCardStatus(hCard, (LPSTR)reader, &chReaderLen,
                          &state, &protocol, pbAtr, &atrLen);
         if (rv != SCARD_S_SUCCESS) {
                 logger->debug("isCardPresent - error retrieving status (%x)\n",

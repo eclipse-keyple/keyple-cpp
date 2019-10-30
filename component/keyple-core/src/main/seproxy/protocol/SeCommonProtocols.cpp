@@ -122,7 +122,7 @@ SeCommonProtocols& SeCommonProtocols::operator=(const SeCommonProtocols& s)
 }
 */
 
-std::string SeCommonProtocols::getName()
+std::string SeCommonProtocols::getName() const
 {
     return name;
 }

@@ -86,7 +86,8 @@ public:
      */
     virtual void addObserver(std::shared_ptr<Observer<T>> observer) override
     {
-        logger->trace("[%s][%s] addObserver => Adding an observer\n", name, this->getName());
+        logger->trace("[%s][%s] addObserver => Adding an observer\n", name,
+                      this->getName());
 
         Observable<T>::addObserver(observer);
     }

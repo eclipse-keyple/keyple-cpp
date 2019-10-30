@@ -108,7 +108,7 @@ public:
     /**
      *
      */
-    std::string getName() override;
+    std::string getName() const override;
 
     /**
      *

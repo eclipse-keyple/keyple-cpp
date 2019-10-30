@@ -59,7 +59,7 @@ public:
      * 
      * @return String
      */
-    virtual std::string getName()
+    virtual std::string getName() const
     {
         return "";
     }
@@ -101,11 +101,14 @@ public:
     /**
      *
      */
-    friend std::ostream &operator<<(std::ostream &os, SeProtocol &se)
-    {
-        os << "name: " << se.getName();
+    friend std::ostream& operator<<(std::ostream &os, const SeProtocol &se);
 
-        return os;
+    /**
+     * 
+     */
+    std::string toString() const
+    {
+        return this->getName();
     }
 
 private:

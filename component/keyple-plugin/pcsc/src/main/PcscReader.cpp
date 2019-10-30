@@ -124,7 +124,7 @@ void PcscReader::closePhysicalChannel()
 bool PcscReader::checkSePresence()
 {
     try {
-	logger->debug("checkSePresence - calling isCardPresent\n");
+	    logger->debug("checkSePresence - calling isCardPresent\n");
         return terminal->isCardPresent();
     }
     catch (const CardException &e) {
@@ -226,11 +226,17 @@ bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
         std::string atr = ByteArrayUtil::toHex(card->getATR()->getBytes());
         if (!p->matcher(atr)->matches()) {
             logger->trace("[%s] protocolFlagMatches => unmatching SE. " \
-                          "PROTOCOLFLAG = %s\n", this->getName(), protocolFlag);
+                          "PROTOCOLFLAG = %s\n", this->getName(),
+                          protocolFlag.toString());
             result = false;
         } else {
+            std::cout << "name: " << this->getName();
+            std::cout << "name: " << this->getName();
+            std::cout << "name: " << this->getName();
+            std::cout << "name: " << this->getName();
             logger->trace("[%s] protocolFlagMatches => matching SE. " \
-                          "PROTOCOLFLAG = %s\n", this->getName(), protocolFlag);
+                          "PROTOCOLFLAG = %s\n", this->getName(),
+                          protocolFlag.toString());
             result = true;
         }
     //} else {
@@ -317,7 +323,7 @@ void PcscReader::setParameter(const std::string &name, const std::string &value)
         } else if (value == SETTING_DISCONNECT_UNPOWER) {
             cardReset = false;
         } else if (value == SETTING_DISCONNECT_EJECT ||
-                 value == SETTING_DISCONNECT_LEAVE) {
+                   value == SETTING_DISCONNECT_LEAVE) {
             throw std::invalid_argument("This disconnection parameter is not " \
                                         "supported by this plugin" + name +
                                         " : " + value);

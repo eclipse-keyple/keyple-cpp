@@ -96,29 +96,33 @@ bool StubReader::protocolFlagMatches(const SeProtocol& protocolFlag)
     bool result;
     // Test protocolFlag to check if ATR based protocol filtering is required
     //if (protocolFlag != nullptr) {
-        if (!isPhysicalChannelOpen())
-        {
+        if (!isPhysicalChannelOpen()) {
             openPhysicalChannel();
         }
-        // the requestSet will be executed only if the protocol match the requestElement
+
+        /*
+         * The requestSet will be executed only if the protocol match the 
+         * requestElement.
+         */
         std::string selectionMask = protocolsMap[protocolFlag];
-        if (selectionMask == "")
-        {
+        if (selectionMask == "") {
             throw std::make_shared<KeypleReaderException>(
                 "Target selector mask not found!"); //, nullptr);
         }
+
         Pattern *p = Pattern::compile(selectionMask);
         std::string protocol       = se->getSeProcotol();
-        if (!p->matcher(protocol)->matches())
-        {
-            logger->trace("[%s] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %s\n",
-                            this->getName(), protocolFlag);
+        if (!p->matcher(protocol)->matches()) {
+            logger->trace("[%s] protocolFlagMatches => unmatching SE. " \
+                          "PROTOCOLFLAG = %s\n", this->getName(),
+                          protocolFlag.toString());
             result = false;
         }
         else
         {
-            logger->trace("[%s] protocolFlagMatches => matching SE. PROTOCOLFLAG = %s\n",
-                            this->getName(), protocolFlag);
+            logger->trace("[%s] protocolFlagMatches => matching SE. " \
+                          "PROTOCOLFLAG = %s\n", this->getName(),
+                          protocolFlag.toString());
             result = true;
         }
     //}
@@ -152,8 +156,8 @@ void StubReader::setParameter(const std::string &name, const std::string &value)
     }
     else
     {
-        throw std::make_shared<KeypleReaderException>("parameter name not supported : " +
-                                                        name);
+        throw std::make_shared<KeypleReaderException>(
+                  "parameter name not supported : " + name);
     }
 }
 
@@ -167,12 +171,14 @@ TransmissionMode StubReader::getTransmissionMode()
     return transmissionMode;
 }
 
-std::shared_ptr<ApduResponse> StubReader::processApduRequestTestProxy(std::shared_ptr<ApduRequest> apduRequest)
+std::shared_ptr<ApduResponse> StubReader::processApduRequestTestProxy(
+    std::shared_ptr<ApduRequest> apduRequest)
 {
     return this->processApduRequest(apduRequest);
 }
 
-std::shared_ptr<SeResponseSet> StubReader::processSeRequestSetTestProxy(std::shared_ptr<SeRequestSet> requestSet)
+std::shared_ptr<SeResponseSet> StubReader::processSeRequestSetTestProxy(
+    std::shared_ptr<SeRequestSet> requestSet)
 {
     return this->processSeRequestSet(requestSet);
 }
@@ -267,7 +273,8 @@ int StubReader::hashCode()
     return 0;
 }
 
-void StubReader::setParameters(std::unordered_map<std::string, std::string> &parameters)
+void StubReader::setParameters(
+    std::unordered_map<std::string, std::string> &parameters)
 {
     (void)parameters;
 }
