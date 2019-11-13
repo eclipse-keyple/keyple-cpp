@@ -59,16 +59,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ReaderEvent.cpp
 
 	# seproxy - exception
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleApplicationSelectionException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleBaseException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleChannelStateException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleIOReaderException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeyplePluginException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeyplePluginNotFoundException.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleReaderException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleReaderNotFoundException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleRuntimeException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/NoStackTraceThrowable.cpp
 
 	# seproxy - message
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/AnswerToReset.cpp

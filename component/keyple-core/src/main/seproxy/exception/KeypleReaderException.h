@@ -39,19 +39,19 @@ using namespace keyple::core::seproxy::message;
 class EXPORT KeypleReaderException : public KeypleBaseException {
 public:
     /**
-     * New exception to be thrown
      *
-     * @param message : message to identify the exception and the context
      */
-    KeypleReaderException(const std::string &message);
+    KeypleReaderException(const std::string& msg) : KeypleBaseException(msg)
+    {
+    }
 
     /**
-     * Encapsulate a lower level reader exception
      *
-     * @param message : message to add some context to the exception
-     * @param cause : lower level exception
      */
-    KeypleReaderException(const std::string &message, std::runtime_error cause);
+    KeypleReaderException(const std::string& msg, const std::exception& cause)
+    : KeypleBaseException(msg, cause)
+    {
+    }
 
     /**
      *
@@ -74,19 +74,10 @@ public:
 
     virtual void setSeResponse(std::shared_ptr<SeResponse> seResponse);
 
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<KeypleReaderException> shared_from_this()
-    {
-        return std::static_pointer_cast<KeypleReaderException>(KeypleBaseException::shared_from_this());
-    }
-
 private:
     /**
-     * SeResponseSet and SeResponse objects to carry partial responses in the event of a breakdown
-     * in communication with the SE.
+     * SeResponseSet and SeResponse objects to carry partial responses in the
+     * event of a breakdown in communication with the SE.
      */
     std::shared_ptr<SeResponseSet> seResponseSet;
 

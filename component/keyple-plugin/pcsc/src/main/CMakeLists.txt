@@ -44,7 +44,6 @@ INCLUDE_DIRECTORIES(
 
 	# Helpers
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-smartcardio/src/main
 
 	# pcsc (Linux / macOS) 
 	/usr/include/PCSC	
@@ -58,6 +57,7 @@ ADD_LIBRARY(
 	${CMAKE_CURRENT_SOURCE_DIR}/PcscProtocolSetting.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/PcscReaderSettings.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/PcscReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/PcscTerminal.cpp
 )
 
 IF(WIN32)
@@ -79,6 +79,6 @@ ENDIF(APPLE)
 #	PATHS ${CMAKE_BUILD_DIRECTORY}
 #	PATH_SUFFIXES bin)
 
-SET(LINK_LIBS ${WINSCARD} keyplecore keyplesmartcardio)
+SET(LINK_LIBS ${WINSCARD} keyplecore)
 
 TARGET_LINK_LIBRARIES(keyplepluginpcsc ${LINK_LIBS})

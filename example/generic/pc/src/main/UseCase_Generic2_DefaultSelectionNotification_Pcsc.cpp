@@ -16,7 +16,6 @@
 #include "GenericSeSelectionRequest.h"
 #include "KeypleBaseException.h"
 #include "MatchingSelection.h"
-#include "NoStackTraceThrowable.h"
 #include "ObservableReader_Import.h"
 #include "PcscPlugin.h"
 #include "ReaderUtilities.h"

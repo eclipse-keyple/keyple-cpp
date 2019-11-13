@@ -193,9 +193,7 @@ public:
                         try {
                             poReader = SeProxyService::getInstance().getPlugin(event->getPluginName())->getReader(event->getReaderName());
                         } catch (KeyplePluginNotFoundException& e) {
-                            e.printStackTrace();
                         } catch (KeypleReaderNotFoundException& e) {
-                            e.printStackTrace();
                         }
 
                     logger->info("Observer notification: the selection of the PO has succeeded\n");
@@ -252,10 +250,12 @@ public:
                             /* Log the result */
                             logger->info("EventLog file data: %s", ByteArrayUtil::toHex(eventLog));
                         }
+                    } catch (const KeypleReaderException &e) {
+                        logger->error("update - caught KeypleReaderException " \
+                                      "(msg: %s, cause: %s)\n", e.getMessage(),
+                                      e.getCause().what());
                     }
-                    catch (const KeypleReaderException &e) {
-                        e.printStackTrace();
-                    }
+
                     logger->info("==================================================================================\n");
                     logger->info("= End of the Calypso PO processing.                                              =\n");
                     logger->info("==================================================================================\n");

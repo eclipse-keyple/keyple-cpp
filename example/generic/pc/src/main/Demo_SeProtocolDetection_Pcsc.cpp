@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 
 	} catch (const IOException &e)
 	{
-	    e.printStackTrace();
+	    //e.printStackTrace();
 	}
 	if (c == 0x0A)
 	{

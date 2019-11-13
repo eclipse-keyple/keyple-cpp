@@ -160,7 +160,10 @@ void AbstractLocalReader::cardInserted()
         catch (const KeypleReaderException &e) {
             /* The last transmission failed, close the logical channel */
             closeLogicalChannel();
-            e.printStackTrace();
+            logger->error("cardInserted - caught KeypleReaderException " \
+                          "(message: %s, cause: %s)\n", e.getMessage(),
+                          e.getCause().what());
+
 
             /*
              * In this case the card has been removed or not read correctly, do
@@ -190,7 +193,7 @@ void AbstractLocalReader::cardRemoved()
         logger->trace("[%s] Exception occured in waitForCardAbsent. Message:" \
                       "%s", AbstractLoggedObservable<ReaderEvent>::getName(),
                       e.what());
-        throw std::make_shared<NoStackTraceThrowable>();
+        /* No stack trace throwable? */
     }
 }
 

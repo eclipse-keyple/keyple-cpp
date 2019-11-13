@@ -23,24 +23,20 @@ namespace seproxy {
 namespace exception {
 
 /**
- * Exception thrown when {@link org.eclipse.keyple.seproxy.ReaderPlugin} is not found
+ * Exception thrown when {@link org.eclipse.keyple.seproxy.ReaderPlugin} is not
+ * found
  */
 class KeyplePluginNotFoundException : public KeyplePluginException {
 public:
     /**
-     * Exception thrown when {@link org.eclipse.keyple.seproxy.ReaderPlugin} is not found
+     * Exception thrown when {@link org.eclipse.keyple.seproxy.ReaderPlugin} is
+     * not found
      *
      * @param pluginName : pluginName that has not been found
      */
-    KeyplePluginNotFoundException(const std::string &pluginName);
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<KeyplePluginNotFoundException> shared_from_this()
+    KeyplePluginNotFoundException(const std::string &pluginName)
+    : KeyplePluginException("Plugin with name " + pluginName + " was not found")
     {
-        return std::static_pointer_cast<KeyplePluginNotFoundException>(KeyplePluginException::shared_from_this());
     }
 };
 

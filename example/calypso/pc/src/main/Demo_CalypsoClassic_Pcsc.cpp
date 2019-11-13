@@ -69,7 +69,9 @@ int main(int argc, char **argv)
         samReader = ReaderUtilities::getReaderByName(PcscReadersSettings::SAM_READER_NAME_REGEX);
     }
     catch (const KeypleReaderNotFoundException &e) {
-        e.printStackTrace();
+        logger->error("update - caught KeypleReaderNotFoundException " \
+                      "(msg: %s, cause: %s)\n", e.getMessage(),
+                      e.getCause().what());
     }
 
     /* Both readers are expected not null */

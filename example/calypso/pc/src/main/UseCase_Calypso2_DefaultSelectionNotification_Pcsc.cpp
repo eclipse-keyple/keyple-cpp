@@ -210,9 +210,13 @@ public:
                                event->getPluginName())
                                ->getReader(event->getReaderName());
             } catch (KeyplePluginNotFoundException& e) {
-                e.printStackTrace();
+                logger->error("update - caught KeyplePluginNotFoundException " \
+                              "(msg: %s, cause: %s)\n", e.getMessage(),
+                              e.getCause().what());
             } catch (KeypleReaderNotFoundException& e) {
-                e.printStackTrace();
+                logger->error("update - caught KeypleReaderNotFoundException " \
+                              "(msg: %s, cause: %s)\n", e.getMessage(),
+                              e.getCause().what());
             }
 
             std::shared_ptr<CalypsoPo> calypsoPo =
@@ -288,7 +292,9 @@ public:
                                  ByteArrayUtil::toHex(eventLog));
                 }
             } catch (const KeypleReaderException &e) {
-                e.printStackTrace();
+                logger->error("update - caught KeypleReaderException " \
+                              "(msg: %s, cause: %s)\n", e.getMessage(),
+                              e.getCause().what());
             }
 
             logger->info("===================================================" \

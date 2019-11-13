@@ -37,7 +37,11 @@ public:
      *
      * @param message : message to identify the exception and the context
      */
-    KeypleIOReaderException(const std::string &message);
+    KeypleIOReaderException(const std::string &msg)
+    : KeypleReaderException(msg)
+    {
+
+    }
 
     /**
      * Encapsulate a lower level reader exception
@@ -45,16 +49,12 @@ public:
      * @param message : message to add some context to the exception
      * @param cause : lower level exception
      */
-    KeypleIOReaderException(const std::string &message, std::runtime_error cause);
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<KeypleIOReaderException> shared_from_this()
+    KeypleIOReaderException(const std::string &msg, std::exception& cause)
+    : KeypleReaderException(msg, cause)
     {
-        return std::static_pointer_cast<KeypleIOReaderException>(KeypleReaderException::shared_from_this());
+
     }
+
 };
 
 }

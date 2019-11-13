@@ -29,27 +29,7 @@ namespace exception {
  * Application selection failure in {@link ProxyReader} by AID or ATR
  */
 class KeypleApplicationSelectionException : public KeypleReaderException {
-public:
-    /**
-     *
-     */
-    KeypleApplicationSelectionException(const std::string &message);
 
-    /**
-     *
-     */
-    KeypleApplicationSelectionException(const std::string &message,
-                                        std::runtime_error cause);
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<KeypleApplicationSelectionException> shared_from_this()
-    {
-        return std::static_pointer_cast<KeypleApplicationSelectionException>(
-                   KeypleReaderException::shared_from_this());
-    }
 };
 
 }

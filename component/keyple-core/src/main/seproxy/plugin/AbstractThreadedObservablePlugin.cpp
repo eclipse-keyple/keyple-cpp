@@ -149,14 +149,16 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
             /* sleep for a while. */
             Thread::sleep((long)outerInstance->threadWaitTimeout);
         }
-    }
-    catch (const InterruptedException &e) {
-        e.printStackTrace();
-        outerInstance->logger->warn("[%s] An exception occurred while monitoring plugin: %s, cause %s", this->pluginName, e.getMessage(), e.getCause().what());
-    }
-    catch (const KeypleReaderException &e) {
-        e.printStackTrace();
-        outerInstance->logger->warn("[%s] An exception occurred while monitoring plugin: %s, cause %s", this->pluginName, e.what(), e.getCause().what());
+    } catch (const InterruptedException &e) {
+        outerInstance->logger->warn("[%s] An exception occurred while " \
+                                    "monitoring plugin: %s, cause %s",
+                                    this->pluginName, e.getMessage(),
+                                    e.getCause().what());
+    } catch (const KeypleReaderException &e) {
+        outerInstance->logger->warn("[%s] An exception occurred while " \
+                                    "monitoring plugin: %s, cause %s",
+                                    this->pluginName, e.what(),
+                                    e.getCause().what());
     }
 
     return nullptr;

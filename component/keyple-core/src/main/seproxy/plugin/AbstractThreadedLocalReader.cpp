@@ -14,7 +14,6 @@
 
 /* Core */
 #include "AbstractThreadedLocalReader.h"
-#include "NoStackTraceThrowable.h"
 
 namespace keyple {
 namespace core {
@@ -74,55 +73,49 @@ void *AbstractThreadedLocalReader::EventThread::run()
 {
     outerInstance->logger->debug("starting thread (run)\n");
 
-    try {
-        /*
-         * First thing we'll do is to notify that a card was inserted if one is
-         * already present.
-         */
+    /*
+     * First thing we'll do is to notify that a card was inserted if one is
+     * already present.
+     */
+    outerInstance->logger->debug("checking if a SE is present...\n");
+    if (outerInstance->isSePresent()) {
+        outerInstance->logger->debug("notify card inserted\n");
+        outerInstance->cardInserted();
+    }
+
+    while (running) {
+        /* If we have a card */
         outerInstance->logger->debug("checking if a SE is present...\n");
         if (outerInstance->isSePresent()) {
-            outerInstance->logger->debug("notify card inserted\n");
-            outerInstance->cardInserted();
-        }
-
-        while (running) {
-            /* If we have a card */
-            outerInstance->logger->debug("checking if a SE is present...\n");
-            if (outerInstance->isSePresent()) {
-                /* ... we will wait for it to disappear */
-                outerInstance->logger->debug(
-                    "waiting for card to be removed...\n");
-                if (outerInstance->waitForCardAbsent(
-                        outerInstance->threadWaitTimeout)) {
-                    /* ... and notify about it */
-                    outerInstance->logger->debug("notify card removed\n");
-                    outerInstance->cardRemoved();
-                }
-                /*
-                 * False means timeout, and we go back to the beginning of the
-                 * loop.
-                 */
+            /* ... we will wait for it to disappear */
+            outerInstance->logger->debug(
+                "waiting for card to be removed...\n");
+            if (outerInstance->waitForCardAbsent(
+                    outerInstance->threadWaitTimeout)) {
+                /* ... and notify about it */
+                outerInstance->logger->debug("notify card removed\n");
+                outerInstance->cardRemoved();
             }
-            /* If we don't, */
-            else {
-                /* ... we will wait for it to appear. */
-                outerInstance->logger->debug("waiting for card to be " \
-                                             "inserted...\n");
-                if (outerInstance->waitForCardPresent(
-                        outerInstance->threadWaitTimeout)) {
-                    outerInstance->logger->debug("notify card inserted\n");
-                    outerInstance->cardInserted();
-                }
-                /*
-                 * False means timeout, and we go back to the beginning of the
-                 * loop
-                 */
-            }
+            /*
+             * False means timeout, and we go back to the beginning of the
+             * loop.
+             */
         }
-    }
-    catch (const NoStackTraceThrowable &e) {
-        outerInstance->logger->trace("[%s] exception occurred in monitoring " \
-                                     "thread: %s\n", readerName, e.what());
+        /* If we don't, */
+        else {
+            /* ... we will wait for it to appear. */
+            outerInstance->logger->debug("waiting for card to be " \
+                                         "inserted...\n");
+            if (outerInstance->waitForCardPresent(
+                    outerInstance->threadWaitTimeout)) {
+                outerInstance->logger->debug("notify card inserted\n");
+                outerInstance->cardInserted();
+            }
+            /*
+             * False means timeout, and we go back to the beginning of the
+             * loop
+             */
+        }
     }
 
     return NULL;

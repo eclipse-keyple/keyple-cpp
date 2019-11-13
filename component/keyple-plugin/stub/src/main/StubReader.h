@@ -26,7 +26,6 @@
 #include "TransmissionMode.h"
 #include "KeypleBaseException.h"
 #include "KeypleChannelStateException.h"
-#include "NoStackTraceThrowable.h"
 
 /* Forward declarations */
 namespace keyple { namespace plugin { namespace stub { class StubSecureElement; } } }
@@ -180,8 +179,7 @@ protected:
      * This method is called by the monitoring thread to check SE presence
      *
      * @param timeout the delay in millisecond we wait for a card insertion
-     * @return true if the SE is present
-     * @throws NoStackTraceThrowable in case of unplugging the reader
+     * @return true if the SE is presents
      */
     bool waitForCardPresent(long long timeout) override;
 
@@ -190,7 +188,6 @@ protected:
      *
      * @param timeout the delay in millisecond we wait for a card withdrawing
      * @return true if the SE is absent
-     * @throws NoStackTraceThrowable in case of unplugging the reader
      */
     bool waitForCardAbsent(long long timeout) override;
 

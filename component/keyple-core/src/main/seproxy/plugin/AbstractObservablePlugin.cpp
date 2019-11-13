@@ -46,9 +46,10 @@ void AbstractObservablePlugin::initReaders()
             logger->debug("initializing native readers\n");
             readers = initNativeReaders();
             logger->debug("readers: %p\n", readers);
-        } catch (KeypleReaderException &e) {
-            logger->debug("KeypleReaderException\n");
-            e.printStackTrace();
+        } catch (KeypleReaderException& e) {
+            logger->error("initReaders - caught KeypleReaderException " \
+                          "(message: %s, cause: %s)\n", e.getMessage(),
+                          e.getCause().what());
         }
     }
 }

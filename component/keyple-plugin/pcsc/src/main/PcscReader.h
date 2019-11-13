@@ -14,12 +14,6 @@
 
 #pragma once
 
-#include <memory>
-#include <stdexcept>
-#include <string>
-#include <unordered_map>
-#include <vector>
-
 #include "exceptionhelper.h"
 #include "stringhelper.h"
 
@@ -33,10 +27,8 @@
 #include "ReaderEvent_Import.h"
 #include "TransmissionMode.h"
 
-/* Smartcard I/O */
-#include "Card.h"
-#include "CardChannel.h"
-#include "CardTerminal.h"
+/* PC/SC plugin */
+#include "PcscTerminal.h"
 
 namespace keyple {
 namespace plugin {
@@ -46,7 +38,6 @@ using namespace keyple::common;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::protocol;
-using namespace keyple::smartcardio;
 
 class EXPORT PcscReader : public AbstractThreadedLocalReader {
 public:
@@ -82,12 +73,15 @@ public:
      * @param pluginName the name of the plugin
      * @param terminal the PC/SC terminal
      */
-
-    PcscReader(const std::string &pluginName,
-               std::shared_ptr<CardTerminal> terminal);
+    PcscReader(const std::string &pluginName, PcscTerminal& terminal);
 
     /**
      * 
+     */
+    PcscReader(const PcscReader& o);
+
+    /**
+     *
      */
     virtual ~PcscReader() { }
     
@@ -270,7 +264,7 @@ private:
     /**
      *
      */
-    const std::shared_ptr<CardTerminal> terminal;
+    PcscTerminal& terminal;
 
     /**
      *
@@ -290,22 +284,12 @@ private:
     /**
      *
      */
+    bool channelOpen = false;
+
+    /**
+     *
+     */
     TransmissionMode transmissionMode = static_cast<TransmissionMode>(0);
-
-    /**
-     *
-     */
-    std::shared_ptr<Card> card;
-
-    /**
-     *
-     */
-    std::shared_ptr<CardChannel> channel;
-
-    /**
-     *
-     */
-    bool logging = false;
 
     /**
      *

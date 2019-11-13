@@ -28,7 +28,8 @@ namespace seproxy {
 namespace exception {
 
 /**
- * Exception thrown when Channel Operations (open/close) failed in a {@link ProxyReader}
+ * Exception thrown when Channel Operations (open/close) failed in a {@link
+ * ProxyReader}
  */
 class EXPORT KeypleChannelStateException : public KeypleReaderException {
 public:
@@ -37,7 +38,11 @@ public:
      *
      * @param message : message to identify the exception and the context
      */
-    KeypleChannelStateException(const std::string &message);
+    KeypleChannelStateException(const std::string &msg)
+    : KeypleReaderException(msg)
+    {
+
+    }
 
     /**
      * Encapsulate a lower level reader exception
@@ -45,16 +50,12 @@ public:
      * @param message : message to add some context to the exception
      * @param cause : lower level exception
      */
-    KeypleChannelStateException(const std::string &message, std::runtime_error cause);
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<KeypleChannelStateException> shared_from_this()
+    KeypleChannelStateException(const std::string &msg, std::exception& cause)
+    : KeypleReaderException(msg, cause)
     {
-        return std::static_pointer_cast<KeypleChannelStateException>(KeypleReaderException::shared_from_this());
+
     }
+
 };
 
 }

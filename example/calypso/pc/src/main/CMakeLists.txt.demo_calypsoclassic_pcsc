@@ -94,4 +94,4 @@ ADD_EXECUTABLE(demo_calypsoclassic_pcsc
 	${CMAKE_CURRENT_SOURCE_DIR}/Demo_CalypsoClassic_Pcsc.cpp
 )
 
-TARGET_LINK_LIBRARIES(demo_calypsoclassic_pcsc keyplepluginpcsc keyplecore keyplesmartcardio keyplecalypso ${WINSCARD})
+TARGET_LINK_LIBRARIES(demo_calypsoclassic_pcsc keyplepluginpcsc keyplecore keyplecalypso ${WINSCARD})

@@ -299,9 +299,9 @@ void CalypsoClassicTransactionEngine::processSeMatch(std::shared_ptr<AbstractDef
 
             //profiler->stop();
             //logger->warn(System::getProperty("line.separator") + "{}", profiler);
-        }
-        catch (const Exception &e) {
-            e.printStackTrace();
+        } catch (const Exception &e) {
+            logger->error("processSeMatch - caught Exception (msg: %s, " \
+                          "cause: %s)\n", e.getMessage(), e.getCause().what());
         }
     }
 }

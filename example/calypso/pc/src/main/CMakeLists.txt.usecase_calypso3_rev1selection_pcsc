@@ -94,4 +94,4 @@ ADD_EXECUTABLE(usecase_calypso3_rev1selection_pcsc
 	${CMAKE_CURRENT_SOURCE_DIR}/UseCase_Calypso3_Rev1Selection_Pcsc.cpp
 )
 
-TARGET_LINK_LIBRARIES(usecase_calypso3_rev1selection_pcsc keyplepluginpcsc keyplecore keyplesmartcardio keyplecalypso ${WINSCARD})
+TARGET_LINK_LIBRARIES(usecase_calypso3_rev1selection_pcsc keyplepluginpcsc keyplecore keyplecalypso ${WINSCARD})

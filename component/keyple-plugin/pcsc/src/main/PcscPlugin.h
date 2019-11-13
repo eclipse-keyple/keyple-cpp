@@ -18,11 +18,9 @@
 #include <unordered_map>
 #include <vector>
 
-#include "exceptionhelper.h"
-
 /* Common */
+#include "exceptionhelper.h"
 #include "Export.h"
-
 #include "Logger.h"
 #include "LoggerFactory.h"
 
@@ -30,15 +28,13 @@
 #include "AbstractThreadedObservablePlugin.h"
 #include "PluginEvent.h"
 #include "SeReader.h"
-
-/* Smartcard I/O */
-#include "CardTerminal.h"
-#include "CardTerminals.h"
-#include "TerminalFactory.h"
 #include "KeypleBaseException.h"
 #include "KeypleReaderException.h"
 #include "AbstractObservableReader.h"
 #include "KeypleReaderNotFoundException.h"
+
+/* PC/SC plugin */
+#include "PcscTerminal.h"
 
 namespace keyple {
 namespace plugin {
@@ -195,7 +191,7 @@ protected:
      * @throws KeypleReaderException if a reader error occurs
      */
     std::shared_ptr<AbstractObservableReader> fetchNativeReader(const std::string &name) override;
-    
+
     /**
      *
      */
@@ -219,16 +215,17 @@ private:
     /**
      *
      */
-    static std::shared_ptr<TerminalFactory> factory;
+    bool logging = false;
 
     /**
      *
      */
-    bool logging = false;
+    std::vector<PcscTerminal> terminals;
+
     /**
      *
      */
-    std::shared_ptr<CardTerminals> getCardTerminals();
+    std::vector<PcscTerminal>& getTerminals();
 };
 
 }

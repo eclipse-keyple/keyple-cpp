@@ -108,15 +108,12 @@ void ObservableReaderNotificationEngine::SpecificPluginObserver::update(std::sha
                                     event->getPluginName(), reader->getName(), event->getEventType());
 
         /* We retrieve the reader object from its name. */
-        try
-        {
+        try {
             reader = SeProxyService::getInstance().getPlugin(event->getPluginName())->getReader(reader->getName());
-        } catch (KeyplePluginNotFoundException &e)
-        {
-            e.printStackTrace();
-        } catch (KeypleReaderNotFoundException &e)
-        {
-            e.printStackTrace();
+        } catch (KeyplePluginNotFoundException &e) {
+
+        } catch (KeypleReaderNotFoundException &e) {
+
         }
 
         switch (event->getEventType().innerEnumValue)

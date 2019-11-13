@@ -89,16 +89,6 @@ public:
      */
     virtual std::vector<std::shared_ptr<ApduResponse>>& getResponses();
 
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<KeypleCalypsoSecureSessionException> shared_from_this()
-    {
-        return std::static_pointer_cast<KeypleCalypsoSecureSessionException>(
-                   KeypleReaderException::shared_from_this());
-    }
-
 private:
     /**
      *

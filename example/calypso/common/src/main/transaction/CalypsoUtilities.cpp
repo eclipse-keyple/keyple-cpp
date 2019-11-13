@@ -50,7 +50,7 @@ CalypsoUtilities::StaticConstructor::StaticConstructor()
 {
     properties = std::make_shared<Properties>();
 
-	std::string propertiesFileName = "/Volumes/macbook-air-extension/git/cna/github.com.calypsonet.keyple-cpp/build/bin/config.properties";
+	std::string propertiesFileName = "config.properties";
 
     std::ifstream inputStream;
 	inputStream.exceptions(std::ifstream::failbit|std::ifstream::badbit);
@@ -66,12 +66,8 @@ CalypsoUtilities::StaticConstructor::StaticConstructor()
 
     try {
         properties->load(inputStream);
-    }
-    catch (const FileNotFoundException &e) {
-        e.printStackTrace();
-    }
-    catch (const IOException &e) {
-        e.printStackTrace();
+    } catch (const FileNotFoundException &e) {
+    } catch (const IOException &e) {
     }
 }
 

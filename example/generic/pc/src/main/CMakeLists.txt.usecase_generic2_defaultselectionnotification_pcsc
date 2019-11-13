@@ -72,4 +72,4 @@ IF(UNIX)
     FIND_LIBRARY(WINSCARD pcsclite)
 ENDIF(UNIX)
 
-TARGET_LINK_LIBRARIES(usecase_generic2_defaultselectionnotification_pcsc keyplepluginpcsc keyplecalypso keyplecore keyplesmartcardio ${WINSCARD})
+TARGET_LINK_LIBRARIES(usecase_generic2_defaultselectionnotification_pcsc keyplepluginpcsc keyplecalypso keyplecore ${WINSCARD})

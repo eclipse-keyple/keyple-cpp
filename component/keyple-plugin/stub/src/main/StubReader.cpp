@@ -21,7 +21,6 @@
 #include "ApduResponse.h"
 #include "SeRequestSet.h"
 #include "SeResponseSet.h"
-#include "NoStackTraceThrowable.h"
 
 /* Plugin - Stub */
 #include "StubReader.h"
@@ -193,17 +192,16 @@ void StubReader::insertSe(std::shared_ptr<StubSecureElement> _se)
     logger->debug("inserting SE: %p\n", _se);
 
     /* clean channels status */
-    if (isPhysicalChannelOpen())
-    {
+    if (isPhysicalChannelOpen()) {
         logger->debug("closing logical channel\n");
         closeLogicalChannel();
-        try
-        {
+
+        try {
             logger->debug("closing physical channel\n");
             closePhysicalChannel();
-        } catch (const KeypleReaderException &e)
-        {
-            e.printStackTrace();
+        } catch (KeypleReaderException &e) {
+            logger->debug("insertSe - caught KeypleReaderException (msg: %s " \
+                          ", cause: %s\n", e.getMessage(), e.getCause().what());
         }
     }
 

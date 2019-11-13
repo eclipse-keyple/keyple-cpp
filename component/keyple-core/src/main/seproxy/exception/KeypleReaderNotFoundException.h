@@ -12,14 +12,12 @@
 
 #pragma once
 
-#include <string>
-#include <memory>
-
 /* Core */
 #include "KeypleReaderException.h"
 
 /* Common */
 #include "Export.h"
+#include "stringhelper.h"
 
 namespace keyple {
 namespace core {
@@ -27,24 +25,16 @@ namespace seproxy {
 namespace exception {
 
 /**
- * Exception thrown when {@link org.eclipse.keyple.seproxy.message.ProxyReader} is not found
+ * Exception thrown when {@link org.eclipse.keyple.seproxy.message.ProxyReader}
+ * is not found
  */
 class EXPORT KeypleReaderNotFoundException : public KeypleReaderException {
 public:
-    /**
-     * Exception thrown when @{@link ProxyReader} is not found
-     *
-     * @param readerName : readerName that has not been found
-     */
-    KeypleReaderNotFoundException(const std::string &readerName);
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<KeypleReaderNotFoundException> shared_from_this()
+    KeypleReaderNotFoundException(const std::string &readerName)
+    : KeypleReaderException(
+        StringHelper::formatSimple("Reader with name %s was not found",
+                                   readerName))
     {
-        return std::static_pointer_cast<KeypleReaderNotFoundException>(KeypleReaderException::shared_from_this());
     }
 };
 

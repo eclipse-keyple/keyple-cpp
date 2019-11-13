@@ -21,7 +21,6 @@
 #include "KeypleReaderException.h"
 #include "Matcher.h"
 #include "MatchingSelection.h"
-#include "NoStackTraceThrowable.h"
 #include "PcscPlugin.h"
 #include "ReaderUtilities.h"
 #include "SeCommonProtocols_Import.h"

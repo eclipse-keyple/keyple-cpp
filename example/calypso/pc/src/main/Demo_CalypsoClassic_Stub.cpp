@@ -72,7 +72,9 @@ int main(int argc, char **argv)
         samReader = std::dynamic_pointer_cast<StubReader>(stubPlugin.getReader("samReader"));
     }
     catch (const KeypleReaderNotFoundException &e) {
-        e.printStackTrace();
+        logger->error("update - caught KeypleReaderNotFoundException " \
+                      "(msg: %s, cause: %s)\n", e.getMessage(),
+                      e.getCause().what());
     }
 
     /* Both readers are expected not null */

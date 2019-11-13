@@ -45,17 +45,6 @@ public:
      */
     virtual ~KeypleCalypsoSecureSessionUnauthorizedKvcException() {}
 
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<KeypleCalypsoSecureSessionUnauthorizedKvcException>
-    shared_from_this()
-    {
-        return std::static_pointer_cast<
-                   KeypleCalypsoSecureSessionUnauthorizedKvcException>(
-                       KeypleReaderException::shared_from_this());
-    }
 };
 
 }

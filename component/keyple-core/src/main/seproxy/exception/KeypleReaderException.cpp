@@ -21,17 +21,6 @@ namespace exception {
 
 using namespace keyple::core::seproxy::message;
 
-KeypleReaderException::KeypleReaderException(const std::string &message)
-: KeypleBaseException(message)
-{
-}
-
-KeypleReaderException::KeypleReaderException(const std::string &message,
-                                             std::runtime_error cause)
-: KeypleBaseException(message, cause)
-{
-}
-
 KeypleReaderException::KeypleReaderException(
   const KeypleReaderException& o)
 : KeypleBaseException(o.getMessage(), o.getCause())

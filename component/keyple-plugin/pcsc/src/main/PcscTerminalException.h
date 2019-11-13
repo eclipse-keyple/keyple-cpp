@@ -14,43 +14,35 @@
 
 #pragma once
 
-#include <stdexcept>
-#include <memory>
-
-/* Common */
-#include "Export.h"
+#include "Exception.h"
 
 namespace keyple {
-namespace core {
-namespace seproxy {
-namespace exception {
+namespace plugin {
+namespace pcsc {
 
-/**
- * Exception that do not print stack trace Useful when the exceptions are
- * expected and managed.
- */
-// TODO workaround for no stackstrace; should we keep it?
-class EXPORT NoStackTraceThrowable
-: public std::runtime_error,
-  public std::enable_shared_from_this<NoStackTraceThrowable> {
+using namespace keyple::common;
+
+class PcscTerminalException : public Exception {
 public:
     /**
      *
      */
-    NoStackTraceThrowable();
+    PcscTerminalException(const std::string &msg)
+    : Exception(msg)
+    {
+
+    }
 
     /**
      *
      */
-    NoStackTraceThrowable(const std::string &message);
+    PcscTerminalException(const std::string &msg, std::exception& cause)
+    : Exception(msg, cause)
+    {
 
-    /**
-     *
-     */
-    std::runtime_error fillInStackTrace();// override;
+    }
 };
 
-}
 }
 }
 }
