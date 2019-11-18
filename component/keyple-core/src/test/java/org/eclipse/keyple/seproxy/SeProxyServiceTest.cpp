@@ -44,7 +44,6 @@ std::string SeProxyServiceTest::PLUGIN_NAME = "plugin1";
                     std::string regex = "^([0-9]+)\\.([0-9]+)\\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?(?:\\+[0-9A-Za-z-]+)?$";
                     std::string version = SeProxyService::getInstance()->getVersion();
                     logger->info("Version of SeProxyService {}", version);
-                    std::cout << "Version of SeProxyService " << version << std::endl;
                     assertTrue(std::regex_match(version, std::regex(regex)));
                 }
 

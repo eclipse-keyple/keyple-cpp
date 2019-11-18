@@ -156,26 +156,33 @@ void StubPlugin::unplugStubReader(const std::string &name, bool synchronous)
             connectedStubNames->erase(name);
         }
         /* remove the native reader from the native readers list */
-        logger->info("Unplugged reader with name %s, connectedStubNames size %s\n", name, connectedStubNames->size());
+        logger->info("Unplugged reader with name %s, connectedStubNames size" \
+                     "%s\n", name, connectedStubNames->size());
     }
 }
 
-void StubPlugin::unplugStubReaders(std::shared_ptr<std::set<std::string>> names, bool synchronous)
+void StubPlugin::unplugStubReaders(std::shared_ptr<std::set<std::string>> names,
+                                   bool synchronous)
 {
-    logger->info("Unplug %d stub readers\n", names->size());
-    logger->debug("Unplug stub readers.. %s\n", names);
+    logger->info("unplugStubReaders - unplug %d stub readers\n", names->size());
+
     std::vector<std::shared_ptr<StubReader>> readersToDelete;
+
     for (auto name : *names) {
         try {
-            readersToDelete.push_back(std::dynamic_pointer_cast<StubReader>(getReader(name)));
-    }
-        catch (const KeypleReaderNotFoundException &e) {
+            logger->info("unplugStubReaders -   unpluging %s\n", name);
+            readersToDelete.push_back(
+                std::dynamic_pointer_cast<StubReader>(getReader(name)));
+        } catch (const KeypleReaderNotFoundException &e) {
             (void)e;
-            logger->warn("unplugStubReaders() No reader found with name %s\n", name);
+            logger->warn("unplugStubReaders -   no reader found with name %s\n",
+                         name);
         }
     }
+
     for (auto name : *names)
     	connectedStubNames->erase(name);
+
     if (synchronous) {
         for (auto name : readersToDelete)
             readers->erase(name);
@@ -190,17 +197,21 @@ std::shared_ptr<std::set<std::string>> StubPlugin::fetchNativeReadersNames()
     return connectedStubNames;
 }
 
-std::shared_ptr<AbstractObservableReader> StubPlugin::fetchNativeReader(const std::string &name)
+std::shared_ptr<AbstractObservableReader>
+StubPlugin::fetchNativeReader(const std::string &name)
 {
     for (auto reader : *readers) {
         if (reader->getName() == name) {
             return std::dynamic_pointer_cast<AbstractObservableReader>(reader);
         }
     }
+
     std::shared_ptr<AbstractObservableReader> reader = nullptr;
+
     if (connectedStubNames->find(name) != connectedStubNames->end()) {
         reader = std::make_shared<StubReader>(name);
     }
+
     return reader;
 }
 

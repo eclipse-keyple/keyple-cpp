@@ -1,14 +1,16 @@
-/********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -125,7 +127,7 @@ public:
      */
     void addObserver(std::shared_ptr<PluginObserver> observer) override
     {
-        logger->debug("[PcscPlugin::addObserver] observer: %p\n", observer);
+        logger->debug("observer\n");
 
         return AbstractThreadedObservablePlugin::AbstractObservablePlugin::addObserver(observer);
     }
@@ -135,7 +137,7 @@ public:
      */
     void removeObserver(std::shared_ptr<PluginObserver> observer) override
     {
-        logger->debug("[PcscPlugin::removeObserver]\n");
+        logger->debug("removeObserver\n");
         return AbstractThreadedObservablePlugin::AbstractObservablePlugin::removeObserver(observer);
     }
 
@@ -144,7 +146,7 @@ public:
      */
     void notifyObservers(std::shared_ptr<PluginEvent> event) override
     {
-        logger->debug("[PcscPlugin::notifyObservers]\n");
+        logger->debug("notifyObservers\n");
         AbstractThreadedObservablePlugin::AbstractLoggedObservable<PluginEvent>::notifyObservers(event);
     }
 

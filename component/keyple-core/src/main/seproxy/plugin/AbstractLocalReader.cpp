@@ -225,7 +225,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::openChannelForAidHackGetData(
         if (!fciResponse->isSuccessful()) {
             logger->trace("[%s] openChannelForAidHackGetData => Get data " \
                           "failed. SELECTOR = %s\n", this->getName(),
-                          aidSelector);
+                          aidSelector->toString());
         }
     }
 
@@ -258,7 +258,7 @@ std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannel(
         if (!seSelector->getAtrFilter()->atrMatches(atr)) {
             logger->info("[%s] openLogicalChannel => ATR didn't match. " \
                          "SELECTOR = %s, ATR = %s\n", this->getName(),
-                         seSelector, ByteArrayUtil::toHex(atr));
+                         seSelector->toString(), ByteArrayUtil::toHex(atr));
             selectionHasMatched = false;
         }
     }
@@ -419,7 +419,7 @@ std::shared_ptr<SeResponseSet> AbstractLocalReader::processSeRequestSet(
             if (requestMatchesProtocol[requestIndex]) {
                 logger->debug("[%s] processSeRequestSet => transmit %s\n",
                               AbstractLoggedObservable<ReaderEvent>::getName(),
-                              request);
+                              request->toString());
 
                 std::shared_ptr<SeResponse> response = nullptr;
 
@@ -451,7 +451,7 @@ std::shared_ptr<SeResponseSet> AbstractLocalReader::processSeRequestSet(
                 responses.push_back(response);
                 logger->debug("[%s] processSeRequestSet => receive %s\n",
                               AbstractLoggedObservable<ReaderEvent>::getName(),
-                              response);
+                              response->toString());
             } else {
                 /*
                  * in case the protocolFlag of a SeRequest doesn't match the
@@ -574,7 +574,7 @@ std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(
                         "logical channel. AID = %s, EXPECTEDAID = %s",
                         AbstractLoggedObservable<ReaderEvent>::getName(),
                         ByteArrayUtil::toHex(aidCurrentlySelected->getValue()),
-                        seRequest->getSeSelector());
+                        seRequest->getSeSelector()->toString());
                 }
                 /*
                  * Close the channel (will reset the current selection status)
@@ -691,7 +691,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
         this->before = timeStamp;
         logger->trace("[%s] processApduRequest => %s, elapsed %s ms\n",
                       AbstractLoggedObservable<ReaderEvent>::getName(),
-                      apduRequest, elapsedMs);
+                      apduRequest->toString(), elapsedMs);
     }
 
 
@@ -714,7 +714,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
         this->before = timeStamp;
         logger->trace("[%s] processApduRequest => %s, elapsed %s ms\n",
                       AbstractLoggedObservable<ReaderEvent>::getName(),
-                      apduResponse, elapsedMs);
+                      apduResponse->toString(), elapsedMs);
     }
 
     return apduResponse;

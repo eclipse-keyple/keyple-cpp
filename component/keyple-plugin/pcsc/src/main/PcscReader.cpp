@@ -225,10 +225,6 @@ bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
                           protocolFlag.toString());
             result = false;
         } else {
-            std::cout << "name: " << this->getName();
-            std::cout << "name: " << this->getName();
-            std::cout << "name: " << this->getName();
-            std::cout << "name: " << this->getName();
             logger->trace("[%s] protocolFlagMatches => matching SE. " \
                           "PROTOCOLFLAG = %s\n", this->getName(),
                           protocolFlag.toString());

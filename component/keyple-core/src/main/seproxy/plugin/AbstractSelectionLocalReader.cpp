@@ -97,7 +97,7 @@ std::shared_ptr<ApduResponse> AbstractSelectionLocalReader::openChannelForAid(
         logger->trace("[%s] openLogicalChannel => Application Selection " \
                       "failed. SELECTOR = %s\n",
                       AbstractLoggedObservable<ReaderEvent>::getName(),
-                      aidSelector);
+                      aidSelector->toString());
     }
 
     return fciResponse;

@@ -50,19 +50,15 @@ CalypsoUtilities::StaticConstructor::StaticConstructor()
 {
     properties = std::make_shared<Properties>();
 
-	std::string propertiesFileName = "config.properties";
+    std::string propertiesFileName = "config.properties";
 
     std::ifstream inputStream;
-	inputStream.exceptions(std::ifstream::failbit|std::ifstream::badbit);
+    inputStream.exceptions(std::ifstream::failbit|std::ifstream::badbit);
     try {
         inputStream.open(propertiesFileName, std::ifstream::in);
     } catch (int errorCode) {
-        std::cout << "ifstream::open() failed with error code: " << errorCode
-                  << std::endl;
     } catch (std::ifstream::failure &e) {
-		std::cout << "ifstream::open() raised an exception: "
-		          << std::strerror(errno) << std::endl;
-	}
+    }
 
     try {
         properties->load(inputStream);

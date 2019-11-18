@@ -23,9 +23,14 @@
 /* Core */
 #include "ReaderEvent_Import.h"
 
+/* Common */
+#include "LoggerFactory.h"
+
 namespace keyple {
 namespace core {
 namespace util {
+
+using namespace keyple::common;
 
 template<typename T>
 class Observer {
@@ -77,24 +82,21 @@ public:
      */
     virtual void addObserver(std::shared_ptr<Observer<T>> observer)
     {
-        std::cout << "[DEBUG]   [class Observable]   [addObserver]"
-                  << std::endl;
+        logger->debug("addObserver\n");
 
         if (observer == nullptr) {
-            std::cout << "[DEBUG]   [class Observable]   [addObserver] " \
-                         "observer is null, skipping it" << std::endl;
+            logger->error("addObserver - observer is null, skipping it\n");
             return;
         }
 
         /* Multithread locking is not converted to native C++ */
 
         if (!observers.size())
-            std::cout << "[DEBUG]   [class Observable]   [addObserver] " \
-                         "observers is empty, creating new set" << std::endl;
+            logger->debug("addObserver - observers empty, creating new set\n");
            
 
-        std::cout << "[DEBUG]   [class Observable]   [addObserver] adding " \
-                     "observer to set" << std::endl;
+        logger->debug("addObserver - adding observer to set\n");
+
         observers.insert(observer);
     }
 
@@ -103,19 +105,16 @@ public:
      */
     virtual void removeObserver(std::shared_ptr<Observer<T>> observer)
     {
-        std::cout << "[DEBUG]   [class Observable]   [addObserver]"
-                  << std::endl;
+        logger->debug("removeObserver\n");
 
         if (observer == nullptr) {
-            std::cout << "[DEBUG]   [class Observable]   [addObserver] " \
-                         "observer is null, skipping it" << std::endl;
+            logger->debug("removeObserver -observer is null, skipping it\n");
             return;
         }
 
         /* Multithread locking is not converted to native C++ */
         if (observers.size()) {
-            std::cout << "[DEBUG]   [class Observable]   [addObserver] " \
-                         "removing observer from set" << std::endl;
+            logger->debug("removeObserver - removing observer from set\n");
             observers.erase(observer);
         }
     }
@@ -125,12 +124,10 @@ public:
      */
     virtual void clearObservers()
     {
-        std::cout << "[DEBUG]   [class Observable]   [clearObservers]"
-                  << std::endl;
+        logger->debug("clearObservers\n");
 
         if (observers.size()) {
-            std::cout << "[DEBUG]   [class Observable]   [clearObservers] " \
-                         "clearing observers set" << std::endl;
+            logger->debug("clearObservers - clearing observers set\n");
             this->observers.clear();
         }
     }
@@ -161,8 +158,7 @@ public:
      */
     virtual int countObservers()
     {
-        std::cout << "[DEBUG]   [class Observable] " << observers.size()
-                  << "observers" << std::endl;
+        logger->debug("countObservers\n");
 
         return observers.size();
     }
@@ -172,8 +168,7 @@ public:
      */
     virtual void notifyObservers()
     {
-        std::cout << "[DEBUG]   [class Observable] notify observers (no event)"
-                  << std::endl;
+        logger->debug("notifyObservers - notify observers (no event)\n");
 
         notifyObservers(nullptr);
     }
@@ -183,8 +178,7 @@ public:
      */
     virtual void notifyObservers(std::shared_ptr<T> event)
     {
-        std::cout << "[DEBUG]   [class Observable] notify observers"
-                  << std::endl;
+        logger->debug("notifyObservers\n");
 
         /* Multithread locking is not converted to native C++ */
 
@@ -215,6 +209,12 @@ private:
      *
      */
     std::set<std::shared_ptr<Observer<T>>> observers;
+
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger =
+        LoggerFactory::getLogger(typeid(Observable));
 };
 
 }

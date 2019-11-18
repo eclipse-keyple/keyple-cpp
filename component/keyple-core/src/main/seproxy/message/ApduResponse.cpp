@@ -48,7 +48,7 @@ ApduResponse::ApduResponse(std::vector<char> &buffer, std::shared_ptr<std::set<i
 
 bool ApduResponse::isSuccessful()
 {
-    logger->debug("successful: %d\n", successful);
+    logger->debug("successful: %s\n", successful);
 
     return successful;
 }

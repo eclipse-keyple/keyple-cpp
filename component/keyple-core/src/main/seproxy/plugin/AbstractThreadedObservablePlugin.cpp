@@ -59,9 +59,6 @@ AbstractThreadedObservablePlugin::EventThread::EventThread(
   const std::string &pluginName)
 : outerInstance(outerInstance), pluginName(pluginName)
 {
-    outerInstance->logger->debug("constructor with outerInstance: %p, " \
-                                 "pluginName: %s (running: %d)\n",
-                                 outerInstance, pluginName, running);
 }
 
 void AbstractThreadedObservablePlugin::EventThread::end()

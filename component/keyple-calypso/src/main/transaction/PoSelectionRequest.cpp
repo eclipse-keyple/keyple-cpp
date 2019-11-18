@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #include "AbstractApduResponseParser_Import.h"
 #include "AbstractMatchingSe.h"
@@ -137,10 +139,10 @@ int PoSelectionRequest::prepareSelectFileCmd(SelectFileCmdBuild::SelectControl s
     (void)extraInfo;
 
     addApduRequest(
-                 (std::make_shared<SelectFileCmdBuild>(poClass, selectControl))->getApduRequest());
-    if (logger->isTraceEnabled()) {
-        logger->trace("Navigate: CONTROL = %d\n", static_cast<int>(selectControl));
-    }
+        (std::make_shared<SelectFileCmdBuild>(poClass, selectControl))
+        ->getApduRequest());
+        
+    logger->trace("Navigate: CONTROL = %d\n", static_cast<int>(selectControl));
 
     /* set the parser for the response of this command */
     parsingClassList.push_back(typeid(SelectFileRespPars).name());
@@ -149,47 +151,62 @@ int PoSelectionRequest::prepareSelectFileCmd(SelectFileCmdBuild::SelectControl s
     return commandIndex++;
 }
 
-int PoSelectionRequest::preparePoCustomReadCmd(const std::string &name, std::vector<char> &apdu)
+int PoSelectionRequest::preparePoCustomReadCmd(const std::string &name,
+                                               std::vector<char> &apdu)
 {
-    std::shared_ptr<ApduRequest> apduRequest = std::make_shared<ApduRequest>(apdu, false);
+    std::shared_ptr<ApduRequest> apduRequest = 
+        std::make_shared<ApduRequest>(apdu, false);
+
     addApduRequest(
-              (std::make_shared<PoCustomReadCommandBuilder>(name, apduRequest))->getApduRequest());
-    if (logger->isTraceEnabled()) {
-        logger->trace("CustomReadCommand: APDUREQUEST = %s\n", apduRequest);
-    }
-                        /* return and post increment the command index */
-                        return commandIndex++;
+        (std::make_shared<PoCustomReadCommandBuilder>(name, apduRequest))
+            ->getApduRequest());
+
+    logger->trace("CustomReadCommand: APDUREQUEST = %s\n",
+                  apduRequest->toString());
+
+    /* return and post increment the command index */
+    return commandIndex++;
 }
 
-int PoSelectionRequest::preparePoCustomModificationCmd(const std::string &name, std::shared_ptr<ApduRequest> apduRequest)
+int PoSelectionRequest::preparePoCustomModificationCmd(
+    const std::string &name, std::shared_ptr<ApduRequest> apduRequest)
 {
     addApduRequest(
-      (std::make_shared<PoCustomModificationCommandBuilder>(name, apduRequest))->getApduRequest());
-    if (logger->isTraceEnabled()) {
-        logger->trace("CustomModificationCommand: APDUREQUEST = %s\n", apduRequest);
-    }
-                        /* return and post increment the command index */
-                        return commandIndex++;
+      (std::make_shared<PoCustomModificationCommandBuilder>(name, apduRequest))
+           ->getApduRequest());
+
+    logger->trace("CustomModificationCommand: APDUREQUEST = %s\n",
+                  apduRequest->toString());
+
+    /* return and post increment the command index */
+    return commandIndex++;
 }
 
-std::shared_ptr<AbstractApduResponseParser> PoSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse, int commandIndex)
+std::shared_ptr<AbstractApduResponseParser>
+PoSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse, 
+                                    int commandIndex)
 {
     if (commandIndex >= (int)parsingClassList.size()) {
-        throw std::invalid_argument("Incorrect command index while getting command parser.");
+        throw std::invalid_argument("Incorrect command index while getting " \
+                                    "command parser.");
     }
 
     if (seResponse->getApduResponses().size() != parsingClassList.size()) {
-        throw std::invalid_argument("The number of responses and commands doesn't match.");
+        throw std::invalid_argument("The number of responses and commands " \
+                                    "doesn't match.");
     }
 
     const std::string& parsingClass = parsingClassList[commandIndex];
     std::shared_ptr<AbstractApduResponseParser> parser;
+
     if (parsingClass == typeid(ReadRecordsRespPars).name()) {
-       parser = std::make_shared<ReadRecordsRespPars>(seResponse->getApduResponses()[commandIndex],
-                                                      readRecordDataStructureMap[commandIndex],
-                                                      readRecordFirstRecordNumberMap[commandIndex]);
+       parser = std::make_shared<ReadRecordsRespPars>(
+                    seResponse->getApduResponses()[commandIndex],
+                    readRecordDataStructureMap[commandIndex],
+                    readRecordFirstRecordNumberMap[commandIndex]);
     } else if (parsingClass == typeid(SelectFileRespPars).name()) {
-        parser = std::make_shared<SelectFileRespPars>(seResponse->getApduResponses()[commandIndex]);
+        parser = std::make_shared<SelectFileRespPars>(
+                     seResponse->getApduResponses()[commandIndex]);
     } else {
         throw std::invalid_argument("No parser available for this command.");
     }
@@ -200,8 +217,13 @@ std::shared_ptr<AbstractApduResponseParser> PoSelectionRequest::getCommandParser
 //std::shared_ptr<CalypsoPo> PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse) {
 std::shared_ptr<AbstractMatchingSe> PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
 {
-    /* Return an AbstractMatchingSe but *instanciate* a CalypsoPo otherwise some members won't be initialized */
-    return std::make_shared<CalypsoPo>(seResponse, seSelector->getSeProtocol().getTransmissionMode(), seSelector->getExtraInfo());
+    /*
+     * Return an AbstractMatchingSe but *instanciate* a CalypsoPo otherwise some
+     * members won't be initialized
+     */
+    return std::make_shared<CalypsoPo>(
+               seResponse, seSelector->getSeProtocol().getTransmissionMode(),
+               seSelector->getExtraInfo());
 }
 
 }

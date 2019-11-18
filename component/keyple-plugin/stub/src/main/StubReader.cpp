@@ -189,8 +189,6 @@ bool StubReader::isLogicalChannelOpenTestProxy()
 
 void StubReader::insertSe(std::shared_ptr<StubSecureElement> _se)
 {
-    logger->debug("inserting SE: %p\n", _se);
-
     /* clean channels status */
     if (isPhysicalChannelOpen()) {
         logger->debug("closing logical channel\n");

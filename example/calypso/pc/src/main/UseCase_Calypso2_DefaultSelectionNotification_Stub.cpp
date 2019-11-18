@@ -66,6 +66,10 @@ public:
      */
     UseCase_Calypso2_DefaultSelectionNotification_Stub()
     {
+    }
+
+    void init()
+    {
         /* Get the instance of the SeProxyService (Singleton pattern) */
         SeProxyService seProxyService = SeProxyService::getInstance();
 
@@ -280,5 +284,6 @@ int main(int argc, char **argv)
 
     /* Create the observable object to handle the PO processing */
     std::shared_ptr<UseCase_Calypso2_DefaultSelectionNotification_Stub> m = std::make_shared<UseCase_Calypso2_DefaultSelectionNotification_Stub>();
+    m->init();
 }
 

@@ -18,13 +18,16 @@ namespace common {
 
 class LoggerFactory;
 
-Logger::Logger(const std::string &className) : className(demangle(className.c_str()))
+Logger::Logger(const std::string &className, std::mutex* mtx)
+: className(demangle(className.c_str()))
 {
     traceEnabled = 1;
     debugEnabled = 1;
     warnEnabled  = 1;
     infoEnabled  = 1;
     errorEnabled = 1;
+
+    this->mtx = mtx;
 }
 
 Logger::~Logger()

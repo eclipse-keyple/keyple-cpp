@@ -131,8 +131,6 @@ public:
     // Alex: function was final in Java (problem in PcscPlugin.cpp)
     void notifyObservers(std::shared_ptr<T> event) override
     {
-        logger->debug("notifyObservers => event: %p\n", event);
-
         /*
          * Alex: Downcasting on both AbstractObservableReader and
          *       AbstractObservablePlugin doesn't seem possible even though

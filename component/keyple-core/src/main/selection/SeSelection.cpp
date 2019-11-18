@@ -50,7 +50,7 @@ int SeSelection::prepareSelection(
 {
 
     logger->trace("SELECTORREQUEST = %s, EXTRAINFO = %s\n",
-                  seSelectionRequest->getSelectionRequest(),
+                  seSelectionRequest->getSelectionRequest()->toString(),
                   seSelectionRequest->getSeSelector()->getExtraInfo());
 
     /* build the SeRequest set transmitted to the SE */

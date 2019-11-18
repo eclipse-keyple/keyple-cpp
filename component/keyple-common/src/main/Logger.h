@@ -1,20 +1,21 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
 #include <iomanip>
 #include <iostream>
-#include <mutex>
 #include <stdexcept>
 #include <string>
 
@@ -24,15 +25,182 @@
 
 /* Common*/
 #include "Export.h"
+#include "LoggerMutex_Import.h"
+
+/* Forward declaration */
+namespace keyple { namespace common { class LoggerFactory; } }
 
 namespace keyple {
 namespace common {
 
 class EXPORT Logger {
+public:
+    /**
+     * Constructor
+     */
+    Logger(const std::string &className, std::mutex* mtx);
+
+    /**
+     * Destructor
+     */
+    ~Logger();
+
+    /**
+     *
+     */
+    bool isTraceEnabled();
+    
+    /**
+     *
+     */
+    bool isDebugEnabled();
+    
+    /**
+     *
+     */
+    bool isWarnEnabled();
+
+    /**
+     *
+     */
+    bool isInfoEnabled();
+
+    /**
+     *
+     */
+    bool isErrorEnabled();
+
+    /**
+     *
+     */
+    std::string getClassName();
+
+    /**
+     *
+     */
+    void setTraceEnabled(bool enabled);
+
+    /**
+     *
+     */
+    void setDebugEnabled(bool enabled);
+
+    /**
+     *
+     */
+    void setWarnEnabled(bool enabled);
+
+    /**
+     *
+     */
+    void setInfoEnabled(bool enabled);
+
+    /**
+     *
+     */
+    void setErrorEnabled(bool enabled);
+
+    /**
+     *
+     */
+    void trace(const std::string s)
+    {
+        if (traceEnabled)
+            log("TRACE", s);
+    }
+
+    /**
+     *
+     */
+    template <typename... Args> void trace(const std::string s, Args... args)
+    {
+        if (traceEnabled)
+            log("TRACE", s, args...);
+    }
+
+    /**
+     *
+     */
+    void debug(const std::string s)
+    {
+        if (debugEnabled)
+            log("DEBUG", s);
+    }
+
+    /**
+     *
+     */
+    template <typename... Args>
+    void debug(const std::string s, const Args& ... args) noexcept
+    {
+        if (debugEnabled)
+            log("DEBUG", s, args...);
+    }
+
+    /**
+     *
+     */
+    void warn(const std::string s)
+    {
+        if (warnEnabled)
+            log("WARN", s);
+    }
+
+    /**
+     *
+     */
+    template <typename... Args> void warn(const std::string s, Args... args)
+    {
+        if (warnEnabled)
+            log("WARN", s, args...);
+    }
+
+    /**
+     *
+     */
+    void info(const std::string s)
+    {
+        if (infoEnabled)
+            log("INFO", s);
+    }
+
+    /**
+     *
+     */
+    template <typename... Args> void info(const std::string s, Args... args)
+    {
+        if (infoEnabled)
+            log("INFO", s, args...);
+    }
+
+    /**
+     *
+     */
+    void error(const std::string s)
+    {
+        if (errorEnabled) {
+            log("ERROR", s);
+        }
+    }
+
+    /**
+     *
+     */
+    template <typename... Args> void error(const std::string& s, Args... args)
+    {
+        if (errorEnabled)
+            log("ERROR", s, args...);
+    }
+
 private:
     /**
      *
-      */
+     */
+    const size_t maxClassNameLength = 100;
+
+    /**
+     *
+     */
     bool traceEnabled;
 
     /**
@@ -61,195 +229,58 @@ private:
     const std::string className;
 
     /**
-     * Mutex for critical sections (std::cout usage)
+     *
      */
-    std::mutex mtx;
+    std::mutex* mtx;
 
     /**
      *
      */
-    void log(const char *s)
+    #ifdef __GNUG__ // gnu C++ compiler
+    std::string demangle( const char* mangled_name )
     {
-        mtx.lock();
-
-        while (s && *s)
-        {
-            if (*s == '%' && *++s != '%') { // make sure that there wasn't meant to be more arguments
-                                            // %% represents plain % in a format string
-                mtx.unlock();
-                throw std::runtime_error("invalid format: missing arguments");
-            }
-
-            std::cout << *s++;
-        }
-
-        mtx.unlock();
-    }
-
-    /**
-     * Actual printing function
-     */
-    template <typename T, typename... Args>
-    void log(const char *s, T value, Args... args)
-    {
-        mtx.lock();
-
-        while (s && *s)
-        {
-            if (*s == '%' && *++s != '%')
-            {                             // a format specifier (ignore which one it is)
-                std::cout << value;       // use first non-format argument
-                mtx.unlock();
-                return log(++s, args...); // ``peel off'' first argument
-            }
-            std::cout << *s++;
-        }
-
-        mtx.unlock();
-
-        throw std::runtime_error("extra arguments provided to log");
-    }
-
-    public:
-    /**
-     * Constructor
-     */
-    Logger(const std::string &className);
-
-    /**
-     * Destructor
-     */
-    ~Logger();
-
-    bool isTraceEnabled();
-
-    bool isDebugEnabled();
-
-    bool isWarnEnabled();
-
-    bool isInfoEnabled();
-
-    bool isErrorEnabled();
-
-    std::string getClassName();
-
-    void setTraceEnabled(bool enabled);
-
-    void setDebugEnabled(bool enabled);
-
-    void setWarnEnabled(bool enabled);
-
-    void setInfoEnabled(bool enabled);
-
-    void setErrorEnabled(bool enabled);
-
-#ifdef __GNUG__ // gnu C++ compiler
-    static std::string demangle( const char* mangled_name ) {
         std::size_t len = 0 ;
         int status = 0 ;
-        std::unique_ptr< char, decltype(&std::free) > ptr(
-        __cxxabiv1::__cxa_demangle( mangled_name, nullptr, &len, &status ), &std::free ) ;
-        return ptr.get() ;
+        std::unique_ptr<char, decltype(&std::free)> ptr(
+            __cxxabiv1::__cxa_demangle(mangled_name, nullptr, &len, &status),
+                                       &std::free );
+        std::string s(ptr.get());
+        if (s.size() > maxClassNameLength)
+            s.resize(maxClassNameLength);
+        return s;
     }
 #else
-    static std::string demangle(const char* name) {
-        return name;
+    std::string demangle(const char* name)
+    {
+        std::string s(name);
+        if (s.size() > maxClassNameLength)
+            s.resize(maxClassNameLength);
+        return s;
     }
 #endif // _GNUG_
 
-    void trace(const char *s)
+    template <typename T>
+    T const * argument(const std::basic_string<T>& value) noexcept
     {
-        if (traceEnabled)
-        {
-            std::cout << "[TRACE]   [" << className << "]   ";
-            log(s);
-        }
+        return value.c_str();
     }
 
-    template <typename T, typename... Args>
-    void trace(const char *s, T value, Args... args)
+    char const * argument(const bool& value) noexcept
     {
-        if (traceEnabled)
-        {
-            std::cout << "[TRACE]   [" << className << "]   ";
-            log(s, value, std::forward<Args>(args)...);
-        }
+        return value ? "true" : "false";
     }
 
-    void debug(const char *s)
+    /**
+     *
+     */
+    template <typename... Args>
+    void log(const std::string label, const std::string format, Args ... args)
+    noexcept
     {
-        if (debugEnabled)
-        {
-            std::cout << "[DEBUG]   [" << className << "]   ";
-            log(s);
-        }
-    }
-
-    template <typename T, typename... Args>
-    void debug(const char *s, T value, Args... args)
-    {
-        if (debugEnabled)
-        {
-            std::cout << "[DEBUG]   [" << className << "]   ";
-            log(s, value, std::forward<Args>(args)...);
-        }
-    }
-
-    void warn(const char *s)
-    {
-        if (warnEnabled)
-        {
-            std::cout << "[ WARN]   [" << className << "    ";
-            log(s);
-        }
-    }
-
-    template <typename T, typename... Args>
-    void warn(const char *s, T value, Args... args)
-    {
-        if (warnEnabled)
-        {
-            std::cout << "[ WARN]   [" << className << "]   ";
-            log(s, value, std::forward<Args>(args)...);
-        }
-    }
-
-    void info(const char *s)
-    {
-        if (infoEnabled)
-        {
-            std::cout << "[ INFO]   [" << className << "]   ";
-            log(s);
-        }
-    }
-
-    template <typename T, typename... Args>
-    void info(const char *s, T value, Args... args)
-    {
-        if (infoEnabled)
-        {
-            std::cout << "[ INFO]   [" << className << "]   ";
-            log(s, value, std::forward<Args>(args)...);
-        }
-    }
-
-    void error(const char *s)
-    {
-        if (errorEnabled)
-        {
-            std::cout << "[ERROR]   [" << className << "]   ";
-            log(s);
-        }
-    }
-
-    template <typename T, typename... Args>
-    void error(const char *s, T value, Args... args)
-    {
-        if (errorEnabled)
-        {
-            std::cout << "[ERROR]   [" << className << "]   ";
-            log(s, value, std::forward<Args>(args)...);
-        }
+        mtx->lock();
+        printf((std::string("[%5s]   [%-100s]   ").append(format)).c_str(),
+               label.c_str(), className.c_str(), argument(args)...);
+        mtx->unlock();
     }
 };
 
