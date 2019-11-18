@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
@@ -43,12 +45,16 @@ using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::protocol;
 
 class UseCase_Calypso2_DefaultSelectionNotification_Stub
-: public std::enable_shared_from_this<UseCase_Calypso2_DefaultSelectionNotification_Stub>, public ObservableReader::ReaderObserver {
+: public std::enable_shared_from_this<
+             UseCase_Calypso2_DefaultSelectionNotification_Stub>,
+  public ObservableReader::ReaderObserver {
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(UseCase_Calypso2_DefaultSelectionNotification_Stub));
+    const std::shared_ptr<Logger> logger =
+        LoggerFactory::getLogger(
+            typeid(UseCase_Calypso2_DefaultSelectionNotification_Stub));
 
     /**
      *
@@ -71,12 +77,13 @@ public:
     void init()
     {
         /* Get the instance of the SeProxyService (Singleton pattern) */
-        SeProxyService seProxyService = SeProxyService::getInstance();
+        SeProxyService& seProxyService = SeProxyService::getInstance();
 
         /* Get the instance of the Stub plugin */
         StubPlugin& stubPlugin = StubPlugin::getInstance();
         stubPlugin.initReaders();
-        std::shared_ptr<StubPlugin> shared_stub = std::make_shared<StubPlugin>(stubPlugin);
+        std::shared_ptr<StubPlugin> shared_stub =
+            std::make_shared<StubPlugin>(stubPlugin);
 
         /* Assign StubPlugin to the SeProxyService */
         seProxyService.addPlugin(shared_stub);
@@ -185,94 +192,144 @@ public:
     {
         ReaderEvent::EventType type = event->getEventType();
 
+        logger->debug("update - received event of type %s\n",
+                      event->getEventType().toString());
+
         if (type == ReaderEvent::EventType::SE_MATCHED) {
-                if (seSelection->processDefaultSelection(event->getDefaultSelectionsResponse())) {
-                    std::shared_ptr<MatchingSelection> matchingSelection
-                                    = seSelection->processDefaultSelection(event->getDefaultSelectionsResponse())->getActiveSelection();
 
-                    std::shared_ptr<CalypsoPo> calypsoPo = std::dynamic_pointer_cast<CalypsoPo>(matchingSelection->getMatchingSe());
+            logger->debug("update - retrieve matching selection\n");
+            std::shared_ptr<MatchingSelection> matchingSelection =
+                seSelection->processDefaultSelection(
+                    event->getDefaultSelectionsResponse())
+                        ->getActiveSelection();
 
-                    if (calypsoPo->isSelected()) {
-                        std::shared_ptr<SeReader> poReader;
-                        try {
-                            poReader = SeProxyService::getInstance().getPlugin(event->getPluginName())->getReader(event->getReaderName());
-                        } catch (KeyplePluginNotFoundException& e) {
-                        } catch (KeypleReaderNotFoundException& e) {
-                        }
+            logger->debug("update - retrieve calypso Po\n");
+            std::shared_ptr<CalypsoPo> calypsoPo =
+                std::dynamic_pointer_cast<CalypsoPo>(
+                    matchingSelection->getMatchingSe());
 
-                    logger->info("Observer notification: the selection of the PO has succeeded\n");
+            logger->debug("update - is selected ?\n");
+            if (calypsoPo->isSelected()) {
+                logger->debug("update - yes\n");
+                std::shared_ptr<SeReader> poReader;
+                try {
+                    logger->debug("update - retrieve plugin\n");
+                    poReader = SeProxyService::getInstance().getPlugin(
+                                   event->getPluginName())->getReader(
+                                       event->getReaderName());
+                } catch (KeyplePluginNotFoundException& e) {
+                    logger->error("update - caught " \
+                                  "KeyplePluginNotFoundException (msg: %s, " \
+                                  "cause: %s)\n", e.getMessage(),
+                                  e.getCause().what());
+                } catch (KeypleReaderNotFoundException& e) {
+                    logger->error("update - caught " \
+                                  "KeypleReaderNotFoundException (msg: %s, " \
+                                  "cause: %s)\n", e.getMessage(),
+                                  e.getCause().what());
+                }
 
-                    /*
-                     * Retrieve the data read from the parser updated during the selection process
-                     */
-                    std::shared_ptr<ReadRecordsRespPars> readEnvironmentParser =
-                        std::dynamic_pointer_cast<ReadRecordsRespPars>(matchingSelection->getResponseParser(readEnvironmentParserIndex));
+                logger->info("Observer notification: the selection of the PO " \
+                             "has succeeded\n");
 
+                /*
+                 * Retrieve the data read from the parser updated during the 
+                 * selection process
+                 */
+                std::shared_ptr<ReadRecordsRespPars> readEnvironmentParser =
+                    std::dynamic_pointer_cast<ReadRecordsRespPars>(
+                        matchingSelection->getResponseParser(
+                            readEnvironmentParserIndex));
 
-                    std::vector<char> environmentAndHolder =
-                        (*(readEnvironmentParser->getRecords().get()))[static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1)];
+                std::vector<char> environmentAndHolder =
+                    (*(readEnvironmentParser->getRecords().get()))[
+                        static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1)];
 
-                    /* Log the result */
-                    logger->info("Environment file data: %s\n", ByteArrayUtil::toHex(environmentAndHolder));
+                /* Log the result */
+                logger->info("Environment file data: %s\n",
+                             ByteArrayUtil::toHex(environmentAndHolder));
 
-                    /* Go on with the reading of the first record of the EventLog file */
-                    logger->info("==================================================================================\n");
-                    logger->info("= 2nd PO exchange: reading transaction of the EventLog file.                     =\n");
-                    logger->info("==================================================================================\n");
+                /*
+                 * Go on with the reading of the first record of the EventLog
+                 * file
+                 */
+                logger->info("===============================================" \
+                             "===================================\n");
+                logger->info("= 2nd PO exchange: reading transaction of the " \
+                             "EventLog file.                     =\n");
+                logger->info("===============================================" \
+                             "===================================\n");
 
-                    std::shared_ptr<PoTransaction> poTransaction =
-                        std::make_shared<PoTransaction>(std::make_shared<PoResource>(poReader, calypsoPo));
+                std::shared_ptr<PoTransaction> poTransaction =
+                    std::make_shared<PoTransaction>(
+                        std::make_shared<PoResource>(poReader, calypsoPo));
 
-                    /*
-                     * Prepare the reading order and keep the associated parser for later use once the
-                     * transaction has been processed.
-                     */
-                    int readEventLogParserIndex =
-                        poTransaction->prepareReadRecordsCmd(CalypsoClassicInfo::SFI_EventLog,
-                                                             ReadDataStructure::SINGLE_RECORD_DATA,
-                                                             CalypsoClassicInfo::RECORD_NUMBER_1,
-                                                             StringHelper::formatSimple("EventLog (SFI=%02X, recnbr=%d))",
-                                                                                        CalypsoClassicInfo::SFI_EventLog,
-                                                                                        CalypsoClassicInfo::RECORD_NUMBER_1));
+                /*
+                 * Prepare the reading order and keep the associated parser for
+                 * later use once the transaction has been processed.
+                 */
+                int readEventLogParserIndex =
+                    poTransaction->prepareReadRecordsCmd(
+                        CalypsoClassicInfo::SFI_EventLog,
+                        ReadDataStructure::SINGLE_RECORD_DATA,
+                        CalypsoClassicInfo::RECORD_NUMBER_1,
+                        StringHelper::formatSimple(
+                            "EventLog (SFI=%02X, recnbr=%d))",
+                            CalypsoClassicInfo::SFI_EventLog,
+                            CalypsoClassicInfo::RECORD_NUMBER_1));
 
-                    /*
-                     * Actual PO communication: send the prepared read order, then close the channel
-                     * with the PO
-                     */
-                    try {
-                        if (poTransaction->processPoCommands(ChannelState::CLOSE_AFTER)) {
-                            logger->info("The reading of the EventLog has succeeded\n");
+                /*
+                 * Actual PO communication: send the prepared read order, then
+                 * close the channel with the PO
+                 */
+                try {
+                    if (poTransaction->processPoCommands(
+                            ChannelState::CLOSE_AFTER)) {
+                        
+                        logger->info("The reading of the EventLog has " \
+                                     "succeeded\n");
 
-                            /*
-                             * Retrieve the data read from the parser updated during the transaction
-                             * process
-                             */
-                            std::shared_ptr<ReadRecordsRespPars> parser =
-                                std::dynamic_pointer_cast<ReadRecordsRespPars>(poTransaction->getResponseParser(readEventLogParserIndex));
-                            std::vector<char> eventLog = (*(parser->getRecords().get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
+                        /*
+                         * Retrieve the data read from the parser updated during
+                         * the transaction process
+                         */
+                        std::shared_ptr<ReadRecordsRespPars> parser =
+                            std::dynamic_pointer_cast<ReadRecordsRespPars>(
+                                poTransaction->getResponseParser(
+                                    readEventLogParserIndex));
 
-                            /* Log the result */
-                            logger->info("EventLog file data: %s", ByteArrayUtil::toHex(eventLog));
-                        }
-                    } catch (const KeypleReaderException &e) {
-                        logger->error("update - caught KeypleReaderException " \
-                                      "(msg: %s, cause: %s)\n", e.getMessage(),
-                                      e.getCause().what());
+                        std::vector<char> eventLog =
+                            (*(parser->getRecords().get()))[
+                                CalypsoClassicInfo::RECORD_NUMBER_1];
+
+                        /* Log the result */
+                        logger->info("EventLog file data: %s\n",
+                                     ByteArrayUtil::toHex(eventLog));
                     }
+                } catch (const KeypleReaderException &e) {
+                    logger->error("update - caught KeypleReaderException " \
+                                  "(msg: %s, cause: %s)\n", e.getMessage(),
+                                  e.getCause().what());
+                }
 
-                    logger->info("==================================================================================\n");
-                    logger->info("= End of the Calypso PO processing.                                              =\n");
-                    logger->info("==================================================================================\n");
-                }
-                else {
-                    logger->error("The selection of the PO has failed. Should not have occurred due to the MATCHED_ONLY selection mode\n");
-                }
-            } else if (type == ReaderEvent::EventType::SE_INSERTED) {
-                logger->error("SE_INSERTED event: should not have occurred due to the MATCHED_ONLY selection mode\n");
-            } else if (type == ReaderEvent::EventType::SE_REMOVAL) {
-                logger->info("The PO has been removed\n");
+                logger->info("===========================================" \
+                                "=======================================\n");
+                logger->info("= End of the Calypso PO processing.        " \
+                                "                                      =\n");
+                logger->info("===========================================" \
+                                "=======================================\n");
             } else {
+                logger->error("The selection of the PO has failed. Should" \
+                              " not have occurred due to the MATCHED_ONLY" \
+                              "selection mode\n");
             }
+        } else if (type == ReaderEvent::EventType::SE_INSERTED) {
+            logger->error("update - SE_INSERTED event: should not have "\
+                          "occurred due to the MATCHED_ONLY selection mode\n");
+        } else if (type == ReaderEvent::EventType::SE_REMOVAL) {
+            logger->info("update - the PO has been removed\n");
+        } else {
+            logger->info("update - unexpected event\n");
         }
     }
 };
@@ -283,7 +340,8 @@ int main(int argc, char **argv)
     (void)argv;
 
     /* Create the observable object to handle the PO processing */
-    std::shared_ptr<UseCase_Calypso2_DefaultSelectionNotification_Stub> m = std::make_shared<UseCase_Calypso2_DefaultSelectionNotification_Stub>();
+    std::shared_ptr<UseCase_Calypso2_DefaultSelectionNotification_Stub> m =
+        std::make_shared<UseCase_Calypso2_DefaultSelectionNotification_Stub>();
     m->init();
 }
 

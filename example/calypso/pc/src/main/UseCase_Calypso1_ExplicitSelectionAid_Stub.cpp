@@ -161,7 +161,7 @@ int main(int argc, char **argv)
             std::shared_ptr<CalypsoPo> calypsoPo =
                 std::static_pointer_cast<CalypsoPo>(
                     matchingSelection->getMatchingSe());
-            logger->info("The selection of the PO has succeeded.");
+            logger->info("The selection of the PO has succeeded\n");
 
             std::shared_ptr<ReadRecordsRespPars> readEnvironmentParser =
                     std::dynamic_pointer_cast<ReadRecordsRespPars>(
@@ -213,7 +213,7 @@ int main(int argc, char **argv)
              * the channel with the PO
              */
             if (poTransaction->processPoCommands(ChannelState::CLOSE_AFTER)) {
-                logger->info("The reading of the EventLog has succeeded.");
+                logger->info("The reading of the EventLog has succeeded\n");
 
                 /*
                  * Retrieve the data read from the parser updated during the
@@ -244,7 +244,7 @@ int main(int argc, char **argv)
         logger->error("No PO were detected\n");
     }
 
-    logger->info("Remove stub PO.");
+    logger->info("Remove stub PO\n");
     poReader->removeSe();
 
     return 0;
