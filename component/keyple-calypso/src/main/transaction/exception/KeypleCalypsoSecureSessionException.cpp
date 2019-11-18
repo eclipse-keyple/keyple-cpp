@@ -38,7 +38,7 @@ KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(
 }
 
 KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(
-  const std::string &message, std::shared_ptr<ApduRequest> req,
+  const std::string& message, std::shared_ptr<ApduRequest> req,
   std::shared_ptr<ApduResponse> resp)
 : KeypleReaderException(message)
 {
@@ -48,7 +48,7 @@ KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(
 }
 
 KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(
-  const std::string &message, std::shared_ptr<ApduResponse> resp)
+  const std::string& message, std::shared_ptr<ApduResponse> resp)
 : KeypleCalypsoSecureSessionException(message, nullptr, resp)
 {
 }

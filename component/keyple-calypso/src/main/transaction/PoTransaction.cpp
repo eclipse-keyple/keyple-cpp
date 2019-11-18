@@ -218,7 +218,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
                       ByteArrayUtil::toHex(sessionTerminalChallenge));
     }
     else {
-        throw KeypleCalypsoSecureSessionException(
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
                   "Invalid message received",
                   KeypleCalypsoSecureSessionException::Type::SAM,
                   samApduRequestList, samApduResponseList);
@@ -273,7 +273,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req =
             poSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException(
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
                  "Null response received",
                  KeypleCalypsoSecureSessionException::Type::PO,
                  req, emptyVector);
@@ -283,7 +283,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req =
             poSeRequest->getApduRequests();
-        throw KeypleCalypsoSecureSessionException(
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
                   "The logical channel was not open",
                   KeypleCalypsoSecureSessionException::Type::PO,
                   req, emptyVector);
@@ -295,7 +295,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
 
     /* Do some basic checks */
     if (poApduRequestList.size() != poApduResponseList.size()) {
-        throw KeypleCalypsoSecureSessionException(
+        throw std::make_shared<KeypleCalypsoSecureSessionException>(
                   "Inconsistent requests and responses",
                   KeypleCalypsoSecureSessionException::Type::PO,
                   poApduRequestList, poApduResponseList);
@@ -303,7 +303,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
 
     for (auto apduR : poApduResponseList) {
         if (!apduR->isSuccessful()) {
-            throw KeypleCalypsoSecureSessionException(
+            throw std::make_shared<KeypleCalypsoSecureSessionException>(
                       "Invalid response",
                       KeypleCalypsoSecureSessionException::Type::PO,
                       poApduRequestList, poApduResponseList);

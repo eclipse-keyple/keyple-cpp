@@ -12,6 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include <cstring>
+
 /* Common */
 #include "exceptionhelper.h"
 #include "System.h"

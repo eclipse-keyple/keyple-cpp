@@ -46,7 +46,7 @@ public:
      *
      */
     KeypleCalypsoSecureSessionException(
-        const std::string &message,
+        const std::string& message,
         Type type, std::vector<std::shared_ptr<ApduRequest>> &requests,
         std::vector<std::shared_ptr<ApduResponse>> &responses);
 
@@ -54,13 +54,13 @@ public:
      *
      */
     KeypleCalypsoSecureSessionException(
-        const std::string &message, std::shared_ptr<ApduRequest> req,
+        const std::string& message, std::shared_ptr<ApduRequest> req,
         std::shared_ptr<ApduResponse> resp);
 
     /**
      *
      */
-    KeypleCalypsoSecureSessionException(const std::string &message,
+    KeypleCalypsoSecureSessionException(const std::string& message,
                                         std::shared_ptr<ApduResponse> resp);
 
     /**

@@ -16,6 +16,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <mutex>
 #include <stdexcept>
 #include <string>
 
@@ -25,7 +26,6 @@
 
 /* Common*/
 #include "Export.h"
-#include "LoggerMutex_Import.h"
 
 /* Forward declaration */
 namespace keyple { namespace common { class LoggerFactory; } }

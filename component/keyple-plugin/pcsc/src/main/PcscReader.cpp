@@ -91,10 +91,12 @@ PcscReader::PcscReader(
 }
 
 PcscReader::PcscReader(const PcscReader& o)
-: AbstractThreadedLocalReader(o.pluginName, o.terminal.getName()),
+: Nameable(),
+  AbstractThreadedLocalReader(o.pluginName, o.terminal.getName()),
   terminal(o.terminal), parameterCardProtocol(o.parameterCardProtocol),
   cardExclusiveMode(o.cardExclusiveMode), cardReset(o.cardReset),
   transmissionMode(o.transmissionMode)
+
 {
 }
 

@@ -95,7 +95,7 @@ std::shared_ptr<SamResource> CalypsoUtilities::getDefaultSamResource()
      */
     try {
         return checkSamAndOpenChannel(samReader);
-    } catch (IllegalStateException e) {
+    } catch (IllegalStateException& e) {
         throw;
     }
 }
