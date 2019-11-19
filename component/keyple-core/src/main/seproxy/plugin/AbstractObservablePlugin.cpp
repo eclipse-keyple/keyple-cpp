@@ -35,7 +35,7 @@ using namespace keyple::core::seproxy::message;
 AbstractObservablePlugin::AbstractObservablePlugin(const std::string &name)
 : AbstractLoggedObservable<PluginEvent>(name)
 {
-    logger->debug("constructor (name: %s)\n", name);
+    logger->debug("constructor (name: %s)\n", name.c_str());
 }
 
 void AbstractObservablePlugin::initReaders()
@@ -46,16 +46,17 @@ void AbstractObservablePlugin::initReaders()
             readers = initNativeReaders();
         } catch (KeypleReaderException& e) {
             logger->error("initReaders - caught KeypleReaderException " \
-                          "(message: %s, cause: %s)\n", e.getMessage(),
+                          "(message: %s, cause: %s)\n", e.getMessage().c_str(),
                           e.getCause().what());
         }
     }
 }
 
-std::shared_ptr<std::set<std::shared_ptr<SeReader>>> AbstractObservablePlugin::getReaders()
+std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
+AbstractObservablePlugin::getReaders()
 {
     if (readers == nullptr) {
-        throw std::make_shared<KeypleReaderException>("List of readers has not been initialized");
+        throw KeypleReaderException("List of readers has not been initialized");
     }
 
     return readers;
@@ -63,14 +64,16 @@ std::shared_ptr<std::set<std::shared_ptr<SeReader>>> AbstractObservablePlugin::g
 
 std::shared_ptr<std::set<std::string>> AbstractObservablePlugin::getReaderNames()
 {
-    std::shared_ptr<std::set<std::string>> readerNames = std::make_shared<std::set<std::string>>();
+    std::shared_ptr<std::set<std::string>> readerNames =
+        std::make_shared<std::set<std::string>>();
     for (auto reader : *readers) {
         readerNames->insert(reader->getName());
     }
     return readerNames;
 }
 
-void AbstractObservablePlugin::addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+void AbstractObservablePlugin::addObserver(
+    std::shared_ptr<ObservablePlugin::PluginObserver> observer)
 {
     AbstractLoggedObservable<PluginEvent>::addObserver(observer);
     if (AbstractLoggedObservable<PluginEvent>::countObservers() == 1) {
@@ -79,7 +82,8 @@ void AbstractObservablePlugin::addObserver(std::shared_ptr<ObservablePlugin::Plu
     }
 }
 
-void AbstractObservablePlugin::removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+void AbstractObservablePlugin::removeObserver(
+    std::shared_ptr<ObservablePlugin::PluginObserver> observer)
 {
     AbstractLoggedObservable<PluginEvent>::removeObserver(observer);
     if (AbstractLoggedObservable<PluginEvent>::countObservers() == 0) {
@@ -94,15 +98,17 @@ int AbstractObservablePlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
 }
 
 /*
-    * Alex: consider note in header comment (covariant return type).
-    */
-std::shared_ptr<SeReader> AbstractObservablePlugin::getReader(const std::string &name)
+ * Alex: consider note in header comment (covariant return type).
+ */
+std::shared_ptr<SeReader>
+    AbstractObservablePlugin::getReader(const std::string &name)
 {
-    logger->debug("getReader - looking for reader: %s in list of %d readers\n", name, readers->size());
+    logger->debug("getReader - looking for reader: %s in list of %d readers\n",
+                  name.c_str(), readers->size());
 
     for (auto reader : *readers)
     {
-        logger->debug("getReader - reader: %s\n", reader->getName());
+        logger->debug("getReader - reader: %s\n", reader->getName().c_str());
 
         if (reader->getName() == name)
         {

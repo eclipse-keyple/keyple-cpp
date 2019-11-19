@@ -85,8 +85,8 @@ int main(int argc, char **argv)
     }
 
     logger->info("=============== UseCase Calypso #5: Po Authentication ==================\n");
-    logger->info("= PO Reader  NAME = %s\n", poReader->getName());
-    logger->info("= SAM Reader  NAME = %s\n", samResource->getSeReader()->getName());
+    logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
+    logger->info("= SAM Reader  NAME = %s\n", samResource->getSeReader()->getName().c_str());
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
@@ -195,7 +195,7 @@ int main(int argc, char **argv)
                 for (int i = 0; i < nbCommands; i++) {
                     if (!poTransaction->getResponseParser(appendRecordParsers[i])->isSuccessful()) {
                         logger->error("Append record #%d failed with error %s\n", i,
-                                      poTransaction->getResponseParser(appendRecordParsers[i])->getStatusInformation());
+                                      poTransaction->getResponseParser(appendRecordParsers[i])->getStatusInformation().c_str());
                     }
                 }
             }

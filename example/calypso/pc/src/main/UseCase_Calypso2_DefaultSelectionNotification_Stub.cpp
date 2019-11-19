@@ -105,7 +105,7 @@ public:
                                        StubProtocolSetting::STUB_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO14443_4]);
 
         logger->info("=============== UseCase Calypso #2: AID based explicit selection ===================\n");
-        logger->info("= PO Reader  NAME = %s\n", poReader->getName());
+        logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
 
         /*
          * Prepare a Calypso PO selection
@@ -193,7 +193,7 @@ public:
         ReaderEvent::EventType type = event->getEventType();
 
         logger->debug("update - received event of type %s\n",
-                      event->getEventType().toString());
+                      event->getEventType().toString().c_str());
 
         if (type == ReaderEvent::EventType::SE_MATCHED) {
 
@@ -220,12 +220,12 @@ public:
                 } catch (KeyplePluginNotFoundException& e) {
                     logger->error("update - caught " \
                                   "KeyplePluginNotFoundException (msg: %s, " \
-                                  "cause: %s)\n", e.getMessage(),
+                                  "cause: %s)\n", e.getMessage().c_str(),
                                   e.getCause().what());
                 } catch (KeypleReaderNotFoundException& e) {
                     logger->error("update - caught " \
                                   "KeypleReaderNotFoundException (msg: %s, " \
-                                  "cause: %s)\n", e.getMessage(),
+                                  "cause: %s)\n", e.getMessage().c_str(),
                                   e.getCause().what());
                 }
 
@@ -247,7 +247,7 @@ public:
 
                 /* Log the result */
                 logger->info("Environment file data: %s\n",
-                             ByteArrayUtil::toHex(environmentAndHolder));
+                             ByteArrayUtil::toHex(environmentAndHolder).c_str());
 
                 /*
                  * Go on with the reading of the first record of the EventLog
@@ -304,11 +304,12 @@ public:
 
                         /* Log the result */
                         logger->info("EventLog file data: %s\n",
-                                     ByteArrayUtil::toHex(eventLog));
+                                     ByteArrayUtil::toHex(eventLog).c_str());
                     }
                 } catch (const KeypleReaderException &e) {
                     logger->error("update - caught KeypleReaderException " \
-                                  "(msg: %s, cause: %s)\n", e.getMessage(),
+                                  "(msg: %s, cause: %s)\n",
+                                  e.getMessage().c_str(),
                                   e.getCause().what());
                 }
 

@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 
     logger->info("=============== UseCase Calypso #1: AID based explicit " \
                  "selection ==================\n");
-    logger->info("= PO Reader  NAME = %s\n", poReader->getName());
+    logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
 
             /* Log the result */
             logger->info("Environment file data: %s\n",
-                        ByteArrayUtil::toHex(environmentAndHolder));
+                        ByteArrayUtil::toHex(environmentAndHolder).c_str());
 
             /*
              * Go on with the reading of the first record of the EventLog file
@@ -229,7 +229,7 @@ int main(int argc, char **argv)
 
                 /* Log the result */
                 logger->info("EventLog file data: %s\n",
-                             ByteArrayUtil::toHex(eventLog));
+                             ByteArrayUtil::toHex(eventLog).c_str());
             }
             logger->info("===================================================" \
                          "===============================\n");

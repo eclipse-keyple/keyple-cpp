@@ -19,6 +19,7 @@
 #include <mutex>
 #include <stdexcept>
 #include <string>
+#include <cstdio>
 
 #ifdef __GNUG__ // gnu C++ compiler
 #include <cxxabi.h>
@@ -103,94 +104,27 @@ public:
     /**
      *
      */
-    void trace(const std::string s)
-    {
-        if (traceEnabled)
-            log("TRACE", s);
-    }
+    void trace(const std::string s, ...);
 
     /**
      *
      */
-    template <typename... Args> void trace(const std::string s, Args... args)
-    {
-        if (traceEnabled)
-            log("TRACE", s, args...);
-    }
+    void debug(const std::string s, ...);
 
     /**
      *
      */
-    void debug(const std::string s)
-    {
-        if (debugEnabled)
-            log("DEBUG", s);
-    }
+    void warn(const std::string s, ...);
 
     /**
      *
      */
-    template <typename... Args>
-    void debug(const std::string s, const Args& ... args) noexcept
-    {
-        if (debugEnabled)
-            log("DEBUG", s, args...);
-    }
+    void info(const std::string s, ...);
 
     /**
      *
      */
-    void warn(const std::string s)
-    {
-        if (warnEnabled)
-            log("WARN", s);
-    }
-
-    /**
-     *
-     */
-    template <typename... Args> void warn(const std::string s, Args... args)
-    {
-        if (warnEnabled)
-            log("WARN", s, args...);
-    }
-
-    /**
-     *
-     */
-    void info(const std::string s)
-    {
-        if (infoEnabled)
-            log("INFO", s);
-    }
-
-    /**
-     *
-     */
-    template <typename... Args> void info(const std::string s, Args... args)
-    {
-        if (infoEnabled)
-            log("INFO", s, args...);
-    }
-
-    /**
-     *
-     */
-    void error(const std::string s)
-    {
-        if (errorEnabled) {
-            log("ERROR", s);
-        }
-    }
-
-    /**
-     *
-     */
-    template <typename... Args> void error(const std::string& s, Args... args)
-    {
-        if (errorEnabled)
-            log("ERROR", s, args...);
-    }
+    void error(const std::string s, ...);
 
 private:
     /**
@@ -274,12 +208,13 @@ private:
      *
      */
     template <typename... Args>
-    void log(const std::string label, const std::string format, Args ... args)
-    noexcept
+    void log(const std::string label, const std::string format,  va_list args)
     {
         mtx->lock();
-        printf((std::string("[%5s]   [%-100s]   ").append(format)).c_str(),
-               label.c_str(), className.c_str(), argument(args)...);
+        
+        std::printf("[%5s]   [%-100s]   ", label.c_str(), className.c_str());
+        std::vprintf(format.c_str(), args);
+        
         mtx->unlock();
     }
 };

@@ -126,7 +126,7 @@ void AbstractThreadedLocalReader::finalize()
     thread->end();
     thread.reset();
     logger->trace("[%s] Observable Reader thread ended\n",
-                  AbstractLoggedObservable<ReaderEvent>::getName());
+                  AbstractLoggedObservable<ReaderEvent>::getName().c_str());
     //AbstractSelectionLocalReader::finalize();
 }
 

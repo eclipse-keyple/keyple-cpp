@@ -315,9 +315,11 @@ SeSelector::SeSelector(SeProtocol& seProtocol,
         logger->trace(
           "Selection data: AID = %s ATRREGEX = %s, EXTRAINFO = %s\n",
           this->aidSelector == nullptr ? "null" :
-          ByteArrayUtil::toHex(this->aidSelector->getAidToSelect()->getValue()),
-          this->atrFilter == nullptr ? "null" : this->atrFilter->getAtrRegex(),
-          extraInfo);
+          ByteArrayUtil::toHex(
+              this->aidSelector->getAidToSelect()->getValue()).c_str(),
+          this->atrFilter == nullptr ? "null" :
+          this->atrFilter->getAtrRegex().c_str(),
+          extraInfo.c_str());
     }
 }
 

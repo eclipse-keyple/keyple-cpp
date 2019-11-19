@@ -35,7 +35,7 @@ AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(
   const std::string &name)
 : AbstractObservablePlugin(name)
 {
-    logger->debug("constructor (name: %s)\n", name);
+    logger->debug("constructor (name: %s)\n", name.c_str());
 }
 
 void AbstractThreadedObservablePlugin::startObservation()
@@ -113,8 +113,8 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                         std::shared_ptr<AbstractObservableReader> it = std::dynamic_pointer_cast<AbstractObservableReader>(_it);
                         if (actualNativeReadersNames->find(it->AbstractLoggedObservable<ReaderEvent>::getName()) != actualNativeReadersNames->end()) {
                             outerInstance->readers->erase(_it);
-                            outerInstance->logger->trace("[%s][%s] Plugin thread => Remove unplugged reader from readers list.", this->pluginName,
-                                            it->AbstractLoggedObservable<ReaderEvent>::getName());
+                            outerInstance->logger->trace("[%s][%s] Plugin thread => Remove unplugged reader from readers list.", this->pluginName.c_str(),
+                                            it->AbstractLoggedObservable<ReaderEvent>::getName().c_str());
                             /* remove reader name from the current list */
                             outerInstance->nativeReadersNames->erase(it->AbstractLoggedObservable<ReaderEvent>::getName());
                     }
@@ -132,8 +132,8 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                         outerInstance->readers->insert(reader);
                         /* add to the notification list */
                         changedReaderNames->insert(readerName);
-                        outerInstance->logger->trace("[%s][%s] Plugin thread => Add plugged reader to readers list.", this->pluginName,
-                                                        reader->AbstractLoggedObservable<ReaderEvent>::getName());
+                        outerInstance->logger->trace("[%s][%s] Plugin thread => Add plugged reader to readers list.", this->pluginName.c_str(),
+                                                        reader->AbstractLoggedObservable<ReaderEvent>::getName().c_str());
                         /* add reader name to the current list */
                         outerInstance->nativeReadersNames->insert(readerName);
                     }
@@ -149,12 +149,13 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
     } catch (const InterruptedException &e) {
         outerInstance->logger->warn("[%s] An exception occurred while " \
                                     "monitoring plugin: %s, cause %s",
-                                    this->pluginName, e.getMessage(),
+                                    this->pluginName.c_str(),
+                                    e.getMessage().c_str(),
                                     e.getCause().what());
     } catch (const KeypleReaderException &e) {
         outerInstance->logger->warn("[%s] An exception occurred while " \
                                     "monitoring plugin: %s, cause %s",
-                                    this->pluginName, e.what(),
+                                    this->pluginName.c_str(), e.what(),
                                     e.getCause().what());
     }
 
@@ -165,7 +166,10 @@ void AbstractThreadedObservablePlugin::finalize()
 {
     thread->end();
     thread.reset();
-    logger->trace("[%s] observable Plugin thread ended.", this->getName());
+
+    logger->trace("[%s] observable Plugin thread ended.",
+                  this->getName().c_str());
+    
     //AbstractObservablePlugin::finalize();
 }
 

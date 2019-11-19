@@ -102,7 +102,7 @@ public:
 
         logger->info("=============== UseCase Calypso #2: AID based default " \
                      "selection ===================\n");
-        logger->info("= PO Reader  NAME = %s\n", poReader->getName());
+        logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
 
         /*
          * Prepare a Calypso PO selection
@@ -211,11 +211,11 @@ public:
                                ->getReader(event->getReaderName());
             } catch (KeyplePluginNotFoundException& e) {
                 logger->error("update - caught KeyplePluginNotFoundException " \
-                              "(msg: %s, cause: %s)\n", e.getMessage(),
+                              "(msg: %s, cause: %s)\n", e.getMessage().c_str(),
                               e.getCause().what());
             } catch (KeypleReaderNotFoundException& e) {
                 logger->error("update - caught KeypleReaderNotFoundException " \
-                              "(msg: %s, cause: %s)\n", e.getMessage(),
+                              "(msg: %s, cause: %s)\n", e.getMessage().c_str(),
                               e.getCause().what());
             }
 
@@ -236,7 +236,7 @@ public:
                     static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1)];
 
             logger->info("Environment file data: %s\n",
-                         ByteArrayUtil::toHex(environmentAndHolder));
+                         ByteArrayUtil::toHex(environmentAndHolder).c_str());
 
             /*
              * Go on with the reading of the first record of the EventLog file
@@ -289,11 +289,11 @@ public:
 
                     /* Log the result */
                     logger->info("EventLog file data: %s\n",
-                                 ByteArrayUtil::toHex(eventLog));
+                                 ByteArrayUtil::toHex(eventLog).c_str());
                 }
             } catch (const KeypleReaderException &e) {
                 logger->error("update - caught KeypleReaderException " \
-                              "(msg: %s, cause: %s)\n", e.getMessage(),
+                              "(msg: %s, cause: %s)\n", e.getMessage().c_str(),
                               e.getCause().what());
             }
 

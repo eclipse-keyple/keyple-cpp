@@ -1,15 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
-
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 /* Plugin - Stub */
 #include "StubPlugin.h"
 #include "StubReader.h"
@@ -26,16 +27,19 @@ namespace stub {
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::plugin;
 
-std::shared_ptr<std::set<std::string>> StubPlugin::connectedStubNames = std::make_shared<std::set<std::string>>();
-std::shared_ptr<std::set<std::string>> StubPlugin::nativeStubReadersNames = std::make_shared<std::set<std::string>>();
+std::shared_ptr<std::set<std::string>>
+StubPlugin::connectedStubNames = std::make_shared<std::set<std::string>>();
+
+std::shared_ptr<std::set<std::string>>
+StubPlugin::nativeStubReadersNames = std::make_shared<std::set<std::string>>();
 
 StubPlugin::StubPlugin() : AbstractThreadedObservablePlugin("StubPlugin")
 {
     logger->debug("constructor\n");
 
     /*
-     * Monitoring is not handled by a lower layer (as in PC/SC), reduce the threading period to
-     * 50 ms to speed up responsiveness.
+     * Monitoring is not handled by a lower layer (as in PC/SC), reduce the
+     * threading period to 50 ms to speed up responsiveness.
      */
     threadWaitTimeout = 50;
 }
@@ -56,7 +60,8 @@ void StubPlugin::setParameter(const std::string &key, const std::string &value)
     parameters.emplace(key, value);
 }
 
-std::shared_ptr<std::set<std::shared_ptr<SeReader>>> StubPlugin::initNativeReaders()
+std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
+    StubPlugin::initNativeReaders()
 {
     /* init Stub Readers list */
     logger->debug("creating new list\n");
@@ -65,7 +70,8 @@ std::shared_ptr<std::set<std::shared_ptr<SeReader>>> StubPlugin::initNativeReade
             new std::set<std::shared_ptr<SeReader>>());
 
     /*
-     * parse the current readers list to create the ProxyReader(s) associated with new reader(s)
+     * parse the current readers list to create the ProxyReader(s) associated
+     * with new reader(s)
      */
     if (nativeStubReadersNames != nullptr && nativeStubReadersNames->size() > 0)
     {
@@ -82,12 +88,13 @@ void StubPlugin::plugStubReader(const std::string &name, bool synchronous)
     plugStubReader(name, TransmissionMode::CONTACTLESS, synchronous);
 }
 
-void StubPlugin::plugStubReader(const std::string &name, TransmissionMode transmissionMode,
+void StubPlugin::plugStubReader(const std::string &name,
+                                TransmissionMode transmissionMode,
                                 bool synchronous)
 {
     (void)transmissionMode;
 
-    logger->info("Plugging a new reader with name %s\n", name);
+    logger->info("Plugging a new reader with name %s\n", name.c_str());
     /* add the native reader to the native readers list */
     bool exist = connectedStubNames->find(name) != connectedStubNames->end();
 
@@ -99,11 +106,13 @@ void StubPlugin::plugStubReader(const std::string &name, TransmissionMode transm
     connectedStubNames->insert(name);
 
     if (exist) {
-        logger->error("Reader with name %s was already plugged\n", name);
+        logger->error("Reader with name %s was already plugged\n",name.c_str());
     }
 }
 
-void StubPlugin::plugStubReaders(std::shared_ptr<std::set<std::string>> names, bool synchronous) {
+void StubPlugin::plugStubReaders(std::shared_ptr<std::set<std::string>> names,
+                                 bool synchronous)
+{
     logger->debug("Plugging %s readers ..\n", names->size());
 
     /* plug stub readers that were not plugged already */
@@ -144,20 +153,20 @@ void StubPlugin::unplugStubReader(const std::string &name, bool synchronous)
 {
 
     if (connectedStubNames->find(name) == connectedStubNames->end()) {
-        logger->warn("unplugStubReader() No reader found with name %s\n", name);
-        }
-    else {
+        logger->warn("unplugStubReader() No reader found with name %s\n",
+                     name.c_str());
+    } else {
         /* remove the reader from the readers list */
         if (synchronous) {
             connectedStubNames->erase(name);
             readers->erase(getReader(name));
-    }
-        else {
+        } else {
             connectedStubNames->erase(name);
         }
+
         /* remove the native reader from the native readers list */
         logger->info("Unplugged reader with name %s, connectedStubNames size" \
-                     "%s\n", name, connectedStubNames->size());
+                     "%s\n", name.c_str(), connectedStubNames->size());
     }
 }
 
@@ -170,13 +179,13 @@ void StubPlugin::unplugStubReaders(std::shared_ptr<std::set<std::string>> names,
 
     for (auto name : *names) {
         try {
-            logger->info("unplugStubReaders -   unpluging %s\n", name);
+            logger->info("unplugStubReaders -   unpluging %s\n", name.c_str());
             readersToDelete.push_back(
                 std::dynamic_pointer_cast<StubReader>(getReader(name)));
         } catch (const KeypleReaderNotFoundException &e) {
             (void)e;
             logger->warn("unplugStubReaders -   no reader found with name %s\n",
-                         name);
+                         name.c_str());
         }
     }
 

@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 /* Core */
 #include "ByteArrayUtil.h"
@@ -28,12 +30,27 @@ namespace parser {
 using namespace keyple::core::command;
 using namespace keyple::core::util;
 
-std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> SelectFileRespPars::STATUS_TABLE;
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-SelectFileRespPars::StaticConstructor::StaticConstructor() {
-    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
-    m.emplace(0x6A88, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Data object not found (optional mode not available)."));
-    m.emplace(0x6B00, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "P1 or P2 value not supported (<>004fh, 0062h, 006Fh, 00C0h, 00D0h, 0185h and 5F52h, according to availabl optional modes)."));
+std::unordered_map<int, std::shared_ptr<StatusProperties>>
+    SelectFileRespPars::STATUS_TABLE;
+
+SelectFileRespPars::StaticConstructor::StaticConstructor()
+{
+    std::unordered_map<int, std::shared_ptr<StatusProperties>>
+        m(AbstractApduResponseParser::STATUS_TABLE);
+ 
+    m.emplace(0x6A88,
+              std::make_shared<StatusProperties>(
+                  false,
+                  "Data object not found (optional mode not available)."));
+    m.emplace(0x6B00,
+            std::make_shared<StatusProperties>(
+                false,
+                "P1 or P2 value not supported (<>004fh, 0062h, 006Fh, 00C0h, " \
+                "00D0h, 0185h and 5F52h, according to availabl optional " \
+                "modes)."));
+ 
     STATUS_TABLE = m;
 }
 
@@ -49,16 +66,20 @@ void SelectFileRespPars::parseResponse() {
     }
 
     if (logger->isTraceEnabled()) {
-        logger->trace("Parsing FCI: {}", ByteArrayUtil::toHex(inFileParameters));
+        logger->trace("Parsing FCI: {}",
+                      ByteArrayUtil::toHex(inFileParameters).c_str());
     }
 
     // Check File TLV Tag and length
-    if (inFileParameters[iter++] != static_cast<char>(0x85) || inFileParameters[iter++] != static_cast<char>(0x17)) {
-        throw IllegalStateException("Unexpected FCI format: " + ByteArrayUtil::toHex(inFileParameters));
+    if (inFileParameters[iter++] != static_cast<char>(0x85) ||
+        inFileParameters[iter++] != static_cast<char>(0x17)) {
+        throw IllegalStateException("Unexpected FCI format: " +
+                                    ByteArrayUtil::toHex(inFileParameters));
     }
 
     fileBinaryData = std::vector<char>(inFileParameters.size());
-    System::arraycopy(inFileParameters, 0, fileBinaryData, 0, inFileParameters.size());
+    System::arraycopy(inFileParameters, 0, fileBinaryData, 0,
+                      inFileParameters.size());
 
     sfi = inFileParameters[iter++];
     fileType = inFileParameters[iter++];
@@ -66,7 +87,8 @@ void SelectFileRespPars::parseResponse() {
 
     if (fileType == FILE_TYPE_EF && efType == EF_TYPE_BINARY) {
 
-        recSize = ((inFileParameters[iter] << 8) & 0x0000ff00) | (inFileParameters[iter + 1] & 0x000000ff);
+        recSize = ((inFileParameters[iter] << 8) & 0x0000ff00) |
+                  (inFileParameters[iter + 1]   & 0x000000ff);
         numRec = 1;
         iter += 2;
 
@@ -103,7 +125,8 @@ void SelectFileRespPars::parseResponse() {
         }
         else {
 
-            sharedEf = ((inFileParameters[iter + 1] << 8) & 0x0000ff00) | (inFileParameters[iter] & 0x000000ff);
+            sharedEf = ((inFileParameters[iter + 1] << 8) & 0x0000ff00) |
+                       (inFileParameters[iter] & 0x000000ff);
             iter += 2;
         }
 
@@ -127,12 +150,14 @@ void SelectFileRespPars::parseResponse() {
         rfu[0] = inFileParameters[iter++];
     }
 
-    lid = ((inFileParameters[iter] << 8) & 0x0000ff00) | (inFileParameters[iter + 1] & 0x000000ff);
+    lid = ((inFileParameters[iter] << 8) & 0x0000ff00) |
+          (inFileParameters[iter + 1] & 0x000000ff);
 
     selectionSuccessful = true;
 }
 
-SelectFileRespPars::SelectFileRespPars(std::shared_ptr<ApduResponse> response) : AbstractPoResponseParser(response)
+SelectFileRespPars::SelectFileRespPars(std::shared_ptr<ApduResponse> response)
+: AbstractPoResponseParser(response)
 {
     parseResponse();
 }

@@ -124,8 +124,8 @@ int main(int argc, char **argv)
 
     logger->info("=============== UseCase Calypso #4: Po Authentication =====" \
                  "=============\n");
-    logger->info("= PO Reader  NAME = %s\n", poReader->getName());
-    logger->info("= SAM Reader  NAME = %s\n", samReader->getName());
+    logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
+    logger->info("= SAM Reader  NAME = %s\n", samReader->getName().c_str());
 
     poReader->addSeProtocolSetting(
         SeCommonProtocols::PROTOCOL_ISO14443_4,
@@ -278,7 +278,7 @@ int main(int argc, char **argv)
 
             /* Log the result */
             logger->info("EventLog file data: %s\n",
-                         ByteArrayUtil::toHex(eventLog));
+                         ByteArrayUtil::toHex(eventLog).c_str());
 
             if (!poProcessStatus) {
                 throw std::make_shared<IllegalStateException>(

@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     }
     catch (const KeypleReaderNotFoundException &e) {
         logger->error("update - caught KeypleReaderNotFoundException " \
-                      "(msg: %s, cause: %s)\n", e.getMessage(),
+                      "(msg: %s, cause: %s)\n", e.getMessage().c_str(),
                       e.getCause().what());
     }
 
@@ -79,8 +79,8 @@ int main(int argc, char **argv)
         throw std::make_shared<IllegalStateException>("Bad PO/SAM setup");
     }
 
-    logger->info("PO Reader  NAME = %s\n", poReader->getName());
-    logger->info("SAM Reader  NAME = %s\n", samReader->getName());
+    logger->info("PO Reader  NAME = %s\n", poReader->getName().c_str());
+    logger->info("SAM Reader  NAME = %s\n", samReader->getName().c_str());
 
     /* Set PcSc settings per reader */
     poReader->setParameter(PcscReaderSettings::SETTING_KEY_LOGGING, "true");

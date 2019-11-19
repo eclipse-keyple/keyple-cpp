@@ -65,7 +65,9 @@ public:
      */
     AbstractLoggedObservable(const std::string &name) : name(name)
     {
-        logger->debug("constructor (name: %s)\n", name);
+        const char *s = name.c_str();
+        std::cout << s << std::endl;
+        logger->debug("constructor (name: %s)\n", name.c_str());
     }
 
     /**
@@ -86,8 +88,8 @@ public:
      */
     virtual void addObserver(std::shared_ptr<Observer<T>> observer) override
     {
-        logger->trace("[%s][%s] addObserver => Adding an observer\n", name,
-                      this->getName());
+        logger->trace("[%s][%s] addObserver => Adding an observer\n",
+                      name.c_str(), this->getName().c_str());
 
         Observable<T>::addObserver(observer);
     }
@@ -110,11 +112,11 @@ public:
         if (std::is_same<T, ReaderEvent>::value) {
         //if (std::dynamic_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
             logger->trace("[%s] removeObserver => Deleting a reader observer\n",
-                          this->getName());
+                          this->getName().c_str());
         }
         else { //else if (std::reinterpret_pointer_cast<AbstractObservablePlugin>(shared_from_this()) != nullptr) {
             logger->trace("[%s] removeObserver => Deleting a plugin observer\n",
-                          this->getName());
+                          this->getName().c_str());
         }
 
         Observable<T>::removeObserver(observer);
@@ -141,13 +143,19 @@ public:
          */
         if (std::is_same<T, ReaderEvent>::value) {
         //if (std::static_pointer_cast<AbstractObservableReader>(shared_from_this()) != nullptr) {
-            logger->trace("[%s] AbstractObservableReader => Notifying a reader event. EVENTNAME = %s\n",
-                            this->getName(), (reinterpret_cast<ReaderEvent *>(event.get()))->getEventType().getName());
+            logger->trace("[%s] AbstractObservableReader => Notifying a " \
+                          "reader event. EVENTNAME = %s\n",
+                          this->getName().c_str(),
+                          (reinterpret_cast<ReaderEvent *>(event.get()))
+                              ->getEventType().getName().c_str());
                                               
         }
         else { //else if (std::dynamic_pointer_cast<AbstractObservablePlugin>(shared_from_this()) != nullptr) {
-            logger->trace("[%s] AbstractObservableReader => Notifying a plugin event. EVENTNAME = %s\n",
-                            this->getName(), (reinterpret_cast<PluginEvent *>(event.get()))->getEventType().getName());
+            logger->trace("[%s] AbstractObservableReader => Notifying a " \
+                          "plugin event. EVENTNAME = %s\n",
+                          this->getName().c_str(),
+                          (reinterpret_cast<PluginEvent *>(event.get()))
+                               ->getEventType().getName().c_str());
         }
  
         Observable<T>::setChanged();

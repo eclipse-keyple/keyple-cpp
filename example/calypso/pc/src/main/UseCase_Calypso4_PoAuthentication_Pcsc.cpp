@@ -92,9 +92,9 @@ int main(int argc, char **argv)
 
     logger->info("=============== UseCase Calypso #4: Po Authentication =====" \
                  "=============\n");
-    logger->info("= PO Reader  NAME = %s\n", poReader->getName());
+    logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
     logger->info("= SAM Reader  NAME = %s\n",
-                 samResource->getSeReader()->getName());
+                 samResource->getSeReader()->getName().c_str());
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
@@ -240,7 +240,7 @@ int main(int argc, char **argv)
 
             /* Log the result */
             logger->info("EventLog file data: %s\n",
-                         ByteArrayUtil::toHex(eventLog));
+                         ByteArrayUtil::toHex(eventLog).c_str());
 
             if (!poProcessStatus) {
                 throw std::make_shared<IllegalStateException>(

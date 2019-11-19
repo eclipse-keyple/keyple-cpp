@@ -57,8 +57,8 @@ void doAndAnalyseSelection(std::shared_ptr<SeReader> seReader, std::shared_ptr<S
         logger->info("The SE matched the selection %d.", index);
         logger->info("Selection status for case %d: \n\t\tATR: " \
                          "%s\n\t\tFCI: %s\n", index,
-                         ByteArrayUtil::toHex(matchingSe->getSelectionStatus()->getAtr()->getBytes()),
-                         ByteArrayUtil::toHex(matchingSe->getSelectionStatus()->getFci()->getDataOut()));
+                         ByteArrayUtil::toHex(matchingSe->getSelectionStatus()->getAtr()->getBytes()).c_str(),
+                         ByteArrayUtil::toHex(matchingSe->getSelectionStatus()->getFci()->getDataOut()).c_str());
     }
     else {
         logger->info("The selection 2 process did not return any selected SE\n");
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
     }
 
     logger->info("=============== UseCase Generic #4: AID based sequential explicit multiple selection ==================\n");
-    logger->info("= SE Reader  NAME = %s\n", seReader->getName());
+    logger->info("= SE Reader  NAME = %s\n", seReader->getName().c_str());
 
     std::shared_ptr<AbstractMatchingSe> matchingSe;
 

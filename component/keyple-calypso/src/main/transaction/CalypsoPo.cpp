@@ -132,10 +132,11 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, Transmission
         this->isDfInvalidated_Renamed = false;
     }
     if (logger->isTraceEnabled()) {
-        logger->trace("REVISION = %s, SERIALNUMBER = %s, DFNAME = %s\n",
-                      static_cast<int>(this->revision),
-                      ByteArrayUtil::toHex(this->applicationSerialNumber),
-                      ByteArrayUtil::toHex(this->dfName));
+        logger->trace(
+            "REVISION = %s, SERIALNUMBER = %s, DFNAME = %s\n",
+            static_cast<int>(this->revision),
+            ByteArrayUtil::toHex(this->applicationSerialNumber).c_str(),
+            ByteArrayUtil::toHex(this->dfName).c_str());
     }
 }
 
@@ -232,16 +233,21 @@ bool CalypsoPo::isDfInvalidated()
 }
 
 PoClass CalypsoPo::getPoClass() {
-    /* Rev1 and Rev2 expects the legacy class byte while Rev3 expects the ISO class byte */
+    /*
+     * Rev1 and Rev2 expects the legacy class byte while Rev3 expects the ISO
+     * class byte
+     */
     if (revision == PoRevision::REV1_0 || revision == PoRevision::REV2_4) {
         if (logger->isTraceEnabled()) {
-            logger->trace("PO revision = %d, PO class = %s\n", static_cast<int>(revision), "PoClass::LEGACY");
+            logger->trace("PO revision = %d, PO class = %s\n",
+                          static_cast<int>(revision), "PoClass::LEGACY");
         }
         return PoClass::LEGACY;
     }
     else {
         if (logger->isTraceEnabled()) {
-            logger->trace("PO revision = %d, PO class = %s\n", static_cast<int>(revision), "PoClass::ISO");
+            logger->trace("PO revision = %d, PO class = %s\n",
+                          static_cast<int>(revision), "PoClass::ISO");
         }
         return PoClass::ISO;
     }

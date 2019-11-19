@@ -26,7 +26,8 @@ namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-PcscTerminal::PcscTerminal(const std::string& name) : name(name)
+PcscTerminal::PcscTerminal(const std::string& name)
+: name(name), contextEstablished(false)
 {
 }
 
@@ -69,7 +70,35 @@ const std::vector<std::string>& PcscTerminal::listTerminals()
         ptr += strlen(ptr) + 1;
     }
 
+    SCardReleaseContext(context);
+    free(readers);
+
     return list;
+}
+
+void PcscTerminal::establishContext()
+{
+    LONG ret;
+
+    if (this->contextEstablished)
+        return;
+
+    ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &this->context);
+    if (ret != SCARD_S_SUCCESS) {
+        this->contextEstablished = false;
+        throw PcscTerminalException("SCardEstablishContext failed");
+    }
+
+    this->contextEstablished = true;
+}
+
+void PcscTerminal::releaseContext()
+{
+    if (!this->contextEstablished)
+        return;
+    
+    SCardReleaseContext(this->context);
+    this->contextEstablished = false;
 }
 
 bool PcscTerminal::isCardPresent()
@@ -78,6 +107,15 @@ bool PcscTerminal::isCardPresent()
     SCARDHANDLE hCard;
     LONG rv;
 
+    try {
+        establishContext();
+    } catch (PcscTerminalException& e) {
+        logger->error("isCardPresent - caught PcscTerminalException (msg: %s" \
+                      ", cause: %s)\n", e.getMessage().c_str(),
+                      e.getCause().what());
+        throw e;
+    }
+
     logger->debug("isCardPresent - connecting to card\n");
 
     rv = SCardConnect(this->context, (LPSTR)this->name.c_str(),
@@ -85,7 +123,10 @@ bool PcscTerminal::isCardPresent()
                       SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &hCard,
                       &protocol);
     if (rv != SCARD_S_SUCCESS) {
-            logger->debug("isCardPresent - error connecting to card\n");
+        std::cout << "error: " << rv << std::endl;
+            logger->debug("isCardPresent - error connecting to card (%s)\n",
+                          pcsc_stringify_error(rv));
+            releaseContext();
             return false;
     }
 
@@ -127,6 +168,17 @@ void PcscTerminal::openAndConnect(std::string protocol)
     BYTE atr[33];
     DWORD atrLen = sizeof(atr);
 
+    logger->debug("openAndConnect\n");
+
+    try {
+        establishContext();
+    } catch (PcscTerminalException& e) {
+        logger->error("isCardPresent - caught PcscTerminalException (msg: %s" \
+                      ", cause: %s)\n", e.getMessage().c_str(),
+                      e.getCause().what());
+        throw e;
+    }
+
     if (!protocol.compare("*")) {
         connectProtocol = SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1;
     } else if (!protocol.compare("T=0")) {
@@ -141,13 +193,14 @@ void PcscTerminal::openAndConnect(std::string protocol)
     }
 
     logger->debug("openAndConnect - connecting with protocol: %s, " \
-                  "connectProtocol: %d and sharingMode: %d\n", protocol,
+                  "connectProtocol: %d and sharingMode: %d\n", protocol.c_str(),
                   connectProtocol, sharingMode);
 
     rv = SCardConnect(this->context, this->name.c_str(), sharingMode,
                       connectProtocol, &this->handle, &this->protocol);
     if (rv != SCARD_S_SUCCESS) {
         logger->error("openAndConnect - SCardConnect failed (%d)\n", rv);
+        releaseContext();
         throw PcscTerminalException("openAndConnect failed");
     }
 
@@ -164,6 +217,7 @@ void PcscTerminal::openAndConnect(std::string protocol)
                      &this->protocol, atr, &atrLen);
     if (rv != SCARD_S_SUCCESS) {
         logger->error("openAndConnect - SCardStatus failed (%d)\n", rv);
+        releaseContext();
         throw PcscTerminalException("openAndConnect failed");
     } else {
         logger->debug("openAndConnect - card state: %d\n", this->state);
@@ -174,7 +228,11 @@ void PcscTerminal::openAndConnect(std::string protocol)
 
 void PcscTerminal::closeAndDisconnect(bool reset)
 {
+    logger->debug("closeAndDisconnect\n");
+
     SCardDisconnect(this->context, reset ? SCARD_LEAVE_CARD : SCARD_RESET_CARD);
+
+    releaseContext();
 }
 
 bool PcscTerminal::waitForCardAbsent(long long timeout)

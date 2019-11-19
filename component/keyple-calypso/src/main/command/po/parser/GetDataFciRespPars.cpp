@@ -79,15 +79,15 @@ GetDataFciRespPars::GetDataFciRespPars(
 
     /* check the command status to determine if the DF has been invalidated */
     if (selectApplicationResponse->getStatusCode() == 0x6283) {
-        logger->debug("The response to the select application command status word indicates that" \
-                      "the DF has been invalidated\n");
+        logger->debug("The response to the select application command status" \
+                      "word indicates that the DF has been invalidated\n");
         isDfInvalidated_Renamed = true;
     }
 
     /* parse the raw data with the help of the TLV class */
     try {
         /* init TLV object with the raw data and extract the FCI Template */
-        logger->debug("response: %s\n", ByteArrayUtil::toHex(response));
+        logger->debug("response: %s\n", ByteArrayUtil::toHex(response).c_str());
         std::vector<char> vec = response;
         tlv = std::make_shared<TLV>(vec);
 
@@ -104,17 +104,20 @@ GetDataFciRespPars::GetDataFciRespPars(
         }
 
         dfName = tlv->getValue();
-        logger->debug("DF Name = %s\n", ByteArrayUtil::toHex(dfName));
+        logger->debug("DF Name = %s\n", ByteArrayUtil::toHex(dfName).c_str());
 
         /* Get the FCI Proprietary Template */
         if (!tlv->parse(TAG_FCI_PROPRIETARY_TEMPLATE, tlv->getPosition())) {
-            logger->error("FCI parsing error: FCI proprietary template tag not found\n");
+            logger->error("FCI parsing error: FCI proprietary template tag " \
+                          "not found\n");
             return;
         }
 
         /* Get the FCI Issuer Discretionary Data */
-        if (!tlv->parse(TAG_FCI_ISSUER_DISCRETIONARY_DATA, tlv->getPosition())) {
-            logger->error("FCI parsing error: FCI issuer discretionary data tag not found\n");
+        if (!tlv->parse(TAG_FCI_ISSUER_DISCRETIONARY_DATA, tlv->getPosition()))
+        {
+            logger->error("FCI parsing error: FCI issuer discretionary data " \
+                          "tag not found\n");
             return;
         }
 
@@ -125,18 +128,21 @@ GetDataFciRespPars::GetDataFciRespPars(
         }
 
         applicationSN = tlv->getValue();
-        logger->debug("Application Serial Number = %s\n", ByteArrayUtil::toHex(applicationSN));
+        logger->debug("Application Serial Number = %s\n",
+                      ByteArrayUtil::toHex(applicationSN).c_str());
 
         /* Get the Discretionary Data */
         if (!tlv->parse(TAG_DISCRETIONARY_DATA, tlv->getPosition())) {
-            logger->error("FCI parsing error: discretionary data tag not found\n");
+            logger->error("FCI parsing error: discretionary data tag not " \
+                          "found\n");
             return;
         }
 
         std::vector<char> discretionaryData = tlv->getValue();
 
         if (logger->isDebugEnabled()) {
-            logger->debug("Discretionary Data = %s\n", ByteArrayUtil::toHex(discretionaryData));
+            logger->debug("Discretionary Data = %s\n",
+                          ByteArrayUtil::toHex(discretionaryData).c_str());
         }
 
         /*
@@ -155,7 +161,8 @@ GetDataFciRespPars::GetDataFciRespPars(
     }
     catch (const std::runtime_error &e) {
         /* Silently ignore problems decoding TLV structure. Just log. */
-        logger->debug("Error while parsing the FCI BER-TLV data structure (%s)\n", e.what());
+        logger->debug("Error while parsing the FCI BER-TLV data structure " \
+                     "(%s)\n", e.what());
     }
 }
 

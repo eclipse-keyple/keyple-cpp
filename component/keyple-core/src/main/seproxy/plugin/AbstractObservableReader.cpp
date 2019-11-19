@@ -89,8 +89,8 @@ std::shared_ptr<SeResponseSet> AbstractObservableReader::transmitSet(
             static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
         logger->debug("[%s] transmit => SEREQUESTSET = %s, elapsed %d ms\n",
-                      AbstractLoggedObservable<ReaderEvent>::getName(),
-                      requestSet->toString(), elapsedMs);
+                      AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
+                      requestSet->toString().c_str(), elapsedMs);
     }
 
     try {
@@ -103,7 +103,7 @@ std::shared_ptr<SeResponseSet> AbstractObservableReader::transmitSet(
         logger->debug("transmit => SEREQUESTSET channel failure. elapsed %d\n",
                       elapsedMs);
         /* Throw an exception with the responses collected so far. */
-        logger->debug("exception message: %s\n", ex.getMessage());
+        logger->debug("exception message: %s\n", ex.getMessage().c_str());
         throw ex;
     } catch (const KeypleIOReaderException &ex) {
         long long timeStamp = System::nanoTime();
@@ -114,7 +114,7 @@ std::shared_ptr<SeResponseSet> AbstractObservableReader::transmitSet(
                       elapsedMs);
 
         /* Throw an exception with the responses collected so far. */
-        logger->debug("exception message: %s\n", ex.getMessage());
+        logger->debug("exception message: %s\n", ex.getMessage().c_str());
         throw ex;
     }
 
@@ -124,14 +124,16 @@ std::shared_ptr<SeResponseSet> AbstractObservableReader::transmitSet(
             static_cast<double>((timeStamp - before) / 100000) / 10;
         this->before = timeStamp;
         logger->debug("[%s] transmit => SERESPONSESET = %s, elapsed %d ms\n",
-                        AbstractLoggedObservable<ReaderEvent>::getName(),
-                        responseSet->toString(), elapsedMs);
+                        AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
+                        responseSet->toString().c_str(), elapsedMs);
     }
 
     return responseSet;
 }
 
-std::shared_ptr<SeResponse> AbstractObservableReader::transmit(std::shared_ptr<SeRequest> seRequest) {
+std::shared_ptr<SeResponse>
+AbstractObservableReader::transmit(std::shared_ptr<SeRequest> seRequest)
+{
     if (seRequest == nullptr) {
         throw std::invalid_argument("seRequest must not be null\n");
     }
@@ -140,47 +142,66 @@ std::shared_ptr<SeResponse> AbstractObservableReader::transmit(std::shared_ptr<S
 
     if (logger->isDebugEnabled()) {
         long long timeStamp = System::nanoTime();
-        double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
+        double elapsedMs =
+        static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
+ 
         logger->debug("[%s] transmit => SEREQUEST = %s, elapsed %d ms\n",
-                        AbstractLoggedObservable<ReaderEvent>::getName(), seRequest->toString(), elapsedMs);
+                      AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
+                      seRequest->toString().c_str(), elapsedMs);
     }
 
     try {
         seResponse = processSeRequest(seRequest);
-    }
-    catch (const KeypleChannelStateException &ex) {
+    } catch (const KeypleChannelStateException &ex) {
         long long timeStamp = System::nanoTime();
-        double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
+        double elapsedMs =
+         static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
-        logger->debug("[%s] transmit => SEREQUEST channel failure. elapsed %d\n",
-                        AbstractLoggedObservable<ReaderEvent>::getName(), elapsedMs);
-        /* Throw an exception with the responses collected so far (ex.getSeResponse()). */
+ 
+        logger->debug("[%s] transmit => SEREQUEST channel failure. elaps. %d\n",
+                      AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
+                      elapsedMs);
+        /*
+         * Throw an exception with the responses collected so far
+         * (ex.getSeResponse()).
+         */
         throw ex;
     }
     catch (const KeypleIOReaderException &ex) {
         long long timeStamp = System::nanoTime();
-        double elapsedMs = static_cast<double>((timeStamp - this->before) / 100000) / 10;
+        double elapsedMs =
+         static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
+
         logger->debug("[%s] transmit => SEREQUEST IO failure. elapsed %d\n",
-                        AbstractLoggedObservable<ReaderEvent>::getName(), elapsedMs);
-        /* Throw an exception with the responses collected so far (ex.getSeResponse()). */
+                      AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
+                      elapsedMs);
+        /*
+         * Throw an exception with the responses collected so far
+         * (ex.getSeResponse()).
+         */
         throw ex;
     }
 
     if (logger->isDebugEnabled()) {
         long long timeStamp = System::nanoTime();
-        double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
+        double elapsedMs =
+         static_cast<double>((timeStamp - before) / 100000) / 10;
         this->before = timeStamp;
+        
         logger->debug("[%s] transmit => SERESPONSE = %s, elapsed %d ms\n",
-                        AbstractLoggedObservable<ReaderEvent>::getName(), seResponse->toString(), elapsedMs);
+                      AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
+                      seResponse->toString().c_str(), elapsedMs);
     }
 
     return seResponse;
 }
 
-void AbstractObservableReader::addObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
-    // if an observer is added to an empty list, start the observation
+void AbstractObservableReader::addObserver(
+    std::shared_ptr<ObservableReader::ReaderObserver> observer)
+{
+    /* If an observer is added to an empty list, start the observation */
     if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
         logger->debug("Start the reader monitoring\n");
         startObservation();
@@ -189,7 +210,9 @@ void AbstractObservableReader::addObserver(std::shared_ptr<ObservableReader::Rea
     AbstractLoggedObservable<ReaderEvent>::addObserver(observer);
 }
 
-void AbstractObservableReader::removeObserver(std::shared_ptr<ObservableReader::ReaderObserver> observer) {
+void AbstractObservableReader::removeObserver(
+    std::shared_ptr<ObservableReader::ReaderObserver> observer)
+{
     AbstractLoggedObservable<ReaderEvent>::removeObserver(observer);
     if (AbstractLoggedObservable<ReaderEvent>::countObservers() == 0) {
         logger->debug("Stop the reader monitoring\n");

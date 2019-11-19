@@ -77,12 +77,13 @@ std::vector<char> StubSecureElement::processApdu(std::vector<char> &apduIn)
     /* Convert apduIn to hexa */
     std::string hexApdu = ByteArrayUtil::toHex(apduIn);
 
-    logger->debug("processApdu - looking for response to %s\n", hexApdu);
+    logger->debug("processApdu - looking for response to %s\n",
+                  hexApdu.c_str());
 
     /* Return matching hexa response if found */
     if (hexCommands.find(hexApdu) != hexCommands.end()) {
         logger->debug("processApdu - response found: %s\n",
-                      hexCommands[hexApdu]);
+                      hexCommands[hexApdu].c_str());
         return ByteArrayUtil::fromHex(hexCommands[hexApdu]);
     }
 

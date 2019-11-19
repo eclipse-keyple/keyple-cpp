@@ -50,8 +50,8 @@ int SeSelection::prepareSelection(
 {
 
     logger->trace("SELECTORREQUEST = %s, EXTRAINFO = %s\n",
-                  seSelectionRequest->getSelectionRequest()->toString(),
-                  seSelectionRequest->getSeSelector()->getExtraInfo());
+                  seSelectionRequest->getSelectionRequest()->toString().c_str(),
+                  seSelectionRequest->getSeSelector()->getExtraInfo().c_str());
 
     /* build the SeRequest set transmitted to the SE */
     selectionRequestSet->add(seSelectionRequest->getSelectionRequest());

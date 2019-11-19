@@ -135,6 +135,21 @@ private:
      *
      */
     std::vector<char> atr;
+
+    /**
+     * 
+     */
+    bool contextEstablished;
+
+    /**
+     * 
+     */
+    void establishContext();
+
+    /**
+     * 
+     */
+    void releaseContext();
 };
 
 }

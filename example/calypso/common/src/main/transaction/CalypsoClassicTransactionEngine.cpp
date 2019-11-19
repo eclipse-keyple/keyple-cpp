@@ -104,10 +104,10 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(std::shared_
                                                     CalypsoClassicInfo::RECORD_NUMBER_1);
 
     logger->info("Parsing Read EventLog file: %s\n",
-                 poTransaction->getResponseParser(readEventLogParserIndex)->getStatusInformation());
+                 poTransaction->getResponseParser(readEventLogParserIndex)->getStatusInformation().c_str());
 
     logger->info("Parsing Read ContractList file: %s\n",
-                 poTransaction->getResponseParser(readContractListParserIndex)->getStatusInformation());
+                 poTransaction->getResponseParser(readContractListParserIndex)->getStatusInformation().c_str());
 
     if (!poTransaction->wasRatified()) {
         logger->info("========= Previous Secure Session was not ratified. =====================\n");
@@ -156,7 +156,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(std::shared_
         poProcessStatus = poTransaction->processPoCommandsInSession();
 
         logger->info("Parsing Read Contract file: %s",
-                     poTransaction->getResponseParser(readContractsParserIndex)->getStatusInformation());
+                     poTransaction->getResponseParser(readContractsParserIndex)->getStatusInformation().c_str());
 
         logger->info("========= PO Calypso session ======= Closing ============================\n");
 
@@ -185,7 +185,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(std::shared_
         poProcessStatus = poTransaction->processClosing(ChannelState::KEEP_OPEN);
 
         logger->info("Parsing Append EventLog file: %s\n",
-                     poTransaction->getResponseParser(appendEventLogParserIndex)->getStatusInformation());
+                     poTransaction->getResponseParser(appendEventLogParserIndex)->getStatusInformation().c_str());
     }
 
     if (poTransaction->isSuccessful()) {
@@ -301,7 +301,8 @@ void CalypsoClassicTransactionEngine::processSeMatch(std::shared_ptr<AbstractDef
             //logger->warn(System::getProperty("line.separator") + "{}", profiler);
         } catch (const Exception &e) {
             logger->error("processSeMatch - caught Exception (msg: %s, " \
-                          "cause: %s)\n", e.getMessage(), e.getCause().what());
+                          "cause: %s)\n", e.getMessage().c_str(),
+                          e.getCause().what());
         }
     }
 }

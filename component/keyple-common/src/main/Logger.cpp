@@ -90,5 +90,54 @@ void Logger::setErrorEnabled(bool enabled)
     errorEnabled = enabled;
 }
 
+void Logger::trace(const std::string s, ...)
+{
+    if (traceEnabled) {
+        va_list arg;
+        va_start (arg, s);
+        log("TRACE", s, arg);
+        va_end(arg);
+    }
+}
+
+void Logger::debug(const std::string s, ...)
+{
+    if (debugEnabled) {
+        va_list arg;
+        va_start (arg, s);
+        log("DEBUG", s, arg);
+        va_end(arg);
+    }
+}
+
+void Logger::warn(const std::string s, ...)
+{
+    if (warnEnabled) {
+        va_list arg;
+        va_start (arg, s);
+        log("WARN", s, arg);
+        va_end(arg);
+    }
+}
+
+void Logger::info(const std::string s, ...)
+{
+    if (infoEnabled) {
+        va_list arg;
+        va_start (arg, s);
+        log("INFO", s, arg);
+        va_end(arg);
+    }
+}
+
+void Logger::error(const std::string s, ...)
+{
+    if (errorEnabled) {
+        va_list arg;
+        va_start (arg, s);
+        log("ERROR", s, arg);
+        va_end(arg);
+    }
+}
 }
 }

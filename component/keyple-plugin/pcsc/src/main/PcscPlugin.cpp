@@ -72,14 +72,15 @@ std::shared_ptr<std::set<std::string>> PcscPlugin::fetchNativeReadersNames()
         } else {
             for (auto &term : terminals) {
                 logger->debug("fetchNativeReadersNames - reader: %s\n",
-                              static_cast<std::string>(term.getName()));
+                              term.getName().c_str());
                 nativeReadersNames.insert(term.getName());
             }
         }
     } catch (PcscTerminalException &e) {
         logger->trace("fetchNativeReadersNames - terminal list is not " \
                       "accessible, name: %s, exception: %s, cause: %s\n",
-                      this->getName(), e.getMessage(), e.getCause().what());
+                      this->getName().c_str(), e.getMessage().c_str(),
+                      e.getCause().what());
         throw KeypleReaderException("Could not access terminals list", e);
     }
 
@@ -114,7 +115,8 @@ PcscPlugin::initNativeReaders()
         }
     } catch (PcscTerminalException &e) {
         logger->trace("[%s] terminal list not accessible, msg: %s, cause: %s",
-                      this->getName(), e.getMessage(), e.getCause().what());
+                      this->getName().c_str(), e.getMessage().c_str(),
+                      e.getCause().what());
         throw KeypleReaderException("Could not access terminals list", e);
     }
 
@@ -146,7 +148,7 @@ PcscPlugin::fetchNativeReader(const std::string &name)
         }
     } catch (PcscTerminalException& e) {
         logger->trace("[%s] caught PcscTerminalException (msg: %s, cause: " \
-                      "%s)\n", this->getName(), e.getMessage(),
+                      "%s)\n", this->getName().c_str(), e.getMessage().c_str(),
                       e.getCause().what());
         throw KeypleReaderException("Could not access terminals list", e);
     }

@@ -69,7 +69,7 @@ PcscReader::PcscReader(
   terminal(terminal)
 {
     logger->debug("PcscReader::PcscReader pluginName: %s, terminal: %s\n",
-                  pluginName, terminal.getName());
+                  pluginName.c_str(), terminal.getName().c_str());
 
     this->protocolsMap = std::unordered_map<SeProtocol, std::string>();
 
@@ -85,8 +85,8 @@ PcscReader::PcscReader(
     } catch (KeypleBaseException& e) {
 
         logger->trace("[%s] PcscReader - caught KeypleBaseException (msg: %s," \
-                      " cause: %s\n", pluginName, e.getMessage(),
-                      e.getCause().what());
+                      " cause: %s\n", pluginName.c_str(),
+                      e.getMessage().c_str(), e.getCause().what());
     }
 }
 
@@ -103,7 +103,7 @@ PcscReader::PcscReader(const PcscReader& o)
 void PcscReader::closePhysicalChannel()
 {
     try {
-        logger->trace("[%s] closePhysicalChannel\n", this->getName());
+        logger->trace("[%s] closePhysicalChannel\n", this->getName().c_str());
         terminal.closeAndDisconnect(cardReset);
 
     } catch (PcscTerminalException &e) {
@@ -121,8 +121,8 @@ bool PcscReader::checkSePresence()
 
     } catch (PcscTerminalException &e) {
         logger->trace("[%s] checkSePresence - caught PcscTerminalException " \
-                      " (msg: %s, cause: %ds\n", terminal.getName(),
-                      e.getMessage(), e.getCause().what());
+                      " (msg: %s, cause: %ds\n", terminal.getName().c_str(),
+                      e.getMessage().c_str(), e.getCause().what());
     }
 
     return false;
@@ -137,8 +137,8 @@ bool PcscReader::waitForCardPresent(long long timeout)
 
     } catch (PcscTerminalException &e) {
         logger->trace("[%s] waitForCardPresent - caught PcscTerminalException " \
-                      " (msg: %s, cause: %ds\n", terminal.getName(),
-                      e.getMessage(), e.getCause().what());
+                      " (msg: %s, cause: %ds\n", terminal.getName().c_str(),
+                      e.getMessage().c_str(), e.getCause().what());
     }
 
     return false;
@@ -157,8 +157,8 @@ bool PcscReader::waitForCardAbsent(long long timeout)
 
     } catch (PcscTerminalException &e) {
         logger->trace("[%s] waitForCardAbsent - caught PcscTerminalException " \
-                      " (msg: %s, cause: %ds\n", terminal.getName(),
-                      e.getMessage(), e.getCause().what());
+                      " (msg: %s, cause: %ds\n", terminal.getName().c_str(),
+                      e.getMessage().c_str(), e.getCause().what());
     }
 
     return false;
@@ -174,7 +174,8 @@ std::vector<char> PcscReader::transmitApdu(std::vector<char> &apduIn)
         response = terminal.transmitApdu(apduIn);
     } catch (PcscTerminalException& e) {
         logger->error("transmitApdu - caught PcscTerminalException (msg: %s, " \
-                      "cause: %s)\n", e.getMessage(), e.getCause().what());
+                      "cause: %s)\n", e.getMessage().c_str(),
+                      e.getCause().what());
         throw KeypleIOReaderException("transmitApdu failed", e);
     } catch (std::invalid_argument& e) {
         /* Card could have been removed prematurely */
@@ -203,8 +204,8 @@ bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
             protocolsMap.begin();
         while (it != protocolsMap.end()) {
             SeProtocol p = it->first;
-            logger->debug("available protocol: %s - %s\n", p.getName(),
-                          it->second);
+            logger->debug("available protocol: %s - %s\n", p.getName().c_str(),
+                          it->second.c_str());
             it++;
         }
 
@@ -214,7 +215,7 @@ bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
          */
         std::string selectionMask = protocolsMap[protocolFlag];
         logger->debug("protocolFlagMatches - selectionMask: %s\n",
-                      selectionMask);
+                      selectionMask.c_str());
         if (selectionMask == "") {
             throw KeypleReaderException("Target selector mask not found!");// nullptr));
         }
@@ -223,13 +224,13 @@ bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
         std::string atr = ByteArrayUtil::toHex(this->terminal.getATR());
         if (!p->matcher(atr)->matches()) {
             logger->trace("[%s] protocolFlagMatches => unmatching SE. " \
-                          "PROTOCOLFLAG = %s\n", this->getName(),
-                          protocolFlag.toString());
+                          "PROTOCOLFLAG = %s\n", this->getName().c_str(),
+                          protocolFlag.toString().c_str());
             result = false;
         } else {
             logger->trace("[%s] protocolFlagMatches => matching SE. " \
-                          "PROTOCOLFLAG = %s\n", this->getName(),
-                          protocolFlag.toString());
+                          "PROTOCOLFLAG = %s\n", this->getName().c_str(),
+                          protocolFlag.toString().c_str());
             result = true;
         }
     //} else {
@@ -243,7 +244,8 @@ bool PcscReader::protocolFlagMatches(const SeProtocol& protocolFlag)
 void PcscReader::setParameter(const std::string &name, const std::string &value)
 {
     logger->trace("[%s] setParameter => PCSC: Set a parameter. NAME = %s," \
-                  " VALUE = %s\n", this->getName(), name, value);
+                  " VALUE = %s\n", this->getName().c_str(), name.c_str(),
+                  value.c_str());
 
     if (name == "") {
         throw std::invalid_argument("Parameter shouldn't be null\n");
@@ -389,10 +391,10 @@ void PcscReader::openPhysicalChannel()
         if (cardExclusiveMode) {
             this->terminal.beginExclusive();
             logger->trace("[%s] Opening of a physical SE channel in " \
-                          "exclusive mode\n", this->getName());
+                          "exclusive mode\n", this->getName().c_str());
         } else {
             logger->trace("[%s] Opening of a physical SE channel in " \
-                              "shared mode\n", this->getName());
+                              "shared mode\n", this->getName().c_str());
         }
     } catch (PcscTerminalException &e) {
         throw KeypleChannelStateException(

@@ -56,8 +56,9 @@ std::shared_ptr<ApduResponse> AbstractSelectionLocalReader::openChannelForAid(
     }
 
     logger->trace("[%s] openLogicalChannel => Select Application with AID = " \
-                  "%s\n", AbstractLoggedObservable<ReaderEvent>::getName(),
-                  ByteArrayUtil::toHex(aid));
+                  "%s\n",
+                  AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
+                  ByteArrayUtil::toHex(aid).c_str());
 
     /*
      * build a get response command the actual length expected by the SE in the
@@ -80,8 +81,8 @@ std::shared_ptr<ApduResponse> AbstractSelectionLocalReader::openChannelForAid(
     selectApplicationCommand[5 + aid.size()] = static_cast<char>(0x00); // Le
 
     logger->trace("[%s] openLogicalChannel => final command = %s\n",
-                  AbstractLoggedObservable<ReaderEvent>::getName(),
-                  ByteArrayUtil::toHex(selectApplicationCommand));
+                  AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
+                  ByteArrayUtil::toHex(selectApplicationCommand).c_str());
 
     /*
      * we use here processApduRequest to manage case 4 hack. The successful
@@ -96,8 +97,8 @@ std::shared_ptr<ApduResponse> AbstractSelectionLocalReader::openChannelForAid(
     if (!fciResponse->isSuccessful()) {
         logger->trace("[%s] openLogicalChannel => Application Selection " \
                       "failed. SELECTOR = %s\n",
-                      AbstractLoggedObservable<ReaderEvent>::getName(),
-                      aidSelector->toString());
+                      AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
+                      aidSelector->toString().c_str());
     }
 
     return fciResponse;

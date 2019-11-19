@@ -137,8 +137,8 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
     if (logger->isDebugEnabled()) {
         logger->debug("processAtomicOpening => Identification: DFNAME = %s, " \
                       "SERIALNUMBER = %s\n",
-                      ByteArrayUtil::toHex(poCalypsoInstanceAid),
-                      ByteArrayUtil::toHex(poCalypsoInstanceSerial));
+                      ByteArrayUtil::toHex(poCalypsoInstanceAid).c_str(),
+                      ByteArrayUtil::toHex(poCalypsoInstanceSerial).c_str());
     }
 
     /* diversify only if this has not already been done. */
@@ -175,14 +175,14 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
                                     ChannelState::KEEP_OPEN);
 
     logger->debug("processAtomicOpening => identification: SAMSEREQUEST = %s\n",
-                  samSeRequest->toString());
+                  samSeRequest->toString().c_str());
 
     /*
      * Transmit the SeRequest to the SAM and get back the SeResponse (list of
      * ApduResponse)
      */
     logger->debug("processAtomicOpening - transmiting request on samReader" \
-                  "(%s)\n", this->samReader->getName());
+                  "(%s)\n", this->samReader->getName().c_str());
     std::shared_ptr<SeResponse> samSeResponse =
         this->samReader->transmit(samSeRequest);
 
@@ -197,7 +197,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
     }
 
     logger->debug("processAtomicOpening => identification: SAMSERESPONSE = " \
-                  "%s\n", samSeResponse->toString());
+                  "%s\n", samSeResponse->toString().c_str());
 
     std::vector<std::shared_ptr<ApduResponse>> samApduResponseList =
         samSeResponse->getApduResponses();
@@ -215,7 +215,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
         sessionTerminalChallenge = samChallengePars->getChallenge();
         logger->debug("processAtomicOpening => identification: " \
                       "TERMINALCHALLENGE = %s\n",
-                      ByteArrayUtil::toHex(sessionTerminalChallenge));
+                      ByteArrayUtil::toHex(sessionTerminalChallenge).c_str());
     }
     else {
         throw std::make_shared<KeypleCalypsoSecureSessionException>(
@@ -261,13 +261,13 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
         std::make_shared<SeRequest>(poApduRequestList, ChannelState::KEEP_OPEN);
 
     logger->debug("processAtomicOpening => opening:  POSEREQUEST = %s\n",
-                  poSeRequest->toString());
+                  poSeRequest->toString().c_str());
 
     /* Transmit the commands to the PO */
     std::shared_ptr<SeResponse> poSeResponse = poReader->transmit(poSeRequest);
 
     logger->debug("processAtomicOpening => opening:  POSERESPONSE = %s\n",
-                  poSeResponse->toString());
+                  poSeResponse->toString().c_str());
 
     if (poSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
@@ -331,8 +331,9 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
 
     logger->debug("processAtomicOpening => opening: CARDCHALLENGE = %s, " \
                   "POKIF = %s, POKVC = %s\n",
-                  ByteArrayUtil::toHex(sessionCardChallenge),
-                  StringHelper::formatSimple("%02x", poKif), poKvc->toString());
+                  ByteArrayUtil::toHex(sessionCardChallenge).c_str(),
+                  StringHelper::formatSimple("%02x", poKif).c_str(),
+                  poKvc->toString().c_str());
 
     if (!securitySettings->isAuthorizedKvc(poKvc->byteValue())) {
         throw KeypleCalypsoSecureSessionUnauthorizedKvcException(
@@ -435,13 +436,13 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicPoCommands(
         std::make_shared<SeRequest>(poApduRequestList, channelState);
 
     logger->debug("processAtomicPoCommands => POREQUEST = %s\n",
-                  poSeRequest->toString());
+                  poSeRequest->toString().c_str());
 
     /* Transmit the commands to the PO */
     std::shared_ptr<SeResponse> poSeResponse = poReader->transmit(poSeRequest);
 
     logger->debug("processAtomicPoCommands => PORESPONSE = %s\n",
-                  poSeResponse->toString());
+                  poSeResponse->toString().c_str());
 
     if (poSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
@@ -558,14 +559,14 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         DigestProcessor::getSamDigestRequest();
 
     logger->debug("processAtomicClosing => SAMREQUEST = %s\n",
-                 samSeRequest->toString());
+                 samSeRequest->toString().c_str());
 
     /* Transmit SeRequest and get SeResponse */
     std::shared_ptr<SeResponse> samSeResponse =
         samReader->transmit(samSeRequest);
 
     logger->debug("processAtomicClosing => SAMRESPONSE = %s\n",
-                 samSeResponse->toString());
+                 samSeResponse->toString().c_str());
 
     if (samSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
@@ -594,10 +595,11 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
     for (int i = 0; i < (int)samApduResponseList.size(); i++) {
         if (!samApduResponseList[i]->isSuccessful()) {
 
-            logger->debug("processAtomicClosing => command failure REQUEST = " \
-                          "%s, RESPONSE = %s\n",
-                          samSeRequest->getApduRequests()[i]->toString(),
-                          samApduResponseList[i]->toString());
+            logger->debug(
+                "processAtomicClosing => command failure REQUEST = " \
+                "%s, RESPONSE = %s\n",
+                samSeRequest->getApduRequests()[i]->toString().c_str(),
+                samApduResponseList[i]->toString().c_str());
 
             throw IllegalStateException("ProcessClosing command failure " \
                                         "during digest computation process.");
@@ -617,7 +619,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
 
     if (logger->isDebugEnabled()) {
         logger->debug("processAtomicClosing => SIGNATURE = %s\n", 
-                      ByteArrayUtil::toHex(sessionTerminalSignature));
+                      ByteArrayUtil::toHex(sessionTerminalSignature).c_str());
     }
 
     std::shared_ptr<PoCustomReadCommandBuilder> ratificationCommand;
@@ -676,7 +678,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         std::make_shared<SeRequest>(poApduRequestList, channelState);
 
     logger->debug("processAtomicClosing => POSEREQUEST = %s\n",
-                  poSeRequest->toString());
+                  poSeRequest->toString().c_str());
 
     std::shared_ptr<SeResponse> poSeResponse;
     try {
@@ -727,7 +729,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
     }
 
     logger->debug("processAtomicClosing => POSERESPONSE = %s\n",
-                  poSeResponse->toString());
+                  poSeResponse->toString().c_str());
 
     std::vector<std::shared_ptr<ApduResponse>> poApduResponseList =
         poSeResponse->getApduResponses();
@@ -760,12 +762,12 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         std::make_shared<SeRequest>(samApduRequestList, ChannelState::KEEP_OPEN);
 
     logger->debug("PoTransaction.DigestProcessor => checkPoSignature: "\
-                  "SAMREQUEST = %s\n", samSeRequest->toString());
+                  "SAMREQUEST = %s\n", samSeRequest->toString().c_str());
 
     samSeResponse = samReader->transmit(samSeRequest);
 
     logger->debug("PoTransaction.DigestProcessor => checkPoSignature: " \
-                  "SAMRESPONSE = %s\n", samSeResponse->toString());
+                  "SAMRESPONSE = %s\n", samSeResponse->toString().c_str());
 
     if (samSeResponse == nullptr) {
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
@@ -870,11 +872,21 @@ std::vector<char> PoTransaction::getOpenRecordDataRead()
     return openRecordDataRead;
 }
 
-PoTransaction::SessionAccessLevel PoTransaction::SessionAccessLevel::SESSION_LVL_PERSO("SESSION_LVL_PERSO", InnerEnum::SESSION_LVL_PERSO, "perso", static_cast<char>(0x01));
-PoTransaction::SessionAccessLevel PoTransaction::SessionAccessLevel::SESSION_LVL_LOAD("SESSION_LVL_LOAD", InnerEnum::SESSION_LVL_LOAD, "load", static_cast<char>(0x02));
-PoTransaction::SessionAccessLevel PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT("SESSION_LVL_DEBIT", InnerEnum::SESSION_LVL_DEBIT, "debit", static_cast<char>(0x03));
+PoTransaction::SessionAccessLevel
+    PoTransaction::SessionAccessLevel::SESSION_LVL_PERSO(
+        "SESSION_LVL_PERSO", InnerEnum::SESSION_LVL_PERSO, "perso",
+        static_cast<char>(0x01));
+PoTransaction::SessionAccessLevel
+    PoTransaction::SessionAccessLevel::SESSION_LVL_LOAD(
+        "SESSION_LVL_LOAD", InnerEnum::SESSION_LVL_LOAD, "load",
+        static_cast<char>(0x02));
+PoTransaction::SessionAccessLevel
+    PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT(
+        "SESSION_LVL_DEBIT", InnerEnum::SESSION_LVL_DEBIT, "debit",
+        static_cast<char>(0x03));
 
-std::vector<PoTransaction::SessionAccessLevel> PoTransaction::SessionAccessLevel::valueList;
+std::vector<PoTransaction::SessionAccessLevel>
+    PoTransaction::SessionAccessLevel::valueList;
 
 PoTransaction::SessionAccessLevel::StaticConstructor::StaticConstructor()
 {
@@ -887,9 +899,11 @@ PoTransaction::SessionAccessLevel::StaticConstructor
     PoTransaction::SessionAccessLevel::staticConstructor;
 int PoTransaction::SessionAccessLevel::nextOrdinal = 0;
 
-PoTransaction::SessionAccessLevel::SessionAccessLevel(const std::string &nameValue, InnerEnum innerEnum, const std::string &name,
-                                                      char sessionKey)
-: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name), sessionKey(sessionKey)
+PoTransaction::SessionAccessLevel::SessionAccessLevel(
+  const std::string &nameValue, InnerEnum innerEnum, const std::string &name,
+  char sessionKey)
+: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++),
+  name(name), sessionKey(sessionKey)
 {
 }
 
@@ -903,17 +917,20 @@ char PoTransaction::SessionAccessLevel::getSessionKey()
     return sessionKey;
 }
 
-bool PoTransaction::SessionAccessLevel::operator == (const PoTransaction::SessionAccessLevel &other)
+bool PoTransaction::SessionAccessLevel::operator==(
+    const PoTransaction::SessionAccessLevel &other)
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool PoTransaction::SessionAccessLevel::operator != (const PoTransaction::SessionAccessLevel &other)
+bool PoTransaction::SessionAccessLevel::operator!=(
+    const PoTransaction::SessionAccessLevel &other)
 {
     return this->ordinalValue != other.ordinalValue;
 }
 
-std::vector<PoTransaction::SessionAccessLevel> PoTransaction::SessionAccessLevel::values()
+std::vector<PoTransaction::SessionAccessLevel>
+    PoTransaction::SessionAccessLevel::values()
 {
     return valueList;
 }
@@ -928,7 +945,8 @@ std::string PoTransaction::SessionAccessLevel::toString()
     return nameValue;
 }
 
-PoTransaction::SessionAccessLevel PoTransaction::SessionAccessLevel::valueOf(const std::string &name)
+PoTransaction::SessionAccessLevel
+    PoTransaction::SessionAccessLevel::valueOf(const std::string &name)
 {
     for (auto enumInstance : PoTransaction::SessionAccessLevel::valueList) {
         if (enumInstance.nameValue == name) {
@@ -940,7 +958,10 @@ PoTransaction::SessionAccessLevel PoTransaction::SessionAccessLevel::valueOf(con
     return PoTransaction::SessionAccessLevel::valueList.front();
 }
 
-std::vector<std::vector<char>> PoTransaction::DigestProcessor::poDigestDataCache = std::vector<std::vector<char>>();
+std::vector<std::vector<char>>
+    PoTransaction::DigestProcessor::poDigestDataCache =
+        std::vector<std::vector<char>>();
+
 SamRevision PoTransaction::DigestProcessor::samRevision = SamRevision::NO_REV;
 PoRevision PoTransaction::DigestProcessor::poRevision = PoRevision::NO_REV;
 bool PoTransaction::DigestProcessor::encryption = false;
@@ -952,9 +973,10 @@ char PoTransaction::DigestProcessor::keyKVC = 0;
 const std::shared_ptr<Logger> PoTransaction::DigestProcessor::logger =
     LoggerFactory::getLogger(typeid(PoTransaction::DigestProcessor));
 
-void PoTransaction::DigestProcessor::initialize(PoRevision poRev, SamRevision samRev, bool sessionEncryption, bool verificationMode,
-                                                bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif, char workKeyKVC,
-                                                std::vector<char> &digestData)
+void PoTransaction::DigestProcessor::initialize(
+    PoRevision poRev, SamRevision samRev, bool sessionEncryption,
+    bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber,
+    char workKeyKif, char workKeyKVC, std::vector<char> &digestData)
 {
     /* Store work context */
     poRevision = poRev;
@@ -965,6 +987,7 @@ void PoTransaction::DigestProcessor::initialize(PoRevision poRev, SamRevision sa
     keyRecordNumber = workKeyRecordNumber;
     keyKIF = workKeyKif;
     keyKVC = workKeyKVC;
+   
     /*
         * Alex: logger is not static...
     if (logger->isDebugEnabled()) {
@@ -990,7 +1013,7 @@ void PoTransaction::DigestProcessor::pushPoExchangeData(
 {
 
     logger->debug("PoTransaction.DigestProcessor => pushPoExchangeData: " \
-                  "REQUEST = %s\n", request->toString());
+                  "REQUEST = %s\n", request->toString().c_str());
 
     /*
      * Add an ApduRequest to the digest computation: if the request is of case4
@@ -1005,7 +1028,7 @@ void PoTransaction::DigestProcessor::pushPoExchangeData(
     }
 
     logger->debug("PoTransaction.DigestProcessor => pushPoExchangeData: " \
-                  "RESPONSE = %s\n", response->toString());
+                  "RESPONSE = %s\n", response->toString().c_str());
 
     /* Add an ApduResponse to the digest computation */
     poDigestDataCache.push_back(response->getBytes());
@@ -1016,18 +1039,21 @@ std::shared_ptr<SeRequest> PoTransaction::DigestProcessor::getSamDigestRequest()
     std::vector<std::shared_ptr<ApduRequest>> samApduRequestList;
 
     if (poDigestDataCache.empty()) {
-        //logger->debug("PoTransaction.DigestProcessor => getSamDigestRequest: no data in cache.");
+        logger->debug("PoTransaction.DigestProcessor => getSamDigestRequest: " \
+                      "no data in cache\n");
         throw IllegalStateException("Digest data cache is empty\n");
     }
     if (poDigestDataCache.size() % 2 == 0) {
         /* the number of buffers should be 2*n + 1 */
-        //logger->debug("PoTransaction.DigestProcessor => getSamDigestRequest: wrong number of buffer in cache NBR = %s.", poDigestDataCache.size());
+        logger->debug("PoTransaction.DigestProcessor => getSamDigestRequest: " \
+                      "wrong number of buffer in cache NBR = %s\n",
+                      poDigestDataCache.size());
         throw IllegalStateException("Digest data cache is inconsistent\n");
     }
 
     /*
-     * Build and append Digest Init command as first ApduRequest of the digest computation
-     * process
+     * Build and append Digest Init command as first ApduRequest of the digest
+     * computation process
      */
     samApduRequestList.push_back(
         (std::make_shared<DigestInitCmdBuild>(
@@ -1563,7 +1589,7 @@ bool PoTransaction::processCancel(ChannelState channelState) {
         std::make_shared<SeRequest>(poApduRequestList, channelState);
 
     logger->debug("processCancel => POSEREQUEST = %s",
-                  poSeRequest->toString());
+                  poSeRequest->toString().c_str());
 
     std::shared_ptr<SeResponse> poSeResponse;
     try {
@@ -1573,7 +1599,7 @@ bool PoTransaction::processCancel(ChannelState channelState) {
     }
 
     logger->debug("processCancel => POSERESPONSE = %s",
-                  poSeResponse->toString());
+                  poSeResponse->toString().c_str());
 
     /* sets the flag indicating that the commands have been executed */
     logger->debug("processCancel - setting preparedCommandsProcessed to true\n");
@@ -1705,7 +1731,8 @@ int PoTransaction::prepareSelectFileCmd(std::vector<char> &path,
     (void)extraInfo;
 
     if (logger->isTraceEnabled()) {
-        logger->trace("Select File: PATH = %s", ByteArrayUtil::toHex(path));
+        logger->trace("Select File: PATH = %s",
+                      ByteArrayUtil::toHex(path).c_str());
     }
 
     /* Create and keep the PoBuilderParser, return the command index */

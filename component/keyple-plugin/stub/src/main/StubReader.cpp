@@ -48,7 +48,9 @@ const std::string StubReader::pluginName            = "StubPlugin";
 StubReader::StubReader(const std::string &name)
 : AbstractThreadedLocalReader(pluginName, name)
 {
-    logger->debug("constructor (pluginName: %s, name: %s)\n", pluginName, name);
+    logger->debug("constructor (pluginName: %s, name: %s)\n",
+                  pluginName.c_str(), name.c_str());
+
     readerName                   = name;
     sePresent                    = false;
     threadWaitTimeout            = 5000;
@@ -56,7 +58,7 @@ StubReader::StubReader(const std::string &name)
 
 StubReader::~StubReader()
 {
-    logger->debug("destructor (name: %s)\n", name);
+    logger->debug("destructor (name: %s)\n", name.c_str());
 }
 
 std::vector<char> StubReader::getATR()
@@ -113,15 +115,15 @@ bool StubReader::protocolFlagMatches(const SeProtocol& protocolFlag)
         std::string protocol       = se->getSeProcotol();
         if (!p->matcher(protocol)->matches()) {
             logger->trace("[%s] protocolFlagMatches => unmatching SE. " \
-                          "PROTOCOLFLAG = %s\n", this->getName(),
-                          protocolFlag.toString());
+                          "PROTOCOLFLAG = %s\n", this->getName().c_str(),
+                          protocolFlag.toString().c_str());
             result = false;
         }
         else
         {
             logger->trace("[%s] protocolFlagMatches => matching SE. " \
-                          "PROTOCOLFLAG = %s\n", this->getName(),
-                          protocolFlag.toString());
+                          "PROTOCOLFLAG = %s\n", this->getName().c_str(),
+                          protocolFlag.toString().c_str());
             result = true;
         }
     //}
@@ -199,7 +201,8 @@ void StubReader::insertSe(std::shared_ptr<StubSecureElement> _se)
             closePhysicalChannel();
         } catch (KeypleReaderException &e) {
             logger->debug("insertSe - caught KeypleReaderException (msg: %s " \
-                          ", cause: %s\n", e.getMessage(), e.getCause().what());
+                          ", cause: %s\n", e.getMessage().c_str(),
+                          e.getCause().what());
         }
     }
 
