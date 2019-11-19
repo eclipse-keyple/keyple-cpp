@@ -9,6 +9,7 @@
 *
 * SPDX-License-Identifier: EPL-2.0
 ********************************************************************************/
+#include <cstdarg>
 
 #include "Logger.h"
 #include "LoggerFactory.h"
