@@ -50,12 +50,12 @@ public:
      *
      */
     bool isTraceEnabled();
-    
+
     /**
      *
      */
     bool isDebugEnabled();
-    
+
     /**
      *
      */
@@ -193,17 +193,6 @@ private:
     }
 #endif // _GNUG_
 
-    template <typename T>
-    T const * argument(const std::basic_string<T>& value) noexcept
-    {
-        return value.c_str();
-    }
-
-    char const * argument(const bool& value) noexcept
-    {
-        return value ? "true" : "false";
-    }
-
     /**
      *
      */
@@ -211,10 +200,10 @@ private:
     void log(const std::string label, const std::string format,  va_list args)
     {
         mtx->lock();
-        
+
         std::printf("[%5s]   [%-100s]   ", label.c_str(), className.c_str());
         std::vprintf(format.c_str(), args);
-        
+
         mtx->unlock();
     }
 };

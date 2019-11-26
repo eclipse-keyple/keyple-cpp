@@ -140,12 +140,12 @@ class NameNotFoundException : public std::exception {
     }
 };
 
-class IllegalStateException : public std::exception {
+class IllegalStateException : public Exception {
   private:
     std::string msg;
 
   public:
-    IllegalStateException(const std::string &message = "") : msg(message)
+    IllegalStateException(const std::string &message = "") : Exception(message)
     {
     }
 

@@ -112,7 +112,7 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(
 std::shared_ptr<SelectionsResult> SeSelection::processDefaultSelection(
   std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
 {
-    logger->trace("Process default SELECTIONRESPONSE (%s response(s))\n",
+    logger->trace("Process default SELECTIONRESPONSE (%d response(s))\n",
                   (std::static_pointer_cast<DefaultSelectionsResponse>(
                       defaultSelectionsResponse))->
                           getSelectionSeResponseSet()->getResponses().size());

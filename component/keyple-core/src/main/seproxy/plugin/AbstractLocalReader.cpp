@@ -57,10 +57,10 @@ AbstractLocalReader::AbstractLocalReader(
      * Provides an initial value for measuring the inter-exchange time. The
      * first measurement gives the time elapsed since the plugin was loaded.
      */
-    this->before = System::nanoTime(); 
+    this->before = System::nanoTime();
 }
 
-bool AbstractLocalReader::isSePresent() 
+bool AbstractLocalReader::isSePresent()
 {
     logger->debug("isSePresent\n");
 
@@ -523,7 +523,7 @@ std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(
 
     std::vector<std::shared_ptr<ApduResponse>> apduResponseList;
 
-    logger->trace("[%s] processSeRequest => Logical channel open = %s\n",
+    logger->trace("[%s] processSeRequest => Logical channel open = %d\n",
                   AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
                   isLogicalChannelOpen());
 
@@ -695,7 +695,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
         double elapsedMs =
             static_cast<double>((timeStamp - before) / 100000) / 10;
         this->before = timeStamp;
-        logger->trace("[%s] processApduRequest => %s, elapsed %s ms\n",
+        logger->trace("[%s] processApduRequest => %s, elapsed %d ms\n",
                       AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
                       apduRequest->toString().c_str(), elapsedMs);
     }
@@ -718,7 +718,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
         double elapsedMs =
             static_cast<double>((timeStamp - before) / 100000) / 10;
         this->before = timeStamp;
-        logger->trace("[%s] processApduRequest => %s, elapsed %s ms\n",
+        logger->trace("[%s] processApduRequest => %s, elapsed %d ms\n",
                       AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
                       apduResponse->toString().c_str(), elapsedMs);
     }

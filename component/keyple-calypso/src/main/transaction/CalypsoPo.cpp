@@ -133,7 +133,7 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, Transmission
     }
     if (logger->isTraceEnabled()) {
         logger->trace(
-            "REVISION = %s, SERIALNUMBER = %s, DFNAME = %s\n",
+            "REVISION = %d, SERIALNUMBER = %s, DFNAME = %s\n",
             static_cast<int>(this->revision),
             ByteArrayUtil::toHex(this->applicationSerialNumber).c_str(),
             ByteArrayUtil::toHex(this->dfName).c_str());

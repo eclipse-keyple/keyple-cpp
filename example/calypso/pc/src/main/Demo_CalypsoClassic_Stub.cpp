@@ -121,7 +121,7 @@ int main(int argc, char **argv)
     poReader->removeSe();
     samReader->removeSe();
 
-    logger->info("END.");
+    logger->info("END\n");
 
     exit(0);
 }

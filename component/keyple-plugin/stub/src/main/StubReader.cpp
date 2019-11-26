@@ -92,7 +92,7 @@ std::vector<char> StubReader::transmitApdu(std::vector<char> &apduIn)
     return se->processApdu(apduIn);
 }
 
-bool StubReader::protocolFlagMatches(const SeProtocol& protocolFlag) 
+bool StubReader::protocolFlagMatches(const SeProtocol& protocolFlag)
 {
     bool result;
     // Test protocolFlag to check if ATR based protocol filtering is required
@@ -102,13 +102,12 @@ bool StubReader::protocolFlagMatches(const SeProtocol& protocolFlag)
         }
 
         /*
-         * The requestSet will be executed only if the protocol match the 
+         * The requestSet will be executed only if the protocol match the
          * requestElement.
          */
         std::string selectionMask = protocolsMap[protocolFlag];
         if (selectionMask == "") {
-            throw std::make_shared<KeypleReaderException>(
-                "Target selector mask not found!"); //, nullptr);
+            throw KeypleReaderException("Target selector mask not found!");
         }
 
         Pattern *p = Pattern::compile(selectionMask);
@@ -141,7 +140,7 @@ bool StubReader::checkSePresence()
     return se != nullptr;
 }
 
-void StubReader::setParameter(const std::string &name, const std::string &value) 
+void StubReader::setParameter(const std::string &name, const std::string &value)
 {
     if (name == ALLOWED_PARAMETER_1 || name == ALLOWED_PARAMETER_2)
     {

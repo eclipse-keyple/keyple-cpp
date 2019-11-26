@@ -166,7 +166,7 @@ void StubPlugin::unplugStubReader(const std::string &name, bool synchronous)
 
         /* remove the native reader from the native readers list */
         logger->info("Unplugged reader with name %s, connectedStubNames size" \
-                     "%s\n", name.c_str(), connectedStubNames->size());
+                     "%d\n", name.c_str(), connectedStubNames->size());
     }
 }
 

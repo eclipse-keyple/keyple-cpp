@@ -46,7 +46,7 @@ AbstractSelectionLocalReader::AbstractSelectionLocalReader(
 std::shared_ptr<ApduResponse> AbstractSelectionLocalReader::openChannelForAid(
     std::shared_ptr<SeSelector::AidSelector> aidSelector)
 {
-    logger->debug("openLogicalChannel- \n");
+    logger->debug("openLogicalChannel\n");
 
     std::shared_ptr<ApduResponse> fciResponse;
 
