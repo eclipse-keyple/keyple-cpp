@@ -42,7 +42,9 @@ public:
     /**
      *
      */
-    const std::string ATR_HEX = "3B8F8001804F0CA000000306030001000000006A";
+    const std::vector<uint8_t> atr{
+        0x3B, 0x8F, 0x80, 0x01, 0x80, 0x4F, 0x0C, 0xA0, 0x00, 0x00, 0x03, 0x06,
+        0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x6A};
 
     /**
      *
@@ -57,7 +59,7 @@ public:
     /**
      *
      */
-    std::vector<char> getATR() override;
+    const std::vector<uint8_t>& getATR() override;
 
     /**
      *
@@ -70,7 +72,8 @@ protected:
      */
     std::shared_ptr<StubMifareClassic> shared_from_this()
     {
-        return std::static_pointer_cast<StubMifareClassic>(StubSecureElement::shared_from_this());
+        return std::static_pointer_cast<StubMifareClassic>(
+                   StubSecureElement::shared_from_this());
     }
 };
 

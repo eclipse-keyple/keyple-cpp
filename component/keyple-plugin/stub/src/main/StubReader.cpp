@@ -61,7 +61,7 @@ StubReader::~StubReader()
     logger->debug("destructor (name: %s)\n", name.c_str());
 }
 
-std::vector<char> StubReader::getATR()
+const std::vector<uint8_t>& StubReader::getATR()
 {
     return se->getATR();
 }

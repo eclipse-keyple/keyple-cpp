@@ -39,7 +39,7 @@ public:
     /**
      *
      */
-    AnswerToReset(std::vector<char> &atrBytes);
+    AnswerToReset(const std::vector<uint8_t>& atrBytes);
 
     /**
      *
@@ -49,7 +49,7 @@ public:
     /**
      *
      */
-    std::vector<char> getBytes();
+    const std::vector<uint8_t>& getBytes();
 
     /**
      *
@@ -71,7 +71,7 @@ private:
     /**
      *
      */
-    std::vector<char> atrBytes;
+    std::vector<uint8_t> atrBytes;
 };
 
 }

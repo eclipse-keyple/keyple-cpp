@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #include "ByteArrayUtil.h"
 #include "Pattern.h"
@@ -19,7 +21,8 @@ namespace keyple {
 namespace core {
 namespace util {
 
-std::vector<std::string> const ByteArrayUtil::byteToHex = std::vector<std::string> {
+const
+std::vector<std::string>  ByteArrayUtil::byteToHex = std::vector<std::string> {
     "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B",
     "0C", "0D", "0E", "0F", "10", "11", "12", "13", "14", "15", "16", "17",
     "18", "19", "1A", "1B", "1C", "1D", "1E", "1F", "20", "21", "22", "23",
@@ -58,8 +61,9 @@ std::vector<char> ByteArrayUtil::fromHex(const std::string &hex)
 
     std::vector<char> byteArray(_hex.length() / 2);
     for (int i = 0; i < (int)_hex.length(); i += 2) {
-        byteArray[i / 2] = static_cast<char>((Character::digit(_hex[i], 16) << 4) +
-                                              Character::digit(_hex[i + 1], 16));
+        byteArray[i / 2] =
+            static_cast<char>((Character::digit(_hex[i], 16) << 4) +
+                               Character::digit(_hex[i + 1], 16));
     }
 
     return byteArray;
@@ -71,7 +75,23 @@ std::string ByteArrayUtil::toHex(const std::vector<char> &byteArray)
         return "";
     }
 
-    std::shared_ptr<StringBuilder> hexStringBuilder = std::make_shared<StringBuilder>();
+    std::shared_ptr<StringBuilder> hexStringBuilder =
+        std::make_shared<StringBuilder>();
+    for (int i = 0; i < (int)byteArray.size(); i++) {
+        hexStringBuilder->append(byteToHex[byteArray[i] & 0xFF]);
+    }
+
+    return hexStringBuilder->toString();
+}
+
+std::string ByteArrayUtil::toHex(const std::vector<uint8_t> &byteArray)
+{
+    if (byteArray.empty()) {
+        return "";
+    }
+
+    std::shared_ptr<StringBuilder> hexStringBuilder =
+        std::make_shared<StringBuilder>();
     for (int i = 0; i < (int)byteArray.size(); i++) {
         hexStringBuilder->append(byteToHex[byteArray[i] & 0xFF]);
     }

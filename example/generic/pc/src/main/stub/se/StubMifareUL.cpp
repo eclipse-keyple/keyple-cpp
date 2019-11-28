@@ -36,9 +36,9 @@ StubMifareUL::StubMifareUL()
     addHexCommand("FFCA 000000", "223344556677889000");
 }
 
-std::vector<char> StubMifareUL::getATR()
+const std::vector<uint8_t>& StubMifareUL::getATR()
 {
-    return ByteArrayUtil::fromHex(ATR_HEX);
+    return atr;
 }
 
 std::string StubMifareUL::getSeProcotol()

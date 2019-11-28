@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     (void)argv;
 
     /* get the SeProxyService instance */
-    SeProxyService seProxyService = SeProxyService::getInstance();
+    SeProxyService& seProxyService = SeProxyService::getInstance();
 
     /* add the PcscPlugin to the SeProxyService */
     PcscPlugin pcscPlugin = PcscPlugin::getInstance();
@@ -57,12 +57,10 @@ int main(int argc, char **argv)
         ReaderUtilities::getReaderByName(
             PcscReadersSettings::PO_READER_NAME_REGEX);
 
-    if (poReader == nullptr)
-    {
-	throw std::make_shared<IllegalStateException>("Bad PO/SAM setup");
+    if (poReader == nullptr) {
+	    throw IllegalStateException("Bad PO/SAM setup");
     }
 
-    std::cout << "PO Reader  : " << poReader->getName() << std::endl;
     poReader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");
 
     /* create an observer class to handle the SE operations */

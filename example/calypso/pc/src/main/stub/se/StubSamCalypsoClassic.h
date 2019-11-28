@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -44,9 +46,11 @@ public:
     static const std::string seProtocol;
 
     /**
-     *
+     * serial number : 12345678
      */
-    const std::string ATR_HEX = "3B3F9600805A0080C120000012345678829000"; // serial number : 12345678
+    const std::vector<uint8_t> atr{
+        0x3F, 0x96, 0x00, 0x80, 0x5A, 0x00, 0x80, 0xC1, 0x20, 0x00, 0x00, 0x12,
+        0x34, 0x56, 0x78, 0x82, 0x90, 0x00};
 
     /**
      *
@@ -61,7 +65,7 @@ public:
     /**
      *
      */
-    std::vector<char> getATR() override;
+    const std::vector<uint8_t>& getATR() override;
 
     /**
      *
@@ -74,14 +78,16 @@ protected:
      */
     std::shared_ptr<StubSamCalypsoClassic> shared_from_this()
     {
-        return std::static_pointer_cast<StubSamCalypsoClassic>(StubSecureElement::shared_from_this());
+        return std::static_pointer_cast<StubSamCalypsoClassic>(
+                   StubSecureElement::shared_from_this());
     }
 
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(StubSamCalypsoClassic));
+    const std::shared_ptr<Logger> logger =
+        LoggerFactory::getLogger(typeid(StubSamCalypsoClassic));
 };
 
 }

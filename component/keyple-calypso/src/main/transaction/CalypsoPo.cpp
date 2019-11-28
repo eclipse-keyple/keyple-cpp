@@ -34,10 +34,11 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::selection;
 using namespace keyple::core::util;
 
-CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo)
-: AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo) {
-
-    poAtr = selectionResponse->getSelectionStatus()->getAtr()->getBytes();
+CalypsoPo::CalypsoPo(
+  std::shared_ptr<SeResponse> selectionResponse,
+  TransmissionMode transmissionMode, const std::string &extraInfo)
+: AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo),
+  poAtr(selectionResponse->getSelectionStatus()->getAtr()->getBytes()) {
 
     /* The selectionSeResponse may not include a FCI field (e.g. old PO Calypso Rev 1) */
     if (selectionResponse->getSelectionStatus()->getFci()->isSuccessful()) {
@@ -103,7 +104,9 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, Transmission
 
         /* basic check: we expect to be here following a selection based on the ATR */
         if (poAtr.size() != PO_REV1_ATR_LENGTH) {
-            throw std::make_shared<IllegalStateException>("Unexpected ATR length: " + ByteArrayUtil::toHex(poAtr));
+            throw IllegalStateException(
+                      StringHelper::formatSimple("Unexpected ATR length: %s",
+                                                 ByteArrayUtil::toHex(poAtr)));
         }
 
         this->revision = PoRevision::REV1_0;
@@ -140,11 +143,13 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, Transmission
     }
 }
 
-PoRevision CalypsoPo::getRevision() {
+PoRevision CalypsoPo::getRevision()
+{
     return this->revision;
 }
 
-std::vector<char> CalypsoPo::getDfName() {
+std::vector<char> CalypsoPo::getDfName()
+{
     return dfName;
 }
 
@@ -153,7 +158,8 @@ std::vector<char> CalypsoPo::getApplicationSerialNumber()
     return applicationSerialNumber;
 }
 
-std::vector<char> CalypsoPo::getAtr() {
+const std::vector<uint8_t>& CalypsoPo::getAtr()
+{
     return poAtr;
 }
 

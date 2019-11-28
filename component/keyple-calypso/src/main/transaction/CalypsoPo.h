@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -54,12 +56,14 @@ public:
     /**
      * Constructor.
      *
-     * @param selectionResponse the response to the selection application command
-     * @param transmissionMode the current {@link TransmissionMode} (contacts or contactless)
+     * @param selectionResponse the response to the selection application
+     *        command
+     * @param transmissionMode the current {@link TransmissionMode} (contacts or
+     *        contactless)
      * @param extraInfo information string
      */
-    CalypsoPo(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode,
-              const std::string &extraInfo);
+    CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
+              TransmissionMode transmissionMode, const std::string &extraInfo);
 
     /**
      *
@@ -79,7 +83,7 @@ public:
     /**
      *
      */
-    std::vector<char> getAtr();
+    const std::vector<uint8_t>& getAtr();
 
     /**
      *
@@ -274,7 +278,7 @@ private:
     /**
      *
      */
-    std::vector<char> poAtr;
+    const std::vector<uint8_t>& poAtr;
 
     /**
      *

@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -42,7 +44,7 @@ public:
     /**
      *
      */
-    const std::string ATR_HEX = "3B8180018080";
+    const std::vector<uint8_t> atr{0x3B, 0x81, 0x80, 0x01, 0x80, 0x80};
 
     /**
      *
@@ -57,7 +59,7 @@ public:
     /**
      *
      */
-    std::vector<char> getATR() override;
+    const std::vector<uint8_t>& getATR() override;
 
     /**
      *
@@ -70,7 +72,8 @@ protected:
      */
     std::shared_ptr<StubMifareDesfire> shared_from_this()
     {
-        return std::static_pointer_cast<StubMifareDesfire>(StubSecureElement::shared_from_this());
+        return std::static_pointer_cast<StubMifareDesfire>(
+                   StubSecureElement::shared_from_this());
     }
 };
 

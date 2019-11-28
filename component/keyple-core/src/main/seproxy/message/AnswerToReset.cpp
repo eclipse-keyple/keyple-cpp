@@ -18,12 +18,12 @@ namespace core {
 namespace seproxy {
 namespace message {
 
-AnswerToReset::AnswerToReset(std::vector<char> &atrBytes)
+AnswerToReset::AnswerToReset(const std::vector<uint8_t>& atrBytes)
 {
-    this->atrBytes = atrBytes;
+    this->atrBytes.assign(atrBytes.begin(), atrBytes.end());
 }
 
-std::vector<char> AnswerToReset::getBytes()
+const std::vector<uint8_t>& AnswerToReset::getBytes()
 {
     return atrBytes;
 }

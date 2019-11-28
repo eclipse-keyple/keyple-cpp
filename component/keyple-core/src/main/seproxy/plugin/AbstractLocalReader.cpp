@@ -241,7 +241,7 @@ void AbstractLocalReader::setForceGetDataFlag(bool forceGetDataFlag)
 std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannel(
     std::shared_ptr<SeSelector> seSelector)
 {
-    std::vector<char> atr = getATR();
+    const std::vector<uint8_t>& atr = getATR();
     bool selectionHasMatched = true;
     std::shared_ptr<SelectionStatus> selectionStatus;
 

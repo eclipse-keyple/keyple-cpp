@@ -123,7 +123,7 @@ protected:
     /**
      *
      */
-    std::vector<char> getATR() override;
+    const std::vector<uint8_t>& getATR() override;
 
     /**
      *

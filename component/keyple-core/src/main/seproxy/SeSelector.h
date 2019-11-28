@@ -338,7 +338,7 @@ public:
                 * <p>
                 * Tells if the current AID starts with the value contained in
                 * the provided AID
-                * 
+                *
                 * @param aid an other AID
                 * @return true or false
                 */
@@ -505,7 +505,7 @@ public:
         * @param atr a buffer containing the ATR to be checked
         * @return a boolean true the ATR matches the current regex
         */
-        virtual bool atrMatches(std::vector<char> &atr);
+        virtual bool atrMatches(const std::vector<uint8_t>& atr);
 
         /**
         * Print out the ATR regex

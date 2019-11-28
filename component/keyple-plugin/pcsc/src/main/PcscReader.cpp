@@ -370,7 +370,7 @@ std::unordered_map<std::string, std::string> PcscReader::getParameters()
     return parameters;
 }
 
-std::vector<char> PcscReader::getATR()
+const std::vector<uint8_t>& PcscReader::getATR()
 {
     return terminal.getATR();
 }

@@ -47,38 +47,43 @@ class UseCase_Generic2_DefaultSelectionNotification_Pcsc
   public ObservableReader::ReaderObserver  {
 private:
     /**
-     * 
+     *
      */
     const std::shared_ptr<void> waitForEnd = nullptr;
 
     /**
      *
-     */ 
+     */
     //std::string seAid = "A0000004040125090101";
     std::string seAid = "304554502E494341";
 
     /**
-     * 
+     *
      */
     std::shared_ptr<SeSelection> seSelection;
-    
+
     /**
-     * 
+     *
      */
     std::shared_ptr<SeReader> seReader;
+
+    /**
+     *
+     */
+    PcscPlugin pcscplugin;
 
 public:
     /**
      *
-     */ 
+     */
     const std::shared_ptr<Logger> logger =
         LoggerFactory::getLogger(
             typeid(UseCase_Generic2_DefaultSelectionNotification_Pcsc));
 
-    UseCase_Generic2_DefaultSelectionNotification_Pcsc()
+    UseCase_Generic2_DefaultSelectionNotification_Pcsc() : pcscplugin(PcscPlugin::getInstance())
     {
         /* Get the instance of the PC/SC plugin */
-        PcscPlugin pcscplugin = PcscPlugin::getInstance();
+        //pcscplugin = PcscPlugin::getInstance();
         pcscplugin.initReaders();
 
         /* Assign PcscPlugin to the SeProxyService */
@@ -121,7 +126,7 @@ public:
         std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
             std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
         std::shared_ptr<SeSelector::AidSelector> aidSelector  =
-                    std::make_shared<SeSelector::AidSelector>(isoAid, nullptr);
+            std::make_shared<SeSelector::AidSelector>(isoAid, nullptr);
         std::shared_ptr<SeSelector> seSelector =
             std::make_shared<SeSelector>(
                 SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector,
@@ -139,17 +144,20 @@ public:
          * Provide the SeReader with the selection operation to be processed
          * when a SE is inserted.
          */
-        (std::dynamic_pointer_cast<ObservableReader>(seReader))
-            ->setDefaultSelectionRequest(
-                seSelection->getSelectionOperation(),
-                ObservableReader::NotificationMode::MATCHED_ONLY);
+        std::shared_ptr<ObservableReader> observable =
+            std::dynamic_pointer_cast<ObservableReader>(seReader);
+        observable->setDefaultSelectionRequest(
+            seSelection->getSelectionOperation(),
+            ObservableReader::NotificationMode::MATCHED_ONLY);
+
+        logger->debug("end of constructor\n");
     }
 
     virtual ~UseCase_Generic2_DefaultSelectionNotification_Pcsc()
     {
     }
 
-    void doSomething() 
+    void doSomething()
     {
         /* Set the current class as Observer of the first reader */
         (std::dynamic_pointer_cast<ObservableReader>(seReader))

@@ -42,7 +42,7 @@ using namespace keyple::core::seproxy::protocol;
 class IMPORT PcscReader : public AbstractThreadedLocalReader {
 public:
     /**
-     * 
+     *
      */
     static const std::string SETTING_KEY_TRANSMISSION_MODE;
     static const std::string SETTING_TRANSMISSION_MODE_CONTACTS;
@@ -74,7 +74,7 @@ public:
     PcscReader(const std::string &pluginName, PcscTerminal& terminal);
 
     /**
-     * 
+     *
      */
     PcscReader(const PcscReader& o);
 
@@ -82,7 +82,7 @@ public:
      *
      */
     virtual ~PcscReader() { }
-    
+
     /**
      * Set a parameter.
      * <p>
@@ -210,7 +210,7 @@ protected:
     /**
      *
      */
-    std::vector<char> getATR() override;
+    const std::vector<uint8_t>& getATR() override;
 
     /**
      * Tells if a physical channel is open

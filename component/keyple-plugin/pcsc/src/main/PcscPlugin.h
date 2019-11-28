@@ -66,7 +66,7 @@ public:
     virtual ~PcscPlugin() { }
 
     /**
-     * 
+     *
      */
     PcscPlugin(const PcscPlugin&) = default;
 
@@ -79,12 +79,12 @@ public:
     static PcscPlugin getInstance();
 
     /**
-     * 
+     *
      */
     std::unordered_map<std::string, std::string> getParameters() override;
 
     /**
-     * 
+     *
      */
     void setParameter(const std::string &key, const std::string &value) override;
 
@@ -98,7 +98,7 @@ public:
     std::shared_ptr<PcscPlugin> setLogging(bool logging);
 
     /**
-     * 
+     *
      */
     void setParameters(std::unordered_map<std::string, std::string> &parameters) override
     {
@@ -107,7 +107,7 @@ public:
     }
 
     /**
-     * 
+     *
      */
     std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders()  override
     {
@@ -115,7 +115,7 @@ public:
     }
 
     /**
-     * 
+     *
      */
     std::shared_ptr<SeReader> getReader(const std::string &name) override
     {
@@ -123,7 +123,7 @@ public:
     }
 
     /**
-     * 
+     *
      */
     void addObserver(std::shared_ptr<PluginObserver> observer) override
     {
@@ -133,7 +133,7 @@ public:
     }
 
     /**
-     * 
+     *
      */
     void removeObserver(std::shared_ptr<PluginObserver> observer) override
     {
@@ -142,7 +142,7 @@ public:
     }
 
     /**
-     * 
+     *
      */
     void notifyObservers(std::shared_ptr<PluginEvent> event) override
     {
@@ -151,7 +151,7 @@ public:
     }
 
     /**
-     * 
+     *
      */
     bool equals(std::shared_ptr<void> o) override
     {
@@ -160,7 +160,7 @@ public:
     }
 
     /**
-     * 
+     *
      */
     int hashCode() override
     {
@@ -169,7 +169,7 @@ public:
 
 protected:
     /**
-     * 
+     *
      */
     std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() override;
 

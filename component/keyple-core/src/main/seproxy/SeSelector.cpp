@@ -283,7 +283,7 @@ std::string SeSelector::AtrFilter::getAtrRegex()
     return atrRegex;
 }
 
-bool SeSelector::AtrFilter::atrMatches(std::vector<char> &atr)
+bool SeSelector::AtrFilter::atrMatches(const std::vector<uint8_t> &atr)
 {
     bool m;
 
@@ -336,7 +336,7 @@ std::shared_ptr<AtrFilter> SeSelector::getAtrFilter()
 std::shared_ptr<AidSelector> SeSelector::getAidSelector()
 {
     return aidSelector;
-} 
+}
 
 std::string SeSelector::getExtraInfo()
 {

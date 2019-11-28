@@ -91,9 +91,9 @@ StubCalypsoClassic::StubCalypsoClassic()
     logger->debug("hexCommands size: %d\n", hexCommands.size());
 }
 
-std::vector<char> StubCalypsoClassic::getATR()
+const std::vector<uint8_t>& StubCalypsoClassic::getATR()
 {
-    return ByteArrayUtil::fromHex(ATR_HEX);
+    return atr;
 }
 
 std::string StubCalypsoClassic::getSeProcotol()

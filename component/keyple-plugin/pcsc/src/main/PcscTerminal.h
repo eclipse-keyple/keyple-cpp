@@ -11,7 +11,7 @@
  *                                                                            *
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
- 
+
  #pragma once
 
  /* Common */
@@ -53,7 +53,7 @@ public:
      *
      */
     bool waitForCardPresent(long long timeout);
-    
+
     /**
      *
      */
@@ -77,7 +77,7 @@ public:
     /**
      *
      */
-    const std::vector<char>& getATR();
+    const std::vector<uint8_t>& getATR();
 
     /**
      *
@@ -134,20 +134,20 @@ private:
     /**
      *
      */
-    std::vector<char> atr;
+    std::vector<uint8_t> atr;
 
     /**
-     * 
+     *
      */
     bool contextEstablished;
 
     /**
-     * 
+     *
      */
     void establishContext();
 
     /**
-     * 
+     *
      */
     void releaseContext();
 };

@@ -48,7 +48,7 @@ public:
      *
      * @return Secured Element ATR
      */
-    virtual std::vector<char> getATR() = 0;
+    virtual const std::vector<uint8_t>& getATR() = 0;
 
     /**
      *

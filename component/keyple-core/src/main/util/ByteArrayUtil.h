@@ -55,6 +55,14 @@ public:
     static std::string toHex(const std::vector<char> &byteArray);
 
     /**
+     * Represents the byte array in a hexadecimal string.
+     *
+     * @param byteArray byte array to represent to hex
+     * @return Hex representation of the byte array
+     */
+    static std::string toHex(const std::vector<uint8_t> &byteArray);
+
+    /**
      * Convert three bytes from a byte array into an integer.
      * <p>
      * The three bytes are expected to be in the MSB first order (aka network
@@ -71,8 +79,8 @@ public:
     static int threeBytesToInt(std::vector<char> &bytes, int offset);
 
 private:
-    /** B
-     * yte to hex string conversion table
+    /**
+     * Byte to hex string conversion table
      */
     static std::vector<std::string> const byteToHex;
 

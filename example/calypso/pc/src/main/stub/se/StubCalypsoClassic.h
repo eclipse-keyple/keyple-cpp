@@ -43,7 +43,9 @@ public:
     /**
      *
      */
-    const std::string ATR_HEX = "3B8880010000000000718100F9";
+    const std::vector<uint8_t> atr{
+        0x3B, 0x88, 0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x71, 0x81, 0x00,
+        0xF9};
 
     /**
      *
@@ -58,7 +60,7 @@ public:
     /**
      *
      */
-    std::vector<char> getATR() override;
+    const std::vector<uint8_t>& getATR() override;
 
     /**
      *

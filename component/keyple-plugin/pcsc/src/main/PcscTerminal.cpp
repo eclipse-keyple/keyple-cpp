@@ -96,7 +96,7 @@ void PcscTerminal::releaseContext()
 {
     if (!this->contextEstablished)
         return;
-    
+
     SCardReleaseContext(this->context);
     this->contextEstablished = false;
 }
@@ -116,20 +116,19 @@ bool PcscTerminal::isCardPresent()
         throw e;
     }
 
-    logger->debug("isCardPresent - connecting to card\n");
-
-    rv = SCardConnect(this->context, (LPSTR)this->name.c_str(),
+    rv = SCardConnect(this->context, (LPCSTR)this->name.c_str(),
                       SCARD_SHARE_SHARED,
                       SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &hCard,
                       &protocol);
     if (rv != SCARD_S_SUCCESS) {
-        std::cout << "error: " << rv << std::endl;
+        if (rv != (int)SCARD_E_NO_SMARTCARD)
             logger->debug("isCardPresent - error connecting to card (%s)\n",
-                          pcsc_stringify_error(rv));
-            releaseContext();
-            return false;
+                            pcsc_stringify_error(rv));
+        releaseContext();
+        return false;
     }
 
+    releaseContext();
     return true;
 }
 
@@ -165,8 +164,8 @@ void PcscTerminal::openAndConnect(std::string protocol)
     DWORD sharingMode = SCARD_SHARE_SHARED;
     BYTE reader[200];
     DWORD readerLen = sizeof(reader);
-    BYTE atr[33];
-    DWORD atrLen = sizeof(atr);
+    BYTE _atr[33];
+    DWORD atrLen = sizeof(_atr);
 
     logger->debug("openAndConnect\n");
 
@@ -199,7 +198,8 @@ void PcscTerminal::openAndConnect(std::string protocol)
     rv = SCardConnect(this->context, this->name.c_str(), sharingMode,
                       connectProtocol, &this->handle, &this->protocol);
     if (rv != SCARD_S_SUCCESS) {
-        logger->error("openAndConnect - SCardConnect failed (%d)\n", rv);
+        logger->error("openAndConnect - SCardConnect failed (%s)\n",
+                      pcsc_stringify_error(rv));
         releaseContext();
         throw PcscTerminalException("openAndConnect failed");
     }
@@ -214,16 +214,18 @@ void PcscTerminal::openAndConnect(std::string protocol)
     }
 
     rv = SCardStatus(this->handle, (LPSTR)reader, &readerLen, &this->state,
-                     &this->protocol, atr, &atrLen);
+                     &this->protocol, _atr, &atrLen);
     if (rv != SCARD_S_SUCCESS) {
-        logger->error("openAndConnect - SCardStatus failed (%d)\n", rv);
+        logger->error("openAndConnect - SCardStatus failed (%s)\n",
+                      pcsc_stringify_error(rv));
         releaseContext();
         throw PcscTerminalException("openAndConnect failed");
     } else {
         logger->debug("openAndConnect - card state: %d\n", this->state);
-        this->atr.clear();
-        this->atr.assign(atr, atr + atrLen);
     }
+
+    this->atr.clear();
+    this->atr.insert(this->atr.end(), _atr, _atr + atrLen);
 }
 
 void PcscTerminal::closeAndDisconnect(bool reset)
@@ -260,7 +262,7 @@ bool PcscTerminal::waitForCardAbsent(long long timeout)
     } while (1);
 }
 
-const std::vector<char>& PcscTerminal::getATR()
+const std::vector<uint8_t>& PcscTerminal::getATR()
 {
     return this->atr;
 }

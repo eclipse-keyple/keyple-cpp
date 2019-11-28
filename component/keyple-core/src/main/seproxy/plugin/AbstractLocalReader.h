@@ -135,7 +135,7 @@ protected:
      * @throws NoStackTraceThrowable exception without stack trace
      */
     virtual bool checkSePresence()
-    { 
+    {
         return false;
     }
 
@@ -180,7 +180,7 @@ protected:
      *
      * @return ATR returned by the SE or reconstructed by the reader (contactless)
      */
-    virtual std::vector<char> getATR() = 0;
+    virtual const std::vector<uint8_t>& getATR() = 0;
 
 
     /**
@@ -268,7 +268,7 @@ protected:
      * @throws KeypleChannelStateException if a reader error occurs
      */
     virtual void closePhysicalChannel() = 0;
- 
+
     /**
      * Tells if the physical channel is open or not
      * <p>
