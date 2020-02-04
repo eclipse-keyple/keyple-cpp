@@ -14,9 +14,14 @@
 
 #include "SamIdentifier.h"
 
+/* Common */
+#include "Pattern.h"
+
 namespace keyple {
 namespace calypso {
 namespace transaction {
+
+using namespace keyple::common;
 
 SamIdentifier::SamIdentifier(
   const SamRevision& samRevision, const std::string& serialNumber,
@@ -36,12 +41,12 @@ const std::string& SamIdentifier::getSerialNumber() const
     return serialNumber;
 }
 
-const std::string SamIdentifier::getGroupReference() const
+const std::string& SamIdentifier::getGroupReference() const
 {
     return groupReference;
 }
 
-bool SamIdentifier::matches(const SamIdentifier* samIdentifier)
+bool SamIdentifier::matches(const SamIdentifier* samIdentifier) const
 {
     if (samIdentifier == nullptr) {
         return true;
@@ -52,16 +57,15 @@ bool SamIdentifier::matches(const SamIdentifier* samIdentifier)
         return false;
     }
 
-    if (samIdentifier->getSerialNumber() != null &&
-       !samIdentifier->getSerialNumber().isEmpty()) {
-        Pattern* p = Pattern.compile(samIdentifier->getSerialNumber());
-        if (!p->matcher(serialNumber).matches()) {
+    if (!samIdentifier->getSerialNumber().empty()) {
+        Pattern* p = Pattern::compile(samIdentifier->getSerialNumber());
+        if (!p->matcher(serialNumber)->matches()) {
             return false;
         }
     }
 
-    if (samIdentifier->getGroupReference() != null &&
-       !samIdentifier->getGroupReference().equals(groupReference)) {
+    if (!samIdentifier->getGroupReference().empty() &&
+        !samIdentifier->getGroupReference().compare(groupReference)) {
         return false;
     }
 

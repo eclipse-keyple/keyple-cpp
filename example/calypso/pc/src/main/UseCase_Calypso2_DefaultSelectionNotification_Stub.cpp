@@ -233,7 +233,7 @@ public:
                              "has succeeded\n");
 
                 /*
-                 * Retrieve the data read from the parser updated during the 
+                 * Retrieve the data read from the parser updated during the
                  * selection process
                  */
                 std::shared_ptr<ReadRecordsRespPars> readEnvironmentParser =
@@ -241,7 +241,7 @@ public:
                         matchingSelection->getResponseParser(
                             readEnvironmentParserIndex));
 
-                std::vector<char> environmentAndHolder =
+                std::vector<uint8_t> environmentAndHolder =
                     (*(readEnvironmentParser->getRecords().get()))[
                         static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1)];
 
@@ -285,7 +285,7 @@ public:
                 try {
                     if (poTransaction->processPoCommands(
                             ChannelState::CLOSE_AFTER)) {
-                        
+
                         logger->info("The reading of the EventLog has " \
                                      "succeeded\n");
 
@@ -298,7 +298,7 @@ public:
                                 poTransaction->getResponseParser(
                                     readEventLogParserIndex));
 
-                        std::vector<char> eventLog =
+                        std::vector<uint8_t> eventLog =
                             (*(parser->getRecords().get()))[
                                 CalypsoClassicInfo::RECORD_NUMBER_1];
 

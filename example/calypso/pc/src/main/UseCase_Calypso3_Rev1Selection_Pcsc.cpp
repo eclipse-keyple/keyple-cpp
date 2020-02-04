@@ -128,7 +128,7 @@ int main(int argc, char **argv)
         /*
          * Prepare the selection of the DF RT.
          */
-        std::vector<char> dfrt = ByteArrayUtil::fromHex(poDfRtPath);
+        std::vector<uint8_t> dfrt = ByteArrayUtil::fromHex(poDfRtPath);
         int selectFileParserIndex =
             poSelectionRequest->prepareSelectFileCmd(
                 dfrt,
@@ -188,7 +188,7 @@ int main(int argc, char **argv)
              * Retrieve the data read from the parser updated during the
              * selection process
              */
-            std::vector<char> environmentAndHolder =
+            std::vector<uint8_t> environmentAndHolder =
                 (*(readEnvironmentParser->getRecords().get()))[
                     static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1)];
 
@@ -240,7 +240,7 @@ int main(int argc, char **argv)
                         poTransaction->getResponseParser(
                             readEventLogParserIndex));
 
-                std::vector<char> eventLog =
+                std::vector<uint8_t> eventLog =
                         (*(parser->getRecords().get()))[
                             CalypsoClassicInfo::RECORD_NUMBER_1];
 

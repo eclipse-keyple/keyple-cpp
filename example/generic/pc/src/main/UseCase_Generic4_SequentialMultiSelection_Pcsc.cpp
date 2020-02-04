@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 
         /* AID based selection */
         {
-        std::vector<char> aid = ByteArrayUtil::fromHex(seAidPrefix);
+        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
         std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
         std::shared_ptr<SeSelector::AidSelector> aidSelector  =
             std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::FIRST,
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 
         /* next selection (2nd selection, later indexed 1) */
         {
-        std::vector<char> aid = ByteArrayUtil::fromHex(seAidPrefix);
+        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
         std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
         std::shared_ptr<SeSelector::AidSelector> aidSelector  =
             std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
 
         /* next selection */
         {
-        std::vector<char> aid = ByteArrayUtil::fromHex(seAidPrefix);
+        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
         std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
         std::shared_ptr<SeSelector::AidSelector> aidSelector  =
             std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,

@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -28,7 +30,8 @@
 #include "KeypleChannelStateException.h"
 
 /* Forward declarations */
-namespace keyple { namespace plugin { namespace stub { class StubSecureElement; } } }
+namespace keyple { namespace plugin { namespace stub {
+    class StubSecureElement; } } }
 
 namespace keyple {
 namespace plugin {
@@ -84,7 +87,7 @@ public:
     /**
      *
      */
-    std::vector<char> transmitApdu(std::vector<char> &apduIn) override;
+    std::vector<uint8_t> transmitApdu(std::vector<uint8_t>& apduIn) override;
 
     /**
      * STATE CONTROLLERS FOR INSERTING AND REMOVING SECURE ELEMENT
@@ -109,14 +112,16 @@ public:
     /**
      *
      */
-    void setParameters(std::unordered_map<std::string, std::string> &parameters) override;
+    void setParameters(std::unordered_map<std::string,
+                       std::string>& parameters) override;
 
     /**
      *
      */
     std::string getName() override
     {
-        return AbstractThreadedLocalReader::AbstractLoggedObservable<ReaderEvent>::getName();
+        return AbstractThreadedLocalReader
+                   ::AbstractLoggedObservable<ReaderEvent>::getName();
     }
 
 protected:
@@ -148,7 +153,8 @@ protected:
     /**
      *
      */
-    void setParameter(const std::string &name, const std::string &value)  override;
+    void setParameter(const std::string& name, const std::string& value)
+        override;
 
     /**
      *
@@ -163,12 +169,14 @@ protected:
     /**
      * HELPERS TO TEST INTERNAL METHOD TODO : is this necessary?
      */
-    std::shared_ptr<ApduResponse> processApduRequestTestProxy(std::shared_ptr<ApduRequest> apduRequest);
+    std::shared_ptr<ApduResponse>
+        processApduRequestTestProxy(std::shared_ptr<ApduRequest> apduRequest);
 
     /**
      *
      */
-    std::shared_ptr<SeResponseSet> processSeRequestSetTestProxy(std::shared_ptr<SeRequestSet> requestSet);
+    std::shared_ptr<SeResponseSet>
+        processSeRequestSetTestProxy(std::shared_ptr<SeRequestSet> requestSet);
 
     /**
      *

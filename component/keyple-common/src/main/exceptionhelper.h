@@ -311,6 +311,21 @@ public:
   }
 };
 
+class AssertionError : public std::exception {
+private:
+  std::string msg;
+
+public:
+  AssertionError(const std::string &message = "") : msg(message)
+  {
+  }
+
+  const char *what()
+  {
+      return msg.c_str();
+  }
+};
+
 }
 }
 

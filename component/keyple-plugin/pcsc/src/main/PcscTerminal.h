@@ -82,7 +82,7 @@ public:
     /**
      *
      */
-    std::vector<char> transmitApdu(std::vector<char> apduIn);
+    std::vector<uint8_t> transmitApdu(std::vector<uint8_t> apduIn);
 
     /**
      *

@@ -13,7 +13,11 @@
  ******************************************************************************/
 
 #include "SamResource.h"
+
+/* Calypso */
 #include "CalypsoSam.h"
+
+/* Core */
 #include "SeReader.h"
 
 namespace keyple {
@@ -33,17 +37,17 @@ SamResource::SamResource(std::shared_ptr<SeReader> seReader,
 
 bool SamResource::isSamResourceFree()
 {
-    return samResourceStatus.equals(SamResourceStatus.FREE);
+    return samResourceStatus == SamResourceStatus::FREE;
 }
 
-void SamResource::setSamIdentifier(SamIdentifier samIdentifier)
+void SamResource::setSamIdentifier(SamIdentifier* samIdentifier)
 {
     this->samIdentifier = samIdentifier;
 }
 
-bool SamResource::isSamMatching(SamIdentifier samIdentifier)
+bool SamResource::isSamMatching(SamIdentifier* samIdentifier)
 {
-    return samIdentifier.matches(this->samIdentifier);
+    return samIdentifier->matches(this->samIdentifier);
 }
 
 void SamResource::setSamResourceStatus(SamResourceStatus samResourceStatus)

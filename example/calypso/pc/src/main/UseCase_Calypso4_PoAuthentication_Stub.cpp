@@ -271,7 +271,7 @@ int main(int argc, char **argv)
                 std::dynamic_pointer_cast<ReadRecordsRespPars>(
                     poTransaction->getResponseParser(
                         readEventLogParserIndexBis));
-            std::vector<char> eventLog =
+            std::vector<uint8_t> eventLog =
                 (*(parser->getRecords().get()))[
                     CalypsoClassicInfo::RECORD_NUMBER_1];
 

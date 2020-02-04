@@ -87,7 +87,7 @@ void StubReader::closePhysicalChannel()
     }
 }
 
-std::vector<char> StubReader::transmitApdu(std::vector<char> &apduIn)
+std::vector<uint8_t> StubReader::transmitApdu(std::vector<uint8_t>& apduIn)
 {
     return se->processApdu(apduIn);
 }

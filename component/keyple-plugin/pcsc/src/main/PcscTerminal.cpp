@@ -267,7 +267,7 @@ const std::vector<uint8_t>& PcscTerminal::getATR()
     return this->atr;
 }
 
-std::vector<char> PcscTerminal::transmitApdu(std::vector<char> apduIn)
+std::vector<uint8_t> PcscTerminal::transmitApdu(std::vector<uint8_t> apduIn)
 {
     if (apduIn.size() == 0)
         throw IllegalArgumentException("command cannot be empty");
@@ -305,7 +305,7 @@ std::vector<char> PcscTerminal::transmitApdu(std::vector<char> apduIn)
 
     bool getresponse = (t0 && t0GetResponse) || (t1 && t1GetResponse);
     int k = 0;
-    std::vector<char> result;
+    std::vector<uint8_t> result;
 
     while (true) {
         if (++k >= 32) {
@@ -316,7 +316,7 @@ std::vector<char> PcscTerminal::transmitApdu(std::vector<char> apduIn)
         SCardTransmit(this->handle, &this->pioSendPCI,
                       (LPCBYTE)apduIn.data(), apduIn.size(), NULL,
                       (LPBYTE)r_apdu, &dwRecv);
-        std::vector<char> response(r_apdu, r_apdu + dwRecv);
+        std::vector<uint8_t> response(r_apdu, r_apdu + dwRecv);
         int rn = response.size();
         if (getresponse && (rn >= 2)) {
             // see ISO 7816/2005, 5.1.3
@@ -332,7 +332,7 @@ std::vector<char> PcscTerminal::transmitApdu(std::vector<char> apduIn)
                     result.insert(result.end(), response.begin(),
                                   response.begin() + rn - 2);
                 }
-                apduIn[1] = static_cast<char>(0xC0);
+                apduIn[1] = 0xC0;
                 apduIn[2] = 0;
                 apduIn[3] = 0;
                 apduIn[4] = response[rn - 1];

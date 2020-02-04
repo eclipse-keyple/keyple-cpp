@@ -101,7 +101,7 @@ public:
     /**
      *
      */
-    virtual std::string getApplicationTypeMask();
+    virtual const std::string& getApplicationTypeMask() const;
 
     /**
      *

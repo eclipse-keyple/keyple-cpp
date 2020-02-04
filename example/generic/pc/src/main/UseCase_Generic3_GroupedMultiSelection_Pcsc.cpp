@@ -96,72 +96,72 @@ int main(int argc, char **argv)
 
         /* AID based selection (1st selection, later indexed 0 */
         {
-        std::vector<char> aid = ByteArrayUtil::fromHex(seAidPrefix);
- 
+        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
+
         std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
             std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
- 
-        std::shared_ptr<SeSelector::AidSelector> aidSelector  = 
+
+        std::shared_ptr<SeSelector::AidSelector> aidSelector  =
             std::make_shared<SeSelector::AidSelector>(
                 isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::FIRST,
                 SeSelector::AidSelector::FileControlInformation::FCI);
- 
+
         std::shared_ptr<SeSelector> seSelector =
             std::make_shared<SeSelector>(
-                SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector, 
+                SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector,
                 "Initial selection #1");
- 
+
         std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
             std::make_shared<GenericSeSelectionRequest>(
                 seSelector, ChannelState::CLOSE_AFTER);
- 
+
         seSelection->prepareSelection(genericSeSelectionRequest);
         }
 
         /* next selection (2nd selection, later indexed 1) */
         {
-        std::vector<char> aid = ByteArrayUtil::fromHex(seAidPrefix);
+        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
 
         std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
             std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
 
-        std::shared_ptr<SeSelector::AidSelector> aidSelector  = 
+        std::shared_ptr<SeSelector::AidSelector> aidSelector  =
             std::make_shared<SeSelector::AidSelector>(
                 isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,
                 SeSelector::AidSelector::FileControlInformation::FCI);
-      
+
         std::shared_ptr<SeSelector> seSelector =
             std::make_shared<SeSelector>(
-                SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector, 
+                SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector,
                 "Initial selection #2");
-      
+
         std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
             std::make_shared<GenericSeSelectionRequest>(
                 seSelector, ChannelState::CLOSE_AFTER);
-       
+
         seSelection->prepareSelection(genericSeSelectionRequest);
         }
         /* next selection */
         {
-        std::vector<char> aid = ByteArrayUtil::fromHex(seAidPrefix);
-      
-        std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = 
+        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
+
+        std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
             std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
-      
-        std::shared_ptr<SeSelector::AidSelector> aidSelector  = 
+
+        std::shared_ptr<SeSelector::AidSelector> aidSelector  =
             std::make_shared<SeSelector::AidSelector>(
-                isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,    
+                isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,
                 SeSelector::AidSelector::FileControlInformation::FCI);
-        
+
         std::shared_ptr<SeSelector> seSelector =
             std::make_shared<SeSelector>(
                 SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector,
                 "Initial selection #3");
-       
+
         std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
             std::make_shared<GenericSeSelectionRequest>(
                 seSelector, ChannelState::CLOSE_AFTER);
-       
+
         seSelection->prepareSelection(genericSeSelectionRequest);
         }
 
@@ -171,7 +171,7 @@ int main(int argc, char **argv)
          */
         std::shared_ptr<SelectionsResult> selectionsResult =
             seSelection->processExplicitSelection(seReader);
-       
+
         if (selectionsResult->getMatchingSelections().size() > 0) {
             for (auto matchingSelection :
                      selectionsResult->getMatchingSelections()) {

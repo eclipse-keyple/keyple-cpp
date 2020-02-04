@@ -173,7 +173,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(std::shared_
          */
 
         /* prepare Event Log append record */
-        std::vector<char> eventlog = ByteArrayUtil::fromHex(CalypsoClassicInfo::eventLog_dataFill);
+        std::vector<uint8_t> eventlog = ByteArrayUtil::fromHex(CalypsoClassicInfo::eventLog_dataFill);
         int appendEventLogParserIndex = poTransaction->prepareAppendRecordCmd(CalypsoClassicInfo::SFI_EventLog,
                                                                               eventlog,
                                                                               StringHelper::formatSimple("EventLog (SFI=%02X)",

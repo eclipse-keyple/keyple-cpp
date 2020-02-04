@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -128,7 +130,7 @@ protected:
      * @return the list of AbstractObservableReader objects.
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> initNativeReaders() override;
+    std::set<std::shared_ptr<SeReader>> initNativeReaders() override;
 
     /**
      * Fetch the reader whose name is provided as an argument. Returns the current reader if it is
@@ -206,7 +208,7 @@ protected:
     {
         (void)observer;
     }
-    
+
 private:
     /**
      *

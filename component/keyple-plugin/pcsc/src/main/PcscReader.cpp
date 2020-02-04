@@ -164,11 +164,11 @@ bool PcscReader::waitForCardAbsent(long long timeout)
     return false;
 }
 
-std::vector<char> PcscReader::transmitApdu(std::vector<char> &apduIn)
+std::vector<uint8_t> PcscReader::transmitApdu(std::vector<uint8_t>& apduIn)
 {
     logger->debug("transmitApdu\n");
 
-    std::vector<char> response;
+    std::vector<uint8_t> response;
 
     try {
         response = terminal.transmitApdu(apduIn);

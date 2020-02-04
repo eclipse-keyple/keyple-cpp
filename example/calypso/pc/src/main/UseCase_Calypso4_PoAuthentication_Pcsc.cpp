@@ -121,7 +121,7 @@ int main(int argc, char **argv)
          */
 
         /*
-         * Calypso selection: configures a PoSelector with all the desired 
+         * Calypso selection: configures a PoSelector with all the desired
          * attributes to make the selection and read additional information
          * afterwards
          */
@@ -196,7 +196,7 @@ int main(int argc, char **argv)
             /*
              * Open Session for the debit key
              */
-            bool poProcessStatus = 
+            bool poProcessStatus =
                 poTransaction->processOpening(
                     PoTransaction::ModificationMode::ATOMIC,
                     PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT,
@@ -234,7 +234,7 @@ int main(int argc, char **argv)
                 std::dynamic_pointer_cast<ReadRecordsRespPars>(
                     poTransaction->getResponseParser(
                         readEventLogParserIndexBis));
-            std::vector<char> eventLog = (*(parser->getRecords().get()))[
+            std::vector<uint8_t> eventLog = (*(parser->getRecords().get()))[
                                          CalypsoClassicInfo::RECORD_NUMBER_1];
 
 
@@ -278,6 +278,6 @@ int main(int argc, char **argv)
     else {
         logger->error("No PO were detected\n");
     }
-    
+
     return 0;
 }

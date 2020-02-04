@@ -88,15 +88,15 @@ public:
      * @param command : hexadecimal command to react to
      * @param response : hexadecimal response to be sent in reaction to command
      */
-    virtual void addHexCommand(const std::string &command,
-                               const std::string &response);
+    virtual void addHexCommand(const std::string& command,
+                               const std::string& response);
 
     /**
      * Remove simulated commands from the Stub SE
      *
      * @param command : hexadecimal command to be removed
      */
-    virtual void removeHexCommand(const std::string &command);
+    virtual void removeHexCommand(const std::string& command);
 
     /**
      * Return APDU Response to APDU Request
@@ -105,7 +105,7 @@ public:
      * @return APDU response
      * @throws KeypleIOReaderException if the transmission fails
      */
-    virtual std::vector<char> processApdu(std::vector<char> &apduIn);
+    virtual std::vector<uint8_t> processApdu(std::vector<uint8_t>& apduIn);
 
 private:
     /**

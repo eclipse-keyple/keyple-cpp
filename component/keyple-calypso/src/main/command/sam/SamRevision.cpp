@@ -63,7 +63,7 @@ std::string SamRevision::getName()
     return name;
 }
 
-std::string SamRevision::getApplicationTypeMask()
+const std::string& SamRevision::getApplicationTypeMask() const
 {
     return applicationTypeMask;
 }

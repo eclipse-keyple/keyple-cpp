@@ -72,14 +72,26 @@ public:
 		return hash;
 	}
 
-	static std::vector<char>&
+	static std::vector<char>
     copyOfRange(const std::vector<char> &original, int from, int to)
     {
-		static std::vector<char> privateArray;
-		privateArray.clear();
+		std::vector<char> vec;
+
 		std::copy(original.begin() + from, original.begin() + to,
-                  std::back_inserter(privateArray));
-		return privateArray;
+                  std::back_inserter(vec));
+
+		return vec;
+	}
+
+    static std::vector<uint8_t>
+    copyOfRange(const std::vector<uint8_t> &original, int from, int to)
+    {
+        std::vector<uint8_t> vec;
+
+		std::copy(original.begin() + from, original.begin() + to,
+                  std::back_inserter(vec));
+
+		return vec;
 	}
 };
 

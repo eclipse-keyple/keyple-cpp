@@ -181,7 +181,7 @@ int main(int argc, char **argv)
                          nbCommands, modificationsBufferSize, modificationsBufferSize / 35);
 
             for (int i = 0; i < nbCommands; i++) {
-                std::vector<char> dataFill = ByteArrayUtil::fromHex(CalypsoClassicInfo::eventLog_dataFill);
+                std::vector<uint8_t> dataFill = ByteArrayUtil::fromHex(CalypsoClassicInfo::eventLog_dataFill);
                 appendRecordParsers[i] = poTransaction->prepareAppendRecordCmd(CalypsoClassicInfo::SFI_EventLog, dataFill,
                                                                                StringHelper::formatSimple("EventLog (SFI=%02X) #%d",
                                                                                                           CalypsoClassicInfo::SFI_EventLog,

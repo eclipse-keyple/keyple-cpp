@@ -693,7 +693,7 @@ public:
     std::shared_ptr<SeResponse> processAtomicPoCommands(
          std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
                                                     AbstractPoResponseParser>>>> &poBuilderParsers,
-         channelControl channelControl);
+         ChannelControl channelControl);
 
     /**
      * Process SAM commands.

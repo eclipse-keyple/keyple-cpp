@@ -122,7 +122,7 @@ public:
          * Generic selection: configures a SeSelector with all the desired
          * attributes to make the selection
          */
-        std::vector<char> aid = ByteArrayUtil::fromHex(seAid);
+        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAid);
         std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
             std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
         std::shared_ptr<SeSelector::AidSelector> aidSelector  =

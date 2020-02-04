@@ -172,7 +172,7 @@ int main(int argc, char **argv)
              * Retrieve the data read from the parser updated during the
              * selection process
              */
-            std::vector<char> environmentAndHolder =
+            std::vector<uint8_t> environmentAndHolder =
                 (*(readEnvironmentParser->getRecords().get()))[
                     static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1)];
 
@@ -223,7 +223,7 @@ int main(int argc, char **argv)
                     std::dynamic_pointer_cast<ReadRecordsRespPars>(
                         poTransaction->getResponseParser(
                             readEventLogParserIndex));
-                std::vector<char> eventLog =
+                std::vector<uint8_t> eventLog =
                     (*(parser->getRecords().get()))[
                         CalypsoClassicInfo::RECORD_NUMBER_1];
 

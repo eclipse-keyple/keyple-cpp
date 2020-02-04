@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -30,7 +32,8 @@ public:
 #if defined(WIN32)
 		SYSTEMTIME time;
 		GetSystemTime(&time);
-		return static_cast<long>(((time.wSecond * 1000) + time.wMilliseconds) * pow(10, 6));
+		return static_cast<long>(((time.wSecond * 1000) +
+                                 time.wMilliseconds) * pow(10, 6));
 #else
 		timespec ts;
    		// clock_gettime(CLOCK_MONOTONIC, &ts); // Works on FreeBSD
@@ -52,6 +55,14 @@ public:
 	{
 		for (int i = 0; i < length; i++) {
 			dest[destPos + i] = static_cast<char>(src[srcPos + i]);
+		}
+	}
+
+    static void arraycopy(const std::vector<uint8_t>& src, int srcPos,
+                          std::vector<uint8_t>& dest, int destPos, int length)
+	{
+		for (int i = 0; i < length; i++) {
+			dest[destPos + i] = src[srcPos + i];
 		}
 	}
 

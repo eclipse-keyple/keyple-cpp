@@ -60,8 +60,7 @@ void StubPlugin::setParameter(const std::string &key, const std::string &value)
     parameters.emplace(key, value);
 }
 
-std::shared_ptr<std::set<std::shared_ptr<SeReader>>>
-    StubPlugin::initNativeReaders()
+std::set<std::shared_ptr<SeReader>> StubPlugin::initNativeReaders()
 {
     /* init Stub Readers list */
     logger->debug("creating new list\n");

@@ -147,7 +147,7 @@ int main(int argc, char **argv)
                     std::dynamic_pointer_cast<ReadRecordsRespPars>(matchingSelection->getResponseParser(readEnvironmentParserIndex));
 
             /* Retrieve the data read from the parser updated during the selection process */
-            std::vector<char> environmentAndHolder =
+            std::vector<uint8_t> environmentAndHolder =
                 (*(readEnvironmentParser->getRecords().get()))[static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1)];
 
             /* Log the result */
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
                  */
                 std::shared_ptr<ReadRecordsRespPars> parser =
                         std::dynamic_pointer_cast<ReadRecordsRespPars>(poTransaction->getResponseParser(readEventLogParserIndex));
-                std::vector<char> eventLog = (*(parser->getRecords().get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
+                std::vector<uint8_t> eventLog = (*(parser->getRecords().get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
                 /* Log the result */
                 logger->info("EventLog file data: %s\n", ByteArrayUtil::toHex(eventLog).c_str());

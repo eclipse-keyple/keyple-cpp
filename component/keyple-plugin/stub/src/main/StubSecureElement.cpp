@@ -69,7 +69,8 @@ void StubSecureElement::removeHexCommand(const std::string &command)
     hexCommands.erase(StringHelper::trim(command));
 }
 
-std::vector<char> StubSecureElement::processApdu(std::vector<char> &apduIn)
+std::vector<uint8_t> StubSecureElement::processApdu(
+    std::vector<uint8_t>& apduIn)
 {
     if (apduIn.empty())
         return apduIn;

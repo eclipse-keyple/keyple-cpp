@@ -62,8 +62,8 @@ std::shared_ptr<AbstractDefaultSelectionsRequest> SeProtocolDetectionEngine::pre
             //char SFI_T2Usage = static_cast<char>(0x1A);
             char SFI_T2Environment = static_cast<char>(0x14);
 
-            std::vector<char> aid = ByteArrayUtil::fromHex(HoplinkAID);
-            std::shared_ptr<PoSelectionRequest> poSelectionRequest = 
+            std::vector<uint8_t> aid = ByteArrayUtil::fromHex(HoplinkAID);
+            std::shared_ptr<PoSelectionRequest> poSelectionRequest =
                 std::make_shared<PoSelectionRequest>(
                     std::make_shared<PoSelector>(SeCommonProtocols::PROTOCOL_ISO14443_3A, nullptr,
                                                  std::make_shared<PoSelector::PoAidSelector>(
@@ -72,7 +72,7 @@ std::shared_ptr<AbstractDefaultSelectionsRequest> SeProtocolDetectionEngine::pre
                                                  "Hoplink selector"),
                     ChannelState::KEEP_OPEN);
 
-                std::vector<char> apdu = ByteArrayUtil::fromHex("FFCA000000");
+                std::vector<uint8_t> apdu = ByteArrayUtil::fromHex("FFCA000000");
                 poSelectionRequest->preparePoCustomReadCmd("Standard Get Data", apdu);
                 poSelectionRequest->prepareReadRecordsCmd(SFI_T2Environment, ReadDataStructure::SINGLE_RECORD_DATA, static_cast<char>(0x01), "Hoplink T2 Environment");
                 seSelection->prepareSelection(poSelectionRequest);

@@ -99,7 +99,7 @@ public:
     /**
      *
      */
-    virtual std::string getApplicationTypeMask();
+    virtual const std::string& getApplicationTypeMask() const;
 
     /**
      *
@@ -114,7 +114,7 @@ public:
     /**
      *
      */
-    bool operator!=(const SamRevision &other);
+    bool operator!=(const SamRevision &other) const;
 
     /**
      *

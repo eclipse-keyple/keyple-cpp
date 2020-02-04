@@ -193,7 +193,7 @@ protected:
      * @return apduOut buffer
      * @throws KeypleIOReaderException if the transmission failed
      */
-    std::vector<char> transmitApdu(std::vector<char> &apduIn) override;
+    std::vector<uint8_t> transmitApdu(std::vector<uint8_t> &apduIn) override;
 
     /**
      * Tells if the current SE protocol matches the provided protocol flag. If

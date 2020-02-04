@@ -34,7 +34,7 @@ public:
     {
         interrupted = false;
         detached = true;
-        running = false;
+        alive = false;
     }
 
     /**
@@ -45,7 +45,7 @@ public:
 	 *
 	 * @param name the name of the new thread
 	 */
-    Thread(const std::string &name) : name(name), t(nullptr), running(false)
+    Thread(const std::string &name) : alive(false), name(name), t(nullptr)
     {
         interrupted = false;
         detached = true;
@@ -56,7 +56,7 @@ public:
 	 */
     virtual ~Thread()
     {
-        if (running == 1 && detached == 0)
+        if (alive == 1 && detached == 0)
         {
             t->detach();
         }
@@ -84,7 +84,7 @@ public:
         result = t ? 0 : -1;
 
         if (result == 0)
-            running = 1;
+            alive = 1;
     }
 
     /**
@@ -111,7 +111,7 @@ public:
     {
         int result = -1;
 
-        if (running == 1) {
+        if (alive == 1) {
             t->join();
             detached = 1;
         }
@@ -129,7 +129,7 @@ public:
     {
         int result = -1;
 
-        if (running == 1 && detached == 0) {
+        if (alive == 1 && detached == 0) {
             t->detach();
             detached = 1;
         }
@@ -155,7 +155,7 @@ public:
     }
 
     /**
-     * 
+     *
      */
     void setDaemon(bool on)
     {
@@ -217,12 +217,12 @@ public:
     }
 
     /**
-     * 
+     *
      */
     virtual void *run() = 0;
 
     /**
-     * 
+     *
      */
     static std::thread::id currentThreadId()
     {
@@ -230,7 +230,7 @@ public:
     }
 
     /**
-     * 
+     *
      */
     std::string getName()
     {
@@ -238,12 +238,17 @@ public:
     }
 
     /**
-     * 
+     *
      */
     void setThread(std::thread* t)
     {
         this->t = t;
     }
+
+    /**
+     *
+     */
+    int alive;
 
 private:
     /**
@@ -264,13 +269,7 @@ private:
     /**
      *
      */
-    int running;
-
-    /**
-     *
-     */
     int detached;
-
 };
 
 }

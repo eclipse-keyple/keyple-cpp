@@ -74,7 +74,7 @@ public:
      *
      * @param samIdentifier the SAM identifier
      */
-    void setSamIdentifier(SamIdentifier samIdentifier);
+    void setSamIdentifier(SamIdentifier* samIdentifier);
 
     /**
      * Indicates whether the SamResource matches the provided SAM identifier.
@@ -94,7 +94,7 @@ public:
      * @param samIdentifier the SAM identifier
      * @return true or false according to the result of the correspondence test
      */
-    bool isSamMatching(SamIdentifier samIdentifier);
+    bool isSamMatching(SamIdentifier* samIdentifier);
 
     /**
      * Sets the free/busy status of the SamResource
@@ -123,7 +123,7 @@ private:
     /**
      * The sam identifier
      */
-    std::shared_ptr<SamIdentifier> samIdentifier;
+    SamIdentifier* samIdentifier;
 };
 
 }
