@@ -54,7 +54,7 @@ ChangeKeyRespPars::ChangeKeyRespPars(std::shared_ptr<ApduResponse> response)
 
 std::unordered_map<int,
     std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-ChangeKeyRespPars::getStatusTable()
+        ChangeKeyRespPars::getStatusTable() const
 {
     return STATUS_TABLE;
 }

@@ -32,21 +32,21 @@ OpenSession31RespPars::OpenSession31RespPars(
   std::shared_ptr<ApduResponse> response)
 : AbstractOpenSessionRespPars(response, PoRevision::REV3_1)
 {
-    std::vector<char> data = response->getDataOut();
+    std::vector<uint8_t> data = response->getDataOut();
     this->secureSession = toSecureSession(data);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-OpenSession31RespPars::toSecureSession(std::vector<char> &apduResponseData)
+    OpenSession31RespPars::toSecureSession(
+        const std::vector<uint8_t>& apduResponseData)
 {
     std::shared_ptr<SecureSession> secureSession;
-    bool previousSessionRatified =
-        (apduResponseData[4] == static_cast<char>(0x00));
+    bool previousSessionRatified = (apduResponseData[4] == 0x00);
     bool manageSecureSessionAuthorized = false;
 
-    char kif = apduResponseData[5];
+    uint8_t kif = apduResponseData[5];
     int dataLength = apduResponseData[7];
-    std::vector<char> data =
+    std::vector<uint8_t> data =
         Arrays::copyOfRange(apduResponseData, 8, 8 + dataLength);
 
     return std::make_shared<SecureSession>(

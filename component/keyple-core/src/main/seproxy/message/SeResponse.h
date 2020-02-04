@@ -62,7 +62,7 @@ public:
     /**
      * Was channel previously open.
      *
-     * @return the previous state of the logical channel.
+     * @return the previous currentState of the logical channel.
      */
     bool wasChannelPreviouslyOpen();
 

@@ -86,7 +86,7 @@ AppendRecordRespPars::AppendRecordRespPars(
 
 std::unordered_map<int,
     std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        AppendRecordRespPars::getStatusTable()
+        AppendRecordRespPars::getStatusTable() const
 {
     return STATUS_TABLE;
 }

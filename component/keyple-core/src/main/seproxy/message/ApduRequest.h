@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -33,7 +35,8 @@ using namespace keyple::common;
 /**
  * Single APDU request wrapper
   */
-class EXPORT ApduRequest final : public std::enable_shared_from_this<ApduRequest>, public Serializable {
+class EXPORT ApduRequest final
+: public std::enable_shared_from_this<ApduRequest>, public Serializable {
 public:
     /**
      *
@@ -41,15 +44,16 @@ public:
     static constexpr long long serialVersionUID = 877369841119873812LL;
 
     /**
-     * the constructor called by a ticketing application in order to build the APDU command requests
-     * to push to the ProxyReader.
+     * the constructor called by a ticketing application in order to build the
+     * APDU command requests to push to the ProxyReader.
      *
      * @param buffer Buffer of the APDU request
      * @param case4 the case 4
-     * @param successfulStatusCodes the list of status codes to be considered as successful although
-     *        different from 9000
+     * @param successfulStatusCodes the list of status codes to be considered as
+     *        successful although different from 9000
      */
-    ApduRequest(std::vector<char> &buffer, bool case4, std::shared_ptr<std::set<int>> successfulStatusCodes);
+    ApduRequest(const std::vector<uint8_t>& buffer, bool case4,
+                std::shared_ptr<std::set<int>> successfulStatusCodes);
 
     /**
      * Alternate constructor with name
@@ -57,10 +61,12 @@ public:
      * @param name name to be printed (e.g. in logs)
      * @param buffer data buffer
      * @param case4 case 4 flag (true if case 4)
-     * @param successfulStatusCodes the list of status codes to be considered as successful although
-     *        different from 9000
+     * @param successfulStatusCodes the list of status codes to be considered as
+     *        successful although different from 9000
      */
-    ApduRequest(const std::string &name, std::vector<char> &buffer, bool case4, std::shared_ptr<std::set<int>> successfulStatusCodes);
+    ApduRequest(const std::string& name, const std::vector<uint8_t>& buffer,
+                bool case4,
+                std::shared_ptr<std::set<int>> successfulStatusCodes);
 
     /**
      * Alternate constructor without status codes list
@@ -68,7 +74,7 @@ public:
      * @param buffer data buffer
      * @param case4 case 4 flag (true if case 4)
      */
-    ApduRequest(std::vector<char> &buffer, bool case4);
+    ApduRequest(const std::vector<uint8_t>& buffer, bool case4);
 
     /**
      * Alternate constructor with name, without status codes list
@@ -77,7 +83,8 @@ public:
      * @param buffer data buffer
      * @param case4 case 4 flag (true if case 4)
      */
-    ApduRequest(const std::string &name, std::vector<char> &buffer, bool case4);
+    ApduRequest(const std::string& name, const std::vector<uint8_t>& buffer,
+                bool case4);
 
     /**
      *
@@ -118,7 +125,7 @@ public:
      *
      * @return Name of the APDU request
      */
-    std::vector<char> getBytes();
+    std::vector<uint8_t> getBytes();
 
     /**
      *
@@ -139,7 +146,7 @@ private:
     /**
      * Buffer of the APDU Request
      */
-    std::vector<char> bytes;
+    std::vector<uint8_t> bytes;
 
     /**
      * a ‘case 4’ flag in order to explicitly specify, if it’s expected that the APDU command

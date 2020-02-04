@@ -53,7 +53,7 @@ FileOccurrence::StaticConstructor::StaticConstructor() {
 FileOccurrence::StaticConstructor FileOccurrence::staticConstructor;
 int FileOccurrence::nextOrdinal = 0;
 
-FileOccurrence::FileOccurrence(const std::string &name, InnerEnum innerEnum,
+FileOccurrence::FileOccurrence(const std::string& name, InnerEnum innerEnum,
                                char isoBitMask)
 : innerEnumValue(innerEnum), nameValue(name), ordinalValue(nextOrdinal++)
 {
@@ -96,7 +96,7 @@ std::string FileOccurrence::toString()
     return nameValue;
 }
 
-FileOccurrence FileOccurrence::valueOf(const std::string &name)
+FileOccurrence FileOccurrence::valueOf(const std::string& name)
 {
     for (auto enumInstance : FileOccurrence::valueList) {
         if (enumInstance.nameValue == name) {
@@ -108,14 +108,11 @@ FileOccurrence FileOccurrence::valueOf(const std::string &name)
     return FileOccurrence::valueList.front();
 }
 
-FileControlInformation FileControlInformation::FCI("FCI", InnerEnum::FCI,
-                                                   static_cast<char>(0x00));
-FileControlInformation FileControlInformation::FCP("FCP", InnerEnum::FCP,
-                                                   static_cast<char>(0x04));
-FileControlInformation FileControlInformation::FMD("FMD", InnerEnum::FMD,
-                                                   static_cast<char>(0x08));
+FileControlInformation FileControlInformation::FCI("FCI", InnerEnum::FCI, 0x00);
+FileControlInformation FileControlInformation::FCP("FCP", InnerEnum::FCP, 0x04);
+FileControlInformation FileControlInformation::FMD("FMD", InnerEnum::FMD, 0x08);
 FileControlInformation FileControlInformation::NO_RESPONSE(
-    "NO_RESPONSE", InnerEnum::NO_RESPONSE, static_cast<char>(0x0C));
+    "NO_RESPONSE", InnerEnum::NO_RESPONSE, 0x0C);
 
 std::vector<FileControlInformation> FileControlInformation::valueList;
 
@@ -131,9 +128,8 @@ FileControlInformation::StaticConstructor
 FileControlInformation::staticConstructor;
 int FileControlInformation::nextOrdinal = 0;
 
-FileControlInformation::FileControlInformation(const std::string &name,
-                                               InnerEnum innerEnum,
-                                               char isoBitMask)
+FileControlInformation::FileControlInformation(
+  const std::string& name, InnerEnum innerEnum, char isoBitMask)
 : innerEnumValue(innerEnum), nameValue(name), ordinalValue(nextOrdinal++)
 {
     this->isoBitMask = isoBitMask;
@@ -170,11 +166,13 @@ int FileControlInformation::ordinal()
     return ordinalValue;
 }
 
-std::string FileControlInformation::toString() {
+std::string FileControlInformation::toString()
+{
     return nameValue;
-    }
+}
 
-FileControlInformation FileControlInformation::valueOf(const std::string &name) {
+FileControlInformation FileControlInformation::valueOf(const std::string& name)
+{
     for (auto enumInstance : FileControlInformation::valueList) {
         if (enumInstance.nameValue == name) {
             return enumInstance;
@@ -185,7 +183,7 @@ FileControlInformation FileControlInformation::valueOf(const std::string &name) 
     return FileControlInformation::valueList.front();
 }
 
-SeSelector::AidSelector::IsoAid::IsoAid(std::vector<char> aid)
+SeSelector::AidSelector::IsoAid::IsoAid(const std::vector<uint8_t>& aid)
 {
     if (aid.size() < AID_MIN_LENGTH || aid.size() > AID_MAX_LENGTH) {
         value.clear();
@@ -198,11 +196,11 @@ SeSelector::AidSelector::IsoAid::IsoAid(std::vector<char> aid)
     }
 }
 
-IsoAid::IsoAid(const std::string &aid) : IsoAid(ByteArrayUtil::fromHex(aid))
+IsoAid::IsoAid(const std::string& aid) : IsoAid(ByteArrayUtil::fromHex(aid))
 {
 }
 
-std::vector<char> IsoAid::getValue()
+const std::vector<uint8_t>& IsoAid::getValue()
 {
     return value;
 }
@@ -268,12 +266,12 @@ std::string SeSelector::AidSelector::toString()
               ByteArrayUtil::toHex(aidToSelect->getValue()));
 }
 
-SeSelector::AtrFilter::AtrFilter(const std::string &atrRegex)
+SeSelector::AtrFilter::AtrFilter(const std::string& atrRegex)
 {
     this->atrRegex = atrRegex;
 }
 
-void SeSelector::AtrFilter::setAtrRegex(const std::string &atrRegex)
+void SeSelector::AtrFilter::setAtrRegex(const std::string& atrRegex)
 {
     this->atrRegex = atrRegex;
 }

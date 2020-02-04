@@ -14,14 +14,14 @@
 
 #pragma once
 
+#include <list>
 #include <memory>
 
 /* Common */
 #include "Export.h"
 
-/* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeResponseSet; } } } }
+/* Core */
+#include "SeResponse.h"
 
 namespace keyple {
 namespace core {
@@ -30,6 +30,12 @@ namespace event {
 
 using namespace keyple::core::seproxy::message;
 
+/**
+ * The abstract class defining the default selections response in return to the
+ * default selection made when the SE was inserted..
+ * <p>
+ * The default selections response provides a list of {@link SeResponse}
+ */
 class EXPORT AbstractDefaultSelectionsResponse
 : public std::enable_shared_from_this<AbstractDefaultSelectionsResponse> {
 public:
@@ -40,20 +46,10 @@ public:
 
 protected:
     /**
-     * The {@link keyple::core::seproxy::message::SeResponseSet}
+     * @return the list of {@link SeResponse}
      */
-    const std::shared_ptr<SeResponseSet> selectionSeResponseSet;
-
-    /**
-     *
-     */
-    AbstractDefaultSelectionsResponse(std::shared_ptr<SeResponseSet>
-        selectionSeResponseSet);
-
-    /**
-     *
-     */
-    virtual std::shared_ptr<SeResponseSet> getSelectionSeResponseSet() = 0;
+    virtual std::list<std::shared_ptr<SeResponse>>&
+                getSelectionSeResponseSet() = 0;
 };
 
 }

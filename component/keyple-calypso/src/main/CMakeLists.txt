@@ -57,7 +57,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/selection
-	
+
 
 	/* Helpers */
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main
@@ -135,8 +135,13 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/DigestUpdateCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/DigestUpdateMultipleCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/GiveRandomCmdBuild.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamGetChallengeCmdBuild.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamGetChallengeCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamReadCeilingsCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamReadEventCounterCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamReadKeyParametersCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamWriteKeyCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SelectDiversifierCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/UnlockCmdBuild.cpp
 
 	# calypso - command - sam - parser - security
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/CardGenerateKeyRespPars.cpp
@@ -147,7 +152,12 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/DigestUpdateRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/GiveRandomRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SamGetChallengeRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SamReadCeilingsRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SamReadEventCounterRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SamReadKeyParametersRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SamWriteKeyRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SelectDiversifierRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/UnlockRespPars.cpp
 
 	# calypso - transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoPo.cpp
@@ -156,6 +166,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelector.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoTransaction.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamIdentifier.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResource.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelector.cpp

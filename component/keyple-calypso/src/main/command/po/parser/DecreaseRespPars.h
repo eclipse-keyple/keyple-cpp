@@ -43,6 +43,8 @@ class DecreaseRespPars final : public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new DecreaseRespPars.
+     *
+     * @param response the response from the PO
      */
     DecreaseRespPars(std::shared_ptr<ApduResponse> response);
 
@@ -66,7 +68,7 @@ protected:
      */
     std::unordered_map<int,
         std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-            getStatusTable() override;
+            getStatusTable() const override;
 
     /**
      *

@@ -34,8 +34,8 @@ using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::core::seproxy::message;
 
 OpenSession10CmdBuild::OpenSession10CmdBuild(
-  char keyIndex, std::vector<char> &samChallenge, char sfiToSelect,
-  char recordNumberToRead, const std::string &extraInfo)
+  uint8_t keyIndex, const std::vector<uint8_t>& samChallenge,
+  uint8_t sfiToSelect, uint8_t recordNumberToRead, const std::string& extraInfo)
 : AbstractOpenSessionCmdBuild<OpenSession10RespPars>(PoRevision::REV1_0)
 {
 
@@ -43,13 +43,14 @@ OpenSession10CmdBuild::OpenSession10CmdBuild(
         throw std::invalid_argument("Key index can't be null for rev 1.0!");
     }
 
-    char p1 = static_cast<char>((recordNumberToRead * 8) + keyIndex);
-    char p2 = static_cast<char>(sfiToSelect * 8);
+    uint8_t p1 = (recordNumberToRead * 8) + keyIndex;
+    uint8_t p2 = sfiToSelect * 8;
+
     /*
      * case 4: this command contains incoming and outgoing data. We define
      * le = 0, the actual length will be processed by the lower layers.
      */
-    char le = 0;
+    uint8_t le = 0;
 
     this->request =
         setApduRequest(

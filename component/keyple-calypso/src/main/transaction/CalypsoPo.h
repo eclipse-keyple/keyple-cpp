@@ -73,17 +73,17 @@ public:
     /**
      *
      */
-    std::vector<char> getDfName();
+    const std::vector<uint8_t>& getDfName() const;
 
     /**
      *
      */
-    std::vector<char> getApplicationSerialNumber();
+    const std::vector<uint8_t>& getApplicationSerialNumber() const;
 
     /**
      *
      */
-    const std::vector<uint8_t>& getAtr();
+    const std::vector<uint8_t>& getAtr() const;
 
     /**
      *
@@ -248,7 +248,7 @@ private:
     /**
      *
      */
-    std::vector<char> applicationSerialNumber;
+    std::vector<uint8_t> applicationSerialNumber;
 
     /**
      *
@@ -258,7 +258,7 @@ private:
     /**
      *
      */
-    std::vector<char> dfName;
+    std::vector<uint8_t> dfName;
 
     /**
      *

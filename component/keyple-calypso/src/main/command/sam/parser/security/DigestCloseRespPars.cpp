@@ -28,9 +28,9 @@ DigestCloseRespPars::DigestCloseRespPars(std::shared_ptr<ApduResponse> response)
 {
 }
 
-std::vector<char> DigestCloseRespPars::getSignature()
+std::vector<uint8_t> DigestCloseRespPars::getSignature() const
 {
-    return isSuccessful() ? response->getDataOut() : std::vector<char>();
+    return isSuccessful() ? response->getDataOut() : std::vector<uint8_t>();
 }
 
 }

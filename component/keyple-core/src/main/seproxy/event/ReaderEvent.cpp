@@ -26,23 +26,23 @@ using namespace keyple::core::seproxy::event;
 
 using EventType = ReaderEvent::EventType;
 
-EventType EventType::IO_ERROR("IO_ERROR", InnerEnum::IO_ERROR,
-                              "SE Reader IO Error");
+EventType EventType::TIMEOUT_ERROR("TIMEOUT_ERROR", InnerEnum::TIMEOUT_ERROR,
+                                   "SE Reader timeout Error");
 EventType EventType::SE_INSERTED("SE_INSERTED", InnerEnum::SE_INSERTED,
                                  "SE insertion");
 EventType EventType::SE_MATCHED("SE_MATCHED", InnerEnum::SE_MATCHED,
                                 "SE matched");
-EventType EventType::SE_REMOVAL("SE_REMOVAL", InnerEnum::SE_REMOVAL,
-                                "SE removal");
+EventType EventType::SE_REMOVED("SE_REMOVED", InnerEnum::SE_REMOVAL,
+                                "SE removed");
 
 std::vector<EventType> EventType::valueList;
 
 EventType::StaticConstructor::StaticConstructor()
 {
-    valueList.push_back(IO_ERROR);
+    valueList.push_back(TIMEOUT_ERROR);
     valueList.push_back(SE_INSERTED);
     valueList.push_back(SE_MATCHED);
-    valueList.push_back(SE_REMOVAL);
+    valueList.push_back(SE_REMOVED);
 }
 
 EventType::StaticConstructor EventType::staticConstructor;
@@ -100,7 +100,7 @@ EventType EventType::valueOf(const std::string &name)
     }
 
     /* Should not end up here */
-    return EventType::IO_ERROR;
+    return EventType::TIMEOUT_ERROR;
 }
 
 ReaderEvent::ReaderEvent(const std::string &pluginName,

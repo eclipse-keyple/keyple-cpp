@@ -1,17 +1,20 @@
-/********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #include "SeProxyService.h"
 #include "ReaderPlugin.h"
+#include "KeyplePluginInstantiationException.h"
 #include "KeyplePluginNotFoundException.h"
 
 namespace keyple {
@@ -24,22 +27,60 @@ SeProxyService::SeProxyService()
 {
 }
 
-void SeProxyService::setPlugins(std::set<std::shared_ptr<ReaderPlugin>> &plugins)
+void SeProxyService::registerPlugin(AbstractPluginFactory* pluginFactory)
 {
-    this->plugins = plugins;
+    if (pluginFactory == nullptr)
+        throw IllegalArgumentException("Factory must not be null");
+
+    std::unique_lock<std::mutex> lock(MONITOR);
+
+    if (!isRegistered(pluginFactory->getPluginName())) {
+        logger->info("Registering a new Plugin to the platform : %s\n",
+                pluginFactory->getPluginName());
+        ReaderPlugin& newPlugin = pluginFactory->getPluginInstance();
+        this->plugins.insert(&newPlugin);
+    } else {
+        logger->warn("Plugin has already been registered to the platform " \
+                    ": %s\n", pluginFactory->getPluginName());
+    }
 }
 
-void SeProxyService::addPlugin(std::shared_ptr<ReaderPlugin> plugin)
+bool SeProxyService::unregisterPlugin(const std::string& pluginName)
 {
-    this->plugins.insert(plugin);
+    ReaderPlugin* readerPlugin = nullptr;
+
+    std::unique_lock<std::mutex> lock(MONITOR);
+
+    try {
+        readerPlugin = this->getPlugin(pluginName);
+        logger->info("Unregistering a plugin from the platform : %s\n",
+                        readerPlugin->getName());
+        return plugins.erase(readerPlugin);
+    } catch (KeyplePluginNotFoundException& e) {
+        logger->info("Plugin is not registered to the platform : %s\n",
+                        pluginName);
+        return false;
+    }
 }
 
-std::set<std::shared_ptr<ReaderPlugin>>& SeProxyService::getPlugins()
+bool SeProxyService::isRegistered(const std::string& pluginName)
+{
+    std::unique_lock<std::mutex> lock(MONITOR);
+
+    for (ReaderPlugin* registeredPlugin : plugins) {
+        if (registeredPlugin->getName().compare(pluginName)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::set<ReaderPlugin*>& SeProxyService::getPlugins()
 {
     return plugins;
 }
 
-std::shared_ptr<ReaderPlugin> SeProxyService::getPlugin(const std::string &name)
+ReaderPlugin* SeProxyService::getPlugin(const std::string &name)
 {
     for (auto plugin : plugins)
     {

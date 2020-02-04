@@ -32,30 +32,51 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
 using namespace keyple::core::util::bertlv;
 
-std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> GetDataFciRespPars::STATUS_TABLE;
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
+
+std::unordered_map<int, std::shared_ptr<StatusProperties>>
+    GetDataFciRespPars::STATUS_TABLE;
 
 GetDataFciRespPars::StaticConstructor::StaticConstructor()
 {
-    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> m(AbstractApduResponseParser::STATUS_TABLE);
-    m.emplace(0x6A88, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "Data object not found (optional mode not available)."));
-    m.emplace(0x6B00, std::make_shared<AbstractApduResponseParser::StatusProperties>(false, "P1 or P2 value not supported (<>004fh, 0062h, 006Fh, 00C0h, 00D0h, 0185h and 5F52h, according to availabl optional modes)."));
-    m.emplace(0x6283, std::make_shared<AbstractApduResponseParser::StatusProperties>(true, "Successful execution, FCI request and DF is invalidated."));
+    std::unordered_map<int, std::shared_ptr<StatusProperties>>
+        m(AbstractApduResponseParser::STATUS_TABLE);
+
+    m.emplace(
+        0x6A88,
+        std::make_shared<StatusProperties>(
+            false,
+            "Data object not found (optional mode not available)."));
+    m.emplace(0x6B00,
+        std::make_shared<StatusProperties>(
+            false,
+            "P1 or P2 value not supported (<>004fh, 0062h, 006Fh, 00C0h, " \
+            "00D0h, 0185h and 5F52h, according to availabl optional modes)."));
+    m.emplace(0x6283,
+        std::make_shared<StatusProperties>(
+            true, "Successful execution, FCI request and DF is invalidated."));
+
     STATUS_TABLE = m;
 }
 
 GetDataFciRespPars::StaticConstructor GetDataFciRespPars::staticConstructor;
 
-std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> GetDataFciRespPars::getStatusTable()
+std::unordered_map<int, std::shared_ptr<StatusProperties>>
+    GetDataFciRespPars::getStatusTable() const
 {
     return STATUS_TABLE;
 }
 
-std::vector<int> const GetDataFciRespPars::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE =
-    std::vector<int> {0, 0, 0, 0, 0, 0, 215, 256, 304, 362, 430, 512, 608, 724, 861, 1024, 1217,
-                      1448, 1722, 2048, 2435, 2896, 3444, 4096, 4870, 5792, 6888, 8192, 9741,
-                      11585, 13777, 16384, 19483, 23170, 27554, 32768, 38967, 46340, 55108, 65536,
-                      77935, 92681, 110217, 131072, 155871, 185363, 220435, 262144, 311743, 370727,
-                      440871, 524288, 623487, 741455, 881743, 1048576};
+std::vector<int> const
+    GetDataFciRespPars::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE =
+        std::vector<int> {
+                  0,      0,      0,      0,      0,      0,    215,    256,
+                304,    362,    430,    512,    608,    724,    861,   1024,
+               1217,   1448,   1722,   2048,   2435,   2896,   3444,   4096,
+               4870,   5792,   6888,   8192,   9741,  11585,  13777,  16384,
+              19483,  23170,  27554,  32768,  38967,  46340,  55108,  65536,
+              77935,  92681, 110217, 131072, 155871, 185363, 220435, 262144,
+             311743, 370727, 440871, 524288, 623487, 741455, 881743, 1048576};
 
 const std::shared_ptr<Tag> GetDataFciRespPars::TAG_FCI_TEMPLATE =
     std::make_shared<Tag>(0x0F, Tag::APPLICATION, Tag::TagType::CONSTRUCTED);
@@ -63,8 +84,9 @@ const std::shared_ptr<Tag> GetDataFciRespPars::TAG_DF_NAME =
     std::make_shared<Tag>(0x04, Tag::CONTEXT, Tag::TagType::PRIMITIVE);
 const std::shared_ptr<Tag> GetDataFciRespPars::TAG_FCI_PROPRIETARY_TEMPLATE =
     std::make_shared<Tag>(0x05, Tag::CONTEXT, Tag::TagType::CONSTRUCTED);
-const std::shared_ptr<Tag> GetDataFciRespPars::TAG_FCI_ISSUER_DISCRETIONARY_DATA =
-    std::make_shared<Tag>(0x0C, Tag::CONTEXT, Tag::TagType::CONSTRUCTED);
+const std::shared_ptr<Tag>
+    GetDataFciRespPars::TAG_FCI_ISSUER_DISCRETIONARY_DATA =
+        std::make_shared<Tag>(0x0C, Tag::CONTEXT, Tag::TagType::CONSTRUCTED);
 const std::shared_ptr<Tag> GetDataFciRespPars::TAG_APPLICATION_SERIAL_NUMBER =
     std::make_shared<Tag>(0x07, Tag::PRIVATE, Tag::TagType::PRIMITIVE);
 const std::shared_ptr<Tag> GetDataFciRespPars::TAG_DISCRETIONARY_DATA =
@@ -74,7 +96,7 @@ GetDataFciRespPars::GetDataFciRespPars(
   std::shared_ptr<ApduResponse> selectApplicationResponse)
 : AbstractPoResponseParser(selectApplicationResponse) {
 
-    const std::vector<char> response = selectApplicationResponse->getBytes();
+    const std::vector<uint8_t> response = selectApplicationResponse->getBytes();
     std::shared_ptr<TLV> tlv;
 
     /* check the command status to determine if the DF has been invalidated */
@@ -88,7 +110,7 @@ GetDataFciRespPars::GetDataFciRespPars(
     try {
         /* init TLV object with the raw data and extract the FCI Template */
         logger->debug("response: %s\n", ByteArrayUtil::toHex(response).c_str());
-        std::vector<char> vec = response;
+        std::vector<uint8_t> vec = response;
         tlv = std::make_shared<TLV>(vec);
 
         /* Get the FCI template */
@@ -138,7 +160,7 @@ GetDataFciRespPars::GetDataFciRespPars(
             return;
         }
 
-        std::vector<char> discretionaryData = tlv->getValue();
+        std::vector<uint8_t> discretionaryData = tlv->getValue();
 
         if (logger->isDebugEnabled()) {
             logger->debug("Discretionary Data = %s\n",
@@ -171,12 +193,13 @@ bool GetDataFciRespPars::isValidCalypsoFCI()
     return isValidCalypsoFCI_Renamed;
 }
 
-std::vector<char> GetDataFciRespPars::getDfName()
+const std::vector<uint8_t>& GetDataFciRespPars::getDfName() const
 {
     return dfName;
 }
 
-std::vector<char> GetDataFciRespPars::getApplicationSerialNumber()
+const
+std::vector<uint8_t>& GetDataFciRespPars::getApplicationSerialNumber() const
 {
     return applicationSN;
 }

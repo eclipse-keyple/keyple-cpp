@@ -41,9 +41,11 @@ public:
      *
      * @param revision of the SAM (SAM)
      * @param expectedResponseLength the expected response length
-     * @throws IllegalArgumentException - if the expected response length has wrong value.
+     * @throws IllegalArgumentException - if the expected response length has
+     *         wrong value.
      */
-    SamGetChallengeCmdBuild(SamRevision revision, char expectedResponseLength);
+    SamGetChallengeCmdBuild(SamRevision revision,
+                            uint8_t expectedResponseLength);
 
     /**
      *
@@ -56,7 +58,8 @@ protected:
      */
     std::shared_ptr<SamGetChallengeCmdBuild> shared_from_this()
     {
-        return std::static_pointer_cast<SamGetChallengeCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
+        return std::static_pointer_cast<SamGetChallengeCmdBuild>(
+                   AbstractSamCommandBuilder::shared_from_this());
     }
 
 private:

@@ -43,8 +43,7 @@ public:
      * @param hex Hexa string
      * @return byte array
      */
-
-    static std::vector<char> fromHex(const std::string &hex);
+    static std::vector<uint8_t> fromHex(const std::string &hex);
 
     /**
      * Represents the byte array in a hexadecimal string.
@@ -76,7 +75,7 @@ public:
      * @return the resulting int
      * @throws IllegalArgumentException if the buffer has a bad length
      */
-    static int threeBytesToInt(std::vector<char> &bytes, int offset);
+    static int threeBytesToInt(std::vector<uint8_t>& bytes, int offset);
 
 private:
     /**

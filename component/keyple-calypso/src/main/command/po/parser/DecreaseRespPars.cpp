@@ -49,7 +49,7 @@ DecreaseRespPars::StaticConstructor DecreaseRespPars::staticConstructor;
 
 std::unordered_map<int,
     std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        DecreaseRespPars::getStatusTable()
+        DecreaseRespPars::getStatusTable() const
 {
     return STATUS_TABLE;
 }
@@ -61,7 +61,7 @@ DecreaseRespPars::DecreaseRespPars(std::shared_ptr<ApduResponse> response)
 
 int DecreaseRespPars::getNewValue()
 {
-    std::vector<char> newValueBuffer = getApduResponse()->getDataOut();
+    std::vector<uint8_t> newValueBuffer = getApduResponse()->getDataOut();
     if (newValueBuffer.size() == 3) {
         return (newValueBuffer[0] << 16) + (newValueBuffer[1] << 8) + newValueBuffer[2];
     }

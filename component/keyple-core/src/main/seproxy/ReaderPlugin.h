@@ -24,7 +24,6 @@
 /* Core */
 #include "Comparable.h"
 #include "Configurable.h"
-#include "KeypleReaderException.h"
 #include "KeypleReaderNotFoundException.h"
 #include "Nameable.h"
 
@@ -42,7 +41,7 @@ using namespace keyple::core::util;
     * Card readers plugin interface.
     */
 class EXPORT ReaderPlugin
-: public virtual Nameable, public Configurable,
+: public virtual Nameable, public virtual Configurable,
   public Comparable<ReaderPlugin> {
 public:
     /**
@@ -74,10 +73,10 @@ public:
     /**
      * Gets the readers.
      *
-     * @return the ‘unique’ name of the readers’ plugin.
-     * @throws KeypleReaderException if the list of readers has not been initialized
+     * @return list of connected readers in this plugin, can be an empty list,
+     *         can not be null;
      */
-    virtual std::shared_ptr<std::set<std::shared_ptr<SeReader>>> getReaders() = 0;
+    virtual std::set<std::shared_ptr<SeReader>>& getReaders() = 0;
 
     /**
      * Gets the reader whose name is provided as an argument

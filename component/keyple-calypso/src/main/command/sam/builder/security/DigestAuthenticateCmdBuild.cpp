@@ -24,7 +24,7 @@ namespace security {
 using namespace keyple::calypso::command::sam;
 
 DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
-  SamRevision revision, std::vector<char> &signature)
+  SamRevision revision, std::vector<uint8_t>& signature)
 : AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_AUTHENTICATE, nullptr)
 {
     this->defaultRevision = revision;
@@ -41,13 +41,9 @@ DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
                                     std::to_string(signature.size()));
     }
 
-    char cla = SamRevision::S1D ==
-                   (this->defaultRevision) ?
-                   static_cast<char>(0x94) : static_cast<char>(0x80);
-    char p1 = 0x00;
-    char p2 = static_cast<char>(0x00);
+    uint8_t cla = SamRevision::S1D == (this->defaultRevision) ? 0x94 : 0x80;
 
-    request = setApduRequest(cla, command, p1, p2, signature, -1);
+    request = setApduRequest(cla, command, 0x00, 0x00, signature);
 }
 
 }

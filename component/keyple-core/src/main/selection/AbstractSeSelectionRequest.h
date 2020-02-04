@@ -17,7 +17,7 @@
 #include <vector>
 #include <memory>
 
-#include "ChannelState.h"
+#include "ChannelControl.h"
 
 /* Common */
 #include "Export.h"
@@ -61,16 +61,9 @@ public:
     const std::shared_ptr<SeSelector> seSelector;
 
     /**
-     * the channelState may be accessed from derived classes. Let it with the
-     * protected access level.
-     */
-    const ChannelState channelState;
-
-    /**
      *
      */
-    AbstractSeSelectionRequest(std::shared_ptr<SeSelector> seSelector,
-                               ChannelState channelState);
+    AbstractSeSelectionRequest(std::shared_ptr<SeSelector> seSelector);
 
     /**
      *

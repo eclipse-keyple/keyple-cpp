@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -43,13 +45,16 @@ public:
      * @param workKeyRecordNumber the work key record number
      * @param workKeyKif from the AbstractOpenSessionCmdBuild response
      * @param workKeyKVC from the AbstractOpenSessionCmdBuild response
-     * @param digestData all data out from the AbstractOpenSessionCmdBuild response
+     * @param digestData all data out from the AbstractOpenSessionCmdBuild
+     *        response
      * @throws IllegalArgumentException - if the work key record number
      * @throws IllegalArgumentException - if the digest data is null
      * @throws IllegalArgumentException - if the request is inconsistent
      */
-    DigestInitCmdBuild(SamRevision revision, bool verificationMode, bool rev3_2Mode, char workKeyRecordNumber, char workKeyKif,
-                       char workKeyKVC, std::vector<char> &digestData);
+    DigestInitCmdBuild(SamRevision revision, bool verificationMode,
+                       bool rev3_2Mode, uint8_t workKeyRecordNumber,
+                       uint8_t workKeyKif, uint8_t workKeyKVC,
+                       std::vector<uint8_t>& digestData);
 
     /**
      *
@@ -62,7 +67,8 @@ protected:
      */
     std::shared_ptr<DigestInitCmdBuild> shared_from_this()
     {
-        return std::static_pointer_cast<DigestInitCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
+        return std::static_pointer_cast<DigestInitCmdBuild>(
+                   AbstractSamCommandBuilder::shared_from_this());
     }
 
 private:

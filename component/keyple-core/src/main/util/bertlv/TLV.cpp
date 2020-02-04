@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "TLV.h"
 #include "Tag.h"
 #include "ByteArrayUtil.h"
@@ -14,9 +28,9 @@ namespace bertlv {
 
 using namespace keyple::core::util;
 
-TLV::TLV(std::vector<char> &binary) : binary(binary)
+TLV::TLV(std::vector<uint8_t> &binary) : binary(binary)
 {
-    tag = std::make_shared<Tag>(0, static_cast<char>(0), Tag::TagType::PRIMITIVE); // This is a primitive TLV
+    tag = std::make_shared<Tag>(0, 0, Tag::TagType::PRIMITIVE);
     length = 0;
 }
 
@@ -37,13 +51,16 @@ bool TLV::parse(const std::shared_ptr<Tag> tag, int offset)
     if (tag->equals(this->tag)) {
         offset += this->tag->getSize();
         position += this->tag->getSize();
-        if ((binary[offset] & static_cast<char>(0x80)) == static_cast<char>(0x00)) {
+        if ((binary[offset] & 0x80) == 0x00) {
             /* short form: single octet length */
             length += static_cast<int>(binary[offset]);
             position++;
         } else {
-            /* long form: first octet (b6-b0)) gives the number of following length octets */
-            int following = (binary[offset] & static_cast<char>(0x7F));
+            /*
+             * Long form: first octet (b6-b0)) gives the number of following
+             * length octets
+             */
+            int following = (binary[offset] & 0x7F);
             position++;
             while (following > 0) {
                 offset++;
@@ -61,24 +78,26 @@ bool TLV::parse(const std::shared_ptr<Tag> tag, int offset)
     }
 }
 
-std::vector<char> TLV::getValue()
+std::vector<uint8_t> TLV::getValue()
 {
-    static std::vector<char> value;
+    std::vector<uint8_t> value;
 
-    value.clear();
     value = Arrays::copyOfRange(binary, position, position + length);
     position += length;
 
     return value;
 }
 
-int TLV::getPosition() {
+int TLV::getPosition()
+{
     return position;
 }
 
-std::string TLV::toString() {
-//JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
-    return StringHelper::formatSimple("TAG: %s, LENGTH: %d, VALUE: %s", tag->toString(), length, ByteArrayUtil::toHex(getValue()));
+std::string TLV::toString()
+{
+    return StringHelper::formatSimple("TAG: %s, LENGTH: %d, VALUE: %s",
+                                      tag->toString(), length,
+                                      ByteArrayUtil::toHex(getValue()));
 }
 
 }

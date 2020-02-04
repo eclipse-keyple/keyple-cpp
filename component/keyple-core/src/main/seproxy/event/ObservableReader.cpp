@@ -54,15 +54,16 @@ std::string NotificationMode::getName()
     return this->name;
 }
 
-const std::unordered_map<std::string, NotificationMode>
-NotificationMode::lookup = std::unordered_map<std::string, NotificationMode>();
+const std::map<std::string, NotificationMode>
+NotificationMode::lookup = std::map<std::string, NotificationMode>();
 
 NotificationMode::StaticConstructor NotificationMode::staticConstructor;
 
 NotificationMode NotificationMode::get(const std::string &name)
 {
-    std::unordered_map<std::string, NotificationMode>::const_iterator it =
-                                                             lookup.find(name);
+    std::map<std::string, NotificationMode>::const_iterator it =
+        lookup.find(name);
+
     return it->second;
 }
 

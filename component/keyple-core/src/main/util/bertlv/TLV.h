@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -21,7 +23,8 @@
 #include "Export.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace util { namespace bertlv { class Tag; } } } }
+namespace keyple { namespace core { namespace util { namespace bertlv {
+    class Tag; } } } }
 
 namespace keyple {
 namespace core {
@@ -42,7 +45,7 @@ public:
      *
      * @param binary the byte array containing the TLV structure
      */
-    TLV(std::vector<char> &binary);
+    TLV(std::vector<uint8_t> &binary);
 
     /**
      *
@@ -63,15 +66,15 @@ public:
     virtual bool parse(std::shared_ptr<Tag> tag, int offset);
 
     /**
-     * Return a byte array copied from the main array corresponding to value part of the last TLV
-     * parsing.
+     * Return a byte array copied from the main array corresponding to value
+     * part of the last TLV parsing.
      * <p>
-     * This method modifies the global position in the main array. Thus, it must be called once
-     * only.
+     * This method modifies the global position in the main array. Thus, it must
+     * be called once only.
      *
      * @return a byte array
      */
-    virtual std::vector<char> getValue();
+    virtual std::vector<uint8_t> getValue();
 
     /**
      * @return the current position in the main array
@@ -97,7 +100,7 @@ private:
     /**
      *
      */
-    std::vector<char> binary;
+    std::vector<uint8_t> binary;
 
     /**
      *

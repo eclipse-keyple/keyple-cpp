@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -40,25 +42,27 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::core::seproxy::message;
 
 /**
- * Open session response parser. See specs: Calypso / page 100 / 9.5.1 - Open secure session
+ * Open session response parser. See specs: Calypso / page 100 / 9.5.1 - Open
+ * secure session
  *
  */
 class AbstractOpenSessionRespPars : public AbstractPoResponseParser {
-        /**
-     * The Class SecureSession. A secure session is returned by a open secure session command
-     */
 public:
+    /**
+     * The Class SecureSession. A secure session is returned by a open secure
+     * session command
+     */
     class SecureSession : public std::enable_shared_from_this<SecureSession> {
     private:
         /**
          * Challenge transaction counter
          */
-        std::vector<char> const challengeTransactionCounter;
+        const std::vector<uint8_t> challengeTransactionCounter;
 
         /**
          * Challenge random number
          */
-        std::vector<char> const challengeRandomNumber;
+        const std::vector<uint8_t> challengeRandomNumber;
 
         /**
          * The previous session ratified boolean
@@ -73,22 +77,23 @@ public:
         /**
          * The kif
          */
-        const char kif;
+        const uint8_t kif;
 
         /**
-         * The kvc (may be null if it doesn't exist in the considered PO [rev 1.0])
+         * The kvc (may be null if it doesn't exist in the considered PO [rev
+         * 1.0])
          */
         const std::shared_ptr<Byte> kvc;
 
         /**
          * The original data
          */
-        std::vector<char> const originalData;
+        const std::vector<uint8_t> originalData;
 
         /**
          * The secure session data
          */
-        std::vector<char> const secureSessionData;
+        const std::vector<uint8_t> secureSessionData;
 
     public:
         /**
@@ -97,36 +102,69 @@ public:
          * @param challengeTransactionCounter Challenge transaction counter
          * @param challengeRandomNumber Challenge random number
          * @param previousSessionRatified the previous session ratified
-         * @param manageSecureSessionAuthorized the manage secure session authorized
-         * @param kif the KIF from the response of the open secure session APDU command
-         * @param kvc the KVC from the response of the open secure session APDU command
-         * @param originalData the original data from the response of the open secure session APDU
+         * @param manageSecureSessionAuthorized the manage secure session
+         *        authorized
+         * @param kif the KIF from the response of the open secure session APDU
          *        command
-         * @param secureSessionData the secure session data from the response of open secure session
-         *        APDU command
+         * @param kvc the KVC from the response of the open secure session APDU
+         *        command
+         * @param originalData the original data from the response of the open
+         *        secure session APDU command
+         * @param secureSessionData the secure session data from the response of
+         *        open secure session APDU command
          */
-        SecureSession(std::vector<char> &challengeTransactionCounter,
-                      std::vector<char> &challengeRandomNumber, bool previousSessionRatified,
-                      bool manageSecureSessionAuthorized, char kif, std::shared_ptr<Byte> kvc,
-                      std::vector<char> &originalData, std::vector<char> &secureSessionData);
+        SecureSession(const std::vector<uint8_t> &challengeTransactionCounter,
+                      const std::vector<uint8_t> &challengeRandomNumber,
+                      bool previousSessionRatified,
+                      bool manageSecureSessionAuthorized, uint8_t kif,
+                      std::shared_ptr<Byte> kvc,
+                      const std::vector<uint8_t>& originalData,
+                      const std::vector<uint8_t>& secureSessionData);
 
         /**
-         * Instantiates a new SecureSession for a Calypso application revision 2.4
-         * 
+         * Instantiates a new SecureSession for a Calypso application revision
+         * 2.4
+         *
          * @param challengeTransactionCounter Challenge transaction counter
          * @param challengeRandomNumber Challenge random number
          * @param previousSessionRatified the previous session ratified
-         * @param manageSecureSessionAuthorized the manage secure session authorized
-         * @param kvc the KVC from the response of the open secure session APDU command
-         * @param originalData the original data from the response of the open secure session APDU
+         * @param manageSecureSessionAuthorized the manage secure session
+         *        authorized
+         * @param kvc the KVC from the response of the open secure session APDU
          *        command
-         * @param secureSessionData the secure session data from the response of open secure session
-         *        APDU command
+         * @param originalData the original data from the response of the open
+         *        secure session APDU command
+         * @param secureSessionData the secure session data from the response of
+         *        open secure session APDU command
          */
-        SecureSession(std::vector<char> &challengeTransactionCounter,
-                      std::vector<char> &challengeRandomNumber, bool previousSessionRatified,
-                      bool manageSecureSessionAuthorized, std::shared_ptr<Byte> kvc,
-                      std::vector<char> &originalData, std::vector<char> &secureSessionData);
+        SecureSession(const std::vector<uint8_t>& challengeTransactionCounter,
+                      const std::vector<uint8_t>& challengeRandomNumber,
+                      bool previousSessionRatified,
+                      bool manageSecureSessionAuthorized,
+                      std::shared_ptr<Byte> kvc,
+                      const std::vector<uint8_t>& originalData,
+                      const std::vector<uint8_t>& secureSessionData);
+
+        /**
+         * Instantiates a new SecureSession for a Calypso application revision
+         * 2.4
+         *
+         * @param challengeTransactionCounter Challenge transaction counter
+         * @param challengeRandomNumber Challenge random number
+         * @param previousSessionRatified the previous session ratified
+         * @param manageSecureSessionAuthorized the manage secure session
+         *        authorized
+         * @param kvc the KVC from the response of the open secure session APDU
+         *        command
+         * @param secureSessionData the secure session data from the response of
+         *        open secure session APDU command
+         */
+        SecureSession(const std::vector<uint8_t>& challengeTransactionCounter,
+                      const std::vector<uint8_t>& challengeRandomNumber,
+                      bool previousSessionRatified,
+                      bool manageSecureSessionAuthorized,
+                      std::shared_ptr<Byte> kvc,
+                      const std::vector<uint8_t>& secureSessionData);
 
         /**
          *
@@ -136,12 +174,12 @@ public:
         /**
          *
          */
-        virtual std::vector<char> getChallengeTransactionCounter();
+        virtual const std::vector<uint8_t>& getChallengeTransactionCounter();
 
         /**
          *
          */
-        virtual std::vector<char> getChallengeRandomNumber();
+        virtual const std::vector<uint8_t>& getChallengeRandomNumber();
 
         /**
          * Checks if is previous session ratified.
@@ -162,7 +200,7 @@ public:
          *
          * @return the kif
          */
-        virtual char getKIF();
+        virtual uint8_t getKIF();
 
         /**
          * Gets the kvc.
@@ -176,26 +214,28 @@ public:
          *
          * @return the original data
          */
-        virtual std::vector<char> getOriginalData();
+        virtual const std::vector<uint8_t>& getOriginalData();
 
         /**
          * Gets the secure session data.
          *
          * @return the secure session data
          */
-        virtual std::vector<char> getSecureSessionData();
+        virtual const std::vector<uint8_t>& getSecureSessionData();
     };
 
 private:
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<int, std::shared_ptr<
+               AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
     /**
      *
      */
-    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    class StaticConstructor
+    : public std::enable_shared_from_this<StaticConstructor> {
     public:
         StaticConstructor();
     };
@@ -209,7 +249,9 @@ protected:
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> getStatusTable() override;
+    std::unordered_map<int, std::shared_ptr<
+        AbstractApduResponseParser::StatusProperties>> getStatusTable() const
+        override;
 
 private:
     /**
@@ -229,7 +271,8 @@ public:
      * @param response the response from Open secure session APDU command
      * @param revision the revision of the PO
      */
-    AbstractOpenSessionRespPars(std::shared_ptr<ApduResponse> response, PoRevision revision);
+    AbstractOpenSessionRespPars(std::shared_ptr<ApduResponse> response,
+                                PoRevision revision);
 
     /**
      *
@@ -239,18 +282,21 @@ public:
     /**
      *
      */
-    static std::shared_ptr<AbstractOpenSessionRespPars> create(std::shared_ptr<ApduResponse> response, PoRevision revision);
+    static std::shared_ptr<AbstractOpenSessionRespPars> create(
+               std::shared_ptr<ApduResponse> response, PoRevision revision);
 
     /*
-     * C++: This method is called from the class constructor. It *cannot* be pure virtual. Moved it to derived class constructors.
+     * C++: This method is called from the class constructor. It *cannot* be
+     * pure virtual. Moved it to derived class constructors.
      */
-    //virtual std::shared_ptr<SecureSession> toSecureSession(std::vector<char> &apduResponseData) = 0;
+    //virtual std::shared_ptr<SecureSession> toSecureSession(
+    //              std::vector<char> &apduResponseData) = 0;
 
 
     /**
      *
      */
-    virtual std::vector<char> getPoChallenge();
+    virtual const std::vector<uint8_t>& getPoChallenge();
 
     /**
      *
@@ -280,7 +326,7 @@ public:
     /**
      *
      */
-    virtual std::vector<char> getRecordDataRead();
+    virtual const std::vector<uint8_t>& getRecordDataRead();
 
 protected:
     /**
@@ -288,7 +334,8 @@ protected:
      */
     std::shared_ptr<AbstractOpenSessionRespPars> shared_from_this()
     {
-        return std::static_pointer_cast<AbstractOpenSessionRespPars>(AbstractApduResponseParser::shared_from_this());
+        return std::static_pointer_cast<AbstractOpenSessionRespPars>(
+                   AbstractApduResponseParser::shared_from_this());
     }
 };
 

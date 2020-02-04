@@ -15,7 +15,7 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
+#include <map>
 
 #include "KeypleBaseException.h"
 
@@ -54,7 +54,7 @@ public:
      *
      * @return the configuration of the item
      */
-    virtual std::unordered_map<std::string, std::string> getParameters() = 0;
+    virtual std::map<std::string, std::string> getParameters() = 0;
 
     /**
      * allows to define a proprietary setting for a reader or a plugin
@@ -78,8 +78,8 @@ public:
      *         supported
      * @throws KeypleBaseException if the parameter fails to be set up
      */
-    virtual void setParameters(std::unordered_map<std::string,
-                               std::string> &parameters) = 0;
+    virtual void setParameters(const std::map<std::string,
+                               std::string>& parameters) = 0;
 };
 
 }

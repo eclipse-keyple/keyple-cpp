@@ -19,11 +19,14 @@
 
 /* Common */
 #include "Export.h"
+#include "Object.h"
 
 namespace keyple {
 namespace core {
 namespace util {
 namespace bertlv {
+
+using namespace keyple::common;
 
 /**
  * This class represent a TAG as defined by the Basic Encoding Rules for ASN.1
@@ -57,7 +60,7 @@ public:
      * @param tagClass the tag class.
      * @param tagType constructed or primitive
      */
-    Tag(int tagNumber, char tagClass, TagType tagType);
+    Tag(int tagNumber, uint8_t tagClass, TagType tagType);
 
     /**
      * Create a tag from a binary stream.
@@ -67,7 +70,7 @@ public:
      * @param offset the start offset in the byte array
      * @throws IndexOutOfBoundsException if the offset is too large
      */
-    Tag(std::vector<char> &binary, int offset);
+    Tag(std::vector<uint8_t>& binary, int offset);
 
     /**
      *
@@ -97,7 +100,7 @@ public:
     /**
      *
      */
-    virtual bool equals(std::shared_ptr<Tag> tag);
+    virtual bool equals(std::shared_ptr<Object> obj);
 
     /**
      *
@@ -113,7 +116,7 @@ private:
     /**
      *
      */
-    char tagClass;
+    uint8_t tagClass;
 
     /**
      *

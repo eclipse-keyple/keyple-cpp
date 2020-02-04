@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <list>
 #include <string>
 #include <stdexcept>
 #include <memory>
@@ -24,7 +25,6 @@
 /* Core */
 #include "KeypleBaseException.h"
 #include "SeResponse.h"
-#include "SeResponseSet.h"
 
 namespace keyple {
 namespace core {
@@ -41,17 +41,12 @@ public:
     /**
      *
      */
-    KeypleReaderException(const std::string& msg) : KeypleBaseException(msg)
-    {
-    }
+    KeypleReaderException(const std::string& msg);
 
     /**
      *
      */
-    KeypleReaderException(const std::string& msg, const std::exception& cause)
-    : KeypleBaseException(msg, cause)
-    {
-    }
+    KeypleReaderException(const std::string& msg, const std::exception& cause);
 
     /**
      *
@@ -64,11 +59,12 @@ public:
     virtual ~KeypleReaderException() {}
 
     /**
-     * Setters and Getters for SeResponseSet and SeResponse
+     * Setters and Getters for List of SeResponseSet and SeResponse
      */
-    virtual std::shared_ptr<SeResponseSet> getSeResponseSet();
+    virtual std::list<std::shared_ptr<SeResponse>>& getSeResponseSet();
 
-    virtual void setSeResponseSet(std::shared_ptr<SeResponseSet> seResponseSet);
+    virtual void setSeResponseSet(
+                std::list<std::shared_ptr<SeResponse>> seResponseList);
 
     virtual std::shared_ptr<SeResponse> getSeResponse();
 
@@ -76,17 +72,15 @@ public:
 
 private:
     /**
-     * SeResponseSet and SeResponse objects to carry partial responses in the
-     * event of a breakdown in communication with the SE.
+     * SeResponse and List of SeResponse objects to carry partial responses in
+     * the event of a breakdown in communication with the SE.
      */
-    std::shared_ptr<SeResponseSet> seResponseSet;
+    std::list<std::shared_ptr<SeResponse>> seResponseList;
 
     /**
      *
      */
     std::shared_ptr<SeResponse> seResponse;
-
-
 };
 
 }

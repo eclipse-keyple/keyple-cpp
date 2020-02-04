@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -37,8 +39,8 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::core::command;
 
 /**
- * The Class AbstractOpenSessionCmdBuild. This class provides the dedicated constructor to build the
- * Open Secure Session APDU command.
+ * The Class AbstractOpenSessionCmdBuild. This class provides the dedicated
+ * constructor to build the Open Secure Session APDU command.
  *
  */
 template<typename T>
@@ -52,18 +54,21 @@ public:
      * @throws IllegalArgumentException - if the request is inconsistent
      */
     AbstractOpenSessionCmdBuild(PoRevision revision)
-    : AbstractPoCommandBuilder<T>(CalypsoPoCommands::getOpenSessionForRev(revision), nullptr)
+    : AbstractPoCommandBuilder<T>(CalypsoPoCommands
+          ::getOpenSessionForRev(revision), nullptr)
     {
     }
 
-    static std::shared_ptr<AbstractOpenSessionCmdBuild<T>> create(PoRevision revision, char debitKeyIndex,
-                                                                  std::vector<char> &sessionTerminalChallenge, char sfi,
-                                                                  char recordNb, const std::string &extraInfo);
+    static std::shared_ptr<AbstractOpenSessionCmdBuild<T>> create(
+               PoRevision revision, uint8_t debitKeyIndex,
+               const std::vector<uint8_t>& sessionTerminalChallenge, uint8_t sfi,
+               uint8_t recordNb, const std::string& extraInfo);
 
 protected:
     std::shared_ptr<AbstractOpenSessionCmdBuild> shared_from_this()
     {
-        return std::static_pointer_cast<AbstractOpenSessionCmdBuild>(AbstractPoCommandBuilder<T>::shared_from_this());
+        return std::static_pointer_cast<AbstractOpenSessionCmdBuild>(
+                   AbstractPoCommandBuilder<T>::shared_from_this());
     }
 };
 

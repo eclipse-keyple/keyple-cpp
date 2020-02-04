@@ -21,21 +21,32 @@ namespace exception {
 
 using namespace keyple::core::seproxy::message;
 
+KeypleReaderException::KeypleReaderException(const std::string& msg)
+: KeypleBaseException(msg)
+{
+}
+
 KeypleReaderException::KeypleReaderException(
-  const KeypleReaderException& o)
+  const std::string& msg, const std::exception& cause)
+: KeypleBaseException(msg, cause)
+{
+}
+
+KeypleReaderException::KeypleReaderException(const KeypleReaderException& o)
 : KeypleBaseException(o.getMessage(), o.getCause())
 {
 }
 
-std::shared_ptr<SeResponseSet> KeypleReaderException::getSeResponseSet()
+std::list<std::shared_ptr<SeResponse>>&
+    KeypleReaderException::getSeResponseSet()
 {
-    return seResponseSet;
+    return seResponseList;
 }
 
 void KeypleReaderException::setSeResponseSet(
-  std::shared_ptr<SeResponseSet> seResponseSet)
+    std::list<std::shared_ptr<SeResponse>> seResponseList)
 {
-    this->seResponseSet = seResponseSet;
+    this->seResponseList = seResponseList;
 }
 
 std::shared_ptr<SeResponse> KeypleReaderException::getSeResponse()

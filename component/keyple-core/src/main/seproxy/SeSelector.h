@@ -29,7 +29,7 @@
 
 /* Core */
 #include "ApduRequest.h"
-#include "ChannelState.h"
+#include "ChannelControl.h"
 #include "SeProtocol_Import.h"
 
 namespace keyple {
@@ -311,7 +311,7 @@ public:
              * @throws IllegalArgumentException if the byte length array is not
              *         within the allowed range.
              */
-            IsoAid(std::vector<char> aid);
+            IsoAid(const std::vector<uint8_t>& aid);
 
 
             /**
@@ -321,7 +321,7 @@ public:
              * @throws IllegalArgumentException if the byte length array is not
              *         within the allowed range.
              */
-            IsoAid(const std::string &aid);
+            IsoAid(const std::string& aid);
 
             /**
              *
@@ -329,28 +329,26 @@ public:
             virtual ~IsoAid() {}
 
             /**
-                * @return the AID value as a byte array
-                */
-            virtual std::vector<char> getValue();
+             *
+             */
+            virtual const std::vector<uint8_t>& getValue();
 
             /**
-                * Compares two IsoAid objects.
-                * <p>
-                * Tells if the current AID starts with the value contained in
-                * the provided AID
-                *
-                * @param aid an other AID
-                * @return true or false
-                */
+             * Compares two IsoAid objects.
+             * <p>
+             * Tells if the current AID starts with the value contained in
+             * the provided AID
+             *
+             * @param aid an other AID
+             * @return true or false
+             */
             virtual bool startsWith(std::shared_ptr<IsoAid> aid);
 
         private:
             /**
              *
              */
-            std::vector<char> value;
-
-
+            std::vector<uint8_t> value;
         };
 
 
@@ -370,6 +368,10 @@ public:
          * @param aidToSelect IsoAid
          * @param successfulSelectionStatusCodes list of successful status codes
          *        for the select application response
+         * @param fileOccurrence the occurrence parameter (see ISO7816-4
+         *        definition)
+         * @param fileControlInformation the file control information (see
+         *        ISO7816-4 definition)
          */
         AidSelector(std::shared_ptr<IsoAid> aidToSelect,
                     std::shared_ptr<std::set<int>>
@@ -429,7 +431,7 @@ public:
          *
          * @return a string
          */
-        virtual std::string toString();
+        std::string toString();
 
     private:
         /**
@@ -512,7 +514,7 @@ public:
         *
         * @return a string
         */
-        virtual std::string toString();
+        std::string toString();
 
     private:
         /**

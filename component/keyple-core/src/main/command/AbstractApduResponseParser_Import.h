@@ -102,7 +102,7 @@ public:
 
     /**
      * Sets the Apdu response to parse
-     * 
+     *
      * @param response the apdu response
      */
     void setApduResponse(std::shared_ptr<ApduResponse> response);
@@ -117,7 +117,7 @@ public:
      *
      * @return the ApduResponse instance.
      */
-    std::shared_ptr<ApduResponse> getApduResponse();
+    const std::shared_ptr<ApduResponse> getApduResponse() const;
 
     /**
      * Checks if is successful.
@@ -125,7 +125,7 @@ public:
      * @return if the status is successful from the statusTable according to the
      *         current status code.
      */
-    virtual bool isSuccessful();
+    virtual bool isSuccessful() const;
 
     /**
      * Gets the status information.
@@ -152,8 +152,8 @@ protected:
      *
      * @return Status table
      */
-    virtual
-    std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable();
+    virtual std::unordered_map<int, std::shared_ptr<StatusProperties>>
+        getStatusTable() const;
 
 private:
     /**
@@ -183,12 +183,12 @@ private:
     /**
      *
      */
-    int getStatusCode();
+    int getStatusCode() const;
 
     /**
      *
      */
-    std::shared_ptr<StatusProperties> getPropertiesForStatusCode();
+    std::shared_ptr<StatusProperties> getPropertiesForStatusCode() const;
 };
 
 }

@@ -65,6 +65,7 @@ public:
     /**
      * Instantiates a new SelectFileRespPars.
      *
+     * @param response the response from the PO
      */
     SelectFileRespPars(std::shared_ptr<ApduResponse> response);
 
@@ -81,17 +82,17 @@ public:
     /**
      *
      */
-    char getSfi();
+    uint8_t getSfi();
 
     /**
      *
      */
-    char getFileType();
+    uint8_t getFileType();
 
     /**
      *
      */
-    char getEfType();
+    uint8_t getEfType();
 
     /**
      *
@@ -101,27 +102,27 @@ public:
     /**
      *
      */
-    char getNumRec();
+    uint8_t getNumRec();
 
     /**
      *
      */
-    std::vector<char> getAccessConditions();
+    std::vector<uint8_t> getAccessConditions();
 
     /**
      *
      */
-    std::vector<char> getKeyIndexes();
+    std::vector<uint8_t> getKeyIndexes();
 
     /**
      *
      */
-    char getSimulatedCounterFileSfi();
+    uint8_t getSimulatedCounterFileSfi();
 
     /**
      *
      */
-    char getSimulatedCounterNumber();
+    uint8_t getSimulatedCounterNumber();
 
     /**
      *
@@ -131,32 +132,32 @@ public:
     /**
      *
      */
-    char getDfStatus();
+    uint8_t getDfStatus();
 
     /**
      *
      */
-    std::vector<char> getFileBinaryData();
+    std::vector<uint8_t> getFileBinaryData();
 
     /**
      *
      */
-    std::vector<char> getRfu();
+    std::vector<uint8_t> getRfu();
 
     /**
      *
      */
-    std::vector<char> getKvcInfo();
+    std::vector<uint8_t> getKvcInfo();
 
     /**
      *
      */
-    std::vector<char> getKifInfo();
+    std::vector<uint8_t> getKifInfo();
 
     /**
      *
      */
-    std::vector<char> getSelectionData();
+    std::vector<uint8_t> getSelectionData();
 
 protected:
     /**
@@ -164,24 +165,28 @@ protected:
      */
     std::shared_ptr<SelectFileRespPars> shared_from_this()
     {
-        return std::static_pointer_cast<SelectFileRespPars>(AbstractPoResponseParser::shared_from_this());
+        return std::static_pointer_cast<SelectFileRespPars>(
+                   AbstractPoResponseParser::shared_from_this());
     }
 
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(SelectFileRespPars));
+    const std::shared_ptr<Logger> logger =
+              LoggerFactory::getLogger(typeid(SelectFileRespPars));
 
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<int, std::shared_ptr<
+               AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
 
     /**
      *
      */
-    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    class StaticConstructor
+    : public std::enable_shared_from_this<StaticConstructor> {
     public:
         StaticConstructor();
     };
@@ -194,7 +199,7 @@ private:
     /**
      *
      */
-    std::vector<char> fileBinaryData;
+    std::vector<uint8_t> fileBinaryData;
 
     /**
      *
@@ -204,17 +209,17 @@ private:
     /**
      *
      */
-    char sfi = 0;
+    uint8_t sfi = 0;
 
     /**
      *
      */
-    char fileType = 0;
+    uint8_t fileType = 0;
 
     /**
      *
      */
-    char efType = 0;
+    uint8_t efType = 0;
 
     /**
      *
@@ -224,27 +229,27 @@ private:
     /**
      *
      */
-    char numRec = 0;
+    uint8_t numRec = 0;
 
     /**
      *
      */
-    std::vector<char> accessConditions;
+    std::vector<uint8_t> accessConditions;
 
     /**
      *
      */
-    std::vector<char> keyIndexes;
+    std::vector<uint8_t> keyIndexes;
 
     /**
      *
      */
-    char simulatedCounterFileSfi = 0;
+    uint8_t simulatedCounterFileSfi = 0;
 
     /**
      *
      */
-    char simulatedCounterNumber = 0;
+    uint8_t simulatedCounterNumber = 0;
 
     /**
      *
@@ -254,22 +259,22 @@ private:
     /**
      *
      */
-    char dfStatus = 0;
+    uint8_t dfStatus = 0;
 
     /**
      *
      */
-    std::vector<char> rfu;
+    std::vector<uint8_t> rfu;
 
     /**
      *
      */
-    std::vector<char> kvcInfo;
+    std::vector<uint8_t> kvcInfo;
 
     /**
      *
      */
-    std::vector<char> kifInfo;
+    std::vector<uint8_t> kifInfo;
 
     /**
      *

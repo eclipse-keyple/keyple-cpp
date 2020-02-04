@@ -49,7 +49,7 @@ std::vector<std::string>  ByteArrayUtil::byteToHex = std::vector<std::string> {
 
 Pattern* ByteArrayUtil::HEX_IGNORED_CHARS = Pattern::compile(" |h");
 
-std::vector<char> ByteArrayUtil::fromHex(const std::string &hex)
+std::vector<uint8_t> ByteArrayUtil::fromHex(const std::string &hex)
 {
     std::string _hex = HEX_IGNORED_CHARS->matcher(hex)->replaceAll("");
     for (auto & c: _hex)
@@ -59,11 +59,10 @@ std::vector<char> ByteArrayUtil::fromHex(const std::string &hex)
         throw std::invalid_argument("Odd numbered hex array");
     }
 
-    std::vector<char> byteArray(_hex.length() / 2);
+    std::vector<uint8_t> byteArray(_hex.length() / 2);
     for (int i = 0; i < (int)_hex.length(); i += 2) {
-        byteArray[i / 2] =
-            static_cast<char>((Character::digit(_hex[i], 16) << 4) +
-                               Character::digit(_hex[i + 1], 16));
+        byteArray[i / 2] = (Character::digit(_hex[i], 16) << 4) +
+                            Character::digit(_hex[i + 1], 16);
     }
 
     return byteArray;
@@ -99,7 +98,7 @@ std::string ByteArrayUtil::toHex(const std::vector<uint8_t> &byteArray)
     return hexStringBuilder->toString();
 }
 
-int ByteArrayUtil::threeBytesToInt(std::vector<char> &bytes, int offset)
+int ByteArrayUtil::threeBytesToInt(std::vector<uint8_t>& bytes, int offset)
 {
     if (bytes.empty() || (int)bytes.size() < offset + 3 || offset < 0) {
        throw std::invalid_argument("Bad data for converting 3-byte integers.");

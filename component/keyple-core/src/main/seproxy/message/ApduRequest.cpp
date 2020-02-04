@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #include "ApduRequest.h"
 #include "ByteArrayUtil.h"
@@ -21,24 +23,30 @@ namespace message {
 
 using namespace keyple::core::util;
 
-ApduRequest::ApduRequest(std::vector<char> &buffer, bool case4, std::shared_ptr<std::set<int>> successfulStatusCodes)
+ApduRequest::ApduRequest(
+  const std::vector<uint8_t>& buffer, bool case4,
+  std::shared_ptr<std::set<int>> successfulStatusCodes)
 : case4(case4), successfulStatusCodes(successfulStatusCodes)
 {
     this->bytes = buffer;
 }
 
-ApduRequest::ApduRequest(const std::string &name, std::vector<char> &buffer, bool case4,
-                         std::shared_ptr<std::set<int>> successfulStatusCodes)
+ApduRequest::ApduRequest(
+  const std::string &name, const std::vector<uint8_t>& buffer, bool case4,
+  std::shared_ptr<std::set<int>> successfulStatusCodes)
 : ApduRequest(buffer, case4, successfulStatusCodes)
 {
     this->name = name;
 }
 
-ApduRequest::ApduRequest(std::vector<char> &buffer, bool case4) : ApduRequest(buffer, case4, nullptr)
+ApduRequest::ApduRequest(const std::vector<uint8_t>& buffer, bool case4)
+: ApduRequest(buffer, case4, nullptr)
 {
 }
 
-ApduRequest::ApduRequest(const std::string &name, std::vector<char> &buffer, bool case4) : ApduRequest(buffer, case4, nullptr)
+ApduRequest::ApduRequest(
+  const std::string& name, const std::vector<uint8_t>& buffer, bool case4)
+: ApduRequest(buffer, case4, nullptr)
 {
     this->name = name;
 }
@@ -63,35 +71,38 @@ std::string ApduRequest::getName()
     return name;
 }
 
-std::vector<char> ApduRequest::getBytes()
+std::vector<uint8_t> ApduRequest::getBytes()
 {
     return this->bytes;
 }
 
 std::string ApduRequest::toString()
 {
-    std::shared_ptr<StringBuilder> string;
-    string = std::make_shared<StringBuilder>("ApduRequest: NAME = \"" + this->getName() + "\", RAWDATA = " + ByteArrayUtil::toHex(bytes));
+    std::string string =
+        StringHelper::formatSimple(
+            "ApduRequest: NAME = %s, RAWDATA = %s", this->getName(),
+            ByteArrayUtil::toHex(bytes));
+
     if (isCase4()) {
-        string->append(", case4");
+        string.append(", case4");
     }
     if (successfulStatusCodes != nullptr) {
-        string->append(", additional successful status codes = ");
+        string.append(", additional successful status codes = ");
         std::set<int>::const_iterator iterator = successfulStatusCodes->begin();
         while (iterator != successfulStatusCodes->end()) {
-            string->append(StringHelper::formatSimple("%04X", *iterator));
+            string.append(StringHelper::formatSimple("%04X", *iterator));
             if (iterator != successfulStatusCodes->end()) {
-                string->append(", ");
+                string.append(", ");
             }
             iterator++;
         }
     }
-    return string->toString();
+    return string;
 }
 
 bool equals(std::shared_ptr<void> o)
 {
-                        
+
     (void)o;
 
     /* To be implemented */

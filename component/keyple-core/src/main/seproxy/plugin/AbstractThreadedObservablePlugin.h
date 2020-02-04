@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -19,8 +21,10 @@
 #include "exceptionhelper.h"
 
 /* Core */
+#include "AbstractPlugin.h"
 #include "ObservablePlugin.h"
-#include "AbstractObservablePlugin.h"
+#include "ObservableReader_Import.h"
+#include "SeReader.h"
 
 /* Common */
 #include "Export.h"
@@ -41,17 +45,54 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::common;
 
-class EXPORT AbstractThreadedObservablePlugin
-: public AbstractObservablePlugin, public ObservablePlugin, public Object {
+/**
+ * The {@link AbstractThreadedObservablePlugin} class provides the means to
+ * observe a plugin (insertion/removal of readers) using a monitoring thread.
+ */
+class EXPORT AbstractThreadedObservablePlugin : public AbstractPlugin {
 public:
     /**
-     * Constructor
+     * Add a plugin observer.
+     * <p>
+     * The observer will receive all the events produced by this plugin (reader
+     * insertion, removal, etc.)
+     * <p>
+     * In the case of a {@link AbstractThreadedObservablePlugin}, a thread is
+     * created if it does not already exist (when the first observer is added).
+     *
+     * @param observer the observer object
+     */
+    void addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+        /* override */;
+
+    /**
+     * Remove a plugin observer.
+     * <p>
+     * The observer will do not receive any of the events produced by this
+     * plugin.
+     * <p>
+     * In the case of a {@link AbstractThreadedObservablePlugin}, the monitoring
+     * thread is ended when the last observer is removed.
+     *
+     * @param observer the observer object
+     */
+    void removeObserver(
+        std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+        /* override */;
+
+    /**
+     *
+     */
+    void clearObservers() override;
+
+protected:
+    /**
+     * Instantiates an observable plugin
      *
      * @param name name of the plugin
      */
     AbstractThreadedObservablePlugin(const std::string &name);
 
-protected:
     /**
      * Thread wait timeout in ms
      *
@@ -60,32 +101,41 @@ protected:
     long long threadWaitTimeout = SETTING_THREAD_TIMEOUT_DEFAULT;
 
     /**
-     * Fetch the list of connected native reader (usually from third party library) and returns
-     * their names (or id)
+     * Fetch the list of connected native reader (usually from third party
+     * library) and returns their names (or id)
      *
      * @return connected readers' name list
      * @throws KeypleReaderException if a reader error occurs
      */
-    virtual std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() = 0;
+    virtual
+       std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() = 0;
 
     /**
-     * Start the monitoring thread.
-     * <p>
-     * The thread is created if it does not already exist
+     * Fetch connected native reader (from third party library) by its name
+     * Returns the current {@link AbstractReader} if it is already listed.
+     * Creates and returns a new {@link AbstractReader} if not.
+     *
+     * @param name the reader name
+     * @return the list of AbstractReader objects.
+     * @throws KeypleReaderException if a reader error occurs
      */
-    void startObservation() override;
+    virtual
+       std::shared_ptr<SeReader> fetchNativeReader(const std::string& name) = 0;
 
     /**
-     * Terminate the monitoring thread
+     * Check weither the background job is monitoring for new readers
+     *
+     * @return true, if the background job is monitoring, false in all other
+     *         cases.
      */
-    void stopObservation() override;
+    bool isMonitoring();
 
     /**
      * Called when the class is unloaded. Attempt to do a clean exit.
      *
      * @throws Throwable a generic exception
      */
-    void finalize() override;
+    void finalize() /* override */;
 
     /**
      *
@@ -93,10 +143,15 @@ protected:
     std::shared_ptr<AbstractThreadedObservablePlugin> shared_from_this()
     {
         return std::static_pointer_cast<AbstractThreadedObservablePlugin>(
-            AbstractObservablePlugin::shared_from_this());
+            AbstractPlugin::shared_from_this());
     }
 
 private:
+    /**
+     * Reader insertion/removal management
+     */
+    static const long SETTING_THREAD_TIMEOUT_DEFAULT = 1000;
+
     /**
      *
      */
@@ -106,11 +161,13 @@ private:
          * Constructor
          */
 
-        EventThread(std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance,
-                    const std::string &pluginName);
+        EventThread(
+            std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance,
+            const std::string &pluginName);
 
         /**
-         * Marks the thread as one that should end when the last cardWaitTimeout occurs
+         * Marks the thread as one that should end when the last cardWaitTimeout
+         * occurs
          */
         virtual void end();
 
@@ -123,6 +180,16 @@ private:
          *
          */
         virtual ~EventThread() {}
+
+        /**
+         *
+         */
+        bool isMonitoring();
+
+        /**
+         *
+         */
+        bool isAlive();
 
     private:
         /**
@@ -144,12 +211,8 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractThreadedObservablePlugin));
-
-    /**
-     *
-     */
-    static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 1000;
+    const std::shared_ptr<Logger> logger =
+             LoggerFactory::getLogger(typeid(AbstractThreadedObservablePlugin));
 
     /**
      * Local thread to monitoring readers presence
@@ -157,10 +220,11 @@ private:
     std::shared_ptr<EventThread> thread;
 
     /**
-     * List of names of the physical (native) connected readers This list helps synchronizing
-     * physical readers managed by third-party library such as smardcard.io and the list of keyple
-     * {@link org.eclipse.keyple.seproxy.SeReader} Insertion, removal, and access operations safely
-     * execute concurrently by multiple threads.
+     * List of names of the physical (native) connected readers This list helps
+     * synchronizing physical readers managed by third-party library such as
+     * smardcard.io and the list of keyple {@link
+     * org.eclipse.keyple.seproxy.SeReader} Insertion, removal, and access
+     * operations safely execute concurrently by multiple threads.
      */
     std::shared_ptr<std::set<std::string>> nativeReadersNames =
         std::make_shared<std::set<std::string>>(std::set<std::string>());

@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -47,32 +49,36 @@ public:
      *
      * @return the ciphered data byte array or null if the operation failed
      */
-    virtual std::vector<char> getCipheredData();
+    virtual std::vector<uint8_t> getCipheredData() const;
 
 protected:
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable() override;
+    std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable()
+        const override;
 
     /**
      *
      */
     std::shared_ptr<CardGenerateKeyRespPars> shared_from_this()
     {
-        return std::static_pointer_cast<CardGenerateKeyRespPars>(AbstractSamResponseParser::shared_from_this());
+        return std::static_pointer_cast<CardGenerateKeyRespPars>(
+                   AbstractSamResponseParser::shared_from_this());
     }
 
 private:
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<int, std::shared_ptr<StatusProperties>>
+               STATUS_TABLE;
 
     /**
      *
      */
-    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    class StaticConstructor
+    : public std::enable_shared_from_this<StaticConstructor> {
     public:
         StaticConstructor();
     };

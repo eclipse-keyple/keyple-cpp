@@ -11,7 +11,8 @@ namespace security {
 using namespace keyple::calypso::command::sam;
 using namespace keyple::core::seproxy::message;
 
-SelectDiversifierRespPars::SelectDiversifierRespPars(std::shared_ptr<ApduResponse> response)
+SelectDiversifierRespPars::SelectDiversifierRespPars(
+  std::shared_ptr<ApduResponse> response)
 : AbstractSamResponseParser(response)
 {
 }

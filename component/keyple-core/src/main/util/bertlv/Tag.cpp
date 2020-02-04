@@ -28,13 +28,13 @@ const char Tag::APPLICATION = static_cast<char>(0x01);
 const char Tag::CONTEXT = static_cast<char>(0x02);
 const char Tag::PRIVATE = static_cast<char>(0x03);
 
-Tag::Tag(int tagNumber, char tagClass, TagType tagType)
+Tag::Tag(int tagNumber, uint8_t tagClass, TagType tagType)
 : tagNumber(tagNumber), tagClass(tagClass), tagType(tagType)
 {
     //if (tagType == nullptr) {
     //    throw std::invalid_argument("TLV Tag: type is null.");
     //}
-    if (tagClass < 0 || tagClass > PRIVATE) {
+    if (tagClass > PRIVATE) {
         throw std::invalid_argument("TLV Tag: unknown tag class.");
     }
     if (tagNumber < 0x1F) {
@@ -54,13 +54,13 @@ Tag::Tag(int tagNumber, char tagClass, TagType tagType)
     }
 }
 
-Tag::Tag(std::vector<char> &binary, int offset)
+Tag::Tag(std::vector<uint8_t>& binary, int offset)
 {
     /* the 2 first bits (b7b6) of the first byte defines the class */
-    tagClass = static_cast<char>((binary[offset] & 0xC0) >> 6);
+    tagClass = (binary[offset] & 0xC0) >> 6;
 
     /* the type bit is the third bit (b5) */
-    if ((binary[offset] & static_cast<char>(0x20)) == static_cast<char>(0x20)) {
+    if ((binary[offset] & 0x20) == 0x20) {
         tagType = TagType::CONSTRUCTED;
     }
     else {
@@ -73,7 +73,7 @@ Tag::Tag(std::vector<char> &binary, int offset)
      */
     int index = offset;
     int number = 0;
-    if ((binary[index] & static_cast<char>(0x1F)) == static_cast<char>(0x1F)) {
+    if ((binary[index] & 0x1F) == 0x1F) {
         /* all bits of tag number are set: multi-octet tag */
         do {
             index++;
@@ -81,34 +81,58 @@ Tag::Tag(std::vector<char> &binary, int offset)
             number += binary[index] & 0x7F;
             /* loop while the "more bit" (b7) is set */
         } while ((binary[index] & 0x80) == 0x80);
-    }
-    else {
+    } else {
         /* single octet tag */
-        number = binary[index] & static_cast<char>(0x1F);
+        number = binary[index] & 0x1F;
     }
 
     tagNumber = number;
     size = index + 1 - offset;
 }
 
-int Tag::getTagNumber() {
+int Tag::getTagNumber()
+{
     return tagNumber;
 }
 
-char Tag::getTagClass() {
+char Tag::getTagClass()
+{
     return tagClass;
 }
 
-Tag::TagType Tag::getTagType() {
+Tag::TagType Tag::getTagType()
+{
     return tagType;
 }
 
-int Tag::getSize() {
+int Tag::getSize()
+{
     return size;
+}
+
+bool Tag::equals(std::shared_ptr<Object> obj)
+{
+    std::shared_ptr<Tag> tag = std::dynamic_pointer_cast<Tag>(obj);
+
+    if (!tag)
+        return false;
+
+    if (tag.get() == this)
+        return true;
+
+    return ((this->tagNumber == tag->tagNumber) &&
+            (this->tagClass == tag->tagClass)   &&
+            (this->tagType == tag->tagType));
 }
 
 bool Tag::equals(std::shared_ptr<Tag> tag)
 {
+    if (!tag)
+        return false;
+
+    if (tag.get() == this)
+        return true;
+
     return ((this->tagNumber == tag->tagNumber) &&
             (this->tagClass == tag->tagClass)   &&
             (this->tagType == tag->tagType));

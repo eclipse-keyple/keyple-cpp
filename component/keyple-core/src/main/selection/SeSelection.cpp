@@ -24,11 +24,9 @@
 #include "ProxyReader.h"
 #include "SeSelection.h"
 #include "SeRequest.h"
-#include "SeRequestSet.h"
 #include "SelectionsResult.h"
 #include "SelectionStatus.h"
 #include "SeReader.h"
-#include "SeResponseSet.h"
 #include "SeSelector_Import.h"
 
 namespace keyple {
@@ -40,21 +38,28 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-SeSelection::SeSelection()
+SeSelection::SeSelection(
+  const MultiSeRequestProcessing multiSeRequestProcessing,
+  const ChannelControl channelControl)
+: selectionIndex(0), multiSeRequestProcessing(multiSeRequestProcessing),
+  channelControl(channelControl)
 {
-    selectionIndex = 0;
+}
+
+SeSelection::SeSelection()
+: SeSelection(MultiSeRequestProcessing::FIRST_MATCH, ChannelControl::KEEP_OPEN)
+{
 }
 
 int SeSelection::prepareSelection(
     std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest)
 {
-
     logger->trace("SELECTORREQUEST = %s, EXTRAINFO = %s\n",
                   seSelectionRequest->getSelectionRequest()->toString().c_str(),
                   seSelectionRequest->getSeSelector()->getExtraInfo().c_str());
 
     /* build the SeRequest set transmitted to the SE */
-    selectionRequestSet->add(seSelectionRequest->getSelectionRequest());
+    selectionRequestSet.insert(seSelectionRequest->getSelectionRequest());
 
     /* keep the selection request */
     seSelectionRequestList.push_back(seSelectionRequest);
@@ -64,46 +69,39 @@ int SeSelection::prepareSelection(
 }
 
 std::shared_ptr<SelectionsResult> SeSelection::processSelection(
-    std::shared_ptr<DefaultSelectionsResponse> defaultSelectionsResponse)
+    std::shared_ptr<AbstractDefaultSelectionsResponse>
+        defaultSelectionsResponse)
 {
+    int index = 0;
 
-    int selectionIndex = 0;
     std::shared_ptr<SelectionsResult> selectionsResult =
         std::make_shared<SelectionsResult>();
 
-    logger->debug("processSelection\n");
-
-    /* null pointer exception protection */
-    if (defaultSelectionsResponse == nullptr) {
-        logger->error("defaultSelectionsResponse shouldn't be null in " \
-                      "processSelection\n");
-        return nullptr;
-    }
-
     /* Check SeResponses */
-    for (auto seResponse : defaultSelectionsResponse
-                               ->getSelectionSeResponseSet()->getResponses()) {
-        if (seResponse != nullptr) {
+    for (auto seResponse :
+             (std::dynamic_pointer_cast<DefaultSelectionsResponse>(
+                 defaultSelectionsResponse))->getSelectionSeResponseSet()) {
+        /*
+         * Test if the selection is successful: we should have either a FCI
+         * or an ATR
+         */
+        if (seResponse != nullptr &&
+            seResponse->getSelectionStatus() != nullptr &&
+            seResponse->getSelectionStatus()->hasMatched()) {
             /*
-             * Test if the selection is successful: we should have either a FCI
-             * or an ATR
+             * Create a AbstractMatchingSe with the class deduced from the
+             * selection request during the selection preparation
              */
-            if (seResponse->getSelectionStatus() != nullptr &&
-                seResponse->getSelectionStatus()->hasMatched()) {
-                /*
-                 * Create a AbstractMatchingSe with the class deduced from the
-                 * selection request during the selection preparation
-                 */
-                std::shared_ptr<AbstractMatchingSe> matchingSe =
-                    seSelectionRequestList[selectionIndex]->parse(seResponse);
+            std::shared_ptr<AbstractMatchingSe> matchingSe =
+                seSelectionRequestList[index]->parse(seResponse);
 
-                selectionsResult->addMatchingSelection(
-                    std::make_shared<MatchingSelection>(
-                        selectionIndex, seSelectionRequestList[selectionIndex],
-                        matchingSe, seResponse));
-            }
+            selectionsResult->addMatchingSelection(
+                std::make_shared<MatchingSelection>(
+                    index, seSelectionRequestList[index],
+                    matchingSe, seResponse));
         }
-        selectionIndex++;
+
+        index++;
     }
 
     return selectionsResult;
@@ -112,14 +110,19 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(
 std::shared_ptr<SelectionsResult> SeSelection::processDefaultSelection(
   std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
 {
+    /* Null pointer exception protection */
+    if (defaultSelectionsResponse == nullptr) {
+        logger->error("defaultSelectionsResponse shouldn't be null in " \
+                      "processSelection\n");
+        return nullptr;
+    }
+
     logger->trace("Process default SELECTIONRESPONSE (%d response(s))\n",
                   (std::static_pointer_cast<DefaultSelectionsResponse>(
                       defaultSelectionsResponse))->
-                          getSelectionSeResponseSet()->getResponses().size());
+                          getSelectionSeResponseSet().size());
 
-    return processSelection(
-               std::static_pointer_cast<DefaultSelectionsResponse>(
-                   defaultSelectionsResponse));
+    return processSelection(defaultSelectionsResponse);
 }
 
 std::shared_ptr<SelectionsResult>
@@ -130,7 +133,7 @@ SeSelection::processExplicitSelection(std::shared_ptr<SeReader> seReader)
      * trace function already.
      */
     logger->trace("Transmit SELECTIONREQUEST (%d request(s))\n",
-                  selectionRequestSet->getRequests()->size());
+                  selectionRequestSet.size());
 
     if (!seReader) {
         logger->error("processExplicitSelection - seReader is null\n");
@@ -138,43 +141,20 @@ SeSelection::processExplicitSelection(std::shared_ptr<SeReader> seReader)
     }
 
     /* Communicate with the SE to do the selection */
-    try {
-        std::shared_ptr<ProxyReader> proxy =
-                std::dynamic_pointer_cast<ProxyReader>(seReader);
-        if (!proxy) {
-            logger->error("processExplicitSelection - error retrieving " \
-                          "ProxyReader\n");
-            return nullptr;
-        }
+    std::list<std::shared_ptr<SeResponse>> seResponseList =
+        (std::dynamic_pointer_cast<ProxyReader>(seReader))
+            ->transmitSet(selectionRequestSet, multiSeRequestProcessing,
+                channelControl);
 
-        std::shared_ptr<SeResponseSet> seResponseSet =
-            proxy->transmitSet(selectionRequestSet);
-        if (!seResponseSet) {
-            logger->error("processExplicitSelection - error retrieving " \
-                          "seResponseSet\n");
-            return nullptr;
-        }
-
-        std::shared_ptr<DefaultSelectionsResponse> defaultSelectionResponse =
-            std::make_shared<DefaultSelectionsResponse>(seResponseSet);
-        if (!defaultSelectionResponse) {
-            logger->error("processExplicitSelection - error casting "\
-                          "seResponseSet into defaultSelectionResponse\n");
-            return nullptr;
-        }
-
-        return processSelection(defaultSelectionResponse);
-
-    } catch (const KeypleIOReaderException &ex) {
-            throw ex;
-    }
+    return processSelection(
+               std::make_shared<DefaultSelectionsResponse>(seResponseList));
 }
 
 std::shared_ptr<AbstractDefaultSelectionsRequest>
 SeSelection::getSelectionOperation()
 {
-    return std::static_pointer_cast<AbstractDefaultSelectionsRequest>(
-               std::make_shared<DefaultSelectionsRequest>(selectionRequestSet));
+    return std::make_shared<DefaultSelectionsRequest>(
+               selectionRequestSet, multiSeRequestProcessing, channelControl);
 }
 
 }

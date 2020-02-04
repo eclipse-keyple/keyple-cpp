@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <list>
 #include <memory>
 
 #include "AbstractDefaultSelectionsResponse.h"
@@ -30,9 +31,8 @@ namespace message {
 using namespace keyple::core::seproxy::event;
 
 /**
- * Class containing the
- * {@link org.eclipse.keyple.core.seproxy.message.SeResponseSet} used from a
- * default selection made at the {@link ObservableReader} level.
+ * Class containing the List of {@link SeResponse} used from a default selection
+ * made at the {@link ObservableReader} level.
  */
 class DefaultSelectionsResponse final
 : public AbstractDefaultSelectionsResponse {
@@ -40,23 +40,19 @@ public:
     /**
      *
      */
-    DefaultSelectionsResponse(std::shared_ptr<SeResponseSet>
-        selectionSeResponseSet);
+    DefaultSelectionsResponse(
+        std::list<std::shared_ptr<SeResponse>>& selectionSeResponseSet);
 
     /**
      *
      */
-    std::shared_ptr<SeResponseSet> getSelectionSeResponseSet() override;
+    std::list<std::shared_ptr<SeResponse>>& getSelectionSeResponseSet();
 
-protected:
+private:
     /**
-     *
+     * The List of {@link SeResponse}
      */
-    std::shared_ptr<DefaultSelectionsResponse> shared_from_this()
-    {
-        return std::static_pointer_cast<DefaultSelectionsResponse>(
-                   AbstractDefaultSelectionsResponse::shared_from_this());
-    }
+    std::list<std::shared_ptr<SeResponse>>& selectionSeResponseSet;
 };
 
 }

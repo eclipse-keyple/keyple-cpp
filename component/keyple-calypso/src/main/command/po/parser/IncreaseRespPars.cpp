@@ -58,14 +58,14 @@ IncreaseRespPars::IncreaseRespPars(std::shared_ptr<ApduResponse> response)
 
 std::unordered_map<int,
     std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        IncreaseRespPars::getStatusTable()
+        IncreaseRespPars::getStatusTable() const
 {
     return STATUS_TABLE;
 }
 
 int IncreaseRespPars::getNewValue()
 {
-    std::vector<char> newValueBuffer = getApduResponse()->getDataOut();
+    std::vector<uint8_t> newValueBuffer = getApduResponse()->getDataOut();
     if (newValueBuffer.size() == 3) {
         return (newValueBuffer[0] << 16) +
                (newValueBuffer[1] <<  8) +

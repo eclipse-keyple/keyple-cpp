@@ -60,6 +60,24 @@ public:
     /** The sam digest authenticate. */
     static CalypsoSamCommands CARD_GENERATE_KEY;
 
+    /** The sam unlock. */
+    static CalypsoSamCommands UNLOCK;
+
+    /** The sam write key command. */
+    static CalypsoSamCommands WRITE_KEY;
+
+    /** */
+    static CalypsoSamCommands READ_KEY_PARAMETERS;
+
+    /** */
+    static CalypsoSamCommands READ_EVENT_COUNTER;
+
+    /** */
+    static CalypsoSamCommands READ_CEILINGS;
+
+    /**
+     *
+     */
     enum class InnerEnum {
         SELECT_DIVERSIFIER,
         GET_CHALLENGE,
@@ -69,7 +87,12 @@ public:
         DIGEST_CLOSE,
         DIGEST_AUTHENTICATE,
         GIVE_RANDOM,
-        CARD_GENERATE_KEY
+        CARD_GENERATE_KEY,
+        UNLOCK,
+        WRITE_KEY,
+        READ_KEY_PARAMETERS,
+        READ_EVENT_COUNTER,
+        READ_CEILINGS
     };
 
     /**
@@ -85,35 +108,38 @@ public:
      * @param commandBuilderClass the command builder class
      * @param responseParserClass the response parser class
      */
-    CalypsoSamCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte, const std::type_info& commandBuilderClass, const std::type_info& responseParserClass);
+    CalypsoSamCommands(const std::string &nameValue, InnerEnum innerEnum,
+                       const std::string &name, char instructionByte,
+                       const std::type_info& commandBuilderClass,
+                       const std::type_info& responseParserClass);
 
     /**
      * Gets the name.
      *
      * @return the command name
      */
-    virtual std::string getName();
+    virtual const std::string& getName() const;
 
     /**
      * Gets the instruction byte.
      *
      * @return the value of INS byte
      */
-    virtual char getInstructionByte();
+    virtual uint8_t getInstructionByte() const;
 
     /**
      * Gets the command builder class.
      *
      * @return the corresponding command builder class
      */
-    virtual const std::type_info& getCommandBuilderClass();
+    virtual const std::type_info& getCommandBuilderClass() const;
 
     /**
      * Gets the response parser class.
      *
      * @return the corresponding response parser class
      */
-    virtual const std::type_info& getResponseParserClass();
+    virtual const std::type_info& getResponseParserClass() const;
 
     /**
      *

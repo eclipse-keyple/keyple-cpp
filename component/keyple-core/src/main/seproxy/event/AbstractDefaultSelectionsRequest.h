@@ -14,14 +14,16 @@
 
 #pragma once
 
+#include <set>
 #include <memory>
 
 /* Common */
 #include "Export.h"
 
-/* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeRequestSet; } } } }
+/* Core */
+#include "ChannelControl.h"
+#include "MultiSeRequestProcessing.h"
+#include "SeRequest.h"
 
 namespace keyple {
 namespace core {
@@ -31,8 +33,19 @@ namespace event {
 using namespace keyple::core::seproxy::message;
 
 /**
-    * The {@link AbstractDefaultSelectionsRequest} class is dedicated to
-    */
+ * The abstract class defining the default selection request to be processed
+ * when an SE is inserted in an observable reader.
+ * <p>
+ * The default selection is defined by:
+ * <ul>
+ * <li>a set of requests corresponding to one or more selection cases
+ * <li>a {@link MultiSeRequestProcessing} indicator specifying whether all
+ * planned selections are to be executed or whether to stop at the first one
+ * that is successful
+ * <li>an indicator to control the physical channel to stipulate whether it
+ * should be closed or left open at the end of the selection process
+ * </ul>
+ */
 class EXPORT AbstractDefaultSelectionsRequest
 : public std::enable_shared_from_this<AbstractDefaultSelectionsRequest> {
 public:
@@ -43,20 +56,19 @@ public:
 
 protected:
     /**
-     * The {@link keyple::core::seproxy::message::SeRequestSet}
+     * @return the selection request set
      */
-    const std::shared_ptr<SeRequestSet> selectionSeRequestSet;
+    virtual std::set<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet() = 0;
 
     /**
-     *
+     * @return the multi SE request mode
      */
-    AbstractDefaultSelectionsRequest(
-      std::shared_ptr<SeRequestSet> selectionSeRequestSet);
+    virtual MultiSeRequestProcessing& getMultiSeRequestProcessing() = 0;
 
-    /**
-     *
+     /**
+     * @return the channel control
      */
-    virtual std::shared_ptr<SeRequestSet> getSelectionSeRequestSet() = 0;
+    virtual ChannelControl& getChannelControl() = 0;
 };
 
 }

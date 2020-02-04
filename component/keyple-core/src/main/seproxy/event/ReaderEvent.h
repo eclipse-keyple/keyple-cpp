@@ -41,14 +41,15 @@ class EXPORT ReaderEvent final
 
 public:
     /**
-     * The different types of reader event
+     * The different types of reader events, reflecting the status of the reader
+     * regarding the presence of the card
      */
     class EXPORT EventType final {
     public:
         /**
-         * An io error occurred.
+         * An timeout error occurred.
          */
-        static EventType IO_ERROR;
+        static EventType TIMEOUT_ERROR;
 
         /**
          * A SE has been inserted.
@@ -57,20 +58,21 @@ public:
 
         /**
          * A SE has been inserted and the default requests process has been
-         * operated.
+         * successfully operated.
          */
         static EventType SE_MATCHED;
 
         /**
-         * The SE has been removed.
+         * The SE has been removed and is no longer able to communicate with the
+         * reader
          */
-        static EventType SE_REMOVAL;
+        static EventType SE_REMOVED;
 
         /**
          *
          */
         enum class InnerEnum {
-            IO_ERROR,
+            TIMEOUT_ERROR,
             SE_INSERTED,
             SE_MATCHED,
             SE_REMOVAL
@@ -181,7 +183,7 @@ public:
      * @param readerName the name of the current reader
      * @param eventType the type of event
      * @param defaultSelectionsResponse the response to the default
-     *        DefaultSelectionsRequest (may be null)
+     *        AbstractDefaultSelectionsRequest (may be null)
      */
     ReaderEvent(const std::string &pluginName, const std::string &readerName,
                 EventType eventType,
@@ -214,6 +216,7 @@ private:
      * The type of event
      */
     const EventType eventType;
+
     /**
      * The name of the plugin handling the reader that produced the event
      */
@@ -225,7 +228,9 @@ private:
     const std::string readerName;
 
     /**
-     * The response to the selection request
+     * The response to the selection request Note: although the object is
+     * instantiated externally, we use DefaultSelectionsResponse here to keep
+     * ReaderEvent serializable
      */
     const std::shared_ptr<DefaultSelectionsResponse> defaultResponseSet;
 };

@@ -29,7 +29,7 @@ namespace keyple { namespace core { namespace seproxy { namespace protocol {
 namespace keyple {
 namespace core {
 namespace seproxy {
-    
+
 using namespace keyple::core::util;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::protocol;
@@ -45,7 +45,7 @@ using namespace keyple::core::seproxy::protocol;
  * Interface used by applications processing SE.
  */
 class SeReader
-: public virtual Nameable, public Configurable,
+: public virtual Nameable, public virtual Configurable,
   public Comparable<std::shared_ptr<SeReader>> {
 public:
     /**
@@ -57,6 +57,7 @@ public:
      * Checks if is SE present.
      *
      * @return true if a Secure Element is present in the reader
+     * @throws KeypleIOReaderException if error while reading SE
      */
     virtual bool isSePresent() = 0;
 
@@ -90,10 +91,10 @@ public:
     /**
      * Complete the current setting map with the provided map
      *
-     * @param protocolSetting
+     * @param protocolSetting the protocol setting map
      */
-    virtual void setSeProtocolSetting(std::unordered_map<SeProtocol,
-                                      std::string>& protocolSetting) = 0;
+    virtual void setSeProtocolSetting(
+                const std::map<SeProtocol, std::string>& protocolSetting) = 0;
 
     /**
      * @return the transmission mode in use with this SE reader

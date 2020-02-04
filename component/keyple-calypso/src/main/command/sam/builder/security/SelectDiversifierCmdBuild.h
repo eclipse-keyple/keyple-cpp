@@ -14,10 +14,6 @@
 
 #pragma once
 
-#include <vector>
-#include <stdexcept>
-#include <memory>
-
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommands.h"
 #include "SamRevision_Import.h"
@@ -47,7 +43,7 @@ public:
      * @throws IllegalArgumentException - if the request is inconsistent
      */
     SelectDiversifierCmdBuild(SamRevision revision,
-                              std::vector<char> &diversifier);
+                              std::vector<uint8_t> &diversifier);
 
     /**
      *

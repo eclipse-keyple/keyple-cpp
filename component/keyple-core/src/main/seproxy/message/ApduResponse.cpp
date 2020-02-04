@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #include "ApduResponse.h"
 #include "ByteArrayUtil.h"
@@ -21,7 +23,9 @@ namespace message {
 
 using namespace keyple::core::util;
 
-ApduResponse::ApduResponse(std::vector<char> &buffer, std::shared_ptr<std::set<int>> successfulStatusCodes)
+ApduResponse::ApduResponse(
+  std::vector<uint8_t>& buffer,
+  std::shared_ptr<std::set<int>> successfulStatusCodes)
 : bytes(buffer)
 {
     if (buffer.empty()) {
@@ -37,9 +41,9 @@ ApduResponse::ApduResponse(std::vector<char> &buffer, std::shared_ptr<std::set<i
                          (buffer[buffer.size() - 1] & 0x000000FF);
 
         if (successfulStatusCodes != nullptr) {
-            this->successful =
-                         statusCode == 0x9000 ||
-                         (successfulStatusCodes->find(statusCode) != successfulStatusCodes->end());
+            this->successful = statusCode == 0x9000 ||
+                               (successfulStatusCodes->find(statusCode) !=
+                                   successfulStatusCodes->end());
         } else {
             this->successful = statusCode == 0x9000;
         }
@@ -66,28 +70,29 @@ int ApduResponse::getStatusCode()
     return code;
 }
 
-std::vector<char> ApduResponse::getBytes() const
+const std::vector<uint8_t>& ApduResponse::getBytes() const
 {
     logger->debug("getBytes - 'bytes' size is %d\n", this->bytes.size());
 
     return this->bytes;
 }
 
-std::vector<char> ApduResponse::getDataOut()
+std::vector<uint8_t> ApduResponse::getDataOut() const
 {
     logger->debug("getDataOut - byte size is %d\n", this->bytes.size());
 
     if (this->bytes.size() < 2)
-        return std::vector<char>();
+        return std::vector<uint8_t>();
 
-    std::vector<char> test = Arrays::copyOfRange(this->bytes, 0, this->bytes.size() - 2);
     return Arrays::copyOfRange(this->bytes, 0, this->bytes.size() - 2);
 }
 
 std::string ApduResponse::toString()
 {
     std::string status = isSuccessful() ? "SUCCESS" : "FAILURE";
-    return "ApduResponse: " + status + ", RAWDATA = " + ByteArrayUtil::toHex(this->bytes);
+    return StringHelper::formatSimple(
+               "ApduResponse: %s, RAWDATA = %s", status,
+               ByteArrayUtil::toHex(this->bytes));
 }
 
 bool ApduResponse::equals(std::shared_ptr<void> o)
@@ -100,8 +105,11 @@ bool ApduResponse::equals(std::shared_ptr<void> o)
         return false;
     }
 
-    std::shared_ptr<ApduResponse> resp = std::static_pointer_cast<ApduResponse>(o);
-    return Arrays::equals(resp->getBytes(), this->bytes) && resp->isSuccessful() == this->successful;
+    std::shared_ptr<ApduResponse> resp =
+        std::static_pointer_cast<ApduResponse>(o);
+
+    return Arrays::equals(resp->getBytes(), this->bytes) &&
+           resp->isSuccessful() == this->successful;
 }
 
 int ApduResponse::hashCode()

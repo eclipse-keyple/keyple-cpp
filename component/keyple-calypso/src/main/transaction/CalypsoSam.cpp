@@ -48,7 +48,7 @@ CalypsoSam::CalypsoSam(
     std::string atrString =
         ByteArrayUtil::toHex(
             selectionResponse->getSelectionStatus()->getAtr()->getBytes());
-    if (atrString.empty()) {  
+    if (atrString.empty()) {
         throw IllegalStateException("ATR should not be empty.");
     }
 
@@ -57,7 +57,7 @@ CalypsoSam::CalypsoSam(
     Pattern* pattern = Pattern::compile(extractRegex);
     Matcher* matcher = pattern->matcher(atrString);
     if (matcher->find(0)) {
-        std::vector<char> atrSubElements =
+        std::vector<uint8_t> atrSubElements =
             ByteArrayUtil::fromHex(matcher->group(2));
         platform = atrSubElements[0];
         applicationType = atrSubElements[1];
@@ -88,7 +88,7 @@ CalypsoSam::CalypsoSam(
         softwareRevision = atrSubElements[5];
         System::arraycopy(atrSubElements, 6, serialNumber, 0, 4);
         if (logger->isTraceEnabled()) {
-            logger->trace("%s", 
+            logger->trace("%s",
                           StringHelper::formatSimple(
                               "SAM %s PLATFORM = %02X, APPTYPE = %02X, " \
                               "APPSUBTYPE = %02X, SWISSUER =%02X, SWVERSION =" \

@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -104,7 +106,8 @@ public:
      * @param name the name
      * @param instructionByte the instruction byte
      */
-    CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum, const std::string &name, char instructionByte);
+    CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum,
+                      const std::string &name, uint8_t instructionByte);
 
     /**
      *
@@ -116,14 +119,14 @@ public:
      *
      * @return the command name
      */
-    virtual std::string getName() override;
+    virtual const std::string& getName() const override;
 
     /**
      * Gets the instruction byte.
      *
      * @return the value of INS byte
      */
-    virtual char getInstructionByte() override;
+    virtual uint8_t getInstructionByte() const override;
 
     /**
      * Get the right open-session command for a given {@link PoRevision}
@@ -167,7 +170,7 @@ public:
      * Alex: had to add these for the compiler to authorize instanciation of
      * class. Not present in Java code.
      */
-    const std::type_info& getCommandBuilderClass() override
+    const std::type_info& getCommandBuilderClass() const override
     {
 
         /* Fixme! */
@@ -177,7 +180,7 @@ public:
     /**
      *
      */
-    const std::type_info& getResponseParserClass() override
+    const std::type_info& getResponseParserClass() const override
     {
         /* Fixe me! */
         return typeid(this);

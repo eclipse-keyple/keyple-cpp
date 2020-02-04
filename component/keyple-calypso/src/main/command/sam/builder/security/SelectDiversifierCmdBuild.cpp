@@ -24,7 +24,7 @@ namespace security {
 using namespace keyple::calypso::command::sam;
 
 SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(
-  SamRevision revision, std::vector<char> &diversifier)
+  SamRevision revision, std::vector<uint8_t>& diversifier)
 : AbstractSamCommandBuilder(CalypsoSamCommands::SELECT_DIVERSIFIER, nullptr)
 {
     this->defaultRevision = revision;
@@ -35,10 +35,8 @@ SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(
     }
 
     char cla = this->defaultRevision.getClassByte();
-    char p1 = 0x00;
-    char p2 = 0x00;
 
-    request = setApduRequest(cla, command, p1, p2, diversifier, -1);
+    request = setApduRequest(cla, command, 0x00, 0x00, diversifier);
 
 }
 }

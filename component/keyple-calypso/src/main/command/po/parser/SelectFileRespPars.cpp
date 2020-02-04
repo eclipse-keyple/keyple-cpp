@@ -39,7 +39,7 @@ SelectFileRespPars::StaticConstructor::StaticConstructor()
 {
     std::unordered_map<int, std::shared_ptr<StatusProperties>>
         m(AbstractApduResponseParser::STATUS_TABLE);
- 
+
     m.emplace(0x6A88,
               std::make_shared<StatusProperties>(
                   false,
@@ -50,14 +50,14 @@ SelectFileRespPars::StaticConstructor::StaticConstructor()
                 "P1 or P2 value not supported (<>004fh, 0062h, 006Fh, 00C0h, " \
                 "00D0h, 0185h and 5F52h, according to availabl optional " \
                 "modes)."));
- 
+
     STATUS_TABLE = m;
 }
 
 SelectFileRespPars::StaticConstructor SelectFileRespPars::staticConstructor;
 
 void SelectFileRespPars::parseResponse() {
-    std::vector<char> inFileParameters = response->getDataOut();
+    std::vector<uint8_t> inFileParameters = response->getDataOut();
     int iter = 0;
 
     if (!response->isSuccessful()) {
@@ -71,13 +71,12 @@ void SelectFileRespPars::parseResponse() {
     }
 
     // Check File TLV Tag and length
-    if (inFileParameters[iter++] != static_cast<char>(0x85) ||
-        inFileParameters[iter++] != static_cast<char>(0x17)) {
+    if (inFileParameters[iter++] != 0x85 || inFileParameters[iter++] != 0x17) {
         throw IllegalStateException("Unexpected FCI format: " +
                                     ByteArrayUtil::toHex(inFileParameters));
     }
 
-    fileBinaryData = std::vector<char>(inFileParameters.size());
+    fileBinaryData = std::vector<uint8_t>(inFileParameters.size());
     System::arraycopy(inFileParameters, 0, fileBinaryData, 0,
                       inFileParameters.size());
 
@@ -105,11 +104,11 @@ void SelectFileRespPars::parseResponse() {
         iter += 2;
     }
 
-    accessConditions = std::vector<char>(4);
+    accessConditions = std::vector<uint8_t>(4);
     System::arraycopy(inFileParameters, iter, accessConditions, 0, 4);
     iter += 4;
 
-    keyIndexes = std::vector<char>(4);
+    keyIndexes = std::vector<uint8_t>(4);
     System::arraycopy(inFileParameters, iter, keyIndexes, 0, 4);
     iter += 4;
 
@@ -125,28 +124,28 @@ void SelectFileRespPars::parseResponse() {
         }
         else {
 
-            sharedEf = ((inFileParameters[iter + 1] << 8) & 0x0000ff00) |
-                       (inFileParameters[iter] & 0x000000ff);
+            sharedEf = ((inFileParameters[iter] << 8) & 0x0000ff00) |
+                       (inFileParameters[iter + 1] & 0x000000ff);
             iter += 2;
         }
 
-        rfu = std::vector<char>(5);
+        rfu = std::vector<uint8_t>(5);
         System::arraycopy(inFileParameters, iter, rfu, 0, 5);
         iter += 5; // RFU fields;
 
     }
     else {
 
-        kvcInfo = std::vector<char>(3);
+        kvcInfo = std::vector<uint8_t>(3);
         System::arraycopy(inFileParameters, iter, kvcInfo, 0, 3);
         iter += 3;
 
-        kifInfo = std::vector<char>(3);
+        kifInfo = std::vector<uint8_t>(3);
         System::arraycopy(inFileParameters, iter, kifInfo, 0, 3);
         iter += 3;
 
 
-        rfu = std::vector<char>(1);
+        rfu = std::vector<uint8_t>(1);
         rfu[0] = inFileParameters[iter++];
     }
 
@@ -172,17 +171,17 @@ int SelectFileRespPars::getLid()
     return lid;
 }
 
-char SelectFileRespPars::getSfi()
+uint8_t SelectFileRespPars::getSfi()
 {
     return sfi;
 }
 
-char SelectFileRespPars::getFileType()
+uint8_t SelectFileRespPars::getFileType()
 {
     return fileType;
 }
 
-char SelectFileRespPars::getEfType()
+uint8_t SelectFileRespPars::getEfType()
 {
     return efType;
 }
@@ -192,27 +191,27 @@ int SelectFileRespPars::getRecSize()
     return recSize;
 }
 
-char SelectFileRespPars::getNumRec()
+uint8_t SelectFileRespPars::getNumRec()
 {
     return numRec;
 }
 
-std::vector<char> SelectFileRespPars::getAccessConditions()
+std::vector<uint8_t> SelectFileRespPars::getAccessConditions()
 {
     return accessConditions;
 }
 
-std::vector<char> SelectFileRespPars::getKeyIndexes()
+std::vector<uint8_t> SelectFileRespPars::getKeyIndexes()
 {
     return keyIndexes;
 }
 
-char SelectFileRespPars::getSimulatedCounterFileSfi()
+uint8_t SelectFileRespPars::getSimulatedCounterFileSfi()
 {
     return simulatedCounterFileSfi;
 }
 
-char SelectFileRespPars::getSimulatedCounterNumber()
+uint8_t SelectFileRespPars::getSimulatedCounterNumber()
 {
     return simulatedCounterNumber;
 }
@@ -222,32 +221,32 @@ int SelectFileRespPars::getSharedEf()
     return sharedEf;
 }
 
-char SelectFileRespPars::getDfStatus()
+uint8_t SelectFileRespPars::getDfStatus()
 {
     return dfStatus;
 }
 
-std::vector<char> SelectFileRespPars::getFileBinaryData()
+std::vector<uint8_t> SelectFileRespPars::getFileBinaryData()
 {
     return fileBinaryData;
 }
 
-std::vector<char> SelectFileRespPars::getRfu()
+std::vector<uint8_t> SelectFileRespPars::getRfu()
 {
     return rfu;
 }
 
-std::vector<char> SelectFileRespPars::getKvcInfo()
+std::vector<uint8_t> SelectFileRespPars::getKvcInfo()
 {
     return kvcInfo;
 }
 
-std::vector<char> SelectFileRespPars::getKifInfo()
+std::vector<uint8_t> SelectFileRespPars::getKifInfo()
 {
     return kifInfo;
 }
 
-std::vector<char> SelectFileRespPars::getSelectionData()
+std::vector<uint8_t> SelectFileRespPars::getSelectionData()
 {
     return response->getDataOut();
 }

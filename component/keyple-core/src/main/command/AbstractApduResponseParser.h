@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -113,7 +115,7 @@ public:
      *
      * @return the ApduResponse instance.
      */
-    std::shared_ptr<ApduResponse> getApduResponse();
+    const std::shared_ptr<ApduResponse> getApduResponse() const;
 
     /**
      * Checks if is successful.
@@ -121,7 +123,7 @@ public:
      * @return if the status is successful from the statusTable according to the current status
      *         code.
      */
-    virtual bool isSuccessful();
+    virtual bool isSuccessful() const;
 
     /**
      * Gets the status information.
@@ -146,7 +148,8 @@ protected:
      *
      * @return Status table
      */
-    virtual std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable();
+    virtual std::unordered_map<int, std::shared_ptr<StatusProperties>>
+        getStatusTable() const;
 
 private:
     /**
@@ -175,12 +178,12 @@ private:
     /**
      *
      */
-    int getStatusCode();
+    int getStatusCode() const;
 
     /**
      *
      */
-    std::shared_ptr<StatusProperties> getPropertiesForStatusCode();
+    std::shared_ptr<StatusProperties> getPropertiesForStatusCode() const;
 };
 
 }

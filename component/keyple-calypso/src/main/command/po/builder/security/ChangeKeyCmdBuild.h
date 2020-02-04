@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -48,12 +50,15 @@ public:
      * @param keyIndex index of the key of the current DF to change
      * @param cryptogram key encrypted with Issuer key (key #1)
      */
-    ChangeKeyCmdBuild(PoClass poClass, char keyIndex, std::vector<char> &cryptogram);
+    ChangeKeyCmdBuild(PoClass poClass, uint8_t keyIndex,
+                      std::vector<uint8_t>& cryptogram);
 
     /**
      *
      */
-    std::shared_ptr<ChangeKeyRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<ChangeKeyRespPars>
+        createResponseParser(std::shared_ptr<ApduResponse> apduResponse)
+        override;
 
 protected:
     /**
@@ -61,7 +66,9 @@ protected:
      */
     std::shared_ptr<ChangeKeyCmdBuild> shared_from_this()
     {
-        return std::static_pointer_cast<ChangeKeyCmdBuild>(AbstractPoCommandBuilder<ChangeKeyRespPars>::shared_from_this());
+        return std::static_pointer_cast<ChangeKeyCmdBuild>(
+                   AbstractPoCommandBuilder<ChangeKeyRespPars>
+                       ::shared_from_this());
     }
 };
 

@@ -31,7 +31,6 @@ using namespace keyple::core::seproxy::message;
 
 /**
  * Abstract class for all PO command builders.
- * <p>
  */
 template<typename T>
 class AbstractPoCommandBuilder : public AbstractIso7816CommandBuilder {

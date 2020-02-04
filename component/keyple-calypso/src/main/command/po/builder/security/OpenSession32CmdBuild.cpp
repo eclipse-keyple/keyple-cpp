@@ -36,22 +36,22 @@ using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::core::seproxy::message;
 
 OpenSession32CmdBuild::OpenSession32CmdBuild(
-  char keyIndex, std::vector<char> &samChallenge, char sfiToSelect,
-  char recordNumberToRead, const std::string &extraInfo)
+  uint8_t keyIndex, const std::vector<uint8_t>& samChallenge,
+  uint8_t sfiToSelect, uint8_t recordNumberToRead, const std::string& extraInfo)
 : AbstractOpenSessionCmdBuild<OpenSession32RespPars>(PoRevision::REV3_2)
 {
 
-    char p1 = static_cast<char>((recordNumberToRead * 8) + keyIndex);
-    char p2 = static_cast<char>((sfiToSelect * 8) + 2);
+    uint8_t p1 = (recordNumberToRead * 8) + keyIndex;
+    uint8_t p2 = (sfiToSelect * 8) + 2;
 
     /*
      * case 4: this command contains incoming and outgoing data. We define
      * le = 0, the actual  length will be processed by the lower layers.
      */
-    char le = 0;
+    uint8_t le = 0;
 
-    std::vector<char> dataIn(samChallenge.size() + 1);
-    dataIn[0] = static_cast<char>(0x00);
+    std::vector<uint8_t> dataIn(samChallenge.size() + 1);
+    dataIn[0] = 0x00;
     System::arraycopy(samChallenge, 0, dataIn, 1, samChallenge.size());
 
     this->request =
