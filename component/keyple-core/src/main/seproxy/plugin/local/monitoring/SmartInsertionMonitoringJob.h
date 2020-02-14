@@ -47,7 +47,7 @@ public:
     /**
      *
      */
-    SmartInsertionMonitoringJob(const SmartInsertionReader& reader);
+    SmartInsertionMonitoringJob(SmartInsertionReader* reader);
 
     /**
      *
@@ -58,7 +58,8 @@ public:
     /**
      *
      */
-    std::future<void> startMonitoring(AbstractObservableState* state,
+    std::future<void> startMonitoring(
+        AbstractObservableState* state,
         std::atomic<bool>& cancellationFlag) override;
 
     /**
@@ -77,7 +78,7 @@ private:
     /**
      *
      */
-    SmartInsertionReader& reader;
+    SmartInsertionReader* reader;
 };
 
 }

@@ -26,7 +26,12 @@ namespace plugin {
 namespace local {
 namespace monitoring {
 
+CardAbsentPingMonitoringJob::CardAbsentPingMonitoringJob(
+  AbstractObservableLocalReader* reader)
+: reader(reader)
+{
 
+}
 
 void CardAbsentPingMonitoringJob::monitoringJob(
     AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
@@ -35,15 +40,15 @@ void CardAbsentPingMonitoringJob::monitoringJob(
     long retries = 0;
     bool loop = true;
 
-    logger->debug("[%s] Polling from isSePresentPing\n", reader.getName());
+    logger->debug("[%s] Polling from isSePresentPing\n", reader->getName());
     while (loop) {
         if (cancellationFlag) {
-            logger->debug("[%s] monitoring job cancelled\n", reader.getName());
+            logger->debug("[%s] monitoring job cancelled\n", reader->getName());
             return;
         }
 
-        if (!reader.isSePresentPing()) {
-            logger->debug("[%s] The SE stopped responding\n", reader.getName());
+        if (!reader->isSePresentPing()) {
+            logger->debug("[%s] The SE stopped responding\n", reader->getName());
             loop = false;
             state->onEvent(InternalEvent::SE_REMOVED);
             return;
@@ -51,7 +56,7 @@ void CardAbsentPingMonitoringJob::monitoringJob(
 
         retries++;
 
-        logger->trace("[%s] Polling retries : %d\n", reader.getName(), retries);
+        logger->trace("[%s] Polling retries : %d\n", reader->getName(), retries);
 
         try {
             /* Wait for a bit */

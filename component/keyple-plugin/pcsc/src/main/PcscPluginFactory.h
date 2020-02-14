@@ -12,34 +12,37 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "MonitoringPool.h"
+#pragma once
 
-/* Core */
-#include "AbstractObservableState.h"
+#include "AbstractPluginFactory.h"
 
 namespace keyple {
-namespace core {
-namespace seproxy {
 namespace plugin {
-namespace local {
+namespace pcsc {
 
-MonitoringPool::MonitoringPool()
-{
+using namespace keyple::core::seproxy;
 
-}
+/**
+ * Builds a {@link PcscPlugin}
+ */
+class PcscPluginFactory : public AbstractPluginFactory {
+public:
+    /**
+     *
+     */
+    const std::string& getPluginName() override;
 
-std::future<void>* MonitoringPool::submit(
-    std::shared_ptr<MonitoringJob> monitoringJob,
-    AbstractObservableState* state,
-    std::atomic<bool>& cancellationFlag)
-{
-    pool.push_back(monitoringJob->startMonitoring(state, cancellationFlag));
+protected:
+    /**
+     * Returns an instance of the {@link PcscPlugin} if the platform is ready
+     *
+     * @return PcscPlugin instance
+     * @throws KeyplePluginInstantiationException if Smartcard.io library is not
+     * ready
+     */
+    ReaderPlugin& getPluginInstance() override;
+};
 
-    return &pool.back();
-}
-
-}
-}
 }
 }
 }

@@ -34,6 +34,7 @@
 #include "SeResponse.h"
 #include "SeRequest.h"
 #include "SeSelector_Import.h"
+#include "SmartSelectionReader.h"
 
 namespace keyple {
 namespace core {
@@ -189,41 +190,6 @@ void AbstractLocalReader::cardRemoved()
 }
 #endif
 
-std::shared_ptr<ApduResponse> AbstractLocalReader::openChannelForAidHackGetData(
-    std::shared_ptr<SeSelector::AidSelector> aidSelector)
-{
-    std::shared_ptr<SeSelector::AidSelector> noResponseAidSelector =
-        std::make_shared<SeSelector::AidSelector>(
-            aidSelector->getAidToSelect(),
-            aidSelector->getSuccessfulSelectionStatusCodes(),
-            aidSelector->getFileOccurrence(),
-            SeSelector::AidSelector::FileControlInformation::NO_RESPONSE);
-
-    std::shared_ptr<ApduResponse> fciResponse =
-        openChannelForAid(noResponseAidSelector);
-
-    if (fciResponse->isSuccessful()) {
-        std::vector<uint8_t> getDataCommand(4);
-        getDataCommand[0] = 0x00; // CLA
-        getDataCommand[1] = 0xCA; // INS
-        getDataCommand[2] = 0x00; // P1: always 0
-        getDataCommand[3] = 0x6F; // P2: 0x6F FCI for the
-                                                     // current DF
-
-        /* The successful status codes list for this command is provided */
-        fciResponse = processApduRequest(std::make_shared<ApduRequest>(
-            "Internal Get Data", getDataCommand, false,
-            aidSelector->getSuccessfulSelectionStatusCodes()));
-        if (!fciResponse->isSuccessful()) {
-            logger->trace("[%s] openChannelForAidHackGetData => Get data " \
-                          "failed. SELECTOR = %s\n", this->getName().c_str(),
-                          aidSelector->toString().c_str());
-        }
-    }
-
-    return fciResponse;
-}
-
 void AbstractLocalReader::setForceGetDataFlag(bool forceGetDataFlag)
 {
     this->forceGetDataFlag = forceGetDataFlag;
@@ -239,35 +205,52 @@ std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannel(
     /** Perform ATR filtering if requested */
     if (seSelector->getAtrFilter() != nullptr) {
         if (atr.empty()) {
-            throw std::make_shared<KeypleIOReaderException>("Didn't get an " \
-                                                            "ATR from the SE.");
+            throw KeypleIOReaderException("Didn't get an ATR from the SE");
         }
 
-        if (logger->isTraceEnabled()) {
-            logger->trace("[%s] openLogicalChannel => ATR = %s\n",
-                          this->getName().c_str(),
-                          ByteArrayUtil::toHex(atr).c_str());
-        }
+        logger->trace("[%s] openLogicalChannel => ATR = %s\n", this->getName(),
+                      ByteArrayUtil::toHex(atr));
+
         if (!seSelector->getAtrFilter()->atrMatches(atr)) {
             logger->info("[%s] openLogicalChannel => ATR didn't match. " \
-                         "SELECTOR = %s, ATR = %s\n", this->getName().c_str(),
-                         seSelector->toString().c_str(),
-                         ByteArrayUtil::toHex(atr).c_str());
+                         "SELECTOR = %s, ATR = %s", this->getName(),
+                         seSelector->toString(),
+                         ByteArrayUtil::toHex(atr));
+
             selectionHasMatched = false;
         }
     }
 
-    /*
+    /**
      * Perform application selection if requested and if ATR filtering matched
      * or was not requested
      */
     if (selectionHasMatched && seSelector->getAidSelector() != nullptr) {
         std::shared_ptr<ApduResponse> fciResponse;
-        if (!forceGetDataFlag) {
-            fciResponse = openChannelForAid(seSelector->getAidSelector());
-        } else {
+
+        std::shared_ptr<SmartSelectionReader> smartSelectionReader =
+            std::dynamic_pointer_cast<SmartSelectionReader>(shared_from_this());
+
+        if (smartSelectionReader) {
             fciResponse =
-                openChannelForAidHackGetData(seSelector->getAidSelector());
+                smartSelectionReader->openChannelForAid(
+                    *(seSelector->getAidSelector().get()));
+        } else {
+            fciResponse = processExplicitAidSelection(
+                              *(seSelector->getAidSelector().get()));
+        }
+
+        if (fciResponse->isSuccessful() &&
+            fciResponse->getDataOut().size() == 0) {
+            /**
+             * The selection didn't provide data (e.g. OMAPI), we get the FCI
+             * using a Get Data command.
+             * <p>
+             * The AID selector is provided to handle successful status word in
+             * the Get Data command.
+             */
+            fciResponse = recoverSelectionFciData(
+                              *(seSelector->getAidSelector().get()));
         }
 
         /*
@@ -275,17 +258,17 @@ std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannel(
          * is determined by the answer to the select application command.
          */
         selectionStatus = std::make_shared<SelectionStatus>(
-                              std::make_shared<AnswerToReset>(atr),
-                              fciResponse, fciResponse->isSuccessful());
+                              std::make_shared<AnswerToReset>(atr), fciResponse,
+                              fciResponse->isSuccessful());
     } else {
         /*
          * The ATR filtering didn't match or no AidSelector was provided. The
          * selection status is determined by the ATR filtering.
          */
-        std::vector<uint8_t> empty;
+        std::vector<uint8_t> dummy;
         selectionStatus = std::make_shared<SelectionStatus>(
                               std::make_shared<AnswerToReset>(atr),
-                              std::make_shared<ApduResponse>(empty, nullptr),
+                              std::make_shared<ApduResponse>(dummy, nullptr),
                               selectionHasMatched);
     }
 
@@ -802,6 +785,84 @@ void AbstractLocalReader::closeLogicalAndPhysicalChannels()
                       "closeLogicalAndPhysicalChannels. Message: %s\n",
                       this->getName(), e.getMessage());
     }
+}
+
+std::shared_ptr<ApduResponse> AbstractLocalReader::processExplicitAidSelection(
+    SeSelector::AidSelector& aidSelector)
+{
+    std::shared_ptr<ApduResponse> fciResponse;
+    const std::vector<uint8_t> aid = aidSelector.getAidToSelect()->getValue();
+
+    if (aid.empty()) {
+        throw IllegalArgumentException(
+                  "AID must not be null for an AidSelector");
+    }
+
+    logger->trace("[%s] openLogicalChannel => Select Application with AID = " \
+                  "%s\n", this->getName(), ByteArrayUtil::toHex(aid));
+
+    /*
+     * build a get response command the actual length expected by the SE in the
+     * get response command is handled in transmitApdu
+     */
+    std::vector<uint8_t> selectApplicationCommand;
+    selectApplicationCommand.reserve(6 + aid.size());
+    selectApplicationCommand[0] = 0x00; // CLA
+    selectApplicationCommand[1] = 0xA4; // INS
+    selectApplicationCommand[2] = 0x04; // P1: select by name
+    /*
+     * P2: b0,b1 define the File occurrence, b2,b3 define the File control
+     * information. We use the bitmask defined in the respective enums.
+     */
+    selectApplicationCommand[3] =
+        aidSelector.getFileOccurrence().getIsoBitMask() |
+        aidSelector.getFileControlInformation().getIsoBitMask();
+    selectApplicationCommand[4] = aid.size(); // Lc
+    System::arraycopy(aid, 0, selectApplicationCommand, 5, aid.size()); // data
+    selectApplicationCommand[5 + aid.size()] = 0x00; // Le
+
+    /*
+     * we use here processApduRequest to manage case 4 hack. The successful
+     * status codes list for this command is provided.
+     */
+    fciResponse = processApduRequest(
+                      std::make_shared<ApduRequest>(
+                          "Internal Select Application",
+                          selectApplicationCommand, true,
+                          aidSelector.getSuccessfulSelectionStatusCodes()));
+
+    if (!fciResponse->isSuccessful()) {
+        logger->trace("[%s] openLogicalChannel => Application Selection " \
+                      "failed. SELECTOR = %s\n", this->getName(),
+                      aidSelector.toString());
+    }
+
+    return fciResponse;
+}
+
+std::shared_ptr<ApduResponse> AbstractLocalReader::recoverSelectionFciData(
+    SeSelector::AidSelector& aidSelector)
+{
+    std::shared_ptr<ApduResponse> fciResponse;
+
+    /*
+     * Get Data APDU: CLA, INS, P1: always 0, P2: 0x6F FCI for the current DF,
+     * LC: 0
+     */
+    std::vector<uint8_t> getDataCommand = {0x00, 0xCA, 0x00, 0x6F, 0x00};
+
+    /* The successful status codes list for this command is provided */
+    fciResponse = processApduRequest(
+                      std::make_shared<ApduRequest>(
+                          "Internal Get Data", getDataCommand, false,
+                          aidSelector.getSuccessfulSelectionStatusCodes()));
+
+    if (!fciResponse->isSuccessful()) {
+        logger->trace("[%s] selectionGetData => Get data failed. SELECTOR = " \
+                      "%s", this->getName(), aidSelector.toString());
+    }
+
+    return fciResponse;
 }
 
 }

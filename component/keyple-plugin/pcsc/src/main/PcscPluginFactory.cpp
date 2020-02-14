@@ -12,40 +12,35 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#pragma once
+#include "PcscPluginFactory.h"
 
-#include <string>
+/* Core */
+#include "KeyplePluginInstantiationException.h"
+#include "KeypleRuntimeException.h"
 
-#include "Export.h"
+/* PC/SC Plugin */
+#include "PcscPlugin.h"
+#include "PcscPluginImpl.h"
 
 namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-class IMPORT PcscReaderSettings {
-public:
-    /**
-     *
-     */
-    static const std::string SETTING_KEY_TRANSMISSION_MODE;
-    static const std::string SETTING_TRANSMISSION_MODE_CONTACTS;
-    static const std::string SETTING_TRANSMISSION_MODE_CONTACTLESS;
-    static const std::string SETTING_KEY_PROTOCOL;
-    static const std::string SETTING_PROTOCOL_T0;
-    static const std::string SETTING_PROTOCOL_T1;
-    static const std::string SETTING_PROTOCOL_T_CL;
-    static const std::string SETTING_PROTOCOL_TX;
-    static const std::string SETTING_KEY_MODE;
-    static const std::string SETTING_MODE_EXCLUSIVE;
-    static const std::string SETTING_MODE_SHARED;
-    static const std::string SETTING_KEY_DISCONNECT;
-    static const std::string SETTING_DISCONNECT_RESET;
-    static const std::string SETTING_DISCONNECT_UNPOWER;
-    static const std::string SETTING_DISCONNECT_LEAVE;
-    static const std::string SETTING_DISCONNECT_EJECT;
-    static const std::string SETTING_KEY_THREAD_TIMEOUT;
-    static const std::string SETTING_KEY_LOGGING;
-};
+const std::string& PcscPluginFactory::getPluginName()
+{
+    return PcscPlugin::PLUGIN_NAME;
+}
+
+ReaderPlugin& PcscPluginFactory::getPluginInstance()
+{
+    try {
+        return PcscPluginImpl::getInstance();
+    } catch (KeypleRuntimeException& e) {
+        throw KeyplePluginInstantiationException(
+                  "Can not access Smartcard.io readers, check " \
+                  "initNativeReaders trace", e);
+    }
+}
 
 }
 }

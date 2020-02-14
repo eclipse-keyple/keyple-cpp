@@ -12,10 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "SmartInsertionMonitoringJob.h"
+
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "KeypleIOReaderException.h"
-#include "SmartInsertionMonitoringJob.h"
 
 namespace keyple {
 namespace core {
@@ -24,21 +25,28 @@ namespace plugin {
 namespace local {
 namespace monitoring {
 
+SmartInsertionMonitoringJob::SmartInsertionMonitoringJob(
+  SmartInsertionReader* reader)
+: reader(reader)
+{
+
+}
+
 void SmartInsertionMonitoringJob::monitoringJob(
     AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
 {
     (void)cancellationFlag;
 
     logger->trace("[%s] Invoke waitForCardPresent asynchronously\n",
-                  reader.getName());
+                  reader->getName());
 
     try {
-        if (reader.waitForCardPresent()) {
+        if (reader->waitForCardPresent()) {
             state->onEvent(InternalEvent::SE_INSERTED);
         }
     } catch (KeypleIOReaderException &e) {
         logger->trace("[%s] waitForCardPresent => Error while polling SE with" \
-                      " waitForCardPresent\n", reader.getName());
+                      " waitForCardPresent\n", reader->getName());
         state->onEvent(InternalEvent::STOP_DETECT);
     }
 }

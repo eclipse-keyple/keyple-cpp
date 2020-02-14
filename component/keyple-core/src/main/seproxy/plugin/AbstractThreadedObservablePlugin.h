@@ -63,7 +63,7 @@ public:
      * @param observer the observer object
      */
     void addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer)
-        /* override */;
+        override;
 
     /**
      * Remove a plugin observer.
@@ -78,7 +78,7 @@ public:
      */
     void removeObserver(
         std::shared_ptr<ObservablePlugin::PluginObserver> observer)
-        /* override */;
+        override;
 
     /**
      *

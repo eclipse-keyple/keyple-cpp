@@ -48,15 +48,6 @@ AbstractReader::AbstractReader(
     this->before = System::nanoTime();
 }
 
-void AbstractReader::startObservation()
-{
-    logger->debug("starting observation\n");
-}
-
-void AbstractReader::stopObservation()
-{
-}
-
 const std::string& AbstractReader::getPluginName()
 {
     return pluginName;
@@ -226,23 +217,17 @@ std::shared_ptr<SeResponse> AbstractReader::transmit(
 void AbstractReader::addObserver(
     std::shared_ptr<ObservableReader::ReaderObserver> observer)
 {
-    /* If an observer is added to an empty list, start the observation */
-    if (this->countObservers() == 0) {
-        logger->debug("Start the reader monitoring\n");
-        startObservation();
-    }
-
+    logger->trace("[%s] addObserver => Adding '%s' as an observer of '%s'\n",
+                  typeid(this).name(), typeid(observer).name(), name);
     this->addObserver(observer);
 }
 
 void AbstractReader::removeObserver(
     std::shared_ptr<ObservableReader::ReaderObserver> observer)
 {
+    logger->trace("[%s] removeObserver => Deleting a reader observer\n",
+                  this->getName());
     this->removeObserver(observer);
-    if (this->countObservers() == 0) {
-        logger->debug("Stop the reader monitoring\n");
-        stopObservation();
-    }
 }
 
 void AbstractReader::notifySeProcessed()
@@ -270,6 +255,14 @@ void AbstractReader::notifyObservers(std::shared_ptr<ReaderEvent> event)
     setChanged();
 
     Observable<ReaderEvent>::notifyObservers(event);
+}
+
+void AbstractReader::setParameters(
+    const std::map<std::string, std::string>& parameters)
+{
+    for (auto &en : parameters) {
+        setParameter(en.first, en.second);
+    }
 }
 
 }

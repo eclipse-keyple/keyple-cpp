@@ -21,14 +21,15 @@ namespace plugin {
 namespace local {
 namespace state {
 
-WaitForSeRemoval::WaitForSeRemoval(AbstractObservableLocalReader& reader)
+WaitForSeRemoval::WaitForSeRemoval(AbstractObservableLocalReader* reader)
 : AbstractObservableState(MonitoringState::WAIT_FOR_SE_REMOVAL, reader)
 {
 }
 
 WaitForSeRemoval::WaitForSeRemoval(
-  AbstractObservableLocalReader& reader, MonitoringJob* monitoringJob,
-  MonitoringPool* executorService)
+  AbstractObservableLocalReader* reader,
+  std::shared_ptr<MonitoringJob> monitoringJob,
+  std::shared_ptr<MonitoringPool> executorService)
 : AbstractObservableState(MonitoringState::WAIT_FOR_SE_REMOVAL, reader,
                           monitoringJob, executorService)
 {
@@ -37,7 +38,7 @@ WaitForSeRemoval::WaitForSeRemoval(
 void WaitForSeRemoval::onEvent(const InternalEvent event)
 {
     logger->trace("[%s] onEvent => Event %s received in currentState %d\n",
-                  reader.getName(), event, state);
+                  reader->getName(), event, state);
 
     /*
      * Process InternalEvent
@@ -49,8 +50,8 @@ void WaitForSeRemoval::onEvent(const InternalEvent event)
          * the currentState of waiting for insertion
          * We notify the application of the SE_REMOVED event.
          */
-        reader.processSeRemoved();
-        if (reader.getPollingMode() ==
+        reader->processSeRemoved();
+        if (reader->getPollingMode() ==
             ObservableReader::PollingMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         } else {
@@ -58,13 +59,13 @@ void WaitForSeRemoval::onEvent(const InternalEvent event)
         }
         break;
     case InternalEvent::STOP_DETECT:
-        reader.processSeRemoved();
+        reader->processSeRemoved();
         switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         break;
 
     default:
         logger->warn("[%s] Ignore =>  Event %d received in currentState %d\n",
-                     reader.getName(), event, state);
+                     reader->getName(), event, state);
         break;
     }
 }

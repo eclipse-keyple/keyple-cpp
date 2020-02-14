@@ -200,6 +200,17 @@ public:
      */
     void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
 
+    /**
+     * Sets at once a set of parameters for a reader
+     * <p>
+     * See {@link #setParameter(String, String)} for more details
+     *
+     * @param parameters a Map &lt;String, String&gt; parameter set
+     * @throws KeypleBaseException if one of the parameters could not be set up
+     */
+    void setParameters(const std::map<std::string, std::string>& parameters)
+        override;
+
 protected:
     /**
      *
@@ -276,29 +287,6 @@ protected:
     virtual std::shared_ptr<SeResponse>processSeRequest(
                 std::shared_ptr<SeRequest> seRequest,
                 ChannelControl channelControl) = 0;
-
-    /**
-     * Starts the monitoring of the reader activity (especially card insertion
-     * and removal)
-     * <p>
-     * This abstract method has to be implemented by the class that handle the
-     * monitoring thread ( e.g. {@link AbstractThreadedLocalReader}).
-     * <p>
-     * It will be called when a first observer is added (see addObserver).
-     */
-    virtual void startObservation() = 0;
-
-    /**
-     * Ends the monitoring of the reader activity
-     * <p>
-     * This abstract method has to be implemented by the class that handle the
-     * monitoring thread (e.g. {@link AbstractThreadedLocalReader}). It will be
-     * called when the observer is removed.
-     * <p>
-     * It will be called when the last observer is removed (see removeObserver).
-     *
-     */
-    virtual void stopObservation() = 0;
 
 private:
     /**

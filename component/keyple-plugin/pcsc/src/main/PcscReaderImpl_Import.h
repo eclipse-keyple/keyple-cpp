@@ -1,0 +1,394 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
+#pragma once
+
+#include "exceptionhelper.h"
+#include "stringhelper.h"
+
+/* Common */
+#include "Export.h"
+#include "Logger.h"
+#include "LoggerFactory.h"
+
+/* Core */
+#include "AbstractObservableLocalReader.h"
+#include "MonitoringPool.h"
+#include "ReaderEvent_Import.h"
+#include "SmartInsertionReader.h"
+#include "SmartRemovalReader.h"
+#include "TransmissionMode.h"
+
+/* PC/SC plugin */
+#include "PcscReader.h"
+#include "PcscTerminal.h"
+
+namespace keyple {
+namespace plugin {
+namespace pcsc {
+
+using namespace keyple::common;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::core::seproxy::plugin;
+using namespace keyple::core::seproxy::plugin::local;
+using namespace keyple::core::seproxy::protocol;
+
+class IMPORT PcscReaderImpl
+: public AbstractObservableLocalReader, public PcscReader,
+  public SmartInsertionReader, public SmartRemovalReader {
+public:
+    /**
+     * This constructor should only be called by PcscPlugin PCSC reader
+     * parameters are initialized with their default values as defined in
+     * setParameter. See {@link #setParameter(String, String)} for more details
+     *
+     * @param pluginName the name of the plugin
+     * @param terminal the PC/SC terminal
+     */
+    PcscReaderImpl(const std::string &pluginName, PcscTerminal& terminal);
+
+    /**
+     *
+     */
+    PcscReaderImpl(const PcscReaderImpl& o);
+
+    /**
+     *
+     */
+    virtual ~PcscReaderImpl() { }
+
+    /**
+     * Set a parameter.
+     * <p>
+     * These are the parameters you can use with their associated values:
+     * <ul>
+     * <li><strong>protocol</strong>:
+     * <ul>
+     * <li>Tx: Automatic negotiation (default)</li>
+     * <li>T0: T0 protocol</li>
+     * <li>T1: T1 protocol</li>
+     * </ul>
+     * </li>
+     * <li><strong>mode</strong>:
+     * <ul>
+     * <li>shared: Shared between apps and threads (default)</li>
+     * <li>exclusive: Exclusive to this app and the current thread</li>
+     * </ul>
+     * </li>
+     * <li><strong>disconnect</strong>:
+     * <ul>
+     * <li>reset: Reset the card</li>
+     * <li>unpower: Simply unpower it</li>
+     * <li>leave: Unsupported</li>
+     * <li>eject: Eject</li>
+     * </ul>
+     * </li>
+     * <li><strong>thread_wait_timeout</strong>: Number of milliseconds towait</li>
+     * </ul>
+     *
+     * @param name Parameter name
+     * @param value Parameter value
+     * @throws KeypleBaseException This method can fail when disabling the
+     *         exclusive mode as it's executed instantly
+     * @throws IllegalArgumentException when parameter is wrong
+     *
+     *
+     */
+    void setParameter(const std::string& name, const std::string& value)
+        override;
+
+    /**
+     *
+     */
+    std::map<std::string, std::string> getParameters() override;
+
+     /**
+     * The transmission mode can set with
+     * setParameter(SETTING_KEY_TRANSMISSION_MODE, )
+     * <p>
+     * When the transmission mode has not explicitly set, it is deduced from the
+     * protocol:
+     * <ul>
+     * <li>T=0: contacts mode</li>
+     * <li>T=1: contactless mode</li>
+     * </ul>
+     *
+     * @return the current transmission mode
+     */
+    TransmissionMode getTransmissionMode() override;
+
+    /**
+     *
+     */
+    void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
+
+    /**
+     *
+     */
+    std::shared_ptr<ObservableReaderStateService> initStateService() override;
+
+protected:
+    /**
+     *
+     */
+    void closePhysicalChannel() override;
+
+    /**
+     *
+     */
+    bool checkSePresence() override;
+
+    /**
+     *
+     */
+    bool waitForCardPresent() override;
+
+    /**
+     * Wait for the card absent event from smartcard.io
+     *
+     * @return true if the card is removed within the delay
+     */
+    bool waitForCardAbsentNative() override;
+
+    /**
+     * Transmission of single APDU
+     *
+     * @param apduIn APDU in buffer
+     * @return apduOut buffer
+     * @throws KeypleIOReaderException if the transmission failed
+     */
+    std::vector<uint8_t> transmitApdu(std::vector<uint8_t>& apduIn) override;
+
+    /**
+     * Tells if the current SE protocol matches the provided protocol flag. If
+     * the protocol flag is not defined (null), we consider here that it
+     * matches. An exception is returned when the provided protocolFlag is not
+     * found in the current protocolMap.
+     *
+     * @param protocolFlag the protocol flag
+     * @return true if the current SE matches the protocol flag
+     * @throws KeypleReaderException if the protocol mask is not found
+     */
+    bool protocolFlagMatches(const SeProtocol& protocolFlag) override;
+
+    /**
+     *
+     */
+    const std::vector<uint8_t>& getATR() override;
+
+    /**
+     * Tells if a physical channel is open
+     * <p>
+     * This status may be wrong if the card has been removed.
+     * <p>
+     * The caller should test the card presence with isSePresent before calling
+     * this method.
+     *
+     * @return true if the physical channel is open
+     */
+    bool isPhysicalChannelOpen() override;
+
+    /**
+     * Opens a physical channel
+     *
+     * The card access may be set to 'Exclusive' through the reader's settings.
+     *
+     * In this case be aware that on some platforms (ex. Windows 8+), the
+     * exclusivity is granted for a limited time (ex. 5 seconds). After this
+     * delay, the card is automatically resetted.
+     *
+     * @throws KeypleChannelStateException if a reader error occurs
+     */
+    void openPhysicalChannel() override;
+
+    /**
+     *
+     */
+    std::shared_ptr<PcscReaderImpl> shared_from_this()
+    {
+        return std::static_pointer_cast<PcscReaderImpl>(
+                   AbstractObservableLocalReader::shared_from_this());
+    }
+
+private:
+    /**
+     *
+     */
+    static const std::string PROTOCOL_T0;
+    static const std::string PROTOCOL_T1;
+    static const std::string PROTOCOL_T_CL;
+    static const std::string PROTOCOL_ANY;
+
+    /**
+     * The latency delay value (in ms) determines the maximum time during which
+     * the waitForCardPresent and waitForCardPresent blocking functions will
+     * execute. This will correspond to the capacity to react to the interrupt
+     * signal of the thread (see cancel method of the Future object).
+     */
+    const long insertLatency = 50;
+    const long removalLatency = 50;
+
+    /**
+     *
+     */
+    std::shared_ptr<MonitoringPool> executorService;
+
+    /**
+     *
+     */
+    bool logging;
+
+
+    /**
+     *
+     */
+    static constexpr long long SETTING_THREAD_TIMEOUT_DEFAULT = 5000;
+
+    /**
+     *
+     */
+    PcscTerminal& terminal;
+
+    /**
+     *
+     */
+    std::string parameterCardProtocol;
+
+    /**
+     *
+     */
+    bool cardExclusiveMode            = false;
+
+    /**
+     *
+     */
+    bool cardReset                    = false;
+
+    /**
+     *
+     */
+    bool channelOpen = false;
+
+    /**
+     *
+     */
+    TransmissionMode transmissionMode = static_cast<TransmissionMode>(0);
+
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> logger =
+        LoggerFactory::getLogger(typeid(PcscReaderImpl));
+
+    /**
+     * Add a reader observer.
+     * <p>
+     * The observer will receive all the events produced by this reader (card
+     * insertion, removal, etc.)
+     *
+     * @param observer the observer object
+     *
+     * /!\/!\/!\
+     *
+     * Function addObserver() is present in two base classes (AbstractReader and
+     * ObservableReader). AbstractReader implements the virtual function but
+     * ObservableReader and its derived classes don't, therefore function
+     * ObservableReader::addObserver() is considered virtual. Override needed in
+     * this class.
+     */
+    void addObserver(std::shared_ptr<ReaderObserver> observer) override;
+
+    /**
+     * Remove a reader observer.
+     * <p>
+     * The observer will not receive any of the events produced by this reader.
+     *
+     * @param observer the observer object
+     *
+     * /!\/!\/!\
+     *
+     * Function removeObserver() is present in two base classes (AbstractReader
+     * and ObservableReader). AbstractReader implements the virtual function
+     * but ObservableReader and its derived classes don't, therefore function
+     * ObservableReader::removeObserver() is considered virtual. Override needed
+     * in this class.
+     */
+    void removeObserver(std::shared_ptr<ReaderObserver> observer) override;
+
+    /**
+     * Starts the SE detection. Once activated, the application can be notified
+     * of the arrival of an SE.
+     *
+     * @param pollingMode indicates the action to be followed after processing
+     *        the SE: if CONTINUE, the SE detection is restarted, if STOP, the
+     *        SE detection is stopped until a new call to startSeDetection is
+     *        made.
+     *
+     * /!\/!\/!\
+     *
+     * Function startSeDetection() is present in two base classes (
+     * AbstractObservableLocalReader and ObservableReader).
+     * AbstractObservableLocalReader implements the virtual function but
+     * ObservableReader and its derived classes don't, therefore function
+     * ObservableReader::startSeDetection() is considered virtual. Override
+     * needed in this class.
+     */
+    void startSeDetection(PollingMode pollingMode) override;
+
+    /**
+     * Stops the SE detection.
+     * <p>
+     * This method must be overloaded by readers depending on the particularity
+     * of their management of the start of SE detection.
+     *
+     * /!\/!\/!\
+     *
+     * Function removeObserver() is present in two base classes (
+     * AbstractObservableLocalReader and ObservableReader).
+     * AbstractObservableLocalReader implements the virtual function but
+     * ObservableReader and its derived classes don't, therefore function
+     * ObservableReader::removeObserver() is considered virtual. Override needed
+     * in this class.
+     */
+    void stopSeDetection() override;
+
+    /**
+     * Defines the selection request to be processed when an SE is inserted.
+     * Depending on the SE and the notificationMode parameter, a SE_INSERTED,
+     * SE_MATCHED or no event at all will be notified to the application
+     * observers.
+     *
+     * @param defaultSelectionsRequest the selection request to be operated
+     * @param notificationMode indicates whether a SE_INSERTED event should be
+     *        notified even if the selection has failed (ALWAYS) or whether the
+     *        SE insertion should be ignored in this case (MATCHED_ONLY).
+     *
+     * /!\/!\/!\
+     *
+     * Function setDefaultSelectionRequest() is present in two base classes (
+     * AbstractObservableLocalReader and ObservableReader).
+     * AbstractObservableLocalReader implements the virtual function but
+     * ObservableReader and its derived classes don't, therefore function
+     * ObservableReader::setDefaultSelectionRequest() is considered virtual.
+     * Override needed in this class.
+     */
+    void setDefaultSelectionRequest(
+                std::shared_ptr<AbstractDefaultSelectionsRequest>
+                    defaultSelectionsRequest,
+                NotificationMode notificationMode) override;
+};
+
+}
+}
+}

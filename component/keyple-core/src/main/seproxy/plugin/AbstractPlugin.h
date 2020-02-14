@@ -51,7 +51,7 @@ using namespace keyple::common;
  * Observable plugin. These plugin can report when a reader is added or removed.
  */
 class EXPORT AbstractPlugin
-: public Observable<PluginEvent>, public ReaderPlugin {
+: public Observable<PluginEvent>, public virtual ReaderPlugin {
 public:
     /**
      *
@@ -93,7 +93,7 @@ public:
      *
      * @param observer the observer object
      */
-    void addObserver(
+    virtual void addObserver(
       std::shared_ptr<ObservablePlugin::PluginObserver> observer);
 
     /**
@@ -104,7 +104,7 @@ public:
      *
      * @param observer the observer object
      */
-    void removeObserver(
+    virtual void removeObserver(
       std::shared_ptr<ObservablePlugin::PluginObserver> observer);
 
     /**
@@ -196,22 +196,6 @@ protected:
      * Alex: using SeReader instead of AbstractObservableReader
      */
     virtual std::set<std::shared_ptr<SeReader>> initNativeReaders();
-
-    /**
-     * Starts the monitoring thread
-     * <p>
-     * This abstract method has to be implemented by the class that handle the
-     * monitoring thread. It will be called when a first observer is added.
-     */
-    virtual void startObservation() = 0;
-
-    /**
-     * Ends the monitoring thread
-     * <p>
-     * This abstract method has to be implemented by the class that handle the
-     * monitoring thread. It will be called when the observer is removed.
-     */
-    virtual void stopObservation() = 0;
 
 private:
     /**

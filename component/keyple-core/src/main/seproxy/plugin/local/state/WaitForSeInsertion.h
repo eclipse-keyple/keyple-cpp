@@ -15,6 +15,7 @@
 #pragma once
 
 /* Core */
+#include "AbstractObservableState.h"
 #include "AbstractObservableLocalReader.h"
 #include "MonitoringJob.h"
 
@@ -27,6 +28,8 @@ namespace seproxy {
 namespace plugin {
 namespace local {
 namespace state {
+
+using namespace keyple::core::seproxy::plugin::local;
 
 /**
  * Wait for Se Insertion State
@@ -47,14 +50,14 @@ public:
     /**
      *
      */
-    WaitForSeInsertion(AbstractObservableLocalReader& reader);
+    WaitForSeInsertion(AbstractObservableLocalReader* reader);
 
     /**
      *
      */
-    WaitForSeInsertion(AbstractObservableLocalReader& reader,
-                       MonitoringJob* monitoringJob,
-                       MonitoringPool* executorService);
+    WaitForSeInsertion(AbstractObservableLocalReader* reader,
+                       std::shared_ptr<MonitoringJob> monitoringJob,
+                       std::shared_ptr<MonitoringPool> executorService);
 
     /**
      *

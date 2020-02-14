@@ -51,7 +51,7 @@ public:
     /**
      *
      */
-    CardAbsentPingMonitoringJob(const AbstractObservableLocalReader& reader);
+    CardAbsentPingMonitoringJob(AbstractObservableLocalReader* reader);
 
     /**
      *
@@ -76,7 +76,7 @@ private:
     /**
      *
      */
-    AbstractObservableLocalReader& reader;
+    AbstractObservableLocalReader* reader;
 };
 
 }

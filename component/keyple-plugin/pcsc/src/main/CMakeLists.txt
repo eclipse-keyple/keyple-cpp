@@ -39,14 +39,17 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local/state
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local/monitoring
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/transaction
 
 	# Helpers
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main
 
-	# pcsc (Linux / macOS) 
-	/usr/include/PCSC	
+	# pcsc (Linux / macOS)
+	/usr/include/PCSC
 )
 
 ADD_LIBRARY(
@@ -54,10 +57,12 @@ ADD_LIBRARY(
     ${LIBRARY_NAME} SHARED
 
 	${CMAKE_CURRENT_SOURCE_DIR}/PcscPlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/PcscPluginFactory.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/PcscPluginImpl.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/PcscProtocolSetting.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/PcscReaderSettings.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/PcscReader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/PcscTerminal.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/PcscReaderImpl.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/PcscTerminal.cpp
 )
 
 IF(WIN32)

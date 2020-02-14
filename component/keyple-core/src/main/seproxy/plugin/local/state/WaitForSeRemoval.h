@@ -45,14 +45,14 @@ public:
     /**
      *
      */
-    WaitForSeRemoval(AbstractObservableLocalReader& reader);
+    WaitForSeRemoval(AbstractObservableLocalReader* reader);
 
     /**
      *
      */
-    WaitForSeRemoval(AbstractObservableLocalReader& reader,
-                     MonitoringJob* monitoringJob,
-                     MonitoringPool* executorService);
+    WaitForSeRemoval(AbstractObservableLocalReader* reader,
+                     std::shared_ptr<MonitoringJob> monitoringJob,
+                     std::shared_ptr<MonitoringPool> executorService);
 
     /**
      *

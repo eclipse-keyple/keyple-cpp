@@ -12,9 +12,10 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "WaitForSeInsertion.h"
+
 /* Core */
 #include "AbstractObservableState.h"
-#include "WaitForSeInsertion.h"
 
 namespace keyple {
 namespace core {
@@ -23,14 +24,15 @@ namespace plugin {
 namespace local {
 namespace state {
 
-WaitForSeInsertion::WaitForSeInsertion(AbstractObservableLocalReader& reader)
+WaitForSeInsertion::WaitForSeInsertion(AbstractObservableLocalReader* reader)
 : AbstractObservableState(MonitoringState::WAIT_FOR_SE_INSERTION, reader)
 {
 }
 
 WaitForSeInsertion::WaitForSeInsertion(
-  AbstractObservableLocalReader& reader, MonitoringJob* monitoringJob,
-  MonitoringPool* executorService)
+  AbstractObservableLocalReader* reader,
+  std::shared_ptr<MonitoringJob> monitoringJob,
+  std::shared_ptr<MonitoringPool> executorService)
 : AbstractObservableState(MonitoringState::WAIT_FOR_SE_INSERTION, reader,
     monitoringJob, executorService)
 {
@@ -39,7 +41,7 @@ WaitForSeInsertion::WaitForSeInsertion(
 void WaitForSeInsertion::onEvent(const InternalEvent event)
 {
     logger->trace("[%s] onEvent => Event %d received in currentState %d\n",
-                  reader.getName(), event, state);
+                  reader->getName(), event, state);
 
     /*
      * Process InternalEvent
@@ -47,7 +49,7 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
     switch (event) {
     case InternalEvent::SE_INSERTED:
         /* Process default selection if any */
-        if (this->reader.processSeInserted()) {
+        if (this->reader->processSeInserted()) {
             switchState(MonitoringState::WAIT_FOR_SE_PROCESSING);
         } else {
             /*
@@ -55,7 +57,7 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
              * stay in the same state.
              */
             logger->trace("[%s] onEvent => Inserted SE hasn't matched\n",
-                          reader.getName());
+                          reader->getName());
         }
         break;
     case InternalEvent::STOP_DETECT:
@@ -66,7 +68,7 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
          * TODO Check if this case really happens (NFC?)
          * SE has been removed during default selection
          */
-        if (reader.getPollingMode() ==
+        if (reader->getPollingMode() ==
             ObservableReader::PollingMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         } else {
@@ -75,7 +77,7 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
         break;
     default:
         logger->warn("[%s] Ignore =>  Event %d received in currentState %d\n",
-                     reader.getName(), event, state);
+                     reader->getName(), event, state);
         break;
     }
 }

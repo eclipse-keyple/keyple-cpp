@@ -12,10 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "AbstractObservableState.h"
+
 #include <chrono>
 
 /* Core */
-#include "AbstractObservableState.h"
 #include "AbstractObservableLocalReader.h"
 
 /* Common */
@@ -28,15 +29,16 @@ namespace plugin {
 namespace local {
 
 AbstractObservableState::AbstractObservableState(
-  MonitoringState state, AbstractObservableLocalReader& reader,
-  MonitoringJob* monitoringJob, MonitoringPool* executorService)
+  MonitoringState state, AbstractObservableLocalReader* reader,
+  std::shared_ptr<MonitoringJob> monitoringJob,
+  std::shared_ptr<MonitoringPool> executorService)
 : state(state), reader(reader), monitoringJob(monitoringJob),
   executorService(executorService), cancellationFlag()
 {
 }
 
 AbstractObservableState::AbstractObservableState(
-  MonitoringState state, AbstractObservableLocalReader& reader)
+  MonitoringState state, AbstractObservableLocalReader* reader)
 : state(state), reader(reader), cancellationFlag()
 {
 }
@@ -48,12 +50,12 @@ MonitoringState AbstractObservableState::getMonitoringState()
 
 void AbstractObservableState::switchState(const MonitoringState stateId)
 {
-    reader.switchState(stateId);
+    reader->switchState(stateId);
 }
 
 void AbstractObservableState::onActivate()
 {
-    logger->trace("[%s] onActivate => %s\n", this->reader.getName(),
+    logger->trace("[%s] onActivate => %s\n", this->reader->getName(),
                   this->getMonitoringState());
 
     /* Launch the monitoringJob is necessary */
@@ -69,7 +71,7 @@ void AbstractObservableState::onActivate()
 
 void AbstractObservableState::onDeactivate()
 {
-    logger->trace("[%s] onDeactivate => %s\n", this->reader.getName(),
+    logger->trace("[%s] onDeactivate => %s\n", this->reader->getName(),
                   this->getMonitoringState());
 
     /* Cancel the monitoringJob is necessary */
@@ -82,7 +84,7 @@ void AbstractObservableState::onDeactivate()
         monitoringEvent->wait();
         cancellationFlag = false;
         logger->trace("[%s] onDeactivate => cancel runnable waitForCarPresent" \
-                      " by thead interruption\n", reader.getName());
+                      " by thead interruption\n", reader->getName());
     }
 }
 

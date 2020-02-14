@@ -30,6 +30,8 @@ namespace plugin {
 namespace local {
 namespace state {
 
+using namespace keyple::core::seproxy::plugin::local;
+
 /**
  * Wait for Start SE Detection
  * <p>
@@ -46,14 +48,14 @@ public:
     /**
      *
      */
-    WaitForStartDetect(AbstractObservableLocalReader& reader);
+    WaitForStartDetect(AbstractObservableLocalReader* reader);
 
     /**
      *
      */
-    WaitForStartDetect(AbstractObservableLocalReader& reader,
-                       MonitoringJob* monitoringJob,
-                       MonitoringPool* executorService);
+    WaitForStartDetect(AbstractObservableLocalReader* reader,
+                       std::shared_ptr<MonitoringJob> monitoringJob,
+                       std::shared_ptr<MonitoringPool> executorService);
 
     /**
      *

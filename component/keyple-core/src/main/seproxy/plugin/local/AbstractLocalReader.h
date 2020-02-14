@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include <string>
-#include <unordered_map>
-#include <vector>
+#include <map>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "exceptionhelper.h"
 
@@ -150,23 +150,6 @@ protected:
      */
     virtual const std::vector<uint8_t>& getATR() = 0;
 
-
-    /**
-     * This abstract method must be implemented by the derived class in order to
-     * proceed to the application selection
-     * <p>
-     * Gets application selection data according to
-     * {@link org.eclipse.keyple.core.seproxy.SeSelector.AidSelector}
-     * attributes.
-     *
-     * @return a ApduResponse containing the FCI or similar data output from
-     *         selection application
-     * @throws KeypleIOReaderException if a reader error occurs
-     */
-    virtual std::shared_ptr<ApduResponse>
-                openChannelForAid(
-                    std::shared_ptr<SeSelector::AidSelector> aidSelector) = 0;
-
     /**
      * Set the flag that enables the execution of the Get Data hack to get the
      * FCI
@@ -277,7 +260,7 @@ protected:
      * protocolFlagMatches (e.g. ATR regex for Pcsc plugins, technology name for
      * Nfc plugins, etc).
      */
-    std::unordered_map<SeProtocol, std::string> protocolsMap;
+    std::map<SeProtocol, std::string> protocolsMap;
 
     /**
      * Test if the current protocol matches the provided protocol flag.
@@ -406,17 +389,27 @@ private:
     long long before = 0;
 
     /**
+     * Executes the selection application command and returns the requested data
+     * according to AidSelector attributes.
+     *
+     * @param aidSelector the selection parameters
+     * @return the response to the select application command
+     * @throws KeypleIOReaderException if a reader error occurs
+     */
+    std::shared_ptr<ApduResponse> processExplicitAidSelection(
+        SeSelector::AidSelector& aidSelector);
+
+    /**
      * This method is dedicated to the case where no FCI data is available in
      * return for the select command.
      * <p>
-     * We force here selection without response and proceed to a get data
-     * command to get the expected FCI.
      *
-     * @param aidSelector
+     * @param aidSelector used to retrieve the successful status codes from the
+     *        main AidSelector
      * @return a ApduResponse containing the FCI
      */
-    std::shared_ptr<ApduResponse> openChannelForAidHackGetData(
-        std::shared_ptr<SeSelector::AidSelector> aidSelector);
+    std::shared_ptr<ApduResponse> recoverSelectionFciData(
+        SeSelector::AidSelector& aidSelector);
 
     /**
      * Implements the logical processSeRequest.

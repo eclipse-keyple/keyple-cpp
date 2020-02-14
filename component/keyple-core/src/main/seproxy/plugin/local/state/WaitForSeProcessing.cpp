@@ -21,14 +21,15 @@ namespace plugin {
 namespace local {
 namespace state {
 
-WaitForSeProcessing::WaitForSeProcessing(AbstractObservableLocalReader& reader)
+WaitForSeProcessing::WaitForSeProcessing(AbstractObservableLocalReader* reader)
 : AbstractObservableState(MonitoringState::WAIT_FOR_SE_PROCESSING, reader)
 {
 }
 
 WaitForSeProcessing::WaitForSeProcessing(
-  AbstractObservableLocalReader& reader, MonitoringJob* monitoringJob,
-  MonitoringPool* executorService)
+  AbstractObservableLocalReader* reader,
+  std::shared_ptr<MonitoringJob> monitoringJob,
+  std::shared_ptr<MonitoringPool> executorService)
 : AbstractObservableState(MonitoringState::WAIT_FOR_SE_PROCESSING, reader,
                           monitoringJob, executorService)
 {
@@ -37,14 +38,14 @@ WaitForSeProcessing::WaitForSeProcessing(
 void WaitForSeProcessing::onEvent(const InternalEvent event)
 {
     logger->trace("[%s] onEvent => Event %d received in currentState %d\n",
-                  reader.getName(), event, state);
+                  reader->getName(), event, state);
 
     /*
      * Process InternalEvent
      */
     switch (event) {
     case InternalEvent::SE_PROCESSED:
-        if (this->reader.getPollingMode() ==
+        if (this->reader->getPollingMode() ==
             ObservableReader::PollingMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_SE_REMOVAL);
         } else {
@@ -52,7 +53,7 @@ void WaitForSeProcessing::onEvent(const InternalEvent event)
              * We close the channels now and notify the application of
              * the SE_REMOVED event.
              */
-            this->reader.processSeRemoved();
+            this->reader->processSeRemoved();
             switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         }
         break;
@@ -62,8 +63,8 @@ void WaitForSeProcessing::onEvent(const InternalEvent event)
          * the currentState of waiting for insertion
          * We notify the application of the SE_REMOVED event.
          */
-        reader.processSeRemoved();
-        if (reader.getPollingMode() ==
+        reader->processSeRemoved();
+        if (reader->getPollingMode() ==
             ObservableReader::PollingMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         } else {
@@ -71,13 +72,13 @@ void WaitForSeProcessing::onEvent(const InternalEvent event)
         }
         break;
     case InternalEvent::STOP_DETECT:
-        reader.processSeRemoved();
+        reader->processSeRemoved();
         switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         break;
 
     default:
         logger->warn("[%s] Ignore =>  Event %d received in currentState %d\n",
-                     reader.getName(), event, state);
+                     reader->getName(), event, state);
         break;
     }
 }

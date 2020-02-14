@@ -37,7 +37,7 @@ public:
     /**
      *
      */
-    std::future<void>* submit(MonitoringJob* monitoringJob,
+    std::future<void>* submit(std::shared_ptr<MonitoringJob> monitoringJob,
                               AbstractObservableState* state,
                               std::atomic<bool>& cancellationFlag);
 

@@ -64,16 +64,17 @@ void AbstractObservableLocalReader::stopSeDetection()
 }
 
 void AbstractObservableLocalReader::setDefaultSelectionRequest(
-        AbstractDefaultSelectionsRequest* defaultSelectionsRequest,
-        const ObservableReader::NotificationMode notificationMode)
+    std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
+    const ObservableReader::NotificationMode notificationMode)
 {
     this->defaultSelectionsRequest =
-        static_cast<DefaultSelectionsRequest*>(defaultSelectionsRequest);
+        std::dynamic_pointer_cast<DefaultSelectionsRequest>(
+            defaultSelectionsRequest);
     this->notificationMode = notificationMode;
 }
 
 void AbstractObservableLocalReader::setDefaultSelectionRequest(
-    AbstractDefaultSelectionsRequest* defaultSelectionsRequest,
+    std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
     const ObservableReader::NotificationMode notificationMode,
     const ObservableReader::PollingMode pollingMode)
 {

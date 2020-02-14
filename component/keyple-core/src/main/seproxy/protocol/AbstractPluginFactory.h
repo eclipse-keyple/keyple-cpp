@@ -28,7 +28,7 @@ public:
      *
      * @return pluginName
      */
-    virtual std::string& getPluginName() = 0;
+    virtual const std::string& getPluginName() = 0;
 
     /**
      * Retrieve instance of a plugin (can be a singleton or not)

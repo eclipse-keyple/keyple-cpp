@@ -23,6 +23,8 @@ namespace seproxy {
 namespace plugin {
 namespace local {
 
+using namespace keyple::core::seproxy::event;
+
 class SmartInsertionReader : public ObservableReader {
 public:
     /**

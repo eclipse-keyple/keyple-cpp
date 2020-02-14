@@ -193,7 +193,8 @@ public:
      *        MATCHED_ONLY)
      */
     void setDefaultSelectionRequest(
-             AbstractDefaultSelectionsRequest* defaultSelectionsRequest,
+             std::shared_ptr<AbstractDefaultSelectionsRequest>
+                 defaultSelectionsRequest,
              const ObservableReader::NotificationMode notificationMode);
 
     /**
@@ -210,7 +211,8 @@ public:
      *        made.
      */
     void setDefaultSelectionRequest(
-            AbstractDefaultSelectionsRequest* defaultSelectionsRequest,
+            std::shared_ptr<AbstractDefaultSelectionsRequest>
+                defaultSelectionsRequest,
             const ObservableReader::NotificationMode notificationMode,
             const ObservableReader::PollingMode pollingMode);
 
@@ -313,7 +315,7 @@ protected:
      * Service that handles Internal Events and their impact on the current
      * state of the reader
      */
-    ObservableReaderStateService* stateService;
+    std::shared_ptr<ObservableReaderStateService> stateService;
 
     /**
      * Initialize the ObservableReaderStateService with the possible states and
@@ -327,7 +329,7 @@ protected:
      * @return initialized state stateService with possible states and the init
      * state
      */
-    virtual ObservableReaderStateService initStateService();
+    virtual std::shared_ptr<ObservableReaderStateService> initStateService();
 
 private:
     /**
@@ -340,7 +342,7 @@ private:
     /**
      * The default DefaultSelectionsRequest to be executed upon SE insertion
      */
-    DefaultSelectionsRequest* defaultSelectionsRequest;
+    std::shared_ptr<DefaultSelectionsRequest> defaultSelectionsRequest;
 
     /**
      * Indicate if all SE detected should be notified or only matching SE

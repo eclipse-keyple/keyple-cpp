@@ -55,7 +55,7 @@ public:
     /**
      *
      */
-    SmartRemovalMonitoringJob(SmartRemovalReader& reader);
+    SmartRemovalMonitoringJob(SmartRemovalReader* reader);
 
     /**
      *
@@ -80,7 +80,7 @@ private:
     /**
      *
      */
-    SmartRemovalReader& reader;
+    SmartRemovalReader* reader;
 };
 
 }

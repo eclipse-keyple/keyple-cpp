@@ -24,22 +24,29 @@ namespace plugin {
 namespace local {
 namespace monitoring {
 
+SmartRemovalMonitoringJob::SmartRemovalMonitoringJob(
+  SmartRemovalReader* reader)
+: reader(reader)
+{
+
+}
+
 void SmartRemovalMonitoringJob::monitoringJob(
     AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
 {
     (void)cancellationFlag;
 
     try {
-        if (reader.waitForCardAbsentNative()) {
+        if (reader->waitForCardAbsentNative()) {
             // timeout is already managed within the task
             state->onEvent(InternalEvent::SE_REMOVED);
         } else {
             logger->trace("[%s] waitForCardAbsentNative => return false, task" \
-                          " interrupted\n", reader.getName());
+                          " interrupted\n", reader->getName());
         }
     } catch (KeypleIOReaderException &e) {
         logger->trace("[%s] waitForCardAbsent => Error while polling SE with " \
-                     "waitForCardAbsent\n", reader.getName());
+                     "waitForCardAbsent\n", reader->getName());
         state->onEvent(InternalEvent::STOP_DETECT);
     }
 }

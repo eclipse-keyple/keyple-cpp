@@ -83,12 +83,12 @@ protected:
     /**
      * Reference to Reader
      */
-    AbstractObservableLocalReader& reader;
+    AbstractObservableLocalReader* reader;
 
     /**
      * Background job definition if any
      */
-    MonitoringJob* monitoringJob;
+    std::shared_ptr<MonitoringJob> monitoringJob;
 
     /**
      * Result of the background job if any
@@ -98,7 +98,7 @@ protected:
     /**
      * Executor service used to execute MonitoringJob
      */
-    MonitoringPool* executorService;
+    std::shared_ptr<MonitoringPool> executorService;
 
     /**
      *
@@ -115,8 +115,10 @@ protected:
      * @param executorService the executor service
      */
     AbstractObservableState(
-        MonitoringState state, AbstractObservableLocalReader& reader,
-        MonitoringJob* monitoringJob, MonitoringPool* executorService);
+        MonitoringState state,
+        AbstractObservableLocalReader* reader,
+        std::shared_ptr<MonitoringJob> monitoringJob,
+        std::shared_ptr<MonitoringPool> executorService);
 
     /**
      * Create a new state with a state identifier
@@ -124,8 +126,9 @@ protected:
      * @param reader : observable reader this currentState is attached to
      * @param state : name of the currentState
      */
-    AbstractObservableState(MonitoringState state,
-                            AbstractObservableLocalReader& reader);
+    AbstractObservableState(
+        MonitoringState state,
+        AbstractObservableLocalReader* reader);
 
     /**
      * Switch state in the parent reader

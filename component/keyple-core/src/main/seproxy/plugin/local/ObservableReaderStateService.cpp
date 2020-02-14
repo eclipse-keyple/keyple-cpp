@@ -22,7 +22,8 @@ namespace local {
 
 ObservableReaderStateService::ObservableReaderStateService(
   AbstractObservableLocalReader* reader,
-  std::map<MonitoringState, AbstractObservableState>& states,
+  std::map<MonitoringState,
+           std::shared_ptr<AbstractObservableState>>& states,
   const MonitoringState initState)
 : reader(reader), states(states)
 {
@@ -48,7 +49,7 @@ void ObservableReaderStateService::switchState(const MonitoringState stateId)
     }
 
     /* Switch currentState */
-    currentState = &this->states.find(stateId)->second;
+    currentState = this->states.find(stateId)->second;
 
     logger->debug("[%s] New currentState %d", this->reader->getName(),
             currentState->getMonitoringState());
@@ -57,7 +58,8 @@ void ObservableReaderStateService::switchState(const MonitoringState stateId)
     currentState->onActivate();
 }
 
-AbstractObservableState* ObservableReaderStateService::getCurrentState()
+std::shared_ptr<AbstractObservableState>
+    ObservableReaderStateService::getCurrentState()
 {
     return currentState;
 }

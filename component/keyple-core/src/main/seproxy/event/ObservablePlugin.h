@@ -72,12 +72,12 @@ public:
     /**
      *
      */
-    virtual void addObserver(std::shared_ptr<PluginObserver> observer) = 0;
+    //virtual void addObserver(std::shared_ptr<PluginObserver> observer) = 0;
 
     /**
      *
      */
-    virtual void removeObserver(std::shared_ptr<PluginObserver> observer) = 0;
+    //virtual void removeObserver(std::shared_ptr<PluginObserver> observer) = 0;
 
     /**
      *

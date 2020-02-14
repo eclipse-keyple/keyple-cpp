@@ -21,14 +21,15 @@ namespace plugin {
 namespace local {
 namespace state {
 
-WaitForStartDetect::WaitForStartDetect(AbstractObservableLocalReader& reader)
+WaitForStartDetect::WaitForStartDetect(AbstractObservableLocalReader* reader)
 : AbstractObservableState(MonitoringState::WAIT_FOR_START_DETECTION, reader)
 {
 }
 
 WaitForStartDetect::WaitForStartDetect(
-  AbstractObservableLocalReader& reader, MonitoringJob* monitoringJob,
-  MonitoringPool* executorService)
+  AbstractObservableLocalReader* reader,
+  std::shared_ptr<MonitoringJob> monitoringJob,
+  std::shared_ptr<MonitoringPool> executorService)
 : AbstractObservableState(MonitoringState::WAIT_FOR_START_DETECTION, reader,
                           monitoringJob, executorService)
 {
@@ -37,7 +38,7 @@ WaitForStartDetect::WaitForStartDetect(
 void WaitForStartDetect::onEvent(const InternalEvent event)
 {
     logger->trace("[%s] onEvent => Event %d received in currentState %d\n",
-                  reader.getName(), event, state);
+                  reader->getName(), event, state);
 
     /*
      * Process InternalEvent
@@ -49,7 +50,7 @@ void WaitForStartDetect::onEvent(const InternalEvent event)
 
     default:
         logger->warn("[%s] Ignore =>  Event %d received in currentState %d\n",
-                     reader.getName(), event, state);
+                     reader->getName(), event, state);
         break;
     }
 }

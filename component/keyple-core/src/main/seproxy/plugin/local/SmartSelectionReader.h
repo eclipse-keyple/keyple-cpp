@@ -33,6 +33,7 @@ namespace local {
  * process (e.g. Android OMAPI readers).
  */
 class SmartSelectionReader : public SeReader {
+public:
     /**
      * Opens a logical channel for the provided AID
      *
@@ -43,7 +44,7 @@ class SmartSelectionReader : public SeReader {
      * @throws KeypleApplicationSelectionException if selection error occurs
      */
     virtual std::shared_ptr<ApduResponse> openChannelForAid(
-                SeSelector::AidSelector aidSelector);
+                SeSelector::AidSelector& aidSelector);
 };
 
 }
