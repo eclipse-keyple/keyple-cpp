@@ -32,26 +32,26 @@ OpenSession31RespPars::OpenSession31RespPars(
   std::shared_ptr<ApduResponse> response)
 : AbstractOpenSessionRespPars(response, PoRevision::REV3_1)
 {
-    std::vector<uint8_t> data = response->getDataOut();
+    std::vector<char> data = response->getDataOut();
     this->secureSession = toSecureSession(data);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-    OpenSession31RespPars::toSecureSession(
-        const std::vector<uint8_t>& apduResponseData)
+OpenSession31RespPars::toSecureSession(std::vector<char> &apduResponseData)
 {
     std::shared_ptr<SecureSession> secureSession;
-    bool previousSessionRatified = (apduResponseData[4] == 0x00);
+    bool previousSessionRatified = (apduResponseData[4] == static_cast<char>(0x00));
     bool manageSecureSessionAuthorized = false;
 
-    uint8_t kif = apduResponseData[5];
+    char kif = apduResponseData[5];
     int dataLength = apduResponseData[7];
-    std::vector<uint8_t> data =
-        Arrays::copyOfRange(apduResponseData, 8, 8 + dataLength);
+    std::vector<char> data =  Arrays::copyOfRange(apduResponseData, 8, 8 + dataLength);
 
-    return std::make_shared<SecureSession>(
-               Arrays::copyOfRange(apduResponseData, 0, 3),
-               Arrays::copyOfRange(apduResponseData, 3, 4),
+    std::vector<char> challengeTransactionCounter = Arrays::copyOfRange(apduResponseData, 0, 3);
+    std::vector<char> challengeRandomNumber = Arrays::copyOfRange(apduResponseData, 3, 4);
+
+    return std::make_shared<SecureSession>( challengeTransactionCounter,
+               challengeRandomNumber,
                previousSessionRatified, manageSecureSessionAuthorized,
                kif, std::make_shared<Byte>(apduResponseData[6]), data,
                apduResponseData);
