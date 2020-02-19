@@ -45,9 +45,36 @@ bool Matcher::matches()
 std::string Matcher::replaceAll(std::string replacement)
 {
     (void)replacement;
+    std::string init_string = text;
+    std::string result;
+    bool bDone = true;
 
-    /* To be implemented */
-    return text;
+    for ( unsigned int index = 0; index < parentPattern->pattern.size(); index++ )
+    {
+        char sBuf[4];
+
+        snprintf( sBuf, sizeof(sBuf), "%c", parentPattern->pattern[index] );
+        std::string find = sBuf;
+        size_t find_len = find.size();
+        size_t pos,from=0;
+        while ( std::string::npos != ( pos=init_string.find(find,from) ) ) {
+            result.append( init_string, from, pos-from );
+            result.append( replacement );
+            from = pos + find_len;
+            bDone = true;
+        }
+        if ( bDone )
+        {
+            bDone = false;
+            result.append( init_string, from , std::string::npos );
+        }
+        init_string.clear();
+        init_string = result;
+    }
+    return init_string;
+
+//    /* To be implemented */
+//    return text;
 }
 
 bool Matcher::find()
