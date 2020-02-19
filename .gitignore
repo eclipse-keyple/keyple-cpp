@@ -302,4 +302,4 @@ build-eclipse
 .project
 .cproject
 .settings
-
+.vscode
