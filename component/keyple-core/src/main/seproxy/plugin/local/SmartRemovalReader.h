@@ -52,6 +52,11 @@ public:
      *         with the reader (disconnection)
      */
     virtual bool waitForCardAbsentNative();
+
+    /**
+     * Interrupts the waiting of the removal of the SE
+     */
+    virtual void stopWaitForCardRemoval() = 0;
 };
 
 }

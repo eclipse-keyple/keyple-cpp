@@ -91,7 +91,7 @@ protected:
      *
      * @param name name of the plugin
      */
-    AbstractThreadedObservablePlugin(const std::string &name);
+    AbstractThreadedObservablePlugin(const std::string& name);
 
     /**
      * Thread wait timeout in ms
@@ -107,8 +107,7 @@ protected:
      * @return connected readers' name list
      * @throws KeypleReaderException if a reader error occurs
      */
-    virtual
-       std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() = 0;
+    virtual const std::set<std::string>& fetchNativeReadersNames() = 0;
 
     /**
      * Fetch connected native reader (from third party library) by its name
@@ -222,13 +221,11 @@ private:
     /**
      * List of names of the physical (native) connected readers This list helps
      * synchronizing physical readers managed by third-party library such as
-     * smardcard.io and the list of keyple {@link
-     * org.eclipse.keyple.seproxy.SeReader} Insertion, removal, and access
-     * operations safely execute concurrently by multiple threads.
+     * smardcard.io and the list of keyple {@link keyple::seproxy::SeReader}
+     * Insertion, removal, and access operations safely execute concurrently by
+     * multiple threads.
      */
-    std::shared_ptr<std::set<std::string>> nativeReadersNames =
-        std::make_shared<std::set<std::string>>(std::set<std::string>());
-
+    std::set<std::string> nativeReadersNames;
 };
 
 }

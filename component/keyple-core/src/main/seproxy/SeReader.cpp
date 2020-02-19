@@ -19,6 +19,11 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 
+bool SeReader::operator==(const SeReader& o)
+{
+    return !this->getName().compare(o.getName());
+}
+
 }
 }
 }

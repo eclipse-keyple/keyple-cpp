@@ -22,7 +22,7 @@ namespace stub {
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::seproxy::protocol;
 
-std::unordered_map<SeCommonProtocols, std::string>
+std::map<SeCommonProtocols, std::string>
     StubProtocolSetting::STUB_PROTOCOL_SETTING;
 
 StubProtocolSetting::StaticConstructor::StaticConstructor()
@@ -45,11 +45,11 @@ StubProtocolSetting::StaticConstructor::StaticConstructor()
 
 StubProtocolSetting::StaticConstructor StubProtocolSetting::staticConstructor;
 
-std::unordered_map<SeCommonProtocols, std::string>
-StubProtocolSetting::getSpecificSettings(
+std::map<SeCommonProtocols, std::string>
+    StubProtocolSetting::getSpecificSettings(
     std::set<SeCommonProtocols> specificProtocols)
 {
-    std::unordered_map<SeCommonProtocols, std::string> map;
+    std::map<SeCommonProtocols, std::string> map;
 
     for (auto seCommonProtocols : specificProtocols) {
         map.emplace(std::make_pair(seCommonProtocols,
@@ -59,8 +59,7 @@ StubProtocolSetting::getSpecificSettings(
     return map;
 }
 
-std::unordered_map<SeCommonProtocols, std::string>
-StubProtocolSetting::getAllSettings()
+std::map<SeCommonProtocols, std::string> StubProtocolSetting::getAllSettings()
 {
     return STUB_PROTOCOL_SETTING;
 }

@@ -53,7 +53,7 @@ const std::string& AbstractReader::getPluginName()
     return pluginName;
 }
 
-const std::string& AbstractReader::getName()
+const std::string& AbstractReader::getName() const
 {
     return name;
 }

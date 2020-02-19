@@ -48,6 +48,8 @@ CalypsoPoCommands CalypsoPoCommands::READ_RECORDS(
     "READ_RECORDS", InnerEnum::READ_RECORDS, "Read Records", 0xB2);
 CalypsoPoCommands CalypsoPoCommands::UPDATE_RECORD(
     "UPDATE_RECORD", InnerEnum::UPDATE_RECORD, "Update Record", 0xDC);
+CalypsoPoCommands CalypsoPoCommands::WRITE_RECORD(
+    "WRITE_RECORD", InnerEnum::WRITE_RECORD, "Write Record", 0xD2);
 CalypsoPoCommands CalypsoPoCommands::APPEND_RECORD(
     "APPEND_RECORD", InnerEnum::APPEND_RECORD, "Append Record", 0xE2);
 CalypsoPoCommands CalypsoPoCommands::GET_CHALLENGE(

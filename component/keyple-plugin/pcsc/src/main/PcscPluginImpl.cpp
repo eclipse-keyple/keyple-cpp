@@ -42,9 +42,10 @@ PcscPluginImpl& PcscPluginImpl::getInstance()
     return uniqueInstance;
 }
 
-std::map<std::string, std::string> PcscPluginImpl::getParameters()
+const std::map<const std::string, const std::string>
+    PcscPluginImpl::getParameters()
 {
-     return std::map<std::string, std::string>();
+     return std::map<const std::string, const std::string>();
 }
 
 void PcscPluginImpl::setParameter(const std::string& key,
@@ -54,7 +55,7 @@ void PcscPluginImpl::setParameter(const std::string& key,
     (void)value;
 }
 
-std::shared_ptr<std::set<std::string>> PcscPluginImpl::fetchNativeReadersNames()
+const std::set<std::string>& PcscPluginImpl::fetchNativeReadersNames()
 {
     nativeReadersNames.clear();
 
@@ -81,7 +82,7 @@ std::shared_ptr<std::set<std::string>> PcscPluginImpl::fetchNativeReadersNames()
         throw KeypleReaderException("Could not access terminals list", e);
     }
 
-    return std::make_shared<std::set<std::string>>(nativeReadersNames);
+    return nativeReadersNames;
 }
 
 std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
@@ -177,6 +178,16 @@ std::vector<PcscTerminal>& PcscPluginImpl::getTerminals()
    }
 
    return terminals;
+}
+
+void PcscPluginImpl::addObserver(std::shared_ptr<PluginObserver> observer)
+{
+    AbstractThreadedObservablePlugin::addObserver(observer);
+}
+
+void PcscPluginImpl::removeObserver(std::shared_ptr<PluginObserver> observer)
+{
+    AbstractThreadedObservablePlugin::removeObserver(observer);
 }
 
 }

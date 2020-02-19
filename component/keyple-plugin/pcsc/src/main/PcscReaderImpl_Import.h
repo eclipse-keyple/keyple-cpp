@@ -14,13 +14,11 @@
 
 #pragma once
 
-#include "exceptionhelper.h"
-#include "stringhelper.h"
-
 /* Common */
+#include "exceptionhelper.h"
 #include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
+#include "stringhelper.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
@@ -111,7 +109,8 @@ public:
     /**
      *
      */
-    std::map<std::string, std::string> getParameters() override;
+    const std::map<const std::string, const std::string> getParameters()
+        override;
 
      /**
      * The transmission mode can set with
@@ -149,10 +148,15 @@ protected:
      */
     bool checkSePresence() override;
 
-    /**
-     *
+    /*
+     * Implements from SmartInsertionReader
      */
     bool waitForCardPresent() override;
+
+    /*
+     * Implements from SmartInsertionReader
+     */
+    void stopWaitForCard() override;
 
     /**
      * Wait for the card absent event from smartcard.io
@@ -160,6 +164,11 @@ protected:
      * @return true if the card is removed within the delay
      */
     bool waitForCardAbsentNative() override;
+
+    /*
+     * Implements from SmartRemovalReader
+     */
+    void stopWaitForCardRemoval() override;
 
     /**
      * Transmission of single APDU
@@ -236,8 +245,27 @@ private:
      * execute. This will correspond to the capacity to react to the interrupt
      * signal of the thread (see cancel method of the Future object).
      */
-    const long insertLatency = 50;
-    const long removalLatency = 50;
+    const long insertLatency = 500;
+
+    /**
+     *
+     */
+    const long removalLatency = 500;
+
+    /**
+     *
+     */
+    const long insertWaitTimeout = 200;
+
+    /**
+     *
+     */
+    std::atomic<bool> loopWaitSe;
+
+    /**
+     *
+     */
+    std::atomic<bool> loopWaitSeRemoval;
 
     /**
      *
@@ -248,7 +276,6 @@ private:
      *
      */
     bool logging;
-
 
     /**
      *

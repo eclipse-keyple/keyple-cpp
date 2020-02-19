@@ -94,7 +94,8 @@ public:
      * @param samIdentifier the SAM identifier
      * @return true or false according to the result of the correspondence test
      */
-    bool isSamMatching(SamIdentifier* samIdentifier);
+    bool isSamMatching(const SamIdentifier* samIdentifier) const;
+    bool isSamMatching(const SamIdentifier& samIdentifier) const;
 
     /**
      * Sets the free/busy status of the SamResource

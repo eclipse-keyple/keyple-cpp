@@ -96,7 +96,7 @@ PluginEvent::PluginEvent(const std::string &pluginName,
                          const std::string &readerName, EventType eventType)
 : readerName(readerName), eventType(eventType), pluginName(pluginName)
 {
-    this->readerNames->insert(readerName);
+    this->readerNames.insert(readerName);
 }
 
 PluginEvent::PluginEvent(const std::string &pluginName,
@@ -104,7 +104,7 @@ PluginEvent::PluginEvent(const std::string &pluginName,
                          EventType eventType)
 : eventType(eventType), pluginName(pluginName)
 {
-    this->readerNames->insert(readerNames->begin(), readerNames->end());
+    this->readerNames.insert(readerNames->begin(), readerNames->end());
 }
 
 std::string PluginEvent::getPluginName()
@@ -112,7 +112,7 @@ std::string PluginEvent::getPluginName()
     return pluginName;
 }
 
-std::shared_ptr<std::set<std::string>> PluginEvent::getReaderNames()
+std::set<std::string>& PluginEvent::getReaderNames()
 {
     return readerNames;
 }

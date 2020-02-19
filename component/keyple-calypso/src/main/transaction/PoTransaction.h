@@ -1147,11 +1147,12 @@ public:
      * Builds an UpdateRecord command and add it to the list of commands to be
      * sent with the next process command
      * <p>
-     * Returns the associated response parser.
+     * Returns the associated response parser index.
      *
      * @param sfi the sfi to select
      * @param recordNumber the record number to update
-     * @param newRecordData the new record data to write
+     * @param newRecordData the new record data. If length &lt; RecSize, bytes
+     *        beyond length are left unchanged.
      * @param extraInfo extra information included in the logs (can be null or
      *        empty)
      * @return the command index (input order, starting at 0)
@@ -1159,14 +1160,34 @@ public:
      * @throws IllegalArgumentException - if the request is inconsistent
      */
     int prepareUpdateRecordCmd(uint8_t sfi, uint8_t recordNumber,
-                               const std::vector<uint8_t> &newRecordData,
-                               const std::string &extraInfo);
+                               const std::vector<uint8_t>& newRecordData,
+                               const std::string& extraInfo);
+
+    /**
+     * Builds an WriteRecord command and add it to the list of commands to be
+     * sent with the next process command
+     * <p>
+     * Returns the associated response parser index.
+     *
+     * @param sfi the sfi to select
+     * @param recordNumber the record number to write
+     * @param overwriteRecordData the data to overwrite in the record. If length
+     *        &lt; RecSize, bytes beyond length are left unchanged.
+     * @param extraInfo extra information included in the logs (can be null or
+     *        empty)
+     * @return the command index (input order, starting at 0)
+     * @throws IllegalArgumentException - if record number is &lt; 1
+     * @throws IllegalArgumentException - if the request is inconsistent
+     */
+    int prepareWriteRecordCmd(uint8_t sfi, uint8_t recordNumber,
+                              const std::vector<uint8_t>& overwriteRecordData,
+                              const std::string& extraInfo);
 
     /**
      * Builds a Increase command and add it to the list of commands to be sent
      * with the next process command
      * <p>
-     * Returns the associated response parser.
+     * Returns the associated response parser index.
      *
      * @param counterNumber &gt;= 01h: Counters file, number of the counter.
      *        00h: Simulated Counter file.
@@ -1186,7 +1207,7 @@ public:
      * Builds a Decrease command and add it to the list of commands to be sent
      * with the next process command
      * <p>
-     * Returns the associated response parser.
+     * Returns the associated response parser index.
      *
      * @param counterNumber &gt;= 01h: Counters file, number of the counter.
      *        00h: Simulated Counter file.

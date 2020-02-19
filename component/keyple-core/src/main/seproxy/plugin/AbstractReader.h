@@ -180,7 +180,7 @@ public:
      *
      * @return the reader name string
      */
-    const std::string& getName() override;
+    const std::string& getName() const override;
 
     /**
      * Allows the application to signal the end of processing and thus proceed

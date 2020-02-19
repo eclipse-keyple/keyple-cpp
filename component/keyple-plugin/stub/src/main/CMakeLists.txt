@@ -39,6 +39,9 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local/state
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local/monitoring
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/transaction
 
@@ -49,9 +52,12 @@ INCLUDE_DIRECTORIES(
 
 ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
-	${CMAKE_CURRENT_SOURCE_DIR}/StubPlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/StubPluginFactory.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/StubPluginImpl.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/StubPoolPluginFactory.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/StubPoolPluginImpl.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/StubProtocolSetting.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/StubReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/StubReaderImpl.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/StubSecureElement.cpp
 )
 

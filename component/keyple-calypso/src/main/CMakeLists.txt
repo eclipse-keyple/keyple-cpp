@@ -88,6 +88,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/ReadRecordsCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/SelectFileCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/UpdateRecordCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/WriteRecordCmdBuild.cpp
 
 	# calypso - command - po - builder - security
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/AbstractOpenSessionCmdBuild.cpp
@@ -108,6 +109,8 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/ReadRecordsRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/SelectFileRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/UpdateRecordRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/WriteRecordRespPars.cpp
+
 
 	# calypso - command - po - parser - security
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/AbstractOpenSessionRespPars.cpp
@@ -168,6 +171,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoTransaction.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamIdentifier.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResource.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResourceManager.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelector.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SecuritySettings.cpp

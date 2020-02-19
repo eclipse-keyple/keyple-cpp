@@ -31,7 +31,7 @@ std::shared_ptr<std::set<std::string>> nativeReadersNames =
      std::make_shared<std::set<std::string>>(_set);
 
 AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(
-  const std::string &name)
+  const std::string& name)
 : AbstractPlugin(name)
 {
     logger->debug("constructor (name: %s)\n", name.c_str());
@@ -112,7 +112,7 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
     try {
         while (running) {
             /* Retrieves the current readers names list */
-            std::shared_ptr<std::set<std::string>> actualNativeReadersNames =
+            const std::set<std::string>& actualNativeReadersNames =
                 outerInstance->fetchNativeReadersNames();
 
             /*
@@ -129,8 +129,8 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                 changedReaderNames->clear();
 
                 for (auto it : outerInstance->readers) {
-                        if (actualNativeReadersNames->find(it->getName()) ==
-                            actualNativeReadersNames->end()) {
+                        if (actualNativeReadersNames.find(it->getName()) ==
+                            actualNativeReadersNames.end()) {
                         changedReaderNames->insert(it->getName());
                     }
                 }
@@ -145,8 +145,8 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
 
                     /* list update */
                     for (auto it : outerInstance->readers) {
-                        if (actualNativeReadersNames->find(it->getName()) !=
-                            actualNativeReadersNames->end()) {
+                        if (actualNativeReadersNames.find(it->getName()) !=
+                            actualNativeReadersNames.end()) {
                             /*
                              * Remove any possible observers before removing the
                              * reader.
@@ -165,7 +165,7 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                                 it->getName().c_str());
 
                             /* remove reader name from the current list */
-                            outerInstance->nativeReadersNames->erase(
+                            outerInstance->nativeReadersNames.erase(
                                 it->getName());
                     }
                 }
@@ -176,9 +176,9 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                  * Parse the new readers list, notify for readers appearance,
                  * update readers list
                  */
-                for (auto readerName : *actualNativeReadersNames) {
-                    if (outerInstance->nativeReadersNames->find(readerName) !=
-                        outerInstance->nativeReadersNames->end()) {
+                for (auto readerName : actualNativeReadersNames) {
+                    if (outerInstance->nativeReadersNames.find(readerName) !=
+                        outerInstance->nativeReadersNames.end()) {
                         std::shared_ptr<SeReader> reader =
                             outerInstance->fetchNativeReader(readerName);
                         outerInstance->readers.insert(reader);
@@ -191,7 +191,7 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                             reader->getName().c_str());
 
                         /* add reader name to the current list */
-                        outerInstance->nativeReadersNames->insert(readerName);
+                        outerInstance->nativeReadersNames.insert(readerName);
                     }
                 }
 

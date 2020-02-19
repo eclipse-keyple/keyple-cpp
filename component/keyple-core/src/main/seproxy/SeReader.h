@@ -17,7 +17,6 @@
 #include <memory>
 
 #include "Configurable.h"
-#include "Comparable.h"
 #include "Nameable.h"
 #include "SeProtocol_Import.h"
 #include "TransmissionMode.h"
@@ -45,8 +44,7 @@ using namespace keyple::core::seproxy::protocol;
  * Interface used by applications processing SE.
  */
 class SeReader
-: public virtual Nameable, public virtual Configurable,
-  public Comparable<std::shared_ptr<SeReader>> {
+: public virtual Nameable, public virtual Configurable {
 public:
     /**
      *
@@ -100,6 +98,11 @@ public:
      * @return the transmission mode in use with this SE reader
      */
     virtual TransmissionMode getTransmissionMode() = 0;
+
+    /**
+     *
+     */
+    bool operator==(const SeReader& o);
 };
 
 }

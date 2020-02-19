@@ -54,7 +54,8 @@ public:
      *
      * @return the configuration of the item
      */
-    virtual std::map<std::string, std::string> getParameters() = 0;
+    virtual const std::map<const std::string, const std::string>
+        getParameters() = 0;
 
     /**
      * allows to define a proprietary setting for a reader or a plugin

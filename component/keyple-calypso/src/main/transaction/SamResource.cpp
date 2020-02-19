@@ -45,9 +45,14 @@ void SamResource::setSamIdentifier(SamIdentifier* samIdentifier)
     this->samIdentifier = samIdentifier;
 }
 
-bool SamResource::isSamMatching(SamIdentifier* samIdentifier)
+bool SamResource::isSamMatching(const SamIdentifier* samIdentifier) const
 {
     return samIdentifier->matches(this->samIdentifier);
+}
+
+bool SamResource::isSamMatching(const SamIdentifier& samIdentifier) const
+{
+    return samIdentifier.matches(this->samIdentifier);
 }
 
 void SamResource::setSamResourceStatus(SamResourceStatus samResourceStatus)

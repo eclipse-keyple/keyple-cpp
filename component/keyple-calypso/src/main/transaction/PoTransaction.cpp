@@ -46,6 +46,8 @@
 #include "SendableInSession.h"
 #include "UpdateRecordCmdBuild.h"
 #include "UpdateRecordRespPars.h"
+#include "WriteRecordCmdBuild.h"
+#include "WriteRecordRespPars.h"
 
 /* Core */
 #include "ByteArrayUtil.h"
@@ -1974,6 +1976,27 @@ int PoTransaction::prepareUpdateRecordCmd(
                     ur,
                     reinterpret_cast<AbstractPoCommandBuilder<
                         AbstractPoResponseParser> *>(ur.get()));
+
+    return createAndStoreCommandBuilder(abstract);
+}
+
+int PoTransaction::prepareWriteRecordCmd(
+    uint8_t sfi, uint8_t recordNumber,
+    const std::vector<uint8_t>&  overwriteRecordData,
+    const std::string &extraInfo)
+{
+    /* Create and keep the PoBuilderParser, return the command index */
+    std::shared_ptr<WriteRecordCmdBuild> wr =
+        std::make_shared<WriteRecordCmdBuild>(
+            calypsoPo->getPoClass(), sfi, recordNumber, overwriteRecordData,
+            extraInfo);
+
+    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
+        abstract =
+            std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>(
+                    wr,
+                    reinterpret_cast<AbstractPoCommandBuilder<
+                        AbstractPoResponseParser> *>(wr.get()));
 
     return createAndStoreCommandBuilder(abstract);
 }

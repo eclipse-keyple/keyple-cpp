@@ -58,6 +58,9 @@ PcscReaderImpl::PcscReaderImpl(
     this->stateService = initStateService();
     this->executorService = std::make_shared<MonitoringPool>();
 
+    logger->debug("[%s] constructor => using terminal %s\n",
+                  terminal.getName());
+
     /*
      * Using null values to use the standard method for defining default values
      */
@@ -121,7 +124,7 @@ std::shared_ptr<ObservableReaderStateService> PcscReaderImpl::initStateService()
 void PcscReaderImpl::closePhysicalChannel()
 {
     try {
-        logger->trace("[%s] closePhysicalChannel\n", this->getName().c_str());
+        logger->debug("[%s] closePhysicalChannel\n", this->getName().c_str());
         terminal.closeAndDisconnect(cardReset);
 
     } catch (PcscTerminalException &e) {
@@ -138,7 +141,7 @@ bool PcscReaderImpl::checkSePresence()
         return terminal.isCardPresent();
 
     } catch (PcscTerminalException &e) {
-        logger->trace("[%s] checkSePresence - caught PcscTerminalException " \
+        logger->debug("[%s] checkSePresence - caught PcscTerminalException " \
                       " (msg: %s, cause: %ds\n", terminal.getName().c_str(),
                       e.getMessage().c_str(), e.getCause().what());
     }
@@ -148,11 +151,16 @@ bool PcscReaderImpl::checkSePresence()
 
 bool PcscReaderImpl::waitForCardPresent()
 {
-    logger->trace("[%s] waitForCardPresent => loop with latency of %d ms\n",
+    logger->debug("[%s] waitForCardPresent => loop with latency of %d ms\n",
                   this->getName(), insertLatency);
 
+    /* Activate loop */
+    loopWaitSe = true;
+
     try {
-        while (true) {
+        while (loopWaitSe) {
+            logger->trace("[%s] waitForCardPresent => looping\n",
+                          this->getName());
             if (terminal.waitForCardPresent(insertLatency)) {
                 /* Card inserted */
                 return true;
@@ -160,13 +168,17 @@ bool PcscReaderImpl::waitForCardPresent()
                 logger->debug("FIXME. Do we need to handle a thread" \
                               "interruption here?\n");
 /*                if (Thread.interrupted()) {
-                    logger->trace("[%s] waitForCardPresent => task has been " \
+                    logger->debug("[%s] waitForCardPresent => task has been " \
                                   cancelled\n", this->getName());
 */                    /* Task has been cancelled */
                     return false;
 //                  }
             }
         }
+
+        /* If loop was stopped */
+        return false;
+
     } catch (PcscTerminalException& e) {
         throw KeypleIOReaderException(
                  StringHelper::formatSimple(
@@ -175,33 +187,50 @@ bool PcscReaderImpl::waitForCardPresent()
     }
 }
 
+void PcscReaderImpl::stopWaitForCard()
+{
+    loopWaitSe = false;
+}
+
 bool PcscReaderImpl::waitForCardAbsentNative()
 {
-        logger->trace("[%s] waitForCardAbsentNative => loop with latency of " \
-                      "%s ms\n", this->getName(), removalLatency);
+    logger->debug("[%s] waitForCardAbsentNative => loop with latency of " \
+                    "%s ms\n", this->getName(), removalLatency);
 
-        try {
-            while (true) {
-                if (terminal.waitForCardAbsent(removalLatency)) {
-                    /* Card removed */
-                    return true;
-                } else {
-                    logger->debug("FIXME. Do we need to handle a thread" \
-                              "interruption here?\n");
+    loopWaitSeRemoval = true;
+
+    try {
+        while (loopWaitSeRemoval) {
+            logger->trace("[%s] waitForCardAbsentNative => looping\n",
+                          this->getName());
+            if (terminal.waitForCardAbsent(removalLatency)) {
+                /* Card removed */
+                return true;
+            } else {
+                logger->debug("FIXME. Do we need to handle a thread" \
+                            "interruption here?\n");
 /*                    if (Thread.interrupted()) {
-                        logger->trace("[%s] waitForCardAbsentNative => task " \
-                                      "has been cancelled\n", this->getName());
+                    logger->debug("[%s] waitForCardAbsentNative => task " \
+                                    "has been cancelled\n", this->getName());
 */                        /* Task has been cancelled */
-                        return false;
+                    return false;
 //                    }
-                }
             }
-        } catch (PcscTerminalException& e) {
-            throw KeypleIOReaderException(StringHelper::formatSimple(
-                    "[%s] Exception occurred in waitForCardAbsentNa)tive. " \
-                    "Message: %s", this->getName(), e.getMessage()));
         }
+
+        return false;
+
+    } catch (PcscTerminalException& e) {
+        throw KeypleIOReaderException(StringHelper::formatSimple(
+                "[%s] Exception occurred in waitForCardAbsentNa)tive. " \
+                "Message: %s", this->getName(), e.getMessage()));
     }
+}
+
+void PcscReaderImpl::stopWaitForCardRemoval()
+{
+    loopWaitSeRemoval = false;
+}
 
 std::vector<uint8_t> PcscReaderImpl::transmitApdu(std::vector<uint8_t>& apduIn)
 {
@@ -262,12 +291,12 @@ bool PcscReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
         Pattern *p = Pattern::compile(selectionMask);
         std::string atr = ByteArrayUtil::toHex(this->terminal.getATR());
         if (!p->matcher(atr)->matches()) {
-            logger->trace("[%s] protocolFlagMatches => unmatching SE. " \
+            logger->debug("[%s] protocolFlagMatches => unmatching SE. " \
                           "PROTOCOLFLAG = %s\n", this->getName().c_str(),
                           protocolFlag.toString().c_str());
             result = false;
         } else {
-            logger->trace("[%s] protocolFlagMatches => matching SE. " \
+            logger->debug("[%s] protocolFlagMatches => matching SE. " \
                           "PROTOCOLFLAG = %s\n", this->getName().c_str(),
                           protocolFlag.toString().c_str());
             result = true;
@@ -283,7 +312,7 @@ bool PcscReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
 void PcscReaderImpl::setParameter(const std::string& name,
                                   const std::string& value)
 {
-    logger->trace("[%s] setParameter => PCSC: Set a parameter. NAME = %s," \
+    logger->debug("[%s] setParameter => PCSC: Set a parameter. NAME = %s," \
                   " VALUE = %s\n", this->getName().c_str(), name.c_str(),
                   value.c_str());
 
@@ -345,21 +374,16 @@ void PcscReaderImpl::setParameter(const std::string& name,
             throw std::invalid_argument("Parameters not supported : " + name +
                                         " : " + value);
         }
-    } else if (name == SETTING_KEY_LOGGING) {
-        /*
-         * Convert "true" or "false" to 1 or 0
-         * default is null and perfectly acceptable
-         */
-        //std::istringstream(value) >> logging;
     } else {
         throw std::invalid_argument("This parameter is unknown !" + name +
                                     " : " + value);
     }
 }
 
-std::map<std::string, std::string> PcscReaderImpl::getParameters()
+const std::map<const std::string, const std::string>
+    PcscReaderImpl::getParameters()
 {
-    std::map<std::string, std::string> parameters;
+    std::map<const std::string, const std::string> parameters;
 
     /* Returning the protocol */
     std::string protocol = parameterCardProtocol;
@@ -404,10 +428,10 @@ void PcscReaderImpl::openPhysicalChannel()
         this->terminal.openAndConnect(parameterCardProtocol);
         if (cardExclusiveMode) {
             this->terminal.beginExclusive();
-            logger->trace("[%s] Opening of a physical SE channel in " \
+            logger->debug("[%s] Opening of a physical SE channel in " \
                           "exclusive mode\n", this->getName().c_str());
         } else {
-            logger->trace("[%s] Opening of a physical SE channel in " \
+            logger->debug("[%s] Opening of a physical SE channel in " \
                               "shared mode\n", this->getName().c_str());
         }
     } catch (PcscTerminalException &e) {
@@ -450,6 +474,11 @@ void PcscReaderImpl::removeObserver(std::shared_ptr<ReaderObserver> observer)
 void PcscReaderImpl::startSeDetection(PollingMode pollingMode)
 {
     AbstractObservableLocalReader::startSeDetection(pollingMode);
+}
+
+void PcscReaderImpl::stopSeDetection()
+{
+    AbstractObservableLocalReader::stopSeDetection();
 }
 
 void PcscReaderImpl::setDefaultSelectionRequest(

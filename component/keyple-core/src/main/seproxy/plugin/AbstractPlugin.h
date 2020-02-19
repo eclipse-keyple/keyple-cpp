@@ -83,7 +83,7 @@ public:
      *
      * @return a list of String
      */
-    std::shared_ptr<std::set<std::string>> getReaderNames() override;
+    const std::set<std::string> getReaderNames() override;
 
     /**
      * Add a plugin observer.
@@ -115,7 +115,7 @@ public:
      * @return true if the names match (The method is needed for the std::set
      * lists)
      */
-    int compareTo(std::shared_ptr<ReaderPlugin> plugin);
+    virtual int compareTo(std::shared_ptr<ReaderPlugin> plugin);
 
     /**
      * Gets a specific reader designated by its name in the current readers list
@@ -152,6 +152,13 @@ public:
     void setParameters(const std::map<std::string, std::string>& parameters)
         override;
 
+    /**
+     * Gets the plugin name
+     *
+     * @return the plugin name string
+     */
+    const std::string& getName() const override;
+
 protected:
     /**
      *
@@ -175,13 +182,6 @@ protected:
      * @param name name of the plugin
      */
     AbstractPlugin(const std::string &name);
-
-    /**
-     * Gets the plugin name
-     *
-     * @return the plugin name string
-     */
-    const std::string& getName() override;
 
     /**
      * Fetch connected native readers (from third party library) and returns a

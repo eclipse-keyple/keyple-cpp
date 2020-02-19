@@ -16,7 +16,7 @@
 #include "StubSecureElement.h"
 
 /* Core - Seproxy - Exception */
-#include "KeypleChannelStateException.h"
+#include "KeypleChannelControlException.h"
 #include "KeypleIOReaderException.h"
 
 /* Core - Util */

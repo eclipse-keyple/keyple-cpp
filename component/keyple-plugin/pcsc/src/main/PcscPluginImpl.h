@@ -76,7 +76,8 @@ public:
     /**
      *
      */
-    std::map<std::string, std::string> getParameters() override;
+    const std::map<const std::string, const std::string> getParameters()
+        override;
 
     /**
      *
@@ -92,7 +93,7 @@ protected:
      * @return connected readers' name list
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::shared_ptr<std::set<std::string>> fetchNativeReadersNames() override;
+    const std::set<std::string>& fetchNativeReadersNames() override;
 
     /**
      * Fetch connected native readers (from smartcard.io) and returns a list of
@@ -117,6 +118,16 @@ protected:
      */
     std::shared_ptr<SeReader> fetchNativeReader(const std::string &name)
         override;
+
+    /**
+     *
+     */
+    void addObserver(std::shared_ptr<PluginObserver> observer);
+
+    /**
+     *
+     */
+    void removeObserver(std::shared_ptr<PluginObserver> observer);
 
 private:
     /**

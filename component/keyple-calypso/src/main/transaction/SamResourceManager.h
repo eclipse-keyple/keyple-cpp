@@ -24,6 +24,8 @@
 /* Core */
 #include "ObservablePlugin.h"
 #include "ObservableReader.h"
+#include "PluginEvent.h"
+#include "ReaderEvent_Import.h"
 #include "ReaderPlugin.h"
 
 /* Calypso */
@@ -68,7 +70,7 @@ public:
      * @throws KeypleReaderException throw if an error occurs while getting the
      *         readers list.
      */
-    SamResourceManager(ReaderPlugin& samReaderPlugin,
+    SamResourceManager(std::shared_ptr<ReaderPlugin> samReaderPlugin,
                        const std::string& samReaderFilter);
     /**
      * Allocate a SAM resource from the specified SAM group.
@@ -90,7 +92,7 @@ public:
      * @throws KeypleReaderException if a reader error occurs
      */
     std::unique_ptr<SamResource> allocateSamResource(
-        AllocationMode allocationMode, SamIdentifier samIdentifier);
+       const AllocationMode allocationMode, const SamIdentifier& samIdentifier);
 
     /**
      * Free a previously allocated SAM resource.
@@ -99,15 +101,13 @@ public:
      */
     void freeSamResource(std::unique_ptr<SamResource> samResource);
 
-private:
     /**
      *
      */
     const std::shared_ptr<Logger> logger =
               LoggerFactory::getLogger(typeid(SamResourceManager));
 
-
-
+private:
     /**
      * The maximum time (in tenths of a second) during which the BLOCKING mode
      * will wait
@@ -157,6 +157,37 @@ private:
     void removeResource(std::shared_ptr<SeReader> samReader);
 
     /**
+     * Reader observer to handle SAM insertion/withdraw
+     */
+    class ReaderObserver : public ObservableReader::ReaderObserver {
+    public:
+        /**
+         * Handle {@link ReaderEvent}
+         * <p>
+         * Create {@link SamResource}
+         *
+         * @param event the reader event
+         */
+        void update(std::shared_ptr<ReaderEvent> event) override;
+
+        /**
+         *
+         */
+        ReaderObserver(SamResourceManager *parent);
+
+    private:
+        /**
+         *
+         */
+        const std::shared_ptr<Logger> logger;
+
+        /**
+         *
+         */
+        SamResourceManager *parent;
+    };
+
+    /**
      * Plugin observer to handle SAM reader connection/disconnection.
      * <p>
      * Add or remove readers
@@ -170,18 +201,25 @@ private:
          *
          * @param event the plugin event
          */
-        void update(PluginEvent event) override;
+        void update(std::shared_ptr<PluginEvent> event) override;
+
+        /**
+         *
+         */
+        PluginObserver(SamResourceManager *parent,
+                       std::shared_ptr<ReaderObserver> readerObserver,
+                       const std::string samReaderFilter);
 
     private:
         /**
          *
          */
-        ReaderObserver readerObserver;
+        std::shared_ptr<ReaderObserver> readerObserver;
 
         /**
          *
          */
-        std::string samReaderFilter;
+        const std::string samReaderFilter;
 
         /**
          *
@@ -191,32 +229,13 @@ private:
         /**
          *
          */
-        PluginObserver(ReaderObserver readerObserver,
-                       const std::string& samReaderFilter);
+        const std::shared_ptr<Logger> logger;
+
+        /**
+         *
+         */
+        SamResourceManager *parent;
     };
-
-    /**
-     * Reader observer to handle SAM insertion/withdraw
-     */
-    class ReaderObserver : public ObservableReader::ReaderObserver {
-    public:
-        /**
-         * Handle {@link ReaderEvent}
-         * <p>
-         * Create {@link SamResource}
-         *
-         * @param event the reader event
-         */
-        void update(ReaderEvent event) override;
-
-    private:
-        /**
-         *
-         */
-        ReaderObserver();
-
-
-    }:
 };
 
 }

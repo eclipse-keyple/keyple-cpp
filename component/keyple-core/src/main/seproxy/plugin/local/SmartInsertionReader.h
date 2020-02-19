@@ -35,13 +35,18 @@ public:
      * implements the
      * {@link SmartInsertionReader} interface.
      * <p>
-     * Returns false if no SE is detected within the delay.
+     * Returns false if no SE is detected
      *
      * @return presence status
      * @throws KeypleIOReaderException in the event of a communication failure
      *         with the reader (disconnection)
      */
     virtual bool waitForCardPresent();
+
+     /**
+     * Interrupts the waiting of a SE
+     */
+    virtual void stopWaitForCard() = 0;
 };
 
 }

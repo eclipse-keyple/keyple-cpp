@@ -14,7 +14,6 @@
 
 #include "AbstractMatchingSe.h"
 #include "AbstractSeSelectionRequest.h"
-#include "ChannelState.h"
 #include "SeSelector_Import.h"
 #include "TransmissionMode.h"
 

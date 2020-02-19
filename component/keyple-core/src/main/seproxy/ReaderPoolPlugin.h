@@ -46,8 +46,7 @@ public:
      *
      * @return a list of String
      */
-    virtual std::shared_ptr<std::set<std::string>>
-                getReaderGroupReferences() = 0;
+    virtual std::set<std::string> getReaderGroupReferences() = 0;
 
     /**
      * Obtains an available SeReader resource and makes it exclusive to the

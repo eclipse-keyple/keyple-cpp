@@ -35,7 +35,7 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-AbstractPlugin::AbstractPlugin(const std::string &name)
+AbstractPlugin::AbstractPlugin(const std::string& name)
 : name(name)
 {
     try {
@@ -60,13 +60,13 @@ std::set<std::shared_ptr<SeReader>>& AbstractPlugin::getReaders()
     return readers;
 }
 
-std::shared_ptr<std::set<std::string>> AbstractPlugin::getReaderNames()
+const std::set<std::string> AbstractPlugin::getReaderNames()
 {
-    std::shared_ptr<std::set<std::string>> readerNames =
-        std::make_shared<std::set<std::string>>();
-    for (auto reader : readers) {
-        readerNames->insert(reader->getName());
-    }
+    std::set<std::string> readerNames;
+
+    for (auto reader : readers)
+        readerNames.insert(reader->getName());
+
     return readerNames;
 }
 
@@ -117,7 +117,7 @@ std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string &name)
     throw std::make_shared<KeypleReaderNotFoundException>(name);
 }
 
-const std::string& AbstractPlugin::getName()
+const std::string& AbstractPlugin::getName() const
 {
     return name;
 }

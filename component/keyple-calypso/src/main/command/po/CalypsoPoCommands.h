@@ -57,6 +57,9 @@ public:
     /** The po update record. */
     static CalypsoPoCommands UPDATE_RECORD;
 
+    /** The po write record. */
+    static CalypsoPoCommands WRITE_RECORD;
+
     /** The po append record. */
     static CalypsoPoCommands APPEND_RECORD;
 
@@ -87,6 +90,7 @@ public:
         CLOSE_SESSION,
         READ_RECORDS,
         UPDATE_RECORD,
+        WRITE_RECORD,
         APPEND_RECORD,
         GET_CHALLENGE,
         INCREASE,

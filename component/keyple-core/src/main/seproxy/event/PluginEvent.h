@@ -198,7 +198,7 @@ public:
     /**
      *
      */
-    std::shared_ptr<std::set<std::string>> getReaderNames();
+    std::set<std::string>& getReaderNames();
 
     /**
      *
@@ -226,8 +226,7 @@ private:
    /**
     * The name of the readers involved
     */
-   std::shared_ptr<std::set<std::string>> readerNames =
-       std::make_shared<std::set<std::string>>();
+   std::set<std::string> readerNames;
 };
 
 }
