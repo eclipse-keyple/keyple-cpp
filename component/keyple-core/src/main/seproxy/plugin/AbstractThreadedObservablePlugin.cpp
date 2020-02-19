@@ -148,14 +148,18 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                         if (actualNativeReadersNames.find(it->getName()) !=
                             actualNativeReadersNames.end()) {
                             /*
-                             * Remove any possible observers before removing the
-                             * reader.
+                             * Removes any possible observers before removing
+                             * the reader.
                              */
                             std::shared_ptr<ObservableReader> observableR =
                                 std::dynamic_pointer_cast<ObservableReader>(
                                     it);
-                            if (observableR)
+                            if (observableR) {
                                 observableR->clearObservers();
+
+                                /* In case where Reader was detected SE */
+                                observableR->stopSeDetection();
+                            }
 
                             outerInstance->readers.erase(it);
                             outerInstance->logger->trace(

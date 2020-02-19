@@ -84,7 +84,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponse.cpp
 
     # seproxy - plugin - local - monitoring
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring/CardAbsentPingMonitoringJob.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring/CardPresentMonitoringJob.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring/SmartInsertionMonitoringJob.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring/SmartRemovalMonitoringJob.cpp
 

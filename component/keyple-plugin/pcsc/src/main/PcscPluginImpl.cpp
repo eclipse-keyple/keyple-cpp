@@ -91,6 +91,18 @@ std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
     std::set<std::shared_ptr<SeReader>> nativeReaders;
 
     /*
+     * activate a special processing "SCARD_E_NO_NO_SERVICE" (on Windows
+     * platforms the removal of the last PC/SC reader stops the "Windows Smart
+     * Card service")
+     */
+#ifdef _WIN32
+    scardNoServiceHackNeeded = true;
+    logger.info("System detected : %d", scardNoServiceHackNeeded);
+#else
+    scardNoServiceHackNeeded = false;
+#endif
+
+    /*
      * Parse the current readers list to create the ProxyReader(s) associated
      * with new reader(s).
      */

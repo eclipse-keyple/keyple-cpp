@@ -59,6 +59,12 @@ std::future<void> SmartInsertionMonitoringJob::startMonitoring(
                       this, state, std::ref(cancellationFlag));
 }
 
+void SmartInsertionMonitoringJob::stop()
+{
+    logger->trace("[%s] stopWaitForCard on reader\n", reader->getName());
+    reader->stopWaitForCard();
+}
+
 }
 }
 }

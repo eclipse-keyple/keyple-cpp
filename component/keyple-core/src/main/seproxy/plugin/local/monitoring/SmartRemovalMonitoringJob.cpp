@@ -59,6 +59,11 @@ std::future<void> SmartRemovalMonitoringJob::startMonitoring(
                       this, state, std::ref(cancellationFlag));
 }
 
+void SmartRemovalMonitoringJob::stop()
+{
+    reader->stopWaitForCardRemoval();
+}
+
 }
 }
 }

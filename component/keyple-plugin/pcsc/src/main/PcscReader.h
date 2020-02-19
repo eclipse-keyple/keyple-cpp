@@ -50,7 +50,6 @@ public:
     static const std::string SETTING_DISCONNECT_LEAVE;
     static const std::string SETTING_DISCONNECT_EJECT;
     static const std::string SETTING_KEY_THREAD_TIMEOUT;
-    static const std::string SETTING_KEY_LOGGING;
 };
 
 }

@@ -68,6 +68,11 @@ public:
     void monitoringJob(AbstractObservableState* state,
                        std::atomic<bool>& cancellationFlag);
 
+    /**
+     *
+     */
+    void stop() override;
+
 private:
     /**
      *

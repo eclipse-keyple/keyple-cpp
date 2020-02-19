@@ -69,7 +69,6 @@ PcscReaderImpl::PcscReaderImpl(
         setParameter(SETTING_KEY_PROTOCOL, "");
         setParameter(SETTING_KEY_MODE, "");
         setParameter(SETTING_KEY_DISCONNECT, "");
-        setParameter(SETTING_KEY_LOGGING, "");
     } catch (KeypleBaseException& e) {
         /* Can not fail with null value */
     }

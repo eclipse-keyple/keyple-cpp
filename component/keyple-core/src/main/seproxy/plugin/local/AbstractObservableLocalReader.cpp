@@ -91,7 +91,7 @@ void AbstractObservableLocalReader::startRemovalSequence()
     this->stateService->onEvent(InternalEvent::SE_PROCESSED);
 }
 
-bool AbstractObservableLocalReader::processSeInserted()
+std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
 {
     logger->trace("[%s] processSeInserted => process the inserted se\n",
                   this->getName());
@@ -103,11 +103,10 @@ bool AbstractObservableLocalReader::processSeInserted()
                       " defined, notify SE_INSERTED\n", this->getName());
 
         /* No default request is defined, just notify the SE insertion */
-        notifyObservers(
-            std::make_shared<ReaderEvent>(this->pluginName, this->name,
-                                          ReaderEvent::EventType::SE_INSERTED,
-                                          nullptr));
         presenceNotified = true;
+        return std::make_shared<ReaderEvent>(
+                    this->pluginName, this->name,
+                    ReaderEvent::EventType::SE_INSERTED, nullptr);
     } else {
         /*
          * A default request is defined, send it and notify according to the
@@ -138,31 +137,31 @@ bool AbstractObservableLocalReader::processSeInserted()
                  * Notify only if a SE matched the selection, just ignore if not
                  */
                 if (aSeMatched) {
-                    notifyObservers(
-                        std::make_shared<ReaderEvent>(
-                            this->pluginName, this->name,
-                            ReaderEvent::EventType::SE_MATCHED,
-                            std::make_shared<DefaultSelectionsResponse>(
-                                seResponseList)));
                     presenceNotified = true;
+                    return std::make_shared<ReaderEvent>(
+                               this->pluginName, this->name,
+                               ReaderEvent::EventType::SE_MATCHED,
+                               std::make_shared<DefaultSelectionsResponse>(
+                                   seResponseList));
                 } else {
                     logger->trace("[%s] processSeInserted => selection hasn't" \
                                   " matched, do not throw any event because " \
                                   "of MATCHED_ONLY flag\n", this->getName());
+                    return nullptr;
                 }
             } else {
                 /* ObservableReader::NotificationMode::ALWAYS */
                 if (aSeMatched) {
+                    presenceNotified = true;
                     /*
                      * The SE matched, notify a SE_MATCHED event with the
                      * received response.
                      */
-                    notifyObservers(
-                        std::make_shared<ReaderEvent>(
-                            this->pluginName, this->name,
-                            ReaderEvent::EventType::SE_MATCHED,
-                            std::make_shared<DefaultSelectionsResponse>(
-                                seResponseList)));
+                    return std::make_shared<ReaderEvent>(
+                               this->pluginName, this->name,
+                               ReaderEvent::EventType::SE_MATCHED,
+                               std::make_shared<DefaultSelectionsResponse>(
+                                   seResponseList));
                 } else {
                     /*
                      * The SE didn't match, notify an SE_INSERTED event with the
@@ -171,14 +170,14 @@ bool AbstractObservableLocalReader::processSeInserted()
                     logger->trace("[%s] processSeInserted => none of %d " \
                                   "default selection matched\n",
                                   this->getName(), seResponseList.size());
-                    notifyObservers(
-                        std::make_shared<ReaderEvent>(
-                            this->pluginName, this->name,
-                            ReaderEvent::EventType::SE_INSERTED,
-                            std::make_shared<DefaultSelectionsResponse>(
-                                seResponseList)));
+
+                    presenceNotified = true;
+                    return std::make_shared<ReaderEvent>(
+                               this->pluginName, this->name,
+                               ReaderEvent::EventType::SE_INSERTED,
+                               std::make_shared<DefaultSelectionsResponse>(
+                                   seResponseList));
                 }
-                presenceNotified = true;
             }
         } catch (const KeypleReaderException& e) {
             /*
@@ -208,7 +207,8 @@ bool AbstractObservableLocalReader::processSeInserted()
         }
     }
 
-    return presenceNotified;
+    /* No event returned */
+    return nullptr;
 }
 
 bool AbstractObservableLocalReader::isSePresentPing()

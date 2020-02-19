@@ -236,7 +236,8 @@ void AbstractReader::notifySeProcessed()
         try {
             /* Close the physical channel thanks to CLOSE_AFTER flag */
             processSeRequest(nullptr, ChannelControl::CLOSE_AFTER);
-            logger->trace("Explicit physical channel closing executed\n");
+            logger->trace("Explicit communication closing requested, starting" \
+                          " removal sequence.");
         } catch (KeypleReaderException& e) {
             logger->error("KeypleReaderException while terminating: %s\n",
                           e.getMessage());

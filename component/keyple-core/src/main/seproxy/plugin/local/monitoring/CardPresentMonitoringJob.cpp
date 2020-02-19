@@ -13,7 +13,7 @@
  ******************************************************************************/
 
 /* Core */
-#include "CardAbsentPingMonitoringJob.h"
+#include "CardPresentMonitoringJob.h"
 
 /* Common */
 #include "InterruptedException.h"
@@ -26,21 +26,14 @@ namespace plugin {
 namespace local {
 namespace monitoring {
 
-CardAbsentPingMonitoringJob::CardAbsentPingMonitoringJob(
-  AbstractObservableLocalReader* reader)
-: reader(reader)
+CardPresentMonitoringJob::CardPresentMonitoringJob(
+  SeReader* reader, long waitTimeout, bool monitorInsertion)
+: reader(reader), waitTimeout(waitTimeout), monitorInsertion(monitorInsertion)
 {
 
 }
 
-CardAbsentPingMonitoringJob::CardAbsentPingMonitoringJob(
-  AbstractObservableLocalReader* reader, long removalWait)
-: reader(reader), removalWait(removalWait)
-{
-
-}
-
-void CardAbsentPingMonitoringJob::monitoringJob(
+void CardPresentMonitoringJob::monitoringJob(
     AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
 {
     long retries = 0;
@@ -56,41 +49,58 @@ void CardAbsentPingMonitoringJob::monitoringJob(
             return;
         }
 
-        if (!reader->isSePresentPing()) {
-            logger->debug("[%s] The SE stopped responding\n", reader->getName());
+        try {
+            /* Polls for SE_INSERTED */
+            if (monitorInsertion && reader->isSePresent()) {
+                logger->debug("[%s] The SE is present\n", reader->getName());
+                loop = false;
+                state->onEvent(InternalEvent::SE_INSERTED);
+                return;
+            }
+
+            /* Polls for SE_REMOVED */
+            if (!monitorInsertion && !reader->isSePresent()) {
+                logger->debug("[%s] The SE is not present\n",
+                              reader->getName());
+                loop = false;
+                state->onEvent(InternalEvent::SE_REMOVED);
+                return;
+            }
+
+        } catch (KeypleIOReaderException& e) {
             loop = false;
-            state->onEvent(InternalEvent::SE_REMOVED);
-            return;
+            /* What do do here */
         }
 
         retries++;
 
-        logger->trace("[%s] Polling retries : %d\n", reader->getName(), retries);
+        logger->trace("[%s] isSePresent polling retries : %d\n",
+                      reader->getName(), retries);
 
         try {
-            /* Wait for a bit */
-            Thread::sleep(removalWait);
-        } catch (InterruptedException &ignored) {
+            /* Wait a bit */
+            Thread::sleep(waitTimeout);
+        } catch (InterruptedException& ignored) {
             /* Restore interrupted state... */
-            std::terminate();
+            //Thread.currentThread().interrupt();
             loop = false;
         }
     }
 
-    logger->debug("[%s] Polling loop has been stopped\n", reader->getName());
+    logger->trace("[%s] Looping has been stopped\n", reader->getName());
 }
 
-void CardAbsentPingMonitoringJob::stop()
+void CardPresentMonitoringJob::stop()
 {
     logger->debug("[%s] Stop Polling\n", reader->getName());
     loop = false;
 }
 
-std::future<void> CardAbsentPingMonitoringJob::startMonitoring(
+std::future<void> CardPresentMonitoringJob::startMonitoring(
     AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
 {
     return std::async(std::launch::async,
-                      &CardAbsentPingMonitoringJob::monitoringJob,
+                      &CardPresentMonitoringJob::monitoringJob,
                       this, state, std::ref(cancellationFlag));
 }
 

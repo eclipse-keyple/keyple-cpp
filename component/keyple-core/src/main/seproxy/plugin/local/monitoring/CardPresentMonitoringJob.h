@@ -19,9 +19,9 @@
 #include "LoggerFactory.h"
 
 /* Core */
+#include "AbstractObservableLocalReader.h"
 #include "AbstractObservableState.h"
 #include "MonitoringJob.h"
-#include "SmartRemovalReader.h"
 
 namespace keyple {
 namespace core {
@@ -33,29 +33,20 @@ namespace monitoring {
 using namespace keyple::common;
 
 /**
- * Detect the SE removal thanks to the method {@link
- * SmartRemovalReader#waitForCardAbsentNative()}. This method is invoked in
- * another thread
- * <p>
- * This job should be used by readers who have the ability to natively detect
- * the disappearance of the SE during a communication session with an ES
- * (between two APDU exchanges).
- * <p>
- * PC/SC readers have this capability.
- * <p>
- * If the SE is removed during processing, then an internal SE_REMOVED event is
- * triggered.
- * <p>
- * If a communication problem with the reader occurs (KeypleIOReaderException)
- * an internal
- * STOP_DETECT event is fired.
+ * This monitoring job polls the {@link SeReader#isSePresent()} method to detect
+ * SE_INSERTED/SE_REMOVED
  */
-class SmartRemovalMonitoringJob : public MonitoringJob {
+class EXPORT CardPresentMonitoringJob : public MonitoringJob {
 public:
     /**
+     * Build a monitoring job to detect the card insertion
      *
+     * @param reader : reader that will be polled with the method isSePresent()
+     * @param waitTimeout : wait time during two hit of the polling
+     * @param monitorInsertion : if true, polls for SE_INSERTED, else SE_REMOVED
      */
-    SmartRemovalMonitoringJob(SmartRemovalReader* reader);
+    CardPresentMonitoringJob(SeReader* reader, long waitTimeout,
+                             bool monitorInsertion);
 
     /**
      *
@@ -69,6 +60,7 @@ public:
     void monitoringJob(AbstractObservableState* state,
                        std::atomic<bool>& cancellationFlag);
 
+
     /**
      *
      */
@@ -79,12 +71,27 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(SmartRemovalMonitoringJob));
+              LoggerFactory::getLogger(typeid(CardPresentMonitoringJob));
 
     /**
      *
      */
-    SmartRemovalReader* reader;
+    SeReader* reader;
+
+    /**
+     *
+     */
+    std::atomic<bool> loop;
+
+    /**
+     *
+     */
+    long waitTimeout;
+
+    /**
+     *
+     */
+    bool monitorInsertion;
 };
 
 }

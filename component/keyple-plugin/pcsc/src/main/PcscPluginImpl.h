@@ -149,11 +149,6 @@ private:
     /**
      *
      */
-    //static TerminalFactory factory;
-
-    /**
-     *
-     */
     bool logging = false;
 
     /**
@@ -170,6 +165,11 @@ private:
      * Constructor
      */
     PcscPluginImpl();
+
+    /**
+     *
+     */
+    bool scardNoServiceHackNeeded;
 };
 
 }

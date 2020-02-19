@@ -224,7 +224,7 @@ public:
      * NfcAdapter callback method onTagDiscovered in the case of a Android NFC
      * plugin.
      * <p>
-     * It will fire a ReaderEvent in the following cases:
+     * It will return a ReaderEvent in the following cases:
      * <ul>
      * <li>SE_INSERTED: if no default selection request was defined
      * <li>SE_MATCHED: if a default selection request was defined in any mode
@@ -234,13 +234,14 @@ public:
      * however transmitted)
      * </ul>
      * <p>
-     * It will do nothing if a default selection is defined in MATCHED_ONLY mode
+     * It returns null if a default selection is defined in MATCHED_ONLY mode
      * but no SE matched the selection.
      *
-     * @return true if the notification was actually sent to the application,
-     *         false if not
+     * @return ReaderEvent that should be notified to observers, contains the
+     *         results of the default selection if any, can be null if no event
+     *         should be sent
      */
-    bool processSeInserted();
+    std::shared_ptr<ReaderEvent> processSeInserted();
 
     /**
      * Sends a neutral APDU to the SE to check its presence. The status of the

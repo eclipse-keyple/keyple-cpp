@@ -80,6 +80,9 @@ void AbstractObservableState::onDeactivate()
             std::future_status::ready) {
 
         logger->debug("onDeactivate - cancelling monitoring job\n");
+        monitoringJob->stop();
+
+        /* TODO this could be inside the stop method? */
         cancellationFlag = true;
         monitoringEvent->wait();
         cancellationFlag = false;
