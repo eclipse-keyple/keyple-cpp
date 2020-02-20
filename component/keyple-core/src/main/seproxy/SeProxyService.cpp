@@ -57,8 +57,8 @@ bool SeProxyService::unregisterPlugin(const std::string& pluginName)
                         readerPlugin->getName());
         return plugins.erase(readerPlugin);
     } catch (KeyplePluginNotFoundException& e) {
-        logger->info("Plugin is not registered to the platform : %s\n",
-                        pluginName);
+        logger->info("Plugin is not registered to the platform : %s. %s\n",
+                     pluginName, e.getMessage());
         return false;
     }
 }

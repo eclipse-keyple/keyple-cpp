@@ -219,7 +219,7 @@ void AbstractReader::addObserver(
 {
     logger->trace("[%s] addObserver => Adding '%s' as an observer of '%s'\n",
                   typeid(this).name(), typeid(observer).name(), name);
-    this->addObserver(observer);
+    Observable<ReaderEvent>::addObserver(observer);
 }
 
 void AbstractReader::removeObserver(
@@ -227,7 +227,7 @@ void AbstractReader::removeObserver(
 {
     logger->trace("[%s] removeObserver => Deleting a reader observer\n",
                   this->getName());
-    this->removeObserver(observer);
+    Observable<ReaderEvent>::removeObserver(observer);
 }
 
 void AbstractReader::notifySeProcessed()

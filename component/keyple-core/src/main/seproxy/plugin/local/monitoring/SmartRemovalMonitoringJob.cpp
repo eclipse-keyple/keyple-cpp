@@ -46,7 +46,8 @@ void SmartRemovalMonitoringJob::monitoringJob(
         }
     } catch (KeypleIOReaderException &e) {
         logger->trace("[%s] waitForCardAbsent => Error while polling SE with " \
-                     "waitForCardAbsent\n", reader->getName());
+                      "waitForCardAbsent. %s\n", reader->getName(),
+                      e.getMessage());
         state->onEvent(InternalEvent::STOP_DETECT);
     }
 }

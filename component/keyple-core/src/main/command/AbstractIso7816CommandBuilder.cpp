@@ -69,7 +69,7 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
     apdu[3] = p2;
 
     /* append Lc and ingoing data */
-    apdu[4] = dataIn.size();
+    apdu[4] = static_cast<uint8_t>(dataIn.size());
     System::arraycopy(dataIn, 0, apdu, 5, dataIn.size());
 
     /*
@@ -153,7 +153,7 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
     /* ISO7618 case determination and Le management */
     if (dataIn.size() > 0) {
         /* append Lc and ingoing data */
-        apdu[4] = dataIn.size();
+        apdu[4] = static_cast<uint8_t>(dataIn.size());
         System::arraycopy(dataIn, 0, apdu, 5, dataIn.size());
         /*
          * case4: ingoing and outgoing data, Le is always set to 0 (see

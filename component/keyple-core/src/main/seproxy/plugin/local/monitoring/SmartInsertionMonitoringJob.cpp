@@ -46,7 +46,8 @@ void SmartInsertionMonitoringJob::monitoringJob(
         }
     } catch (KeypleIOReaderException &e) {
         logger->trace("[%s] waitForCardPresent => Error while polling SE with" \
-                      " waitForCardPresent\n", reader->getName());
+                      " waitForCardPresent. %s\n", reader->getName(),
+                      e.getMessage());
         state->onEvent(InternalEvent::STOP_DETECT);
     }
 }

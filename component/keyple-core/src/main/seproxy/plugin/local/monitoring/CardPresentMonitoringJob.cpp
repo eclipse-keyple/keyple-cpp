@@ -68,6 +68,7 @@ void CardPresentMonitoringJob::monitoringJob(
             }
 
         } catch (KeypleIOReaderException& e) {
+            (void)e;
             loop = false;
             /* What do do here */
         }
@@ -81,6 +82,7 @@ void CardPresentMonitoringJob::monitoringJob(
             /* Wait a bit */
             Thread::sleep(waitTimeout);
         } catch (InterruptedException& ignored) {
+            (void)ignored;
             /* Restore interrupted state... */
             //Thread.currentThread().interrupt();
             loop = false;

@@ -330,7 +330,8 @@ protected:
      * @return initialized state stateService with possible states and the init
      * state
      */
-    virtual std::shared_ptr<ObservableReaderStateService> initStateService();
+    virtual std::shared_ptr<ObservableReaderStateService> initStateService()
+        = 0;
 
 private:
     /**

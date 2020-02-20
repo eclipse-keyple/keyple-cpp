@@ -796,7 +796,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processExplicitAidSelection(
     selectApplicationCommand[3] =
         aidSelector.getFileOccurrence().getIsoBitMask() |
         aidSelector.getFileControlInformation().getIsoBitMask();
-    selectApplicationCommand[4] = aid.size(); // Lc
+    selectApplicationCommand[4] = static_cast<uint8_t>(aid.size()); // Lc
     System::arraycopy(aid, 0, selectApplicationCommand, 5, aid.size()); // data
     selectApplicationCommand[5 + aid.size()] = 0x00; // Le
 

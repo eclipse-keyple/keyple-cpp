@@ -41,6 +41,7 @@ AbstractPlugin::AbstractPlugin(const std::string& name)
     try {
         readers = initNativeReaders();
     } catch (KeypleReaderException& e) {
+        (void)e;
         throw KeypleRuntimeException("Could not instanciate readers in plugin" \
                                      " constructor");
     }

@@ -46,9 +46,12 @@ public:
      *
      * @param state reference to the state the monitoring job in running against
      * @return routine that will be executed in background of the state
+     *
+     * /!\ Not used anymore
      */
-    virtual void (*getMonitoringJob())(AbstractObservableState* state,
-                                       std::atomic<bool>& cancellationFlag);
+    //virtual void (*getMonitoringJob())(
+    //    AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
+    //    = 0;
 
     /**
      *

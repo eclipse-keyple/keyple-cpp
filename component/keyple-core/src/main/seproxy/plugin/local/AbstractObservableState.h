@@ -15,6 +15,7 @@
 #pragma once
 
 /* Common */
+#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
@@ -47,7 +48,7 @@ enum class MonitoringState {
  * {@link AbstractObservableLocalReader.InternalEvent} that might results on a
  * switch of state.
  */
-class AbstractObservableState {
+class EXPORT AbstractObservableState {
 public:
     /**
      * Get the current state identifier of the state machine
@@ -62,7 +63,7 @@ public:
      *
      * @param event internal event received by reader
      */
-    virtual void onEvent(const InternalEvent event);
+    virtual void onEvent(const InternalEvent event) = 0;
 
     /**
      * Invoked when activated, a custom behaviour can be added here

@@ -17,6 +17,7 @@
 #include <map>
 
 /* Common */
+#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
@@ -33,7 +34,7 @@ namespace local {
  * Manages the internal state of an AbstractObservableLocalReader Process
  * InternalEvent against the current state
  */
-class ObservableReaderStateService {
+class EXPORT ObservableReaderStateService {
 public:
     /**
      *

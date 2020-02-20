@@ -343,7 +343,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
                   StringHelper::formatSimple("PO KVC = %02X", poKvc));
     }
 
-    char kif;
+    uint8_t kif;
     if (poKif == KIF_UNDEFINED) {
         if (accessLevel ==  SessionAccessLevel::SESSION_LVL_PERSO) {
             kif = securitySettings->getKeyInfo(

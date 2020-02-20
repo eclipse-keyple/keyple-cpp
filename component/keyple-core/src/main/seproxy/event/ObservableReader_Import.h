@@ -289,7 +289,7 @@ public:
     /**
      * Remove all observers at once
      */
-    void clearObservers();
+    virtual void clearObservers() = 0;
 
     /**
      * @return the number of observers

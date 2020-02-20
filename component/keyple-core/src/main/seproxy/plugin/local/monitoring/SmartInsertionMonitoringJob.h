@@ -52,12 +52,6 @@ public:
     /**
      *
      */
-    void (*getMonitoringJob())(AbstractObservableState* state,
-                               std::atomic<bool>& cancellationFlag) override;
-
-    /**
-     *
-     */
     std::future<void> startMonitoring(
         AbstractObservableState* state,
         std::atomic<bool>& cancellationFlag) override;
