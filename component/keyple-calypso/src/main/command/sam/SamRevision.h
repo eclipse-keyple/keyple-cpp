@@ -116,7 +116,7 @@ public:
     /**
      *
      */
-    bool operator!=(const SamRevision &other);
+    bool operator!=(const SamRevision &other) const;
 
     /**
      *

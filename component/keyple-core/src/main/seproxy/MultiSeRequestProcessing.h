@@ -22,7 +22,7 @@ namespace seproxy {
  * indicates whether the selection process should stop after the first matching
  * or process all requests in the SeRequest Set
  */
-enum MultiSeRequestProcessing {
+enum class MultiSeRequestProcessing {
     /**
      * The selection process stops as soon as a selection case is successful.
      */

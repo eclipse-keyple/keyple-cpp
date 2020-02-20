@@ -217,6 +217,7 @@ bool StubReaderImpl::waitForCardPresent()
         try {
             Thread::sleep(10);
         } catch (InterruptedException& e) {
+            (void)e;
             logger->debug("Sleep was interrupted\n");
         }
     }
@@ -243,6 +244,7 @@ bool StubReaderImpl::waitForCardAbsentNative()
         try {
             Thread::sleep(10);
         } catch (InterruptedException& e) {
+            (void)e;
             logger->debug("Sleep was interrupted\n");
         }
     }
@@ -310,12 +312,22 @@ void StubReaderImpl::startSeDetection(PollingMode pollingMode)
     AbstractObservableLocalReader::startSeDetection(pollingMode);
 }
 
+void StubReaderImpl::stopSeDetection()
+{
+    AbstractObservableLocalReader::stopSeDetection();
+}
+
 void StubReaderImpl::setDefaultSelectionRequest(
     std::shared_ptr<AbstractDefaultSelectionsRequest>
     defaultSelectionsRequest, NotificationMode notificationMode)
 {
     AbstractObservableLocalReader::setDefaultSelectionRequest(
         defaultSelectionsRequest, notificationMode);
+}
+
+void StubReaderImpl::clearObservers()
+{
+    AbstractObservableLocalReader::clearObservers();
 }
 
 }

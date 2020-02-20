@@ -30,6 +30,8 @@ namespace pcsc {
 
 using namespace keyple::core::seproxy::exception;
 
+PcscPluginImpl PcscPluginImpl::uniqueInstance;
+
 PcscPluginImpl::PcscPluginImpl() : AbstractThreadedObservablePlugin(PLUGIN_NAME)
 {
 }
@@ -97,7 +99,7 @@ std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
      */
 #ifdef _WIN32
     scardNoServiceHackNeeded = true;
-    logger.info("System detected : %d", scardNoServiceHackNeeded);
+    logger->info("System detected : %d", scardNoServiceHackNeeded);
 #else
     scardNoServiceHackNeeded = false;
 #endif
@@ -186,6 +188,7 @@ std::vector<PcscTerminal>& PcscPluginImpl::getTerminals()
            terminals.push_back(PcscTerminal(name));
 
    } catch (PcscTerminalException& e) {
+       (void)e;
        logger->error("getTerminalsv - error listing terminals\n");
    }
 

@@ -24,7 +24,7 @@
 #include "KeyplePluginNotFoundException.h"
 #include "MatchingSelection.h"
 #include "ReaderPoolPlugin.h"
-#include "SeCommonProtocols.h"
+#include "SeCommonProtocols_Import.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 #include "SeSelection.h"
@@ -194,6 +194,7 @@ std::unique_ptr<SamResource> SamResourceManager::allocateSamResource(
             try {
                 Thread::sleep(10);
             } catch (InterruptedException& e) {
+                (void)e;
                 //Thread::currentThread().interrupt(); // set interrupt flag
                 logger->error("Interrupt exception in Thread::sleep\n");
             }
@@ -247,7 +248,7 @@ SamResourceManager::PluginObserver::PluginObserver(
   std::shared_ptr<ReaderObserver> readerObserver,
   const std::string samReaderFilter)
 : readerObserver(readerObserver), samReaderFilter(samReaderFilter),
-  logger(parent->logger), parent(parent)
+  logger(parent->logger), parent(parent), p(nullptr)
 {
 }
 
@@ -267,8 +268,10 @@ void SamResourceManager::PluginObserver::update(
                     event->getPluginName())->getReader(readerName);
 
         } catch (KeyplePluginNotFoundException& e) {
+            (void)e;
             logger->error("Plugin not found %s\n", event->getPluginName());
         } catch (KeypleReaderNotFoundException& e) {
+            (void)e;
             logger->error("Reader not found %s\n", readerName);
         }
 
@@ -396,7 +399,9 @@ void SamResourceManager::ReaderObserver::update(
         } catch (KeypleReaderException& e) {
             logger->error("Reader failure while creating a SamResource from " \
                           "%s. %s\n", samReader->getName(), e.getMessage());
+            std::unique_lock<std::mutex> unlock(parent->mtx);
         }
+
         /* failures are ignored */
         if (newSamResource) {
             logger->info("Created SAM resource: READER = %s, SAM_REVISION = " \

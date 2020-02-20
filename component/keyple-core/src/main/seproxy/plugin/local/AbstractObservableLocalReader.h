@@ -26,6 +26,7 @@
 #include "SeResponse.h"
 
 /* Common */
+#include "Export.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -121,7 +122,7 @@ enum class InternalEvent {
  * mode (ObservableReader.PollingMode).
  * </ol>
  */
-class AbstractObservableLocalReader : public AbstractLocalReader {
+class EXPORT AbstractObservableLocalReader : public AbstractLocalReader {
 public:
     /**
      * Reader constructor

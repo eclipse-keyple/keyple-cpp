@@ -70,6 +70,7 @@ PcscReaderImpl::PcscReaderImpl(
         setParameter(SETTING_KEY_MODE, "");
         setParameter(SETTING_KEY_DISCONNECT, "");
     } catch (KeypleBaseException& e) {
+        (void)e;
         /* Can not fail with null value */
     }
 }
@@ -486,6 +487,11 @@ void PcscReaderImpl::setDefaultSelectionRequest(
 {
     AbstractObservableLocalReader::setDefaultSelectionRequest(
         defaultSelectionsRequest, notificationMode);
+}
+
+void PcscReaderImpl::clearObservers()
+{
+    AbstractObservableLocalReader::clearObservers();
 }
 
 }

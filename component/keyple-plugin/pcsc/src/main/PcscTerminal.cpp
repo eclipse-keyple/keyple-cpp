@@ -26,9 +26,20 @@ namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-PcscTerminal::PcscTerminal(const std::string& name)
-: name(name), contextEstablished(false)
+#ifdef WIN32
+static char *pcsc_stringify_error(LONG rv)
 {
+    static char out[20];
+    sprintf_s(out, sizeof(out), "0x%08X", rv);
+
+    return out;
+}
+#endif
+
+PcscTerminal::PcscTerminal(const std::string& name)
+: name(name), contextEstablished(false), context(0), handle(0), state(0)
+{
+    memset(&pioSendPCI, 0, sizeof(SCARD_IO_REQUEST));
 }
 
 const std::string& PcscTerminal::getName() const
@@ -40,10 +51,13 @@ const std::vector<std::string>& PcscTerminal::listTerminals()
 {
     LONG ret;
     SCARDCONTEXT context;
-    char *readers;
-    char *ptr;
-    DWORD len;
+    char *readers = NULL;
+    char *ptr = NULL;
+    DWORD len = 0;
     static std::vector<std::string> list;
+
+    /* Clear list */
+    list.clear();
 
     ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &context);
     if (ret != SCARD_S_SUCCESS) {
@@ -57,13 +71,20 @@ const std::vector<std::string>& PcscTerminal::listTerminals()
 
     readers = (char *)calloc(len, sizeof(char));
 
+    if (!len || !readers)
+        /* No readers to add to list */
+        return list;
+
     ret = SCardListReaders(context, NULL, readers, &len);
     if (ret != SCARD_S_SUCCESS) {
         throw PcscTerminalException("SCardListReaders failed");
     }
 
-    list.clear();
     ptr = readers;
+
+    if (!ptr)
+        return list;
+
     while (*ptr) {
         std::string s(ptr);
         list.push_back(s);

@@ -146,6 +146,13 @@ public:
      *
      */
     bool checkSePresence() override;
+    
+    /**
+     * Remove all observers at once
+     *
+     * /!\ Required to MSVC to authorize PcscReaderImpl instance.
+     */
+    void clearObservers() override;
 
 protected:
     /**

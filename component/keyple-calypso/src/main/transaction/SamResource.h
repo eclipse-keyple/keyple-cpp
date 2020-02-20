@@ -41,7 +41,7 @@ public:
     /**
      * The free/busy enum status
      */
-    enum SamResourceStatus {
+    enum class SamResourceStatus {
         FREE,
         BUSY
     };

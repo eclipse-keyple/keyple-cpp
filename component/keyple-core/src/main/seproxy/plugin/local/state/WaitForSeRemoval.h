@@ -15,6 +15,7 @@
 #pragma once
 
 /* Common */
+#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
@@ -40,7 +41,7 @@ namespace state {
  * WAIT_FOR_SE_DETECTION.
  * </ul>
  */
-class WaitForSeRemoval : public AbstractObservableState {
+class EXPORT WaitForSeRemoval : public AbstractObservableState {
 public:
     /**
      *

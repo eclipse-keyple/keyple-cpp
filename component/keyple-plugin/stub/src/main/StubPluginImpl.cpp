@@ -153,6 +153,7 @@ void StubPluginImpl::unplugStubReaders(const std::set<std::string>& readerNames,
                 std::dynamic_pointer_cast<StubReaderImpl>(seReader);
             readersToDelete.push_back(stubReaderImpl);
         } catch (KeypleReaderNotFoundException& e) {
+            (void)e;
             logger->warn("unplugStubReaders() No reader found with name %s\n",
                          name);
         }

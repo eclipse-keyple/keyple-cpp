@@ -136,6 +136,13 @@ public:
      *
      */
     std::shared_ptr<ObservableReaderStateService> initStateService() override;
+    
+    /**
+     * Remove all observers at once
+     *
+     * /!\ Required to MSVC to authorize PcscReaderImpl instance.
+     */
+    void clearObservers() override;
 
 protected:
     /**

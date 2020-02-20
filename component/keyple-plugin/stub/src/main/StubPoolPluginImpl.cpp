@@ -75,6 +75,7 @@ std::shared_ptr<SeReader> StubPoolPluginImpl::plugStubPoolReader(
 
         return newReader;
     } catch (KeypleReaderNotFoundException& e) {
+        (void)e;
         throw IllegalStateException("Impossible to allocateReader, stubplugin" \
                                     " failed to create a reader");
     }
@@ -94,6 +95,7 @@ void StubPoolPluginImpl::unplugStubPoolReader(const std::string& groupReference)
         stubPlugin.unplugStubReader(stubReader->getName(), true);
 
     } catch (KeypleReaderException& e) {
+        (void)e;
         throw IllegalStateException(
                   StringHelper::formatSimple(
                       "Impossible to release reader, reader with " \

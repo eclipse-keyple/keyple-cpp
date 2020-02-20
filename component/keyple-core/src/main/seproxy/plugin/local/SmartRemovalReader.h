@@ -51,7 +51,7 @@ public:
      * @throws KeypleIOReaderException in the event of a communication failure
      *         with the reader (disconnection)
      */
-    virtual bool waitForCardAbsentNative();
+    virtual bool waitForCardAbsentNative() = 0;
 
     /**
      * Interrupts the waiting of the removal of the SE

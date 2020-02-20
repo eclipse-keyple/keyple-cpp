@@ -19,6 +19,9 @@
 
 #include "MonitoringJob.h"
 
+/* Common */
+#include "Export.h"
+
 namespace keyple {
 namespace core {
 namespace seproxy {
@@ -27,7 +30,7 @@ namespace local {
 
 class AbstractObservableState;
 
-class MonitoringPool {
+class EXPORT MonitoringPool {
 public:
     /**
      *
@@ -41,6 +44,17 @@ public:
                               AbstractObservableState* state,
                               std::atomic<bool>& cancellationFlag);
 
+    /**
+     * /!\ MSVC requires operator= to be deleted because of std::future
+     * not being copyable.
+     */
+    MonitoringPool& operator=(MonitoringPool o) = delete;
+
+    /**
+     * /!\ MSVC requires copy constructor to be deleted because of std::future
+     * not being copyable.
+     */
+    MonitoringPool(const MonitoringPool& o) = delete;
 
 private:
     /**

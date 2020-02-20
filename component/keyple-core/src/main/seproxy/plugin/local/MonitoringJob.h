@@ -16,6 +16,9 @@
 
 #include <future>
 
+/* Common */
+#include "Export.h"
+
 namespace keyple {
 namespace core {
 namespace seproxy {
@@ -39,7 +42,7 @@ class AbstractObservableState;
  * package but it is possible to define new ones within a plugin reader if
  * necessary, respecting this interface.
  */
-class MonitoringJob {
+class EXPORT MonitoringJob {
 public:
     /**
      * Define a Runnable task of the monitoring job

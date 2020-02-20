@@ -24,7 +24,7 @@
 /* Core */
 #include "ObservablePlugin.h"
 #include "ObservableReader.h"
-#include "PluginEvent.h"
+#include "PluginEvent_Import.h"
 #include "ReaderEvent_Import.h"
 #include "ReaderPlugin.h"
 
@@ -50,7 +50,7 @@ public:
     /**
      *
      */
-    enum AllocationMode {
+    enum class AllocationMode {
         BLOCKING,
         NON_BLOCKING
     };

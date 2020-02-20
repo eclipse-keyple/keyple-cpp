@@ -78,7 +78,7 @@ bool SamRevision::operator==(const SamRevision &other)
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool SamRevision::operator!=(const SamRevision &other)
+bool SamRevision::operator!=(const SamRevision &other) const
 {
     return this->ordinalValue != other.ordinalValue;
 }

@@ -21,6 +21,7 @@
 #include "MonitoringPool.h"
 
 /* Common */
+#include "Export.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -47,7 +48,7 @@ using namespace keyple::core::seproxy::plugin::local;
  * WAIT_FOR_SE_DETECTION.
  * </ul>
  */
-class WaitForSeProcessing : public AbstractObservableState {
+class EXPORT WaitForSeProcessing : public AbstractObservableState {
 public:
     /**
      *

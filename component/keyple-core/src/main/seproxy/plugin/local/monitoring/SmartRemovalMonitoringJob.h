@@ -50,7 +50,7 @@ using namespace keyple::common;
  * an internal
  * STOP_DETECT event is fired.
  */
-class SmartRemovalMonitoringJob : public MonitoringJob {
+class EXPORT SmartRemovalMonitoringJob : public MonitoringJob {
 public:
     /**
      *
