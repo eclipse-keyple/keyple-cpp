@@ -186,6 +186,7 @@ void Properties::load(std::ifstream& inStream)
             props.insert(std::pair<std::string, std::string>(keyString, element.toString()));
         }
     } catch (std::ios_base::failure &e) {
+        (void)e;
     }
 }
 
