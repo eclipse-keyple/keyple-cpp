@@ -37,7 +37,7 @@ static char *pcsc_stringify_error(LONG rv)
 #endif
 
 PcscTerminal::PcscTerminal(const std::string& name)
-: name(name), contextEstablished(false), context(0), handle(0), state(0)
+: context(0), handle(0), state(0), name(name), contextEstablished(false) 
 {
     memset(&pioSendPCI, 0, sizeof(SCARD_IO_REQUEST));
 }

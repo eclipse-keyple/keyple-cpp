@@ -248,7 +248,7 @@ SamResourceManager::PluginObserver::PluginObserver(
   std::shared_ptr<ReaderObserver> readerObserver,
   const std::string samReaderFilter)
 : readerObserver(readerObserver), samReaderFilter(samReaderFilter),
-  logger(parent->logger), parent(parent), p(nullptr)
+  p(nullptr), logger(parent->logger), parent(parent)
 {
 }
 
