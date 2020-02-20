@@ -521,7 +521,7 @@ private:
     /**
      * The PO KIF
      */
-    char poKif = 0;
+    uint8_t poKif = 0;
 
     /**
      * The previous PO Secure Session ratification status
