@@ -22,27 +22,25 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-        namespace keyple {
-            namespace calypso {
-                namespace command {
-                    namespace po {
-                        namespace builder {
-                            namespace security {
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace po {
+namespace builder {
+namespace security {
 
+class PoGetChallengeCmdBuildTest
+: public std::enable_shared_from_this<PoGetChallengeCmdBuildTest> {
+public:
+    virtual void POGetChallenge_Rev2_4();
 
+    virtual void POGetChallenge_Rev3_1();
 
-                                class PoGetChallengeCmdBuildTest : public std::enable_shared_from_this<PoGetChallengeCmdBuildTest> {
-                                public:
-
-                                    virtual void POGetChallenge_Rev2_4();
-
-                                    virtual void POGetChallenge_Rev3_1();
-
-                                    virtual void POGetChallenge_Rev3_2();
-                                };
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    virtual void POGetChallenge_Rev3_2();
+};
+}
+}
+}
+}
+}
+}

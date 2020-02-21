@@ -41,10 +41,7 @@ public:
     /**
      * The free/busy enum status
      */
-    enum class SamResourceStatus {
-        FREE,
-        BUSY
-    };
+    enum class SamResourceStatus { FREE, BUSY };
 
     /**
      * Constructor
@@ -111,9 +108,8 @@ protected:
     std::shared_ptr<SamResource> shared_from_this()
     {
         return std::static_pointer_cast<SamResource>(
-                   SeResource<CalypsoSam>::shared_from_this());
+            SeResource<CalypsoSam>::shared_from_this());
     }
-
 
 private:
     /**

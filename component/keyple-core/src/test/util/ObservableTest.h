@@ -19,58 +19,60 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-        namespace keyple {
-            namespace core {
-                namespace util {
+namespace keyple {
+namespace core {
+namespace util {
 
-                using namespace testing;
-                
-                class ObservableTest : public std::enable_shared_from_this<ObservableTest> {
-                public:
-                    class Event : public std::enable_shared_from_this<Event> {
-                    private:
-                        const std::string name;
+using namespace testing;
 
-                    public:
-                        Event(const std::string &name);
+class ObservableTest : public std::enable_shared_from_this<ObservableTest> {
+public:
+    class Event : public std::enable_shared_from_this<Event> {
+    private:
+        const std::string name;
 
-                        virtual std::string getName();
+    public:
+        Event(const std::string& name);
 
-                        std::string toString();
-                    };
+        virtual std::string getName();
 
-                public:
-                    class EventPlus : public Event {
+        std::string toString();
+    };
 
-                    public:
-                        EventPlus(const std::string &name);
+public:
+    class EventPlus : public Event {
 
-                        std::string toString();
+    public:
+        EventPlus(const std::string& name);
 
-protected:
-                        std::shared_ptr<EventPlus> shared_from_this() {
-                            return std::static_pointer_cast<EventPlus>(Event::shared_from_this());
-                        }
-                    };
+        std::string toString();
 
-                //public:
-                //    class Observer : public std::enable_shared_from_this<Observer>, public Observer//<std::shared_ptr<Event>> 
-                //    {
-                //    private:
-                //        int nbCalls = 0;
-
-                //    public:
-                //        virtual int getNbCalls();
-
-                //        void update(std::shared_ptr<Event> arg) override;
-                //    };
-
-                public:
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void sample()
-                    virtual void sample();
-                };
-
-            }
+    protected:
+        std::shared_ptr<EventPlus> shared_from_this()
+        {
+            return std::static_pointer_cast<EventPlus>(
+                Event::shared_from_this());
         }
-    }
+    };
+
+    //public:
+    //    class Observer : public std::enable_shared_from_this<Observer>, public Observer//<std::shared_ptr<Event>>
+    //    {
+    //    private:
+    //        int nbCalls = 0;
+
+    //    public:
+    //        virtual int getNbCalls();
+
+    //        void update(std::shared_ptr<Event> arg) override;
+    //    };
+
+public:
+    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+    //ORIGINAL LINE: @Test public void sample()
+    virtual void sample();
+};
+
+}
+}
+}

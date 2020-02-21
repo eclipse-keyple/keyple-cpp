@@ -32,8 +32,9 @@ using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::core::seproxy::message;
 
 OpenSession31CmdBuild::OpenSession31CmdBuild(
-  uint8_t keyIndex, const std::vector<uint8_t>& samChallenge,
-  uint8_t sfiToSelect, uint8_t recordNumberToRead, const std::string& extraInfo)
+    uint8_t keyIndex, const std::vector<uint8_t>& samChallenge,
+    uint8_t sfiToSelect, uint8_t recordNumberToRead,
+    const std::string& extraInfo)
 : AbstractOpenSessionCmdBuild<OpenSession31RespPars>(PoRevision::REV3_1)
 {
     uint8_t p1 = (recordNumberToRead * 8) + keyIndex;
@@ -45,11 +46,10 @@ OpenSession31CmdBuild::OpenSession31CmdBuild(
      */
     uint8_t le = 0;
 
-    this->request =
-        setApduRequest(
-            PoClass::ISO.getValue(),
-            CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV3_1), p1, p2,
-            samChallenge, le);
+    this->request = setApduRequest(
+        PoClass::ISO.getValue(),
+        CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV3_1), p1, p2,
+        samChallenge, le);
     if (extraInfo != "") {
         this->addSubName(extraInfo);
     }

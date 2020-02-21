@@ -34,8 +34,9 @@ public:
     /**
      * See {@link #isWhitespace(int)}.
      */
-    static bool isWhitespace(char c) {
-        return isWhitespace((int) c);
+    static bool isWhitespace(char c)
+    {
+        return isWhitespace((int)c);
     }
 
     /**
@@ -45,9 +46,11 @@ public:
      * Note also that line separators are considered whitespace; see {@link #isSpaceChar}
      * for an alternative.
      */
-    static bool isWhitespace(int codePoint) {
+    static bool isWhitespace(int codePoint)
+    {
 
-        if ((codePoint >= 0x1c && codePoint <= 0x20) || (codePoint >= 0x09 && codePoint <= 0x0d)) {
+        if ((codePoint >= 0x1c && codePoint <= 0x20) ||
+            (codePoint >= 0x09 && codePoint <= 0x0d)) {
             return true;
         }
         if (codePoint < 0x1000) {
@@ -68,8 +71,9 @@ public:
         }
         if (codePoint <= 0xffff) {
             /* Other whitespace from General Punctuation... */
-            return codePoint <= 0x200a || codePoint == 0x2028 || codePoint == 0x2029 || codePoint == 0x205f ||
-                codePoint == 0x3000; /* ...or CJK Symbols and Punctuation? */
+            return codePoint <= 0x200a || codePoint == 0x2028 ||
+                   codePoint == 0x2029 || codePoint == 0x205f ||
+                   codePoint == 0x3000; /* ...or CJK Symbols and Punctuation? */
         }
         /* Let icu4c worry about non-BMP code points. */
         //return isWhitespaceImpl(codePoint);

@@ -26,7 +26,7 @@ using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
 PoGetChallengeRespPars::PoGetChallengeRespPars(
-  std::shared_ptr<ApduResponse> response)
+    std::shared_ptr<ApduResponse> response)
 : AbstractApduResponseParser(response)
 {
 }

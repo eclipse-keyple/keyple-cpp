@@ -44,7 +44,8 @@ using namespace keyple::calypso::command::po::parser;
  */
 class UpdateRecordCmdBuild final
 : public AbstractPoCommandBuilder<UpdateRecordRespPars>,
-  public PoSendableInSession, public PoModificationCommand {
+  public PoSendableInSession,
+  public PoModificationCommand {
 public:
     /**
      * Instantiates a new UpdateRecordCmdBuild.
@@ -66,8 +67,7 @@ public:
      *
      */
     std::shared_ptr<UpdateRecordRespPars>
-        createResponseParser(std::shared_ptr<ApduResponse> apduResponse)
-        override;
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -76,8 +76,7 @@ protected:
     std::shared_ptr<UpdateRecordCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<UpdateRecordCmdBuild>(
-                   AbstractPoCommandBuilder<UpdateRecordRespPars>
-                       ::shared_from_this());
+            AbstractPoCommandBuilder<UpdateRecordRespPars>::shared_from_this());
     }
 
 private:

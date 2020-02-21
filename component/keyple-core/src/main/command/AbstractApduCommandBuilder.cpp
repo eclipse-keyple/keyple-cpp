@@ -28,7 +28,7 @@ using namespace keyple::core::command;
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
     CommandsTable& commandReference, std::shared_ptr<ApduRequest> request)
 {
-    this->name = commandReference.getName();
+    this->name    = commandReference.getName();
     this->request = request;
 
     // set APDU name for non null request
@@ -38,9 +38,9 @@ AbstractApduCommandBuilder::AbstractApduCommandBuilder(
 }
 
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
-    const std::string &name, std::shared_ptr<ApduRequest> request)
+    const std::string& name, std::shared_ptr<ApduRequest> request)
 {
-    this->name = name;
+    this->name    = name;
     this->request = request;
 
     // set APDU name for non null request
@@ -49,7 +49,7 @@ AbstractApduCommandBuilder::AbstractApduCommandBuilder(
     }
 }
 
-void AbstractApduCommandBuilder::addSubName(const std::string &subName)
+void AbstractApduCommandBuilder::addSubName(const std::string& subName)
 {
     if (subName.length() != 0) {
         this->name = this->name + " - " + subName;

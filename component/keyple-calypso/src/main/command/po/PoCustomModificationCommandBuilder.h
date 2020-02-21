@@ -20,7 +20,13 @@
 #include "PoRevision.h"
 
 /* Forward declaration */
-namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } }
+namespace keyple {
+namespace seproxy {
+namespace message {
+class ApduRequest;
+}
+}
+}
 
 namespace keyple {
 namespace calypso {
@@ -33,7 +39,8 @@ using namespace keyple::core::seproxy::message;
 /**
  * Class to build custom (non-referenced) modification PO commands
  */
-class PoCustomModificationCommandBuilder : public AbstractIso7816CommandBuilder, public PoModificationCommand {
+class PoCustomModificationCommandBuilder : public AbstractIso7816CommandBuilder,
+                                           public PoModificationCommand {
 public:
     /**
      * Constructor dedicated to the construction of user-defined commands.
@@ -50,12 +57,15 @@ public:
      * @param name the name of the command (will appear in the ApduRequest log)
      * @param request the ApduRequest (the correct instruction byte must be provided)
      */
-    PoCustomModificationCommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request);
+    PoCustomModificationCommandBuilder(const std::string& name,
+                                       std::shared_ptr<ApduRequest> request);
 
     /**
      *
      */
-    virtual ~PoCustomModificationCommandBuilder() {}
+    virtual ~PoCustomModificationCommandBuilder()
+    {
+    }
 
 protected:
     /**
@@ -63,7 +73,8 @@ protected:
      */
     std::shared_ptr<PoCustomModificationCommandBuilder> shared_from_this()
     {
-        return std::static_pointer_cast<PoCustomModificationCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());
+        return std::static_pointer_cast<PoCustomModificationCommandBuilder>(
+            AbstractIso7816CommandBuilder::shared_from_this());
     }
 
     /**

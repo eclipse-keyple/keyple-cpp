@@ -106,7 +106,7 @@ public:
      *
      * @param authorizedKvcList the list of authorized KVCs
      */
-    virtual void setAuthorizedKvcList(std::vector<Byte> &authorizedKvcList);
+    virtual void setAuthorizedKvcList(std::vector<Byte>& authorizedKvcList);
 
     /**
      * CHeck if the provided kvc value is authorized or not.

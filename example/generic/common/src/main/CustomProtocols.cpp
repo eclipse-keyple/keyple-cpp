@@ -22,15 +22,11 @@ namespace common {
 using namespace keyple::core::seproxy::protocol;
 
 CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_B_PRIME(
-    "CUSTOM_PROTOCOL_B_PRIME",
-    InnerEnum::CUSTOM_PROTOCOL_B_PRIME,
-    "Custom Old Calypso B prime",
-    TransmissionMode::CONTACTLESS);
+    "CUSTOM_PROTOCOL_B_PRIME", InnerEnum::CUSTOM_PROTOCOL_B_PRIME,
+    "Custom Old Calypso B prime", TransmissionMode::CONTACTLESS);
 CustomProtocols CustomProtocols::CUSTOM_PROTOCOL_MIFARE_DESFIRE(
-    "CUSTOM_PROTOCOL_MIFARE_DESFIRE",
-    InnerEnum::CUSTOM_PROTOCOL_MIFARE_DESFIRE,
-    "Custom Mifare DESFire",
-    TransmissionMode::CONTACTLESS);
+    "CUSTOM_PROTOCOL_MIFARE_DESFIRE", InnerEnum::CUSTOM_PROTOCOL_MIFARE_DESFIRE,
+    "Custom Mifare DESFire", TransmissionMode::CONTACTLESS);
 
 std::vector<CustomProtocols> CustomProtocols::valueList;
 CustomProtocols::StaticConstructor CustomProtocols::staticConstructor;
@@ -42,10 +38,10 @@ CustomProtocols::StaticConstructor::StaticConstructor()
     valueList.push_back(CUSTOM_PROTOCOL_MIFARE_DESFIRE);
 }
 
-CustomProtocols::CustomProtocols(
-  const std::string& nameValue, InnerEnum innerEnum, const std::string& name,
-  TransmissionMode transmissionMode)
-: /*innerEnumValue(innerEnum), */nameValue(nameValue),
+CustomProtocols::CustomProtocols(const std::string& nameValue,
+                                 InnerEnum innerEnum, const std::string& name,
+                                 TransmissionMode transmissionMode)
+: /*innerEnumValue(innerEnum), */ nameValue(nameValue),
   ordinalValue(nextOrdinal++), name(name), transmissionMode(transmissionMode)
 {
     /* innerEnumValue is not used, commented it out in class def. */
@@ -57,12 +53,12 @@ std::string CustomProtocols::getName() const
     return name;
 }
 
-bool CustomProtocols::operator == (const CustomProtocols &other)
+bool CustomProtocols::operator==(const CustomProtocols& other)
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool CustomProtocols::operator != (const CustomProtocols &other)
+bool CustomProtocols::operator!=(const CustomProtocols& other)
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -82,7 +78,7 @@ std::string CustomProtocols::toString()
     return nameValue;
 }
 
-CustomProtocols CustomProtocols::valueOf(const std::string &name)
+CustomProtocols CustomProtocols::valueOf(const std::string& name)
 {
     for (auto enumInstance : CustomProtocols::valueList) {
         if (enumInstance.nameValue == name) {

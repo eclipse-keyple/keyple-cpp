@@ -31,23 +31,23 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::calypso::command::po::parser::security;
 
 OpenSession24RespPars::OpenSession24RespPars(
-  std::shared_ptr<ApduResponse> response)
+    std::shared_ptr<ApduResponse> response)
 : AbstractOpenSessionRespPars(response, PoRevision::REV2_4)
 {
     std::vector<uint8_t> data = response->getDataOut();
-    this->secureSession = toSecureSession(data);
+    this->secureSession       = toSecureSession(data);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-    OpenSession24RespPars::toSecureSession(
-        const std::vector<uint8_t>& apduResponseData)
+OpenSession24RespPars::toSecureSession(
+    const std::vector<uint8_t>& apduResponseData)
 {
     return createSecureSession(apduResponseData);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-    OpenSession24RespPars::createSecureSession(
-        const std::vector<uint8_t>& apduResponseData)
+OpenSession24RespPars::createSecureSession(
+    const std::vector<uint8_t>& apduResponseData)
 {
     bool previousSessionRatified;
 
@@ -78,24 +78,24 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
     std::vector<uint8_t> data;
 
     switch (apduResponseData.size()) {
-        case 5:
-            previousSessionRatified = true;
-            break;
-        case 34:
-            previousSessionRatified = true;
-            data = Arrays::copyOfRange(apduResponseData, 5, 34);
-            break;
-        case 7:
-            previousSessionRatified = false;
-            break;
-        case 36:
-            previousSessionRatified = false;
-            data = Arrays::copyOfRange(apduResponseData, 7, 36);
-            break;
-        default:
-            throw IllegalStateException(
-                "Bad response length to Open Secure Session: " +
-                std::to_string(apduResponseData.size()));
+    case 5:
+        previousSessionRatified = true;
+        break;
+    case 34:
+        previousSessionRatified = true;
+        data                    = Arrays::copyOfRange(apduResponseData, 5, 34);
+        break;
+    case 7:
+        previousSessionRatified = false;
+        break;
+    case 36:
+        previousSessionRatified = false;
+        data                    = Arrays::copyOfRange(apduResponseData, 7, 36);
+        break;
+    default:
+        throw IllegalStateException(
+            "Bad response length to Open Secure Session: " +
+            std::to_string(apduResponseData.size()));
     }
 
     std::vector<uint8_t> challengeTransactionCounter =
@@ -104,10 +104,9 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
         Arrays::copyOfRange(apduResponseData, 4, 5);
 
     return std::make_shared<SecureSession>(
-               challengeTransactionCounter, challengeRandomNumber,
-               previousSessionRatified, false,
-               std::make_shared<Byte>(apduResponseData[0]), data,
-               apduResponseData);
+        challengeTransactionCounter, challengeRandomNumber,
+        previousSessionRatified, false,
+        std::make_shared<Byte>(apduResponseData[0]), data, apduResponseData);
 }
 
 }

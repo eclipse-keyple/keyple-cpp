@@ -57,8 +57,9 @@ public:
     /**
      *
      */
-    std::shared_ptr<AbstractApduResponseParser> getCommandParser(
-        std::shared_ptr<SeResponse> seResponse, int commandIndex) override;
+    std::shared_ptr<AbstractApduResponseParser>
+    getCommandParser(std::shared_ptr<SeResponse> seResponse,
+                     int commandIndex) override;
 
 protected:
     /**
@@ -68,8 +69,8 @@ protected:
      * @param seResponse the SE response received
      * @return a {@link CalypsoSam}
      */
-    std::shared_ptr<AbstractMatchingSe> parse(
-        std::shared_ptr<SeResponse> seResponse) override;
+    std::shared_ptr<AbstractMatchingSe>
+    parse(std::shared_ptr<SeResponse> seResponse) override;
 
     /**
      *
@@ -77,7 +78,7 @@ protected:
     std::shared_ptr<SamSelectionRequest> shared_from_this()
     {
         return std::static_pointer_cast<SamSelectionRequest>(
-                   AbstractSeSelectionRequest::shared_from_this());
+            AbstractSeSelectionRequest::shared_from_this());
     }
 };
 

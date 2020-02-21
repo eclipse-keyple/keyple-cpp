@@ -27,10 +27,10 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
 WriteRecordCmdBuild::WriteRecordCmdBuild(
-  PoClass poClass, uint8_t sfi, uint8_t recordNumber,
-  const std::vector<uint8_t>& newRecordData, const std::string& extraInfo)
-: AbstractPoCommandBuilder<WriteRecordRespPars>(
-      CalypsoPoCommands::WRITE_RECORD, nullptr)
+    PoClass poClass, uint8_t sfi, uint8_t recordNumber,
+    const std::vector<uint8_t>& newRecordData, const std::string& extraInfo)
+: AbstractPoCommandBuilder<WriteRecordRespPars>(CalypsoPoCommands::WRITE_RECORD,
+                                                nullptr)
 {
     if (recordNumber < 1) {
         throw std::invalid_argument("Bad record number (< 1)");
@@ -45,9 +45,8 @@ WriteRecordCmdBuild::WriteRecordCmdBuild(
     }
 }
 
-std::shared_ptr<WriteRecordRespPars>
-    WriteRecordCmdBuild::createResponseParser(
-        std::shared_ptr<ApduResponse> apduResponse)
+std::shared_ptr<WriteRecordRespPars> WriteRecordCmdBuild::createResponseParser(
+    std::shared_ptr<ApduResponse> apduResponse)
 {
     return std::make_shared<WriteRecordRespPars>(apduResponse);
 }

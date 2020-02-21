@@ -26,11 +26,11 @@ namespace plugin {
 namespace local {
 namespace monitoring {
 
-CardPresentMonitoringJob::CardPresentMonitoringJob(
-  SeReader* reader, long waitTimeout, bool monitorInsertion)
+CardPresentMonitoringJob::CardPresentMonitoringJob(SeReader* reader,
+                                                   long waitTimeout,
+                                                   bool monitorInsertion)
 : reader(reader), waitTimeout(waitTimeout), monitorInsertion(monitorInsertion)
 {
-
 }
 
 void CardPresentMonitoringJob::monitoringJob(
@@ -98,12 +98,13 @@ void CardPresentMonitoringJob::stop()
     loop = false;
 }
 
-std::future<void> CardPresentMonitoringJob::startMonitoring(
-    AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
+std::future<void>
+CardPresentMonitoringJob::startMonitoring(AbstractObservableState* state,
+                                          std::atomic<bool>& cancellationFlag)
 {
     return std::async(std::launch::async,
-                      &CardPresentMonitoringJob::monitoringJob,
-                      this, state, std::ref(cancellationFlag));
+                      &CardPresentMonitoringJob::monitoringJob, this, state,
+                      std::ref(cancellationFlag));
 }
 
 }

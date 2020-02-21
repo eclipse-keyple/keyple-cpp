@@ -48,9 +48,9 @@ public:
     /**
      * serial number : 12345678
      */
-    const std::vector<uint8_t> atr{
-        0x3F, 0x96, 0x00, 0x80, 0x5A, 0x00, 0x80, 0xC1, 0x20, 0x00, 0x00, 0x12,
-        0x34, 0x56, 0x78, 0x82, 0x90, 0x00};
+    const std::vector<uint8_t> atr{0x3F, 0x96, 0x00, 0x80, 0x5A, 0x00,
+                                   0x80, 0xC1, 0x20, 0x00, 0x00, 0x12,
+                                   0x34, 0x56, 0x78, 0x82, 0x90, 0x00};
 
     /**
      *
@@ -60,7 +60,9 @@ public:
     /**
      *
      */
-    virtual ~StubSamCalypsoClassic() {}
+    virtual ~StubSamCalypsoClassic()
+    {
+    }
 
     /**
      *
@@ -79,7 +81,7 @@ protected:
     std::shared_ptr<StubSamCalypsoClassic> shared_from_this()
     {
         return std::static_pointer_cast<StubSamCalypsoClassic>(
-                   StubSecureElement::shared_from_this());
+            StubSecureElement::shared_from_this());
     }
 
 private:

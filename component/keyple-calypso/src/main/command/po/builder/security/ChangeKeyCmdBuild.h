@@ -57,8 +57,7 @@ public:
      *
      */
     std::shared_ptr<ChangeKeyRespPars>
-        createResponseParser(std::shared_ptr<ApduResponse> apduResponse)
-        override;
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -67,8 +66,7 @@ protected:
     std::shared_ptr<ChangeKeyCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<ChangeKeyCmdBuild>(
-                   AbstractPoCommandBuilder<ChangeKeyRespPars>
-                       ::shared_from_this());
+            AbstractPoCommandBuilder<ChangeKeyRespPars>::shared_from_this());
     }
 };
 

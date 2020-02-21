@@ -32,7 +32,8 @@ SamRevision SamRevision::NO_REV("NO_REV", InnerEnum::NO_REV, "NO_REV", "??",
 
 std::vector<SamRevision> SamRevision::valueList;
 
-SamRevision::StaticConstructor::StaticConstructor() {
+SamRevision::StaticConstructor::StaticConstructor()
+{
     valueList.push_back(NO_REV);
     valueList.push_back(C1);
     valueList.push_back(S1E);
@@ -43,9 +44,9 @@ SamRevision::StaticConstructor::StaticConstructor() {
 SamRevision::StaticConstructor SamRevision::staticConstructor;
 int SamRevision::nextOrdinal = 0;
 
-SamRevision::SamRevision(
-  const std::string &nameValue, InnerEnum innerEnum, const std::string &name,
-  const std::string &applicationTypeMask, char classByte)
+SamRevision::SamRevision(const std::string& nameValue, InnerEnum innerEnum,
+                         const std::string& name,
+                         const std::string& applicationTypeMask, char classByte)
 : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++),
   name(name), applicationTypeMask(applicationTypeMask), classByte(classByte)
 {
@@ -73,24 +74,24 @@ char SamRevision::getClassByte()
     return classByte;
 }
 
-bool SamRevision::operator==(const SamRevision &other)
+bool SamRevision::operator==(const SamRevision& other)
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool SamRevision::operator!=(const SamRevision &other) const
+bool SamRevision::operator!=(const SamRevision& other) const
 {
     return this->ordinalValue != other.ordinalValue;
 }
 
 SamRevision& SamRevision::operator=(SamRevision o)
 {
-    this->innerEnumValue = o.innerEnumValue;
-    this->nameValue = o.nameValue;
-    this->name = o.name;
-    this->ordinalValue = o.ordinalValue;
+    this->innerEnumValue      = o.innerEnumValue;
+    this->nameValue           = o.nameValue;
+    this->name                = o.name;
+    this->ordinalValue        = o.ordinalValue;
     this->applicationTypeMask = o.applicationTypeMask;
-    this->classByte = o.classByte;
+    this->classByte           = o.classByte;
 
     return *this;
 }
@@ -110,7 +111,7 @@ std::string SamRevision::toString()
     return nameValue;
 }
 
-SamRevision SamRevision::valueOf(const std::string &name)
+SamRevision SamRevision::valueOf(const std::string& name)
 {
     for (auto enumInstance : SamRevision::valueList) {
         if (enumInstance.nameValue == name) {

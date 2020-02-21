@@ -20,20 +20,20 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-        namespace keyple {
-            namespace core {
-                namespace util {
-                
-                using namespace testing;
+namespace keyple {
+namespace core {
+namespace util {
 
-                class ByteArrayUtilTest : public std::enable_shared_from_this<ByteArrayUtilTest>
-                {
-                public:
-                    virtual ~ByteArrayUtilTest(){};
+using namespace testing;
 
-                    int sample();
-                };
+class ByteArrayUtilTest
+: public std::enable_shared_from_this<ByteArrayUtilTest> {
+public:
+    virtual ~ByteArrayUtilTest(){};
 
-                }
-            }
-        }
+    int sample();
+};
+
+}
+}
+}

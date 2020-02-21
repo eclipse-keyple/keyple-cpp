@@ -31,7 +31,7 @@ using namespace keyple::core::seproxy::message;
 
 GetDataFciCmdBuild::GetDataFciCmdBuild(PoClass poClass)
 : AbstractPoCommandBuilder<GetDataFciRespPars>(CalypsoPoCommands::GET_DATA_FCI,
-      nullptr)
+                                               nullptr)
 {
     request = setApduRequest(poClass.getValue(), command, 0, 0x6F, 0x00);
 }

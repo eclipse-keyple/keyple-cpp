@@ -31,10 +31,10 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::calypso::command::po::builder;
 
-SelectFileCmdBuild::SelectFileCmdBuild(
-  PoClass poClass, SelectControl selectControl)
+SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass,
+                                       SelectControl selectControl)
 : AbstractPoCommandBuilder<SelectFileRespPars>(CalypsoPoCommands::SELECT_FILE,
-  nullptr)
+                                               nullptr)
 {
     uint8_t p1;
     uint8_t p2;
@@ -54,20 +54,20 @@ SelectFileCmdBuild::SelectFileCmdBuild(
         p2 = 0x00;
         break;
     default:
-        throw IllegalStateException(
-                  StringHelper::formatSimple(
-                      "Unsupported selectControl parameter %d (see " \
-                      "SelectFileCmdBuild::SelectionControl)", selectControl));
+        throw IllegalStateException(StringHelper::formatSimple(
+            "Unsupported selectControl parameter %d (see "
+            "SelectFileCmdBuild::SelectionControl)",
+            selectControl));
     }
 
-    request = setApduRequest(poClass.getValue(), command, p1, p2, selectData,
-                             0x00);
+    request =
+        setApduRequest(poClass.getValue(), command, p1, p2, selectData, 0x00);
 }
 
 SelectFileCmdBuild::SelectFileCmdBuild(
-  PoClass poClass, const std::vector<uint8_t>& selectionPath)
+    PoClass poClass, const std::vector<uint8_t>& selectionPath)
 : AbstractPoCommandBuilder<SelectFileRespPars>(CalypsoPoCommands::SELECT_FILE,
-  nullptr)
+                                               nullptr)
 {
     request = setApduRequest(poClass.getValue(), command, 0x09, 0x00,
                              selectionPath, 0x00);

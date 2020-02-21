@@ -70,7 +70,8 @@ public:
      *
      * @param samReader the SAM reader
      */
-    static std::shared_ptr<SamResource> checkSamAndOpenChannel(std::shared_ptr<SeReader> samReader);
+    static std::shared_ptr<SamResource>
+    checkSamAndOpenChannel(std::shared_ptr<SeReader> samReader);
 
 private:
     /**
@@ -81,7 +82,8 @@ private:
     /**
      *
      */
-    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    class StaticConstructor
+    : public std::enable_shared_from_this<StaticConstructor> {
     public:
         StaticConstructor();
     };

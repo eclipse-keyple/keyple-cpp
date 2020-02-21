@@ -24,11 +24,9 @@ namespace plugin {
 namespace local {
 namespace monitoring {
 
-SmartRemovalMonitoringJob::SmartRemovalMonitoringJob(
-  SmartRemovalReader* reader)
+SmartRemovalMonitoringJob::SmartRemovalMonitoringJob(SmartRemovalReader* reader)
 : reader(reader)
 {
-
 }
 
 void SmartRemovalMonitoringJob::monitoringJob(
@@ -41,23 +39,25 @@ void SmartRemovalMonitoringJob::monitoringJob(
             // timeout is already managed within the task
             state->onEvent(InternalEvent::SE_REMOVED);
         } else {
-            logger->trace("[%s] waitForCardAbsentNative => return false, task" \
-                          " interrupted\n", reader->getName());
+            logger->trace("[%s] waitForCardAbsentNative => return false, task"
+                          " interrupted\n",
+                          reader->getName());
         }
-    } catch (KeypleIOReaderException &e) {
-        logger->trace("[%s] waitForCardAbsent => Error while polling SE with " \
-                      "waitForCardAbsent. %s\n", reader->getName(),
-                      e.getMessage());
+    } catch (KeypleIOReaderException& e) {
+        logger->trace("[%s] waitForCardAbsent => Error while polling SE with "
+                      "waitForCardAbsent. %s\n",
+                      reader->getName(), e.getMessage());
         state->onEvent(InternalEvent::STOP_DETECT);
     }
 }
 
-std::future<void> SmartRemovalMonitoringJob::startMonitoring(
-    AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
+std::future<void>
+SmartRemovalMonitoringJob::startMonitoring(AbstractObservableState* state,
+                                           std::atomic<bool>& cancellationFlag)
 {
     return std::async(std::launch::async,
-                      &SmartRemovalMonitoringJob::monitoringJob,
-                      this, state, std::ref(cancellationFlag));
+                      &SmartRemovalMonitoringJob::monitoringJob, this, state,
+                      std::ref(cancellationFlag));
 }
 
 void SmartRemovalMonitoringJob::stop()

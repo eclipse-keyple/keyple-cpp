@@ -18,7 +18,13 @@
 #include "SeResponse.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace keyple { namespace calypso { namespace transaction { class CalypsoPo; } } }
+namespace keyple {
+namespace calypso {
+namespace transaction {
+class CalypsoPo;
+}
+}
+}
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -32,22 +38,22 @@ namespace keyple { namespace calypso { namespace transaction { class CalypsoPo; 
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-        namespace keyple {
-            namespace calypso {
-                namespace transaction {
+namespace keyple {
+namespace calypso {
+namespace transaction {
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @RunWith(MockitoJUnitRunner.class) public class CalypsoPoTest
-                    class CalypsoPoTest : public std::enable_shared_from_this<CalypsoPoTest> {
-                        /* Building FCI data with the application byte as a variant and initialize PO */
-                    public:
-                        //static std::shared_ptr<CalypsoPo> getPoApplicationByte(char applicationByte);
-                        PoRevision getPoApplicationByte(char applicationByte);
+class CalypsoPoTest : public std::enable_shared_from_this<CalypsoPoTest> {
+    /* Building FCI data with the application byte as a variant and initialize PO */
+public:
+    //static std::shared_ptr<CalypsoPo> getPoApplicationByte(char applicationByte);
+    PoRevision getPoApplicationByte(char applicationByte);
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void computePoRevision()
-                        virtual void computePoRevision();
-                    };
-                }
-            }
-        }
+    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+    //ORIGINAL LINE: @Test public void computePoRevision()
+    virtual void computePoRevision();
+};
+}
+}
+}

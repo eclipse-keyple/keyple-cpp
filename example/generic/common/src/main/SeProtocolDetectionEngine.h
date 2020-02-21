@@ -25,7 +25,11 @@
 #include "SeSelection.h"
 
 /* Forward class declarations */
-namespace keyple { namespace seproxy { class SeReader; } }
+namespace keyple {
+namespace seproxy {
+class SeReader;
+}
+}
 
 namespace keyple {
 namespace example {
@@ -58,7 +62,9 @@ public:
     /**
      *
      */
-    virtual ~SeProtocolDetectionEngine() {}
+    virtual ~SeProtocolDetectionEngine()
+    {
+    }
 
     /**
      * Assign reader to the transaction engine
@@ -68,14 +74,16 @@ public:
     /**
      *
      */
-    virtual std::shared_ptr<AbstractDefaultSelectionsRequest> prepareSeSelection();
+    virtual std::shared_ptr<AbstractDefaultSelectionsRequest>
+    prepareSeSelection();
 
     /**
      * This method is called when a SE is inserted (or presented to the reader's antenna). It
      * executes a {@link DefaultSelectionRequest} and processes the {@link SelectionResponse}
      * showing the APDUs exchanges
      */
-    void processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse> selectionResponse) override;
+    void processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse>
+                            selectionResponse) override;
 
     /**
      *
@@ -98,7 +106,8 @@ protected:
      */
     std::shared_ptr<SeProtocolDetectionEngine> shared_from_this()
     {
-        return std::static_pointer_cast<SeProtocolDetectionEngine>(AbstractReaderObserverEngine::shared_from_this());
+        return std::static_pointer_cast<SeProtocolDetectionEngine>(
+            AbstractReaderObserverEngine::shared_from_this());
     }
 
 private:

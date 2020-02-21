@@ -31,7 +31,6 @@ StubSe1::StubSe1()
 {
 }
 
-
 const std::vector<uint8_t>& StubSe1::getATR()
 {
     return atr;
@@ -48,4 +47,3 @@ std::string StubSe1::getSeProcotol()
 }
 }
 }
-

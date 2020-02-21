@@ -35,8 +35,8 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-AbstractReader::AbstractReader(
-  const std::string& pluginName, const std::string& name)
+AbstractReader::AbstractReader(const std::string& pluginName,
+                               const std::string& name)
 : pluginName(pluginName), name(name),
   notificationMode(ObservableReader::NotificationMode::ALWAYS)
 {
@@ -63,10 +63,10 @@ int AbstractReader::compareTo(std::shared_ptr<SeReader> seReader)
     return this->getName().compare(seReader->getName());
 }
 
-std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
-    std::set<std::shared_ptr<SeRequest>>& requestSet,
-    MultiSeRequestProcessing multiSeRequestProcessing,
-    ChannelControl channelControl)
+std::list<std::shared_ptr<SeResponse>>
+AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
+                            MultiSeRequestProcessing multiSeRequestProcessing,
+                            ChannelControl channelControl)
 {
     /*
      * Alex:
@@ -88,14 +88,14 @@ std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
             static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
         logger->debug("[%s] transmit => SEREQUESTSET = %s, elapsed %d ms\n",
-                      this->getName().c_str(),
-                      "requestSet <to fix>", elapsedMs);
+                      this->getName().c_str(), "requestSet <to fix>",
+                      elapsedMs);
     }
 
     try {
         responseSet = processSeRequestSet(requestSet, multiSeRequestProcessing,
                                           channelControl);
-    } catch (const KeypleChannelControlException &ex) {
+    } catch (const KeypleChannelControlException& ex) {
         long long timeStamp = System::nanoTime();
         double elapsedMs =
             static_cast<double>((timeStamp - this->before) / 100000) / 10;
@@ -105,7 +105,7 @@ std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
         /* Throw an exception with the responses collected so far. */
         logger->debug("exception message: %s\n", ex.getMessage().c_str());
         throw ex;
-    } catch (const KeypleIOReaderException &ex) {
+    } catch (const KeypleIOReaderException& ex) {
         long long timeStamp = System::nanoTime();
         double elapsedMs =
             static_cast<double>((timeStamp - this->before) / 100000) / 10;
@@ -124,22 +124,23 @@ std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
             static_cast<double>((timeStamp - before) / 100000) / 10;
         this->before = timeStamp;
         logger->debug("[%s] transmit => SERESPONSESET = %s, elapsed %d ms\n",
-                      this->getName().c_str(),
-                      "responseSet <to fix>", elapsedMs);
+                      this->getName().c_str(), "responseSet <to fix>",
+                      elapsedMs);
     }
 
     return responseSet;
 }
 
-std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
-    std::set<std::shared_ptr<SeRequest>>& requestSet)
+std::list<std::shared_ptr<SeResponse>>
+AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet)
 {
     return transmitSet(requestSet, MultiSeRequestProcessing::FIRST_MATCH,
                        ChannelControl::KEEP_OPEN);
 }
 
-std::shared_ptr<SeResponse> AbstractReader::transmit(
-    std::shared_ptr<SeRequest> seRequest, ChannelControl channelControl)
+std::shared_ptr<SeResponse>
+AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest,
+                         ChannelControl channelControl)
 {
     if (seRequest == nullptr) {
         throw std::invalid_argument("seRequest must not be null\n");
@@ -153,20 +154,20 @@ std::shared_ptr<SeResponse> AbstractReader::transmit(
     if (logger->isDebugEnabled()) {
         long long timeStamp = System::nanoTime();
         double elapsedMs =
-        static_cast<double>((timeStamp - this->before) / 100000) / 10;
+            static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
 
         logger->debug("[%s] transmit => SEREQUEST = %s, elapsed %d ms\n",
-                      this->getName().c_str(),
-                      seRequest->toString().c_str(), elapsedMs);
+                      this->getName().c_str(), seRequest->toString().c_str(),
+                      elapsedMs);
     }
 
     try {
         seResponse = processSeRequest(seRequest, channelControl);
-    } catch (const KeypleChannelControlException &ex) {
+    } catch (const KeypleChannelControlException& ex) {
         long long timeStamp = System::nanoTime();
         double elapsedMs =
-         static_cast<double>((timeStamp - this->before) / 100000) / 10;
+            static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
 
         logger->debug("[%s] transmit => SEREQUEST channel failure. elaps. %d\n",
@@ -177,11 +178,10 @@ std::shared_ptr<SeResponse> AbstractReader::transmit(
          * (ex.getSeResponse()).
          */
         throw ex;
-    }
-    catch (const KeypleIOReaderException &ex) {
+    } catch (const KeypleIOReaderException& ex) {
         long long timeStamp = System::nanoTime();
         double elapsedMs =
-         static_cast<double>((timeStamp - this->before) / 100000) / 10;
+            static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
 
         logger->debug("[%s] transmit => SEREQUEST IO failure. elapsed %d\n",
@@ -197,19 +197,19 @@ std::shared_ptr<SeResponse> AbstractReader::transmit(
     if (logger->isDebugEnabled()) {
         long long timeStamp = System::nanoTime();
         double elapsedMs =
-         static_cast<double>((timeStamp - before) / 100000) / 10;
+            static_cast<double>((timeStamp - before) / 100000) / 10;
         this->before = timeStamp;
 
         logger->debug("[%s] transmit => SERESPONSE = %s, elapsed %d ms\n",
-                      this->getName().c_str(),
-                      seResponse->toString().c_str(), elapsedMs);
+                      this->getName().c_str(), seResponse->toString().c_str(),
+                      elapsedMs);
     }
 
     return seResponse;
 }
 
-std::shared_ptr<SeResponse> AbstractReader::transmit(
-    std::shared_ptr<SeRequest> seRequest)
+std::shared_ptr<SeResponse>
+AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest)
 {
     return transmit(seRequest, ChannelControl::KEEP_OPEN);
 }
@@ -236,7 +236,7 @@ void AbstractReader::notifySeProcessed()
         try {
             /* Close the physical channel thanks to CLOSE_AFTER flag */
             processSeRequest(nullptr, ChannelControl::CLOSE_AFTER);
-            logger->trace("Explicit communication closing requested, starting" \
+            logger->trace("Explicit communication closing requested, starting"
                           " removal sequence.");
         } catch (KeypleReaderException& e) {
             logger->error("KeypleReaderException while terminating: %s\n",
@@ -249,9 +249,10 @@ void AbstractReader::notifySeProcessed()
 
 void AbstractReader::notifyObservers(std::shared_ptr<ReaderEvent> event)
 {
-    logger->trace("[%s] AbstractReader => Notifying a reader event to %d "\
-                  "observers. EVENTNAME = %s", this->getName(),
-                  this->countObservers(), event->getEventType().getName());
+    logger->trace("[%s] AbstractReader => Notifying a reader event to %d "
+                  "observers. EVENTNAME = %s",
+                  this->getName(), this->countObservers(),
+                  event->getEventType().getName());
 
     setChanged();
 
@@ -261,7 +262,7 @@ void AbstractReader::notifyObservers(std::shared_ptr<ReaderEvent> event)
 void AbstractReader::setParameters(
     const std::map<std::string, std::string>& parameters)
 {
-    for (auto &en : parameters) {
+    for (auto& en : parameters) {
         setParameter(en.first, en.second);
     }
 }

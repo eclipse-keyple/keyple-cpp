@@ -31,7 +31,9 @@ public:
     /**
      *
      */
-    KeypleBaseException(const std::string& msg) : Exception(msg) {}
+    KeypleBaseException(const std::string& msg) : Exception(msg)
+    {
+    }
 
     /**
      *
@@ -39,7 +41,6 @@ public:
     KeypleBaseException(const std::string& msg, const std::exception& cause)
     : Exception(msg, cause)
     {
-
     }
 };
 

@@ -22,8 +22,8 @@ namespace po {
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
-PoCustomReadCommandBuilder::PoCustomReadCommandBuilder(const std::string &name,
-                                                       std::shared_ptr<ApduRequest> request)
+PoCustomReadCommandBuilder::PoCustomReadCommandBuilder(
+    const std::string& name, std::shared_ptr<ApduRequest> request)
 : AbstractIso7816CommandBuilder("PO Custom Read Command: " + name, request)
 {
 }

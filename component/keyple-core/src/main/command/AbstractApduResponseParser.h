@@ -34,12 +34,14 @@ using namespace keyple::core::seproxy::message;
 /**
     * Base class for parsing APDU
     */
-class EXPORT AbstractApduResponseParser : public std::enable_shared_from_this<AbstractApduResponseParser> {
+class EXPORT AbstractApduResponseParser
+: public std::enable_shared_from_this<AbstractApduResponseParser> {
 public:
     /**
      * Status code properties
      */
-    class EXPORT StatusProperties : public std::enable_shared_from_this<StatusProperties> {
+    class EXPORT StatusProperties
+    : public std::enable_shared_from_this<StatusProperties> {
     public:
         /**
          * A map with the double byte of a status as key, and the successful property and ASCII text
@@ -48,12 +50,14 @@ public:
          * @param successful set successful status
          * @param information additional information
          */
-        StatusProperties(bool successful, const std::string &information);
+        StatusProperties(bool successful, const std::string& information);
 
         /**
          *
          */
-        virtual ~StatusProperties() {}
+        virtual ~StatusProperties()
+        {
+        }
 
         /**
          * Gets the successful.
@@ -96,7 +100,9 @@ public:
     /**
      *
      */
-    virtual ~AbstractApduResponseParser() {}
+    virtual ~AbstractApduResponseParser()
+    {
+    }
 
     /**
      * Sets the Apdu response to parse
@@ -141,7 +147,8 @@ protected:
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<int, std::shared_ptr<StatusProperties>>
+        STATUS_TABLE;
 
     /**
      * Get the internal status table
@@ -149,13 +156,14 @@ protected:
      * @return Status table
      */
     virtual std::unordered_map<int, std::shared_ptr<StatusProperties>>
-        getStatusTable() const;
+    getStatusTable() const;
 
 private:
     /**
      *
      */
-    class StaticConstructor : public std::enable_shared_from_this<StaticConstructor> {
+    class StaticConstructor
+    : public std::enable_shared_from_this<StaticConstructor> {
     public:
         StaticConstructor();
     };
@@ -164,7 +172,6 @@ private:
      *
      */
     static AbstractApduResponseParser::StaticConstructor staticConstructor;
-
 
     /**
      * Indicates whether the ApduResponse has been provided or not

@@ -36,7 +36,7 @@ public:
      *
      * @param response of the SamReadEventCounterRespPars
      */
-     SamReadCeilingsRespPars(std::shared_ptr<ApduResponse> response);
+    SamReadCeilingsRespPars(std::shared_ptr<ApduResponse> response);
 
     /**
      * Gets the key parameters.

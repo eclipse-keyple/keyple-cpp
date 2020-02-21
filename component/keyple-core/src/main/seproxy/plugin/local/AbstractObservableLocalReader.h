@@ -57,7 +57,6 @@ enum class InternalEvent {
     TIME_OUT
 };
 
-
 /**
  * This abstract class is used to manage the matter of observing SE events in
  * the case of a local reader.
@@ -136,7 +135,6 @@ public:
     AbstractObservableLocalReader(const std::string& pluginName,
                                   const std::string& readerName);
 
-
     /**
      * Check the presence of a SE
      * <p>
@@ -194,9 +192,9 @@ public:
      *        MATCHED_ONLY)
      */
     void setDefaultSelectionRequest(
-             std::shared_ptr<AbstractDefaultSelectionsRequest>
-                 defaultSelectionsRequest,
-             const ObservableReader::NotificationMode notificationMode);
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        const ObservableReader::NotificationMode notificationMode);
 
     /**
      * A combination of defining the default selection request and starting the
@@ -212,10 +210,10 @@ public:
      *        made.
      */
     void setDefaultSelectionRequest(
-            std::shared_ptr<AbstractDefaultSelectionsRequest>
-                defaultSelectionsRequest,
-            const ObservableReader::NotificationMode notificationMode,
-            const ObservableReader::PollingMode pollingMode);
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        const ObservableReader::NotificationMode notificationMode,
+        const ObservableReader::PollingMode pollingMode);
 
     /**
      * This method is invoked when a SE is inserted in the case of an observable
@@ -331,16 +329,15 @@ protected:
      * @return initialized state stateService with possible states and the init
      * state
      */
-    virtual std::shared_ptr<ObservableReaderStateService> initStateService()
-        = 0;
+    virtual std::shared_ptr<ObservableReaderStateService>
+    initStateService() = 0;
 
 private:
     /**
      * Logger
     */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(AbstractObservableLocalReader));
-
+        LoggerFactory::getLogger(typeid(AbstractObservableLocalReader));
 
     /**
      * The default DefaultSelectionsRequest to be executed upon SE insertion
@@ -358,7 +355,6 @@ private:
      */
     ObservableReader::PollingMode currentPollingMode =
         ObservableReader::PollingMode::SINGLESHOT;
-
 };
 
 }

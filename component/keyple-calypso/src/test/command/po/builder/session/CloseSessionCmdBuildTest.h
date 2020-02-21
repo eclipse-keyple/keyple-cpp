@@ -23,22 +23,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-        namespace keyple {
-            namespace calypso {
-                namespace command {
-                    namespace po {
-                        namespace builder {
-                            namespace security {
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace po {
+namespace builder {
+namespace security {
 
+class CloseSessionCmdBuildTest
+: public std::enable_shared_from_this<CloseSessionCmdBuildTest> {
+public:
+    virtual void closeSessionCmdBuild();
+};
 
-                                class CloseSessionCmdBuildTest : public std::enable_shared_from_this<CloseSessionCmdBuildTest> {
-                                public:
-                                    virtual void closeSessionCmdBuild();
-                                };
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
+}
+}
+}
+}
+}
+}

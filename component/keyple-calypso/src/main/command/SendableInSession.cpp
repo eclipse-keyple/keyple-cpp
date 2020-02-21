@@ -12,7 +12,6 @@
 
 #include "SendableInSession.h"
 
-
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -20,4 +19,3 @@ namespace command {
 }
 }
 }
-

@@ -26,11 +26,11 @@ namespace common {
 class Pattern;
 
 class EXPORT Matcher {
-  private:
+private:
     /**
      * The Pattern object that created this Matcher.
      */
-    Pattern *parentPattern;
+    Pattern* parentPattern;
 
     /**
      * The original string being matched.
@@ -122,11 +122,11 @@ class EXPORT Matcher {
      */
     std::vector<int> locals;
 
-  public:
+public:
     /**
      * All matchers have the state used by Pattern during a match.
      */
-    Matcher(Pattern *parent, const std::string &text);
+    Matcher(Pattern* parent, const std::string& text);
 
     /**
      * Initiates a search for an anchored match to a Pattern within the given
@@ -266,9 +266,8 @@ class EXPORT Matcher {
      * character sequence. The anchoring and transparency of this matcher's region boundaries are
      * unaffected.
      */
-    Matcher *reset();
+    Matcher* reset();
 };
 
 }
 }
-

@@ -37,10 +37,8 @@ public:
      *
      * @param message : message to identify the exception and the context
      */
-    KeypleIOReaderException(const std::string &msg)
-    : KeypleReaderException(msg)
+    KeypleIOReaderException(const std::string& msg) : KeypleReaderException(msg)
     {
-
     }
 
     /**
@@ -49,12 +47,10 @@ public:
      * @param message : message to add some context to the exception
      * @param cause : lower level exception
      */
-    KeypleIOReaderException(const std::string &msg, std::exception& cause)
+    KeypleIOReaderException(const std::string& msg, std::exception& cause)
     : KeypleReaderException(msg, cause)
     {
-
     }
-
 };
 
 }

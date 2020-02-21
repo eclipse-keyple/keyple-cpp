@@ -25,10 +25,11 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
-DigestInitCmdBuild::DigestInitCmdBuild(
-  SamRevision revision, bool verificationMode, bool rev3_2Mode,
-  uint8_t workKeyRecordNumber, uint8_t workKeyKif, uint8_t workKeyKVC,
-  std::vector<uint8_t>& digestData)
+DigestInitCmdBuild::DigestInitCmdBuild(SamRevision revision,
+                                       bool verificationMode, bool rev3_2Mode,
+                                       uint8_t workKeyRecordNumber,
+                                       uint8_t workKeyKif, uint8_t workKeyKVC,
+                                       std::vector<uint8_t>& digestData)
 : AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_INIT, nullptr)
 {
     this->defaultRevision = revision;
@@ -43,7 +44,7 @@ DigestInitCmdBuild::DigestInitCmdBuild(
     }
 
     uint8_t cla = SamRevision::S1D == (this->defaultRevision) ? 0x94 : 0x80;
-    uint8_t p1 = 0x00;
+    uint8_t p1  = 0x00;
 
     if (verificationMode) {
         p1 += 1;
@@ -61,12 +62,11 @@ DigestInitCmdBuild::DigestInitCmdBuild(
     std::vector<uint8_t> dataIn;
 
     if (p2 == 0xFF) {
-        dataIn = std::vector<uint8_t>(2 + digestData.size());
+        dataIn    = std::vector<uint8_t>(2 + digestData.size());
         dataIn[0] = workKeyKif;
         dataIn[1] = workKeyKVC;
         System::arraycopy(digestData, 0, dataIn, 2, digestData.size());
-    }
-    else {
+    } else {
         dataIn.clear();
     }
 
@@ -76,7 +76,6 @@ DigestInitCmdBuild::DigestInitCmdBuild(
      *                        dataIn);
      */
     request = setApduRequest(cla, command, p1, p2, dataIn);
-
 }
 
 }

@@ -21,7 +21,9 @@ namespace sam {
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
-AbstractSamResponseParser::AbstractSamResponseParser(std::shared_ptr<ApduResponse> response) : AbstractApduResponseParser(response)
+AbstractSamResponseParser::AbstractSamResponseParser(
+    std::shared_ptr<ApduResponse> response)
+: AbstractApduResponseParser(response)
 {
 }
 

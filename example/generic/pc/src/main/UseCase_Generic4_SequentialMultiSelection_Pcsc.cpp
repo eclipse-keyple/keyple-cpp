@@ -44,28 +44,37 @@ using namespace keyple::example::generic::common;
 using namespace keyple::example::generic::pc;
 
 class UseCase_Generic4_SequentialMultiSelection_Pcsc {
-
 };
 
-const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(UseCase_Generic4_SequentialMultiSelection_Pcsc));
+const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(
+    typeid(UseCase_Generic4_SequentialMultiSelection_Pcsc));
 
-void doAndAnalyseSelection(std::shared_ptr<SeReader> seReader, std::shared_ptr<SeSelection> seSelection, int index)
+void doAndAnalyseSelection(std::shared_ptr<SeReader> seReader,
+                           std::shared_ptr<SeSelection> seSelection, int index)
 {
-    std::shared_ptr<SelectionsResult> selectionsResult = seSelection->processExplicitSelection(seReader);
+    std::shared_ptr<SelectionsResult> selectionsResult =
+        seSelection->processExplicitSelection(seReader);
     if (selectionsResult->hasActiveSelection()) {
-        std::shared_ptr<AbstractMatchingSe> matchingSe = selectionsResult->getMatchingSelection(index)->getMatchingSe();
+        std::shared_ptr<AbstractMatchingSe> matchingSe =
+            selectionsResult->getMatchingSelection(index)->getMatchingSe();
         logger->info("The SE matched the selection %d.", index);
-        logger->info("Selection status for case %d: \n\t\tATR: " \
-                         "%s\n\t\tFCI: %s\n", index,
-                         ByteArrayUtil::toHex(matchingSe->getSelectionStatus()->getAtr()->getBytes()).c_str(),
-                         ByteArrayUtil::toHex(matchingSe->getSelectionStatus()->getFci()->getDataOut()).c_str());
-    }
-    else {
-        logger->info("The selection 2 process did not return any selected SE\n");
+        logger->info(
+            "Selection status for case %d: \n\t\tATR: "
+            "%s\n\t\tFCI: %s\n",
+            index,
+            ByteArrayUtil::toHex(
+                matchingSe->getSelectionStatus()->getAtr()->getBytes())
+                .c_str(),
+            ByteArrayUtil::toHex(
+                matchingSe->getSelectionStatus()->getFci()->getDataOut())
+                .c_str());
+    } else {
+        logger->info(
+            "The selection 2 process did not return any selected SE\n");
     }
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
@@ -82,14 +91,16 @@ int main(int argc, char **argv)
      * Get a SE reader ready to work with contactless SE. Use the getReader helper method from
      * the ReaderUtilities class.
      */
-    std::shared_ptr<SeReader> seReader = ReaderUtilities::getDefaultContactLessSeReader();
+    std::shared_ptr<SeReader> seReader =
+        ReaderUtilities::getDefaultContactLessSeReader();
 
     /* Check if the reader exists */
     if (seReader == nullptr) {
         throw std::make_shared<IllegalStateException>("Bad SE reader setup");
     }
 
-    logger->info("=============== UseCase Generic #4: AID based sequential explicit multiple selection ==================\n");
+    logger->info("=============== UseCase Generic #4: AID based sequential "
+                 "explicit multiple selection ==================\n");
     logger->info("= SE Reader  NAME = %s\n", seReader->getName().c_str());
 
     std::shared_ptr<AbstractMatchingSe> matchingSe;
@@ -97,7 +108,8 @@ int main(int argc, char **argv)
     /* Check if a SE is present in the reader */
     if (seReader->isSePresent()) {
 
-        std::shared_ptr<SeSelection> seSelection = std::make_shared<SeSelection>();
+        std::shared_ptr<SeSelection> seSelection =
+            std::make_shared<SeSelection>();
 
         /* operate SE selection (change the AID here to adapt it to the SE used for the test) */
         //std::string seAidPrefix = "A000000404012509";
@@ -105,51 +117,71 @@ int main(int argc, char **argv)
 
         /* AID based selection */
         {
-        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
-        std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
-        std::shared_ptr<SeSelector::AidSelector> aidSelector  =
-            std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::FIRST,
-                                                      SeSelector::AidSelector::FileControlInformation::FCI);
-        std::shared_ptr<SeSelector> seSelector =
-            std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector, "Initial selection #1");
-        std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
-            std::make_shared<GenericSeSelectionRequest>(seSelector, ChannelState::KEEP_OPEN);
-        seSelection->prepareSelection(genericSeSelectionRequest);
-        doAndAnalyseSelection(seReader, seSelection, 1);
+            std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
+            std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
+                std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
+            std::shared_ptr<SeSelector::AidSelector> aidSelector =
+                std::make_shared<SeSelector::AidSelector>(
+                    isoAid, nullptr,
+                    SeSelector::AidSelector::FileOccurrence::FIRST,
+                    SeSelector::AidSelector::FileControlInformation::FCI);
+            std::shared_ptr<SeSelector> seSelector =
+                std::make_shared<SeSelector>(
+                    SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
+                    aidSelector, "Initial selection #1");
+            std::shared_ptr<GenericSeSelectionRequest>
+                genericSeSelectionRequest =
+                    std::make_shared<GenericSeSelectionRequest>(
+                        seSelector, ChannelState::KEEP_OPEN);
+            seSelection->prepareSelection(genericSeSelectionRequest);
+            doAndAnalyseSelection(seReader, seSelection, 1);
         }
 
         /* next selection (2nd selection, later indexed 1) */
         {
-        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
-        std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
-        std::shared_ptr<SeSelector::AidSelector> aidSelector  =
-            std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,
-                                                      SeSelector::AidSelector::FileControlInformation::FCI);
-        std::shared_ptr<SeSelector> seSelector =
-            std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector, "Initial selection #2");
-        std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
-            std::make_shared<GenericSeSelectionRequest>(seSelector, ChannelState::KEEP_OPEN);
-        seSelection->prepareSelection(genericSeSelectionRequest);
-        doAndAnalyseSelection(seReader, seSelection, 2);
+            std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
+            std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
+                std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
+            std::shared_ptr<SeSelector::AidSelector> aidSelector =
+                std::make_shared<SeSelector::AidSelector>(
+                    isoAid, nullptr,
+                    SeSelector::AidSelector::FileOccurrence::NEXT,
+                    SeSelector::AidSelector::FileControlInformation::FCI);
+            std::shared_ptr<SeSelector> seSelector =
+                std::make_shared<SeSelector>(
+                    SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
+                    aidSelector, "Initial selection #2");
+            std::shared_ptr<GenericSeSelectionRequest>
+                genericSeSelectionRequest =
+                    std::make_shared<GenericSeSelectionRequest>(
+                        seSelector, ChannelState::KEEP_OPEN);
+            seSelection->prepareSelection(genericSeSelectionRequest);
+            doAndAnalyseSelection(seReader, seSelection, 2);
         }
 
         /* next selection */
         {
-        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
-        std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid = std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
-        std::shared_ptr<SeSelector::AidSelector> aidSelector  =
-            std::make_shared<SeSelector::AidSelector>(isoAid, nullptr, SeSelector::AidSelector::FileOccurrence::NEXT,
-                                                      SeSelector::AidSelector::FileControlInformation::FCI);
-        std::shared_ptr<SeSelector> seSelector =
-            std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector, "Initial selection #3");
-        std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
-            std::make_shared<GenericSeSelectionRequest>(seSelector, ChannelState::CLOSE_AFTER);
-        seSelection->prepareSelection(genericSeSelectionRequest);
-        doAndAnalyseSelection(seReader, seSelection, 3);
+            std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
+            std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
+                std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
+            std::shared_ptr<SeSelector::AidSelector> aidSelector =
+                std::make_shared<SeSelector::AidSelector>(
+                    isoAid, nullptr,
+                    SeSelector::AidSelector::FileOccurrence::NEXT,
+                    SeSelector::AidSelector::FileControlInformation::FCI);
+            std::shared_ptr<SeSelector> seSelector =
+                std::make_shared<SeSelector>(
+                    SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
+                    aidSelector, "Initial selection #3");
+            std::shared_ptr<GenericSeSelectionRequest>
+                genericSeSelectionRequest =
+                    std::make_shared<GenericSeSelectionRequest>(
+                        seSelector, ChannelState::CLOSE_AFTER);
+            seSelection->prepareSelection(genericSeSelectionRequest);
+            doAndAnalyseSelection(seReader, seSelection, 3);
         }
 
-    }
-    else {
+    } else {
         logger->error("No SE were detected\n");
     }
 

@@ -37,11 +37,10 @@ char PoClass::getValue()
     return cla;
 }
 
-PoClass::PoClass(const std::string &name, InnerEnum innerEnum, char cla)
+PoClass::PoClass(const std::string& name, InnerEnum innerEnum, char cla)
 : innerEnumValue(innerEnum), nameValue(name), ordinalValue(nextOrdinal++),
   cla(cla)
 {
-
 }
 
 PoClass::PoClass(const PoClass& o)
@@ -63,9 +62,9 @@ bool PoClass::operator!=(const PoClass& o)
 PoClass& PoClass::operator=(const PoClass o)
 {
     this->innerEnumValue = o.innerEnumValue;
-    this->nameValue = o.nameValue;
-    this->ordinalValue = o.ordinalValue;
-    this->cla = o.cla;
+    this->nameValue      = o.nameValue;
+    this->ordinalValue   = o.ordinalValue;
+    this->cla            = o.cla;
 
     return *this;
 }
@@ -85,7 +84,7 @@ std::string PoClass::toString()
     return nameValue;
 }
 
-PoClass PoClass::valueOf(const std::string &name)
+PoClass PoClass::valueOf(const std::string& name)
 {
     for (auto enumInstance : PoClass::valueList) {
         if (enumInstance.nameValue == name) {

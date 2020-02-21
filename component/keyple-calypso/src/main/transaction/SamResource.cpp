@@ -32,7 +32,7 @@ SamResource::SamResource(std::shared_ptr<SeReader> seReader,
 : SeResource<CalypsoSam>(seReader, calypsoSam)
 {
     samResourceStatus = SamResourceStatus::FREE;
-    samIdentifier = nullptr;
+    samIdentifier     = nullptr;
 }
 
 bool SamResource::isSamResourceFree()

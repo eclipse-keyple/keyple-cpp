@@ -89,7 +89,6 @@ private:
         SESSION_CLOSED
     };
 
-
 public:
     /**
      * The PO Transaction Access Level: personalization, loading or debiting
@@ -184,9 +183,8 @@ public:
         /**
          * Constructor
          */
-        SessionAccessLevel(const std::string &nameValue, InnerEnum innerEnum,
-                           const std::string &name,
-                           char sessionKey);
+        SessionAccessLevel(const std::string& nameValue, InnerEnum innerEnum,
+                           const std::string& name, char sessionKey);
 
         /**
          *
@@ -201,12 +199,12 @@ public:
         /**
          *
          */
-        bool operator == (const SessionAccessLevel &other);
+        bool operator==(const SessionAccessLevel& other);
 
         /**
          *
          */
-        bool operator != (const SessionAccessLevel &other);
+        bool operator!=(const SessionAccessLevel& other);
 
         /**
          *
@@ -226,7 +224,7 @@ public:
         /**
          *
          */
-        static SessionAccessLevel valueOf(const std::string &name);
+        static SessionAccessLevel valueOf(const std::string& name);
     };
 
     /**
@@ -304,7 +302,7 @@ public:
                                bool sessionEncryption, bool verificationMode,
                                bool rev3_2Mode, uint8_t workKeyRecordNumber,
                                uint8_t workKeyKif, uint8_t workKeyKVC,
-                               const std::vector<uint8_t> &digestData);
+                               const std::vector<uint8_t>& digestData);
 
         /**
          * Appends a full PO exchange (request and response) to the digest data
@@ -347,7 +345,6 @@ public:
              */
             const std::shared_ptr<ApduResponse> apduResponse;
 
-
         public:
             /**
              *
@@ -358,7 +355,9 @@ public:
             /**
              *
              */
-            virtual ~CommandResponse() {}
+            virtual ~CommandResponse()
+            {
+            }
 
             /**
              *
@@ -381,7 +380,7 @@ public:
          * A Map of SFI and Commands/Responses
          */
         static std::unordered_map<char, std::shared_ptr<CommandResponse>>
-                   sfiCommandResponseHashMap;
+            sfiCommandResponseHashMap;
 
     public:
         /**
@@ -394,12 +393,12 @@ public:
          *        apduRequest/apduResponse pair has to be ignored or not.
          */
         static void storeCommandResponse(
-                        std::vector<std::shared_ptr<PoBuilderParser<
-                            AbstractPoCommandBuilder<
-                                AbstractPoResponseParser>>>>& poBuilderParsers,
-                        std::vector<std::shared_ptr<ApduRequest>>& apduRequests,
-                        std::vector<std::shared_ptr<ApduResponse>>&
-                            apduResponses, bool skipFirstItem);
+            std::vector<std::shared_ptr<PoBuilderParser<
+                AbstractPoCommandBuilder<AbstractPoResponseParser>>>>&
+                poBuilderParsers,
+            std::vector<std::shared_ptr<ApduRequest>>& apduRequests,
+            std::vector<std::shared_ptr<ApduResponse>>& apduResponses,
+            bool skipFirstItem);
 
     public:
         /**
@@ -424,10 +423,10 @@ public:
          * @throws KeypleCalypsoSecureSessionException if an response can't be
          *         determined.
          */
-        static std::vector<std::shared_ptr<ApduResponse>> getResponses(
-                   std::vector<std::shared_ptr<PoBuilderParser<
-                       AbstractPoCommandBuilder<AbstractPoResponseParser>>>>&
-                           poBuilderParsers);
+        static std::vector<std::shared_ptr<ApduResponse>>
+        getResponses(std::vector<std::shared_ptr<PoBuilderParser<
+                         AbstractPoCommandBuilder<AbstractPoResponseParser>>>>&
+                         poBuilderParsers);
     };
 
     /* private constants */
@@ -460,7 +459,7 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(PoTransaction));
+        LoggerFactory::getLogger(typeid(PoTransaction));
 
     /**
      * The reader for PO
@@ -536,10 +535,10 @@ private:
     /**
      * The list to contain the prepared commands and their parsers
      */
-    std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
-        AbstractPoResponseParser>>>> poBuilderParserList =
-            std::vector<std::shared_ptr<PoBuilderParser<
-                AbstractPoCommandBuilder<AbstractPoResponseParser>>>>();
+    std::vector<std::shared_ptr<
+        PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>>
+        poBuilderParserList = std::vector<std::shared_ptr<PoBuilderParser<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>>>();
 
     /**
      * The current secure session modification mode: ATOMIC or MULTIPLE
@@ -559,12 +558,12 @@ private:
     /**
      *
      */
-    int modificationsCounterMax        = 0;
+    int modificationsCounterMax = 0;
 
     /**
      *
      */
-    int modificationsCounter           = 0;
+    int modificationsCounter = 0;
 
     /**
      *
@@ -652,12 +651,13 @@ public:
      *         generated "Open Secure Session" command
      * @throws KeypleReaderException the IO reader exception
      */
-  private:
+private:
     std::shared_ptr<SeResponse> processAtomicOpening(
         SessionAccessLevel accessLevel, uint8_t openingSfiToSelect,
         uint8_t openingRecordNumberToRead,
-        std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>>>& poBuilderParsers);
+        std::vector<std::shared_ptr<PoBuilderParser<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>>>&
+            poBuilderParsers);
 
     /**
      * Change SendableInSession List to ApduRequest List .
@@ -665,11 +665,12 @@ public:
      * @param poOrSamCommandsInsideSession a po or sam commands list to be sent in session
      * @return the ApduRequest list
      */
-//JAVA TO C++ CONVERTER TODO TASK: There is no native C++ template equivalent to this generic constraint:
-//ORIGINAL LINE: private List<ApduRequest> getApduRequestsToSendInSession(List<? extends org.eclipse.keyple.calypso.command.CalypsoBuilderParser> poOrSamCommandsInsideSession)
+    //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ template equivalent to this generic constraint:
+    //ORIGINAL LINE: private List<ApduRequest> getApduRequestsToSendInSession(List<? extends org.eclipse.keyple.calypso.command.CalypsoBuilderParser> poOrSamCommandsInsideSession)
     std::vector<std::shared_ptr<ApduRequest>> getApduRequestsToSendInSession(
-                    std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
-                                        AbstractPoResponseParser>>>> poOrSamCommandsInsideSession);
+        std::vector<std::shared_ptr<PoBuilderParser<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>>>
+            poOrSamCommandsInsideSession);
 
     /**
      * Process PO commands in a Secure Session.
@@ -691,9 +692,9 @@ public:
      * @throws KeypleReaderException IO Reader exception
      */
     std::shared_ptr<SeResponse> processAtomicPoCommands(
-         std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
-                                                    AbstractPoResponseParser>>>> &poBuilderParsers,
-         ChannelControl channelControl);
+        std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
+            AbstractPoResponseParser>>>>& poBuilderParsers,
+        ChannelControl channelControl);
 
     /**
      * Process SAM commands.
@@ -796,8 +797,8 @@ public:
      */
     std::shared_ptr<SeResponse> processAtomicClosing(
         std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
-                                              AbstractPoResponseParser>>>> &poModificationCommands,
-        std::vector<std::shared_ptr<ApduResponse>> &poAnticipatedResponses,
+            AbstractPoResponseParser>>>>& poModificationCommands,
+        std::vector<std::shared_ptr<ApduResponse>>& poAnticipatedResponses,
         TransmissionMode transmissionMode, ChannelControl channelControl);
 
     /**
@@ -820,9 +821,9 @@ public:
      *         </ul>
      */
     std::shared_ptr<SeResponse> processAtomicClosing(
-         std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
-                                                    AbstractPoResponseParser>>>> &poBuilderParsers,
-         TransmissionMode transmissionMode, ChannelControl channelControl);
+        std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
+            AbstractPoResponseParser>>>>& poBuilderParsers,
+        TransmissionMode transmissionMode, ChannelControl channelControl);
 
     /**
      * Get the Secure Session Status.
@@ -995,10 +996,10 @@ public:
      */
 private:
     bool createResponseParsers(
-            std::shared_ptr<SeResponse> seResponse,
-            std::vector<std::shared_ptr<PoBuilderParser<
-                AbstractPoCommandBuilder<AbstractPoResponseParser>>>>&
-                    poBuilderParsers);
+        std::shared_ptr<SeResponse> seResponse,
+        std::vector<std::shared_ptr<PoBuilderParser<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>>>&
+            poBuilderParsers);
 
     /**
      * Checks whether the requirement for the modifications buffer of the
@@ -1012,8 +1013,8 @@ private:
      * @param modificationCommand the modification command
      * @return true or false
      */
-    bool willOverflowBuffer(std::shared_ptr<PoModificationCommand>
-                            modificationCommand);
+    bool willOverflowBuffer(
+        std::shared_ptr<PoModificationCommand> modificationCommand);
 
     /**
      * Initialized the modifications buffer counter to its maximum value for the
@@ -1027,8 +1028,8 @@ private:
      * Handle the clearing of the lists.
      */
     int createAndStoreCommandBuilder(
-            std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
-                commandBuilder);
+        std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
+            commandBuilder);
 
     /**
      * Prepare a select file ApduRequest to be executed following the selection.
@@ -1071,10 +1072,11 @@ public:
      * @throws IllegalArgumentException - if the request is inconsistent
      */
 private:
-    int prepareReadRecordsCmdInternal(
-            uint8_t sfi, ReadDataStructure readDataStructureEnum,
-            uint8_t firstRecordNumber, int expectedLength,
-            const std::string& extraInfo);
+    int prepareReadRecordsCmdInternal(uint8_t sfi,
+                                      ReadDataStructure readDataStructureEnum,
+                                      uint8_t firstRecordNumber,
+                                      int expectedLength,
+                                      const std::string& extraInfo);
 
     /**
      * Builds a ReadRecords command and add it to the list of commands to be
@@ -1141,7 +1143,7 @@ public:
      */
     int prepareAppendRecordCmd(uint8_t sfi,
                                const std::vector<uint8_t>& newRecordData,
-                               const std::string &extraInfo);
+                               const std::string& extraInfo);
 
     /**
      * Builds an UpdateRecord command and add it to the list of commands to be
@@ -1231,7 +1233,7 @@ public:
      * @return the corresponding command parser
      */
     std::shared_ptr<AbstractApduResponseParser>
-        getResponseParser(int commandIndex);
+    getResponseParser(int commandIndex);
 };
 
 }

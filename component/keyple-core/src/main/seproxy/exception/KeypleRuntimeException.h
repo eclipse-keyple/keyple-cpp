@@ -30,19 +30,20 @@ namespace exception {
 using namespace keyple::common;
 
 class EXPORT KeypleRuntimeException
-: public Exception,public std::enable_shared_from_this<KeypleRuntimeException> {
+: public Exception,
+  public std::enable_shared_from_this<KeypleRuntimeException> {
 public:
     /**
      *
      */
-    KeypleRuntimeException(const std::string &message) : Exception(message)
+    KeypleRuntimeException(const std::string& message) : Exception(message)
     {
     }
 
     /**
      *
      */
-    KeypleRuntimeException(const std::string &message, std::runtime_error cause)
+    KeypleRuntimeException(const std::string& message, std::runtime_error cause)
     : Exception(message, cause)
     {
     }

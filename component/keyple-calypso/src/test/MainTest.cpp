@@ -14,7 +14,7 @@
 
 using namespace testing;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     /* Initialize GTest */
     ::InitGoogleTest(&argc, argv);

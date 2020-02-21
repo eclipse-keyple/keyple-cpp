@@ -30,10 +30,9 @@ namespace exception {
  */
 class EXPORT KeypleReaderNotFoundException : public KeypleReaderException {
 public:
-    KeypleReaderNotFoundException(const std::string &readerName)
-    : KeypleReaderException(
-        StringHelper::formatSimple("Reader with name %s was not found",
-                                   readerName))
+    KeypleReaderNotFoundException(const std::string& readerName)
+    : KeypleReaderException(StringHelper::formatSimple(
+          "Reader with name %s was not found", readerName))
     {
     }
 };

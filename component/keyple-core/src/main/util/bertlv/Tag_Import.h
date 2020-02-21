@@ -38,10 +38,7 @@ public:
     /**
      *
      */
-    enum class TagType {
-        PRIMITIVE,
-        CONSTRUCTED
-    };
+    enum class TagType { PRIMITIVE, CONSTRUCTED };
 
     /**
      * The tag class
@@ -75,7 +72,9 @@ public:
     /**
      *
      */
-    virtual ~Tag() {}
+    virtual ~Tag()
+    {
+    }
 
     /**
      *

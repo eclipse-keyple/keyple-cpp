@@ -52,120 +52,86 @@ using namespace keyple::calypso::command::sam::parser::security;
 using namespace keyple::core::command;
 
 CalypsoSamCommands CalypsoSamCommands::SELECT_DIVERSIFIER(
-    "SELECT_DIVERSIFIER",
-    InnerEnum::SELECT_DIVERSIFIER,
-    "Select Diversifier",
-    static_cast<char>(0x14),
-    typeid(SelectDiversifierCmdBuild),
+    "SELECT_DIVERSIFIER", InnerEnum::SELECT_DIVERSIFIER, "Select Diversifier",
+    static_cast<char>(0x14), typeid(SelectDiversifierCmdBuild),
     typeid(SelectDiversifierRespPars));
 
-CalypsoSamCommands CalypsoSamCommands::GET_CHALLENGE(
-    "GET_CHALLENGE",
-    InnerEnum::GET_CHALLENGE,
-    "Get Challenge",
-    static_cast<char>(0x84),
-    typeid(SamGetChallengeCmdBuild),
-    typeid(SamGetChallengeRespPars));
+CalypsoSamCommands
+    CalypsoSamCommands::GET_CHALLENGE("GET_CHALLENGE", InnerEnum::GET_CHALLENGE,
+                                      "Get Challenge", static_cast<char>(0x84),
+                                      typeid(SamGetChallengeCmdBuild),
+                                      typeid(SamGetChallengeRespPars));
 
-CalypsoSamCommands CalypsoSamCommands::DIGEST_INIT(
-    "DIGEST_INIT",
-    InnerEnum::DIGEST_INIT,
-    "Digest Init",
-    static_cast<char>(0x8A),
-    typeid(DigestInitCmdBuild),
-    typeid(DigestInitRespPars));
+CalypsoSamCommands CalypsoSamCommands::DIGEST_INIT("DIGEST_INIT",
+                                                   InnerEnum::DIGEST_INIT,
+                                                   "Digest Init",
+                                                   static_cast<char>(0x8A),
+                                                   typeid(DigestInitCmdBuild),
+                                                   typeid(DigestInitRespPars));
 
-CalypsoSamCommands CalypsoSamCommands::DIGEST_UPDATE(
-    "DIGEST_UPDATE",
-    InnerEnum::DIGEST_UPDATE,
-    "Digest Update",
-    static_cast<char>(0x8C),
-    typeid(DigestUpdateCmdBuild),
-    typeid(DigestUpdateRespPars));
+CalypsoSamCommands
+    CalypsoSamCommands::DIGEST_UPDATE("DIGEST_UPDATE", InnerEnum::DIGEST_UPDATE,
+                                      "Digest Update", static_cast<char>(0x8C),
+                                      typeid(DigestUpdateCmdBuild),
+                                      typeid(DigestUpdateRespPars));
 
 CalypsoSamCommands CalypsoSamCommands::DIGEST_UPDATE_MULTIPLE(
-    "DIGEST_UPDATE_MULTIPLE",
-    InnerEnum::DIGEST_UPDATE_MULTIPLE,
-    "Digest Update Multiple",
-    static_cast<char>(0x8C),
-    typeid(DigestUpdateMultipleCmdBuild),
-    typeid(DigestUpdateMultipleRespPars));
+    "DIGEST_UPDATE_MULTIPLE", InnerEnum::DIGEST_UPDATE_MULTIPLE,
+    "Digest Update Multiple", static_cast<char>(0x8C),
+    typeid(DigestUpdateMultipleCmdBuild), typeid(DigestUpdateMultipleRespPars));
 
-CalypsoSamCommands CalypsoSamCommands::DIGEST_CLOSE(
-    "DIGEST_CLOSE",
-    InnerEnum::DIGEST_CLOSE,
-    "Digest Close",
-    static_cast<char>(0x8E),
-    typeid(DigestCloseCmdBuild),
-    typeid(DigestCloseRespPars));
+CalypsoSamCommands
+    CalypsoSamCommands::DIGEST_CLOSE("DIGEST_CLOSE", InnerEnum::DIGEST_CLOSE,
+                                     "Digest Close", static_cast<char>(0x8E),
+                                     typeid(DigestCloseCmdBuild),
+                                     typeid(DigestCloseRespPars));
 
 CalypsoSamCommands CalypsoSamCommands::DIGEST_AUTHENTICATE(
-    "DIGEST_AUTHENTICATE",
-    InnerEnum::DIGEST_AUTHENTICATE,
-    "Digest Authenticate",
-    static_cast<char>(0x82),
-    typeid(DigestAuthenticateCmdBuild),
-    typeid(DigestAuthenticateRespPars));
+    "DIGEST_AUTHENTICATE", InnerEnum::DIGEST_AUTHENTICATE,
+    "Digest Authenticate", static_cast<char>(0x82),
+    typeid(DigestAuthenticateCmdBuild), typeid(DigestAuthenticateRespPars));
 
-CalypsoSamCommands CalypsoSamCommands::GIVE_RANDOM(
-    "GIVE_RANDOM",
-    InnerEnum::GIVE_RANDOM,
-    "Give Random",
-    static_cast<char>(0x86),
-    typeid(GiveRandomCmdBuild),
-    typeid(GiveRandomRespPars));
+CalypsoSamCommands CalypsoSamCommands::GIVE_RANDOM("GIVE_RANDOM",
+                                                   InnerEnum::GIVE_RANDOM,
+                                                   "Give Random",
+                                                   static_cast<char>(0x86),
+                                                   typeid(GiveRandomCmdBuild),
+                                                   typeid(GiveRandomRespPars));
 
 CalypsoSamCommands CalypsoSamCommands::CARD_GENERATE_KEY(
-    "CARD_GENERATE_KEY",
-    InnerEnum::CARD_GENERATE_KEY,
-    "Card Generate Key",
-    static_cast<char>(0x12),
-    typeid(CardGenerateKeyCmdBuild),
+    "CARD_GENERATE_KEY", InnerEnum::CARD_GENERATE_KEY, "Card Generate Key",
+    static_cast<char>(0x12), typeid(CardGenerateKeyCmdBuild),
     typeid(CardGenerateKeyRespPars));
 
-CalypsoSamCommands CalypsoSamCommands::UNLOCK(
-    "UNLOCK",
-    InnerEnum::UNLOCK,
-    "Unlock",
-    static_cast<char>(0x20),
-    typeid(UnlockCmdBuild),
-    typeid(UnlockRespPars));
+CalypsoSamCommands CalypsoSamCommands::UNLOCK("UNLOCK", InnerEnum::UNLOCK,
+                                              "Unlock", static_cast<char>(0x20),
+                                              typeid(UnlockCmdBuild),
+                                              typeid(UnlockRespPars));
 
 CalypsoSamCommands CalypsoSamCommands::WRITE_KEY(
-    "WRITE_KEY",
-    InnerEnum::WRITE_KEY,
-    "Write Key",
-    static_cast<char>(0x1A),
-    typeid(SamWriteKeyCmdBuild),
-    typeid(SamWriteKeyRespPars));
+    "WRITE_KEY", InnerEnum::WRITE_KEY, "Write Key", static_cast<char>(0x1A),
+    typeid(SamWriteKeyCmdBuild), typeid(SamWriteKeyRespPars));
 
 CalypsoSamCommands CalypsoSamCommands::READ_KEY_PARAMETERS(
-    "READ_KEY_PARAMETERS",
-    InnerEnum::READ_KEY_PARAMETERS,
-    "Read Key Parameters",
-    static_cast<char>(0xBC),
-    typeid(SamReadKeyParametersCmdBuild),
-    typeid(SamReadKeyParametersRespPars));
+    "READ_KEY_PARAMETERS", InnerEnum::READ_KEY_PARAMETERS,
+    "Read Key Parameters", static_cast<char>(0xBC),
+    typeid(SamReadKeyParametersCmdBuild), typeid(SamReadKeyParametersRespPars));
 
 CalypsoSamCommands CalypsoSamCommands::READ_EVENT_COUNTER(
-    "READ_EVENT_COUNTER",
-    InnerEnum::READ_EVENT_COUNTER,
-    "Read Event Counter",
-    static_cast<char>(0xBE),
-    typeid(SamReadEventCounterCmdBuild),
+    "READ_EVENT_COUNTER", InnerEnum::READ_EVENT_COUNTER, "Read Event Counter",
+    static_cast<char>(0xBE), typeid(SamReadEventCounterCmdBuild),
     typeid(SamReadEventCounterRespPars));
 
-CalypsoSamCommands CalypsoSamCommands::READ_CEILINGS(
-    "READ_CEILINGS",
-    InnerEnum::READ_CEILINGS,
-    "Read Ceilings",
-    static_cast<char>(0xBE),
-    typeid(SamReadCeilingsCmdBuild),
-    typeid(SamReadCeilingsRespPars));
+CalypsoSamCommands
+    CalypsoSamCommands::READ_CEILINGS("READ_CEILINGS", InnerEnum::READ_CEILINGS,
+                                      "Read Ceilings", static_cast<char>(0xBE),
+                                      typeid(SamReadCeilingsCmdBuild),
+                                      typeid(SamReadCeilingsRespPars));
 
 std::vector<CalypsoSamCommands> CalypsoSamCommands::valueList;
 
-CalypsoSamCommands::StaticConstructor::StaticConstructor() {
+CalypsoSamCommands::StaticConstructor::StaticConstructor()
+{
     valueList.push_back(SELECT_DIVERSIFIER);
     valueList.push_back(GET_CHALLENGE);
     valueList.push_back(DIGEST_INIT);
@@ -179,9 +145,9 @@ CalypsoSamCommands::StaticConstructor CalypsoSamCommands::staticConstructor;
 int CalypsoSamCommands::nextOrdinal = 0;
 
 CalypsoSamCommands::CalypsoSamCommands(
-  const std::string &nameValue, InnerEnum innerEnum, const std::string &name,
-  char instructionByte, const std::type_info& commandBuilderClass,
-  const std::type_info& responseParserClass)
+    const std::string& nameValue, InnerEnum innerEnum, const std::string& name,
+    char instructionByte, const std::type_info& commandBuilderClass,
+    const std::type_info& responseParserClass)
 : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++),
   name(name), instructionbyte(instructionByte),
   commandBuilderClass(commandBuilderClass),
@@ -209,12 +175,12 @@ const std::type_info& CalypsoSamCommands::getResponseParserClass() const
     return responseParserClass;
 }
 
-bool CalypsoSamCommands::operator==(const CalypsoSamCommands &other)
+bool CalypsoSamCommands::operator==(const CalypsoSamCommands& other)
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool CalypsoSamCommands::operator!=(const CalypsoSamCommands &other)
+bool CalypsoSamCommands::operator!=(const CalypsoSamCommands& other)
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -234,7 +200,7 @@ std::string CalypsoSamCommands::toString()
     return nameValue;
 }
 
-CalypsoSamCommands CalypsoSamCommands::valueOf(const std::string &name)
+CalypsoSamCommands CalypsoSamCommands::valueOf(const std::string& name)
 {
     for (auto enumInstance : CalypsoSamCommands::valueList) {
         if (enumInstance.nameValue == name) {

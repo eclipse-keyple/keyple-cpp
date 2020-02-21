@@ -24,10 +24,9 @@ namespace security {
 using namespace keyple::calypso::command::sam;
 
 DigestUpdateMultipleCmdBuild::DigestUpdateMultipleCmdBuild(
-  SamRevision revision, std::vector<uint8_t>& digestData)
-: AbstractSamCommandBuilder(
-      CalypsoSamCommands::DIGEST_UPDATE_MULTIPLE, nullptr)
- {
+    SamRevision revision, std::vector<uint8_t>& digestData)
+: AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_UPDATE_MULTIPLE, nullptr)
+{
     this->defaultRevision = revision;
 
     uint8_t cla = this->defaultRevision.getClassByte();

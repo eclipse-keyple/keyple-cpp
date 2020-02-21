@@ -27,7 +27,7 @@ namespace plugin {
 namespace pcsc {
 
 #ifdef WIN32
-static char *pcsc_stringify_error(LONG rv)
+static char* pcsc_stringify_error(LONG rv)
 {
     static char out[20];
     sprintf_s(out, sizeof(out), "0x%08X", rv);
@@ -37,7 +37,7 @@ static char *pcsc_stringify_error(LONG rv)
 #endif
 
 PcscTerminal::PcscTerminal(const std::string& name)
-: context(0), handle(0), state(0), name(name), contextEstablished(false) 
+: context(0), handle(0), state(0), name(name), contextEstablished(false)
 {
     memset(&pioSendPCI, 0, sizeof(SCARD_IO_REQUEST));
 }
@@ -51,9 +51,9 @@ const std::vector<std::string>& PcscTerminal::listTerminals()
 {
     LONG ret;
     SCARDCONTEXT context;
-    char *readers = NULL;
-    char *ptr = NULL;
-    DWORD len = 0;
+    char* readers = NULL;
+    char* ptr     = NULL;
+    DWORD len     = 0;
     static std::vector<std::string> list;
 
     /* Clear list */
@@ -69,7 +69,7 @@ const std::vector<std::string>& PcscTerminal::listTerminals()
         throw PcscTerminalException("SCardListReaders failed");
     }
 
-    readers = (char *)calloc(len, sizeof(char));
+    readers = (char*)calloc(len, sizeof(char));
 
     if (!len || !readers)
         /* No readers to add to list */
@@ -131,20 +131,19 @@ bool PcscTerminal::isCardPresent()
     try {
         establishContext();
     } catch (PcscTerminalException& e) {
-        logger->error("isCardPresent - caught PcscTerminalException (msg: %s" \
-                      ", cause: %s)\n", e.getMessage().c_str(),
-                      e.getCause().what());
+        logger->error("isCardPresent - caught PcscTerminalException (msg: %s"
+                      ", cause: %s)\n",
+                      e.getMessage().c_str(), e.getCause().what());
         throw e;
     }
 
     rv = SCardConnect(this->context, (LPCSTR)this->name.c_str(),
-                      SCARD_SHARE_SHARED,
-                      SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &hCard,
-                      &protocol);
+                      SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
+                      &hCard, &protocol);
     if (rv != SCARD_S_SUCCESS) {
         if (rv != (int)SCARD_E_NO_SMARTCARD)
             logger->debug("isCardPresent - error connecting to card (%s)\n",
-                            pcsc_stringify_error(rv));
+                          pcsc_stringify_error(rv));
         releaseContext();
         return false;
     }
@@ -193,9 +192,9 @@ void PcscTerminal::openAndConnect(std::string protocol)
     try {
         establishContext();
     } catch (PcscTerminalException& e) {
-        logger->error("isCardPresent - caught PcscTerminalException (msg: %s" \
-                      ", cause: %s)\n", e.getMessage().c_str(),
-                      e.getCause().what());
+        logger->error("isCardPresent - caught PcscTerminalException (msg: %s"
+                      ", cause: %s)\n",
+                      e.getMessage().c_str(), e.getCause().what());
         throw e;
     }
 
@@ -207,14 +206,14 @@ void PcscTerminal::openAndConnect(std::string protocol)
         connectProtocol = SCARD_PROTOCOL_T1;
     } else if (!protocol.compare("direct")) {
         connectProtocol = 0;
-        sharingMode = SCARD_SHARE_DIRECT;
+        sharingMode     = SCARD_SHARE_DIRECT;
     } else {
         throw IllegalArgumentException("Unsupported protocol " + protocol);
     }
 
-    logger->debug("openAndConnect - connecting with protocol: %s, " \
-                  "connectProtocol: %d and sharingMode: %d\n", protocol.c_str(),
-                  connectProtocol, sharingMode);
+    logger->debug("openAndConnect - connecting with protocol: %s, "
+                  "connectProtocol: %d and sharingMode: %d\n",
+                  protocol.c_str(), connectProtocol, sharingMode);
 
     rv = SCardConnect(this->context, this->name.c_str(), sharingMode,
                       connectProtocol, &this->handle, &this->protocol);
@@ -296,7 +295,7 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(std::vector<uint8_t> apduIn)
     /* To check */
     bool t0GetResponse = true;
     bool t1GetResponse = true;
-    bool t1StripLe = true;
+    bool t1StripLe     = true;
 
     logger->debug("doTransmit\n");
 
@@ -304,7 +303,7 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(std::vector<uint8_t> apduIn)
      * Note that we modify the 'command' array in some cases, so it must
      * be a copy of the application provided data
      */
-    int n = apduIn.size();
+    int n   = apduIn.size();
     bool t0 = this->protocol == SCARD_PROTOCOL_T0;
     bool t1 = this->protocol == SCARD_PROTOCOL_T1;
     if (t0 && (n >= 7) && (apduIn[4] == 0)) {
@@ -325,7 +324,7 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(std::vector<uint8_t> apduIn)
     }
 
     bool getresponse = (t0 && t0GetResponse) || (t1 && t1GetResponse);
-    int k = 0;
+    int k            = 0;
     std::vector<uint8_t> result;
 
     while (true) {
@@ -334,9 +333,8 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(std::vector<uint8_t> apduIn)
         }
         char r_apdu[261];
         DWORD dwRecv = sizeof(r_apdu);
-        SCardTransmit(this->handle, &this->pioSendPCI,
-                      (LPCBYTE)apduIn.data(), apduIn.size(), NULL,
-                      (LPBYTE)r_apdu, &dwRecv);
+        SCardTransmit(this->handle, &this->pioSendPCI, (LPCBYTE)apduIn.data(),
+                      apduIn.size(), NULL, (LPBYTE)r_apdu, &dwRecv);
         std::vector<uint8_t> response(r_apdu, r_apdu + dwRecv);
         int rn = response.size();
         if (getresponse && (rn >= 2)) {
@@ -357,7 +355,7 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(std::vector<uint8_t> apduIn)
                 apduIn[2] = 0;
                 apduIn[3] = 0;
                 apduIn[4] = response[rn - 1];
-                n = 5;
+                n         = 5;
                 continue;
             }
         }
@@ -365,17 +363,14 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(std::vector<uint8_t> apduIn)
         break;
     }
     return result;
-
 }
 
 void PcscTerminal::beginExclusive()
 {
-
 }
 
 void PcscTerminal::endExclusive()
 {
-
 }
 
 }

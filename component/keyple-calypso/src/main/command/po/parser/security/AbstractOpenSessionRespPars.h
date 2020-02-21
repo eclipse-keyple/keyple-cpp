@@ -113,8 +113,8 @@ public:
          * @param secureSessionData the secure session data from the response of
          *        open secure session APDU command
          */
-        SecureSession(const std::vector<uint8_t> &challengeTransactionCounter,
-                      const std::vector<uint8_t> &challengeRandomNumber,
+        SecureSession(const std::vector<uint8_t>& challengeTransactionCounter,
+                      const std::vector<uint8_t>& challengeRandomNumber,
                       bool previousSessionRatified,
                       bool manageSecureSessionAuthorized, uint8_t kif,
                       std::shared_ptr<Byte> kvc,
@@ -169,7 +169,9 @@ public:
         /**
          *
          */
-        virtual ~SecureSession() {}
+        virtual ~SecureSession()
+        {
+        }
 
         /**
          *
@@ -228,8 +230,9 @@ private:
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<
-               AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        STATUS_TABLE;
 
     /**
      *
@@ -249,9 +252,9 @@ protected:
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<
-        AbstractApduResponseParser::StatusProperties>> getStatusTable() const
-        override;
+    std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+    getStatusTable() const override;
 
 private:
     /**
@@ -277,13 +280,15 @@ public:
     /**
      *
      */
-    virtual ~AbstractOpenSessionRespPars() {}
+    virtual ~AbstractOpenSessionRespPars()
+    {
+    }
 
     /**
      *
      */
-    static std::shared_ptr<AbstractOpenSessionRespPars> create(
-               std::shared_ptr<ApduResponse> response, PoRevision revision);
+    static std::shared_ptr<AbstractOpenSessionRespPars>
+    create(std::shared_ptr<ApduResponse> response, PoRevision revision);
 
     /*
      * C++: This method is called from the class constructor. It *cannot* be
@@ -291,7 +296,6 @@ public:
      */
     //virtual std::shared_ptr<SecureSession> toSecureSession(
     //              std::vector<char> &apduResponseData) = 0;
-
 
     /**
      *
@@ -335,7 +339,7 @@ protected:
     std::shared_ptr<AbstractOpenSessionRespPars> shared_from_this()
     {
         return std::static_pointer_cast<AbstractOpenSessionRespPars>(
-                   AbstractApduResponseParser::shared_from_this());
+            AbstractApduResponseParser::shared_from_this());
     }
 };
 

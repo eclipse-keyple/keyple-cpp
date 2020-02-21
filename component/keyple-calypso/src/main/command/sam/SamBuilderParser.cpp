@@ -21,7 +21,8 @@ namespace sam {
 
 using namespace keyple::calypso::command;
 
-SamBuilderParser::SamBuilderParser(std::shared_ptr<AbstractSamCommandBuilder> samCommandBuilder)
+SamBuilderParser::SamBuilderParser(
+    std::shared_ptr<AbstractSamCommandBuilder> samCommandBuilder)
 : samCommandBuilder(samCommandBuilder)
 {
 }
@@ -36,7 +37,8 @@ std::shared_ptr<AbstractSamResponseParser> SamBuilderParser::getResponseParser()
     return samResponseParser;
 }
 
-void SamBuilderParser::setResponseParser(std::shared_ptr<AbstractSamResponseParser> poResponseParser)
+void SamBuilderParser::setResponseParser(
+    std::shared_ptr<AbstractSamResponseParser> poResponseParser)
 {
     this->samResponseParser = poResponseParser;
 }

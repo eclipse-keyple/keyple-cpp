@@ -59,7 +59,7 @@ public:
      * @param channelControl indicates if the channel has to be closed at the
      *        end of the processing
      */
-    SeSelection(const  MultiSeRequestProcessing multiSeRequestProcessing,
+    SeSelection(const MultiSeRequestProcessing multiSeRequestProcessing,
                 const ChannelControl channelControl);
 
     /**
@@ -91,9 +91,9 @@ public:
      *         prepared selection cases, including {@link AbstractMatchingSe}
      *         and {@link SeResponse}.
      */
-    std::shared_ptr<SelectionsResult> processDefaultSelection(
-        std::shared_ptr<AbstractDefaultSelectionsResponse>
-            defaultSelectionsResponse);
+    std::shared_ptr<SelectionsResult>
+    processDefaultSelection(std::shared_ptr<AbstractDefaultSelectionsResponse>
+                                defaultSelectionsResponse);
 
     /**
      * Execute the selection process and return a list of {@link
@@ -116,8 +116,8 @@ public:
      *         and {@link SeResponse}.
      * @throws KeypleReaderException if the requests transmission failed
      */
-    std::shared_ptr<SelectionsResult> processExplicitSelection(
-        std::shared_ptr<SeReader> seReader);
+    std::shared_ptr<SelectionsResult>
+    processExplicitSelection(std::shared_ptr<SeReader> seReader);
 
     /**
      * The SelectionOperation is the {@link AbstractDefaultSelectionsRequest} to
@@ -135,7 +135,7 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(SeSelection));
+        LoggerFactory::getLogger(typeid(SeSelection));
 
     /*
      * list of target classes and selection requests used to build the
@@ -181,9 +181,9 @@ private:
      *         prepared selection cases, including {@link AbstractMatchingSe}
      *         and {@link SeResponse}.
      */
-    std::shared_ptr<SelectionsResult> processSelection(
-        std::shared_ptr<AbstractDefaultSelectionsResponse>
-            defaultSelectionsResponse);
+    std::shared_ptr<SelectionsResult>
+    processSelection(std::shared_ptr<AbstractDefaultSelectionsResponse>
+                         defaultSelectionsResponse);
 };
 
 }

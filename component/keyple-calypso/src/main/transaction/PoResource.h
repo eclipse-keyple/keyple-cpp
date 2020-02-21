@@ -40,12 +40,15 @@ public:
      * @param seReader the {@link SeReader} with which the SE is communicating
      * @param calypsoPo the {@link CalypsoPo} information structure
      */
-    PoResource(std::shared_ptr<SeReader> seReader, std::shared_ptr<CalypsoPo> calypsoPo);
+    PoResource(std::shared_ptr<SeReader> seReader,
+               std::shared_ptr<CalypsoPo> calypsoPo);
 
     /**
      *
      */
-    virtual ~PoResource() {}
+    virtual ~PoResource()
+    {
+    }
 
 protected:
     /**
@@ -53,7 +56,8 @@ protected:
      */
     std::shared_ptr<PoResource> shared_from_this()
     {
-        return std::static_pointer_cast<PoResource>(SeResource<CalypsoPo>::shared_from_this());
+        return std::static_pointer_cast<PoResource>(
+            SeResource<CalypsoPo>::shared_from_this());
     }
 };
 

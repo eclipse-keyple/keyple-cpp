@@ -22,7 +22,8 @@ namespace transaction {
 using namespace keyple::core::selection;
 using namespace keyple::core::seproxy;
 
-PoResource::PoResource(std::shared_ptr<SeReader> seReader, std::shared_ptr<CalypsoPo> calypsoPo)
+PoResource::PoResource(std::shared_ptr<SeReader> seReader,
+                       std::shared_ptr<CalypsoPo> calypsoPo)
 : SeResource<CalypsoPo>(seReader, calypsoPo)
 {
 }

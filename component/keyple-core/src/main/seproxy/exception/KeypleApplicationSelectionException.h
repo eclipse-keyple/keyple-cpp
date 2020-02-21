@@ -29,7 +29,6 @@ namespace exception {
  * Application selection failure in {@link ProxyReader} by AID or ATR
  */
 class KeypleApplicationSelectionException : public KeypleReaderException {
-
 };
 
 }

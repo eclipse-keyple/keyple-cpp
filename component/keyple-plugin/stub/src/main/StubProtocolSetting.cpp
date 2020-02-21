@@ -27,26 +27,26 @@ std::map<SeCommonProtocols, std::string>
 
 StubProtocolSetting::StaticConstructor::StaticConstructor()
 {
-    STUB_PROTOCOL_SETTING.emplace(
-        SeCommonProtocols::PROTOCOL_ISO14443_4, "PROTOCOL_ISO14443_4");
-    STUB_PROTOCOL_SETTING.emplace(
-        SeCommonProtocols::PROTOCOL_B_PRIME, "PROTOCOL_B_PRIME");
-    STUB_PROTOCOL_SETTING.emplace(
-        SeCommonProtocols::PROTOCOL_MIFARE_UL, "PROTOCOL_MIFARE_UL");
-    STUB_PROTOCOL_SETTING.emplace(
-        SeCommonProtocols::PROTOCOL_MIFARE_CLASSIC, "PROTOCOL_MIFARE_CLASSIC");
-    STUB_PROTOCOL_SETTING.emplace(
-        SeCommonProtocols::PROTOCOL_MIFARE_DESFIRE, "PROTOCOL_MIFARE_DESFIRE");
-    STUB_PROTOCOL_SETTING.emplace(
-        SeCommonProtocols::PROTOCOL_MEMORY_ST25, "PROTOCOL_MEMORY_ST25");
-    STUB_PROTOCOL_SETTING.emplace(
-        SeCommonProtocols::PROTOCOL_ISO7816_3, "PROTOCOL_ISO7816_3");
+    STUB_PROTOCOL_SETTING.emplace(SeCommonProtocols::PROTOCOL_ISO14443_4,
+                                  "PROTOCOL_ISO14443_4");
+    STUB_PROTOCOL_SETTING.emplace(SeCommonProtocols::PROTOCOL_B_PRIME,
+                                  "PROTOCOL_B_PRIME");
+    STUB_PROTOCOL_SETTING.emplace(SeCommonProtocols::PROTOCOL_MIFARE_UL,
+                                  "PROTOCOL_MIFARE_UL");
+    STUB_PROTOCOL_SETTING.emplace(SeCommonProtocols::PROTOCOL_MIFARE_CLASSIC,
+                                  "PROTOCOL_MIFARE_CLASSIC");
+    STUB_PROTOCOL_SETTING.emplace(SeCommonProtocols::PROTOCOL_MIFARE_DESFIRE,
+                                  "PROTOCOL_MIFARE_DESFIRE");
+    STUB_PROTOCOL_SETTING.emplace(SeCommonProtocols::PROTOCOL_MEMORY_ST25,
+                                  "PROTOCOL_MEMORY_ST25");
+    STUB_PROTOCOL_SETTING.emplace(SeCommonProtocols::PROTOCOL_ISO7816_3,
+                                  "PROTOCOL_ISO7816_3");
 }
 
 StubProtocolSetting::StaticConstructor StubProtocolSetting::staticConstructor;
 
 std::map<SeCommonProtocols, std::string>
-    StubProtocolSetting::getSpecificSettings(
+StubProtocolSetting::getSpecificSettings(
     std::set<SeCommonProtocols> specificProtocols)
 {
     std::map<SeCommonProtocols, std::string> map;

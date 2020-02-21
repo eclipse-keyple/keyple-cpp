@@ -30,7 +30,6 @@ namespace po {
 namespace builder {
 namespace security {
 
-
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
@@ -38,8 +37,8 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
 
 CloseSessionCmdBuild::CloseSessionCmdBuild(
-  PoClass poClass, bool ratificationAsked,
-  std::vector<uint8_t>& terminalSessionSignature)
+    PoClass poClass, bool ratificationAsked,
+    std::vector<uint8_t>& terminalSessionSignature)
 : AbstractPoCommandBuilder<CloseSessionRespPars>(
       CalypsoPoCommands::CLOSE_SESSION, nullptr)
 {
@@ -47,13 +46,12 @@ CloseSessionCmdBuild::CloseSessionCmdBuild(
      * The optional parameter terminalSessionSignature could contain 4 or 8
      * bytes.
      */
-    if (terminalSessionSignature.size() > 0  &&
+    if (terminalSessionSignature.size() > 0 &&
         terminalSessionSignature.size() != 4 &&
         terminalSessionSignature.size() != 8) {
-        throw std::invalid_argument(
-                  StringHelper::formatSimple(
-                      "Invalid terminal sessionSignature: %s",
-                       ByteArrayUtil::toHex(terminalSessionSignature)));
+        throw std::invalid_argument(StringHelper::formatSimple(
+            "Invalid terminal sessionSignature: %s",
+            ByteArrayUtil::toHex(terminalSessionSignature)));
     }
 
     uint8_t p1 = ratificationAsked ? 0x80 : 0x00;
@@ -79,8 +77,8 @@ CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass)
 }
 
 std::shared_ptr<CloseSessionRespPars>
-    CloseSessionCmdBuild::createResponseParser(
-        std::shared_ptr<ApduResponse> apduResponse)
+CloseSessionCmdBuild::createResponseParser(
+    std::shared_ptr<ApduResponse> apduResponse)
 {
     return std::make_shared<CloseSessionRespPars>(apduResponse);
 }

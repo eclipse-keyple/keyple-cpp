@@ -50,12 +50,14 @@ public:
          * @param successful set successful status
          * @param information additional information
          */
-        StatusProperties(bool successful, const std::string &information);
+        StatusProperties(bool successful, const std::string& information);
 
         /**
          *
          */
-        virtual ~StatusProperties() {}
+        virtual ~StatusProperties()
+        {
+        }
 
         /**
          * Gets the successful.
@@ -98,7 +100,9 @@ public:
     /**
      *
      */
-    virtual ~AbstractApduResponseParser() {}
+    virtual ~AbstractApduResponseParser()
+    {
+    }
 
     /**
      * Sets the Apdu response to parse
@@ -153,7 +157,7 @@ protected:
      * @return Status table
      */
     virtual std::unordered_map<int, std::shared_ptr<StatusProperties>>
-        getStatusTable() const;
+    getStatusTable() const;
 
 private:
     /**
@@ -169,7 +173,6 @@ private:
      *
      */
     static AbstractApduResponseParser::StaticConstructor staticConstructor;
-
 
     /**
      * Indicates whether the ApduResponse has been provided or not

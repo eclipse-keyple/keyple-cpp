@@ -28,7 +28,7 @@ namespace std {
 
 using namespace keyple::core::seproxy::protocol;
 
-std::ostream &operator<<(std::ostream &os, const SeProtocol &se)
+std::ostream& operator<<(std::ostream& os, const SeProtocol& se)
 {
     os << "name: " << se.getName();
 

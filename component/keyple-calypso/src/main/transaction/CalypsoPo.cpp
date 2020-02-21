@@ -36,11 +36,12 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::selection;
 using namespace keyple::core::util;
 
-CalypsoPo::CalypsoPo(
-  std::shared_ptr<SeResponse> selectionResponse,
-  TransmissionMode transmissionMode, const std::string &extraInfo)
+CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
+                     TransmissionMode transmissionMode,
+                     const std::string& extraInfo)
 : AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo),
-  poAtr(selectionResponse->getSelectionStatus()->getAtr()->getBytes()) {
+  poAtr(selectionResponse->getSelectionStatus()->getAtr()->getBytes())
+{
 
     /*
      * The selectionSeResponse may not include a FCI field (e.g. old PO Calypso
@@ -72,14 +73,11 @@ CalypsoPo::CalypsoPo(
         if ((applicationTypeByte & (1 << 7)) != 0) {
             /* CLAP */
             this->revision = PoRevision::REV3_1_CLAP;
-        }
-        else if ((applicationTypeByte >> 3) == static_cast<char>(0x05)) {
+        } else if ((applicationTypeByte >> 3) == static_cast<char>(0x05)) {
             this->revision = PoRevision::REV3_2;
-        }
-        else if ((applicationTypeByte >> 3) == static_cast<char>(0x04)) {
+        } else if ((applicationTypeByte >> 3) == static_cast<char>(0x04)) {
             this->revision = PoRevision::REV3_1;
-        }
-        else {
+        } else {
             this->revision = PoRevision::REV2_4;
         }
 
@@ -95,14 +93,13 @@ CalypsoPo::CalypsoPo(
             modificationCounterIsInBytes = false;
             this->modificationsCounterMax =
                 REV2_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
-        }
-        else {
+        } else {
             this->modificationsCounterMax = poFciRespPars->getBufferSizeValue();
         }
         this->bufferSizeIndicator = poFciRespPars->getBufferSizeIndicator();
-        this->bufferSizeValue = poFciRespPars->getBufferSizeValue();
-        this->platform = poFciRespPars->getPlatformByte();
-        this->applicationType = poFciRespPars->getApplicationTypeByte();
+        this->bufferSizeValue     = poFciRespPars->getBufferSizeValue();
+        this->platform            = poFciRespPars->getPlatformByte();
+        this->applicationType     = poFciRespPars->getApplicationTypeByte();
         this->isRev3_2ModeAvailable_Renamed =
             poFciRespPars->isRev3_2ModeAvailable();
         this->isRatificationCommandRequired_Renamed =
@@ -113,8 +110,8 @@ CalypsoPo::CalypsoPo(
         this->applicationSubtypeByte =
             poFciRespPars->getApplicationSubtypeByte();
         this->softwareIssuerByte = poFciRespPars->getSoftwareIssuerByte();
-        this->softwareVersion = poFciRespPars->getSoftwareVersionByte();
-        this->softwareRevision = poFciRespPars->getSoftwareRevisionByte();
+        this->softwareVersion    = poFciRespPars->getSoftwareVersionByte();
+        this->softwareRevision   = poFciRespPars->getSoftwareRevisionByte();
         this->isDfInvalidated_Renamed = poFciRespPars->isDfInvalidated();
     } else {
         /*
@@ -127,9 +124,8 @@ CalypsoPo::CalypsoPo(
          * ATR
          */
         if (poAtr.size() != PO_REV1_ATR_LENGTH) {
-            throw IllegalStateException(
-                      StringHelper::formatSimple("Unexpected ATR length: %s",
-                                                 ByteArrayUtil::toHex(poAtr)));
+            throw IllegalStateException(StringHelper::formatSimple(
+                "Unexpected ATR length: %s", ByteArrayUtil::toHex(poAtr)));
         }
 
         this->revision = PoRevision::REV1_0;
@@ -148,17 +144,17 @@ CalypsoPo::CalypsoPo(
         this->bufferSizeIndicator = 0;
         this->bufferSizeValue =
             REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
-        this->platform = poAtr[6];
-        this->applicationType = poAtr[7];
-        this->applicationSubtypeByte = poAtr[8];
-        this->isRev3_2ModeAvailable_Renamed = false;
+        this->platform                              = poAtr[6];
+        this->applicationType                       = poAtr[7];
+        this->applicationSubtypeByte                = poAtr[8];
+        this->isRev3_2ModeAvailable_Renamed         = false;
         this->isRatificationCommandRequired_Renamed = true;
-        this->hasCalypsoStoredValue_Renamed = false;
-        this->hasCalypsoPin_Renamed = false;
-        this->softwareIssuerByte = poAtr[9];
-        this->softwareVersion = poAtr[10];
-        this->softwareRevision = poAtr[11];
-        this->isDfInvalidated_Renamed = false;
+        this->hasCalypsoStoredValue_Renamed         = false;
+        this->hasCalypsoPin_Renamed                 = false;
+        this->softwareIssuerByte                    = poAtr[9];
+        this->softwareVersion                       = poAtr[10];
+        this->softwareRevision                      = poAtr[11];
+        this->isDfInvalidated_Renamed               = false;
     }
     if (logger->isTraceEnabled()) {
         logger->trace(
@@ -264,7 +260,8 @@ bool CalypsoPo::isDfInvalidated()
     return isDfInvalidated_Renamed;
 }
 
-PoClass CalypsoPo::getPoClass() {
+PoClass CalypsoPo::getPoClass()
+{
     /*
      * Rev1 and Rev2 expects the legacy class byte while Rev3 expects the ISO
      * class byte
@@ -275,8 +272,7 @@ PoClass CalypsoPo::getPoClass() {
                           static_cast<int>(revision), "PoClass::LEGACY");
         }
         return PoClass::LEGACY;
-    }
-    else {
+    } else {
         if (logger->isTraceEnabled()) {
             logger->trace("PO revision = %d, PO class = %s\n",
                           static_cast<int>(revision), "PoClass::ISO");

@@ -26,8 +26,15 @@
 #include "SeCommonProtocols_Import.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace protocol {
-    class SeProtocol; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace protocol {
+class SeProtocol;
+}
+}
+}
+}
 
 namespace keyple {
 namespace plugin {
@@ -62,7 +69,7 @@ public:
      * @return a settings map
      */
     static std::map<SeCommonProtocols, std::string>
-        getSpecificSettings(std::set<SeCommonProtocols>& specificProtocols);
+    getSpecificSettings(std::set<SeCommonProtocols>& specificProtocols);
 
     /**
      * Return the whole settings map

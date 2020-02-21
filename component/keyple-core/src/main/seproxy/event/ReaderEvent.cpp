@@ -48,8 +48,8 @@ EventType::StaticConstructor::StaticConstructor()
 EventType::StaticConstructor EventType::staticConstructor;
 int EventType::nextOrdinal = 0;
 
-EventType::EventType(const std::string &nameValue, InnerEnum innerEnum,
-                     const std::string &name)
+EventType::EventType(const std::string& nameValue, InnerEnum innerEnum,
+                     const std::string& name)
 : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++),
   name(name)
 {
@@ -66,12 +66,12 @@ std::string EventType::getName()
     return this->name;
 }
 
-bool EventType::operator == (const EventType &other)
+bool EventType::operator==(const EventType& other)
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool EventType::operator != (const EventType &other)
+bool EventType::operator!=(const EventType& other)
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -91,7 +91,7 @@ std::string EventType::toString()
     return nameValue;
 }
 
-EventType EventType::valueOf(const std::string &name)
+EventType EventType::valueOf(const std::string& name)
 {
     for (auto enumInstance : EventType::valueList) {
         if (enumInstance.nameValue == name) {
@@ -103,9 +103,10 @@ EventType EventType::valueOf(const std::string &name)
     return EventType::TIMEOUT_ERROR;
 }
 
-ReaderEvent::ReaderEvent(const std::string &pluginName,
-  const std::string &readerName, EventType eventType,
-  std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
+ReaderEvent::ReaderEvent(const std::string& pluginName,
+                         const std::string& readerName, EventType eventType,
+                         std::shared_ptr<AbstractDefaultSelectionsResponse>
+                             defaultSelectionsResponse)
 : eventType(eventType), pluginName(pluginName), readerName(readerName),
   defaultResponseSet(std::static_pointer_cast<DefaultSelectionsResponse>(
       defaultSelectionsResponse))

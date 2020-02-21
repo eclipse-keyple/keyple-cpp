@@ -3,29 +3,29 @@
 
 using namespace keyple::core::util;
 
-        namespace keyple {
-            namespace core {
-                namespace util {
+namespace keyple {
+namespace core {
+namespace util {
 
-                    using namespace testing;
+using namespace testing;
 
-                    int NameableTest::sample()
-                    {
-                        //std::shared_ptr<NameableTest> pLocal = std::make_shared<NameableTest>("Testing");
-                        //std::string szName = pLocal->getName();
-                        std::string szName = "TEST";
+int NameableTest::sample()
+{
+    //std::shared_ptr<NameableTest> pLocal = std::make_shared<NameableTest>("Testing");
+    //std::string szName = pLocal->getName();
+    std::string szName = "TEST";
 
-                        return szName.length();
-                    }
-                }
-            }
-        }
+    return szName.length();
+}
+}
+}
+}
 
-TEST(NameableTest, testA) 
+TEST(NameableTest, testA)
 {
     //std::shared_ptr<NameableTest> LocalTest = std::make_shared<NameableTest>();
-    int local = 4;//LocalTest->sample();
+    int local = 4; //LocalTest->sample();
 
-    ASSERT_NE( local, 0);
-    ASSERT_EQ( local, 4);
+    ASSERT_NE(local, 0);
+    ASSERT_EQ(local, 4);
 }

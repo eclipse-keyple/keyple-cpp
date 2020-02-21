@@ -7,7 +7,17 @@
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } } } }
+namespace org {
+namespace eclipse {
+namespace keyple {
+namespace seproxy {
+namespace message {
+class ApduRequest;
+}
+}
+}
+}
+}
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -21,48 +31,45 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 namespace org {
-    namespace eclipse {
-        namespace keyple {
-            namespace seproxy {
-                namespace message {
+namespace eclipse {
+namespace keyple {
+namespace seproxy {
+namespace message {
 
 //JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
 //                    import static org.junit.Assert.*;
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @SuppressWarnings("PMD.SignatureDeclareThrowsException") @RunWith(MockitoJUnitRunner.class) public class ApduRequestTest
-                    class ApduRequestTest : public std::enable_shared_from_this<ApduRequestTest> {
-                    public:
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Before public void setUp() throws Exception
-                        virtual void setUp() throw(std::runtime_error);
+class ApduRequestTest : public std::enable_shared_from_this<ApduRequestTest> {
+public:
+    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+    //ORIGINAL LINE: @Before public void setUp() throws Exception
+    virtual void setUp() throw(std::runtime_error);
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testSimpleAPDURequest()
-                        virtual void testSimpleAPDURequest();
+    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+    //ORIGINAL LINE: @Test public void testSimpleAPDURequest()
+    virtual void testSimpleAPDURequest();
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testAPDURequest()
-                        virtual void testAPDURequest();
+    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+    //ORIGINAL LINE: @Test public void testAPDURequest()
+    virtual void testAPDURequest();
 
-
-
-                        /*
+    /*
                          * HELPERS
                          */
 
-                        static std::shared_ptr<ApduRequest> getApduSample();
+    static std::shared_ptr<ApduRequest> getApduSample();
 
-                        static std::vector<char> getACommand();
+    static std::vector<char> getACommand();
 
-                        static std::shared_ptr<std::set<Integer>> getASuccessFulStatusCode();
+    static std::shared_ptr<std::set<Integer>> getASuccessFulStatusCode();
 
-                        static std::string getAName();
+    static std::string getAName();
+};
 
-                    };
-
-                }
-            }
-        }
-    }
+}
+}
+}
+}
 }

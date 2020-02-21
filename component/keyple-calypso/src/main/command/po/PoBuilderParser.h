@@ -30,8 +30,10 @@ using namespace keyple::calypso::command;
  * <p>
  * A setter allows to associate the parser object.
  */
-template<typename T>
-class PoBuilderParser : public std::enable_shared_from_this<PoBuilderParser<T>>, public CalypsoBuilderParser<T, AbstractPoResponseParser> {
+template <typename T>
+class PoBuilderParser
+: public std::enable_shared_from_this<PoBuilderParser<T>>,
+  public CalypsoBuilderParser<T, AbstractPoResponseParser> {
 public:
     /**
      *
@@ -44,7 +46,9 @@ public:
     /**
      *
      */
-    virtual ~PoBuilderParser() {}
+    virtual ~PoBuilderParser()
+    {
+    }
 
     /**
      *
@@ -65,7 +69,8 @@ public:
     /**
      *
      */
-    virtual void setResponseParser(std::shared_ptr<AbstractPoResponseParser> poResponseParser)
+    virtual void setResponseParser(
+        std::shared_ptr<AbstractPoResponseParser> poResponseParser)
     {
         this->poResponseParser = poResponseParser;
     }

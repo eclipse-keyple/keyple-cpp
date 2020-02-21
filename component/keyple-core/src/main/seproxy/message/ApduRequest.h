@@ -36,7 +36,8 @@ using namespace keyple::common;
  * Single APDU request wrapper
   */
 class EXPORT ApduRequest final
-: public std::enable_shared_from_this<ApduRequest>, public Serializable {
+: public std::enable_shared_from_this<ApduRequest>,
+  public Serializable {
 public:
     /**
      *
@@ -89,7 +90,9 @@ public:
     /**
      *
      */
-    virtual ~ApduRequest() {}
+    virtual ~ApduRequest()
+    {
+    }
 
     /**
      * Checks if is case 4.
@@ -98,13 +101,12 @@ public:
      */
     bool isCase4();
 
-
     /**
      * Name this APDU request
      *
      * @param name Name of the APDU request
      */
-    void setName(const std::string &name);
+    void setName(const std::string& name);
 
     /**
      * Get the list of successful status codes for the request
@@ -135,7 +137,7 @@ public:
     /**
      *¬
      */
-    friend std::ostream &operator<<(std::ostream &os, ApduRequest &se)
+    friend std::ostream& operator<<(std::ostream& os, ApduRequest& se)
     {
         os << se.toString();
 

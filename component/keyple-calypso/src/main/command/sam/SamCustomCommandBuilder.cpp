@@ -21,12 +21,13 @@ namespace sam {
 using namespace keyple::command;
 using namespace keyple::seproxy::message;
 
-SamCustomCommandBuilder::SamCustomCommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request)
-: AbstractIso7816CommandBuilder("SAM Custom Command: " + name, request) {
+SamCustomCommandBuilder::SamCustomCommandBuilder(
+    const std::string& name, std::shared_ptr<ApduRequest> request)
+: AbstractIso7816CommandBuilder("SAM Custom Command: " + name, request)
+{
 }
 
 }
 }
 }
 }
-

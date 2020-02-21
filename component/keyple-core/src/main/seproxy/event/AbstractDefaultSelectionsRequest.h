@@ -52,20 +52,23 @@ public:
     /**
      *
      */
-    virtual ~AbstractDefaultSelectionsRequest() {}
+    virtual ~AbstractDefaultSelectionsRequest()
+    {
+    }
 
 protected:
     /**
      * @return the selection request set
      */
-    virtual std::set<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet() = 0;
+    virtual std::set<std::shared_ptr<SeRequest>>&
+    getSelectionSeRequestSet() = 0;
 
     /**
      * @return the multi SE request mode
      */
     virtual MultiSeRequestProcessing& getMultiSeRequestProcessing() = 0;
 
-     /**
+    /**
      * @return the channel control
      */
     virtual ChannelControl& getChannelControl() = 0;

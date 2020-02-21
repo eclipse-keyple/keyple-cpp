@@ -32,10 +32,8 @@ public:
      *
      * @param message : message to identify the exception and the context
      */
-    KeyplePluginException(const std::string &msg)
-    : KeypleBaseException(msg)
+    KeyplePluginException(const std::string& msg) : KeypleBaseException(msg)
     {
-
     }
 
     /**
@@ -44,10 +42,9 @@ public:
      * @param message : message to add some context to the exception
      * @param cause : lower level exception
      */
-    KeyplePluginException(const std::string &msg, std::runtime_error cause)
+    KeyplePluginException(const std::string& msg, std::runtime_error cause)
     : KeypleBaseException(msg, cause)
     {
-
     }
 };
 

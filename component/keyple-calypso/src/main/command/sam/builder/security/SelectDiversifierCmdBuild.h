@@ -43,12 +43,14 @@ public:
      * @throws IllegalArgumentException - if the request is inconsistent
      */
     SelectDiversifierCmdBuild(SamRevision revision,
-                              std::vector<uint8_t> &diversifier);
+                              std::vector<uint8_t>& diversifier);
 
     /**
      *
      */
-    virtual ~SelectDiversifierCmdBuild() {}
+    virtual ~SelectDiversifierCmdBuild()
+    {
+    }
 
 protected:
     /**
@@ -57,7 +59,7 @@ protected:
     std::shared_ptr<SelectDiversifierCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<SelectDiversifierCmdBuild>(
-                   AbstractSamCommandBuilder::shared_from_this());
+            AbstractSamCommandBuilder::shared_from_this());
     }
 
 private:

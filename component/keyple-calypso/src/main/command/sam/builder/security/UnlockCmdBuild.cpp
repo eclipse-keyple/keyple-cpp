@@ -27,23 +27,23 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
-UnlockCmdBuild::UnlockCmdBuild(
-  const SamRevision& revision, const std::vector<uint8_t>& unlockData)
+UnlockCmdBuild::UnlockCmdBuild(const SamRevision& revision,
+                               const std::vector<uint8_t>& unlockData)
 : AbstractSamCommandBuilder(CalypsoSamCommands::UNLOCK, nullptr)
 {
     this->defaultRevision = revision;
 
     uint8_t cla = this->defaultRevision.getClassByte();
-    uint8_t p1 = 0x00;
-    uint8_t p2 = 0x00;
+    uint8_t p1  = 0x00;
+    uint8_t p2  = 0x00;
 
     if (unlockData.empty()) {
         throw IllegalArgumentException("Unlock data null!");
     }
 
     if (unlockData.size() != 8 && unlockData.size() != 16) {
-        throw IllegalArgumentException("Unlock data should be 8 ou 16 " \
-                                    "bytes long!");
+        throw IllegalArgumentException("Unlock data should be 8 ou 16 "
+                                       "bytes long!");
     }
 
     request = setApduRequest(cla, command, p1, p2, unlockData);

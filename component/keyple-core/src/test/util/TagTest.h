@@ -20,20 +20,19 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-        namespace keyple {
-            namespace core {
-                namespace util {
-                
-                using namespace testing;
+namespace keyple {
+namespace core {
+namespace util {
 
-                class TagTest : public std::enable_shared_from_this<TagTest>
-                {
-                public:
-                    virtual ~TagTest(){};
+using namespace testing;
 
-                    int sample();
-                };
+class TagTest : public std::enable_shared_from_this<TagTest> {
+public:
+    virtual ~TagTest(){};
 
-                }
-            }
-        }
+    int sample();
+};
+
+}
+}
+}

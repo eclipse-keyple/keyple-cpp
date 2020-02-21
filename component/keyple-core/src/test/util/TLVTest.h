@@ -23,32 +23,31 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-        namespace keyple {
-            namespace core {
-                namespace util {
-                
-                using namespace testing;
+namespace keyple {
+namespace core {
+namespace util {
 
-                class TLVTest : public std::enable_shared_from_this<TLVTest>
-                {
-                    bool isDfInvalidated_Renamed = false;
-                    bool isValidCalypsoFCI_Renamed = false;
-                    std::vector<char> dfName;
-                    std::vector<char> applicationSN;
-                    char siBufferSizeIndicator = 0;
-                    char siPlatform = 0;
-                    char siApplicationType = 0;
-                    char siApplicationSubtype = 0;
-                    char siSoftwareIssuer = 0;
-                    char siSoftwareVersion = 0;
-                    char siSoftwareRevision = 0;
+using namespace testing;
 
-                public:
-                    virtual ~TLVTest(){};
+class TLVTest : public std::enable_shared_from_this<TLVTest> {
+    bool isDfInvalidated_Renamed   = false;
+    bool isValidCalypsoFCI_Renamed = false;
+    std::vector<char> dfName;
+    std::vector<char> applicationSN;
+    char siBufferSizeIndicator = 0;
+    char siPlatform            = 0;
+    char siApplicationType     = 0;
+    char siApplicationSubtype  = 0;
+    char siSoftwareIssuer      = 0;
+    char siSoftwareVersion     = 0;
+    char siSoftwareRevision    = 0;
 
-                    int sample();
-                };
+public:
+    virtual ~TLVTest(){};
 
-                }
-            }
-        }
+    int sample();
+};
+
+}
+}
+}

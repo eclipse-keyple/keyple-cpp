@@ -43,7 +43,8 @@ using namespace keyple::core::seproxy::message;
 */
 class AppendRecordCmdBuild final
 : public AbstractPoCommandBuilder<AppendRecordRespPars>,
-  public PoSendableInSession, public PoModificationCommand {
+  public PoSendableInSession,
+  public PoModificationCommand {
 private:
     /**
      * The command
@@ -69,8 +70,7 @@ public:
      *
      */
     std::shared_ptr<AppendRecordRespPars>
-        createResponseParser( std::shared_ptr<ApduResponse> apduResponse)
-        override;
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**

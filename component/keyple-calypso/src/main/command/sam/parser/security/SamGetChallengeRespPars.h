@@ -45,7 +45,9 @@ public:
     /**
      *
      */
-    virtual ~SamGetChallengeRespPars() {}
+    virtual ~SamGetChallengeRespPars()
+    {
+    }
 
     /**
      * Gets the challenge.
@@ -61,7 +63,7 @@ protected:
     std::shared_ptr<SamGetChallengeRespPars> shared_from_this()
     {
         return std::static_pointer_cast<SamGetChallengeRespPars>(
-                   AbstractSamResponseParser::shared_from_this());
+            AbstractSamResponseParser::shared_from_this());
     }
 };
 

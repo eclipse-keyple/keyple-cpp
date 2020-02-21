@@ -62,13 +62,15 @@ public:
      * @param name name of command
      * @param request ApduRequest
      */
-    AbstractIso7816CommandBuilder(const std::string &name,
+    AbstractIso7816CommandBuilder(const std::string& name,
                                   std::shared_ptr<ApduRequest> request);
 
     /**
      *
      */
-    virtual ~AbstractIso7816CommandBuilder() {}
+    virtual ~AbstractIso7816CommandBuilder()
+    {
+    }
 
 protected:
     /**
@@ -101,9 +103,8 @@ protected:
      * @return an ApduRequest
      */
     virtual std::shared_ptr<ApduRequest>
-                setApduRequest(uint8_t cla, const CommandsTable& command,
-                               uint8_t p1, uint8_t p2,
-                               const std::vector<uint8_t>& dataIn);
+    setApduRequest(uint8_t cla, const CommandsTable& command, uint8_t p1,
+                   uint8_t p2, const std::vector<uint8_t>& dataIn);
 
     /**
      * Helper method to create an ApduRequest from separated elements.
@@ -136,8 +137,8 @@ protected:
      * @return an ApduRequest
      */
     virtual std::shared_ptr<ApduRequest>
-                setApduRequest(uint8_t cla, const CommandsTable& command,
-                               uint8_t p1, uint8_t p2, uint8_t le);
+    setApduRequest(uint8_t cla, const CommandsTable& command, uint8_t p1,
+                   uint8_t p2, uint8_t le);
 
     /**
      * Helper method to create an ApduRequest from separated elements.
@@ -173,9 +174,8 @@ protected:
      * @return an ApduRequest
      */
     virtual std::shared_ptr<ApduRequest>
-                setApduRequest(uint8_t cla, const CommandsTable& command,
-                               uint8_t p1, uint8_t p2,
-                               const std::vector<uint8_t>& dataIn, uint8_t le);
+    setApduRequest(uint8_t cla, const CommandsTable& command, uint8_t p1,
+                   uint8_t p2, const std::vector<uint8_t>& dataIn, uint8_t le);
 
     /**
      *
@@ -183,7 +183,7 @@ protected:
     std::shared_ptr<AbstractIso7816CommandBuilder> shared_from_this()
     {
         return std::static_pointer_cast<AbstractIso7816CommandBuilder>(
-                   AbstractApduCommandBuilder::shared_from_this());
+            AbstractApduCommandBuilder::shared_from_this());
     }
 };
 

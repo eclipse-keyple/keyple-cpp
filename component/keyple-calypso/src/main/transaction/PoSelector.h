@@ -35,16 +35,13 @@ using namespace keyple::core::seproxy::protocol;
  * the additional successful status codes list (in response to a select application command)
   */
 class EXPORT PoSelector final : public SeSelector {
-public:    /**
+public: /**
      * Indicates if an invalidated PO should be selected or not.
      * <p>
      * The acceptance of an invalid PO is determined with the additional successful status codes
      * specified in the {@link AidSelector}
      */
-    enum class InvalidatedPo {
-        REJECT,
-        ACCEPT
-    };
+    enum class InvalidatedPo { REJECT, ACCEPT };
 
     /**
      * PoAidSelector embedding the Calypo PO additional successful codes list
@@ -63,7 +60,9 @@ public:    /**
          * @param fileControlInformation the ISO7816-4 file control information parameter (see
          *        {@link FileControlInformation})
          */
-        PoAidSelector(std::shared_ptr<IsoAid> aidToSelect, InvalidatedPo invalidatedPo, FileOccurrence fileOccurrence,
+        PoAidSelector(std::shared_ptr<IsoAid> aidToSelect,
+                      InvalidatedPo invalidatedPo,
+                      FileOccurrence fileOccurrence,
                       FileControlInformation fileControlInformation);
 
         /**
@@ -74,7 +73,8 @@ public:    /**
          * @param invalidatedPo an enum value to indicate if an invalidated PO should be accepted or
          *        not
          */
-        PoAidSelector(std::shared_ptr<IsoAid> aidToSelect, InvalidatedPo invalidatedPo);
+        PoAidSelector(std::shared_ptr<IsoAid> aidToSelect,
+                      InvalidatedPo invalidatedPo);
 
     protected:
         /**
@@ -82,25 +82,27 @@ public:    /**
          */
         std::shared_ptr<PoAidSelector> shared_from_this()
         {
-            return std::static_pointer_cast<PoAidSelector>(AidSelector::shared_from_this());
+            return std::static_pointer_cast<PoAidSelector>(
+                AidSelector::shared_from_this());
         }
 
     private:
         /**
          *
          */
-        static const std::shared_ptr<std::set<int>> successfulSelectionStatusCodes;
+        static const std::shared_ptr<std::set<int>>
+            successfulSelectionStatusCodes;
 
         /**
          *
          */
-        class HashSetAnonymousInnerClass : public std::unordered_set<int>, public std::enable_shared_from_this<HashSetAnonymousInnerClass> {
-//            {
-//                add(0x6283);
-//            }
+        class HashSetAnonymousInnerClass
+        : public std::unordered_set<int>,
+          public std::enable_shared_from_this<HashSetAnonymousInnerClass> {
+            //            {
+            //                add(0x6283);
+            //            }
         };
-
-
     };
 
     /**
@@ -115,14 +117,16 @@ public:    /**
          *
          * @param atrRegex String hex regular expression
          */
-        PoAtrFilter(const std::string &atrRegex);
+        PoAtrFilter(const std::string& atrRegex);
 
     protected:
         /**
          *
          */
-        std::shared_ptr<PoAtrFilter> shared_from_this() {
-            return std::static_pointer_cast<PoAtrFilter>(AtrFilter::shared_from_this());
+        std::shared_ptr<PoAtrFilter> shared_from_this()
+        {
+            return std::static_pointer_cast<PoAtrFilter>(
+                AtrFilter::shared_from_this());
         }
     };
 
@@ -134,8 +138,9 @@ public:    /**
      * @param poAidSelector the AID selection data
      * @param extraInfo information string (to be printed in logs)
      */
-    PoSelector(SeProtocol& seProtocol, std::shared_ptr<PoAtrFilter> poAtrFilter, std::shared_ptr<PoAidSelector> poAidSelector,
-               const std::string &extraInfo);
+    PoSelector(SeProtocol& seProtocol, std::shared_ptr<PoAtrFilter> poAtrFilter,
+               std::shared_ptr<PoAidSelector> poAidSelector,
+               const std::string& extraInfo);
 
 protected:
     /**
@@ -143,7 +148,8 @@ protected:
      */
     std::shared_ptr<PoSelector> shared_from_this()
     {
-        return std::static_pointer_cast<PoSelector>(SeSelector::shared_from_this());
+        return std::static_pointer_cast<PoSelector>(
+            SeSelector::shared_from_this());
     }
 };
 

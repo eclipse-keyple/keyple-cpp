@@ -52,4 +52,3 @@ std::string StubMifareUL::getSeProcotol()
 }
 }
 }
-

@@ -21,7 +21,8 @@ namespace sam {
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
-AbstractSamCommandBuilder::AbstractSamCommandBuilder(CalypsoSamCommands& reference, std::shared_ptr<ApduRequest> request)
+AbstractSamCommandBuilder::AbstractSamCommandBuilder(
+    CalypsoSamCommands& reference, std::shared_ptr<ApduRequest> request)
 : AbstractIso7816CommandBuilder(reference, request)
 {
 }

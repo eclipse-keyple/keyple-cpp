@@ -32,7 +32,7 @@ using namespace keyple::core::seproxy::message;
 /**
  * Abstract class for all PO command builders.
  */
-template<typename T>
+template <typename T>
 class AbstractPoCommandBuilder : public AbstractIso7816CommandBuilder {
 public:
     /*
@@ -45,7 +45,8 @@ public:
      * @param reference a command reference from the Calypso command table
      * @param request the ApduRequest (the instruction byte will be overwritten)
      */
-    AbstractPoCommandBuilder(CalypsoPoCommands& reference, std::shared_ptr<ApduRequest> request)
+    AbstractPoCommandBuilder(CalypsoPoCommands& reference,
+                             std::shared_ptr<ApduRequest> request)
     : AbstractIso7816CommandBuilder(reference, request)
     {
     }
@@ -53,7 +54,9 @@ public:
     /**
      *
      */
-    virtual ~AbstractPoCommandBuilder() {}
+    virtual ~AbstractPoCommandBuilder()
+    {
+    }
 
     /**
      * Create the response parser matching the builder
@@ -61,7 +64,8 @@ public:
      * @param apduResponse the response data from the SE
      * @return an {@link AbstractApduResponseParser}
      */
-    virtual std::shared_ptr<T> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) = 0;
+    virtual std::shared_ptr<T>
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) = 0;
 
 protected:
     /**
@@ -69,7 +73,8 @@ protected:
      */
     std::shared_ptr<AbstractPoCommandBuilder> shared_from_this()
     {
-        return std::static_pointer_cast<AbstractPoCommandBuilder>(AbstractIso7816CommandBuilder::shared_from_this());
+        return std::static_pointer_cast<AbstractPoCommandBuilder>(
+            AbstractIso7816CommandBuilder::shared_from_this());
     }
 };
 

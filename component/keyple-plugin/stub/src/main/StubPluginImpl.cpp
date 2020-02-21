@@ -32,7 +32,7 @@ StubPluginImpl::StubPluginImpl(const std::string& pluginName)
 }
 
 const std::map<const std::string, const std::string>
-    StubPluginImpl::getParameters()
+StubPluginImpl::getParameters()
 {
     return parameters;
 }
@@ -62,9 +62,8 @@ void StubPluginImpl::plugStubReader(const std::string& readerName,
 
     if (!exist && synchronous) {
         /* add the reader as a new reader to the readers list */
-        readers.insert(
-            std::make_shared<StubReaderImpl>(this->getName(), readerName,
-                                             transmissionMode));
+        readers.insert(std::make_shared<StubReaderImpl>(
+            this->getName(), readerName, transmissionMode));
     }
 
     connectedStubNames.insert(readerName);
@@ -73,11 +72,10 @@ void StubPluginImpl::plugStubReader(const std::string& readerName,
         logger->error("Reader with readerName %s was already plugged\n",
                       readerName);
     }
-
 }
 
-void StubPluginImpl::plugStubReaders(
-    const std::set<std::string>& readerNames, bool synchronous)
+void StubPluginImpl::plugStubReaders(const std::set<std::string>& readerNames,
+                                     bool synchronous)
 {
     logger->debug("Plugging %d readers\n", readerNames.size());
 
@@ -100,8 +98,8 @@ void StubPluginImpl::plugStubReaders(
         if (synchronous) {
             std::list<std::shared_ptr<StubReaderImpl>> newReaders;
             for (auto& name : newNames) {
-                newReaders.push_back(std::make_shared<StubReaderImpl>(
-                    this->getName(), name));
+                newReaders.push_back(
+                    std::make_shared<StubReaderImpl>(this->getName(), name));
             }
 
             std::copy(newReaders.begin(), newReaders.end(),
@@ -113,7 +111,6 @@ void StubPluginImpl::plugStubReaders(
     } else {
         logger->error("All %s readers were already plugged\n",
                       readerNames.size());
-
     }
 }
 
@@ -133,8 +130,9 @@ void StubPluginImpl::unplugStubReader(const std::string& readerName,
         }
 
         /* Remove the native reader from the native readers list */
-        logger->info("Unplugged reader with name %s, connectedStubNames size" \
-                     "%d\n", readerName, connectedStubNames.size());
+        logger->info("Unplugged reader with name %s, connectedStubNames size"
+                     "%d\n",
+                     readerName, connectedStubNames.size());
     }
 }
 
@@ -159,11 +157,11 @@ void StubPluginImpl::unplugStubReaders(const std::set<std::string>& readerNames,
         }
     }
 
-    for (const auto& readerName: readerNames)
+    for (const auto& readerName : readerNames)
         connectedStubNames.erase(readerName);
 
     if (synchronous) {
-        for (const auto& readerToDelete: readersToDelete)
+        for (const auto& readerToDelete : readersToDelete)
             readers.erase(readerToDelete);
     }
 }
@@ -185,8 +183,8 @@ std::set<std::shared_ptr<SeReader>> StubPluginImpl::initNativeReaders()
     return newNativeReaders;
 }
 
-std::shared_ptr<SeReader> StubPluginImpl::fetchNativeReader(
-    const std::string& readerName)
+std::shared_ptr<SeReader>
+StubPluginImpl::fetchNativeReader(const std::string& readerName)
 {
     for (const auto& reader : readers) {
         if (!reader->getName().compare(readerName)) {

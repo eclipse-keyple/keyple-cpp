@@ -51,7 +51,8 @@ public:
      * Static nested class to hold the data elements used to perform an AID
      * based selection
      */
-    class EXPORT AidSelector : public std::enable_shared_from_this<AidSelector>{
+    class EXPORT AidSelector
+    : public std::enable_shared_from_this<AidSelector> {
     public:
         /**
          * FileOccurrence indicates how to carry out the file occurrence in
@@ -70,12 +71,7 @@ public:
             /**
              *
              */
-            enum class InnerEnum {
-                FIRST,
-                LAST,
-                NEXT,
-                PREVIOUS
-            };
+            enum class InnerEnum { FIRST, LAST, NEXT, PREVIOUS };
 
             /**
              *
@@ -85,8 +81,8 @@ public:
             /**
              *
              */
-            FileOccurrence(const std::string &name, InnerEnum innerEnum, char
-                           isoBitMask);
+            FileOccurrence(const std::string& name, InnerEnum innerEnum,
+                           char isoBitMask);
 
             /**
              *
@@ -96,7 +92,9 @@ public:
             /**
              *
              */
-            virtual ~FileOccurrence() {}
+            virtual ~FileOccurrence()
+            {
+            }
 
             /**
              *
@@ -106,12 +104,12 @@ public:
             /**
              *
              */
-            bool operator == (const FileOccurrence &other);
+            bool operator==(const FileOccurrence& other);
 
             /**
              *
              */
-            bool operator != (const FileOccurrence &other);
+            bool operator!=(const FileOccurrence& other);
 
             /**
              *
@@ -131,7 +129,7 @@ public:
             /**
              *
              */
-            static FileOccurrence valueOf(const std::string &name);
+            static FileOccurrence valueOf(const std::string& name);
 
         private:
             /**
@@ -190,17 +188,12 @@ public:
             /**
              *
              */
-            enum class InnerEnum {
-                FCI,
-                FCP,
-                FMD,
-                NO_RESPONSE
-            };public:
-
+            enum class InnerEnum { FCI, FCP, FMD, NO_RESPONSE };
+        public:
             /**
              *
              */
-            FileControlInformation(const std::string &name, InnerEnum innerEnum,
+            FileControlInformation(const std::string& name, InnerEnum innerEnum,
                                    char isoBitMask);
 
             /**
@@ -211,7 +204,9 @@ public:
             /**
              *
              */
-            virtual ~FileControlInformation() {}
+            virtual ~FileControlInformation()
+            {
+            }
 
             /**
              *
@@ -221,12 +216,12 @@ public:
             /**
              *
              */
-            bool operator == (const FileControlInformation &other);
+            bool operator==(const FileControlInformation& other);
 
             /**
              *
              */
-            bool operator != (const FileControlInformation &other);
+            bool operator!=(const FileControlInformation& other);
 
             /**
              *
@@ -246,7 +241,7 @@ public:
             /**
              *
              */
-            static FileControlInformation valueOf(const std::string &name);
+            static FileControlInformation valueOf(const std::string& name);
 
         private:
             /**
@@ -313,7 +308,6 @@ public:
              */
             IsoAid(const std::vector<uint8_t>& aid);
 
-
             /**
              * Build an IsoAid and check length from an hex string
              *
@@ -326,7 +320,9 @@ public:
             /**
              *
              */
-            virtual ~IsoAid() {}
+            virtual ~IsoAid()
+            {
+            }
 
             /**
              *
@@ -351,7 +347,6 @@ public:
             std::vector<uint8_t> value;
         };
 
-
     public:
         /**
          * AidSelector with additional select application successful status
@@ -373,11 +368,11 @@ public:
          * @param fileControlInformation the file control information (see
          *        ISO7816-4 definition)
          */
-        AidSelector(std::shared_ptr<IsoAid> aidToSelect,
-                    std::shared_ptr<std::set<int>>
-                        successfulSelectionStatusCodes,
-                    FileOccurrence fileOccurrence,
-                    FileControlInformation fileControlInformation);
+        AidSelector(
+            std::shared_ptr<IsoAid> aidToSelect,
+            std::shared_ptr<std::set<int>> successfulSelectionStatusCodes,
+            FileOccurrence fileOccurrence,
+            FileControlInformation fileControlInformation);
 
         /**
          * AidSelector with additional select application successful status
@@ -391,14 +386,16 @@ public:
          * @param successfulSelectionStatusCodes list of successful status codes
          *        for the select application response
          */
-        AidSelector(std::shared_ptr<IsoAid> aidToSelect,
-                    std::shared_ptr<std::set<int>>
-                        successfulSelectionStatusCodes);
+        AidSelector(
+            std::shared_ptr<IsoAid> aidToSelect,
+            std::shared_ptr<std::set<int>> successfulSelectionStatusCodes);
 
         /**
          * Destructor
          */
-        virtual ~AidSelector() {}
+        virtual ~AidSelector()
+        {
+        }
 
         /**
          * Getter for the AID provided at construction time
@@ -423,8 +420,7 @@ public:
          * @return the list of status codes
          */
         virtual std::shared_ptr<std::set<int>>
-            getSuccessfulSelectionStatusCodes();
-
+        getSuccessfulSelectionStatusCodes();
 
         /**
          * Print out the AID in hex
@@ -463,7 +459,6 @@ public:
          */
         std::shared_ptr<std::set<int>> successfulSelectionStatusCodes =
             std::make_shared<std::set<int>>();
-
     };
 
     /**
@@ -477,19 +472,19 @@ public:
          *
          * @param atrRegex String hex regular expression
          */
-        AtrFilter(const std::string &atrRegex);
+        AtrFilter(const std::string& atrRegex);
 
         /**
          *
          */
-        virtual ~AtrFilter() {};
+        virtual ~AtrFilter(){};
 
         /**
          * Setter for the regular expression provided at construction time
          *
          * @param atrRegex expression string
          */
-        virtual void setAtrRegex(const std::string &atrRegex);
+        virtual void setAtrRegex(const std::string& atrRegex);
 
         /**
         * Getter for the regular expression provided at construction time
@@ -523,8 +518,6 @@ public:
          */
         std::string atrRegex;
     };
-
-
 
 public:
     /**
@@ -561,12 +554,14 @@ public:
      */
     SeSelector(SeProtocol& seProtocol, std::shared_ptr<AtrFilter> atrFilter,
                std::shared_ptr<AidSelector> aidSelector,
-               const std::string &extraInfo);
+               const std::string& extraInfo);
 
     /**
      *
      */
-    virtual ~SeSelector() {}
+    virtual ~SeSelector()
+    {
+    }
 
     /**
      * Getter

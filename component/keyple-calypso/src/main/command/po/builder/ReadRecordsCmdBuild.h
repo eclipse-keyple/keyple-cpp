@@ -38,7 +38,9 @@ using namespace keyple::core::seproxy::message;
  * The Class ReadRecordsCmdBuild. This class provides the dedicated constructor to build the Read
  * Records APDU command.
  */
-class ReadRecordsCmdBuild final : public AbstractPoCommandBuilder<ReadRecordsRespPars>, public PoSendableInSession {
+class ReadRecordsCmdBuild final
+: public AbstractPoCommandBuilder<ReadRecordsRespPars>,
+  public PoSendableInSession {
 private:
     /**
      * The command
@@ -70,8 +72,10 @@ public:
      * @throws IllegalArgumentException - if record number &lt; 1
      * @throws IllegalArgumentException - if the request is inconsistent
      */
-    ReadRecordsCmdBuild(PoClass poClass, char sfi, ReadDataStructure readDataStructure, char firstRecordNumber, bool readJustOneRecord,
-                        char expectedLength, const std::string &extraInfo);
+    ReadRecordsCmdBuild(PoClass poClass, char sfi,
+                        ReadDataStructure readDataStructure,
+                        char firstRecordNumber, bool readJustOneRecord,
+                        char expectedLength, const std::string& extraInfo);
 
     /**
      * Instantiates a new read records cmd build without specifying the expected length. This
@@ -87,13 +91,16 @@ public:
      * @throws IllegalArgumentException - if record number &lt; 1
      * @throws IllegalArgumentException - if the request is inconsistent
      */
-    ReadRecordsCmdBuild(PoClass poClass, char sfi, ReadDataStructure readDataStructure, char firstRecordNumber, bool readJustOneRecord,
-                        const std::string &extraInfo);
-    
+    ReadRecordsCmdBuild(PoClass poClass, char sfi,
+                        ReadDataStructure readDataStructure,
+                        char firstRecordNumber, bool readJustOneRecord,
+                        const std::string& extraInfo);
+
     /**
      *
      */
-    std::shared_ptr<ReadRecordsRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<ReadRecordsRespPars>
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -101,7 +108,8 @@ protected:
      */
     std::shared_ptr<ReadRecordsCmdBuild> shared_from_this()
     {
-        return std::static_pointer_cast<ReadRecordsCmdBuild>(AbstractPoCommandBuilder<ReadRecordsRespPars>::shared_from_this());
+        return std::static_pointer_cast<ReadRecordsCmdBuild>(
+            AbstractPoCommandBuilder<ReadRecordsRespPars>::shared_from_this());
     }
 };
 

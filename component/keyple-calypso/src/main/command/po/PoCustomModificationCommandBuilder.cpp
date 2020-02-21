@@ -22,9 +22,10 @@ namespace po {
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
-PoCustomModificationCommandBuilder::PoCustomModificationCommandBuilder(const std::string &name,
-                                                              std::shared_ptr<ApduRequest> request)
-: AbstractIso7816CommandBuilder("PO Custom Modification Command: " + name, request)
+PoCustomModificationCommandBuilder::PoCustomModificationCommandBuilder(
+    const std::string& name, std::shared_ptr<ApduRequest> request)
+: AbstractIso7816CommandBuilder("PO Custom Modification Command: " + name,
+                                request)
 {
 }
 

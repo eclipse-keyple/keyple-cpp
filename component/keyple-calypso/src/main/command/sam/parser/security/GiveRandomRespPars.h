@@ -17,7 +17,15 @@
 #include "AbstractSamResponseParser.h"
 
 /* Forwards declaration */
-namespace keyple { namespace core { namespace seproxy { namespace message { class ApduResponse; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class ApduResponse;
+}
+}
+}
+}
 
 namespace keyple {
 namespace calypso {
@@ -25,7 +33,6 @@ namespace command {
 namespace sam {
 namespace parser {
 namespace security {
-
 
 using namespace keyple::calypso::command::sam;
 using namespace keyple::core::seproxy::message;
@@ -50,7 +57,8 @@ protected:
      */
     std::shared_ptr<GiveRandomRespPars> shared_from_this()
     {
-        return std::static_pointer_cast<GiveRandomRespPars>(AbstractSamResponseParser::shared_from_this());
+        return std::static_pointer_cast<GiveRandomRespPars>(
+            AbstractSamResponseParser::shared_from_this());
     }
 };
 

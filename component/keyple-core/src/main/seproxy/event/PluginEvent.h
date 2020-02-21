@@ -53,10 +53,7 @@ public:
         /**
          *
          */
-        enum class InnerEnum {
-            READER_CONNECTED,
-            READER_DISCONNECTED
-        };
+        enum class InnerEnum { READER_CONNECTED, READER_DISCONNECTED };
 
         /**
          * A reader has been connected.
@@ -76,8 +73,8 @@ public:
         /**
          *
          */
-        EventType(const std::string &nameValue, InnerEnum innerEnum,
-                  const std::string &name);
+        EventType(const std::string& nameValue, InnerEnum innerEnum,
+                  const std::string& name);
 
         /**
          *
@@ -87,7 +84,9 @@ public:
         /**
          *
          */
-        virtual ~EventType() {}
+        virtual ~EventType()
+        {
+        }
 
         /**
          *
@@ -97,12 +96,12 @@ public:
         /**
          *
          */
-        bool operator == (const EventType &other);
+        bool operator==(const EventType& other);
 
         /**
          *
          */
-        bool operator != (const EventType &other);
+        bool operator!=(const EventType& other);
 
         /**
          *
@@ -117,7 +116,7 @@ public:
         /**
          *
          */
-        friend std::ostream &operator<<(std::ostream &os, const EventType &e)
+        friend std::ostream& operator<<(std::ostream& os, const EventType& e)
         {
             os << "name: " << e.name;
 
@@ -127,7 +126,7 @@ public:
         /**
          *
          */
-        static EventType valueOf(const std::string &name);
+        static EventType valueOf(const std::string& name);
 
     private:
         /**
@@ -176,7 +175,7 @@ public:
      * @param readerName name of the reader
      * @param eventType type of the event, connection or disconnection
      */
-    PluginEvent(const std::string &pluginName, const std::string &readerName,
+    PluginEvent(const std::string& pluginName, const std::string& readerName,
                 EventType eventType);
 
     /**
@@ -186,7 +185,7 @@ public:
      * @param readerNames list of reader names
      * @param eventType type of the event, connection or disconnection
      */
-    PluginEvent(const std::string &pluginName,
+    PluginEvent(const std::string& pluginName,
                 std::shared_ptr<std::set<std::string>> readerNames,
                 EventType eventType);
 
@@ -206,7 +205,6 @@ public:
     EventType getEventType();
 
 private:
-
     /**
      * The name of the reader involved
      */
@@ -217,16 +215,15 @@ private:
      */
     const EventType eventType;
 
-
-   /**
+    /**
     * The name of the plugin handling the reader that produced the event
     */
-   const std::string pluginName;
+    const std::string pluginName;
 
-   /**
+    /**
     * The name of the readers involved
     */
-   std::set<std::string> readerNames;
+    std::set<std::string> readerNames;
 };
 
 }

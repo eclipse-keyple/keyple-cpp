@@ -29,7 +29,9 @@ public:
     /**
      *
      */
-    Nameable() {}
+    Nameable()
+    {
+    }
 
     /**
      *
@@ -42,7 +44,9 @@ public:
     /**
      *
      */
-    virtual ~Nameable() {}
+    virtual ~Nameable()
+    {
+    }
 
     /**
      *

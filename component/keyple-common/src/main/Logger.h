@@ -29,7 +29,11 @@
 #include "Export.h"
 
 /* Forward declaration */
-namespace keyple { namespace common { class LoggerFactory; } }
+namespace keyple {
+namespace common {
+class LoggerFactory;
+}
+}
 
 namespace keyple {
 namespace common {
@@ -39,7 +43,7 @@ public:
     /**
      * Constructor
      */
-    Logger(const std::string &className, std::mutex* mtx);
+    Logger(const std::string& className, std::mutex* mtx);
 
     /**
      * Destructor
@@ -167,17 +171,17 @@ private:
      */
     std::mutex* mtx;
 
-    /**
+/**
      *
      */
-    #ifdef __GNUG__ // gnu C++ compiler
-    std::string demangle( const char* mangled_name )
+#ifdef __GNUG__ // gnu C++ compiler
+    std::string demangle(const char* mangled_name)
     {
-        std::size_t len = 0 ;
-        int status = 0 ;
+        std::size_t len = 0;
+        int status      = 0;
         std::unique_ptr<char, decltype(&std::free)> ptr(
             __cxxabiv1::__cxa_demangle(mangled_name, nullptr, &len, &status),
-                                       &std::free );
+            &std::free);
         std::string s(ptr.get());
         if (s.size() > maxClassNameLength)
             s.resize(maxClassNameLength);
@@ -197,7 +201,7 @@ private:
      *
      */
     template <typename... Args>
-    void log(const std::string label, const std::string format,  va_list args)
+    void log(const std::string label, const std::string format, va_list args)
     {
         mtx->lock();
 
@@ -210,4 +214,3 @@ private:
 
 }
 }
-

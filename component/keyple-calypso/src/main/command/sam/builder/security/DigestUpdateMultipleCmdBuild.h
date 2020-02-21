@@ -55,7 +55,7 @@ protected:
     std::shared_ptr<DigestUpdateMultipleCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<DigestUpdateMultipleCmdBuild>(
-                   AbstractSamCommandBuilder::shared_from_this());
+            AbstractSamCommandBuilder::shared_from_this());
     }
 
 private:

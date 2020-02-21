@@ -46,7 +46,8 @@ public:
 protected:
     std::shared_ptr<AbstractPoResponseParser> shared_from_this()
     {
-        return std::static_pointer_cast<AbstractPoResponseParser>(AbstractApduResponseParser::shared_from_this());
+        return std::static_pointer_cast<AbstractPoResponseParser>(
+            AbstractApduResponseParser::shared_from_this());
     }
 };
 

@@ -47,8 +47,8 @@ void StubSecureElement::closePhysicalChannel()
     isPhysicalChannelOpen_Renamed = false;
 }
 
-void StubSecureElement::addHexCommand(const std::string &command,
-                                      const std::string &response)
+void StubSecureElement::addHexCommand(const std::string& command,
+                                      const std::string& response)
 {
     if (!command.compare("") || !response.compare("")) {
         logger->debug("either command or response is empty\n");
@@ -60,7 +60,7 @@ void StubSecureElement::addHexCommand(const std::string &command,
                         StringHelper::replace(response, " ", ""));
 }
 
-void StubSecureElement::removeHexCommand(const std::string &command)
+void StubSecureElement::removeHexCommand(const std::string& command)
 {
     if (command.compare(""))
         //"command should not be null"));
@@ -69,8 +69,8 @@ void StubSecureElement::removeHexCommand(const std::string &command)
     hexCommands.erase(StringHelper::trim(command));
 }
 
-std::vector<uint8_t> StubSecureElement::processApdu(
-    std::vector<uint8_t>& apduIn)
+std::vector<uint8_t>
+StubSecureElement::processApdu(std::vector<uint8_t>& apduIn)
 {
     if (apduIn.empty())
         return apduIn;

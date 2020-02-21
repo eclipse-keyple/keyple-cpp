@@ -14,20 +14,19 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 namespace org {
-    namespace eclipse {
-        namespace keyple {
+namespace eclipse {
+namespace keyple {
 
-            using org::junit::rules::TestName;
+using org::junit::rules::TestName;
 
-            class CoreBaseTest : public std::enable_shared_from_this<CoreBaseTest> {
+class CoreBaseTest : public std::enable_shared_from_this<CoreBaseTest> {
 
-            public:
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Rule public org.junit.rules.TestName name = new org.junit.rules.TestName();
-                std::shared_ptr<TestName> name = std::make_shared<TestName>();
+public:
+    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+    //ORIGINAL LINE: @Rule public org.junit.rules.TestName name = new org.junit.rules.TestName();
+    std::shared_ptr<TestName> name = std::make_shared<TestName>();
+};
 
-            };
-
-        }
-    }
+}
+}
 }

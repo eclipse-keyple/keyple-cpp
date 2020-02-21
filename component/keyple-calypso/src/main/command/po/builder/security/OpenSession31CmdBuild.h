@@ -49,7 +49,7 @@ public:
      * @throws IllegalArgumentException - if the request is inconsistent
      */
     OpenSession31CmdBuild(uint8_t keyIndex,
-                          const std::vector<uint8_t> &samChallenge,
+                          const std::vector<uint8_t>& samChallenge,
                           uint8_t sfiToSelect, uint8_t recordNumberToRead,
                           const std::string& extraInfo);
 
@@ -57,8 +57,7 @@ public:
      *
      */
     std::shared_ptr<OpenSession31RespPars>
-        createResponseParser(std::shared_ptr<ApduResponse> apduResponse)
-        override;
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -67,8 +66,8 @@ protected:
     std::shared_ptr<OpenSession31CmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<OpenSession31CmdBuild>(
-                   AbstractOpenSessionCmdBuild<OpenSession31RespPars>
-                       ::shared_from_this());
+            AbstractOpenSessionCmdBuild<
+                OpenSession31RespPars>::shared_from_this());
     }
 };
 

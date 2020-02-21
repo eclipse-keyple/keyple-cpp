@@ -21,16 +21,23 @@
 #include "AnswerToReset.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class ApduResponse; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class ApduResponse;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace message {
 
-class SelectionStatus
-: public std::enable_shared_from_this<SelectionStatus>, public Object {
+class SelectionStatus : public std::enable_shared_from_this<SelectionStatus>,
+                        public Object {
 public:
     /**
      *
@@ -41,7 +48,9 @@ public:
     /**
      *
      */
-    virtual ~SelectionStatus() { }
+    virtual ~SelectionStatus()
+    {
+    }
 
     /**
      *

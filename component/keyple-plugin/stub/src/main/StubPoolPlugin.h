@@ -42,9 +42,10 @@ public:
      * @param se : insert a se at creation (can be null)
      * @return created StubReader
      */
-    virtual std::shared_ptr<SeReader> plugStubPoolReader(
-        const std::string& groupReference, const std::string& readerName,
-        std::shared_ptr<StubSecureElement> se) = 0;
+    virtual std::shared_ptr<SeReader>
+    plugStubPoolReader(const std::string& groupReference,
+                       const std::string& readerName,
+                       std::shared_ptr<StubSecureElement> se) = 0;
 
     /**
      * Unplug synchronously a new reader by groupReference. A
@@ -53,7 +54,6 @@ public:
      * @param groupReference groupReference of the reader to be unplugged
      */
     virtual void unplugStubPoolReader(const std::string& groupReference) = 0;
-
 };
 
 }

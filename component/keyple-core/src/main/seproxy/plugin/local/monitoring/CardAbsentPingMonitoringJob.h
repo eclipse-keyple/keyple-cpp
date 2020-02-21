@@ -69,15 +69,15 @@ public:
     /**
      *
      */
-    std::future<void> startMonitoring(AbstractObservableState* state,
-        std::atomic<bool>& cancellationFlag) override;
+    std::future<void>
+    startMonitoring(AbstractObservableState* state,
+                    std::atomic<bool>& cancellationFlag) override;
 
     /**
      *
      */
     void monitoringJob(AbstractObservableState* state,
                        std::atomic<bool>& cancellationFlag);
-
 
     /**
      *
@@ -89,7 +89,7 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(CardAbsentPingMonitoringJob));
+        LoggerFactory::getLogger(typeid(CardAbsentPingMonitoringJob));
 
     /**
      *

@@ -21,21 +21,21 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-    namespace keyple {
-        namespace calypso {
-            namespace command {    
-                namespace po {            
-                //using namespace testing;
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace po {
+//using namespace testing;
 
-                class AbstractPoCommandBuilderTest : public std::enable_shared_from_this<AbstractPoCommandBuilderTest>
-                {
+class AbstractPoCommandBuilderTest
+: public std::enable_shared_from_this<AbstractPoCommandBuilderTest> {
 
-                public:
-                    virtual ~AbstractPoCommandBuilderTest(){};
+public:
+    virtual ~AbstractPoCommandBuilderTest(){};
 
-                    void sample();
-                };
-                }
-            }
-        }
-    }
+    void sample();
+};
+}
+}
+}
+}

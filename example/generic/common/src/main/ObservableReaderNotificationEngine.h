@@ -43,7 +43,9 @@ public:
     /**
      * Destructor
      */
-    virtual ~ObservableReaderNotificationEngine() { }
+    virtual ~ObservableReaderNotificationEngine()
+    {
+    }
 
     /**
      *
@@ -62,12 +64,14 @@ public:
          * Constructor
          */
         SpecificReaderObserver(
-            ObservableReaderNotificationEngine *outerInstance); //super();
+            ObservableReaderNotificationEngine* outerInstance); //super();
 
         /**
          *
          */
-        virtual ~SpecificReaderObserver() { }
+        virtual ~SpecificReaderObserver()
+        {
+        }
 
         /**
          *
@@ -83,7 +87,7 @@ public:
         /**
          *
          */
-        ObservableReaderNotificationEngine *outerInstance;
+        ObservableReaderNotificationEngine* outerInstance;
     };
 
     /**
@@ -103,13 +107,15 @@ public:
          * Constructor
          */
         SpecificPluginObserver(
-            ObservableReaderNotificationEngine *outerInstance,
+            ObservableReaderNotificationEngine* outerInstance,
             std::shared_ptr<SpecificReaderObserver> readerObserver);
 
         /**
          *
          */
-        virtual ~SpecificPluginObserver() { }
+        virtual ~SpecificPluginObserver()
+        {
+        }
 
         /**
          *
@@ -125,7 +131,7 @@ public:
         /**
          *
          */
-        ObservableReaderNotificationEngine *outerInstance;
+        ObservableReaderNotificationEngine* outerInstance;
     };
 
 private:

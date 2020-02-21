@@ -44,7 +44,9 @@ public:
     /**
      *
      */
-    virtual ~AbstractSamCommandBuilder() {}
+    virtual ~AbstractSamCommandBuilder()
+    {
+    }
 
 protected:
     /**
@@ -58,7 +60,7 @@ protected:
     std::shared_ptr<AbstractSamCommandBuilder> shared_from_this()
     {
         return std::static_pointer_cast<AbstractSamCommandBuilder>(
-                   AbstractIso7816CommandBuilder::shared_from_this());
+            AbstractIso7816CommandBuilder::shared_from_this());
     }
 };
 

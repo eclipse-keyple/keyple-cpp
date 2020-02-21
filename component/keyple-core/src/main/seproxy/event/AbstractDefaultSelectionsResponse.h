@@ -42,14 +42,16 @@ public:
     /**
      *
      */
-    virtual ~AbstractDefaultSelectionsResponse() {}
+    virtual ~AbstractDefaultSelectionsResponse()
+    {
+    }
 
 protected:
     /**
      * @return the list of {@link SeResponse}
      */
     virtual std::list<std::shared_ptr<SeResponse>>&
-                getSelectionSeResponseSet() = 0;
+    getSelectionSeResponseSet() = 0;
 };
 
 }

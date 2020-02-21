@@ -18,24 +18,24 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-        namespace keyple {
-            namespace calypso {
-                namespace command {
-                    namespace sam {
-                        namespace parser {
-
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace sam {
+namespace parser {
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @RunWith(MockitoJUnitRunner.class) public class DigestUpdateRespParsTest
-                            class DigestUpdateRespParsTest : public std::enable_shared_from_this<DigestUpdateRespParsTest> {
-                            public:
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void digestUpdateRespPars()
-                                virtual void digestUpdateRespPars();
-                            };
+class DigestUpdateRespParsTest
+: public std::enable_shared_from_this<DigestUpdateRespParsTest> {
+public:
+    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
+    //ORIGINAL LINE: @Test public void digestUpdateRespPars()
+    virtual void digestUpdateRespPars();
+};
 
-                        }
-                    }
-                }
-            }
-        }
+}
+}
+}
+}
+}

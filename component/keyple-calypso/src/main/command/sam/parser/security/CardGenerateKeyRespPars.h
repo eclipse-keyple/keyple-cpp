@@ -42,7 +42,9 @@ public:
     /**
      *
      */
-    virtual ~CardGenerateKeyRespPars() {}
+    virtual ~CardGenerateKeyRespPars()
+    {
+    }
 
     /**
      * Gets the 32 bytes of ciphered data.
@@ -55,8 +57,8 @@ protected:
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable()
-        const override;
+    std::unordered_map<int, std::shared_ptr<StatusProperties>>
+    getStatusTable() const override;
 
     /**
      *
@@ -64,7 +66,7 @@ protected:
     std::shared_ptr<CardGenerateKeyRespPars> shared_from_this()
     {
         return std::static_pointer_cast<CardGenerateKeyRespPars>(
-                   AbstractSamResponseParser::shared_from_this());
+            AbstractSamResponseParser::shared_from_this());
     }
 
 private:
@@ -72,7 +74,7 @@ private:
      *
      */
     static std::unordered_map<int, std::shared_ptr<StatusProperties>>
-               STATUS_TABLE;
+        STATUS_TABLE;
 
     /**
      *

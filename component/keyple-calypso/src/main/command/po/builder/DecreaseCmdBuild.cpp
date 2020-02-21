@@ -27,9 +27,10 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
 DecreaseCmdBuild::DecreaseCmdBuild(PoClass poClass, char sfi,
-  char counterNumber, int decValue, const std::string &extraInfo)
+                                   char counterNumber, int decValue,
+                                   const std::string& extraInfo)
 : AbstractPoCommandBuilder<DecreaseRespPars>(CalypsoPoCommands::DECREASE,
-  nullptr)
+                                             nullptr)
 {
     // only counter number >= 1 are allowed
     if (counterNumber < 1) {

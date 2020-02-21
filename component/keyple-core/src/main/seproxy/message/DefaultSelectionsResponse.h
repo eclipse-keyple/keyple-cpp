@@ -20,8 +20,15 @@
 #include "AbstractDefaultSelectionsResponse.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeResponseSet; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SeResponseSet;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {

@@ -29,7 +29,6 @@ namespace po {
 namespace parser {
 namespace security {
 
-
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
@@ -60,9 +59,9 @@ protected:
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<
-        AbstractApduResponseParser::StatusProperties>> getStatusTable() const
-            override;
+    std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+    getStatusTable() const override;
 
     /**
      *
@@ -70,7 +69,7 @@ protected:
     std::shared_ptr<CloseSessionRespPars> shared_from_this()
     {
         return std::static_pointer_cast<CloseSessionRespPars>(
-                   AbstractApduResponseParser::shared_from_this());
+            AbstractApduResponseParser::shared_from_this());
     }
 
 private:
@@ -87,8 +86,9 @@ private:
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<
-               AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        STATUS_TABLE;
 
     /**
      *
@@ -107,15 +107,10 @@ private:
      */
     static CloseSessionRespPars::StaticConstructor staticConstructor;
 
-
     /**
      *
      */
     void parse(const std::vector<uint8_t>& response);
-
-
-
-
 };
 
 }

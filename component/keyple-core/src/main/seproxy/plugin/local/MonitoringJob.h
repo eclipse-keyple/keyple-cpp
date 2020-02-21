@@ -59,8 +59,9 @@ public:
     /**
      *
      */
-    virtual std::future<void> startMonitoring(AbstractObservableState* state,
-                std::atomic<bool>& cancellationFlag) = 0;
+    virtual std::future<void>
+    startMonitoring(AbstractObservableState* state,
+                    std::atomic<bool>& cancellationFlag) = 0;
 
     /**
      * Should stop/interrupt the monitoring job

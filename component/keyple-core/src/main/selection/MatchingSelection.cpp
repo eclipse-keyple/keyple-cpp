@@ -28,10 +28,10 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
 
 MatchingSelection::MatchingSelection(
-  int selectionIndex,
-  std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
-  std::shared_ptr<AbstractMatchingSe> matchingSe,
-  std::shared_ptr<SeResponse> selectionSeResponse)
+    int selectionIndex,
+    std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
+    std::shared_ptr<AbstractMatchingSe> matchingSe,
+    std::shared_ptr<SeResponse> selectionSeResponse)
 : matchingSe(matchingSe), seSelectionRequest(seSelectionRequest),
   selectionSeResponse(selectionSeResponse), selectionIndex(selectionIndex)
 {

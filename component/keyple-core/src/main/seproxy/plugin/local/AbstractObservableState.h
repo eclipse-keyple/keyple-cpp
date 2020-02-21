@@ -115,11 +115,10 @@ protected:
      *        no background job is required)
      * @param executorService the executor service
      */
-    AbstractObservableState(
-        MonitoringState state,
-        AbstractObservableLocalReader* reader,
-        std::shared_ptr<MonitoringJob> monitoringJob,
-        std::shared_ptr<MonitoringPool> executorService);
+    AbstractObservableState(MonitoringState state,
+                            AbstractObservableLocalReader* reader,
+                            std::shared_ptr<MonitoringJob> monitoringJob,
+                            std::shared_ptr<MonitoringPool> executorService);
 
     /**
      * Create a new state with a state identifier
@@ -127,9 +126,8 @@ protected:
      * @param reader : observable reader this currentState is attached to
      * @param state : name of the currentState
      */
-    AbstractObservableState(
-        MonitoringState state,
-        AbstractObservableLocalReader* reader);
+    AbstractObservableState(MonitoringState state,
+                            AbstractObservableLocalReader* reader);
 
     /**
      * Switch state in the parent reader
@@ -143,7 +141,7 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(AbstractObservableState));
+        LoggerFactory::getLogger(typeid(AbstractObservableState));
 };
 
 }

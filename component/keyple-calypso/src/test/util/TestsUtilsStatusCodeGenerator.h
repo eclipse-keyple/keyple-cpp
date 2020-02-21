@@ -15,28 +15,29 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-        namespace keyple {
-            namespace calypso {
-                namespace util {
+namespace keyple {
+namespace calypso {
+namespace util {
 
-                    class TestsUtilsStatusCodeGenerator : public std::enable_shared_from_this<TestsUtilsStatusCodeGenerator> {
+class TestsUtilsStatusCodeGenerator
+: public std::enable_shared_from_this<TestsUtilsStatusCodeGenerator> {
 
-                    public:
-                        static std::vector<char> generateSuccessfulStatusCode();
+public:
+    static std::vector<char> generateSuccessfulStatusCode();
 
-                        static std::vector<char> generateCommandForbiddenOnBinaryFilesStatusCode();
+    static std::vector<char> generateCommandForbiddenOnBinaryFilesStatusCode();
 
-                        static std::vector<char> generateFileNotFoundStatusCode();
+    static std::vector<char> generateFileNotFoundStatusCode();
 
-                        static std::vector<char> generateRecordNotFoundStatusCode();
+    static std::vector<char> generateRecordNotFoundStatusCode();
 
-                        static std::vector<char> generateP2ValueNotSupportedStatusCode();
+    static std::vector<char> generateP2ValueNotSupportedStatusCode();
 
-                        static std::vector<char> generateLeValueIncorrectStatusCode();
+    static std::vector<char> generateLeValueIncorrectStatusCode();
 
-                        static std::vector<char> generateAccessForbiddenStatusCode();
-                    };
+    static std::vector<char> generateAccessForbiddenStatusCode();
+};
 
-                }
-            }
-        }
+}
+}
+}

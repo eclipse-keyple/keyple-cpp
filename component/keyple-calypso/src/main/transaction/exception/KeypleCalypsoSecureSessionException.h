@@ -36,26 +36,22 @@ public:
     /**
      *
      */
-    enum class Type {
-        NO_TYPE,
-        PO,
-        SAM
-    };
+    enum class Type { NO_TYPE, PO, SAM };
 
     /**
      *
      */
     KeypleCalypsoSecureSessionException(
-        const std::string& message,
-        Type type, std::vector<std::shared_ptr<ApduRequest>> &requests,
-        std::vector<std::shared_ptr<ApduResponse>> &responses);
+        const std::string& message, Type type,
+        std::vector<std::shared_ptr<ApduRequest>>& requests,
+        std::vector<std::shared_ptr<ApduResponse>>& responses);
 
     /**
      *
      */
-    KeypleCalypsoSecureSessionException(
-        const std::string& message, std::shared_ptr<ApduRequest> req,
-        std::shared_ptr<ApduResponse> resp);
+    KeypleCalypsoSecureSessionException(const std::string& message,
+                                        std::shared_ptr<ApduRequest> req,
+                                        std::shared_ptr<ApduResponse> resp);
 
     /**
      *
@@ -66,13 +62,14 @@ public:
     /**
      *
      */
-    KeypleCalypsoSecureSessionException(
-        KeypleCalypsoSecureSessionException& o);
+    KeypleCalypsoSecureSessionException(KeypleCalypsoSecureSessionException& o);
 
     /**
      *
      */
-    virtual ~KeypleCalypsoSecureSessionException() {}
+    virtual ~KeypleCalypsoSecureSessionException()
+    {
+    }
 
     /**
      *

@@ -27,17 +27,15 @@ namespace local {
 namespace monitoring {
 
 CardAbsentPingMonitoringJob::CardAbsentPingMonitoringJob(
-  AbstractObservableLocalReader* reader)
+    AbstractObservableLocalReader* reader)
 : reader(reader)
 {
-
 }
 
 CardAbsentPingMonitoringJob::CardAbsentPingMonitoringJob(
-  AbstractObservableLocalReader* reader, long removalWait)
+    AbstractObservableLocalReader* reader, long removalWait)
 : reader(reader), removalWait(removalWait)
 {
-
 }
 
 void CardAbsentPingMonitoringJob::monitoringJob(
@@ -57,7 +55,8 @@ void CardAbsentPingMonitoringJob::monitoringJob(
         }
 
         if (!reader->isSePresentPing()) {
-            logger->debug("[%s] The SE stopped responding\n", reader->getName());
+            logger->debug("[%s] The SE stopped responding\n",
+                          reader->getName());
             loop = false;
             state->onEvent(InternalEvent::SE_REMOVED);
             return;
@@ -65,12 +64,13 @@ void CardAbsentPingMonitoringJob::monitoringJob(
 
         retries++;
 
-        logger->trace("[%s] Polling retries : %d\n", reader->getName(), retries);
+        logger->trace("[%s] Polling retries : %d\n", reader->getName(),
+                      retries);
 
         try {
             /* Wait for a bit */
             Thread::sleep(removalWait);
-        } catch (InterruptedException &ignored) {
+        } catch (InterruptedException& ignored) {
             /* Restore interrupted state... */
             std::terminate();
             loop = false;
@@ -90,8 +90,8 @@ std::future<void> CardAbsentPingMonitoringJob::startMonitoring(
     AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
 {
     return std::async(std::launch::async,
-                      &CardAbsentPingMonitoringJob::monitoringJob,
-                      this, state, std::ref(cancellationFlag));
+                      &CardAbsentPingMonitoringJob::monitoringJob, this, state,
+                      std::ref(cancellationFlag));
 }
 
 }

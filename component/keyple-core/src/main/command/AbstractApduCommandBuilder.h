@@ -73,7 +73,7 @@ public:
     /**
      *
      */
-    AbstractApduCommandBuilder(const std::string &name,
+    AbstractApduCommandBuilder(const std::string& name,
                                std::shared_ptr<ApduRequest> request);
 
     /**
@@ -81,7 +81,7 @@ public:
     *
     * @param subName the string to append
     */
-    void addSubName(const std::string &subName);
+    void addSubName(const std::string& subName);
 
     /**
     * Gets the name.

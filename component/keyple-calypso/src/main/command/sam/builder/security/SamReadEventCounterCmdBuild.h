@@ -48,10 +48,7 @@ public:
     /**
      *
      */
-    enum SamEventCounterOperationType {
-        COUNTER_RECORD,
-        SINGLE_COUNTER
-    };
+    enum SamEventCounterOperationType { COUNTER_RECORD, SINGLE_COUNTER };
 
     /**
      *

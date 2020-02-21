@@ -26,8 +26,8 @@ KeypleReaderException::KeypleReaderException(const std::string& msg)
 {
 }
 
-KeypleReaderException::KeypleReaderException(
-  const std::string& msg, const std::exception& cause)
+KeypleReaderException::KeypleReaderException(const std::string& msg,
+                                             const std::exception& cause)
 : KeypleBaseException(msg, cause)
 {
 }
@@ -38,7 +38,7 @@ KeypleReaderException::KeypleReaderException(const KeypleReaderException& o)
 }
 
 std::list<std::shared_ptr<SeResponse>>&
-    KeypleReaderException::getSeResponseSet()
+KeypleReaderException::getSeResponseSet()
 {
     return seResponseList;
 }
@@ -55,7 +55,7 @@ std::shared_ptr<SeResponse> KeypleReaderException::getSeResponse()
 }
 
 void KeypleReaderException::setSeResponse(
-  std::shared_ptr<SeResponse> seResponse)
+    std::shared_ptr<SeResponse> seResponse)
 {
     this->seResponse = seResponse;
 }

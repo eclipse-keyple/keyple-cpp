@@ -86,8 +86,8 @@ public:
         /**
          *
          */
-        EventType(const std::string &nameValue, InnerEnum innerEnum,
-                  const std::string &name);
+        EventType(const std::string& nameValue, InnerEnum innerEnum,
+                  const std::string& name);
 
         /**
          *
@@ -97,7 +97,9 @@ public:
         /**
          *
          */
-        virtual ~EventType() {}
+        virtual ~EventType()
+        {
+        }
 
         /**
          *
@@ -107,12 +109,12 @@ public:
         /**
          *
          */
-        bool operator == (const EventType &other);
+        bool operator==(const EventType& other);
 
         /**
          *
          */
-        bool operator != (const EventType &other);
+        bool operator!=(const EventType& other);
 
         /**
          *
@@ -132,7 +134,7 @@ public:
         /**
          *
          */
-        static EventType valueOf(const std::string &name);
+        static EventType valueOf(const std::string& name);
 
     private:
         /**
@@ -174,8 +176,6 @@ public:
         std::string name;
     };
 
-
-
     /**
      * ReaderEvent constructor for simple insertion notification mode
      *
@@ -185,7 +185,7 @@ public:
      * @param defaultSelectionsResponse the response to the default
      *        AbstractDefaultSelectionsRequest (may be null)
      */
-    ReaderEvent(const std::string &pluginName, const std::string &readerName,
+    ReaderEvent(const std::string& pluginName, const std::string& readerName,
                 EventType eventType,
                 std::shared_ptr<AbstractDefaultSelectionsResponse>
                     defaultSelectionsResponse);
@@ -209,7 +209,7 @@ public:
      *
      */
     std::shared_ptr<AbstractDefaultSelectionsResponse>
-        getDefaultSelectionsResponse();
+    getDefaultSelectionsResponse();
 
 private:
     /**

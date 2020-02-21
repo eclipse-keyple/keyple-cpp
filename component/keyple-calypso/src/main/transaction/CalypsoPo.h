@@ -73,7 +73,7 @@ public:
      * @param extraInfo information string
      */
     CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
-              TransmissionMode transmissionMode, const std::string &extraInfo);
+              TransmissionMode transmissionMode, const std::string& extraInfo);
 
     /**
      * The PO revision indicates the generation of the product presented.
@@ -283,14 +283,16 @@ protected:
      */
     std::shared_ptr<CalypsoPo> shared_from_this()
     {
-        return std::static_pointer_cast<CalypsoPo>(AbstractMatchingSe::shared_from_this());
+        return std::static_pointer_cast<CalypsoPo>(
+            AbstractMatchingSe::shared_from_this());
     }
 
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CalypsoPo));
+    const std::shared_ptr<Logger> logger =
+        LoggerFactory::getLogger(typeid(CalypsoPo));
 
     /**
      *
@@ -380,12 +382,14 @@ private:
     /**
      *
      */
-    static constexpr int REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION = 3;
+    static constexpr int
+        REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION = 3;
 
     /**
      *
      */
-    static constexpr int REV2_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION = 6;
+    static constexpr int
+        REV2_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION = 6;
 
     /**
      *
@@ -401,7 +405,6 @@ private:
      *
      */
     bool modificationCounterIsInBytes = true;
-
 };
 
 }

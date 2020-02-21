@@ -35,13 +35,15 @@ public:
     /**
      *
      */
-    GenericSeSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState);
+    GenericSeSelectionRequest(std::shared_ptr<SeSelector> seSelector,
+                              ChannelState channelState);
 
 protected:
     /**
      *
      */
-    std::shared_ptr<AbstractMatchingSe> parse(std::shared_ptr<SeResponse> seResponse) override;
+    std::shared_ptr<AbstractMatchingSe>
+    parse(std::shared_ptr<SeResponse> seResponse) override;
 
 private:
     /**
@@ -57,13 +59,14 @@ private:
         /**
          * Constructor
          */
-        GenericMatchingSe(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, std::string& extraInfo);
+        GenericMatchingSe(std::shared_ptr<SeResponse> selectionResponse,
+                          TransmissionMode transmissionMode,
+                          std::string& extraInfo);
 
         /**
          * Virtual destructor
          */
         virtual ~GenericMatchingSe();
-
     };
 };
 
@@ -71,4 +74,3 @@ private:
 }
 }
 }
-

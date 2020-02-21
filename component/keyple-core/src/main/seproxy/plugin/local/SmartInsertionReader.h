@@ -43,7 +43,7 @@ public:
      */
     virtual bool waitForCardPresent() = 0;
 
-     /**
+    /**
      * Interrupts the waiting of a SE
      */
     virtual void stopWaitForCard() = 0;

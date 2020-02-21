@@ -19,7 +19,6 @@
 #include <vector>
 #include <memory>
 
-
 /* Common */
 #include "exceptionhelper.h"
 #include "Export.h"
@@ -38,8 +37,13 @@
 #include "StubReader.h"
 
 /* Forward declarations */
-namespace keyple { namespace plugin { namespace stub {
-    class StubSecureElement; } } }
+namespace keyple {
+namespace plugin {
+namespace stub {
+class StubSecureElement;
+}
+}
+}
 
 namespace keyple {
 namespace plugin {
@@ -53,9 +57,10 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::common;
 
-class EXPORT StubReaderImpl
-: public AbstractObservableLocalReader, public StubReader,
-  public SmartInsertionReader, public SmartRemovalReader {
+class EXPORT StubReaderImpl : public AbstractObservableLocalReader,
+                              public StubReader,
+                              public SmartInsertionReader,
+                              public SmartRemovalReader {
 public:
     /**
      * Do not use directly
@@ -88,13 +93,14 @@ public:
     /**
      *
      */
-    void setParameter(const std::string& name, const std::string& value)
-        override;
+    void setParameter(const std::string& name,
+                      const std::string& value) override;
 
     /**
      *
      */
-    const std::map<const std::string, const std::string> getParameters() override;
+    const std::map<const std::string, const std::string>
+    getParameters() override;
 
     /**
      * @return the current transmission mode
@@ -146,7 +152,7 @@ public:
      *
      */
     bool checkSePresence() override;
-    
+
     /**
      * Remove all observers at once
      *
@@ -309,10 +315,10 @@ private:
      * ObservableReader::setDefaultSelectionRequest() is considered virtual.
      * Override needed in this class.
      */
-    void setDefaultSelectionRequest(
-                std::shared_ptr<AbstractDefaultSelectionsRequest>
-                    defaultSelectionsRequest,
-                NotificationMode notificationMode) override;
+    void
+    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
+                                   defaultSelectionsRequest,
+                               NotificationMode notificationMode) override;
 };
 
 }

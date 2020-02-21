@@ -43,8 +43,8 @@ public:
      * @throws KeypleChannelControlException if channel control error occurs
      * @throws KeypleApplicationSelectionException if selection error occurs
      */
-    virtual std::shared_ptr<ApduResponse> openChannelForAid(
-                SeSelector::AidSelector& aidSelector);
+    virtual std::shared_ptr<ApduResponse>
+    openChannelForAid(SeSelector::AidSelector& aidSelector);
 };
 
 }

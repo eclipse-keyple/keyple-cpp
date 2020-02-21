@@ -33,8 +33,8 @@ public:
     Thread() : name("Thread-x"), t(nullptr)
     {
         interrupted = false;
-        detached = true;
-        alive = false;
+        detached    = true;
+        alive       = false;
     }
 
     /**
@@ -45,10 +45,10 @@ public:
 	 *
 	 * @param name the name of the new thread
 	 */
-    Thread(const std::string &name) : alive(false), name(name), t(nullptr)
+    Thread(const std::string& name) : alive(false), name(name), t(nullptr)
     {
         interrupted = false;
-        detached = true;
+        detached    = true;
     }
 
     /**
@@ -56,8 +56,7 @@ public:
 	 */
     virtual ~Thread()
     {
-        if (alive == 1 && detached == 0)
-        {
+        if (alive == 1 && detached == 0) {
             t->detach();
         }
     }
@@ -80,7 +79,7 @@ public:
 
         interrupted = false;
 
-        t = new std::thread(runThread, this);
+        t      = new std::thread(runThread, this);
         result = t ? 0 : -1;
 
         if (result == 0)
@@ -95,9 +94,9 @@ public:
 	 * call the Thread::run() method. Due to polymorphism, the Thread subclass
 	 * run() method will be called to carry out the thread’s action.
 	 */
-    static void runThread(void *arg)
+    static void runThread(void* arg)
     {
-        ((Thread *)arg)->run();
+        ((Thread*)arg)->run();
     }
 
     /**
@@ -219,7 +218,7 @@ public:
     /**
      *
      */
-    virtual void *run() = 0;
+    virtual void* run() = 0;
 
     /**
      *
@@ -264,7 +263,7 @@ private:
     /**
      *
      */
-    std::thread *t;
+    std::thread* t;
 
     /**
      *
@@ -274,4 +273,3 @@ private:
 
 }
 }
-

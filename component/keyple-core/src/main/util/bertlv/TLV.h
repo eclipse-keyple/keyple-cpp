@@ -23,14 +23,20 @@
 #include "Export.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace util { namespace bertlv {
-    class Tag; } } } }
+namespace keyple {
+namespace core {
+namespace util {
+namespace bertlv {
+class Tag;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {
 namespace util {
 namespace bertlv {
-
 
 /**
  * This class helps to parse a byte array as a TLV structure
@@ -45,12 +51,14 @@ public:
      *
      * @param binary the byte array containing the TLV structure
      */
-    TLV(std::vector<uint8_t> &binary);
+    TLV(std::vector<uint8_t>& binary);
 
     /**
      *
      */
-    virtual ~TLV() {}
+    virtual ~TLV()
+    {
+    }
 
     /**
      * Parse the byte array to find the expected TLV.
@@ -106,7 +114,6 @@ private:
      *
      */
     int position = 0;
-
 };
 
 }

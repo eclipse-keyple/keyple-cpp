@@ -60,8 +60,8 @@ protected:
     std::shared_ptr<OpenSession10CmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<OpenSession10CmdBuild>(
-                   AbstractOpenSessionCmdBuild<OpenSession10RespPars>
-                       ::shared_from_this());
+            AbstractOpenSessionCmdBuild<
+                OpenSession10RespPars>::shared_from_this());
     }
 };
 

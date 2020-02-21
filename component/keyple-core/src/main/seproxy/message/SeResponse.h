@@ -25,10 +25,24 @@
 #include "Object.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SelectionStatus; } } } }
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class ApduResponse; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SelectionStatus;
+}
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class ApduResponse;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -42,9 +56,9 @@ using namespace keyple::common;
  *
  * @see SeRequest
  */
-class EXPORT SeResponse final
-: public std::enable_shared_from_this<SeResponse>, public Serializable,
-  public Object {
+class EXPORT SeResponse final : public std::enable_shared_from_this<SeResponse>,
+                                public Serializable,
+                                public Object {
 public:
     /**
      * the constructor called by a ProxyReader during the processing of the
@@ -57,7 +71,7 @@ public:
      */
     SeResponse(bool logicalChannelIsOpen, bool channelPreviouslyOpen,
                std::shared_ptr<SelectionStatus> selectionStatus,
-               std::vector<std::shared_ptr<ApduResponse>> &apduResponses);
+               std::vector<std::shared_ptr<ApduResponse>>& apduResponses);
 
     /**
      * Was channel previously open.

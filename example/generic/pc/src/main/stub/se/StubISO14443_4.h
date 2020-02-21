@@ -12,7 +12,6 @@
 
 #pragma once
 
-
 #include <string>
 #include <vector>
 #include <memory>
@@ -64,8 +63,11 @@ protected:
     /**
      *
      */
-    std::shared_ptr<StubISO14443_4> shared_from_this() {
-        return std::static_pointer_cast<StubISO14443_4>(org.eclipse.keyple.plugin.stub.StubSecureElement::shared_from_this());
+    std::shared_ptr<StubISO14443_4> shared_from_this()
+    {
+        return std::static_pointer_cast<StubISO14443_4>(
+            org.eclipse.keyple.plugin.stub
+                .StubSecureElement::shared_from_this());
     }
 };
 

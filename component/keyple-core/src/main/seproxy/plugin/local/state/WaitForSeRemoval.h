@@ -65,9 +65,7 @@ private:
      * Logger
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(WaitForSeRemoval));
-
-
+        LoggerFactory::getLogger(typeid(WaitForSeRemoval));
 };
 
 }

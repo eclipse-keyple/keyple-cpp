@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-
 #include "DigestUpdateCmdBuild.h"
 
 namespace keyple {
@@ -24,14 +23,15 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
-DigestUpdateCmdBuild::DigestUpdateCmdBuild(
-  SamRevision revision, bool encryptedSession, std::vector<uint8_t>& digestData)
+DigestUpdateCmdBuild::DigestUpdateCmdBuild(SamRevision revision,
+                                           bool encryptedSession,
+                                           std::vector<uint8_t>& digestData)
 : AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_UPDATE, nullptr)
 {
     this->defaultRevision = revision;
 
     uint8_t cla = this->defaultRevision.getClassByte();
-    uint8_t p2 = encryptedSession ? 0x80 : 0x00;
+    uint8_t p2  = encryptedSession ? 0x80 : 0x00;
 
     if (digestData.size() > 0 && digestData.size() > 255) {
         throw std::invalid_argument("Digest data null or too long!");

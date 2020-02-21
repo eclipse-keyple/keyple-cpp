@@ -43,7 +43,7 @@ public:
      * @param hex Hexa string
      * @return byte array
      */
-    static std::vector<uint8_t> fromHex(const std::string &hex);
+    static std::vector<uint8_t> fromHex(const std::string& hex);
 
     /**
      * Represents the byte array in a hexadecimal string.
@@ -51,7 +51,7 @@ public:
      * @param byteArray byte array to represent to hex
      * @return Hex representation of the byte array
      */
-    static std::string toHex(const std::vector<char> &byteArray);
+    static std::string toHex(const std::vector<char>& byteArray);
 
     /**
      * Represents the byte array in a hexadecimal string.
@@ -59,7 +59,7 @@ public:
      * @param byteArray byte array to represent to hex
      * @return Hex representation of the byte array
      */
-    static std::string toHex(const std::vector<uint8_t> &byteArray);
+    static std::string toHex(const std::vector<uint8_t>& byteArray);
 
     /**
      * Convert three bytes from a byte array into an integer.

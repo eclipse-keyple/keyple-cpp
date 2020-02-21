@@ -45,9 +45,9 @@ PcscPluginImpl& PcscPluginImpl::getInstance()
 }
 
 const std::map<const std::string, const std::string>
-    PcscPluginImpl::getParameters()
+PcscPluginImpl::getParameters()
 {
-     return std::map<const std::string, const std::string>();
+    return std::map<const std::string, const std::string>();
 }
 
 void PcscPluginImpl::setParameter(const std::string& key,
@@ -64,20 +64,20 @@ const std::set<std::string>& PcscPluginImpl::fetchNativeReadersNames()
     try {
         const std::vector<PcscTerminal>& terminals = getTerminals();
 
-        logger->debug("fetchNativeReadersNames - filling native readers name " \
+        logger->debug("fetchNativeReadersNames - filling native readers name "
                       "list with card terminal items\n");
 
         if (terminals.empty()) {
             logger->trace("fetchNativeReadersNames - no reader available\n");
         } else {
-            for (auto &term : terminals) {
+            for (auto& term : terminals) {
                 logger->debug("fetchNativeReadersNames - reader: %s\n",
                               term.getName().c_str());
                 nativeReadersNames.insert(term.getName());
             }
         }
-    } catch (PcscTerminalException &e) {
-        logger->trace("fetchNativeReadersNames - terminal list is not " \
+    } catch (PcscTerminalException& e) {
+        logger->trace("fetchNativeReadersNames - terminal list is not "
                       "accessible, name: %s, exception: %s, cause: %s\n",
                       this->getName().c_str(), e.getMessage().c_str(),
                       e.getCause().what());
@@ -119,13 +119,12 @@ std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
     }
 
     try {
-        for (auto &term : terminals) {
+        for (auto& term : terminals) {
             logger->debug("initNativeReaders - inserting terminal into list\n");
-            nativeReaders.insert(
-                std::dynamic_pointer_cast<SeReader>(
-                    std::make_shared<PcscReaderImpl>(this->getName(), term)));
+            nativeReaders.insert(std::dynamic_pointer_cast<SeReader>(
+                std::make_shared<PcscReaderImpl>(this->getName(), term)));
         }
-    } catch (PcscTerminalException &e) {
+    } catch (PcscTerminalException& e) {
         logger->trace("[%s] terminal list not accessible, msg: %s, cause: %s",
                       this->getName().c_str(), e.getMessage().c_str(),
                       e.getCause().what());
@@ -139,8 +138,8 @@ std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
     return nativeReaders;
 }
 
-std::shared_ptr<SeReader> PcscPluginImpl::fetchNativeReader(
-    const std::string &name)
+std::shared_ptr<SeReader>
+PcscPluginImpl::fetchNativeReader(const std::string& name)
 {
     /* Return the current reader if it is already listed */
     for (auto reader : readers) {
@@ -154,18 +153,20 @@ std::shared_ptr<SeReader> PcscPluginImpl::fetchNativeReader(
      * associated with new reader(s)
      */
     std::shared_ptr<AbstractReader> reader = nullptr;
-    std::vector<PcscTerminal>& terminals = getTerminals();
+    std::vector<PcscTerminal>& terminals   = getTerminals();
     std::vector<std::string> terminalList;
 
     try {
         for (auto& term : terminals) {
             if (!term.getName().compare(name)) {
-                reader = std::make_shared<PcscReaderImpl>(this->getName(), term);
+                reader =
+                    std::make_shared<PcscReaderImpl>(this->getName(), term);
             }
         }
     } catch (PcscTerminalException& e) {
-        logger->trace("[%s] caught PcscTerminalException (msg: %s, cause: " \
-                      "%s)\n", this->getName().c_str(), e.getMessage().c_str(),
+        logger->trace("[%s] caught PcscTerminalException (msg: %s, cause: "
+                      "%s)\n",
+                      this->getName().c_str(), e.getMessage().c_str(),
                       e.getCause().what());
         throw KeypleReaderException("Could not access terminals list", e);
     }
@@ -179,20 +180,20 @@ std::shared_ptr<SeReader> PcscPluginImpl::fetchNativeReader(
 
 std::vector<PcscTerminal>& PcscPluginImpl::getTerminals()
 {
-   terminals.clear();
+    terminals.clear();
 
-   try {
-       const std::vector<std::string>& list = PcscTerminal::listTerminals();
+    try {
+        const std::vector<std::string>& list = PcscTerminal::listTerminals();
 
-       for (auto name : list)
-           terminals.push_back(PcscTerminal(name));
+        for (auto name : list)
+            terminals.push_back(PcscTerminal(name));
 
-   } catch (PcscTerminalException& e) {
-       (void)e;
-       logger->error("getTerminalsv - error listing terminals\n");
-   }
+    } catch (PcscTerminalException& e) {
+        (void)e;
+        logger->error("getTerminalsv - error listing terminals\n");
+    }
 
-   return terminals;
+    return terminals;
 }
 
 void PcscPluginImpl::addObserver(std::shared_ptr<PluginObserver> observer)

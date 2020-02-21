@@ -75,7 +75,9 @@ public:
     /**
      *
      */
-    virtual ~CalypsoClassicTransactionEngine() {}
+    virtual ~CalypsoClassicTransactionEngine()
+    {
+    }
 
     /**
      * Assign readers to the transaction engine
@@ -133,21 +135,21 @@ public:
      * @throws KeypleReaderException reader exception (defined as public for
      *         purposes of javadoc)
      */
-    virtual void doCalypsoReadWriteTransaction(
-        std::shared_ptr<PoTransaction> poTransaction, bool closeSeChannel);
+    virtual void
+    doCalypsoReadWriteTransaction(std::shared_ptr<PoTransaction> poTransaction,
+                                  bool closeSeChannel);
 
     /**
      *
      */
-    virtual
-    std::shared_ptr<AbstractDefaultSelectionsRequest> preparePoSelection();
+    virtual std::shared_ptr<AbstractDefaultSelectionsRequest>
+    preparePoSelection();
 
     /**
      * Do the PO selection and possibly go on with Calypso transactions.
      */
-    void processSeMatch(
-        std::shared_ptr<AbstractDefaultSelectionsResponse> selectionResponse)
-        override;
+    void processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse>
+                            selectionResponse) override;
 
     /**
      *
@@ -171,7 +173,7 @@ protected:
     std::shared_ptr<CalypsoClassicTransactionEngine> shared_from_this()
     {
         return std::static_pointer_cast<CalypsoClassicTransactionEngine>(
-                   AbstractReaderObserverEngine::shared_from_this());
+            AbstractReaderObserverEngine::shared_from_this());
     }
 
 private:
@@ -204,7 +206,6 @@ private:
      *
      */
     bool samChannelOpen = false;
-
 };
 
 }

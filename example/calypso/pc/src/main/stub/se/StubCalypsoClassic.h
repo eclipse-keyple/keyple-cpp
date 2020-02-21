@@ -43,9 +43,8 @@ public:
     /**
      *
      */
-    const std::vector<uint8_t> atr{
-        0x3B, 0x88, 0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x71, 0x81, 0x00,
-        0xF9};
+    const std::vector<uint8_t> atr{0x3B, 0x88, 0x80, 0x01, 0x00, 0x00, 0x00,
+                                   0x00, 0x00, 0x71, 0x81, 0x00, 0xF9};
 
     /**
      *
@@ -55,7 +54,9 @@ public:
     /**
      *
      */
-    virtual ~StubCalypsoClassic() {}
+    virtual ~StubCalypsoClassic()
+    {
+    }
 
     /**
      *
@@ -74,7 +75,7 @@ protected:
     std::shared_ptr<StubCalypsoClassic> shared_from_this()
     {
         return std::static_pointer_cast<StubCalypsoClassic>(
-                   StubSecureElement::shared_from_this());
+            StubSecureElement::shared_from_this());
     }
 
 private:
@@ -83,7 +84,6 @@ private:
      */
     const std::shared_ptr<Logger> logger =
         LoggerFactory::getLogger(typeid(StubCalypsoClassic));
-
 };
 
 }

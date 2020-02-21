@@ -30,7 +30,7 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Read Key Parameters APDU command.
  */
-class SamReadKeyParametersCmdBuild : public  AbstractSamCommandBuilder {
+class SamReadKeyParametersCmdBuild : public AbstractSamCommandBuilder {
 public:
     /**
      *
@@ -40,18 +40,12 @@ public:
     /**
      *
      */
-    enum SourceRef {
-        WORK_KEY,
-        SYSTEM_KEY
-    };
+    enum SourceRef { WORK_KEY, SYSTEM_KEY };
 
     /**
      *
      */
-    enum NavControl {
-        FIRST,
-        NEXT
-    };
+    enum NavControl { FIRST, NEXT };
 
     /**
      *

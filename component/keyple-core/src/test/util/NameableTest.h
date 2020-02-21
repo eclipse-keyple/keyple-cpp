@@ -20,20 +20,20 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-        namespace keyple {
-            namespace core {
-                namespace util {
-                
-                using namespace testing;
+namespace keyple {
+namespace core {
+namespace util {
 
-                class NameableTest : public std::enable_shared_from_this<NameableTest>, public Nameable
-                {
-                public:
-                    virtual ~NameableTest(){};
+using namespace testing;
 
-                    int sample();
-                };
+class NameableTest : public std::enable_shared_from_this<NameableTest>,
+                     public Nameable {
+public:
+    virtual ~NameableTest(){};
 
-                }
-            }
-        }
+    int sample();
+};
+
+}
+}
+}

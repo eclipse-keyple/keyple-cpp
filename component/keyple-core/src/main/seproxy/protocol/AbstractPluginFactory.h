@@ -39,8 +39,6 @@ public:
      *         interface is not ready
      */
     virtual ReaderPlugin& getPluginInstance() = 0;
-
-
 };
 
 }

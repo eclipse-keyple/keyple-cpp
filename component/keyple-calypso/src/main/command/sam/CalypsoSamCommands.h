@@ -108,8 +108,8 @@ public:
      * @param commandBuilderClass the command builder class
      * @param responseParserClass the response parser class
      */
-    CalypsoSamCommands(const std::string &nameValue, InnerEnum innerEnum,
-                       const std::string &name, char instructionByte,
+    CalypsoSamCommands(const std::string& nameValue, InnerEnum innerEnum,
+                       const std::string& name, char instructionByte,
                        const std::type_info& commandBuilderClass,
                        const std::type_info& responseParserClass);
 
@@ -144,12 +144,12 @@ public:
     /**
      *
      */
-    bool operator == (const CalypsoSamCommands &other);
+    bool operator==(const CalypsoSamCommands& other);
 
     /**
      *
      */
-    bool operator != (const CalypsoSamCommands &other);
+    bool operator!=(const CalypsoSamCommands& other);
 
     /**
      *
@@ -169,7 +169,7 @@ public:
     /**
      *
      */
-    static CalypsoSamCommands valueOf(const std::string &name);
+    static CalypsoSamCommands valueOf(const std::string& name);
 
 private:
     /**
@@ -216,7 +216,6 @@ private:
 
     /** The response parser class. */
     const std::type_info& responseParserClass;
-
 };
 
 }

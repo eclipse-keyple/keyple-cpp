@@ -33,8 +33,15 @@
 #include "ProxyReader.h"
 
 /* Forward declaration */
-namespace keyple { namespace core { namespace seproxy { namespace plugin {
-    class AbstractObservableReader; }}}}
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace plugin {
+class AbstractObservableReader;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -50,8 +57,8 @@ using namespace keyple::common;
 /**
  * Observable plugin. These plugin can report when a reader is added or removed.
  */
-class EXPORT AbstractPlugin
-: public Observable<PluginEvent>, public virtual ReaderPlugin {
+class EXPORT AbstractPlugin : public Observable<PluginEvent>,
+                              public virtual ReaderPlugin {
 public:
     /**
      *
@@ -93,8 +100,8 @@ public:
      *
      * @param observer the observer object
      */
-    virtual void addObserver(
-      std::shared_ptr<ObservablePlugin::PluginObserver> observer);
+    virtual void
+    addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
 
     /**
      * Remove a plugin observer.
@@ -104,8 +111,8 @@ public:
      *
      * @param observer the observer object
      */
-    virtual void removeObserver(
-      std::shared_ptr<ObservablePlugin::PluginObserver> observer);
+    virtual void
+    removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
 
     /**
      * Compare the name of the current ReaderPlugin to the name of the
@@ -129,7 +136,7 @@ public:
      *       be looked into, maybe returning a reference would
      *       could be best here?
      */
-    std::shared_ptr<SeReader> getReader(const std::string &name) override;
+    std::shared_ptr<SeReader> getReader(const std::string& name) override;
 
     /**
      * This method shall be called only from a SE Proxy plugin implementing
@@ -149,8 +156,8 @@ public:
      * @throws KeypleBaseException This method can fail when disabling the
      *         exclusive mode as it's executed instantly
      */
-    void setParameters(const std::map<std::string, std::string>& parameters)
-        override;
+    void setParameters(
+        const std::map<std::string, std::string>& parameters) override;
 
     /**
      * Gets the plugin name
@@ -166,7 +173,7 @@ protected:
     std::shared_ptr<AbstractPlugin> shared_from_this()
     {
         return std::static_pointer_cast<AbstractPlugin>(
-                   Observable<PluginEvent>::shared_from_this());
+            Observable<PluginEvent>::shared_from_this());
     }
 
     /**
@@ -181,7 +188,7 @@ protected:
      *
      * @param name name of the plugin
      */
-    AbstractPlugin(const std::string &name);
+    AbstractPlugin(const std::string& name);
 
     /**
      * Fetch connected native readers (from third party library) and returns a

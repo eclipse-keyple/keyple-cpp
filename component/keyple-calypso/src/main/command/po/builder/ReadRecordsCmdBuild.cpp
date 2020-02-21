@@ -28,12 +28,15 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
-ReadRecordsCmdBuild::ReadRecordsCmdBuild(
-  PoClass poClass, char sfi, ReadDataStructure readDataStructure,
-  char firstRecordNumber, bool readJustOneRecord, char expectedLength,
-  const std::string& extraInfo)
+ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi,
+                                         ReadDataStructure readDataStructure,
+                                         char firstRecordNumber,
+                                         bool readJustOneRecord,
+                                         char expectedLength,
+                                         const std::string& extraInfo)
 : AbstractPoCommandBuilder<ReadRecordsRespPars>(CalypsoPoCommands::READ_RECORDS,
-      nullptr), firstRecordNumber(firstRecordNumber),
+                                                nullptr),
+  firstRecordNumber(firstRecordNumber),
 
   readDataStructure(readDataStructure)
 {
@@ -52,11 +55,13 @@ ReadRecordsCmdBuild::ReadRecordsCmdBuild(
     }
 }
 
-ReadRecordsCmdBuild::ReadRecordsCmdBuild(
-  PoClass poClass, char sfi, ReadDataStructure readDataStructure,
-  char firstRecordNumber, bool readJustOneRecord, const std::string &extraInfo)
+ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi,
+                                         ReadDataStructure readDataStructure,
+                                         char firstRecordNumber,
+                                         bool readJustOneRecord,
+                                         const std::string& extraInfo)
 : ReadRecordsCmdBuild(poClass, sfi, readDataStructure, firstRecordNumber,
-  readJustOneRecord, 0x00, extraInfo)
+                      readJustOneRecord, 0x00, extraInfo)
 {
 }
 
@@ -64,7 +69,7 @@ std::shared_ptr<ReadRecordsRespPars> ReadRecordsCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
     return std::make_shared<ReadRecordsRespPars>(
-               apduResponse, readDataStructure, firstRecordNumber);
+        apduResponse, readDataStructure, firstRecordNumber);
 }
 
 }

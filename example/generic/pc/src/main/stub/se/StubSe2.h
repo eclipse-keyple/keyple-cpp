@@ -43,9 +43,9 @@ public:
     /**
      *
      */
-    const std::vector<uint8_t> atr = {
-        0x3B, 0x8E, 0x80, 0x01, 0x80, 0x31, 0x80, 0x66, 0x40, 0x90, 0x89, 0x12,
-        0x08, 0x02, 0x83, 0x01, 0x90, 0x00, 0x0B};
+    const std::vector<uint8_t> atr = {0x3B, 0x8E, 0x80, 0x01, 0x80, 0x31, 0x80,
+                                      0x66, 0x40, 0x90, 0x89, 0x12, 0x08, 0x02,
+                                      0x83, 0x01, 0x90, 0x00, 0x0B};
 
     /**
      *
@@ -55,7 +55,9 @@ public:
     /**
      *
      */
-    virtual ~StubSe2() { }
+    virtual ~StubSe2()
+    {
+    }
 
     /**
      *
@@ -74,7 +76,7 @@ protected:
     std::shared_ptr<StubSe2> shared_from_this()
     {
         return std::static_pointer_cast<StubSe2>(
-                   StubSecureElement::shared_from_this());
+            StubSecureElement::shared_from_this());
     }
 };
 

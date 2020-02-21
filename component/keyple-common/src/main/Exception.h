@@ -23,35 +23,35 @@ namespace common {
 
 class Exception : public std::exception {
 public:
-    Exception(const std::string &message) : message(message)
+    Exception(const std::string& message) : message(message)
     {
-	}
+    }
 
-	Exception(const std::string &message, const std::exception cause)
-	: message(message), cause(cause)
+    Exception(const std::string& message, const std::exception cause)
+    : message(message), cause(cause)
     {
-	}
+    }
 
-	/**
+    /**
 	 * Returns the detail message string of this exception.
 	 */
-	std::string getMessage() const
-	{
-		return message;
-	}
+    std::string getMessage() const
+    {
+        return message;
+    }
 
-	/**
+    /**
 	 * Returns the cause of the exception.
 	 */
-	const std::exception getCause() const
-	{
-		return cause;
-	}
+    const std::exception getCause() const
+    {
+        return cause;
+    }
 
     /**
      *
      */
-    friend std::ostream& operator<<(std::ostream &os, const Exception &e)
+    friend std::ostream& operator<<(std::ostream& os, const Exception& e)
     {
         os << "message: " << e.getMessage().c_str()
            << ", cause: " << e.getCause().what();
@@ -59,15 +59,15 @@ public:
     }
 
 private:
-	/**
+    /**
 	 *
 	 */
-	const std::string message;
+    const std::string message;
 
-	/**
+    /**
 	 *
 	 */
-	const std::exception cause;
+    const std::exception cause;
 };
 
 }

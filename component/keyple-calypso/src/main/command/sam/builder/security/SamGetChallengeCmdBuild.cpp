@@ -23,17 +23,17 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
-SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(
-  SamRevision revision, uint8_t expectedResponseLength)
+SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(SamRevision revision,
+                                                 uint8_t expectedResponseLength)
 : AbstractSamCommandBuilder(CalypsoSamCommands::GET_CHALLENGE, nullptr)
 {
     this->defaultRevision = revision;
 
     if (expectedResponseLength != 0x04 && expectedResponseLength != 0x08) {
         throw std::invalid_argument(
-                  StringHelper::formatSimple("Bad challenge length! Expected " \
-                                             "4 or 8, got %s",
-                                             expectedResponseLength));
+            StringHelper::formatSimple("Bad challenge length! Expected "
+                                       "4 or 8, got %s",
+                                       expectedResponseLength));
     }
 
     uint8_t cla = this->defaultRevision.getClassByte();

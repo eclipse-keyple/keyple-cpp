@@ -28,7 +28,8 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
 IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi,
-  char counterNumber, int incValue, const std::string &extraInfo)
+                                   char counterNumber, int incValue,
+                                   const std::string& extraInfo)
 : AbstractPoCommandBuilder<IncreaseRespPars>(command, nullptr)
 {
 
@@ -45,7 +46,7 @@ IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi,
     // convert the integer value into a 3-byte buffer
     std::vector<uint8_t> incValueBuffer(3);
     incValueBuffer[0] = (incValue >> 16) & 0xFF;
-    incValueBuffer[1] = (incValue >>  8) & 0xFF;
+    incValueBuffer[1] = (incValue >> 8) & 0xFF;
     incValueBuffer[2] = incValue & 0xFF;
 
     /* this is a case4 command, we set Le = 0 */

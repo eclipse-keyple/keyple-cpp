@@ -48,7 +48,9 @@ public:
     /**
      *
      */
-    virtual ~DigestInitRespPars() {}
+    virtual ~DigestInitRespPars()
+    {
+    }
 
 protected:
     /**
@@ -57,7 +59,7 @@ protected:
     std::shared_ptr<DigestInitRespPars> shared_from_this()
     {
         return std::static_pointer_cast<DigestInitRespPars>(
-                   AbstractSamResponseParser::shared_from_this());
+            AbstractSamResponseParser::shared_from_this());
     }
 };
 

@@ -28,7 +28,6 @@ namespace pc {
 namespace stub {
 namespace se {
 
-
 using namespace keyple::plugin::stub;
 
 /**
@@ -54,7 +53,9 @@ public:
     /**
      *
      */
-    virtual ~StubMifareDesfire() {}
+    virtual ~StubMifareDesfire()
+    {
+    }
 
     /**
      *
@@ -73,7 +74,7 @@ protected:
     std::shared_ptr<StubMifareDesfire> shared_from_this()
     {
         return std::static_pointer_cast<StubMifareDesfire>(
-                   StubSecureElement::shared_from_this());
+            StubSecureElement::shared_from_this());
     }
 };
 

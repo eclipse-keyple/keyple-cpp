@@ -50,7 +50,9 @@ public:
      *        reference is null)
      * @param sourceKey the reference of the key to be loaded
      */
-    CardGenerateKeyCmdBuild(SamRevision revision, std::shared_ptr<KeyReference> cipheringKey, std::shared_ptr<KeyReference> sourceKey);
+    CardGenerateKeyCmdBuild(SamRevision revision,
+                            std::shared_ptr<KeyReference> cipheringKey,
+                            std::shared_ptr<KeyReference> sourceKey);
 
 protected:
     /**
@@ -58,7 +60,8 @@ protected:
      */
     std::shared_ptr<CardGenerateKeyCmdBuild> shared_from_this()
     {
-        return std::static_pointer_cast<CardGenerateKeyCmdBuild>(AbstractSamCommandBuilder::shared_from_this());
+        return std::static_pointer_cast<CardGenerateKeyCmdBuild>(
+            AbstractSamCommandBuilder::shared_from_this());
     }
 
 private:

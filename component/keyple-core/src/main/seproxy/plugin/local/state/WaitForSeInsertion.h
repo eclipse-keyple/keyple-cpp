@@ -70,7 +70,7 @@ private:
      * Logger
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(WaitForSeInsertion));
+        LoggerFactory::getLogger(typeid(WaitForSeInsertion));
 };
 
 }

@@ -19,7 +19,6 @@ namespace core {
 namespace seproxy {
 namespace event {
 
-
 }
 }
 }

@@ -23,12 +23,12 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
-GiveRandomCmdBuild::GiveRandomCmdBuild(
-  SamRevision revision, std::vector<uint8_t> &random)
+GiveRandomCmdBuild::GiveRandomCmdBuild(SamRevision revision,
+                                       std::vector<uint8_t>& random)
 : AbstractSamCommandBuilder(CalypsoSamCommands::GIVE_RANDOM, nullptr)
 {
     //if (revision != nullptr) {
-        this->defaultRevision = revision;
+    this->defaultRevision = revision;
     //}
 
     uint8_t cla = this->defaultRevision.getClassByte();

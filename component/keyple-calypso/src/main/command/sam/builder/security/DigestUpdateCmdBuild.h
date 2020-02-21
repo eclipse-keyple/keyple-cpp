@@ -29,7 +29,6 @@ namespace sam {
 namespace builder {
 namespace security {
 
-
 using namespace keyple::calypso::command::sam;
 
 /**
@@ -51,12 +50,14 @@ public:
      * @throws IllegalArgumentException - if the request is inconsistent
      */
     DigestUpdateCmdBuild(SamRevision revision, bool encryptedSession,
-                         std::vector<uint8_t> &digestData);
+                         std::vector<uint8_t>& digestData);
 
     /**
      *
      */
-    virtual ~DigestUpdateCmdBuild() {}
+    virtual ~DigestUpdateCmdBuild()
+    {
+    }
 
 protected:
     /**
@@ -65,7 +66,7 @@ protected:
     std::shared_ptr<DigestUpdateCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<DigestUpdateCmdBuild>(
-                   AbstractSamCommandBuilder::shared_from_this());
+            AbstractSamCommandBuilder::shared_from_this());
     }
 
 private:

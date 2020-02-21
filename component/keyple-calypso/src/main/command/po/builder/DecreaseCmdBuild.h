@@ -41,8 +41,9 @@ using namespace keyple::core::seproxy::message;
 *
 */
 class DecreaseCmdBuild final
-: public AbstractPoCommandBuilder<DecreaseRespPars>, public PoSendableInSession, public PoModificationCommand {
-
+: public AbstractPoCommandBuilder<DecreaseRespPars>,
+  public PoSendableInSession,
+  public PoModificationCommand {
 
 private:
     /**
@@ -64,12 +65,14 @@ public:
      * @throws IllegalArgumentException - if the decrement value is out of range
      * @throws IllegalArgumentException - if the command is inconsistent
      */
-    DecreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int decValue, const std::string &extraInfo);
+    DecreaseCmdBuild(PoClass poClass, char sfi, char counterNumber,
+                     int decValue, const std::string& extraInfo);
 
     /**
      *
      */
-    std::shared_ptr<DecreaseRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<DecreaseRespPars>
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -77,7 +80,8 @@ protected:
      */
     std::shared_ptr<DecreaseCmdBuild> shared_from_this()
     {
-        return std::static_pointer_cast<DecreaseCmdBuild>(AbstractPoCommandBuilder<DecreaseRespPars>::shared_from_this());
+        return std::static_pointer_cast<DecreaseCmdBuild>(
+            AbstractPoCommandBuilder<DecreaseRespPars>::shared_from_this());
     }
 };
 

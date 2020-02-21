@@ -26,7 +26,13 @@
 #include "Nameable.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { class SeReader; } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+class SeReader;
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -38,13 +44,15 @@ using namespace keyple::core::util;
 /**
     * Card readers plugin interface.
     */
-class EXPORT ReaderPlugin
-: public virtual Nameable, public virtual Configurable {
+class EXPORT ReaderPlugin : public virtual Nameable,
+                            public virtual Configurable {
 public:
     /**
      *
      */
-    ReaderPlugin() {}
+    ReaderPlugin()
+    {
+    }
 
     /**
      *
@@ -57,7 +65,9 @@ public:
     /**
      *
      */
-    virtual ~ReaderPlugin() {}
+    virtual ~ReaderPlugin()
+    {
+    }
 
     /**
      * Gets the list of names of all readers
@@ -81,7 +91,7 @@ public:
      * @return the SeReader object.
      * @throws KeypleReaderNotFoundException if the wanted reader is not found
      */
-    virtual std::shared_ptr<SeReader> getReader(const std::string &name) = 0;
+    virtual std::shared_ptr<SeReader> getReader(const std::string& name) = 0;
 };
 
 }

@@ -23,10 +23,10 @@ namespace bertlv {
 
 using namespace keyple::common;
 
-const char Tag::UNIVERSAL = static_cast<char>(0x00);
+const char Tag::UNIVERSAL   = static_cast<char>(0x00);
 const char Tag::APPLICATION = static_cast<char>(0x01);
-const char Tag::CONTEXT = static_cast<char>(0x02);
-const char Tag::PRIVATE = static_cast<char>(0x03);
+const char Tag::CONTEXT     = static_cast<char>(0x02);
+const char Tag::PRIVATE     = static_cast<char>(0x03);
 
 Tag::Tag(int tagNumber, uint8_t tagClass, TagType tagType)
 : tagNumber(tagNumber), tagClass(tagClass), tagType(tagType)
@@ -39,17 +39,13 @@ Tag::Tag(int tagNumber, uint8_t tagClass, TagType tagType)
     }
     if (tagNumber < 0x1F) {
         size = 1;
-    }
-    else if (tagNumber < 0x80) {
+    } else if (tagNumber < 0x80) {
         size = 2;
-    }
-    else if (tagNumber < 0x4000) {
+    } else if (tagNumber < 0x4000) {
         size = 3;
-    }
-    else if (tagNumber < 0x200000) {
+    } else if (tagNumber < 0x200000) {
         size = 4;
-    }
-    else {
+    } else {
         size = 5;
     }
 }
@@ -62,8 +58,7 @@ Tag::Tag(std::vector<uint8_t>& binary, int offset)
     /* the type bit is the third bit (b5) */
     if ((binary[offset] & 0x20) == 0x20) {
         tagType = TagType::CONSTRUCTED;
-    }
-    else {
+    } else {
         tagType = TagType::PRIMITIVE;
     }
 
@@ -71,7 +66,7 @@ Tag::Tag(std::vector<uint8_t>& binary, int offset)
      * The tag number is defined in the following bits (b4-b0) and possibly
      * following octets.
      */
-    int index = offset;
+    int index  = offset;
     int number = 0;
     if ((binary[index] & 0x1F) == 0x1F) {
         /* all bits of tag number are set: multi-octet tag */
@@ -87,7 +82,7 @@ Tag::Tag(std::vector<uint8_t>& binary, int offset)
     }
 
     tagNumber = number;
-    size = index + 1 - offset;
+    size      = index + 1 - offset;
 }
 
 int Tag::getTagNumber()
@@ -121,7 +116,7 @@ bool Tag::equals(std::shared_ptr<Object> obj)
         return true;
 
     return ((this->tagNumber == tag->tagNumber) &&
-            (this->tagClass == tag->tagClass)   &&
+            (this->tagClass == tag->tagClass) &&
             (this->tagType == tag->tagType));
 }
 
@@ -134,7 +129,7 @@ bool Tag::equals(std::shared_ptr<Tag> tag)
         return true;
 
     return ((this->tagNumber == tag->tagNumber) &&
-            (this->tagClass == tag->tagClass)   &&
+            (this->tagClass == tag->tagClass) &&
             (this->tagType == tag->tagType));
 }
 
@@ -142,26 +137,27 @@ std::string Tag::toString()
 {
     std::string tagClassString;
     switch (tagClass) {
-        case Tag::UNIVERSAL:
-            tagClassString = "UNIVERSAL";
-            break;
-        case Tag::APPLICATION:
-            tagClassString = "APPLICATION";
-            break;
-        case Tag::CONTEXT:
-            tagClassString = "CONTEXT";
-            break;
-        case Tag::PRIVATE:
-            tagClassString = "PRIVATE";
-            break;
-        default:
-            tagClassString = "UNKWOWN";
-            break;
+    case Tag::UNIVERSAL:
+        tagClassString = "UNIVERSAL";
+        break;
+    case Tag::APPLICATION:
+        tagClassString = "APPLICATION";
+        break;
+    case Tag::CONTEXT:
+        tagClassString = "CONTEXT";
+        break;
+    case Tag::PRIVATE:
+        tagClassString = "PRIVATE";
+        break;
+    default:
+        tagClassString = "UNKWOWN";
+        break;
     }
 
-    return StringHelper::formatSimple("TAG: size=%d Class=%s, Type=%s, " \
-                                     "Number=%X", size, tagClassString,
-                                     "<tag type>", tagNumber);
+    return StringHelper::formatSimple("TAG: size=%d Class=%s, Type=%s, "
+                                      "Number=%X",
+                                      size, tagClassString, "<tag type>",
+                                      tagNumber);
 }
 
 }

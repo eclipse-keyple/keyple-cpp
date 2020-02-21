@@ -20,20 +20,20 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-        namespace keyple {
-            namespace core {
-                namespace util {
-                
-                using namespace testing;
+namespace keyple {
+namespace core {
+namespace util {
 
-                class CountDownLatchTest : public std::enable_shared_from_this<CountDownLatchTest>
-                {
-                public:
-                    virtual ~CountDownLatchTest(){};
+using namespace testing;
 
-                    int sample( unsigned int iValue );
-                };
+class CountDownLatchTest
+: public std::enable_shared_from_this<CountDownLatchTest> {
+public:
+    virtual ~CountDownLatchTest(){};
 
-                }
-            }
-        }
+    int sample(unsigned int iValue);
+};
+
+}
+}
+}

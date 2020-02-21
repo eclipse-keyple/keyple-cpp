@@ -23,20 +23,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-        namespace keyple {
-            namespace calypso {
-                namespace command {
-                    namespace po {
-                        namespace builder {
+namespace keyple {
+namespace calypso {
+namespace command {
+namespace po {
+namespace builder {
 
-                            class GetDataCmdBuildTest : public std::enable_shared_from_this<GetDataCmdBuildTest> {
-                            public:
-                                virtual void getDataFCICmdBuild();
+class GetDataCmdBuildTest
+: public std::enable_shared_from_this<GetDataCmdBuildTest> {
+public:
+    virtual void getDataFCICmdBuild();
 
-                                virtual void getDataFCICmdBuild2();
-                            };
-                        }
-                    }
-                }
-            }
-        }
+    virtual void getDataFCICmdBuild2();
+};
+}
+}
+}
+}
+}

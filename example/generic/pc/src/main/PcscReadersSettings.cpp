@@ -17,7 +17,8 @@ namespace example {
 namespace generic {
 namespace pc {
 
-const std::string PcscReadersSettings::PO_READER_NAME_REGEX = ".*(ASK|ACS|5421\\(2\\)|00\\ 01|5x21-CL\\ ).*";
+const std::string PcscReadersSettings::PO_READER_NAME_REGEX =
+    ".*(ASK|ACS|5421\\(2\\)|00\\ 01|5x21-CL\\ ).*";
 
 }
 }

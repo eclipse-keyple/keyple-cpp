@@ -23,13 +23,13 @@ namespace message {
 using namespace keyple::core::seproxy::event;
 
 DefaultSelectionsResponse::DefaultSelectionsResponse(
-  std::list<std::shared_ptr<SeResponse>>& selectionSeResponseSet)
+    std::list<std::shared_ptr<SeResponse>>& selectionSeResponseSet)
 : selectionSeResponseSet(selectionSeResponseSet)
 {
 }
 
 std::list<std::shared_ptr<SeResponse>>&
-    DefaultSelectionsResponse::getSelectionSeResponseSet()
+DefaultSelectionsResponse::getSelectionSeResponseSet()
 {
     return selectionSeResponseSet;
 }

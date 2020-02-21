@@ -23,9 +23,8 @@ namespace message {
 
 using namespace keyple::core::util;
 
-ApduResponse::ApduResponse(
-  std::vector<uint8_t>& buffer,
-  std::shared_ptr<std::set<int>> successfulStatusCodes)
+ApduResponse::ApduResponse(std::vector<uint8_t>& buffer,
+                           std::shared_ptr<std::set<int>> successfulStatusCodes)
 : bytes(buffer)
 {
     if (buffer.empty()) {
@@ -43,7 +42,7 @@ ApduResponse::ApduResponse(
         if (successfulStatusCodes != nullptr) {
             this->successful = statusCode == 0x9000 ||
                                (successfulStatusCodes->find(statusCode) !=
-                                   successfulStatusCodes->end());
+                                successfulStatusCodes->end());
         } else {
             this->successful = statusCode == 0x9000;
         }
@@ -90,9 +89,8 @@ std::vector<uint8_t> ApduResponse::getDataOut() const
 std::string ApduResponse::toString()
 {
     std::string status = isSuccessful() ? "SUCCESS" : "FAILURE";
-    return StringHelper::formatSimple(
-               "ApduResponse: %s, RAWDATA = %s", status,
-               ByteArrayUtil::toHex(this->bytes));
+    return StringHelper::formatSimple("ApduResponse: %s, RAWDATA = %s", status,
+                                      ByteArrayUtil::toHex(this->bytes));
 }
 
 bool ApduResponse::equals(std::shared_ptr<void> o)
@@ -115,14 +113,13 @@ bool ApduResponse::equals(std::shared_ptr<void> o)
 int ApduResponse::hashCode()
 {
     int hash = 17;
-    hash = 19 * hash + (this->successful ? 0 : 1);
-    hash = 31 * hash + (bytes.empty() ? 0 : Arrays::hashCode(bytes));
+    hash     = 19 * hash + (this->successful ? 0 : 1);
+    hash     = 31 * hash + (bytes.empty() ? 0 : Arrays::hashCode(bytes));
     return hash;
 }
 
 void ApduResponse::finalize()
 {
-
 }
 
 }

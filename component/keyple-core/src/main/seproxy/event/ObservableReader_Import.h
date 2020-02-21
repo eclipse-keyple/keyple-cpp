@@ -54,7 +54,9 @@ public:
         /**
          *
          */
-        virtual ~ReaderObserver() {}
+        virtual ~ReaderObserver()
+        {
+        }
 
         /**
          *
@@ -85,10 +87,7 @@ public:
         /**
          *
          */
-        enum class InnerEnum {
-            ALWAYS,
-            MATCHED_ONLY
-        };
+        enum class InnerEnum { ALWAYS, MATCHED_ONLY };
 
         /*
          * Alex: removed 'const'
@@ -105,8 +104,8 @@ public:
         /**
          *
          */
-        NotificationMode(const std::string &nameValue, InnerEnum innerEnum,
-                         const std::string &name);
+        NotificationMode(const std::string& nameValue, InnerEnum innerEnum,
+                         const std::string& name);
 
         /**
          *
@@ -116,13 +115,14 @@ public:
         /**
          *
          */
-        virtual ~NotificationMode() {}
+        virtual ~NotificationMode()
+        {
+        }
 
         /**
          *
          */
         virtual std::string getName();
-
 
         /**
          * This method can be used for reverse lookup purpose
@@ -130,17 +130,17 @@ public:
          * @param name the enum name
          * @return the corresponding enum
          */
-        static NotificationMode get(const std::string &name);
+        static NotificationMode get(const std::string& name);
 
         /**
          *
          */
-        bool operator==(const NotificationMode &other);
+        bool operator==(const NotificationMode& other);
 
         /**
          *
          */
-        bool operator!=(const NotificationMode &other);
+        bool operator!=(const NotificationMode& other);
 
         /**
          *
@@ -165,7 +165,7 @@ public:
         /**
          *
          */
-        static NotificationMode valueOf(const std::string &name);
+        static NotificationMode valueOf(const std::string& name);
 
     protected:
         /**
@@ -203,7 +203,6 @@ public:
          *
          */
         static int nextOrdinal;
-
 
         /**
          * Reverse Lookup Implementation
@@ -254,7 +253,9 @@ public:
     /**
      *
      */
-    virtual ~ObservableReader() {}
+    virtual ~ObservableReader()
+    {
+    }
 
     /**
      * Add a reader observer.
@@ -326,10 +327,10 @@ public:
      *        notified even if the selection has failed (ALWAYS) or whether the
      *        SE insertion should be ignored in this case (MATCHED_ONLY).
      */
-    virtual void setDefaultSelectionRequest(
-                std::shared_ptr<AbstractDefaultSelectionsRequest>
-                    defaultSelectionsRequest,
-                NotificationMode notificationMode) = 0;
+    virtual void
+    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
+                                   defaultSelectionsRequest,
+                               NotificationMode notificationMode) = 0;
 
     /**
      * A combination of defining the default selection request and starting the

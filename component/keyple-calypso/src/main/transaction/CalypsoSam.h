@@ -50,12 +50,15 @@ public:
      * @param transmissionMode the current {@link TransmissionMode} (contacts or contactless)
      * @param extraInfo textual information
      */
-    CalypsoSam(std::shared_ptr<SeResponse> selectionResponse, TransmissionMode transmissionMode, const std::string &extraInfo);
+    CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
+               TransmissionMode transmissionMode, const std::string& extraInfo);
 
     /**
      *
      */
-    virtual ~CalypsoSam() {}
+    virtual ~CalypsoSam()
+    {
+    }
 
     /**
      *
@@ -103,14 +106,16 @@ protected:
      */
     std::shared_ptr<CalypsoSam> shared_from_this()
     {
-        return std::static_pointer_cast<CalypsoSam>(AbstractMatchingSe::shared_from_this());
+        return std::static_pointer_cast<CalypsoSam>(
+            AbstractMatchingSe::shared_from_this());
     }
 
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(CalypsoSam));
+    const std::shared_ptr<Logger> logger =
+        LoggerFactory::getLogger(typeid(CalypsoSam));
 
     /**
      *

@@ -40,24 +40,27 @@ using namespace keyple::plugin::pcsc;
 class Demo_CalypsoClassic_Pcsc {
 };
 
-std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(Demo_CalypsoClassic_Pcsc));
+std::shared_ptr<Logger> logger =
+    LoggerFactory::getLogger(typeid(Demo_CalypsoClassic_Pcsc));
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
 
-     /* Get the instance of the PC/SC plugin */
+    /* Get the instance of the PC/SC plugin */
     PcscPlugin pcscPlugin = PcscPlugin::getInstance();
     pcscPlugin.initReaders();
-    std::shared_ptr<PcscPlugin> shared_plugin = std::shared_ptr<PcscPlugin>(&pcscPlugin);
+    std::shared_ptr<PcscPlugin> shared_plugin =
+        std::shared_ptr<PcscPlugin>(&pcscPlugin);
 
     /* Assign PcscPlugin to the SeProxyService */
     SeProxyService& seProxyService = SeProxyService::getInstance();
     seProxyService.addPlugin(shared_plugin);
 
     /* Setting up the transaction engine (implements Observer) */
-    std::shared_ptr<CalypsoClassicTransactionEngine> transactionEngine = std::make_shared<CalypsoClassicTransactionEngine>();
+    std::shared_ptr<CalypsoClassicTransactionEngine> transactionEngine =
+        std::make_shared<CalypsoClassicTransactionEngine>();
 
     /*
      * Get PO and SAM readers. Apply regulars expressions to reader names to select PO / SAM
@@ -65,13 +68,14 @@ int main(int argc, char **argv)
      */
     std::shared_ptr<SeReader> poReader = nullptr, samReader = nullptr;
     try {
-        poReader = ReaderUtilities::getReaderByName(PcscReadersSettings::PO_READER_NAME_REGEX);
-        samReader = ReaderUtilities::getReaderByName(PcscReadersSettings::SAM_READER_NAME_REGEX);
-    }
-    catch (const KeypleReaderNotFoundException &e) {
-        logger->error("update - caught KeypleReaderNotFoundException " \
-                      "(msg: %s, cause: %s)\n", e.getMessage().c_str(),
-                      e.getCause().what());
+        poReader = ReaderUtilities::getReaderByName(
+            PcscReadersSettings::PO_READER_NAME_REGEX);
+        samReader = ReaderUtilities::getReaderByName(
+            PcscReadersSettings::SAM_READER_NAME_REGEX);
+    } catch (const KeypleReaderNotFoundException& e) {
+        logger->error("update - caught KeypleReaderNotFoundException "
+                      "(msg: %s, cause: %s)\n",
+                      e.getMessage().c_str(), e.getCause().what());
     }
 
     /* Both readers are expected not null */
@@ -84,9 +88,11 @@ int main(int argc, char **argv)
 
     /* Set PcSc settings per reader */
     poReader->setParameter(PcscReaderSettings::SETTING_KEY_LOGGING, "true");
-    poReader->setParameter(PcscReaderSettings::SETTING_KEY_PROTOCOL, PcscReaderSettings::SETTING_PROTOCOL_T1);
+    poReader->setParameter(PcscReaderSettings::SETTING_KEY_PROTOCOL,
+                           PcscReaderSettings::SETTING_PROTOCOL_T1);
     samReader->setParameter(PcscReaderSettings::SETTING_KEY_LOGGING, "true");
-    samReader->setParameter(PcscReaderSettings::SETTING_KEY_PROTOCOL, PcscReaderSettings::SETTING_PROTOCOL_T0);
+    samReader->setParameter(PcscReaderSettings::SETTING_KEY_PROTOCOL,
+                            PcscReaderSettings::SETTING_PROTOCOL_T0);
 
     /*
      * PC/SC card access mode:
@@ -102,27 +108,36 @@ int main(int argc, char **argv)
      * See KEYPLE-CORE.PC.md file to learn more about this point.
      *
      */
-    samReader->setParameter(PcscReader::SETTING_KEY_MODE, PcscReader::SETTING_MODE_SHARED);
-    poReader->setParameter(PcscReader::SETTING_KEY_MODE, PcscReader::SETTING_MODE_SHARED);
+    samReader->setParameter(PcscReader::SETTING_KEY_MODE,
+                            PcscReader::SETTING_MODE_SHARED);
+    poReader->setParameter(PcscReader::SETTING_KEY_MODE,
+                           PcscReader::SETTING_MODE_SHARED);
 
     /* Set the PO reader protocol flag */
-    poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO14443_4,
-                                   PcscProtocolSetting::PCSC_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO14443_4]);
+    poReader->addSeProtocolSetting(
+        SeCommonProtocols::PROTOCOL_ISO14443_4,
+        PcscProtocolSetting::PCSC_PROTOCOL_SETTING
+            [SeCommonProtocols::PROTOCOL_ISO14443_4]);
     poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_B_PRIME,
-                                   PcscProtocolSetting::PCSC_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_B_PRIME]);
+                                   PcscProtocolSetting::PCSC_PROTOCOL_SETTING
+                                       [SeCommonProtocols::PROTOCOL_B_PRIME]);
     poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO7816_3,
-                                   PcscProtocolSetting::PCSC_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO7816_3]);
+                                   PcscProtocolSetting::PCSC_PROTOCOL_SETTING
+                                       [SeCommonProtocols::PROTOCOL_ISO7816_3]);
 
     /* Assign the readers to the Calypso transaction engine */
     transactionEngine->setReaders(poReader, samReader);
 
     /* Set the default selection operation */
-    (std::dynamic_pointer_cast<ObservableReader>(poReader))->setDefaultSelectionRequest(transactionEngine->preparePoSelection(),
-                                                                                       ObservableReader::NotificationMode::MATCHED_ONLY);
+    (std::dynamic_pointer_cast<ObservableReader>(poReader))
+        ->setDefaultSelectionRequest(
+            transactionEngine->preparePoSelection(),
+            ObservableReader::NotificationMode::MATCHED_ONLY);
 
     /* Set terminal as Observer of the first reader */
-    (std::dynamic_pointer_cast<ObservableReader>(poReader))->addObserver(transactionEngine);
+    (std::dynamic_pointer_cast<ObservableReader>(poReader))
+        ->addObserver(transactionEngine);
 
-    while(1);
+    while (1)
+        ;
 }
-

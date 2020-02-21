@@ -55,12 +55,12 @@ public:
     /**
      * EF Type Values
      */
-    static constexpr int EF_TYPE_DF = 0;
-    static constexpr int EF_TYPE_BINARY = 1;
-    static constexpr int EF_TYPE_LINEAR = 2;
-    static constexpr int EF_TYPE_CYCLIC = 4;
+    static constexpr int EF_TYPE_DF                 = 0;
+    static constexpr int EF_TYPE_BINARY             = 1;
+    static constexpr int EF_TYPE_LINEAR             = 2;
+    static constexpr int EF_TYPE_CYCLIC             = 4;
     static constexpr int EF_TYPE_SIMULATED_COUNTERS = 8;
-    static constexpr int EF_TYPE_COUNTERS = 9;
+    static constexpr int EF_TYPE_COUNTERS           = 9;
 
     /**
      * Instantiates a new SelectFileRespPars.
@@ -166,7 +166,7 @@ protected:
     std::shared_ptr<SelectFileRespPars> shared_from_this()
     {
         return std::static_pointer_cast<SelectFileRespPars>(
-                   AbstractPoResponseParser::shared_from_this());
+            AbstractPoResponseParser::shared_from_this());
     }
 
 private:
@@ -174,13 +174,14 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(SelectFileRespPars));
+        LoggerFactory::getLogger(typeid(SelectFileRespPars));
 
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<
-               AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        STATUS_TABLE;
 
     /**
      *

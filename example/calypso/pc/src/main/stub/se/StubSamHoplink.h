@@ -12,7 +12,6 @@
 
 #pragma once
 
-
 #include <string>
 #include <vector>
 #include <memory>
@@ -25,7 +24,6 @@ namespace calypso {
 namespace pc {
 namespace stub {
 namespace se {
-
 
 using namespace keyple::plugin::stub;
 
@@ -42,7 +40,8 @@ public:
     /**
      *
      */
-    const std::string ATR_HEX = "3B3F9600805A0080C120000012345678829000"; // serial number : 12345678
+    const std::string ATR_HEX =
+        "3B3F9600805A0080C120000012345678829000"; // serial number : 12345678
 
     /**
      *
@@ -65,7 +64,9 @@ protected:
      */
     std::shared_ptr<StubSamHoplink> shared_from_this()
     {
-        return std::static_pointer_cast<StubSamHoplink>(org.eclipse.keyple.plugin.stub.StubSecureElement::shared_from_this());
+        return std::static_pointer_cast<StubSamHoplink>(
+            org.eclipse.keyple.plugin.stub
+                .StubSecureElement::shared_from_this());
     }
 };
 

@@ -22,21 +22,20 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-        namespace keyple {
-            namespace calypso {
-                namespace command {                
-                using namespace testing;
+namespace keyple {
+namespace calypso {
+namespace command {
+using namespace testing;
 
-                class SendableInSessionTest : public std::enable_shared_from_this<SendableInSessionTest>
-                {
+class SendableInSessionTest
+: public std::enable_shared_from_this<SendableInSessionTest> {
 
-                public:
-                    virtual ~SendableInSessionTest(){};
+public:
+    virtual ~SendableInSessionTest(){};
 
-                    void sample();
-                };
-                }
+    void sample();
+};
+}
 
-            }
-        }
-
+}
+}

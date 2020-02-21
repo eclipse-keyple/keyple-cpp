@@ -39,8 +39,8 @@ using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
 SeSelection::SeSelection(
-  const MultiSeRequestProcessing multiSeRequestProcessing,
-  const ChannelControl channelControl)
+    const MultiSeRequestProcessing multiSeRequestProcessing,
+    const ChannelControl channelControl)
 : selectionIndex(0), multiSeRequestProcessing(multiSeRequestProcessing),
   channelControl(channelControl)
 {
@@ -68,9 +68,9 @@ int SeSelection::prepareSelection(
     return selectionIndex++;
 }
 
-std::shared_ptr<SelectionsResult> SeSelection::processSelection(
-    std::shared_ptr<AbstractDefaultSelectionsResponse>
-        defaultSelectionsResponse)
+std::shared_ptr<SelectionsResult>
+SeSelection::processSelection(std::shared_ptr<AbstractDefaultSelectionsResponse>
+                                  defaultSelectionsResponse)
 {
     int index = 0;
 
@@ -79,8 +79,9 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(
 
     /* Check SeResponses */
     for (auto seResponse :
-             (std::dynamic_pointer_cast<DefaultSelectionsResponse>(
-                 defaultSelectionsResponse))->getSelectionSeResponseSet()) {
+         (std::dynamic_pointer_cast<DefaultSelectionsResponse>(
+              defaultSelectionsResponse))
+             ->getSelectionSeResponseSet()) {
         /*
          * Test if the selection is successful: we should have either a FCI
          * or an ATR
@@ -97,8 +98,8 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(
 
             selectionsResult->addMatchingSelection(
                 std::make_shared<MatchingSelection>(
-                    index, seSelectionRequestList[index],
-                    matchingSe, seResponse));
+                    index, seSelectionRequestList[index], matchingSe,
+                    seResponse));
         }
 
         index++;
@@ -108,19 +109,21 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(
 }
 
 std::shared_ptr<SelectionsResult> SeSelection::processDefaultSelection(
-  std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
+    std::shared_ptr<AbstractDefaultSelectionsResponse>
+        defaultSelectionsResponse)
 {
     /* Null pointer exception protection */
     if (defaultSelectionsResponse == nullptr) {
-        logger->error("defaultSelectionsResponse shouldn't be null in " \
+        logger->error("defaultSelectionsResponse shouldn't be null in "
                       "processSelection\n");
         return nullptr;
     }
 
     logger->trace("Process default SELECTIONRESPONSE (%d response(s))\n",
                   (std::static_pointer_cast<DefaultSelectionsResponse>(
-                      defaultSelectionsResponse))->
-                          getSelectionSeResponseSet().size());
+                       defaultSelectionsResponse))
+                      ->getSelectionSeResponseSet()
+                      .size());
 
     return processSelection(defaultSelectionsResponse);
 }
@@ -144,17 +147,17 @@ SeSelection::processExplicitSelection(std::shared_ptr<SeReader> seReader)
     std::list<std::shared_ptr<SeResponse>> seResponseList =
         (std::dynamic_pointer_cast<ProxyReader>(seReader))
             ->transmitSet(selectionRequestSet, multiSeRequestProcessing,
-                channelControl);
+                          channelControl);
 
     return processSelection(
-               std::make_shared<DefaultSelectionsResponse>(seResponseList));
+        std::make_shared<DefaultSelectionsResponse>(seResponseList));
 }
 
 std::shared_ptr<AbstractDefaultSelectionsRequest>
 SeSelection::getSelectionOperation()
 {
     return std::make_shared<DefaultSelectionsRequest>(
-               selectionRequestSet, multiSeRequestProcessing, channelControl);
+        selectionRequestSet, multiSeRequestProcessing, channelControl);
 }
 
 }

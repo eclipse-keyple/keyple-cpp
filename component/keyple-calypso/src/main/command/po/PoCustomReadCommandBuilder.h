@@ -22,8 +22,13 @@
 #include "PoRevision.h"
 
 /* Forward declaration */
-namespace keyple { namespace seproxy { namespace message {
-    class ApduRequest; } } }
+namespace keyple {
+namespace seproxy {
+namespace message {
+class ApduRequest;
+}
+}
+}
 
 namespace keyple {
 namespace calypso {
@@ -36,8 +41,8 @@ using namespace keyple::core::seproxy::message;
 /**
  * Class to build custom (non-referenced) read PO commands
  */
-class PoCustomReadCommandBuilder
-: public AbstractIso7816CommandBuilder, public PoSendableInSession {
+class PoCustomReadCommandBuilder : public AbstractIso7816CommandBuilder,
+                                   public PoSendableInSession {
 public:
     /**
      * Constructor dedicated to the construction of user-defined commands.
@@ -55,13 +60,15 @@ public:
      * @param request the ApduRequest (the correct instruction byte must be
      *        provided)
      */
-    PoCustomReadCommandBuilder(const std::string &name,
+    PoCustomReadCommandBuilder(const std::string& name,
                                std::shared_ptr<ApduRequest> request);
 
     /**
      *
      */
-    virtual ~PoCustomReadCommandBuilder() {}
+    virtual ~PoCustomReadCommandBuilder()
+    {
+    }
 
 protected:
     /**
@@ -70,7 +77,7 @@ protected:
     std::shared_ptr<PoCustomReadCommandBuilder> shared_from_this()
     {
         return std::static_pointer_cast<PoCustomReadCommandBuilder>(
-                   AbstractIso7816CommandBuilder::shared_from_this());
+            AbstractIso7816CommandBuilder::shared_from_this());
     }
 
     /**

@@ -28,9 +28,9 @@ namespace bertlv {
 
 using namespace keyple::core::util;
 
-TLV::TLV(std::vector<uint8_t> &binary) : binary(binary)
+TLV::TLV(std::vector<uint8_t>& binary) : binary(binary)
 {
-    tag = std::make_shared<Tag>(0, 0, Tag::TagType::PRIMITIVE);
+    tag    = std::make_shared<Tag>(0, 0, Tag::TagType::PRIMITIVE);
     length = 0;
 }
 
@@ -42,7 +42,7 @@ bool TLV::parse(const std::shared_ptr<Tag> tag, int offset)
 
     try {
         this->tag = std::make_shared<Tag>(binary, offset);
-    } catch (const std::out_of_range &e) {
+    } catch (const std::out_of_range& e) {
         (void)e;
         throw std::invalid_argument("TLV parsing: index is too large.");
     }

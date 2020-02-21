@@ -26,11 +26,11 @@ using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
-
-AppendRecordCmdBuild::AppendRecordCmdBuild(PoClass poClass, uint8_t sfi,
-  const std::vector<uint8_t>& newRecordData, const std::string& extraInfo)
+AppendRecordCmdBuild::AppendRecordCmdBuild(
+    PoClass poClass, uint8_t sfi, const std::vector<uint8_t>& newRecordData,
+    const std::string& extraInfo)
 : AbstractPoCommandBuilder<AppendRecordRespPars>(
-    CalypsoPoCommands::APPEND_RECORD, nullptr)
+      CalypsoPoCommands::APPEND_RECORD, nullptr)
 {
     this->request = setApduRequest(poClass.getValue(), command, 0x00,
                                    sfi == 0 ? 0x00 : sfi * 8, newRecordData);
@@ -40,8 +40,8 @@ AppendRecordCmdBuild::AppendRecordCmdBuild(PoClass poClass, uint8_t sfi,
 }
 
 std::shared_ptr<AppendRecordRespPars>
-    AppendRecordCmdBuild::createResponseParser(
-        std::shared_ptr<ApduResponse> apduResponse)
+AppendRecordCmdBuild::createResponseParser(
+    std::shared_ptr<ApduResponse> apduResponse)
 {
     return std::make_shared<AppendRecordRespPars>(apduResponse);
 }

@@ -27,19 +27,16 @@ public:
     /**
      *
      */
-    PcscTerminalException(const std::string &msg)
-    : Exception(msg)
+    PcscTerminalException(const std::string& msg) : Exception(msg)
     {
-
     }
 
     /**
      *
      */
-    PcscTerminalException(const std::string &msg, std::exception& cause)
+    PcscTerminalException(const std::string& msg, std::exception& cause)
     : Exception(msg, cause)
     {
-
     }
 };
 

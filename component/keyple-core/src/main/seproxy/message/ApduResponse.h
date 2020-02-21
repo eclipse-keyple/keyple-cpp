@@ -39,9 +39,9 @@ using namespace keyple::common;
 /**
  * Single APDU response wrapper
  */
-class EXPORT ApduResponse
-: public std::enable_shared_from_this<ApduResponse>,
-  public Serializable, public Object {
+class EXPORT ApduResponse : public std::enable_shared_from_this<ApduResponse>,
+                            public Serializable,
+                            public Object {
 public:
     /**
      *
@@ -67,7 +67,9 @@ public:
     /**
      *
      */
-    virtual ~ApduResponse() { }
+    virtual ~ApduResponse()
+    {
+    }
 
     /**
      * Checks if is successful.
@@ -111,7 +113,7 @@ public:
     /**
      *
      */
-    friend std::ostream &operator<<(std::ostream &os, const ApduResponse &r)
+    friend std::ostream& operator<<(std::ostream& os, const ApduResponse& r)
     {
         os << std::string("r-apdu: ");
         const std::vector<uint8_t> b = r.getBytes();
@@ -137,7 +139,7 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(ApduResponse));
+        LoggerFactory::getLogger(typeid(ApduResponse));
 
     /**
      * apdu response data buffer (including sw1sw2)

@@ -95,7 +95,7 @@ public:
     int prepareReadRecordsCmd(uint8_t sfi,
                               ReadDataStructure readDataStructureEnum,
                               uint8_t firstRecordNumber, int expectedLength,
-                              const std::string &extraInfo);
+                              const std::string& extraInfo);
 
     /**
      * Prepare one or more read record ApduRequest based on the target revision
@@ -169,8 +169,9 @@ public:
      * @return the command index indicating the order of the command in the
      *         command list
      */
-    int preparePoCustomModificationCmd(const std::string& name,
-                                       std::shared_ptr<ApduRequest> apduRequest);
+    int
+    preparePoCustomModificationCmd(const std::string& name,
+                                   std::shared_ptr<ApduRequest> apduRequest);
 
     /**
      * Return the parser corresponding to the command whose index is provided.
@@ -180,8 +181,9 @@ public:
      * @param commandIndex the command index
      * @return a parser of the type matching the command
      */
-    std::shared_ptr<AbstractApduResponseParser> getCommandParser(
-        std::shared_ptr<SeResponse> seResponse, int commandIndex) override;
+    std::shared_ptr<AbstractApduResponseParser>
+    getCommandParser(std::shared_ptr<SeResponse> seResponse,
+                     int commandIndex) override;
 
 protected:
     /**
@@ -193,8 +195,8 @@ protected:
      */
     //std::shared_ptr<CalypsoPo> parse(std::shared_ptr<SeResponse> seResponse)
     // override;
-    std::shared_ptr<AbstractMatchingSe> parse(
-        std::shared_ptr<SeResponse> seResponse) override;
+    std::shared_ptr<AbstractMatchingSe>
+    parse(std::shared_ptr<SeResponse> seResponse) override;
 
     /**
      *
@@ -202,7 +204,7 @@ protected:
     std::shared_ptr<PoSelectionRequest> shared_from_this()
     {
         return std::static_pointer_cast<PoSelectionRequest>(
-                   AbstractSeSelectionRequest::shared_from_this());
+            AbstractSeSelectionRequest::shared_from_this());
     }
 
 private:
@@ -226,7 +228,7 @@ private:
      *
      */
     std::unordered_map<int, uint8_t> readRecordFirstRecordNumberMap =
-         std::unordered_map<int, uint8_t>();
+        std::unordered_map<int, uint8_t>();
 
     /**
      *
@@ -259,10 +261,10 @@ private:
      *         command list
      */
     int prepareReadRecordsCmdInternal(uint8_t sfi,
-                                     ReadDataStructure readDataStructureEnum,
-                                     uint8_t firstRecordNumber,
-                                     int expectedLength,
-                                     const std::string& extraInfo);
+                                      ReadDataStructure readDataStructureEnum,
+                                      uint8_t firstRecordNumber,
+                                      int expectedLength,
+                                      const std::string& extraInfo);
 };
 
 }

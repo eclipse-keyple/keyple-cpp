@@ -24,16 +24,15 @@ namespace security {
 using namespace keyple::calypso::command::sam;
 
 DigestCloseCmdBuild::DigestCloseCmdBuild(SamRevision revision,
-  uint8_t expectedResponseLength)
+                                         uint8_t expectedResponseLength)
 : AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_CLOSE, nullptr)
 {
     this->defaultRevision = revision;
 
     if (expectedResponseLength != 0x04 && expectedResponseLength != 0x08) {
-        throw std::invalid_argument(
-                  StringHelper::formatSimple(
-                      "Bad digest length! Expected 4 or 8, got %s",
-                      expectedResponseLength));
+        throw std::invalid_argument(StringHelper::formatSimple(
+            "Bad digest length! Expected 4 or 8, got %s",
+            expectedResponseLength));
     }
 
     uint8_t cla = this->defaultRevision.getClassByte();
