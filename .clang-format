@@ -29,3 +29,5 @@ FixNamespaceComments: false
 NamespaceIndentation: None
 AccessModifierOffset: -4
 ConstructorInitializerIndentWidth: 0
+PointerAlignment: Left
+
