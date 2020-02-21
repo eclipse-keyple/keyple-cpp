@@ -47,11 +47,11 @@ Google Test (1.10.0)
 
  * License: BSD 3-Clause "New" or "Revised" License
 
-PC/SC lite (Linux)
+PC/SC lite (Linux/macOS)
 
  * License: GNU GPL v3
 
 Winscard (Windows)
 
- * License: Windows (?)
+ * License: Windows
 
