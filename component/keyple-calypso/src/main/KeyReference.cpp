@@ -21,12 +21,12 @@ KeyReference::KeyReference(char kif, char kvc) : kif(kif), kvc(kvc)
 
 char KeyReference::getKif()
 {
-        return kif;
+    return kif;
 }
 
 char KeyReference::getKvc()
 {
-        return kvc;
+    return kvc;
 }
 }
 }
