@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "CloseSessionRespParsTest.h"
 #include "ApduResponse.h"
 #include "SelectionStatus.h"
@@ -23,8 +37,6 @@ using SeResponseSet   = keyple::core::seproxy::message::SeResponseSet;
 using SelectionStatus = keyple::core::seproxy::message::SelectionStatus;
 using ByteArrayUtils  = keyple::core::util::ByteArrayUtil;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void closeSessionRespPars()
 void CloseSessionRespParsTest::closeSessionRespPars()
 {
     std::vector<char> response = {
@@ -50,8 +62,6 @@ void CloseSessionRespParsTest::closeSessionRespPars()
                   apduResponseParser->getApduResponse()->getBytes()));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void TestToPOHalfSessionSignature()
 void CloseSessionRespParsTest::TestToPOHalfSessionSignature()
 {
 
@@ -102,8 +112,6 @@ void CloseSessionRespParsTest::TestToPOHalfSessionSignature()
     }
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void existingTestConverted()
 void CloseSessionRespParsTest::existingTestConverted()
 {
     std::vector<char> cResp1 = ByteArrayUtils::fromHex("9000");
@@ -115,8 +123,6 @@ void CloseSessionRespParsTest::existingTestConverted()
     ASSERT_EQ("", ByteArrayUtils::toHex(parser->getPostponedData()));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void abortingASession()
 void CloseSessionRespParsTest::abortingASession()
 {
     std::vector<char> cResp1 = ByteArrayUtils::fromHex("FEDCBA98 9000");
@@ -125,8 +131,6 @@ void CloseSessionRespParsTest::abortingASession()
             std::make_shared<ApduResponse>(cResp1, nullptr));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void lc4withoutPostponedData()
 void CloseSessionRespParsTest::lc4withoutPostponedData()
 {
     std::vector<char> cResp1 = ByteArrayUtils::fromHex("FEDCBA98 9000");
@@ -137,8 +141,6 @@ void CloseSessionRespParsTest::lc4withoutPostponedData()
     ASSERT_EQ("", ByteArrayUtils::toHex(parser->getPostponedData()));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void lc4WithPostponedData()
 void CloseSessionRespParsTest::lc4WithPostponedData()
 {
     std::vector<char> cResp1 =

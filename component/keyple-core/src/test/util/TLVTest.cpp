@@ -1,4 +1,18 @@
 
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "TLVTest.h"
 
 using namespace keyple::calypso::command::po;
@@ -82,13 +96,13 @@ int TLVTest::sample()
     tlv                   = std::make_shared<TLV>(vec);
 
     /* Get the FCI template */
-    //                        if (!tlv->parse(GetDataFciRespPars::TAG_FCI_TEMPLATE, 0)) {
+    // if (!tlv->parse(GetDataFciRespPars::TAG_FCI_TEMPLATE, 0)) {
     logger->error("FCI parsing error: FCI template tag not found\n");
     //                            return;
     //                        }
 
     /* Get the DF Name */
-    //                        if (!tlv->parse(TAG_DF_NAME, tlv->getPosition())) {
+    // if (!tlv->parse(TAG_DF_NAME, tlv->getPosition())) {
     logger->error("FCI parsing error: DF name tag not found\n");
     //                            return;
     //                        }
@@ -97,21 +111,21 @@ int TLVTest::sample()
     logger->debug("DF Name = %s\n", ByteArrayUtil::toHex(dfName));
 
     /* Get the FCI Proprietary Template */
-    //                        if (!tlv->parse(TAG_FCI_PROPRIETARY_TEMPLATE, tlv->getPosition())) {
+    // if (!tlv->parse(TAG_FCI_PROPRIETARY_TEMPLATE, tlv->getPosition())) {
     logger->error(
         "FCI parsing error: FCI proprietary template tag not found\n");
     //                            return;
     //                        }
 
     /* Get the FCI Issuer Discretionary Data */
-    //                        if (!tlv->parse(TAG_FCI_ISSUER_DISCRETIONARY_DATA, tlv->getPosition())) {
+    // if (!tlv->parse(TAG_FCI_ISSUER_DISCRETIONARY_DATA, tlv->getPosition())) {
     logger->error(
         "FCI parsing error: FCI issuer discretionary data tag not found\n");
     //                            return;
     //                        }
 
     /* Get the Application Serial Number */
-    //                        if (!tlv->parse(TAG_APPLICATION_SERIAL_NUMBER, tlv->getPosition())) {
+    // if (!tlv->parse(TAG_APPLICATION_SERIAL_NUMBER, tlv->getPosition())) {
     logger->error("FCI parsing error: serial number tag not found\n");
     //                            return;
     //                        }
@@ -121,7 +135,7 @@ int TLVTest::sample()
                   ByteArrayUtil::toHex(applicationSN));
 
     /* Get the Discretionary Data */
-    //                        if (!tlv->parse(TAG_DISCRETIONARY_DATA, tlv->getPosition())) {
+    // if (!tlv->parse(TAG_DISCRETIONARY_DATA, tlv->getPosition())) {
     logger->error("FCI parsing error: discretionary data tag not found\n");
     //                            return;
     //                        }
@@ -134,8 +148,8 @@ int TLVTest::sample()
     }
 
     /*
-                        * split discretionary data in as many individual startup information
-                        */
+     * split discretionary data in as many individual startup information
+     */
     if (discretionaryData.size() != 0) {
         siBufferSizeIndicator = discretionaryData[0];
         siPlatform            = discretionaryData[1];

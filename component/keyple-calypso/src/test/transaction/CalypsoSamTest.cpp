@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "CalypsoSamTest.h"
 #include "SeCommonProtocols_Import.h"
 #include "SamSelectionRequest.h"
@@ -26,8 +40,6 @@ using SelectionStatus      = keyple::core::seproxy::message::SelectionStatus;
 using ByteArrayUtils       = keyple::core::util::ByteArrayUtil;
 using ContactlessProtocols = SeCommonProtocols;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_CalypsoSam_1()
 void CalypsoSamTest::test_CalypsoSam_1()
 {
     std::vector<char> szAnswerToReset =
@@ -52,8 +64,6 @@ void CalypsoSamTest::test_CalypsoSam_1()
     ASSERT_EQ("11223344", ByteArrayUtils::toHex(calypsoSam->getSerialNumber()));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_CalypsoSam_2()
 void CalypsoSamTest::test_CalypsoSam_2()
 {
     std::vector<char> szAnswerToReset =
@@ -73,8 +83,6 @@ void CalypsoSamTest::test_CalypsoSam_2()
     ASSERT_EQ(static_cast<char>(0xD1), calypsoSam->getApplicationSubType());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_CalypsoSam_3()
 void CalypsoSamTest::test_CalypsoSam_3()
 {
     std::vector<char> szAnswerToReset =
@@ -94,8 +102,6 @@ void CalypsoSamTest::test_CalypsoSam_3()
     ASSERT_EQ(static_cast<char>(0xD2), calypsoSam->getApplicationSubType());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_CalypsoSam_4()
 void CalypsoSamTest::test_CalypsoSam_4()
 {
     std::vector<char> szAnswerToReset =
@@ -115,8 +121,6 @@ void CalypsoSamTest::test_CalypsoSam_4()
     ASSERT_EQ(static_cast<char>(0xC1), calypsoSam->getApplicationSubType());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_CalypsoSam_5()
 void CalypsoSamTest::test_CalypsoSam_5()
 {
     std::vector<char> szAnswerToReset =
@@ -136,8 +140,6 @@ void CalypsoSamTest::test_CalypsoSam_5()
     ASSERT_EQ(static_cast<char>(0xE1), calypsoSam->getApplicationSubType());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test(expected = IllegalStateException.class) public void test_CalypsoSam_6()
 void CalypsoSamTest::test_CalypsoSam_6()
 {
     std::vector<char> szAnswerToReset =
@@ -157,8 +159,6 @@ void CalypsoSamTest::test_CalypsoSam_6()
     }
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test(expected = IllegalStateException.class) public void test_CalypsoSam_7()
 void CalypsoSamTest::test_CalypsoSam_7()
 {
     std::vector<char> szAnswerToReset =
@@ -180,8 +180,6 @@ void CalypsoSamTest::test_CalypsoSam_7()
     }
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test(expected = IllegalStateException.class) public void test_CalypsoSam_8()
 void CalypsoSamTest::test_CalypsoSam_8()
 {
     std::vector<char> szAnswerToReset = ByteArrayUtils::fromHex("");

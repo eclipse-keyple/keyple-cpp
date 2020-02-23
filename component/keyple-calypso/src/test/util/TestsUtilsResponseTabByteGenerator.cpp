@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "TestsUtilsResponseTabByteGenerator.h"
 #include "ByteArrayUtil.h"
 #include "ApduResponse.h"
@@ -12,7 +26,8 @@ using ByteArrayUtils = keyple::core::util::ByteArrayUtil;
 std::vector<char>
 TestsUtilsResponseTabByteGenerator::append(std::vector<char>& arrays)
 {
-    //std::shared_ptr<ByteArrayOutputStream> * const out = std::make_shared<ByteArrayOutputStream>();
+    //std::shared_ptr<ByteArrayOutputStream> * const out =
+    //    std::make_shared<ByteArrayOutputStream>();
     //if (arrays != nullptr) {
     //    for (char[] array_Renamed : arrays) {
     //        if (array_Renamed.size() > 0) {

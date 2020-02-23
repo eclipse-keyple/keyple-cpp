@@ -1,28 +1,38 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "ApduResponseTest.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/message/ApduResponse.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/message/AnswerToReset.h"
+#include "ApduResponse.h"
+#include "ByteArrayUtils.h"
+#include "AnswerToReset.h"
 
 namespace org {
 namespace eclipse {
 namespace keyple {
 namespace seproxy {
 namespace message {
-//                    import static org.junit.Assert.*;
+
 using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 using org::junit::Before;
 using org::junit::Test;
 using org::junit::runner::RunWith;
 using org::mockito::junit::MockitoJUnitRunner;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Before public void setUp()
 void ApduResponseTest::setUp()
 {
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void constructorSuccessFullResponse()
 void ApduResponseTest::constructorSuccessFullResponse()
 {
     std::shared_ptr<ApduResponse> response = std::make_shared<ApduResponse>(
@@ -35,8 +45,6 @@ void ApduResponseTest::constructorSuccessFullResponse()
     assertTrue(response->isSuccessful());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void constructorSuccessFullResponseWithCustomCode()
 void ApduResponseTest::constructorSuccessFullResponseWithCustomCode()
 {
     std::shared_ptr<ApduResponse> response = std::make_shared<ApduResponse>(
@@ -49,8 +57,6 @@ void ApduResponseTest::constructorSuccessFullResponseWithCustomCode()
     assertTrue(response->isSuccessful());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void constructorFailResponse()
 void ApduResponseTest::constructorFailResponse()
 {
     std::shared_ptr<ApduResponse> response = std::make_shared<ApduResponse>(
@@ -63,8 +69,6 @@ void ApduResponseTest::constructorFailResponse()
     assertFalse(response->isSuccessful());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void constructorFailResponseWithCustomCode()
 void ApduResponseTest::constructorFailResponseWithCustomCode()
 {
     std::shared_ptr<ApduResponse> response = std::make_shared<ApduResponse>(
@@ -77,23 +81,17 @@ void ApduResponseTest::constructorFailResponseWithCustomCode()
     assertFalse(response->isSuccessful());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void isEqualsTest()
 void ApduResponseTest::isEqualsTest()
 {
     assertTrue(getAFCI()->equals(getAFCI()));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void isThisEquals()
 void ApduResponseTest::isThisEquals()
 {
     std::shared_ptr<ApduResponse> resp = getAFCI();
     assertTrue(resp->equals(resp));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void isNotEquals()
 void ApduResponseTest::isNotEquals()
 {
     std::shared_ptr<ApduResponse> resp = getAFCI();
@@ -101,8 +99,6 @@ void ApduResponseTest::isNotEquals()
     assertFalse(resp->equals(obj));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void isNotEqualsNull()
 void ApduResponseTest::isNotEqualsNull()
 {
     std::shared_ptr<ApduResponse> resp = getAFCI();
@@ -111,8 +107,6 @@ void ApduResponseTest::isNotEqualsNull()
     assertFalse(resp->equals(respNull));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void hashcodeTest()
 void ApduResponseTest::hashcodeTest()
 {
     std::shared_ptr<ApduResponse> resp  = getAFCI();
@@ -120,8 +114,6 @@ void ApduResponseTest::hashcodeTest()
     assertTrue(resp->hashCode() == resp2->hashCode());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void hashcodeNull()
 void ApduResponseTest::hashcodeNull()
 {
     std::shared_ptr<ApduResponse> resp =
@@ -129,13 +121,10 @@ void ApduResponseTest::hashcodeNull()
     assertNotNull(resp->hashCode());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testToStringNull()
 void ApduResponseTest::testToStringNull()
 {
     std::shared_ptr<ApduResponse> resp =
         std::make_shared<ApduResponse>(nullptr, nullptr);
-    //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
     assertNotNull(resp->toString());
 }
 

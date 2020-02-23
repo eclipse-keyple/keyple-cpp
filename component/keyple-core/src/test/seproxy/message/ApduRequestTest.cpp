@@ -1,27 +1,33 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "ApduRequestTest.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/message/ApduRequest.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/util/ByteArrayUtils.h"
+#include "ApduRequest.h"
+#include "ByteArrayUtils.h"
 
 namespace org {
 namespace eclipse {
 namespace keyple {
 namespace seproxy {
 namespace message {
-//                    import static org.junit.Assert.*;
-using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-using org::junit::Before;
-using org::junit::Test;
-using org::junit::runner::RunWith;
-using org::mockito::junit::MockitoJUnitRunner;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Before public void setUp() throws Exception
+using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+
 void ApduRequestTest::setUp() throw(std::runtime_error)
 {
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testSimpleAPDURequest()
 void ApduRequestTest::testSimpleAPDURequest()
 {
     std::shared_ptr<ApduRequest> request =
@@ -31,13 +37,10 @@ void ApduRequestTest::testSimpleAPDURequest()
     assertTrue(request->isCase4());
     assertArrayEquals(getACommand(), request->getBytes());
     assertEquals(nullptr, request->getSuccessfulStatusCodes());
-    //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
     assertEquals("ApduRequest: NAME = \"null\", RAWDATA = FEDCBA989005, case4",
                  request->toString());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testAPDURequest()
 void ApduRequestTest::testAPDURequest()
 {
     std::shared_ptr<ApduRequest> request = getApduSample();
@@ -47,7 +50,6 @@ void ApduRequestTest::testAPDURequest()
     assertEquals(getAName(), request->getName());
     assertEquals(getASuccessFulStatusCode(),
                  request->getSuccessfulStatusCodes());
-    //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ equivalent to 'toString':
     assertEquals("ApduRequest: NAME = \"" + getAName() +
                      "\", RAWDATA = FEDCBA989005, case4, additional successful "
                      "status codes = 2328",

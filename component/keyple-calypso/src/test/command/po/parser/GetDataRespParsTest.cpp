@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "GetDataRespParsTest.h"
 #include "ApduResponse.h"
 #include "ByteArrayUtil.h"
@@ -13,8 +27,6 @@ namespace parser {
 using ApduResponse   = keyple::core::seproxy::message::ApduResponse;
 using ByteArrayUtils = keyple::core::util::ByteArrayUtil;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testFCIparser_FCI_OK()
 void GetDataRespParsTest::testFCIparser_FCI_OK()
 {
     std::string dfName                  = "00112233445566778899";
@@ -119,8 +131,6 @@ void GetDataRespParsTest::testFCIparser_FCI_OK()
     ASSERT_EQ((char)siSoftwareRevision, parser->getSoftwareRevisionByte());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testFCIparser_FCI_Invalidated()
 void GetDataRespParsTest::testFCIparser_FCI_Invalidated()
 {
     std::string dfName                  = "00112233445566778899";
@@ -153,8 +163,6 @@ void GetDataRespParsTest::testFCIparser_FCI_Invalidated()
     ASSERT_TRUE(parser->isDfInvalidated());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testFCIparser_FCI_BadTags()
 void GetDataRespParsTest::testFCIparser_FCI_BadTags()
 {
     std::string dfName                  = "00112233445566778899";

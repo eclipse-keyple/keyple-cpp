@@ -1,17 +1,26 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "ReaderEventTest.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
+#include "ReaderEvent.h"
 
 namespace org {
 namespace eclipse {
 namespace keyple {
 namespace seproxy {
 namespace event_Renamed {
-//                    import static org.junit.Assert.assertEquals;
-//                    import static org.junit.Assert.assertNotNull;
-using org::junit::Test;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testReaderEvent()
 void ReaderEventTest::testReaderEvent()
 {
     std::shared_ptr<ReaderEvent> event_Renamed = std::make_shared<ReaderEvent>(
@@ -19,8 +28,6 @@ void ReaderEventTest::testReaderEvent()
     assertNotNull(event_Renamed);
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testGetEvent()
 void ReaderEventTest::testGetEvent()
 {
     std::shared_ptr<ReaderEvent> event_Renamed = std::make_shared<ReaderEvent>(

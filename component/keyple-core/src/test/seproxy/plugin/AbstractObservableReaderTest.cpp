@@ -1,16 +1,30 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "AbstractObservableReaderTest.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/event/ReaderEvent.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/plugin/AbstractObservableReader.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/protocol/SeProtocol.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/SeSelector.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/message/SelectionStatus.h"
+#include "ReaderEvent.h"
+#include "AbstractObservableReader.h"
+#include "SeProtocol.h"
+#include "SeSelector.h"
+#include "SelectionStatus.h"
 
 namespace org {
 namespace eclipse {
 namespace keyple {
 namespace seproxy {
 namespace plugin {
-//                    import static org.mockito.Mockito.doAnswer;
+
 using CoreBaseTest = org::eclipse::keyple::CoreBaseTest;
 using SeSelector   = keyple::core::seproxy::SeSelector;
 using ObservableReader =
@@ -21,21 +35,11 @@ using SelectionStatus = org::eclipse::keyple::seproxy::message::SelectionStatus;
 using SeProtocol      = org::eclipse::keyple::seproxy::protocol::SeProtocol;
 using TransmissionMode =
     org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-using org::junit::Assert;
-using org::junit::Before;
-using org::junit::Test;
-using org::junit::runner::RunWith;
-using org::mockito::Mockito;
-using org::mockito::invocation::InvocationOnMock;
-using org::mockito::junit::MockitoJUnitRunner;
-using org::mockito::stubbing::Answer;
 using org::slf4j::Logger;
 using org::slf4j::LoggerFactory;
 const std::shared_ptr<org::slf4j::Logger> AbstractObservableReaderTest::logger =
     org::slf4j::LoggerFactory::getLogger(AbstractObservableReaderTest::typeid);
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Before public void setUp()
 void AbstractObservableReaderTest::setUp()
 {
     logger->info("------------------------------");
@@ -46,8 +50,6 @@ void AbstractObservableReaderTest::setUp()
     initSpyReader();
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testAddObserver()
 void AbstractObservableReaderTest::testAddObserver()
 {
     startObservationCall = std::make_shared<CountDownLatch>(5);
@@ -60,8 +62,6 @@ void AbstractObservableReaderTest::testAddObserver()
         5, stopObservationCall->getCount()); // should not be called
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testRemoveObserver()
 void AbstractObservableReaderTest::testRemoveObserver()
 {
     startObservationCall = std::make_shared<CountDownLatch>(5);
@@ -75,8 +75,6 @@ void AbstractObservableReaderTest::testRemoveObserver()
         4, stopObservationCall->getCount()); // should be called once
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testAddRemoveObserver()
 void AbstractObservableReaderTest::testAddRemoveObserver()
 {
     startObservationCall = std::make_shared<CountDownLatch>(5);

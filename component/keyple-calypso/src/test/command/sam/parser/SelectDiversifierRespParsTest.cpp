@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "SelectDiversifierRespParsTest.h"
 #include "ApduResponse.h"
 #include "SelectDiversifierRespPars.h"
@@ -15,12 +29,12 @@ using AbstractApduResponseParser =
 using ApduResponse = keyple::core::seproxy::message::ApduResponse;
 //using org::hamcrest::core::IsNot;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void selectDiversifierResp()
 void SelectDiversifierRespParsTest::selectDiversifierResp()
 {
-    // We check here that the value returned by getApduResponse matches the value provided at
-    // construct time
+    /*
+     * We check here that the value returned by getApduResponse matches the
+     * value provided at construct time.
+     */
     std::vector<char> cResp  = {static_cast<char>(0x90), 0x00};
     std::vector<char> cResp2 = {static_cast<char>(0x80), 0x00};
     std::shared_ptr<ApduResponse> apduResponse =

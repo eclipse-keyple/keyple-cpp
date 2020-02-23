@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "SamSelectorTest.h"
 //#include "SamRevision.h"
 #include "SamSelector.h"
@@ -10,8 +24,6 @@ using SamRevision    = keyple::calypso::command::sam::SamRevision;
 using SamSelector    = keyple::calypso::transaction::SamSelector;
 using ByteArrayUtils = keyple::core::util::ByteArrayUtil;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_AidSelectorNull()
 void SamSelectorTest::test_AidSelectorNull()
 {
     std::shared_ptr<SamSelector> samSelector =
@@ -19,8 +31,6 @@ void SamSelectorTest::test_AidSelectorNull()
     ASSERT_EQ(samSelector->getAidSelector(), nullptr);
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_SamRevision_S1D()
 void SamSelectorTest::test_SamRevision_S1D()
 {
     std::shared_ptr<SamSelector> samSelector =
@@ -29,8 +39,6 @@ void SamSelectorTest::test_SamRevision_S1D()
               samSelector->getAtrFilter()->getAtrRegex());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_SamRevision_S1E()
 void SamSelectorTest::test_SamRevision_S1E()
 {
     std::shared_ptr<SamSelector> samSelector =
@@ -39,8 +47,6 @@ void SamSelectorTest::test_SamRevision_S1E()
               samSelector->getAtrFilter()->getAtrRegex());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_SamRevision_C1()
 void SamSelectorTest::test_SamRevision_C1()
 {
     std::shared_ptr<SamSelector> samSelector =
@@ -49,8 +55,6 @@ void SamSelectorTest::test_SamRevision_C1()
               samSelector->getAtrFilter()->getAtrRegex());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_SamRevision_ANY()
 void SamSelectorTest::test_SamRevision_ANY()
 {
     std::shared_ptr<SamSelector> samSelector =
@@ -58,8 +62,6 @@ void SamSelectorTest::test_SamRevision_ANY()
     ASSERT_EQ(".*", samSelector->getAtrFilter()->getAtrRegex());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_SamSerialNumber()
 void SamSelectorTest::test_SamSerialNumber()
 {
     std::shared_ptr<SamSelector> samSelector =
@@ -68,8 +70,6 @@ void SamSelectorTest::test_SamSerialNumber()
               samSelector->getAtrFilter()->getAtrRegex());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void test_ExtraInfo()
 void SamSelectorTest::test_ExtraInfo()
 {
     std::shared_ptr<SamSelector> samSelector =

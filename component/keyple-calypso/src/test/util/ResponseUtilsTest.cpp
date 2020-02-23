@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "ResponseUtilsTest.h"
 #include "AbstractOpenSessionRespPars.h"
 #include "OpenSession32RespPars.h"
@@ -19,8 +33,6 @@ using OpenSession32RespPars =
 using ByteArrayUtils = keyple::core::util::ByteArrayUtil;
 using Byte           = keyple::common::Byte;
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void TestToSecureSession()
 void ResponseUtilsTest::TestToSecureSession()
 {
     std::vector<char> apduResponse = {static_cast<char>(0x8F),
@@ -87,8 +99,6 @@ void ResponseUtilsTest::TestToSecureSession()
                   SecureSessionTested->getChallengeTransactionCounter()));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void TestToSecureSessionRev2()
 void ResponseUtilsTest::TestToSecureSessionRev2()
 {
 
@@ -134,11 +144,11 @@ void ResponseUtilsTest::TestToSecureSessionRev2()
                   SecureSessionTested->getChallengeTransactionCounter()));
 
     // Case If Else
-    // byte[] apduResponseCaseTwo = new byte[] {(byte) 0x7E, (byte) 0x03, (byte) 0x0D, (byte)
-    // 0x14,
+    // byte[] apduResponseCaseTwo = new byte[] {(byte) 0x7E, (byte) 0x03,
+    // (byte) 0x0D, (byte) 0x14,
     // (byte) 0x53, (byte) 0x30, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
-    // byte[] originalDataCaseTwo = new byte[] {(byte) 0x7E, (byte) 0x03, (byte) 0x0D, (byte)
-    // 0x14,
+    // byte[] originalDataCaseTwo = new byte[] {(byte) 0x7E, (byte) 0x03,
+    // (byte) 0x0D, (byte) 0x14,
     // (byte) 0x53, (byte) 0xFF, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
     std::vector<char> apduResponseCaseTwo = ByteArrayUtils::fromHex(
         "7E 030D1453 9999 00112233445566778899AABBCCDDEEFF "
@@ -175,10 +185,12 @@ void ResponseUtilsTest::TestToSecureSessionRev2()
             SecureSessionTestedCaseTwo->getChallengeTransactionCounter()));
 
     // Case If If
-    // byte[] apduResponseCaseThree = new byte[] {(byte) 0x7E, (byte) 0x03, (byte) 0x0D,
-    // (byte) 0x14, (byte) 0x53, (byte) 0xFF, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
-    // byte[] originalDataCaseThree = new byte[] {(byte) 0x7E, (byte) 0x03, (byte) 0x0D,
-    // (byte) 0x14, (byte) 0x53, (byte) 0xFF, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
+    // byte[] apduResponseCaseThree = new byte[] {(byte) 0x7E, (byte) 0x03,
+    // (byte) 0x0D, (byte) 0x14, (byte) 0x53, (byte) 0xFF, 0x00, 0x04, 0x01,
+    // 0x02, 0x03, 0x04};
+    // byte[] originalDataCaseThree = new byte[] {(byte) 0x7E, (byte) 0x03,
+    // (byte) 0x0D, (byte) 0x14, (byte) 0x53, (byte) 0xFF, 0x00, 0x04, 0x01,
+    // 0x02, 0x03, 0x04};
 
     std::vector<char> apduResponseCaseThree = ByteArrayUtils::fromHex(
         "7E 030D1453 9999 00112233445566778899AABBCCDDEEFF "

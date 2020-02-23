@@ -1,14 +1,27 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "SeProxyServiceTest.h"
-#include "../../../../../../main/java/org/eclipse/keyple/seproxy/SeProxyService.h"
-#include "../../../../../../main/java/org/eclipse/keyple/seproxy/ReaderPlugin.h"
-#include "../../../../../../main/java/org/eclipse/keyple/seproxy/exception/KeyplePluginNotFoundException.h"
+#include "SeProxyService.h"
+#include "ReaderPlugin.h"
+#include "KeyplePluginNotFoundException.h"
 
 namespace org {
 namespace eclipse {
 namespace keyple {
 namespace seproxy {
-//                import static org.junit.Assert.*;
-//                import static org.mockito.Mockito.when;
+
 using KeyplePluginNotFoundException =
     org::eclipse::keyple::seproxy::exception::KeyplePluginNotFoundException;
 using org::junit::Before;
@@ -22,8 +35,6 @@ const std::shared_ptr<org::slf4j::Logger> SeProxyServiceTest::logger =
     org::slf4j::LoggerFactory::getLogger(SeProxyServiceTest::typeid);
 std::string SeProxyServiceTest::PLUGIN_NAME = "plugin1";
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Before public void setupBeforeEach()
 void SeProxyServiceTest::setupBeforeEach()
 {
 
@@ -31,8 +42,6 @@ void SeProxyServiceTest::setupBeforeEach()
     proxyService = SeProxyService::getInstance();
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testGetInstance()
 void SeProxyServiceTest::testGetInstance()
 {
     // test
@@ -40,8 +49,6 @@ void SeProxyServiceTest::testGetInstance()
     // assertNull(proxyService);
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testGetVersion()
 void SeProxyServiceTest::testGetVersion()
 {
     // test that version follows semver guidelines
@@ -53,8 +60,6 @@ void SeProxyServiceTest::testGetVersion()
     assertTrue(std::regex_match(version, std::regex(regex)));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testGetSetPlugins()
 void SeProxyServiceTest::testGetSetPlugins()
 {
     // init
@@ -67,8 +72,6 @@ void SeProxyServiceTest::testGetSetPlugins()
                       proxyService->getPlugins()->toArray());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testGetPlugin() throws org.eclipse.keyple.seproxy.exception.KeyplePluginNotFoundException
 void SeProxyServiceTest::testGetPlugin() throw(KeyplePluginNotFoundException)
 {
     // init
@@ -82,8 +85,6 @@ void SeProxyServiceTest::testGetPlugin() throw(KeyplePluginNotFoundException)
     assertEquals(plugin1, proxyService->getPlugin(PLUGIN_NAME));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test(expected = org.eclipse.keyple.seproxy.exception.KeyplePluginNotFoundException.class) public void testGetPluginFail() throws Exception
 void SeProxyServiceTest::testGetPluginFail() throw(std::runtime_error)
 {
 

@@ -1,16 +1,29 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #pragma once
 
-#include "../../CoreBaseTest.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/plugin/AbstractLocalReader.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/protocol/TransmissionMode.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/seproxy/event/ObservableReader.h"
+#include "CoreBaseTest.h"
+#include "AbstractLocalReader.h"
+#include "TransmissionMode.h"
+#include "ObservableReader.h"
 #include <string>
 #include <unordered_map>
 #include <vector>
 #include <stdexcept>
 #include <memory>
 
-//JAVA TO C++ CONVERTER NOTE: Forward class declarations:
 namespace org {
 namespace eclipse {
 namespace keyple {
@@ -78,25 +91,12 @@ class SelectionStatus;
 }
 }
 
-/********************************************************************************
- * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
- *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- ********************************************************************************/
 namespace org {
 namespace eclipse {
 namespace keyple {
 namespace seproxy {
 namespace plugin {
 
-//JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
-//                    import static org.mockito.Mockito.doAnswer;
 using CoreBaseTest = org::eclipse::keyple::CoreBaseTest;
 using ObservableReader =
     org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
@@ -105,10 +105,8 @@ using org::slf4j::Logger;
 using org::slf4j::LoggerFactory;
 
 /**
-                     * Test methods linked to observability
-                     */
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @RunWith(MockitoJUnitRunner.class) public class AbstractObservableReaderTest extends org.eclipse.keyple.CoreBaseTest
+ * Test methods linked to observability
+ */
 class AbstractObservableReaderTest : public CoreBaseTest {
 
 private:
@@ -128,29 +126,21 @@ public:
     std::shared_ptr<CountDownLatch> startObservationCall;
     std::shared_ptr<CountDownLatch> stopObservationCall;
 
-    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-    //ORIGINAL LINE: @Before public void setUp()
     virtual void setUp();
 
     /*
-                         * TESTS
-                         */
+     * TESTS
+     */
 
-    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-    //ORIGINAL LINE: @Test public void testAddObserver()
     virtual void testAddObserver();
 
-    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-    //ORIGINAL LINE: @Test public void testRemoveObserver()
     virtual void testRemoveObserver();
 
-    //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-    //ORIGINAL LINE: @Test public void testAddRemoveObserver()
     virtual void testAddRemoveObserver();
 
     /*
-                         * HELPERS
-                         */
+     * HELPERS
+     */
 
     virtual std::shared_ptr<AbstractObservableReader>
     getBlankAbstractObservableReader(const std::string& pluginName,

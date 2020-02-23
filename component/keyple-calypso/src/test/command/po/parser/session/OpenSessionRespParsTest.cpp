@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include "OpenSessionRespParsTest.h"
 #include "AbstractOpenSessionRespPars.h"
 #include "ApduResponse.h"
@@ -31,8 +45,6 @@ void OpenSessionRespParsTest::check(
     ASSERT_TRUE(resp->isSuccessful());
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testgetResponse_rev2_4()
 void OpenSessionRespParsTest::testgetResponse_rev2_4()
 {
 
@@ -57,8 +69,6 @@ void OpenSessionRespParsTest::testgetResponse_rev2_4()
     check(AbstractOpenSessionRespPars::create(response, PoRevision::REV2_4));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testgetResponse_rev2_4_no_data()
 void OpenSessionRespParsTest::testgetResponse_rev2_4_no_data()
 {
 
@@ -81,8 +91,6 @@ void OpenSessionRespParsTest::testgetResponse_rev2_4_no_data()
     check(AbstractOpenSessionRespPars::create(response, PoRevision::REV2_4));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testgetResponse_rev2_4_non_ratified()
 void OpenSessionRespParsTest::testgetResponse_rev2_4_non_ratified()
 {
 
@@ -107,8 +115,6 @@ void OpenSessionRespParsTest::testgetResponse_rev2_4_non_ratified()
     check(AbstractOpenSessionRespPars::create(response, PoRevision::REV2_4));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testgetResponse_rev2_4_no_data_non_ratified()
 void OpenSessionRespParsTest::testgetResponse_rev2_4_no_data_non_ratified()
 {
 
@@ -131,8 +137,6 @@ void OpenSessionRespParsTest::testgetResponse_rev2_4_no_data_non_ratified()
     check(AbstractOpenSessionRespPars::create(response, PoRevision::REV2_4));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test(expected = IllegalStateException.class) public void testgetResponse_rev2_4_bad_length_inf()
 void OpenSessionRespParsTest::testgetResponse_rev2_4_bad_length_inf()
 {
 
@@ -162,8 +166,6 @@ void OpenSessionRespParsTest::testgetResponse_rev2_4_bad_length_inf()
     }
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test(expected = IllegalStateException.class) public void testgetResponse_rev2_4_bad_length_sup()
 void OpenSessionRespParsTest::testgetResponse_rev2_4_bad_length_sup()
 {
 
@@ -192,8 +194,6 @@ void OpenSessionRespParsTest::testgetResponse_rev2_4_bad_length_sup()
     }
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testgetResponse_rev3_1()
 void OpenSessionRespParsTest::testgetResponse_rev3_1()
 {
 
@@ -214,8 +214,6 @@ void OpenSessionRespParsTest::testgetResponse_rev3_1()
     check(AbstractOpenSessionRespPars::create(response, PoRevision::REV3_1));
 }
 
-//JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
-//ORIGINAL LINE: @Test public void testgetResponse_rev3_2()
 void OpenSessionRespParsTest::testgetResponse_rev3_2()
 {
 
