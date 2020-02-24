@@ -32,19 +32,19 @@ public:
      *
      * @param _se stub secure element to be inserted in the reader
      */
-    void insertSe(std::shared_ptr<StubSecureElement> _se);
+    virtual void insertSe(std::shared_ptr<StubSecureElement> _se) = 0;
 
     /**
      * Remove se from reader if any
      */
-    void removeSe();
+    virtual void removeSe() = 0;
 
     /**
      * Get inserted SE
      *
      * @return se, can be null if no Se inserted
      */
-    std::shared_ptr<StubSecureElement> getSe();
+    virtual std::shared_ptr<StubSecureElement> getSe() = 0;
 };
 
 }
