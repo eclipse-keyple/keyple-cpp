@@ -34,27 +34,26 @@ using namespace keyple::core::seproxy::exception;
 using namespace keyple::plugin::pcsc;
 
 std::shared_ptr<SeReader>
-ReaderUtilities::getReaderByName(const std::string &pattern)
+ReaderUtilities::getReaderByName(const std::string& pattern)
 {
-    Pattern* p = Pattern::compile(pattern);
+    Pattern* p            = Pattern::compile(pattern);
     SeProxyService& proxy = SeProxyService::getInstance();
 
     for (auto plugin : proxy.getPlugins()) {
         for (auto reader : *plugin->getReaders()) {
-            Matcher *matcher = p->matcher(reader->getName());
+            Matcher* matcher = p->matcher(reader->getName());
             if (matcher->matches()) {
                 return reader;
             }
         }
     }
     throw KeypleReaderNotFoundException(
-              StringHelper::formatSimple("Reader name pattern: %s", pattern));
+        StringHelper::formatSimple("Reader name pattern: %s", pattern));
 }
 
 std::shared_ptr<SeReader> ReaderUtilities::getDefaultContactLessSeReader()
 {
-    std::shared_ptr<SeReader> seReader =
-        ReaderUtilities::getReaderByName(
+    std::shared_ptr<SeReader> seReader = ReaderUtilities::getReaderByName(
         PcscReadersSettings::PO_READER_NAME_REGEX);
     ReaderUtilities::setContactlessSettings(seReader);
 
@@ -87,11 +86,9 @@ void ReaderUtilities::setContactlessSettings(std::shared_ptr<SeReader> reader)
                          PcscReader::SETTING_MODE_SHARED);
 
     /* Set the PO reader protocol flag */
-    reader->addSeProtocolSetting(
-        SeCommonProtocols::PROTOCOL_ISO14443_4,
-        PcscProtocolSetting::PCSC_PROTOCOL_SETTING[
-            SeCommonProtocols::PROTOCOL_ISO14443_4]);
-
+    reader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO14443_4,
+                                 PcscProtocolSetting::PCSC_PROTOCOL_SETTING
+                                     [SeCommonProtocols::PROTOCOL_ISO14443_4]);
 }
 
 void ReaderUtilities::setContactsSettings(std::shared_ptr<SeReader> reader)
@@ -120,14 +117,12 @@ void ReaderUtilities::setContactsSettings(std::shared_ptr<SeReader> reader)
                          PcscReader::SETTING_MODE_SHARED);
 
     /* Set the SAM reader protocol flag */
-    reader->addSeProtocolSetting(
-        SeCommonProtocols::PROTOCOL_ISO7816_3,
-        PcscProtocolSetting::PCSC_PROTOCOL_SETTING[
-            SeCommonProtocols::PROTOCOL_ISO7816_3]);
+    reader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO7816_3,
+                                 PcscProtocolSetting::PCSC_PROTOCOL_SETTING
+                                     [SeCommonProtocols::PROTOCOL_ISO7816_3]);
 }
 
 }
 }
 }
 }
-

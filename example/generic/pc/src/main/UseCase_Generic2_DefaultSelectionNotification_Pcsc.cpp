@@ -44,7 +44,7 @@ using namespace keyple::example::generic::pc;
 class UseCase_Generic2_DefaultSelectionNotification_Pcsc
 : public std::enable_shared_from_this<
       UseCase_Generic2_DefaultSelectionNotification_Pcsc>,
-  public ObservableReader::ReaderObserver  {
+  public ObservableReader::ReaderObserver {
 private:
     /**
      *
@@ -76,11 +76,11 @@ public:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
-        LoggerFactory::getLogger(
-            typeid(UseCase_Generic2_DefaultSelectionNotification_Pcsc));
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(
+        typeid(UseCase_Generic2_DefaultSelectionNotification_Pcsc));
 
-    UseCase_Generic2_DefaultSelectionNotification_Pcsc() : pcscplugin(PcscPlugin::getInstance())
+    UseCase_Generic2_DefaultSelectionNotification_Pcsc()
+    : pcscplugin(PcscPlugin::getInstance())
     {
         /* Get the instance of the PC/SC plugin */
         //pcscplugin = PcscPlugin::getInstance();
@@ -101,7 +101,7 @@ public:
             throw IllegalStateException("Bad SE reader setup");
         }
 
-        logger->info("=============== UseCase Generic #2: AID based default " \
+        logger->info("=============== UseCase Generic #2: AID based default "
                      "selection ===================\n");
         logger->info("= SE Reader  NAME = %s\n", seReader->getName().c_str());
 
@@ -125,12 +125,11 @@ public:
         std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAid);
         std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
             std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
-        std::shared_ptr<SeSelector::AidSelector> aidSelector  =
+        std::shared_ptr<SeSelector::AidSelector> aidSelector =
             std::make_shared<SeSelector::AidSelector>(isoAid, nullptr);
         std::shared_ptr<SeSelector> seSelector =
-            std::make_shared<SeSelector>(
-                SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector,
-                "AID:" + seAid);
+            std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4,
+                                         nullptr, aidSelector, "AID:" + seAid);
         std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
             std::make_shared<GenericSeSelectionRequest>(
                 seSelector, ChannelState::KEEP_OPEN);
@@ -163,56 +162,58 @@ public:
         (std::dynamic_pointer_cast<ObservableReader>(seReader))
             ->addObserver(shared_from_this());
 
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
-        logger->info("= Wait for a SE. The default AID based selection to be " \
+        logger->info("= Wait for a SE. The default AID based selection to be "
                      "processed as soon as the  =\n");
-        logger->info("= SE is detected.                                      " \
+        logger->info("= SE is detected.                                      "
                      "                          =\n");
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
 
         /* Wait for ever (exit with CTRL-C) */
-        while(1);
+        while (1)
+            ;
     }
 
     void update(std::shared_ptr<ReaderEvent> event)
     {
         if (event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
             /* the selection has one target, get the result at index 0 */
-            if (seSelection->processDefaultSelection(
-                    event->getDefaultSelectionsResponse())->getActiveSelection()
-                        ->getMatchingSe()) {
+            if (seSelection
+                    ->processDefaultSelection(
+                        event->getDefaultSelectionsResponse())
+                    ->getActiveSelection()
+                    ->getMatchingSe()) {
 
                 //std::shared_ptr<MatchingSe> selectedSe = seSelection->getSelectedSe(); Alex: unused?
 
-                logger->info("Observer notification: the selection of the SE " \
+                logger->info("Observer notification: the selection of the SE "
                              "has succeeded\n");
 
-                logger->info("===============================================" \
+                logger->info("==============================================="
                              "===================================\n");
-                logger->info("= End of the SE processing.                    " \
+                logger->info("= End of the SE processing.                    "
                              "                                  =\n");
-                logger->info("===============================================" \
+                logger->info("==============================================="
                              "===================================\n");
             } else {
-                logger->error("The selection of the SE has failed. Should not" \
-                              " have occurred due to the MATCHED_ONLY " \
+                logger->error("The selection of the SE has failed. Should not"
+                              " have occurred due to the MATCHED_ONLY "
                               "selection mode\n");
             }
         } else if (event->getEventType() ==
-                       ReaderEvent::EventType::SE_INSERTED) {
-            logger->error("SE_INSERTED event: should not have occurred due to" \
+                   ReaderEvent::EventType::SE_INSERTED) {
+            logger->error("SE_INSERTED event: should not have occurred due to"
                           " the MATCHED_ONLY selection mode\n");
-        } else if (event->getEventType() == ReaderEvent::EventType::SE_REMOVAL)
-        {
+        } else if (event->getEventType() ==
+                   ReaderEvent::EventType::SE_REMOVAL) {
             logger->info("The SE has been removed.");
         }
     }
-
 };
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;

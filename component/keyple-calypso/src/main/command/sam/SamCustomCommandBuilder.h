@@ -19,7 +19,13 @@
 #include "SamRevision_Import.h"
 
 /* Forward declaration */
-namespace keyple { namespace seproxy { namespace message { class ApduRequest; } } }
+namespace keyple {
+namespace seproxy {
+namespace message {
+class ApduRequest;
+}
+}
+}
 
 namespace keyple {
 namespace calypso {
@@ -42,7 +48,8 @@ public:
      * @param name the name of the command (will appear in the ApduRequest log)
      * @param request the ApduRequest (the correct instruction byte must be provided)
      */
-    SamCustomCommandBuilder(const std::string &name, std::shared_ptr<ApduRequest> request);
+    SamCustomCommandBuilder(const std::string& name,
+                            std::shared_ptr<ApduRequest> request);
 
 protected:
     /**
@@ -54,8 +61,9 @@ protected:
      *
      */
     std::shared_ptr<SamCustomCommandBuilder> shared_from_this()
-            {
-        return std::static_pointer_cast<SamCustomCommandBuilder>(sAbstractIso7816CommandBuilder::shared_from_this());
+    {
+        return std::static_pointer_cast<SamCustomCommandBuilder>(
+            sAbstractIso7816CommandBuilder::shared_from_this());
     }
 };
 

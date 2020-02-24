@@ -37,8 +37,9 @@ ReaderPlugin& PcscPluginFactory::getPluginInstance()
         return PcscPluginImpl::getInstance();
     } catch (KeypleRuntimeException& e) {
         throw KeyplePluginInstantiationException(
-                  "Can not access Smartcard.io readers, check " \
-                  "initNativeReaders trace", e);
+            "Can not access Smartcard.io readers, check "
+            "initNativeReaders trace",
+            e);
     }
 }
 

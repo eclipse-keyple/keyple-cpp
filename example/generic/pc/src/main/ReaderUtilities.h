@@ -34,7 +34,8 @@ public:
      * @return SeReader
      * @throws KeypleReaderException Readers are not initialized
      */
-    static std::shared_ptr<SeReader> getReaderByName(const std::string &pattern);
+    static std::shared_ptr<SeReader>
+    getReaderByName(const std::string& pattern);
 
     /**
      * Get a fully configured contactless proxy reader

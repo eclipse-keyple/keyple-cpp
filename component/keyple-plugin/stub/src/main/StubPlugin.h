@@ -48,7 +48,7 @@ using namespace keyple::core::seproxy::protocol;
  */
 class EXPORT StubPlugin : public ObservablePlugin {
 public:
-     /**
+    /**
      * Plug a Stub Reader
      *
      * @param name : name of the created reader
@@ -89,7 +89,8 @@ public:
      *        (without waiting for the observation thread). An
      *        READER_DISCONNECTED event is raised in both cases
      */
-    virtual void unplugStubReader(const std::string &name, bool synchronous) =0;
+    virtual void unplugStubReader(const std::string& name,
+                                  bool synchronous) = 0;
 
     /**
      * Unplug a list of readers

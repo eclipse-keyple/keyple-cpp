@@ -6,7 +6,6 @@ namespace keyple {
 namespace common {
 
 class InterruptedException : public Exception {
-
 };
 
 }

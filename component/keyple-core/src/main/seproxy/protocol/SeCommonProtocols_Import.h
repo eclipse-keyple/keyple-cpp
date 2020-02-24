@@ -86,8 +86,8 @@ public:
     /**
      * Constructor
      */
-    SeCommonProtocols(const std::string &nameValue, InnerEnum innerEnum,
-                      const std::string &name,
+    SeCommonProtocols(const std::string& nameValue, InnerEnum innerEnum,
+                      const std::string& name,
                       TransmissionMode transmissionMode);
 
     /**
@@ -133,7 +133,7 @@ public:
     /**
      *
      */
-    static SeCommonProtocols valueOf(const std::string &name);
+    static SeCommonProtocols valueOf(const std::string& name);
 
 private:
     /**
@@ -171,7 +171,6 @@ private:
      *
      */
     const TransmissionMode transmissionMode;
-
 };
 
 }
@@ -183,8 +182,7 @@ namespace std {
 
 using namespace keyple::core::seproxy::protocol;
 
-template<> struct hash<SeCommonProtocols>
-{
+template <> struct hash<SeCommonProtocols> {
     size_t operator()(const SeCommonProtocols& obj) const
     {
         return hash<int>()(obj.ordinalValue);

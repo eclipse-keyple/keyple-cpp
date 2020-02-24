@@ -44,20 +44,34 @@ using namespace keyple::common;
  * responding, an internal SE_REMOVED event is fired when the SE is no longer
  * responding.
  * <p>
- * A delay of 200 ms is inserted between each APDU sending.
+ * By default a delay of 200 ms is inserted between each APDU sending .
  */
 class EXPORT CardAbsentPingMonitoringJob : public MonitoringJob {
 public:
     /**
+     * Create a job monitor job that ping the SE with the method
+     * isSePresentPing()
      *
+     * @param reader : reference to the reader
      */
     CardAbsentPingMonitoringJob(AbstractObservableLocalReader* reader);
 
     /**
+     * Create a job monitor job that ping the SE with the method
+     * isSePresentPing()
+     *
+     * @param reader : reference to the reader
+     * @param removalWait : delay between between each APDU sending
+     */
+    CardAbsentPingMonitoringJob(AbstractObservableLocalReader* reader,
+                                long removalWait);
+
+    /**
      *
      */
-    std::future<void> startMonitoring(AbstractObservableState* state,
-        std::atomic<bool>& cancellationFlag) override;
+    std::future<void>
+    startMonitoring(AbstractObservableState* state,
+                    std::atomic<bool>& cancellationFlag) override;
 
     /**
      *
@@ -65,18 +79,32 @@ public:
     void monitoringJob(AbstractObservableState* state,
                        std::atomic<bool>& cancellationFlag);
 
+    /**
+     *
+     */
+    void stop() override;
 
 private:
     /**
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(CardAbsentPingMonitoringJob));
+        LoggerFactory::getLogger(typeid(CardAbsentPingMonitoringJob));
 
     /**
      *
      */
     AbstractObservableLocalReader* reader;
+
+    /**
+     *
+     */
+    std::atomic<bool> loop;
+
+    /**
+     *
+     */
+    long removalWait = 200;
 };
 
 }

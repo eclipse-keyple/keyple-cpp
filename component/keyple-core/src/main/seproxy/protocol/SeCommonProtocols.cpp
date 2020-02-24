@@ -37,9 +37,10 @@ SeCommonProtocols SeCommonProtocols::PROTOCOL_ISO14443_3B(
 SeCommonProtocols SeCommonProtocols::PROTOCOL_JIS_6319_4(
     "PROTOCOL_JIS_6319_4", InnerEnum::PROTOCOL_JIS_6319_4, "JIS 6319-4 Felica",
     TransmissionMode::CONTACTLESS);
-SeCommonProtocols SeCommonProtocols::PROTOCOL_NDEF(
-    "PROTOCOL_NDEF", InnerEnum::PROTOCOL_NDEF, "NFC NDEF TAG",
-    TransmissionMode::CONTACTLESS);
+SeCommonProtocols
+    SeCommonProtocols::PROTOCOL_NDEF("PROTOCOL_NDEF", InnerEnum::PROTOCOL_NDEF,
+                                     "NFC NDEF TAG",
+                                     TransmissionMode::CONTACTLESS);
 SeCommonProtocols SeCommonProtocols::PROTOCOL_NDEF_FORMATABLE(
     "PROTOCOL_NDEF_FORMATABLE", InnerEnum::PROTOCOL_NDEF_FORMATABLE,
     "NFC NDEF FORMATABLE", TransmissionMode::CONTACTLESS);
@@ -64,9 +65,10 @@ SeCommonProtocols SeCommonProtocols::PROTOCOL_MEMORY_ST25(
 SeCommonProtocols SeCommonProtocols::PROTOCOL_ISO7816_3(
     "PROTOCOL_ISO7816_3", InnerEnum::PROTOCOL_ISO7816_3, "ISO 7816-3",
     TransmissionMode::CONTACTS);
-SeCommonProtocols SeCommonProtocols::PROTOCOL_HSP(
-    "PROTOCOL_HSP", InnerEnum::PROTOCOL_HSP, "Old Calypso SAM HSP",
-    TransmissionMode::CONTACTS);
+SeCommonProtocols SeCommonProtocols::PROTOCOL_HSP("PROTOCOL_HSP",
+                                                  InnerEnum::PROTOCOL_HSP,
+                                                  "Old Calypso SAM HSP",
+                                                  TransmissionMode::CONTACTS);
 
 std::vector<SeCommonProtocols> SeCommonProtocols::valueList;
 
@@ -91,9 +93,9 @@ SeCommonProtocols::StaticConstructor::StaticConstructor()
 
 SeCommonProtocols::StaticConstructor SeCommonProtocols::staticConstructor;
 
-SeCommonProtocols::SeCommonProtocols(const std::string &nameValue,
+SeCommonProtocols::SeCommonProtocols(const std::string& nameValue,
                                      InnerEnum innerEnum,
-                                     const std::string &name,
+                                     const std::string& name,
                                      TransmissionMode transmissionMode)
 : innerEnumValue(innerEnum), nameValue(nameValue), name(name),
   transmissionMode(transmissionMode)
@@ -147,7 +149,7 @@ std::string SeCommonProtocols::toString()
     return nameValue;
 }
 
-SeCommonProtocols SeCommonProtocols::valueOf(const std::string &name)
+SeCommonProtocols SeCommonProtocols::valueOf(const std::string& name)
 {
     for (auto enumInstance : SeCommonProtocols::valueList) {
         if (enumInstance.nameValue == name) {

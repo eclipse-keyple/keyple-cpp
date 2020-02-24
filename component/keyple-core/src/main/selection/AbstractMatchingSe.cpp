@@ -26,15 +26,14 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::protocol;
 
 AbstractMatchingSe::AbstractMatchingSe(
-  std::shared_ptr<SeResponse> selectionResponse,
-  TransmissionMode transmissionMode, const std::string &extraInfo)
+    std::shared_ptr<SeResponse> selectionResponse,
+    TransmissionMode transmissionMode, const std::string& extraInfo)
 : selectionResponse(selectionResponse), transmissionMode(transmissionMode),
   selectionExtraInfo(extraInfo)
 {
     if (selectionResponse != nullptr) {
         this->selectionStatus = selectionResponse->getSelectionStatus();
-    }
-    else {
+    } else {
         this->selectionStatus.reset();
     }
 }

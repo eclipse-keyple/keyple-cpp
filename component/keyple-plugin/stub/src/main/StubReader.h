@@ -22,29 +22,29 @@ namespace stub {
 
 class StubReader : public ObservableReader {
 public:
-    const std::string ALLOWED_PARAMETER_1 = "parameter1";
-    const std::string ALLOWED_PARAMETER_2 = "parameter2";
+    const std::string ALLOWED_PARAMETER_1   = "parameter1";
+    const std::string ALLOWED_PARAMETER_2   = "parameter2";
     const std::string CONTACTLESS_PARAMETER = "contactless";
-    const std::string CONTACTS_PARAMETER = "contacts";
+    const std::string CONTACTS_PARAMETER    = "contacts";
 
     /**
      * Insert a stub se into the reader. Will raise a SE_INSERTED event.
      *
      * @param _se stub secure element to be inserted in the reader
      */
-    void insertSe(std::shared_ptr<StubSecureElement> _se);
+    virtual void insertSe(std::shared_ptr<StubSecureElement> _se) = 0;
 
     /**
      * Remove se from reader if any
      */
-    void removeSe();
+    virtual void removeSe() = 0;
 
     /**
      * Get inserted SE
      *
      * @return se, can be null if no Se inserted
      */
-    std::shared_ptr<StubSecureElement> getSe();
+    virtual std::shared_ptr<StubSecureElement> getSe() = 0;
 };
 
 }

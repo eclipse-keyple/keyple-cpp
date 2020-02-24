@@ -24,7 +24,6 @@ namespace sam {
 namespace parser {
 namespace security {
 
-
 using namespace keyple::calypso::command::sam;
 using namespace keyple::core::seproxy::message;
 
@@ -47,7 +46,8 @@ protected:
      */
     std::shared_ptr<DigestUpdateMultipleRespPars> shared_from_this()
     {
-        return std::static_pointer_cast<DigestUpdateMultipleRespPars>(AbstractSamResponseParser::shared_from_this());
+        return std::static_pointer_cast<DigestUpdateMultipleRespPars>(
+            AbstractSamResponseParser::shared_from_this());
     }
 };
 

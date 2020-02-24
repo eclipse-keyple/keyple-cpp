@@ -48,8 +48,8 @@ using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::common;
 
-class EXPORT PcscPluginImpl
-: public AbstractThreadedObservablePlugin, public virtual PcscPlugin {
+class EXPORT PcscPluginImpl : public AbstractThreadedObservablePlugin,
+                              public virtual PcscPlugin {
 public:
     /**
      *
@@ -59,7 +59,9 @@ public:
     /**
      *
      */
-    virtual ~PcscPluginImpl() { }
+    virtual ~PcscPluginImpl()
+    {
+    }
 
     /**
      *
@@ -76,14 +78,14 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string> getParameters()
-        override;
+    const std::map<const std::string, const std::string>
+    getParameters() override;
 
     /**
      *
      */
-    void setParameter(const std::string& key, const std::string& value)
-        override;
+    void setParameter(const std::string& key,
+                      const std::string& value) override;
 
 protected:
     /**
@@ -102,8 +104,7 @@ protected:
      * @return the list of AbstractObservableReader objects.
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::set<std::shared_ptr<SeReader>> initNativeReaders()
-        override;
+    std::set<std::shared_ptr<SeReader>> initNativeReaders() override;
 
     /**
      * Fetch the reader whose name is provided as an argument. Returns the
@@ -116,8 +117,8 @@ protected:
      * @return the reader object
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::shared_ptr<SeReader> fetchNativeReader(const std::string &name)
-        override;
+    std::shared_ptr<SeReader>
+    fetchNativeReader(const std::string& name) override;
 
     /**
      *
@@ -134,7 +135,7 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(PcscPlugin));
+        LoggerFactory::getLogger(typeid(PcscPlugin));
 
     /**
      *
@@ -145,11 +146,6 @@ private:
      * singleton instance of SeProxyService
      */
     static PcscPluginImpl uniqueInstance;
-
-    /**
-     *
-     */
-    //static TerminalFactory factory;
 
     /**
      *
@@ -170,6 +166,11 @@ private:
      * Constructor
      */
     PcscPluginImpl();
+
+    /**
+     *
+     */
+    bool scardNoServiceHackNeeded;
 };
 
 }

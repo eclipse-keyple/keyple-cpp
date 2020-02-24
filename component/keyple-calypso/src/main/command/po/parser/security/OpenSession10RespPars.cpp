@@ -29,23 +29,23 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::core::seproxy::message;
 
 OpenSession10RespPars::OpenSession10RespPars(
-  std::shared_ptr<ApduResponse> response)
+    std::shared_ptr<ApduResponse> response)
 : AbstractOpenSessionRespPars(response, PoRevision::REV1_0)
 {
     std::vector<uint8_t> data = response->getDataOut();
-    this->secureSession = toSecureSession(data);
+    this->secureSession       = toSecureSession(data);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-    OpenSession10RespPars::toSecureSession(
-        const std::vector<uint8_t>& apduResponseData)
+OpenSession10RespPars::toSecureSession(
+    const std::vector<uint8_t>& apduResponseData)
 {
     return createSecureSession(apduResponseData);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-    OpenSession10RespPars::createSecureSession(
-        const std::vector<uint8_t>& apduResponseData)
+OpenSession10RespPars::createSecureSession(
+    const std::vector<uint8_t>& apduResponseData)
 {
     bool previousSessionRatified = true;
 
@@ -72,18 +72,18 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
      * </ul>
      */
     switch (apduResponseData.size()) {
-        case 4:
-        case 33:
-            previousSessionRatified = true;
-            break;
-        case 6:
-        case 35:
-            previousSessionRatified = false;
-            break;
-        default:
-            throw IllegalStateException(
-                      "Bad response length to Open Secure Session: " +
-                      std::to_string(apduResponseData.size()));
+    case 4:
+    case 33:
+        previousSessionRatified = true;
+        break;
+    case 6:
+    case 35:
+        previousSessionRatified = false;
+        break;
+    default:
+        throw IllegalStateException(
+            "Bad response length to Open Secure Session: " +
+            std::to_string(apduResponseData.size()));
     }
 
     /* KVC doesn't exist and is set to null for this type of PO */
@@ -94,9 +94,8 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
         Arrays::copyOfRange(apduResponseData, 4, 5);
 
     return std::make_shared<SecureSession>(
-               challengeTransactionCounter, challengeRandomNumber,
-               previousSessionRatified, false, nullptr, emptyVector,
-               apduResponseData);
+        challengeTransactionCounter, challengeRandomNumber,
+        previousSessionRatified, false, nullptr, emptyVector, apduResponseData);
 }
 
 }

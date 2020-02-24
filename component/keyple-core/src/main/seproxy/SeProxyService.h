@@ -31,10 +31,22 @@
 #include "KeyplePluginNotFoundException.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy {
-    class ReaderPlugin; } } }
-namespace keyple { namespace core { namespace seproxy { namespace exception {
-    class KeyplePluginNotFoundException; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+class ReaderPlugin;
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace exception {
+class KeyplePluginNotFoundException;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -101,7 +113,7 @@ public:
      * @return the plugin
      * @throws KeyplePluginNotFoundException if the wanted plugin is not found
      */
-    ReaderPlugin* getPlugin(const std::string &name);
+    ReaderPlugin* getPlugin(const std::string& name);
 
     /**
      * Gets the version API, (the version of the sdk).
@@ -114,7 +126,7 @@ private:
     /**
      * The list of readers’ plugins interfaced with the SE Proxy Service
      */
-    std::set<ReaderPlugin *> plugins;
+    std::set<ReaderPlugin*> plugins;
 
     /**
      * Instantiates a new SeProxyService.
@@ -125,7 +137,7 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(SeProxyService));
+        LoggerFactory::getLogger(typeid(SeProxyService));
 
     /**
      * This is the object we will be synchronizing on ("the monitor")

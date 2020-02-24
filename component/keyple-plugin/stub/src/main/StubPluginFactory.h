@@ -47,7 +47,7 @@ protected:
      * @throws KeyplePluginInstantiationException if Smartcard.io library is not
      * ready
      */
-   ReaderPlugin& getPluginInstance() override;
+    ReaderPlugin& getPluginInstance() override;
 
 private:
     /**

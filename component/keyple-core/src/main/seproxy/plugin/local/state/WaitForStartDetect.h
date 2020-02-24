@@ -21,6 +21,7 @@
 #include "MonitoringPool.h"
 
 /* Common */
+#include "Export.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -43,7 +44,7 @@ using namespace keyple::core::seproxy::plugin::local;
  * WAIT_FOR_SE_INSERTION.
  * </ul>
  */
-class WaitForStartDetect : public AbstractObservableState {
+class EXPORT WaitForStartDetect : public AbstractObservableState {
 public:
     /**
      *
@@ -67,7 +68,7 @@ private:
      * Logger
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(WaitForStartDetect));
+        LoggerFactory::getLogger(typeid(WaitForStartDetect));
 };
 
 }

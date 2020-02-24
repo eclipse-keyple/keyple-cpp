@@ -17,15 +17,14 @@ namespace common {
 
 template <class T> class Comparable {
 public:
-	Comparable()
-	{
+    Comparable()
+    {
+    }
 
-	}
-	
-	Comparable(T *t)
-	{
-		(void)t;
-	}
+    Comparable(T* t)
+    {
+        (void)t;
+    }
 };
 
 }

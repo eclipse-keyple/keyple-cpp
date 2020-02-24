@@ -19,8 +19,9 @@ namespace common {
 
 using namespace keyple::example::generic::common;
 
-GenericSeSelectionRequest::GenericMatchingSe::GenericMatchingSe(std::shared_ptr<SeResponse> selectionResponse,
-                                                                TransmissionMode transmissionMode, std::string& extraInfo)
+GenericSeSelectionRequest::GenericMatchingSe::GenericMatchingSe(
+    std::shared_ptr<SeResponse> selectionResponse,
+    TransmissionMode transmissionMode, std::string& extraInfo)
 : AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo)
 {
 }
@@ -29,19 +30,21 @@ GenericSeSelectionRequest::GenericMatchingSe::~GenericMatchingSe()
 {
 }
 
-GenericSeSelectionRequest::GenericSeSelectionRequest(std::shared_ptr<SeSelector> seSelector, ChannelState channelState)
+GenericSeSelectionRequest::GenericSeSelectionRequest(
+    std::shared_ptr<SeSelector> seSelector, ChannelState channelState)
 : AbstractSeSelectionRequest(seSelector, channelState)
 {
     transmissionMode = seSelector->getSeProtocol().getTransmissionMode();
 }
 
-std::shared_ptr<AbstractMatchingSe> GenericSeSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
+std::shared_ptr<AbstractMatchingSe>
+GenericSeSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
 {
-    return std::make_shared<AbstractMatchingSe>(seResponse, transmissionMode, "Generic Matching SE");
+    return std::make_shared<AbstractMatchingSe>(seResponse, transmissionMode,
+                                                "Generic Matching SE");
 }
 
 }
 }
 }
 }
-

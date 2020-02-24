@@ -42,38 +42,35 @@ std::unordered_map<int, std::shared_ptr<StatusProperties>>
 
 AbstractOpenSessionRespPars::StaticConstructor::StaticConstructor()
 {
-    std::unordered_map<int, std::shared_ptr<StatusProperties>>
-        m(AbstractApduResponseParser::STATUS_TABLE);
+    std::unordered_map<int, std::shared_ptr<StatusProperties>> m(
+        AbstractApduResponseParser::STATUS_TABLE);
 
-    m.emplace(0x6700,
-              std::make_shared<StatusProperties>(false,
-                                                 "Lc value not supported."));
-    m.emplace(0x6900,
-              std::make_shared<StatusProperties>(false,
-                                                "Transaction Counter is 0"));
+    m.emplace(0x6700, std::make_shared<StatusProperties>(
+                          false, "Lc value not supported."));
+    m.emplace(0x6900, std::make_shared<StatusProperties>(
+                          false, "Transaction Counter is 0"));
     m.emplace(0x6981,
               std::make_shared<StatusProperties>(
                   false,
-                  "Command forbidden (read requested and current EF is a " \
+                  "Command forbidden (read requested and current EF is a "
                   "Binary file)."));
     m.emplace(0x6982,
               std::make_shared<StatusProperties>(
                   false,
-                std::string("Security conditions not fulfilled (PIN code not " \
-                "presented, AES key forbidding the ") + "compatibility mode, " \
-                "encryption required)."));
+                  std::string("Security conditions not fulfilled (PIN code not "
+                              "presented, AES key forbidding the ") +
+                      "compatibility mode, "
+                      "encryption required)."));
     m.emplace(0x6985,
               std::make_shared<StatusProperties>(
-                  false,
-                  "Access forbidden (Never access mode, Session already " \
-                  "opened)."));
-    m.emplace(0x6986,
-              std::make_shared<StatusProperties>(
-                  false,
-                  "Command not allowed (read requested and no current EF)."));
+                  false, "Access forbidden (Never access mode, Session already "
+                         "opened)."));
+    m.emplace(
+        0x6986,
+        std::make_shared<StatusProperties>(
+            false, "Command not allowed (read requested and no current EF)."));
     m.emplace(0x6A81,
-              std::make_shared<StatusProperties>(
-                  false, "Wrong key index."));
+              std::make_shared<StatusProperties>(false, "Wrong key index."));
     m.emplace(0x6A82,
               std::make_shared<StatusProperties>(false, "File not found."));
     m.emplace(0x6A83,
@@ -82,7 +79,7 @@ AbstractOpenSessionRespPars::StaticConstructor::StaticConstructor()
     m.emplace(0x6B00,
               std::make_shared<StatusProperties>(
                   false,
-                  "P1 or P2 value not supported (key index incorrect, wrong " \
+                  "P1 or P2 value not supported (key index incorrect, wrong "
                   "P2)."));
 
     STATUS_TABLE = m;
@@ -92,14 +89,14 @@ AbstractOpenSessionRespPars::StaticConstructor
     AbstractOpenSessionRespPars::staticConstructor;
 
 std::unordered_map<int, std::shared_ptr<StatusProperties>>
-    AbstractOpenSessionRespPars::getStatusTable() const
+AbstractOpenSessionRespPars::getStatusTable() const
 {
     // At this stage, the status table is the same for everyone
     return STATUS_TABLE;
 }
 
 AbstractOpenSessionRespPars::AbstractOpenSessionRespPars(
-  std::shared_ptr<ApduResponse> response, PoRevision revision)
+    std::shared_ptr<ApduResponse> response, PoRevision revision)
 : AbstractPoResponseParser(response) //, revision(revision)
 {
     /*
@@ -110,23 +107,22 @@ AbstractOpenSessionRespPars::AbstractOpenSessionRespPars(
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars>
-    AbstractOpenSessionRespPars::create(
-        std::shared_ptr<ApduResponse> response, PoRevision revision)
+AbstractOpenSessionRespPars::create(std::shared_ptr<ApduResponse> response,
+                                    PoRevision revision)
 {
     switch (revision) {
-        case PoRevision::REV1_0:
-            return std::make_shared<OpenSession10RespPars>(response);
-        case PoRevision::REV2_4:
-            return std::make_shared<OpenSession24RespPars>(response);
-        case PoRevision::REV3_1:
-        case PoRevision::REV3_1_CLAP:
-            return std::make_shared<OpenSession31RespPars>(response);
-        case PoRevision::REV3_2:
-            return std::make_shared<OpenSession32RespPars>(response);
-        default:
-            throw std::invalid_argument(
-                      StringHelper::formatSimple("Unknow revision %d",
-                                                 static_cast<int>(revision)));
+    case PoRevision::REV1_0:
+        return std::make_shared<OpenSession10RespPars>(response);
+    case PoRevision::REV2_4:
+        return std::make_shared<OpenSession24RespPars>(response);
+    case PoRevision::REV3_1:
+    case PoRevision::REV3_1_CLAP:
+        return std::make_shared<OpenSession31RespPars>(response);
+    case PoRevision::REV3_2:
+        return std::make_shared<OpenSession32RespPars>(response);
+    default:
+        throw std::invalid_argument(StringHelper::formatSimple(
+            "Unknow revision %d", static_cast<int>(revision)));
     }
 }
 
@@ -143,7 +139,8 @@ int AbstractOpenSessionRespPars::getTransactionCounterValue()
     return counter[0] << 24 | counter[1] << 16 | counter[2] << 8 | counter[3];
 }
 
-bool AbstractOpenSessionRespPars::wasRatified() {
+bool AbstractOpenSessionRespPars::wasRatified()
+{
     return secureSession->isPreviousSessionRatified();
 }
 
@@ -168,58 +165,56 @@ const std::vector<uint8_t>& AbstractOpenSessionRespPars::getRecordDataRead()
 }
 
 AbstractOpenSessionRespPars::SecureSession::SecureSession(
-  const std::vector<uint8_t>& challengeTransactionCounter,
-  const std::vector<uint8_t>& challengeRandomNumber,
-  bool previousSessionRatified, bool manageSecureSessionAuthorized, uint8_t kif,
-  std::shared_ptr<Byte> kvc, const std::vector<uint8_t>& originalData,
-  const std::vector<uint8_t>& secureSessionData)
+    const std::vector<uint8_t>& challengeTransactionCounter,
+    const std::vector<uint8_t>& challengeRandomNumber,
+    bool previousSessionRatified, bool manageSecureSessionAuthorized,
+    uint8_t kif, std::shared_ptr<Byte> kvc,
+    const std::vector<uint8_t>& originalData,
+    const std::vector<uint8_t>& secureSessionData)
+: challengeTransactionCounter(challengeTransactionCounter),
+  challengeRandomNumber(challengeRandomNumber),
+  previousSessionRatified(previousSessionRatified),
+  manageSecureSessionAuthorized(manageSecureSessionAuthorized), kif(kif),
+  kvc(kvc), originalData(originalData), secureSessionData(secureSessionData)
+{
+}
+
+AbstractOpenSessionRespPars::SecureSession::SecureSession(
+    const std::vector<uint8_t>& challengeTransactionCounter,
+    const std::vector<uint8_t>& challengeRandomNumber,
+    bool previousSessionRatified, bool manageSecureSessionAuthorized,
+    std::shared_ptr<Byte> kvc, const std::vector<uint8_t>& originalData,
+    const std::vector<uint8_t>& secureSessionData)
 : challengeTransactionCounter(challengeTransactionCounter),
   challengeRandomNumber(challengeRandomNumber),
   previousSessionRatified(previousSessionRatified),
   manageSecureSessionAuthorized(manageSecureSessionAuthorized),
-  kif(kif), kvc(kvc), originalData(originalData),
+  kif(static_cast<char>(0xFF)), kvc(kvc), originalData(originalData),
   secureSessionData(secureSessionData)
 {
 }
 
 AbstractOpenSessionRespPars::SecureSession::SecureSession(
-  const std::vector<uint8_t>& challengeTransactionCounter,
-  const std::vector<uint8_t>& challengeRandomNumber,
-  bool previousSessionRatified, bool manageSecureSessionAuthorized,
-  std::shared_ptr<Byte> kvc, const std::vector<uint8_t>& originalData,
-  const std::vector<uint8_t>& secureSessionData)
+    const std::vector<uint8_t>& challengeTransactionCounter,
+    const std::vector<uint8_t>& challengeRandomNumber,
+    bool previousSessionRatified, bool manageSecureSessionAuthorized,
+    std::shared_ptr<Byte> kvc, const std::vector<uint8_t>& secureSessionData)
 : challengeTransactionCounter(challengeTransactionCounter),
   challengeRandomNumber(challengeRandomNumber),
   previousSessionRatified(previousSessionRatified),
   manageSecureSessionAuthorized(manageSecureSessionAuthorized),
-  kif(static_cast<char>(0xFF)),
-  kvc(kvc), originalData(originalData), secureSessionData(secureSessionData)
-{
-}
-
-
-AbstractOpenSessionRespPars::SecureSession::SecureSession(
-  const std::vector<uint8_t>& challengeTransactionCounter,
-  const std::vector<uint8_t>& challengeRandomNumber,
-  bool previousSessionRatified, bool manageSecureSessionAuthorized,
-  std::shared_ptr<Byte> kvc, const std::vector<uint8_t>& secureSessionData)
-: challengeTransactionCounter(challengeTransactionCounter),
-  challengeRandomNumber(challengeRandomNumber),
-  previousSessionRatified(previousSessionRatified),
-  manageSecureSessionAuthorized(manageSecureSessionAuthorized),
-  kif(static_cast<char>(0xFF)),
-  kvc(kvc), secureSessionData(secureSessionData)
+  kif(static_cast<char>(0xFF)), kvc(kvc), secureSessionData(secureSessionData)
 {
 }
 
 const std::vector<uint8_t>&
-    AbstractOpenSessionRespPars::SecureSession::getChallengeTransactionCounter()
+AbstractOpenSessionRespPars::SecureSession::getChallengeTransactionCounter()
 {
     return challengeTransactionCounter;
 }
 
 const std::vector<uint8_t>&
-    AbstractOpenSessionRespPars::SecureSession::getChallengeRandomNumber()
+AbstractOpenSessionRespPars::SecureSession::getChallengeRandomNumber()
 {
     return challengeRandomNumber;
 }
@@ -229,8 +224,8 @@ bool AbstractOpenSessionRespPars::SecureSession::isPreviousSessionRatified()
     return previousSessionRatified;
 }
 
-bool
-AbstractOpenSessionRespPars::SecureSession::isManageSecureSessionAuthorized()
+bool AbstractOpenSessionRespPars::SecureSession::
+    isManageSecureSessionAuthorized()
 {
     return manageSecureSessionAuthorized;
 }
@@ -246,13 +241,13 @@ std::shared_ptr<Byte> AbstractOpenSessionRespPars::SecureSession::getKVC()
 }
 
 const std::vector<uint8_t>&
-    AbstractOpenSessionRespPars::SecureSession::getOriginalData()
+AbstractOpenSessionRespPars::SecureSession::getOriginalData()
 {
     return originalData;
 }
 
 const std::vector<uint8_t>&
-    AbstractOpenSessionRespPars::SecureSession::getSecureSessionData()
+AbstractOpenSessionRespPars::SecureSession::getSecureSessionData()
 {
     return secureSessionData;
 }

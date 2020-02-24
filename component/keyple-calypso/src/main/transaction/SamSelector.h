@@ -75,7 +75,7 @@ protected:
     std::shared_ptr<SamSelector> shared_from_this()
     {
         return std::static_pointer_cast<SamSelector>(
-                   SeSelector::shared_from_this());
+            SeSelector::shared_from_this());
     }
 };
 

@@ -28,17 +28,21 @@ using namespace keyple::calypso::command::sam;
 
 class SamBuilderParser
 : public std::enable_shared_from_this<SamBuilderParser>,
-  public CalypsoBuilderParser<AbstractSamCommandBuilder, AbstractSamResponseParser>{
+  public CalypsoBuilderParser<AbstractSamCommandBuilder,
+                              AbstractSamResponseParser> {
 public:
     /**
      *
      */
-    SamBuilderParser(std::shared_ptr<AbstractSamCommandBuilder> samCommandBuilder);
+    SamBuilderParser(
+        std::shared_ptr<AbstractSamCommandBuilder> samCommandBuilder);
 
     /**
      *
      */
-    virtual ~SamBuilderParser() {}
+    virtual ~SamBuilderParser()
+    {
+    }
 
     /**
      *
@@ -53,7 +57,8 @@ public:
     /**
      *
      */
-    virtual void setResponseParser(std::shared_ptr<AbstractSamResponseParser> poResponseParser);
+    virtual void setResponseParser(
+        std::shared_ptr<AbstractSamResponseParser> poResponseParser);
 
 private:
     /**
@@ -65,7 +70,6 @@ private:
      *
      */
     std::shared_ptr<AbstractSamResponseParser> samResponseParser;
-
 };
 
 }

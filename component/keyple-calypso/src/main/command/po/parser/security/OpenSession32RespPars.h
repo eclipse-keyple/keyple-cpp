@@ -42,14 +42,14 @@ public:
      * @param apduResponseData the apdu response data
      * @return a SecureSession
      */
-    std::shared_ptr<SecureSession> toSecureSession(
-        const std::vector<uint8_t>& apduResponseData);
+    std::shared_ptr<SecureSession>
+    toSecureSession(const std::vector<uint8_t>& apduResponseData);
 
     /**
      *
      */
-    static std::shared_ptr<SecureSession> createSecureSession(
-               const std::vector<uint8_t>& apduResponse);
+    static std::shared_ptr<SecureSession>
+    createSecureSession(const std::vector<uint8_t>& apduResponse);
 
 protected:
     /**
@@ -58,7 +58,7 @@ protected:
     std::shared_ptr<OpenSession32RespPars> shared_from_this()
     {
         return std::static_pointer_cast<OpenSession32RespPars>(
-                   AbstractOpenSessionRespPars::shared_from_this());
+            AbstractOpenSessionRespPars::shared_from_this());
     }
 };
 

@@ -59,7 +59,9 @@ public:
     /**
      *
      */
-    virtual ~DigestInitCmdBuild() {}
+    virtual ~DigestInitCmdBuild()
+    {
+    }
 
 protected:
     /**
@@ -68,7 +70,7 @@ protected:
     std::shared_ptr<DigestInitCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<DigestInitCmdBuild>(
-                   AbstractSamCommandBuilder::shared_from_this());
+            AbstractSamCommandBuilder::shared_from_this());
     }
 
 private:

@@ -33,7 +33,7 @@ namespace calypso {
 namespace command {
 namespace po {
 namespace builder {
-namespace security{
+namespace security {
 
 using namespace keyple::calypso::command::po;
 using namespace keyple::core::command;
@@ -43,7 +43,7 @@ using namespace keyple::core::command;
  * constructor to build the Open Secure Session APDU command.
  *
  */
-template<typename T>
+template <typename T>
 class EXPORT AbstractOpenSessionCmdBuild : public AbstractPoCommandBuilder<T> {
 public:
     /**
@@ -54,21 +54,21 @@ public:
      * @throws IllegalArgumentException - if the request is inconsistent
      */
     AbstractOpenSessionCmdBuild(PoRevision revision)
-    : AbstractPoCommandBuilder<T>(CalypsoPoCommands
-          ::getOpenSessionForRev(revision), nullptr)
+    : AbstractPoCommandBuilder<T>(
+          CalypsoPoCommands ::getOpenSessionForRev(revision), nullptr)
     {
     }
 
-    static std::shared_ptr<AbstractOpenSessionCmdBuild<T>> create(
-               PoRevision revision, uint8_t debitKeyIndex,
-               const std::vector<uint8_t>& sessionTerminalChallenge, uint8_t sfi,
-               uint8_t recordNb, const std::string& extraInfo);
+    static std::shared_ptr<AbstractOpenSessionCmdBuild<T>>
+    create(PoRevision revision, uint8_t debitKeyIndex,
+           const std::vector<uint8_t>& sessionTerminalChallenge, uint8_t sfi,
+           uint8_t recordNb, const std::string& extraInfo);
 
 protected:
     std::shared_ptr<AbstractOpenSessionCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<AbstractOpenSessionCmdBuild>(
-                   AbstractPoCommandBuilder<T>::shared_from_this());
+            AbstractPoCommandBuilder<T>::shared_from_this());
     }
 };
 

@@ -29,23 +29,23 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
 
 SamSelectionRequest::SamSelectionRequest(
-  std::shared_ptr<SamSelector> samSelector)
+    std::shared_ptr<SamSelector> samSelector)
 : AbstractSeSelectionRequest(samSelector)
 {
 }
 
-std::shared_ptr<AbstractMatchingSe> SamSelectionRequest::parse(
-    std::shared_ptr<SeResponse> seResponse)
+std::shared_ptr<AbstractMatchingSe>
+SamSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
 {
     return std::dynamic_pointer_cast<AbstractMatchingSe>(
-              std::make_shared<CalypsoSam>(
-                  seResponse, seSelector->getSeProtocol().getTransmissionMode(),
-                  seSelector->getExtraInfo()));
+        std::make_shared<CalypsoSam>(
+            seResponse, seSelector->getSeProtocol().getTransmissionMode(),
+            seSelector->getExtraInfo()));
 }
 
 std::shared_ptr<AbstractApduResponseParser>
-    SamSelectionRequest::getCommandParser(
-        std::shared_ptr<SeResponse> seResponse, int commandIndex)
+SamSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse,
+                                      int commandIndex)
 {
     (void)seResponse;
     (void)commandIndex;

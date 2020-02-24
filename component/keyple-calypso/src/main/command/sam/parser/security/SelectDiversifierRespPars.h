@@ -46,7 +46,8 @@ protected:
      */
     std::shared_ptr<SelectDiversifierRespPars> shared_from_this()
     {
-        return std::static_pointer_cast<SelectDiversifierRespPars>(AbstractSamResponseParser::shared_from_this());
+        return std::static_pointer_cast<SelectDiversifierRespPars>(
+            AbstractSamResponseParser::shared_from_this());
     }
 };
 

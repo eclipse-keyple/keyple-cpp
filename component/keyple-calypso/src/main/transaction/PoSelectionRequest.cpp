@@ -43,8 +43,7 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
 
-PoSelectionRequest::PoSelectionRequest(
-  std::shared_ptr<PoSelector> poSelector)
+PoSelectionRequest::PoSelectionRequest(std::shared_ptr<PoSelector> poSelector)
 : AbstractSeSelectionRequest(poSelector), poClass(PoClass::LEGACY)
 {
     commandIndex = 0;
@@ -52,8 +51,7 @@ PoSelectionRequest::PoSelectionRequest(
     /* No AID selector for a legacy Calypso PO */
     if (seSelector->getAidSelector() == nullptr) {
         poClass = PoClass::LEGACY;
-    }
-    else {
+    } else {
         poClass = PoClass::ISO;
     }
 
@@ -63,15 +61,15 @@ PoSelectionRequest::PoSelectionRequest(
 }
 
 int PoSelectionRequest::prepareReadRecordsCmdInternal(
-  uint8_t sfi, ReadDataStructure readDataStructureEnum,
-  uint8_t firstRecordNumber, int expectedLength, const std::string& extraInfo)
+    uint8_t sfi, ReadDataStructure readDataStructureEnum,
+    uint8_t firstRecordNumber, int expectedLength, const std::string& extraInfo)
 {
     /*
      * the readJustOneRecord flag is set to false only in case of multiple read
      * records, in all other cases it is set to true
      */
     bool readJustOneRecord =
-     !(readDataStructureEnum == ReadDataStructure::MULTIPLE_RECORD_DATA);
+        !(readDataStructureEnum == ReadDataStructure::MULTIPLE_RECORD_DATA);
 
     logger->debug("prepareReadRecordsCmdInternal - ReadRecordsCmdBuild\n");
 
@@ -84,9 +82,9 @@ int PoSelectionRequest::prepareReadRecordsCmdInternal(
 
     addApduRequest(rrcmd->getApduRequest());
 
-    logger->trace("ReadRecords: SFI = %02x, RECNUMBER = %d, JUSTONE = %d, " \
-                  "EXPECTEDLENGTH = %d\n", sfi, firstRecordNumber,
-                  readJustOneRecord, expectedLength);
+    logger->trace("ReadRecords: SFI = %02x, RECNUMBER = %d, JUSTONE = %d, "
+                  "EXPECTEDLENGTH = %d\n",
+                  sfi, firstRecordNumber, readJustOneRecord, expectedLength);
 
     /* keep read record parameters in the dedicated Maps */
     readRecordFirstRecordNumberMap.emplace(commandIndex, firstRecordNumber);
@@ -100,8 +98,8 @@ int PoSelectionRequest::prepareReadRecordsCmdInternal(
 }
 
 int PoSelectionRequest::prepareReadRecordsCmd(
-  uint8_t sfi, ReadDataStructure readDataStructureEnum,
-  uint8_t firstRecordNumber, int expectedLength, const std::string& extraInfo)
+    uint8_t sfi, ReadDataStructure readDataStructureEnum,
+    uint8_t firstRecordNumber, int expectedLength, const std::string& extraInfo)
 {
     if (expectedLength < 1 || expectedLength > 250) {
         throw std::invalid_argument("Bad length.");
@@ -113,14 +111,14 @@ int PoSelectionRequest::prepareReadRecordsCmd(
 }
 
 int PoSelectionRequest::prepareReadRecordsCmd(
-  uint8_t sfi, ReadDataStructure readDataStructureEnum,
-  uint8_t firstRecordNumber, const std::string& extraInfo)
+    uint8_t sfi, ReadDataStructure readDataStructureEnum,
+    uint8_t firstRecordNumber, const std::string& extraInfo)
 {
     logger->debug("prepareReadRecordsCmd\n");
 
     if (seSelector->getSeProtocol().ordinalValue ==
-            SeCommonProtocols::PROTOCOL_ISO7816_3.ordinal()) {
-        throw std::invalid_argument("In contacts mode, the expected length " \
+        SeCommonProtocols::PROTOCOL_ISO7816_3.ordinal()) {
+        throw std::invalid_argument("In contacts mode, the expected length "
                                     "must be specified.");
     }
 
@@ -136,7 +134,7 @@ int PoSelectionRequest::prepareSelectFileCmd(const std::vector<uint8_t>& path,
     (void)extraInfo;
 
     addApduRequest((std::make_shared<SelectFileCmdBuild>(poClass, path))
-        ->getApduRequest());
+                       ->getApduRequest());
 
     logger->trace("Select File: PATH = %s\n",
                   ByteArrayUtil::toHex(path).c_str());
@@ -150,13 +148,13 @@ int PoSelectionRequest::prepareSelectFileCmd(const std::vector<uint8_t>& path,
 
 int PoSelectionRequest::prepareSelectFileCmd(
     SelectFileCmdBuild::SelectControl selectControl,
-    const std::string &extraInfo)
+    const std::string& extraInfo)
 {
     (void)extraInfo;
 
     addApduRequest(
         (std::make_shared<SelectFileCmdBuild>(poClass, selectControl))
-        ->getApduRequest());
+            ->getApduRequest());
 
     logger->trace("Navigate: CONTROL = %d\n", static_cast<int>(selectControl));
 
@@ -187,9 +185,9 @@ int PoSelectionRequest::preparePoCustomReadCmd(const std::string& name,
 int PoSelectionRequest::preparePoCustomModificationCmd(
     const std::string& name, std::shared_ptr<ApduRequest> apduRequest)
 {
-    addApduRequest(
-      (std::make_shared<PoCustomModificationCommandBuilder>(name, apduRequest))
-           ->getApduRequest());
+    addApduRequest((std::make_shared<PoCustomModificationCommandBuilder>(
+                        name, apduRequest))
+                       ->getApduRequest());
 
     logger->trace("CustomModificationCommand: APDUREQUEST = %s\n",
                   apduRequest->toString().c_str());
@@ -203,12 +201,12 @@ PoSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse,
                                      int commandIndex)
 {
     if (commandIndex >= (int)parsingClassList.size()) {
-        throw std::invalid_argument("Incorrect command index while getting " \
+        throw std::invalid_argument("Incorrect command index while getting "
                                     "command parser.");
     }
 
     if (seResponse->getApduResponses().size() != parsingClassList.size()) {
-        throw std::invalid_argument("The number of responses and commands " \
+        throw std::invalid_argument("The number of responses and commands "
                                     "doesn't match.");
     }
 
@@ -216,13 +214,13 @@ PoSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse,
     std::shared_ptr<AbstractApduResponseParser> parser;
 
     if (parsingClass == typeid(ReadRecordsRespPars).name()) {
-       parser = std::make_shared<ReadRecordsRespPars>(
-                    seResponse->getApduResponses()[commandIndex],
-                    readRecordDataStructureMap[commandIndex],
-                    readRecordFirstRecordNumberMap[commandIndex]);
+        parser = std::make_shared<ReadRecordsRespPars>(
+            seResponse->getApduResponses()[commandIndex],
+            readRecordDataStructureMap[commandIndex],
+            readRecordFirstRecordNumberMap[commandIndex]);
     } else if (parsingClass == typeid(SelectFileRespPars).name()) {
         parser = std::make_shared<SelectFileRespPars>(
-                     seResponse->getApduResponses()[commandIndex]);
+            seResponse->getApduResponses()[commandIndex]);
     } else {
         throw std::invalid_argument("No parser available for this command.");
     }
@@ -232,18 +230,17 @@ PoSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse,
 
 //std::shared_ptr<CalypsoPo> PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse) {
 std::shared_ptr<AbstractMatchingSe>
-    PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
+PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
 {
     /*
      * Return an AbstractMatchingSe but *instanciate* a CalypsoPo otherwise some
      * members won't be initialized
      */
     return std::make_shared<CalypsoPo>(
-               seResponse, seSelector->getSeProtocol().getTransmissionMode(),
-               seSelector->getExtraInfo());
+        seResponse, seSelector->getSeProtocol().getTransmissionMode(),
+        seSelector->getExtraInfo());
 }
 
 }
 }
 }
-

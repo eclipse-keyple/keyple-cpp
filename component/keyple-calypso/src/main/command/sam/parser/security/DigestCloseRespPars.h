@@ -46,7 +46,9 @@ public:
     /**
      *
      */
-    virtual ~DigestCloseRespPars() {}
+    virtual ~DigestCloseRespPars()
+    {
+    }
 
     /**
      * Gets the sam signature.
@@ -62,7 +64,7 @@ protected:
     std::shared_ptr<DigestCloseRespPars> shared_from_this()
     {
         return std::static_pointer_cast<DigestCloseRespPars>(
-                   AbstractSamResponseParser::shared_from_this());
+            AbstractSamResponseParser::shared_from_this());
     }
 };
 

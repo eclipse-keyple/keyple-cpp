@@ -43,7 +43,7 @@ using namespace keyple::example::generic::pc;
 static std::string seAid = "A000000291";
 //static std::string seAid = "A00000019102";
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
@@ -71,15 +71,23 @@ int main(int argc, char **argv)
         throw IllegalStateException("Bad SE reader setup");
     }
 
-    std::cout << "=============== UseCase Generic #1: AID based explicit selection ==================" << std::endl;
+    std::cout << "=============== UseCase Generic #1: AID based explicit "
+                 "selection =================="
+              << std::endl;
     std::cout << "= SE Reader  NAME = " << seReader->getName() << std::endl;
 
     /* Check if a SE is present in the reader */
     if (seReader->isSePresent()) {
 
-        std::cout << "==================================================================================" << std::endl;
-        std::cout << "= AID based selection.                                                           =" << std::endl;
-        std::cout << "==================================================================================" << std::endl;
+        std::cout << "========================================================="
+                     "========================="
+                  << std::endl;
+        std::cout << "= AID based selection.                                   "
+                     "                        ="
+                  << std::endl;
+        std::cout << "========================================================="
+                     "========================="
+                  << std::endl;
 
         /*
          * Prepare the SE selection
@@ -103,12 +111,11 @@ int main(int argc, char **argv)
         std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAid);
         std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
             std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
-        std::shared_ptr<SeSelector::AidSelector> aidSelector  =
+        std::shared_ptr<SeSelector::AidSelector> aidSelector =
             std::make_shared<SeSelector::AidSelector>(isoAid, nullptr);
         std::shared_ptr<SeSelector> seSelector =
-            std::make_shared<SeSelector>(
-                SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr, aidSelector,
-                 "AID:" + seAid);
+            std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4,
+                                         nullptr, aidSelector, "AID:" + seAid);
         std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
             std::make_shared<GenericSeSelectionRequest>(
                 seSelector, ChannelState::KEEP_OPEN);
@@ -124,23 +131,28 @@ int main(int argc, char **argv)
          * selection
          */
         std::shared_ptr<SelectionsResult> selectionsResult =
-             seSelection->processExplicitSelection(seReader);
+            seSelection->processExplicitSelection(seReader);
 
         if (selectionsResult->hasActiveSelection()) {
             std::shared_ptr<AbstractMatchingSe> matchedSe =
                 selectionsResult->getActiveSelection()->getMatchingSe();
             std::cout << "The selection of the SE has succeeded." << std::endl;
-            std::cout << "Application FCI = " << matchedSe->getSelectionStatus()->getFci() << std::endl;
+            std::cout << "Application FCI = "
+                      << matchedSe->getSelectionStatus()->getFci() << std::endl;
 
-            std::cout << "==================================================================================" << std::endl;
-            std::cout << "= End of the generic SE processing.                                              =" << std::endl;
-            std::cout << "==================================================================================" << std::endl;
-        }
-        else {
+            std::cout << "====================================================="
+                         "============================="
+                      << std::endl;
+            std::cout << "= End of the generic SE processing.                  "
+                         "                            ="
+                      << std::endl;
+            std::cout << "====================================================="
+                         "============================="
+                      << std::endl;
+        } else {
             std::cout << "The selection of the SE has failed." << std::endl;
         }
-    }
-    else {
+    } else {
         std::cout << "No SE were detected." << std::endl;
     }
 

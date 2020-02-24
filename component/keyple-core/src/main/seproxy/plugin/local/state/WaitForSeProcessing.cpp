@@ -27,9 +27,9 @@ WaitForSeProcessing::WaitForSeProcessing(AbstractObservableLocalReader* reader)
 }
 
 WaitForSeProcessing::WaitForSeProcessing(
-  AbstractObservableLocalReader* reader,
-  std::shared_ptr<MonitoringJob> monitoringJob,
-  std::shared_ptr<MonitoringPool> executorService)
+    AbstractObservableLocalReader* reader,
+    std::shared_ptr<MonitoringJob> monitoringJob,
+    std::shared_ptr<MonitoringPool> executorService)
 : AbstractObservableState(MonitoringState::WAIT_FOR_SE_PROCESSING, reader,
                           monitoringJob, executorService)
 {

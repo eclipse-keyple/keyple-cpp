@@ -41,7 +41,8 @@ using namespace keyple::calypso::command::po::parser;
  */
 class WriteRecordCmdBuild
 : public AbstractPoCommandBuilder<WriteRecordRespPars>,
-  public PoSendableInSession, public PoModificationCommand {
+  public PoSendableInSession,
+  public PoModificationCommand {
 public:
     /**
      * Instantiates a new WriteRecordCmdBuild.
@@ -62,8 +63,8 @@ public:
     /**
      *
      */
-    std::shared_ptr<WriteRecordRespPars> createResponseParser(
-        std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<WriteRecordRespPars>
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -72,8 +73,7 @@ protected:
     std::shared_ptr<WriteRecordCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<WriteRecordCmdBuild>(
-                   AbstractPoCommandBuilder<WriteRecordRespPars>
-                       ::shared_from_this());
+            AbstractPoCommandBuilder<WriteRecordRespPars>::shared_from_this());
     }
 
 private:
@@ -81,8 +81,6 @@ private:
      * The command
      */
     CalypsoPoCommands& command = CalypsoPoCommands::WRITE_RECORD;
-
-
 };
 
 }

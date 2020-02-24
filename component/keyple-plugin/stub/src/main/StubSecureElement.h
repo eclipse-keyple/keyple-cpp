@@ -41,7 +41,9 @@ public:
     /**
      *
      */
-    virtual ~StubSecureElement() {}
+    virtual ~StubSecureElement()
+    {
+    }
 
     /**
      * Getter for ATR
@@ -69,7 +71,6 @@ public:
      *
      */
     virtual void closePhysicalChannel();
-
 
     /**
      * @return SE protocol supported by the SE

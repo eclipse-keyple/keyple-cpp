@@ -63,8 +63,8 @@ public:
     /**
      *
      */
-    std::shared_ptr<GetDataFciRespPars> createResponseParser(
-        std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<GetDataFciRespPars>
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -72,9 +72,8 @@ protected:
      */
     std::shared_ptr<GetDataFciCmdBuild> shared_from_this()
     {
-         return std::static_pointer_cast<GetDataFciCmdBuild>(
-                    AbstractPoCommandBuilder<GetDataFciRespPars>::
-                       shared_from_this());
+        return std::static_pointer_cast<GetDataFciCmdBuild>(
+            AbstractPoCommandBuilder<GetDataFciRespPars>::shared_from_this());
     }
 };
 

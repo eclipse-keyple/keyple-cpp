@@ -120,11 +120,11 @@ public:
      */
     static int parseInt(std::string str, int radix, bool decode)
     {
-        if (! decode && str.empty())
+        if (!decode && str.empty())
             throw new NumberFormatException();
 
-        int index = 0;
-        int len = str.length();
+        int index  = 0;
+        int len    = str.length();
         bool isNeg = false;
 
         if (len == 0)
@@ -135,7 +135,7 @@ public:
             if (len == 1)
                 throw new NumberFormatException("pure '-'");
             isNeg = true;
-            ch = str.at(++index);
+            ch    = str.at(++index);
         }
 
         if (decode) {
@@ -165,14 +165,14 @@ public:
         int val = 0;
         while (index < len) {
             if (val < 0 || val > max)
-                throw NumberFormatException(
-                        StringHelper::formatSimple("number overflow (pos= %d) : %s", index, str));
+                throw NumberFormatException(StringHelper::formatSimple(
+                    "number overflow (pos= %d) : %s", index, str));
 
-            ch = Character::digit(str.at(index++), radix);
+            ch  = Character::digit(str.at(index++), radix);
             val = val * radix + ch;
-            if (ch < 0 || (val < 0 && (! isNeg || val != MIN_VALUE)))
-                throw NumberFormatException(
-                        StringHelper::formatSimple("invalid character at position %d in %s", index, str));
+            if (ch < 0 || (val < 0 && (!isNeg || val != MIN_VALUE)))
+                throw NumberFormatException(StringHelper::formatSimple(
+                    "invalid character at position %d in %s", index, str));
         }
 
         return isNeg ? -val : val;
@@ -181,4 +181,3 @@ public:
 
 }
 }
-

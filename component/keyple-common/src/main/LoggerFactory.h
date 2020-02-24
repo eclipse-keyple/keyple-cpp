@@ -36,7 +36,7 @@ public:
     /**
      *
      */
-    static std::shared_ptr<Logger> getLogger(const std::type_info &type);
+    static std::shared_ptr<Logger> getLogger(const std::type_info& type);
 };
 
 }

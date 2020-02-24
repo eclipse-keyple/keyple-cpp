@@ -55,13 +55,13 @@ std::shared_ptr<MatchingSelection> SelectionsResult::getActiveSelection()
 }
 
 std::vector<std::shared_ptr<MatchingSelection>>
-    SelectionsResult::getMatchingSelections()
+SelectionsResult::getMatchingSelections()
 {
     return matchingSelectionList;
 }
 
-std::shared_ptr<MatchingSelection> SelectionsResult::getMatchingSelection(
-    int selectionIndex)
+std::shared_ptr<MatchingSelection>
+SelectionsResult::getMatchingSelection(int selectionIndex)
 {
     for (auto matchingSelection : matchingSelectionList) {
         if (matchingSelection->getSelectionIndex() == selectionIndex) {

@@ -16,6 +16,9 @@
 
 #include <future>
 
+/* Common */
+#include "Export.h"
+
 namespace keyple {
 namespace core {
 namespace seproxy {
@@ -39,22 +42,31 @@ class AbstractObservableState;
  * package but it is possible to define new ones within a plugin reader if
  * necessary, respecting this interface.
  */
-class MonitoringJob {
+class EXPORT MonitoringJob {
 public:
     /**
      * Define a Runnable task of the monitoring job
      *
      * @param state reference to the state the monitoring job in running against
      * @return routine that will be executed in background of the state
+     *
+     * /!\ Not used anymore
      */
-    virtual void (*getMonitoringJob())(AbstractObservableState* state,
-                                       std::atomic<bool>& cancellationFlag);
+    //virtual void (*getMonitoringJob())(
+    //    AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
+    //    = 0;
 
     /**
      *
      */
-    virtual std::future<void> startMonitoring(AbstractObservableState* state,
-                std::atomic<bool>& cancellationFlag) = 0;
+    virtual std::future<void>
+    startMonitoring(AbstractObservableState* state,
+                    std::atomic<bool>& cancellationFlag) = 0;
+
+    /**
+     * Should stop/interrupt the monitoring job
+     */
+    virtual void stop() = 0;
 };
 
 }

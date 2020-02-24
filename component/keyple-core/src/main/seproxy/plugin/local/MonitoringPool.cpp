@@ -25,13 +25,12 @@ namespace local {
 
 MonitoringPool::MonitoringPool()
 {
-
 }
 
-std::future<void>* MonitoringPool::submit(
-    std::shared_ptr<MonitoringJob> monitoringJob,
-    AbstractObservableState* state,
-    std::atomic<bool>& cancellationFlag)
+std::future<void>*
+MonitoringPool::submit(std::shared_ptr<MonitoringJob> monitoringJob,
+                       AbstractObservableState* state,
+                       std::atomic<bool>& cancellationFlag)
 {
     pool.push_back(monitoringJob->startMonitoring(state, cancellationFlag));
 

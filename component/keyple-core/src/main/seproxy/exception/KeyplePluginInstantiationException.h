@@ -34,7 +34,6 @@ public:
                                        std::exception& cause)
     : KeypleBaseException(msg, cause)
     {
-
     }
 };
 

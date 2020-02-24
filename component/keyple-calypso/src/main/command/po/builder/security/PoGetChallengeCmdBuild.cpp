@@ -32,8 +32,8 @@ PoGetChallengeCmdBuild::PoGetChallengeCmdBuild(PoClass poClass)
 : AbstractPoCommandBuilder<PoGetChallengeRespPars>(
       CalypsoPoCommands::GET_CHALLENGE, nullptr)
 {
-    this->request = setApduRequest(poClass.getValue(), command, 0x01, 0x10,
-                                   0x08);
+    this->request =
+        setApduRequest(poClass.getValue(), command, 0x01, 0x10, 0x08);
 }
 
 std::shared_ptr<PoGetChallengeRespPars>

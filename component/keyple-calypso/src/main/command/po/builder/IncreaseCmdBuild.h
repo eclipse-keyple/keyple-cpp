@@ -41,8 +41,9 @@ using namespace keyple::core::seproxy::message;
  *
  */
 class IncreaseCmdBuild final
-: public AbstractPoCommandBuilder<IncreaseRespPars>, public PoSendableInSession, public PoModificationCommand {
-
+: public AbstractPoCommandBuilder<IncreaseRespPars>,
+  public PoSendableInSession,
+  public PoModificationCommand {
 
 private:
     /**
@@ -64,12 +65,14 @@ private:
      * @throws IllegalArgumentException - if the command is inconsistent
      */
 public:
-    IncreaseCmdBuild(PoClass poClass, char sfi, char counterNumber, int incValue, const std::string &extraInfo);
+    IncreaseCmdBuild(PoClass poClass, char sfi, char counterNumber,
+                     int incValue, const std::string& extraInfo);
 
     /**
      *
      */
-    std::shared_ptr<IncreaseRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<IncreaseRespPars>
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -77,7 +80,8 @@ protected:
      */
     std::shared_ptr<IncreaseCmdBuild> shared_from_this()
     {
-        return std::static_pointer_cast<IncreaseCmdBuild>(AbstractPoCommandBuilder<IncreaseRespPars>::shared_from_this());
+        return std::static_pointer_cast<IncreaseCmdBuild>(
+            AbstractPoCommandBuilder<IncreaseRespPars>::shared_from_this());
     }
 };
 

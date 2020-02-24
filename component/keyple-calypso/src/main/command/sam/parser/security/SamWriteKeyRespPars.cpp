@@ -29,8 +29,7 @@ namespace security {
 using namespace keyple::calypso::command::sam;
 using namespace keyple::core::seproxy::message;
 
-SamWriteKeyRespPars::SamWriteKeyRespPars(
-  std::shared_ptr<ApduResponse> response)
+SamWriteKeyRespPars::SamWriteKeyRespPars(std::shared_ptr<ApduResponse> response)
 : AbstractApduResponseParser(response)
 {
 }

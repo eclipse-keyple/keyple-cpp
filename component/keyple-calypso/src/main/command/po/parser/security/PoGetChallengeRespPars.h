@@ -55,7 +55,7 @@ protected:
     std::shared_ptr<PoGetChallengeRespPars> shared_from_this()
     {
         return std::static_pointer_cast<PoGetChallengeRespPars>(
-                   AbstractApduResponseParser::shared_from_this());
+            AbstractApduResponseParser::shared_from_this());
     }
 };
 

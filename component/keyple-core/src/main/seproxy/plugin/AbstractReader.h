@@ -59,9 +59,10 @@ using ReaderObserver = ObservableReader::ReaderObserver;
  * <li>Plugin naming management</li>
  * </ul>
  */
-class EXPORT AbstractReader
-: public Observable<ReaderEvent>, public ProxyReader, public virtual Nameable,
-  public virtual Configurable {
+class EXPORT AbstractReader : public Observable<ReaderEvent>,
+                              public ProxyReader,
+                              public virtual Nameable,
+                              public virtual Configurable {
 public:
     /**
      * Compare the name of the current SeReader to the name of the SeReader
@@ -97,10 +98,10 @@ public:
      * @return the response set
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::list<std::shared_ptr<SeResponse>> transmitSet(
-        std::set<std::shared_ptr<SeRequest>>& requestSet,
-        MultiSeRequestProcessing multiSeRequestProcessing,
-        ChannelControl channelControl) override;
+    std::list<std::shared_ptr<SeResponse>>
+    transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
+                MultiSeRequestProcessing multiSeRequestProcessing,
+                ChannelControl channelControl) override;
 
     /**
      * Simplified version of transmitSet for standard use.
@@ -109,9 +110,8 @@ public:
      * @return the response set
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::list<std::shared_ptr<SeResponse>> transmitSet(
-        std::set<std::shared_ptr<SeRequest>>& requestSet)
-            override;
+    std::list<std::shared_ptr<SeResponse>>
+    transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet) override;
 
     /**
      * Execute the transmission of a {@link SeRequest} and returns a
@@ -126,9 +126,9 @@ public:
      * @return the received response
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::shared_ptr<SeResponse> transmit(
-        std::shared_ptr<SeRequest> seRequest, ChannelControl channelControl)
-        override;
+    std::shared_ptr<SeResponse>
+    transmit(std::shared_ptr<SeRequest> seRequest,
+             ChannelControl channelControl) override;
 
     /**
      * Simplified version of transmit for standard use.
@@ -137,8 +137,8 @@ public:
      * @return the received response
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::shared_ptr<SeResponse> transmit(std::shared_ptr<SeRequest> seRequest)
-        override;
+    std::shared_ptr<SeResponse>
+    transmit(std::shared_ptr<SeRequest> seRequest) override;
 
     /**
      * Add a reader observer.
@@ -208,8 +208,8 @@ public:
      * @param parameters a Map &lt;String, String&gt; parameter set
      * @throws KeypleBaseException if one of the parameters could not be set up
      */
-    void setParameters(const std::map<std::string, std::string>& parameters)
-        override;
+    void setParameters(
+        const std::map<std::string, std::string>& parameters) override;
 
 protected:
     /**
@@ -218,7 +218,7 @@ protected:
     std::shared_ptr<AbstractReader> shared_from_this()
     {
         return std::static_pointer_cast<AbstractReader>(
-                   Observable<ReaderEvent>::shared_from_this());
+            Observable<ReaderEvent>::shared_from_this());
     }
 
     /**
@@ -267,10 +267,10 @@ protected:
      *         SeRequest})
      * @throws KeypleReaderException if reader error occurs
      */
-    virtual std::list<std::shared_ptr<SeResponse>> processSeRequestSet(
-                std::set<std::shared_ptr<SeRequest>>& requestSet,
-                MultiSeRequestProcessing multiSeRequestProcessing,
-                ChannelControl channelControl) = 0;
+    virtual std::list<std::shared_ptr<SeResponse>>
+    processSeRequestSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
+                        MultiSeRequestProcessing multiSeRequestProcessing,
+                        ChannelControl channelControl) = 0;
 
     /**
      * Abstract method implemented by the AbstractLocalReader and VirtualReader
@@ -284,9 +284,9 @@ protected:
      * @return the {@link SeResponse} (responses to the {@link SeRequest})
      * @throws KeypleReaderException if reader error occurs
      */
-    virtual std::shared_ptr<SeResponse>processSeRequest(
-                std::shared_ptr<SeRequest> seRequest,
-                ChannelControl channelControl) = 0;
+    virtual std::shared_ptr<SeResponse>
+    processSeRequest(std::shared_ptr<SeRequest> seRequest,
+                     ChannelControl channelControl) = 0;
 
 private:
     /**
@@ -308,7 +308,6 @@ private:
      * switch directly to the removal sequence for the observed readers.
      */
     bool forceClosing = true;
-
 };
 
 }

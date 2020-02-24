@@ -56,9 +56,7 @@ public:
      *
      */
     std::shared_ptr<OpenSession32RespPars>
-        createResponseParser(std::shared_ptr<ApduResponse> apduResponse)
-        override;
-
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -67,8 +65,8 @@ protected:
     std::shared_ptr<OpenSession32CmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<OpenSession32CmdBuild>(
-                   AbstractOpenSessionCmdBuild<OpenSession32RespPars>
-                       ::shared_from_this());
+            AbstractOpenSessionCmdBuild<
+                OpenSession32RespPars>::shared_from_this());
     }
 };
 

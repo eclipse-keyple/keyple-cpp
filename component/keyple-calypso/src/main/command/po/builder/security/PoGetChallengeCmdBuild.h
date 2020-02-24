@@ -35,7 +35,8 @@ using namespace keyple::core::seproxy::message;
  * The Class PoGetChallengeCmdBuild. This class provides the dedicated constructor to build the PO
  * Get Challenge.
  */
-class PoGetChallengeCmdBuild final : public AbstractPoCommandBuilder<PoGetChallengeRespPars> {
+class PoGetChallengeCmdBuild final
+: public AbstractPoCommandBuilder<PoGetChallengeRespPars> {
 private:
     /**
      *
@@ -53,7 +54,8 @@ public:
     /**
      *
      */
-    std::shared_ptr<PoGetChallengeRespPars> createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<PoGetChallengeRespPars>
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -61,7 +63,9 @@ protected:
      */
     std::shared_ptr<PoGetChallengeCmdBuild> shared_from_this()
     {
-        return std::static_pointer_cast<PoGetChallengeCmdBuild>(AbstractPoCommandBuilder<PoGetChallengeRespPars>::shared_from_this());
+        return std::static_pointer_cast<PoGetChallengeCmdBuild>(
+            AbstractPoCommandBuilder<
+                PoGetChallengeRespPars>::shared_from_this());
     }
 };
 

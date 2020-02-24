@@ -23,9 +23,9 @@ namespace transaction {
 
 using namespace keyple::common;
 
-SamIdentifier::SamIdentifier(
-  const SamRevision& samRevision, const std::string& serialNumber,
-  const std::string& groupReference)
+SamIdentifier::SamIdentifier(const SamRevision& samRevision,
+                             const std::string& serialNumber,
+                             const std::string& groupReference)
 : samRevision(samRevision), serialNumber(serialNumber),
   groupReference(groupReference)
 {

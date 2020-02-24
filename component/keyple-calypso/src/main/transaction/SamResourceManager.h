@@ -24,7 +24,7 @@
 /* Core */
 #include "ObservablePlugin.h"
 #include "ObservableReader.h"
-#include "PluginEvent.h"
+#include "PluginEvent_Import.h"
 #include "ReaderEvent_Import.h"
 #include "ReaderPlugin.h"
 
@@ -50,10 +50,7 @@ public:
     /**
      *
      */
-    enum AllocationMode {
-        BLOCKING,
-        NON_BLOCKING
-    };
+    enum class AllocationMode { BLOCKING, NON_BLOCKING };
 
     /**
      * Instantiate a new SamResourceManager.
@@ -91,8 +88,9 @@ public:
      * @return a SAM resource
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::unique_ptr<SamResource> allocateSamResource(
-       const AllocationMode allocationMode, const SamIdentifier& samIdentifier);
+    std::unique_ptr<SamResource>
+    allocateSamResource(const AllocationMode allocationMode,
+                        const SamIdentifier& samIdentifier);
 
     /**
      * Free a previously allocated SAM resource.
@@ -105,7 +103,7 @@ public:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(SamResourceManager));
+        LoggerFactory::getLogger(typeid(SamResourceManager));
 
 private:
     /**
@@ -146,8 +144,8 @@ private:
      * @throws KeypleReaderException if an reader error occurs while doing the
      *         selection
      */
-    std::unique_ptr<SamResource> createSamResource(
-        std::shared_ptr<SeReader> samReader);
+    std::unique_ptr<SamResource>
+    createSamResource(std::shared_ptr<SeReader> samReader);
 
     /**
      * Remove a {@link SamResource}from the current SamResource list
@@ -173,7 +171,7 @@ private:
         /**
          *
          */
-        ReaderObserver(SamResourceManager *parent);
+        ReaderObserver(SamResourceManager* parent);
 
     private:
         /**
@@ -184,7 +182,7 @@ private:
         /**
          *
          */
-        SamResourceManager *parent;
+        SamResourceManager* parent;
     };
 
     /**
@@ -206,7 +204,7 @@ private:
         /**
          *
          */
-        PluginObserver(SamResourceManager *parent,
+        PluginObserver(SamResourceManager* parent,
                        std::shared_ptr<ReaderObserver> readerObserver,
                        const std::string samReaderFilter);
 
@@ -224,7 +222,7 @@ private:
         /**
          *
          */
-        Pattern *p;
+        Pattern* p;
 
         /**
          *
@@ -234,7 +232,7 @@ private:
         /**
          *
          */
-        SamResourceManager *parent;
+        SamResourceManager* parent;
     };
 };
 

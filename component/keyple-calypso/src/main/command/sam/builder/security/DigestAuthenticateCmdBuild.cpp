@@ -24,7 +24,7 @@ namespace security {
 using namespace keyple::calypso::command::sam;
 
 DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
-  SamRevision revision, std::vector<uint8_t>& signature)
+    SamRevision revision, std::vector<uint8_t>& signature)
 : AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_AUTHENTICATE, nullptr)
 {
     this->defaultRevision = revision;
@@ -33,10 +33,9 @@ DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
         throw std::invalid_argument("Signature can't be null");
     }
 
-    if (signature.size() != 4 &&
-        signature.size() != 8 &&
+    if (signature.size() != 4 && signature.size() != 8 &&
         signature.size() != 16) {
-        throw std::invalid_argument("Signature is not the right length : " \
+        throw std::invalid_argument("Signature is not the right length : "
                                     "length is " +
                                     std::to_string(signature.size()));
     }

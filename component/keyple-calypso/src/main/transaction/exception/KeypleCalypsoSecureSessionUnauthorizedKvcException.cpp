@@ -25,15 +25,16 @@ namespace exception {
 
 using namespace keyple::core::seproxy::exception;
 
-KeypleCalypsoSecureSessionUnauthorizedKvcException
-::KeypleCalypsoSecureSessionUnauthorizedKvcException(const std::string &message)
+KeypleCalypsoSecureSessionUnauthorizedKvcException ::
+    KeypleCalypsoSecureSessionUnauthorizedKvcException(
+        const std::string& message)
 : KeypleReaderException(message)
 {
 }
 
-KeypleCalypsoSecureSessionUnauthorizedKvcException
-::KeypleCalypsoSecureSessionUnauthorizedKvcException(
-  const KeypleCalypsoSecureSessionUnauthorizedKvcException& o)
+KeypleCalypsoSecureSessionUnauthorizedKvcException ::
+    KeypleCalypsoSecureSessionUnauthorizedKvcException(
+        const KeypleCalypsoSecureSessionUnauthorizedKvcException& o)
 : KeypleReaderException(o.getMessage())
 {
 }
@@ -42,4 +43,3 @@ KeypleCalypsoSecureSessionUnauthorizedKvcException
 }
 }
 }
-

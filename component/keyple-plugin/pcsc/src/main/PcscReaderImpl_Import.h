@@ -42,9 +42,10 @@ using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::protocol;
 
-class IMPORT PcscReaderImpl
-: public AbstractObservableLocalReader, public PcscReader,
-  public SmartInsertionReader, public SmartRemovalReader {
+class IMPORT PcscReaderImpl : public AbstractObservableLocalReader,
+                              public PcscReader,
+                              public SmartInsertionReader,
+                              public SmartRemovalReader {
 public:
     /**
      * This constructor should only be called by PcscPlugin PCSC reader
@@ -54,7 +55,7 @@ public:
      * @param pluginName the name of the plugin
      * @param terminal the PC/SC terminal
      */
-    PcscReaderImpl(const std::string &pluginName, PcscTerminal& terminal);
+    PcscReaderImpl(const std::string& pluginName, PcscTerminal& terminal);
 
     /**
      *
@@ -64,7 +65,9 @@ public:
     /**
      *
      */
-    virtual ~PcscReaderImpl() { }
+    virtual ~PcscReaderImpl()
+    {
+    }
 
     /**
      * Set a parameter.
@@ -103,16 +106,16 @@ public:
      *
      *
      */
-    void setParameter(const std::string& name, const std::string& value)
-        override;
+    void setParameter(const std::string& name,
+                      const std::string& value) override;
 
     /**
      *
      */
-    const std::map<const std::string, const std::string> getParameters()
-        override;
+    const std::map<const std::string, const std::string>
+    getParameters() override;
 
-     /**
+    /**
      * The transmission mode can set with
      * setParameter(SETTING_KEY_TRANSMISSION_MODE, )
      * <p>
@@ -136,6 +139,13 @@ public:
      *
      */
     std::shared_ptr<ObservableReaderStateService> initStateService() override;
+
+    /**
+     * Remove all observers at once
+     *
+     * /!\ Required to MSVC to authorize PcscReaderImpl instance.
+     */
+    void clearObservers() override;
 
 protected:
     /**
@@ -227,7 +237,7 @@ protected:
     std::shared_ptr<PcscReaderImpl> shared_from_this()
     {
         return std::static_pointer_cast<PcscReaderImpl>(
-                   AbstractObservableLocalReader::shared_from_this());
+            AbstractObservableLocalReader::shared_from_this());
     }
 
 private:
@@ -295,12 +305,12 @@ private:
     /**
      *
      */
-    bool cardExclusiveMode            = false;
+    bool cardExclusiveMode = false;
 
     /**
      *
      */
-    bool cardReset                    = false;
+    bool cardReset = false;
 
     /**
      *
@@ -410,10 +420,10 @@ private:
      * ObservableReader::setDefaultSelectionRequest() is considered virtual.
      * Override needed in this class.
      */
-    void setDefaultSelectionRequest(
-                std::shared_ptr<AbstractDefaultSelectionsRequest>
-                    defaultSelectionsRequest,
-                NotificationMode notificationMode) override;
+    void
+    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
+                                   defaultSelectionsRequest,
+                               NotificationMode notificationMode) override;
 };
 
 }

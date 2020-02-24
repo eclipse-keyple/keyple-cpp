@@ -43,8 +43,8 @@ EventType::StaticConstructor::StaticConstructor()
 EventType::StaticConstructor EventType::staticConstructor;
 int EventType::nextOrdinal = 0;
 
-EventType::EventType(const std::string &nameValue, InnerEnum innerEnum,
-                     const std::string &name)
+EventType::EventType(const std::string& nameValue, InnerEnum innerEnum,
+                     const std::string& name)
 : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++)
 {
     this->name = name;
@@ -61,12 +61,12 @@ std::string EventType::getName()
     return this->name;
 }
 
-bool EventType::operator == (const EventType &other)
+bool EventType::operator==(const EventType& other)
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool EventType::operator != (const EventType &other)
+bool EventType::operator!=(const EventType& other)
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -81,7 +81,7 @@ int EventType::ordinal()
     return ordinalValue;
 }
 
-EventType EventType::valueOf(const std::string &name)
+EventType EventType::valueOf(const std::string& name)
 {
     for (auto enumInstance : EventType::valueList) {
         if (enumInstance.nameValue == name) {
@@ -92,14 +92,14 @@ EventType EventType::valueOf(const std::string &name)
     return EventType::READER_DISCONNECTED;
 }
 
-PluginEvent::PluginEvent(const std::string &pluginName,
-                         const std::string &readerName, EventType eventType)
+PluginEvent::PluginEvent(const std::string& pluginName,
+                         const std::string& readerName, EventType eventType)
 : readerName(readerName), eventType(eventType), pluginName(pluginName)
 {
     this->readerNames.insert(readerName);
 }
 
-PluginEvent::PluginEvent(const std::string &pluginName,
+PluginEvent::PluginEvent(const std::string& pluginName,
                          std::shared_ptr<std::set<std::string>> readerNames,
                          EventType eventType)
 : eventType(eventType), pluginName(pluginName)

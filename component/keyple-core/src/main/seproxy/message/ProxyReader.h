@@ -24,14 +24,42 @@
 #include "KeypleReaderException.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeRequestSet; } } } }
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeResponseSet; } } } }
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeRequest; } } } }
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeResponse; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SeRequestSet;
+}
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SeResponseSet;
+}
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SeRequest;
+}
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SeResponse;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -61,7 +89,9 @@ public:
     /**
      *
      */
-    virtual ~ProxyReader() {}
+    virtual ~ProxyReader()
+    {
+    }
 
     /**
      * Transmits a Set of {@link SeRequest} (list of {@link SeRequest}) to a SE
@@ -96,8 +126,8 @@ public:
      * @throws KeypleReaderException An error occurs during transmit (channel,
      *         IO)
      */
-    virtual std::list<std::shared_ptr<SeResponse>> transmitSet(
-                std::set<std::shared_ptr<SeRequest>>& seApplicationRequest,
+    virtual std::list<std::shared_ptr<SeResponse>>
+    transmitSet(std::set<std::shared_ptr<SeRequest>>& seApplicationRequest,
                 MultiSeRequestProcessing multiSeRequestProcessing,
                 ChannelControl channelControl) = 0;
 
@@ -113,8 +143,8 @@ public:
      * @throws KeypleReaderException An error occurs during transmit (channel,
      *         IO)
      */
-    virtual std::list<std::shared_ptr<SeResponse>> transmitSet(
-                std::set<std::shared_ptr<SeRequest>>& seApplicationRequest) = 0;
+    virtual std::list<std::shared_ptr<SeResponse>>
+    transmitSet(std::set<std::shared_ptr<SeRequest>>& seApplicationRequest) = 0;
 
     /**
      * Transmits a single {@link SeRequest} (list of {@link ApduRequest}) and
@@ -141,9 +171,9 @@ public:
      * @throws KeypleReaderException in case of a reader exception
      * @throws IllegalArgumentException if a bad argument is provided
      */
-    virtual std::shared_ptr<SeResponse> transmit(
-                std::shared_ptr<SeRequest> seApplicationRequest,
-                ChannelControl channelControl) = 0;
+    virtual std::shared_ptr<SeResponse>
+    transmit(std::shared_ptr<SeRequest> seApplicationRequest,
+             ChannelControl channelControl) = 0;
 
     /**
      * Transmits a single {@link SeRequest} (list of {@link ApduRequest}) and
@@ -162,8 +192,8 @@ public:
      * @throws KeypleReaderException in case of a reader exception
      * @throws IllegalArgumentException if a bad argument is provided
      */
-    virtual std::shared_ptr<SeResponse> transmit(
-                std::shared_ptr<SeRequest> seApplicationRequest) = 0;
+    virtual std::shared_ptr<SeResponse>
+    transmit(std::shared_ptr<SeRequest> seApplicationRequest) = 0;
 };
 
 }

@@ -26,12 +26,13 @@ using namespace keyple::plugin::pcsc;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
 
-    std::shared_ptr<ObservableReaderNotificationEngine> demoEngine = std::make_shared<ObservableReaderNotificationEngine>();
+    std::shared_ptr<ObservableReaderNotificationEngine> demoEngine =
+        std::make_shared<ObservableReaderNotificationEngine>();
 
     /*
      * Alex: diamond issue, casting PcscPlugin into ReaderPlugin can take two
@@ -47,7 +48,8 @@ int main(int argc, char **argv)
      */
     PcscPlugin pcscplugin = PcscPlugin::getInstance();
     pcscplugin.initReaders();
-    std::shared_ptr<PcscPlugin> shared_plugin = std::shared_ptr<PcscPlugin>(&pcscplugin);
+    std::shared_ptr<PcscPlugin> shared_plugin =
+        std::shared_ptr<PcscPlugin>(&pcscplugin);
 
     /* Instantiate SeProxyService and add PC/SC plugin */
     SeProxyService& seProxyService = SeProxyService::getInstance();
@@ -56,12 +58,13 @@ int main(int argc, char **argv)
     /* Set observers */
     demoEngine->setPluginObserver();
 
-                            std::cout << "Wait for reader or SE insertion/removal" << std::endl;
+    std::cout << "Wait for reader or SE insertion/removal" << std::endl;
 
     /* Wait indefinitely. CTRL-C to exit. */
-//JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
-//    synchronized(waitBeforeEnd) {
-//        waitBeforeEnd->wait();
-//    }
-    while (1);
+    //JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
+    //    synchronized(waitBeforeEnd) {
+    //        waitBeforeEnd->wait();
+    //    }
+    while (1)
+        ;
 }

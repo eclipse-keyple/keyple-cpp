@@ -36,12 +36,13 @@ void SeProxyService::registerPlugin(AbstractPluginFactory* pluginFactory)
 
     if (!isRegistered(pluginFactory->getPluginName())) {
         logger->info("Registering a new Plugin to the platform : %s\n",
-                pluginFactory->getPluginName());
+                     pluginFactory->getPluginName());
         ReaderPlugin& newPlugin = pluginFactory->getPluginInstance();
         this->plugins.insert(&newPlugin);
     } else {
-        logger->warn("Plugin has already been registered to the platform " \
-                    ": %s\n", pluginFactory->getPluginName());
+        logger->warn("Plugin has already been registered to the platform "
+                     ": %s\n",
+                     pluginFactory->getPluginName());
     }
 }
 
@@ -54,11 +55,11 @@ bool SeProxyService::unregisterPlugin(const std::string& pluginName)
     try {
         readerPlugin = this->getPlugin(pluginName);
         logger->info("Unregistering a plugin from the platform : %s\n",
-                        readerPlugin->getName());
+                     readerPlugin->getName());
         return plugins.erase(readerPlugin);
     } catch (KeyplePluginNotFoundException& e) {
-        logger->info("Plugin is not registered to the platform : %s\n",
-                        pluginName);
+        logger->info("Plugin is not registered to the platform : %s. %s\n",
+                     pluginName, e.getMessage());
         return false;
     }
 }
@@ -80,12 +81,10 @@ std::set<ReaderPlugin*>& SeProxyService::getPlugins()
     return plugins;
 }
 
-ReaderPlugin* SeProxyService::getPlugin(const std::string &name)
+ReaderPlugin* SeProxyService::getPlugin(const std::string& name)
 {
-    for (auto plugin : plugins)
-    {
-        if (plugin->getName() == name)
-        {
+    for (auto plugin : plugins) {
+        if (plugin->getName() == name) {
             return plugin;
         }
     }

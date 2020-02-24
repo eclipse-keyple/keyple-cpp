@@ -28,14 +28,40 @@
 #include "SeSelector_Import.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class ApduRequest; } } } }
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeRequest; } } } }
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeResponse; } } } }
-namespace keyple { namespace core { namespace selection {
-    class AbstractMatchingSe; } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class ApduRequest;
+}
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SeRequest;
+}
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SeResponse;
+}
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace selection {
+class AbstractMatchingSe;
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -91,8 +117,8 @@ public:
      * @param commandIndex the command index
      * @return a parser of the type matching the command
      */
-    virtual std::shared_ptr<AbstractApduResponseParser> getCommandParser(
-        std::shared_ptr<SeResponse> seResponse, int commandIndex);
+    virtual std::shared_ptr<AbstractApduResponseParser>
+    getCommandParser(std::shared_ptr<SeResponse> seResponse, int commandIndex);
 
     /**
      * Virtual parse method
@@ -101,7 +127,7 @@ public:
      * @return a {@link AbstractMatchingSe}
      */
     virtual std::shared_ptr<AbstractMatchingSe>
-        parse(std::shared_ptr<SeResponse> seResponse) = 0;
+    parse(std::shared_ptr<SeResponse> seResponse) = 0;
 
 protected:
     /**
@@ -115,7 +141,6 @@ protected:
      */
     void addApduRequest(std::shared_ptr<ApduRequest> apduRequest);
 
-
     /**
      * Optional apdu requests list to be executed following the selection
      * process
@@ -123,7 +148,6 @@ protected:
 private:
     std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList =
         std::vector<std::shared_ptr<ApduRequest>>();
-
 };
 
 }

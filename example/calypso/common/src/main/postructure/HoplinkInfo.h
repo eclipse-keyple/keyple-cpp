@@ -57,7 +57,7 @@ public:
     /**
      *
      */
-    static const char SFI_T2Usage = static_cast<char>(0x1A);
+    static const char SFI_T2Usage       = static_cast<char>(0x1A);
     static const char SFI_T2Environment = static_cast<char>(0x14);
 
     /**

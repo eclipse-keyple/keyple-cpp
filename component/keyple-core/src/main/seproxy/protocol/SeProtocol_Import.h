@@ -51,8 +51,9 @@ public:
     /**
      *
      */
-    virtual ~SeProtocol() {}
-
+    virtual ~SeProtocol()
+    {
+    }
 
     /**
      * Protocol name
@@ -77,7 +78,7 @@ public:
     /**
      *
      */
-    virtual bool operator==(const SeProtocol &other) const
+    virtual bool operator==(const SeProtocol& other) const
     {
         return this->ordinalValue == other.ordinalValue;
     }
@@ -85,7 +86,7 @@ public:
     /**
      *
      */
-    virtual bool operator!=(const SeProtocol &other) const
+    virtual bool operator!=(const SeProtocol& other) const
     {
         return !(*this == other);
     }
@@ -93,7 +94,7 @@ public:
     /**
      *
      */
-    virtual bool operator<(const SeProtocol &other) const
+    virtual bool operator<(const SeProtocol& other) const
     {
         return this->ordinalValue < other.ordinalValue;
     }
@@ -101,7 +102,7 @@ public:
     /**
      *
      */
-    friend std::ostream& operator<<(std::ostream &os, const SeProtocol &se);
+    friend std::ostream& operator<<(std::ostream& os, const SeProtocol& se);
 
     /**
      * 
@@ -112,7 +113,7 @@ public:
     }
 
 private:
-	/**
+    /**
      *
      */
     static int nextOrdinal;
@@ -127,8 +128,7 @@ namespace std {
 
 using namespace keyple::core::seproxy::protocol;
 
-template<> struct hash<SeProtocol>
-{
+template <> struct hash<SeProtocol> {
     size_t operator()(const SeProtocol& obj) const
     {
         (void)obj;
@@ -138,4 +138,3 @@ template<> struct hash<SeProtocol>
 };
 
 }
-

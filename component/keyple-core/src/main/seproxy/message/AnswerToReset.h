@@ -33,8 +33,8 @@ using namespace keyple::common;
  * <p>
  * (May be enhanced to provide analysis methods)
  */
-class EXPORT AnswerToReset
-: public std::enable_shared_from_this<AnswerToReset>, public Object {
+class EXPORT AnswerToReset : public std::enable_shared_from_this<AnswerToReset>,
+                             public Object {
 public:
     /**
      *
@@ -44,7 +44,9 @@ public:
     /**
      *
      */
-    virtual ~AnswerToReset() { }
+    virtual ~AnswerToReset()
+    {
+    }
 
     /**
      *

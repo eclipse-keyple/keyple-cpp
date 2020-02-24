@@ -23,7 +23,8 @@ namespace security {
 using namespace keyple::calypso::command::sam;
 using namespace keyple::core::seproxy::message;
 
-DigestUpdateRespPars::DigestUpdateRespPars(std::shared_ptr<ApduResponse> response)
+DigestUpdateRespPars::DigestUpdateRespPars(
+    std::shared_ptr<ApduResponse> response)
 : AbstractSamResponseParser(response)
 {
 }

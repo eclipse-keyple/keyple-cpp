@@ -42,8 +42,8 @@ public:
      * @param revision the SAM revision
      * @param unlockData the unlock data
      */
-     UnlockCmdBuild(const SamRevision& revision,
-                    const std::vector<uint8_t>& unlockData);
+    UnlockCmdBuild(const SamRevision& revision,
+                   const std::vector<uint8_t>& unlockData);
 
 private:
     /**

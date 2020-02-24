@@ -43,9 +43,9 @@ public:
     /**
      *
      */
-    const std::vector<uint8_t> atr{
-        0x3B, 0x8F, 0x80, 0x01, 0x80, 0x4F, 0x0C, 0xA0, 0x00, 0x00, 0x03, 0x06,
-        0x03, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x68};
+    const std::vector<uint8_t> atr{0x3B, 0x8F, 0x80, 0x01, 0x80, 0x4F, 0x0C,
+                                   0xA0, 0x00, 0x00, 0x03, 0x06, 0x03, 0x00,
+                                   0x03, 0x00, 0x00, 0x00, 0x00, 0x68};
 
     /**
      *
@@ -55,7 +55,9 @@ public:
     /**
      *
      */
-    virtual ~StubMifareUL() {}
+    virtual ~StubMifareUL()
+    {
+    }
 
     /**
      *
@@ -74,7 +76,7 @@ protected:
     std::shared_ptr<StubMifareUL> shared_from_this()
     {
         return std::static_pointer_cast<StubMifareUL>(
-                   StubSecureElement::shared_from_this());
+            StubSecureElement::shared_from_this());
     }
 };
 

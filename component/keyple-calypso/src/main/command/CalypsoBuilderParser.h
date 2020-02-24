@@ -23,8 +23,7 @@ namespace command {
 
 using namespace keyple::core::command;
 
-template<typename B, typename P>
-class CalypsoBuilderParser {
+template <typename B, typename P> class CalypsoBuilderParser {
     /*
     static_assert(std::is_base_of>AbstractApduResponseParser, P>::value,
                   "P must inherit from org.eclipse.keyple.core.command.AbstractApduResponseParser");

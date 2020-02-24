@@ -110,8 +110,8 @@ public:
      * @param name the name
      * @param instructionByte the instruction byte
      */
-    CalypsoPoCommands(const std::string &nameValue, InnerEnum innerEnum,
-                      const std::string &name, uint8_t instructionByte);
+    CalypsoPoCommands(const std::string& nameValue, InnerEnum innerEnum,
+                      const std::string& name, uint8_t instructionByte);
 
     /**
      *
@@ -143,12 +143,12 @@ public:
     /**
      *
      */
-    bool operator == (const CalypsoPoCommands &other);
+    bool operator==(const CalypsoPoCommands& other);
 
     /**
      *
      */
-    bool operator != (const CalypsoPoCommands &other);
+    bool operator!=(const CalypsoPoCommands& other);
 
     /**
      *
@@ -168,7 +168,7 @@ public:
     /**
      *
      */
-    static CalypsoPoCommands valueOf(const std::string &name);
+    static CalypsoPoCommands valueOf(const std::string& name);
 
     /*
      * Alex: had to add these for the compiler to authorize instanciation of
@@ -232,8 +232,6 @@ private:
      * The instruction byte
      */
     const char instructionbyte;
-
-
 };
 
 }

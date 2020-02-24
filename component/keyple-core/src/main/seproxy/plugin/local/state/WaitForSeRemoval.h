@@ -15,6 +15,7 @@
 #pragma once
 
 /* Common */
+#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
@@ -40,7 +41,7 @@ namespace state {
  * WAIT_FOR_SE_DETECTION.
  * </ul>
  */
-class WaitForSeRemoval : public AbstractObservableState {
+class EXPORT WaitForSeRemoval : public AbstractObservableState {
 public:
     /**
      *
@@ -64,9 +65,7 @@ private:
      * Logger
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(WaitForSeRemoval));
-
-
+        LoggerFactory::getLogger(typeid(WaitForSeRemoval));
 };
 
 }

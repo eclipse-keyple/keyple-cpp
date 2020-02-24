@@ -47,8 +47,8 @@ using namespace keyple::core::seproxy::plugin::local::monitoring;
 using namespace keyple::core::seproxy::plugin::local::state;
 using namespace keyple::core::seproxy::protocol;
 
-StubReaderImpl::StubReaderImpl(
-  const std::string& pluginName, const std::string& readerName)
+StubReaderImpl::StubReaderImpl(const std::string& pluginName,
+                               const std::string& readerName)
 : AbstractObservableLocalReader(pluginName, readerName)
 {
     /* Create a executor service with one thread whose name is customized */
@@ -57,9 +57,9 @@ StubReaderImpl::StubReaderImpl(
     this->stateService = initStateService();
 }
 
-StubReaderImpl::StubReaderImpl(
-  const std::string& pluginName, const std::string& name,
-  TransmissionMode transmissionMode)
+StubReaderImpl::StubReaderImpl(const std::string& pluginName,
+                               const std::string& name,
+                               TransmissionMode transmissionMode)
 : StubReaderImpl(pluginName, name)
 {
     this->transmissionMode = transmissionMode;
@@ -108,34 +108,33 @@ bool StubReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
 
     /* Test protocolFlag to check if ATR based protocol filtering is required */
     //if (protocolFlag != null) {
-        if (!isPhysicalChannelOpen()) {
-            openPhysicalChannel();
-        }
+    if (!isPhysicalChannelOpen()) {
+        openPhysicalChannel();
+    }
 
-        /*
+    /*
          * The requestSet will be executed only if the protocol match the
          * requestElement
          */
-        const std::string& selectionMask =
-            protocolsMap.find(protocolFlag)->second;
+    const std::string& selectionMask = protocolsMap.find(protocolFlag)->second;
 
-        if (selectionMask.empty()) {
-            throw KeypleReaderException("Target selector mask not found!");
-        }
+    if (selectionMask.empty()) {
+        throw KeypleReaderException("Target selector mask not found!");
+    }
 
-        Pattern* p = Pattern::compile(selectionMask);
-        const std::string& protocol = se->getSeProcotol();
-        if (!p->matcher(protocol)->matches()) {
-            logger->trace("[%s] protocolFlagMatches => unmatching SE. " \
-                          "PROTOCOLFLAG = %s\n", this->getName(),
-                          protocolFlag.toString());
-            result = false;
-        } else {
-            logger->trace("[%s] protocolFlagMatches => matching SE. " \
-                          "PROTOCOLFLAG = %s\n", this->getName().c_str(),
-                          protocolFlag.toString().c_str());
-            result = true;
-        }
+    Pattern* p                  = Pattern::compile(selectionMask);
+    const std::string& protocol = se->getSeProcotol();
+    if (!p->matcher(protocol)->matches()) {
+        logger->trace("[%s] protocolFlagMatches => unmatching SE. "
+                      "PROTOCOLFLAG = %s\n",
+                      this->getName(), protocolFlag.toString());
+        result = false;
+    } else {
+        logger->trace("[%s] protocolFlagMatches => matching SE. "
+                      "PROTOCOLFLAG = %s\n",
+                      this->getName().c_str(), protocolFlag.toString().c_str());
+        result = true;
+    }
     //} else {
     //    // no protocol defined returns true
     //    result = true;
@@ -165,7 +164,7 @@ void StubReaderImpl::setParameter(const std::string& name,
 }
 
 const std::map<const std::string, const std::string>
-    StubReaderImpl::getParameters()
+StubReaderImpl::getParameters()
 {
     return parameters;
 }
@@ -217,6 +216,7 @@ bool StubReaderImpl::waitForCardPresent()
         try {
             Thread::sleep(10);
         } catch (InterruptedException& e) {
+            (void)e;
             logger->debug("Sleep was interrupted\n");
         }
     }
@@ -243,6 +243,7 @@ bool StubReaderImpl::waitForCardAbsentNative()
         try {
             Thread::sleep(10);
         } catch (InterruptedException& e) {
+            (void)e;
             logger->debug("Sleep was interrupted\n");
         }
     }
@@ -259,7 +260,7 @@ void StubReaderImpl::stopWaitForCardRemoval()
 std::shared_ptr<ObservableReaderStateService> StubReaderImpl::initStateService()
 {
     if (executorService == nullptr) {
-        throw IllegalArgumentException("Executor service has not been " \
+        throw IllegalArgumentException("Executor service has not been "
                                        "initialized");
     }
 
@@ -292,7 +293,7 @@ std::shared_ptr<ObservableReaderStateService> StubReaderImpl::initStateService()
                 executorService)));
 
     return std::make_shared<ObservableReaderStateService>(
-               this, states, MonitoringState::WAIT_FOR_SE_INSERTION);
+        this, states, MonitoringState::WAIT_FOR_SE_INSERTION);
 }
 
 void StubReaderImpl::addObserver(std::shared_ptr<ReaderObserver> observer)
@@ -310,12 +311,22 @@ void StubReaderImpl::startSeDetection(PollingMode pollingMode)
     AbstractObservableLocalReader::startSeDetection(pollingMode);
 }
 
+void StubReaderImpl::stopSeDetection()
+{
+    AbstractObservableLocalReader::stopSeDetection();
+}
+
 void StubReaderImpl::setDefaultSelectionRequest(
-    std::shared_ptr<AbstractDefaultSelectionsRequest>
-    defaultSelectionsRequest, NotificationMode notificationMode)
+    std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
+    NotificationMode notificationMode)
 {
     AbstractObservableLocalReader::setDefaultSelectionRequest(
         defaultSelectionsRequest, notificationMode);
+}
+
+void StubReaderImpl::clearObservers()
+{
+    AbstractObservableLocalReader::clearObservers();
 }
 
 }

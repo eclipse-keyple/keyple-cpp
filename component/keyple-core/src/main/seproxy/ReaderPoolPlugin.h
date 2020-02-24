@@ -19,12 +19,17 @@
 #include <memory>
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { class SeReader; } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+class SeReader;
+}
+}
+}
 
 namespace keyple {
 namespace core {
 namespace seproxy {
-
 
 /**
  * The ReaderPoolPlugin interface provides methods to handle the access to an
@@ -59,8 +64,8 @@ public:
      *        belongs (may be null depending on the implementation made)
      * @return a SeReader object
      */
-    virtual std::shared_ptr<SeReader> allocateReader(
-                const std::string &groupReference) = 0;
+    virtual std::shared_ptr<SeReader>
+    allocateReader(const std::string& groupReference) = 0;
 
     /**
      * Releases a SeReader previously allocated with allocateReader.

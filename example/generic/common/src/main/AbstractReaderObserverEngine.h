@@ -36,7 +36,8 @@ using namespace keyple::common;
  * insertion, selection, removal is factorized here.
  */
 class AbstractReaderObserverEngine
-: public std::enable_shared_from_this<AbstractReaderObserverEngine>, public ObservableReader::ReaderObserver {
+: public std::enable_shared_from_this<AbstractReaderObserverEngine>,
+  public ObservableReader::ReaderObserver {
 public:
     /**
      *
@@ -46,7 +47,9 @@ public:
     /**
      *
      */
-    virtual ~AbstractReaderObserverEngine() {}
+    virtual ~AbstractReaderObserverEngine()
+    {
+    }
 
     /**
      *
@@ -57,7 +60,9 @@ protected:
     /**
      *
      */
-    virtual void processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse) = 0;
+    virtual void
+    processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse>
+                       defaultSelectionsResponse) = 0;
 
     /**
      *
@@ -74,12 +79,12 @@ protected:
      */
     virtual void processUnexpectedSeRemoval() = 0;
 
- private:
+private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(AbstractReaderObserverEngine));
-
+    const std::shared_ptr<Logger> logger =
+        LoggerFactory::getLogger(typeid(AbstractReaderObserverEngine));
 };
 
 }

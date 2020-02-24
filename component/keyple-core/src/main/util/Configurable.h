@@ -34,7 +34,9 @@ public:
     /**
      *
      */
-    Configurable() {}
+    Configurable()
+    {
+    }
 
     /**
      *
@@ -47,7 +49,9 @@ public:
     /**
      *
      */
-    virtual ~Configurable() {}
+    virtual ~Configurable()
+    {
+    }
 
     /**
      * Gets the parameters
@@ -55,7 +59,7 @@ public:
      * @return the configuration of the item
      */
     virtual const std::map<const std::string, const std::string>
-        getParameters() = 0;
+    getParameters() = 0;
 
     /**
      * allows to define a proprietary setting for a reader or a plugin
@@ -67,8 +71,8 @@ public:
      *         supported
      * @throws KeypleBaseException if the parameter fails to be set up
      */
-    virtual void setParameter(const std::string &key,
-                              const std::string &value) = 0;
+    virtual void setParameter(const std::string& key,
+                              const std::string& value) = 0;
 
     /**
      * allows to define a set of proprietary settings for a reader or a plugin
@@ -79,8 +83,8 @@ public:
      *         supported
      * @throws KeypleBaseException if the parameter fails to be set up
      */
-    virtual void setParameters(const std::map<std::string,
-                               std::string>& parameters) = 0;
+    virtual void
+    setParameters(const std::map<std::string, std::string>& parameters) = 0;
 };
 
 }

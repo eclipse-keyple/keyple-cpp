@@ -22,7 +22,9 @@ public:
     /**
      *
      */
-    Object() {}
+    Object()
+    {
+    }
 
     /**
      *
@@ -35,23 +37,25 @@ public:
     /**
      *
      */
-    virtual ~Object() {}
+    virtual ~Object()
+    {
+    }
 
     /**
      *
      */
-	virtual bool equals(std::shared_ptr<void> o) = 0;
+    virtual bool equals(std::shared_ptr<void> o) = 0;
 
-	/**
+    /**
 	 *
 	 */
-	virtual int hashCode() = 0;
+    virtual int hashCode() = 0;
 
 protected:
-	/**
+    /**
 	 *
 	 */
-	virtual void finalize() = 0;
+    virtual void finalize() = 0;
 };
 
 }

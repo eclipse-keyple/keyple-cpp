@@ -61,13 +61,7 @@ public:
     /**
      *
      */
-    enum class InnerEnum {
-        NO_REV,
-        C1,
-        S1E,
-        S1D,
-        AUTO
-    };
+    enum class InnerEnum { NO_REV, C1, S1E, S1D, AUTO };
 
     /**
      *
@@ -77,8 +71,8 @@ public:
     /**
      *
      */
-    SamRevision(const std::string &nameValue, InnerEnum innerEnum,
-                const std::string &name, const std::string &applicationTypeMask,
+    SamRevision(const std::string& nameValue, InnerEnum innerEnum,
+                const std::string& name, const std::string& applicationTypeMask,
                 char classByte);
 
     /**
@@ -89,7 +83,9 @@ public:
     /**
      *
      */
-    virtual ~SamRevision() {}
+    virtual ~SamRevision()
+    {
+    }
 
     /**
      *
@@ -109,12 +105,12 @@ public:
     /**
      *
      */
-    bool operator==(const SamRevision &other);
+    bool operator==(const SamRevision& other);
 
     /**
      *
      */
-    bool operator!=(const SamRevision &other) const;
+    bool operator!=(const SamRevision& other) const;
 
     /**
      *
@@ -139,7 +135,7 @@ public:
     /**
      *
      */
-    static SamRevision valueOf(const std::string &name);
+    static SamRevision valueOf(const std::string& name);
 
 private:
     /**
@@ -192,7 +188,6 @@ private:
      *
      */
     char classByte;
-
 };
 
 }

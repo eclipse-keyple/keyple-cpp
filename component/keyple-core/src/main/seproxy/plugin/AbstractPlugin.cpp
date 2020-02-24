@@ -35,13 +35,13 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-AbstractPlugin::AbstractPlugin(const std::string& name)
-: name(name)
+AbstractPlugin::AbstractPlugin(const std::string& name) : name(name)
 {
     try {
         readers = initNativeReaders();
     } catch (KeypleReaderException& e) {
-        throw KeypleRuntimeException("Could not instanciate readers in plugin" \
+        (void)e;
+        throw KeypleRuntimeException("Could not instanciate readers in plugin"
                                      " constructor");
     }
 }
@@ -91,7 +91,7 @@ void AbstractPlugin::removeObserver(
 int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
 {
     logger->debug("compareTo - comparing %s to %s\n", this->name,
-                   plugin->getName());
+                  plugin->getName());
 
     return this->name.compare(plugin->getName());
 }
@@ -99,17 +99,15 @@ int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
 /*
  * Alex: consider note in header comment (covariant return type).
  */
-std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string &name)
+std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string& name)
 {
     logger->debug("getReader - looking for reader: %s in list of %d readers\n",
                   name.c_str(), readers.size());
 
-    for (auto reader : readers)
-    {
+    for (auto reader : readers) {
         logger->debug("getReader - reader: %s\n", reader->getName().c_str());
 
-        if (reader->getName() == name)
-        {
+        if (reader->getName() == name) {
             return std::shared_ptr<SeReader>(
                 std::dynamic_pointer_cast<SeReader>(reader));
         }
@@ -124,9 +122,10 @@ const std::string& AbstractPlugin::getName() const
 
 void AbstractPlugin::notifyObservers(std::shared_ptr<PluginEvent> event)
 {
-    logger->trace("[%s] AbstractPlugin => Notifying a plugin event to %d " \
-                  "observers. EVENTNAME = %s\n", this->name,
-                  this->countObservers(), event->getEventType().getName());
+    logger->trace("[%s] AbstractPlugin => Notifying a plugin event to %d "
+                  "observers. EVENTNAME = %s\n",
+                  this->name, this->countObservers(),
+                  event->getEventType().getName());
 
     setChanged();
 

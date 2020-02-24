@@ -57,7 +57,7 @@ const std::shared_ptr<Logger> logger =
 const std::string poAtrRegex = ".*";
 const std::string poDfRtPath = "2000";
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
@@ -83,18 +83,18 @@ int main(int argc, char **argv)
         throw std::make_shared<IllegalStateException>("Bad PO reader setup");
     }
 
-    logger->info("=============== UseCase Calypso #1: ATR based explicit " \
+    logger->info("=============== UseCase Calypso #1: ATR based explicit "
                  "selection (PO Rev1) ===========\n");
     logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
 
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
-        logger->info("= 1st PO exchange: ATR based selection with reading of " \
+        logger->info("= 1st PO exchange: ATR based selection with reading of "
                      "Environment file.         =\n");
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
 
         /*
@@ -121,18 +121,15 @@ int main(int argc, char **argv)
                 std::make_shared<PoSelector>(
                     SeCommonProtocols::PROTOCOL_ISO14443_4,
                     std::make_shared<PoSelector::PoAtrFilter>(poAtrRegex),
-                    nullptr,
-                    StringHelper::formatSimple("ATR: ", poAtrRegex)),
+                    nullptr, StringHelper::formatSimple("ATR: ", poAtrRegex)),
                 ChannelState::KEEP_OPEN);
 
         /*
          * Prepare the selection of the DF RT.
          */
         std::vector<uint8_t> dfrt = ByteArrayUtil::fromHex(poDfRtPath);
-        int selectFileParserIndex =
-            poSelectionRequest->prepareSelectFileCmd(
-                dfrt,
-                StringHelper::formatSimple("Select file: %s", poDfRtPath));
+        int selectFileParserIndex = poSelectionRequest->prepareSelectFileCmd(
+            dfrt, StringHelper::formatSimple("Select file: %s", poDfRtPath));
 
         /*
          * Prepare the reading order and keep the associated parser for later
@@ -146,7 +143,6 @@ int main(int argc, char **argv)
                 StringHelper::formatSimple(
                     "EnvironmentAndHolder (SFI=%02X))",
                     CalypsoClassicInfo::SFI_EnvironmentAndHolder));
-
 
         /*
          * Add the selection case to the current selection (we could have added
@@ -166,8 +162,8 @@ int main(int argc, char **argv)
                 selectionResult->getActiveSelection();
 
             std::shared_ptr<CalypsoPo> calypsoPo =
-                 std::static_pointer_cast<CalypsoPo>(
-                     matchingSelection->getMatchingSe());
+                std::static_pointer_cast<CalypsoPo>(
+                    matchingSelection->getMatchingSe());
             logger->info("The selection of the PO has succeeded\n");
 
             std::shared_ptr<SelectFileRespPars> selectFileRespPars =
@@ -180,17 +176,18 @@ int main(int argc, char **argv)
                     matchingSelection->getResponseParser(
                         readEnvironmentParserIndex));
 
-            logger->info("DF RT FCI: %s\n",
-                         ByteArrayUtil::toHex(
-                             selectFileRespPars->getSelectionData()).c_str());
+            logger->info(
+                "DF RT FCI: %s\n",
+                ByteArrayUtil::toHex(selectFileRespPars->getSelectionData())
+                    .c_str());
 
             /*
              * Retrieve the data read from the parser updated during the
              * selection process
              */
             std::vector<uint8_t> environmentAndHolder =
-                (*(readEnvironmentParser->getRecords().get()))[
-                    static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1)];
+                (*(readEnvironmentParser->getRecords().get()))[static_cast<int>(
+                    CalypsoClassicInfo::RECORD_NUMBER_1)];
 
             /* Log the result */
             logger->info("Environment file data: %s\n",
@@ -199,11 +196,11 @@ int main(int argc, char **argv)
             /*
              * Go on with the reading of the first record of the EventLog file
              */
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
-            logger->info("= 2nd PO exchange: reading transaction of the Event" \
+            logger->info("= 2nd PO exchange: reading transaction of the Event"
                          "Log file.                     =\n");
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
 
             std::shared_ptr<PoTransaction> poTransaction =
@@ -214,15 +211,14 @@ int main(int argc, char **argv)
              * Prepare the reading order and keep the associated parser for
              * later use once the transaction has been processed.
              */
-            int readEventLogParserIndex =
-                poTransaction->prepareReadRecordsCmd(
+            int readEventLogParserIndex = poTransaction->prepareReadRecordsCmd(
+                CalypsoClassicInfo::SFI_EventLog,
+                ReadDataStructure::SINGLE_RECORD_DATA,
+                CalypsoClassicInfo::RECORD_NUMBER_1,
+                StringHelper::formatSimple(
+                    "EventLog (SFI=%02X, recnbr=%d))",
                     CalypsoClassicInfo::SFI_EventLog,
-                    ReadDataStructure::SINGLE_RECORD_DATA,
-                    CalypsoClassicInfo::RECORD_NUMBER_1,
-                    StringHelper::formatSimple(
-                        "EventLog (SFI=%02X, recnbr=%d))",
-                        CalypsoClassicInfo::SFI_EventLog,
-                        CalypsoClassicInfo::RECORD_NUMBER_1));
+                    CalypsoClassicInfo::RECORD_NUMBER_1));
 
             /*
              * Actual PO communication: send the prepared read order, then close
@@ -241,19 +237,19 @@ int main(int argc, char **argv)
                             readEventLogParserIndex));
 
                 std::vector<uint8_t> eventLog =
-                        (*(parser->getRecords().get()))[
-                            CalypsoClassicInfo::RECORD_NUMBER_1];
+                    (*(parser->getRecords()
+                           .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
                 /* Log the result */
                 logger->info("EventLog file data: %s\n",
                              ByteArrayUtil::toHex(eventLog).c_str());
             }
 
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
-            logger->info("= End of the Calypso PO processing.                " \
+            logger->info("= End of the Calypso PO processing.                "
                          "                              =\n");
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
         } else {
             logger->error("The selection of the PO has failed\n");

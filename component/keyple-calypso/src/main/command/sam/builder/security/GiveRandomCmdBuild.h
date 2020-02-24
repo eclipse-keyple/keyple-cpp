@@ -55,7 +55,7 @@ protected:
     std::shared_ptr<GiveRandomCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<GiveRandomCmdBuild>(
-                   AbstractSamCommandBuilder::shared_from_this());
+            AbstractSamCommandBuilder::shared_from_this());
     }
 
 private:
@@ -63,7 +63,6 @@ private:
      * The command reference
      */
     CalypsoSamCommands& command = CalypsoSamCommands::GIVE_RANDOM;
-
 };
 
 }

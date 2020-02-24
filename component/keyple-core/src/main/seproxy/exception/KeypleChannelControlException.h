@@ -40,10 +40,9 @@ public:
      *
      * @param message : message to identify the exception and the context
      */
-    KeypleChannelControlException(const std::string &msg)
+    KeypleChannelControlException(const std::string& msg)
     : KeypleReaderException(msg)
     {
-
     }
 
     /**
@@ -52,12 +51,10 @@ public:
      * @param message : message to add some context to the exception
      * @param cause : lower level exception
      */
-    KeypleChannelControlException(const std::string &msg, std::exception& cause)
+    KeypleChannelControlException(const std::string& msg, std::exception& cause)
     : KeypleReaderException(msg, cause)
     {
-
     }
-
 };
 
 }

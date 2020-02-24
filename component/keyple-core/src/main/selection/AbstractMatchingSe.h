@@ -22,12 +22,25 @@
 /* Common */
 #include "Export.h"
 
-
 /* Forward class declarations  */
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeResponse; } } } }
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SelectionStatus; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SeResponse;
+}
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SelectionStatus;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -52,12 +65,14 @@ public:
      */
     AbstractMatchingSe(std::shared_ptr<SeResponse> selectionResponse,
                        TransmissionMode transmissionMode,
-                       const std::string &extraInfo);
+                       const std::string& extraInfo);
 
     /**
      *
      */
-    virtual ~AbstractMatchingSe() {}
+    virtual ~AbstractMatchingSe()
+    {
+    }
 
     /**
      * Indicates whether the current SE has been identified as selected: the

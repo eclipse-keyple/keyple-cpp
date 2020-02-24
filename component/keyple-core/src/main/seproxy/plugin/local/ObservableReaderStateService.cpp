@@ -21,10 +21,9 @@ namespace plugin {
 namespace local {
 
 ObservableReaderStateService::ObservableReaderStateService(
-  AbstractObservableLocalReader* reader,
-  std::map<MonitoringState,
-           std::shared_ptr<AbstractObservableState>>& states,
-  const MonitoringState initState)
+    AbstractObservableLocalReader* reader,
+    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>& states,
+    const MonitoringState initState)
 : reader(reader), states(states)
 {
     switchState(initState);
@@ -45,21 +44,21 @@ void ObservableReaderStateService::switchState(const MonitoringState stateId)
         currentState->onDeactivate();
     } else {
         logger->trace("[%s] Switch to a new currentState %d\n",
-                     this->reader->getName(), stateId);
+                      this->reader->getName(), stateId);
     }
 
     /* Switch currentState */
     currentState = this->states.find(stateId)->second;
 
     logger->debug("[%s] New currentState %d", this->reader->getName(),
-            currentState->getMonitoringState());
+                  currentState->getMonitoringState());
 
     /* onActivate the new current state */
     currentState->onActivate();
 }
 
 std::shared_ptr<AbstractObservableState>
-    ObservableReaderStateService::getCurrentState()
+ObservableReaderStateService::getCurrentState()
 {
     return currentState;
 }

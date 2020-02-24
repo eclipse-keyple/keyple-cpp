@@ -33,8 +33,15 @@
 #include "Thread.h"
 
 /* Forward class declarations  */
-namespace keyple { namespace core { namespace seproxy { namespace plugin {
-    class EventThread; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace plugin {
+class EventThread;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -62,8 +69,8 @@ public:
      *
      * @param observer the observer object
      */
-    void addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer)
-        override;
+    void addObserver(
+        std::shared_ptr<ObservablePlugin::PluginObserver> observer) override;
 
     /**
      * Remove a plugin observer.
@@ -77,8 +84,7 @@ public:
      * @param observer the observer object
      */
     void removeObserver(
-        std::shared_ptr<ObservablePlugin::PluginObserver> observer)
-        override;
+        std::shared_ptr<ObservablePlugin::PluginObserver> observer) override;
 
     /**
      *
@@ -118,8 +124,8 @@ protected:
      * @return the list of AbstractReader objects.
      * @throws KeypleReaderException if a reader error occurs
      */
-    virtual
-       std::shared_ptr<SeReader> fetchNativeReader(const std::string& name) = 0;
+    virtual std::shared_ptr<SeReader>
+    fetchNativeReader(const std::string& name) = 0;
 
     /**
      * Check weither the background job is monitoring for new readers
@@ -162,7 +168,7 @@ private:
 
         EventThread(
             std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance,
-            const std::string &pluginName);
+            const std::string& pluginName);
 
         /**
          * Marks the thread as one that should end when the last cardWaitTimeout
@@ -173,12 +179,14 @@ private:
         /**
          *
          */
-        virtual void *run();
+        virtual void* run();
 
         /**
          *
          */
-        virtual ~EventThread() {}
+        virtual ~EventThread()
+        {
+        }
 
         /**
          *
@@ -211,7 +219,7 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-             LoggerFactory::getLogger(typeid(AbstractThreadedObservablePlugin));
+        LoggerFactory::getLogger(typeid(AbstractThreadedObservablePlugin));
 
     /**
      * Local thread to monitoring readers presence

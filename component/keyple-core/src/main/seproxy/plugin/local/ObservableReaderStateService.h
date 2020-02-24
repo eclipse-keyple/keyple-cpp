@@ -17,6 +17,7 @@
 #include <map>
 
 /* Common */
+#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
@@ -33,16 +34,16 @@ namespace local {
  * Manages the internal state of an AbstractObservableLocalReader Process
  * InternalEvent against the current state
  */
-class ObservableReaderStateService {
+class EXPORT ObservableReaderStateService {
 public:
     /**
      *
      */
     ObservableReaderStateService(
-            AbstractObservableLocalReader* reader,
-            std::map<MonitoringState,
-                     std::shared_ptr<AbstractObservableState>>& states,
-            const MonitoringState initState);
+        AbstractObservableLocalReader* reader,
+        std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>&
+            states,
+        const MonitoringState initState);
 
     /**
      * Thread safe method to communicate an internal event to this reader Use
@@ -52,7 +53,6 @@ public:
      * @param event internal event
      */
     void onEvent(const InternalEvent event);
-
 
     /**
      * Thread safe method to switch the state of this reader should only be
@@ -82,7 +82,7 @@ private:
      * Logger
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(ObservableReaderStateService));
+        LoggerFactory::getLogger(typeid(ObservableReaderStateService));
 
     /**
      * AbstractObservableLocalReader to manage event and states

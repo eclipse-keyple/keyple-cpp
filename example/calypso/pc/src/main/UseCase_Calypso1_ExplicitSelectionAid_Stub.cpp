@@ -43,10 +43,10 @@ using namespace keyple::core::seproxy::protocol;
 class UseCase_Calypso1_ExplicitSelectionAid_Stub {
 };
 
-std::shared_ptr<Logger> logger =
-    LoggerFactory::getLogger(typeid(UseCase_Calypso1_ExplicitSelectionAid_Stub));
+std::shared_ptr<Logger> logger = LoggerFactory::getLogger(
+    typeid(UseCase_Calypso1_ExplicitSelectionAid_Stub));
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
@@ -79,8 +79,8 @@ int main(int argc, char **argv)
 
     poReader->addSeProtocolSetting(
         SeCommonProtocols::PROTOCOL_ISO14443_4,
-        StubProtocolSetting::STUB_PROTOCOL_SETTING[
-            SeCommonProtocols::PROTOCOL_ISO14443_4]);
+        StubProtocolSetting::STUB_PROTOCOL_SETTING
+            [SeCommonProtocols::PROTOCOL_ISO14443_4]);
 
     /* Create 'virtual' Calypso PO */
     std::shared_ptr<StubSecureElement> calypsoStubSe =
@@ -89,18 +89,18 @@ int main(int argc, char **argv)
     logger->info("Insert stub PO\n");
     poReader->insertSe(calypsoStubSe);
 
-    logger->info("=============== UseCase Calypso #1: AID based explicit " \
+    logger->info("=============== UseCase Calypso #1: AID based explicit "
                  "selection ==================\n");
     logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
 
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
-        logger->info("= 1st PO exchange: AID based selection with reading of " \
+        logger->info("= 1st PO exchange: AID based selection with reading of "
                      "Environment file.          =\n");
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
 
         /*
@@ -164,30 +164,30 @@ int main(int argc, char **argv)
             logger->info("The selection of the PO has succeeded\n");
 
             std::shared_ptr<ReadRecordsRespPars> readEnvironmentParser =
-                    std::dynamic_pointer_cast<ReadRecordsRespPars>(
-                        matchingSelection->getResponseParser(
-                            readEnvironmentParserIndex));
+                std::dynamic_pointer_cast<ReadRecordsRespPars>(
+                    matchingSelection->getResponseParser(
+                        readEnvironmentParserIndex));
 
             /*
              * Retrieve the data read from the parser updated during the
              * selection process
              */
             std::vector<uint8_t> environmentAndHolder =
-                (*(readEnvironmentParser->getRecords().get()))[
-                    static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1)];
+                (*(readEnvironmentParser->getRecords().get()))[static_cast<int>(
+                    CalypsoClassicInfo::RECORD_NUMBER_1)];
 
             /* Log the result */
             logger->info("Environment file data: %s\n",
-                        ByteArrayUtil::toHex(environmentAndHolder).c_str());
+                         ByteArrayUtil::toHex(environmentAndHolder).c_str());
 
             /*
              * Go on with the reading of the first record of the EventLog file
              */
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
-            logger->info("= 2nd PO exchange: reading transaction of the " \
+            logger->info("= 2nd PO exchange: reading transaction of the "
                          "EventLog file.                     =\n");
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
 
             std::shared_ptr<PoTransaction> poTransaction =
@@ -198,15 +198,14 @@ int main(int argc, char **argv)
              * Prepare the reading order and keep the associated parser for
              * later use once the transaction has been processed.
              */
-            int readEventLogParserIndex =
-                poTransaction->prepareReadRecordsCmd(
+            int readEventLogParserIndex = poTransaction->prepareReadRecordsCmd(
+                CalypsoClassicInfo::SFI_EventLog,
+                ReadDataStructure::SINGLE_RECORD_DATA,
+                CalypsoClassicInfo::RECORD_NUMBER_1,
+                StringHelper::formatSimple(
+                    "EventLog (SFI=%02X, recnbr=%d))",
                     CalypsoClassicInfo::SFI_EventLog,
-                    ReadDataStructure::SINGLE_RECORD_DATA,
-                    CalypsoClassicInfo::RECORD_NUMBER_1,
-                    StringHelper::formatSimple(
-                        "EventLog (SFI=%02X, recnbr=%d))",
-                        CalypsoClassicInfo::SFI_EventLog,
-                        CalypsoClassicInfo::RECORD_NUMBER_1));
+                    CalypsoClassicInfo::RECORD_NUMBER_1));
 
             /*
              * Actual PO communication: send the prepared read order, then close
@@ -224,18 +223,18 @@ int main(int argc, char **argv)
                         poTransaction->getResponseParser(
                             readEventLogParserIndex));
                 std::vector<uint8_t> eventLog =
-                    (*(parser->getRecords().get()))[
-                        CalypsoClassicInfo::RECORD_NUMBER_1];
+                    (*(parser->getRecords()
+                           .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
                 /* Log the result */
                 logger->info("EventLog file data: %s\n",
                              ByteArrayUtil::toHex(eventLog).c_str());
             }
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
-            logger->info("= End of the Calypso PO processing.                " \
+            logger->info("= End of the Calypso PO processing.                "
                          "                              =\n");
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
         } else {
             logger->error("The selection of the PO has failed\n");

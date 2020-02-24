@@ -23,10 +23,10 @@ namespace security {
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
-DigestAuthenticateRespPars::DigestAuthenticateRespPars(std::shared_ptr<ApduResponse> response)
+DigestAuthenticateRespPars::DigestAuthenticateRespPars(
+    std::shared_ptr<ApduResponse> response)
 : AbstractSamResponseParser(response)
 {
-
 }
 
 }

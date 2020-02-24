@@ -21,8 +21,7 @@ namespace command {
  *
  * @author CNA
  */
-template<typename T>
-class SendableInSession {
+template <typename T> class SendableInSession {
 };
 
 }

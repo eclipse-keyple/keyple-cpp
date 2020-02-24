@@ -23,17 +23,16 @@ namespace message {
 
 using namespace keyple::core::util;
 
-ApduRequest::ApduRequest(
-  const std::vector<uint8_t>& buffer, bool case4,
-  std::shared_ptr<std::set<int>> successfulStatusCodes)
+ApduRequest::ApduRequest(const std::vector<uint8_t>& buffer, bool case4,
+                         std::shared_ptr<std::set<int>> successfulStatusCodes)
 : case4(case4), successfulStatusCodes(successfulStatusCodes)
 {
     this->bytes = buffer;
 }
 
-ApduRequest::ApduRequest(
-  const std::string &name, const std::vector<uint8_t>& buffer, bool case4,
-  std::shared_ptr<std::set<int>> successfulStatusCodes)
+ApduRequest::ApduRequest(const std::string& name,
+                         const std::vector<uint8_t>& buffer, bool case4,
+                         std::shared_ptr<std::set<int>> successfulStatusCodes)
 : ApduRequest(buffer, case4, successfulStatusCodes)
 {
     this->name = name;
@@ -44,8 +43,8 @@ ApduRequest::ApduRequest(const std::vector<uint8_t>& buffer, bool case4)
 {
 }
 
-ApduRequest::ApduRequest(
-  const std::string& name, const std::vector<uint8_t>& buffer, bool case4)
+ApduRequest::ApduRequest(const std::string& name,
+                         const std::vector<uint8_t>& buffer, bool case4)
 : ApduRequest(buffer, case4, nullptr)
 {
     this->name = name;
@@ -56,7 +55,7 @@ bool ApduRequest::isCase4()
     return case4;
 }
 
-void ApduRequest::setName(const std::string &name)
+void ApduRequest::setName(const std::string& name)
 {
     this->name = name;
 }
@@ -78,10 +77,9 @@ std::vector<uint8_t> ApduRequest::getBytes()
 
 std::string ApduRequest::toString()
 {
-    std::string string =
-        StringHelper::formatSimple(
-            "ApduRequest: NAME = %s, RAWDATA = %s", this->getName(),
-            ByteArrayUtil::toHex(bytes));
+    std::string string = StringHelper::formatSimple(
+        "ApduRequest: NAME = %s, RAWDATA = %s", this->getName(),
+        ByteArrayUtil::toHex(bytes));
 
     if (isCase4()) {
         string.append(", case4");

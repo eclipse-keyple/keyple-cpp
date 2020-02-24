@@ -16,6 +16,7 @@
 
 /* Core */
 #include "AbstractObservableState.h"
+#include "ReaderEvent.h"
 
 namespace keyple {
 namespace core {
@@ -30,16 +31,18 @@ WaitForSeInsertion::WaitForSeInsertion(AbstractObservableLocalReader* reader)
 }
 
 WaitForSeInsertion::WaitForSeInsertion(
-  AbstractObservableLocalReader* reader,
-  std::shared_ptr<MonitoringJob> monitoringJob,
-  std::shared_ptr<MonitoringPool> executorService)
+    AbstractObservableLocalReader* reader,
+    std::shared_ptr<MonitoringJob> monitoringJob,
+    std::shared_ptr<MonitoringPool> executorService)
 : AbstractObservableState(MonitoringState::WAIT_FOR_SE_INSERTION, reader,
-    monitoringJob, executorService)
+                          monitoringJob, executorService)
 {
 }
 
 void WaitForSeInsertion::onEvent(const InternalEvent event)
 {
+    std::shared_ptr<ReaderEvent> seEvent;
+
     logger->trace("[%s] onEvent => Event %d received in currentState %d\n",
                   reader->getName(), event, state);
 
@@ -48,16 +51,23 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
      */
     switch (event) {
     case InternalEvent::SE_INSERTED:
-        /* Process default selection if any */
-        if (this->reader->processSeInserted()) {
+        /* Process default selection if any, return an event, can be null */
+        seEvent = this->reader->processSeInserted();
+
+        if (seEvent != nullptr) {
+            /* Switch internal state */
             switchState(MonitoringState::WAIT_FOR_SE_PROCESSING);
+            /* Notify the external observer of the event */
+            reader->notifyObservers(seEvent);
         } else {
             /*
              * If none event was sent to the application, back to SE detection
-             * stay in the same state.
+             * stay in the same state, however switch to WAIT_FOR_SE_INSERTION
+             * to relaunch the monitoring job
              */
             logger->trace("[%s] onEvent => Inserted SE hasn't matched\n",
                           reader->getName());
+            switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         }
         break;
     case InternalEvent::STOP_DETECT:

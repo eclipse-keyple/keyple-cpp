@@ -20,9 +20,9 @@ namespace command {
 
 using namespace keyple::core::seproxy::message;
 
-std::unordered_map<int, std::shared_ptr<
-    AbstractApduResponseParser::StatusProperties>>
-        AbstractApduResponseParser::STATUS_TABLE;
+std::unordered_map<
+    int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+    AbstractApduResponseParser::STATUS_TABLE;
 
 AbstractApduResponseParser::StaticConstructor::StaticConstructor()
 {
@@ -34,9 +34,9 @@ AbstractApduResponseParser::StaticConstructor::StaticConstructor()
 AbstractApduResponseParser::StaticConstructor
     AbstractApduResponseParser::staticConstructor;
 
-std::unordered_map<int, std::shared_ptr<
-    AbstractApduResponseParser::StatusProperties>>
-        AbstractApduResponseParser::getStatusTable() const
+std::unordered_map<
+    int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+AbstractApduResponseParser::getStatusTable() const
 {
     return STATUS_TABLE;
 }
@@ -45,7 +45,7 @@ AbstractApduResponseParser::AbstractApduResponseParser(
     std::shared_ptr<ApduResponse> response)
 {
     this->response = response;
-    initialized = true;
+    initialized    = true;
 }
 
 AbstractApduResponseParser::AbstractApduResponseParser()
@@ -57,7 +57,7 @@ void AbstractApduResponseParser::setApduResponse(
     std::shared_ptr<ApduResponse> response)
 {
     this->response = response;
-    initialized = true;
+    initialized    = true;
 }
 
 bool AbstractApduResponseParser::isInitialized()
@@ -81,7 +81,7 @@ int AbstractApduResponseParser::getStatusCode() const
 }
 
 std::shared_ptr<AbstractApduResponseParser::StatusProperties>
-    AbstractApduResponseParser::getPropertiesForStatusCode() const
+AbstractApduResponseParser::getPropertiesForStatusCode() const
 {
     return getStatusTable()[getStatusCode()];
 }
@@ -103,7 +103,7 @@ std::string AbstractApduResponseParser::getStatusInformation()
 }
 
 AbstractApduResponseParser::StatusProperties::StatusProperties(
-  bool successful, const std::string& information)
+    bool successful, const std::string& information)
 : successful(successful), information(information)
 {
 }

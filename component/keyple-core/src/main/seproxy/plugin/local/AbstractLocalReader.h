@@ -75,7 +75,9 @@ public:
     /**
      *
      */
-    virtual ~AbstractLocalReader() {}
+    virtual ~AbstractLocalReader()
+    {
+    }
 
     /**
      * Check the presence of a SE
@@ -116,8 +118,7 @@ public:
       *       (astract class, therefore cannot be used in a set/map)
       */
     virtual void setSeProtocolSetting(
-                const std::map<SeProtocol, std::string> &protocolSetting)
-                override;
+        const std::map<SeProtocol, std::string>& protocolSetting) override;
 
 protected:
     /**
@@ -186,8 +187,8 @@ protected:
      *         and/or FCI and the matching status flag).
      * @throws KeypleIOReaderException if a reader error occurs
      */
-    virtual std::shared_ptr<SelectionStatus> openLogicalChannel(
-                std::shared_ptr<SeSelector> seSelector);
+    virtual std::shared_ptr<SelectionStatus>
+    openLogicalChannel(std::shared_ptr<SeSelector> seSelector);
 
     /**
      * Open (if needed) a physical channel and try to establish a logical
@@ -217,8 +218,8 @@ protected:
      * @throws KeypleApplicationSelectionException if the application selection
      *         fails
      */
-    std::shared_ptr<SelectionStatus> openLogicalChannelAndSelect(
-        std::shared_ptr<SeSelector> seSelector);
+    std::shared_ptr<SelectionStatus>
+    openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector);
 
     /**
      * Attempts to open the physical channel
@@ -291,10 +292,10 @@ protected:
      * @return SeResponseSet the response set
      * @throws KeypleIOReaderException if a reader error occurs
       */
-    std::list<std::shared_ptr<SeResponse>> processSeRequestSet(
-        std::set<std::shared_ptr<SeRequest>>& requestSet,
-        MultiSeRequestProcessing multiSeRequestProcessing,
-        ChannelControl channelControl) final override;
+    std::list<std::shared_ptr<SeResponse>>
+    processSeRequestSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
+                        MultiSeRequestProcessing multiSeRequestProcessing,
+                        ChannelControl channelControl) final override;
 
     /**
      * Executes a request made of one or more Apdus and receives their answers.
@@ -306,9 +307,9 @@ protected:
      * @return the SeResponse to the SeRequest
      * @throws KeypleReaderException if a transmission fails
      */
-    std::shared_ptr<SeResponse> processSeRequest(
-        std::shared_ptr<SeRequest> seRequest, ChannelControl channelControl)
-        final override;
+    std::shared_ptr<SeResponse>
+    processSeRequest(std::shared_ptr<SeRequest> seRequest,
+                     ChannelControl channelControl) final override;
 
     /**
      * Transmits an ApduRequest and receives the ApduResponse
@@ -320,8 +321,8 @@ protected:
      * @return APDU response
      * @throws KeypleIOReaderException Exception faced
      */
-    std::shared_ptr<ApduResponse> processApduRequest(
-        std::shared_ptr<ApduRequest> apduRequest);
+    std::shared_ptr<ApduResponse>
+    processApduRequest(std::shared_ptr<ApduRequest> apduRequest);
 
     /**
      * Transmits a single APDU and receives its response.
@@ -343,7 +344,7 @@ protected:
     std::shared_ptr<AbstractLocalReader> shared_from_this()
     {
         return std::static_pointer_cast<AbstractLocalReader>(
-                   AbstractReader::shared_from_this());
+            AbstractReader::shared_from_this());
     }
 
 private:
@@ -396,8 +397,8 @@ private:
      * @return the response to the select application command
      * @throws KeypleIOReaderException if a reader error occurs
      */
-    std::shared_ptr<ApduResponse> processExplicitAidSelection(
-        SeSelector::AidSelector& aidSelector);
+    std::shared_ptr<ApduResponse>
+    processExplicitAidSelection(SeSelector::AidSelector& aidSelector);
 
     /**
      * This method is dedicated to the case where no FCI data is available in
@@ -408,8 +409,8 @@ private:
      *        main AidSelector
      * @return a ApduResponse containing the FCI
      */
-    std::shared_ptr<ApduResponse> recoverSelectionFciData(
-        SeSelector::AidSelector& aidSelector);
+    std::shared_ptr<ApduResponse>
+    recoverSelectionFciData(SeSelector::AidSelector& aidSelector);
 
     /**
      * Implements the logical processSeRequest.
@@ -425,8 +426,8 @@ private:
      * @throws IllegalStateException
      * @throws KeypleReaderException
      */
-    std::shared_ptr<SeResponse> processSeRequestLogical(
-        std::shared_ptr<SeRequest> seRequest);
+    std::shared_ptr<SeResponse>
+    processSeRequestLogical(std::shared_ptr<SeRequest> seRequest);
 
     /**
      * Execute a get response command in order to get outgoing data from

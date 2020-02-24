@@ -75,9 +75,10 @@ public:
     /**
      *
      */
-    std::shared_ptr<SeReader> plugStubPoolReader(
-         const std::string& groupReference, const std::string& readerName,
-         std::shared_ptr<StubSecureElement> se) override;
+    std::shared_ptr<SeReader>
+    plugStubPoolReader(const std::string& groupReference,
+                       const std::string& readerName,
+                       std::shared_ptr<StubSecureElement> se) override;
 
     /**
      *
@@ -91,8 +92,8 @@ public:
      *        belongs (may be null depending on the implementation made)
      * @return seReader if available, null otherwise
      */
-    std::shared_ptr<SeReader> allocateReader(const std::string& groupReference)
-        override;
+    std::shared_ptr<SeReader>
+    allocateReader(const std::string& groupReference) override;
 
     /**
      * Release a reader
@@ -105,7 +106,7 @@ public:
      *
      */
     const std::map<const std::string, const std::string>&
-        listAllocatedReaders();
+    listAllocatedReaders();
 
     /*
      * Delegate methods to embedded stub plugin
@@ -136,20 +137,20 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string> getParameters()
-        override;
+    const std::map<const std::string, const std::string>
+    getParameters() override;
 
     /**
      *
      */
-    void setParameter(const std::string& key, const std::string& value)
-        override;
+    void setParameter(const std::string& key,
+                      const std::string& value) override;
 
     /**
      *
      */
-    void setParameters(const std::map<std::string, std::string>&
-        parameters) override;
+    void setParameters(
+        const std::map<std::string, std::string>& parameters) override;
 };
 
 }

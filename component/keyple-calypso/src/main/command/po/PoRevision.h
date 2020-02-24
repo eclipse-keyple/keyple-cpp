@@ -17,7 +17,6 @@ namespace calypso {
 namespace command {
 namespace po {
 
-
 /**
  * Calypso revisions
  */

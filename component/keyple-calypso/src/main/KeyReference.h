@@ -30,7 +30,9 @@ public:
     /**
      *
      */
-    virtual ~KeyReference() {}
+    virtual ~KeyReference()
+    {
+    }
 
     /**
      * @return the key identifier
@@ -52,7 +54,6 @@ private:
      * Key version
      s*/
     const char kvc;
-
 };
 
 }

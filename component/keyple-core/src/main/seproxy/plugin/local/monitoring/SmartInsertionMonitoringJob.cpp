@@ -26,10 +26,9 @@ namespace local {
 namespace monitoring {
 
 SmartInsertionMonitoringJob::SmartInsertionMonitoringJob(
-  SmartInsertionReader* reader)
+    SmartInsertionReader* reader)
 : reader(reader)
 {
-
 }
 
 void SmartInsertionMonitoringJob::monitoringJob(
@@ -44,9 +43,10 @@ void SmartInsertionMonitoringJob::monitoringJob(
         if (reader->waitForCardPresent()) {
             state->onEvent(InternalEvent::SE_INSERTED);
         }
-    } catch (KeypleIOReaderException &e) {
-        logger->trace("[%s] waitForCardPresent => Error while polling SE with" \
-                      " waitForCardPresent\n", reader->getName());
+    } catch (KeypleIOReaderException& e) {
+        logger->trace("[%s] waitForCardPresent => Error while polling SE with"
+                      " waitForCardPresent. %s\n",
+                      reader->getName(), e.getMessage());
         state->onEvent(InternalEvent::STOP_DETECT);
     }
 }
@@ -55,8 +55,14 @@ std::future<void> SmartInsertionMonitoringJob::startMonitoring(
     AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
 {
     return std::async(std::launch::async,
-                      &SmartInsertionMonitoringJob::monitoringJob,
-                      this, state, std::ref(cancellationFlag));
+                      &SmartInsertionMonitoringJob::monitoringJob, this, state,
+                      std::ref(cancellationFlag));
+}
+
+void SmartInsertionMonitoringJob::stop()
+{
+    logger->trace("[%s] stopWaitForCard on reader\n", reader->getName());
+    reader->stopWaitForCard();
 }
 
 }

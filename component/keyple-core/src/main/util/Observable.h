@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
- #pragma once
+#pragma once
 
 #include <iostream>
 #include <ostream>
@@ -32,13 +32,14 @@ namespace util {
 
 using namespace keyple::common;
 
-template<typename T>
-class Observer {
+template <typename T> class Observer {
 public:
     /**
      *
      */
-    virtual ~Observer() {}
+    virtual ~Observer()
+    {
+    }
 
     /**
      *
@@ -55,13 +56,15 @@ public:
  * @param <T> Generic event
  *
  */
-template<typename T>
+template <typename T>
 class Observable : public std::enable_shared_from_this<Observable<T>> {
 public:
     /**
      *
      */
-    Observable() : changed(false) {}
+    Observable() : changed(false)
+    {
+    }
 
     /**
      *
@@ -75,7 +78,9 @@ public:
     /**
      *
      */
-    virtual ~Observable() {}
+    virtual ~Observable()
+    {
+    }
 
     /**
      *
@@ -93,7 +98,6 @@ public:
 
         if (!observers.size())
             logger->debug("addObserver - observers empty, creating new set\n");
-           
 
         logger->debug("addObserver - adding observer to set\n");
 

@@ -18,7 +18,8 @@
 namespace keyple {
 namespace common {
 
-Matcher::Matcher(Pattern* parent, const std::string& text) : parentPattern(parent), text(text)
+Matcher::Matcher(Pattern* parent, const std::string& text)
+: parentPattern(parent), text(text)
 {
     /* Put fields to initial states */
     reset();
@@ -49,32 +50,31 @@ std::string Matcher::replaceAll(std::string replacement)
     std::string result;
     bool bDone = true;
 
-    for ( unsigned int index = 0; index < parentPattern->pattern.size(); index++ )
-    {
+    for (unsigned int index = 0; index < parentPattern->pattern.size();
+         index++) {
         char sBuf[4];
 
-        snprintf( sBuf, sizeof(sBuf), "%c", parentPattern->pattern[index] );
+        snprintf(sBuf, sizeof(sBuf), "%c", parentPattern->pattern[index]);
         std::string find = sBuf;
-        size_t find_len = find.size();
-        size_t pos,from=0;
-        while ( std::string::npos != ( pos=init_string.find(find,from) ) ) {
-            result.append( init_string, from, pos-from );
-            result.append( replacement );
-            from = pos + find_len;
+        size_t find_len  = find.size();
+        size_t pos, from = 0;
+        while (std::string::npos != (pos = init_string.find(find, from))) {
+            result.append(init_string, from, pos - from);
+            result.append(replacement);
+            from  = pos + find_len;
             bDone = true;
         }
-        if ( bDone )
-        {
+        if (bDone) {
             bDone = false;
-            result.append( init_string, from , std::string::npos );
+            result.append(init_string, from, std::string::npos);
         }
         init_string.clear();
         init_string = result;
     }
     return init_string;
 
-//    /* To be implemented */
-//    return text;
+    //    /* To be implemented */
+    //    return text;
 }
 
 bool Matcher::find()
@@ -109,11 +109,11 @@ bool Matcher::find(int start)
     return search(start);
 }
 
-    
 std::string Matcher::group(int group)
 {
     if (group < 0 || group > (int)groups.size())
-        throw IndexOutOfBoundException(StringHelper::formatSimple("No group %d", group));
+        throw IndexOutOfBoundException(
+            StringHelper::formatSimple("No group %d", group));
 
     return groups[group];
 }
@@ -139,10 +139,10 @@ int Matcher::getTextLength()
     return text.length();
 }
 
-Matcher *Matcher::reset()
+Matcher* Matcher::reset()
 {
-    first = -1;
-    last = 0;
+    first   = -1;
+    last    = 0;
     oldLast = -1;
 
     for (int i = 0; i < (int)groups.size(); i++)
@@ -151,12 +151,11 @@ Matcher *Matcher::reset()
         locals[i] = -1;
 
     lastAppendPosition = 0;
-    from = 0;
-    to = getTextLength();
+    from               = 0;
+    to                 = getTextLength();
 
     return this;
 }
 
 }
 }
-

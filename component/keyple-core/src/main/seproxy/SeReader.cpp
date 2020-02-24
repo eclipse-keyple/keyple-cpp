@@ -14,7 +14,6 @@
 
 #include "SeReader.h"
 
-
 namespace keyple {
 namespace core {
 namespace seproxy {

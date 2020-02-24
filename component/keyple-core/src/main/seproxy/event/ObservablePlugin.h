@@ -23,8 +23,15 @@
 #include "Export.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace event {
-    class PluginEvent; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace event {
+class PluginEvent;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -43,7 +50,9 @@ public:
         /**
          *
          */
-        virtual ~PluginObserver() {}
+        virtual ~PluginObserver()
+        {
+        }
 
         /**
          *
@@ -54,20 +63,22 @@ public:
     /**
      *
      */
-//    ObservablePlugin() {}
+    //    ObservablePlugin() {}
 
     /**
      *
      */
-//    ObservablePlugin(const ObservablePlugin& o) : Nameable(), ReaderPlugin()
-//    {
-//        (void)o;
-//    }
+    //    ObservablePlugin(const ObservablePlugin& o) : Nameable(), ReaderPlugin()
+    //    {
+    //        (void)o;
+    //    }
 
     /**
      *
      */
-    virtual ~ObservablePlugin() {}
+    virtual ~ObservablePlugin()
+    {
+    }
 
     /**
      *

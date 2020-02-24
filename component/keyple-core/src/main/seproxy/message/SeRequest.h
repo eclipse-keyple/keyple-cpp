@@ -30,7 +30,13 @@
 #include "Serializable.h"
 
 /* Forward declaration */
-namespace keyple { namespace core { namespace seproxy { class SeSelector; }}}
+namespace keyple {
+namespace core {
+namespace seproxy {
+class SeSelector;
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -45,8 +51,8 @@ using namespace keyple::core::seproxy::protocol;
  *
  * @see SeResponse
  */
-class EXPORT SeRequest final
-: public std::enable_shared_from_this<SeRequest>, public Serializable {
+class EXPORT SeRequest final : public std::enable_shared_from_this<SeRequest>,
+                               public Serializable {
 public:
     /**
      * The constructor called by a ProxyReader in order to open a logical
@@ -61,7 +67,7 @@ public:
      *        keep the channel open after the request execution
      */
     SeRequest(std::shared_ptr<SeSelector> seSelector,
-              std::vector<std::shared_ptr<ApduRequest>> &apduRequests);
+              std::vector<std::shared_ptr<ApduRequest>>& apduRequests);
 
     /**
      * Constructor to be used when the SE is already selected (without {@link
@@ -71,12 +77,14 @@ public:
      * @param channelState a flag to tell if the channel has to be closed at the
      *        end
      */
-    SeRequest(std::vector<std::shared_ptr<ApduRequest>> &apduRequests);
+    SeRequest(std::vector<std::shared_ptr<ApduRequest>>& apduRequests);
 
     /**
      *
      */
-    virtual ~SeRequest() {}
+    virtual ~SeRequest()
+    {
+    }
 
     /**
      * Gets the SE seSelector.
@@ -101,7 +109,7 @@ public:
     /**
      *¬
      */
-    friend std::ostream &operator<<(std::ostream &os, SeRequest &se)
+    friend std::ostream& operator<<(std::ostream& os, SeRequest& se)
     {
         os << se.toString();
 

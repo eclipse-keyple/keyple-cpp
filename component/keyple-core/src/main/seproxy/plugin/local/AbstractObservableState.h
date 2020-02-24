@@ -15,6 +15,7 @@
 #pragma once
 
 /* Common */
+#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
@@ -47,7 +48,7 @@ enum class MonitoringState {
  * {@link AbstractObservableLocalReader.InternalEvent} that might results on a
  * switch of state.
  */
-class AbstractObservableState {
+class EXPORT AbstractObservableState {
 public:
     /**
      * Get the current state identifier of the state machine
@@ -62,7 +63,7 @@ public:
      *
      * @param event internal event received by reader
      */
-    virtual void onEvent(const InternalEvent event);
+    virtual void onEvent(const InternalEvent event) = 0;
 
     /**
      * Invoked when activated, a custom behaviour can be added here
@@ -114,11 +115,10 @@ protected:
      *        no background job is required)
      * @param executorService the executor service
      */
-    AbstractObservableState(
-        MonitoringState state,
-        AbstractObservableLocalReader* reader,
-        std::shared_ptr<MonitoringJob> monitoringJob,
-        std::shared_ptr<MonitoringPool> executorService);
+    AbstractObservableState(MonitoringState state,
+                            AbstractObservableLocalReader* reader,
+                            std::shared_ptr<MonitoringJob> monitoringJob,
+                            std::shared_ptr<MonitoringPool> executorService);
 
     /**
      * Create a new state with a state identifier
@@ -126,9 +126,8 @@ protected:
      * @param reader : observable reader this currentState is attached to
      * @param state : name of the currentState
      */
-    AbstractObservableState(
-        MonitoringState state,
-        AbstractObservableLocalReader* reader);
+    AbstractObservableState(MonitoringState state,
+                            AbstractObservableLocalReader* reader);
 
     /**
      * Switch state in the parent reader
@@ -142,7 +141,7 @@ private:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(AbstractObservableState));
+        LoggerFactory::getLogger(typeid(AbstractObservableState));
 };
 
 }

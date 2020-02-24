@@ -17,11 +17,7 @@ namespace core {
 namespace seproxy {
 namespace protocol {
 
-enum class TransmissionMode {
-    NO_MODE = 0,
-    CONTACTS,
-    CONTACTLESS
-};
+enum class TransmissionMode { NO_MODE = 0, CONTACTS, CONTACTLESS };
 
 }
 }

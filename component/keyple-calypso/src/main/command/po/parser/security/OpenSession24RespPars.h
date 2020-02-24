@@ -43,14 +43,14 @@ public:
     /**
      *
      */
-    std::shared_ptr<SecureSession> toSecureSession(
-        const std::vector<uint8_t>& apduResponseData);
+    std::shared_ptr<SecureSession>
+    toSecureSession(const std::vector<uint8_t>& apduResponseData);
 
     /**
      *
      */
-    static std::shared_ptr<SecureSession> createSecureSession(
-               const std::vector<uint8_t>& apduResponseData);
+    static std::shared_ptr<SecureSession>
+    createSecureSession(const std::vector<uint8_t>& apduResponseData);
 
 protected:
     /**
@@ -59,7 +59,7 @@ protected:
     std::shared_ptr<OpenSession24RespPars> shared_from_this()
     {
         return std::static_pointer_cast<OpenSession24RespPars>(
-                   AbstractOpenSessionRespPars::shared_from_this());
+            AbstractOpenSessionRespPars::shared_from_this());
     }
 };
 

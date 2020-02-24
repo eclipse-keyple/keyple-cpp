@@ -29,16 +29,15 @@ using namespace keyple::calypso::command::sam;
 using namespace keyple::core::seproxy::message;
 
 SamReadEventCounterRespPars::SamReadEventCounterRespPars(
-  std::shared_ptr<ApduResponse> response)
+    std::shared_ptr<ApduResponse> response)
 : AbstractSamResponseParser(response)
 {
 }
 
 std::vector<uint8_t> SamReadEventCounterRespPars::getCounterData() const
 {
-        return isSuccessful() ? response->getDataOut() : std::vector<uint8_t>();
+    return isSuccessful() ? response->getDataOut() : std::vector<uint8_t>();
 }
-
 
 }
 }

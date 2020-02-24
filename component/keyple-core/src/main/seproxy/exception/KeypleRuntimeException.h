@@ -18,7 +18,9 @@
 #include <stdexcept>
 #include <memory>
 
+/* Common */
 #include "Exception.h"
+#include "Export.h"
 
 namespace keyple {
 namespace core {
@@ -27,18 +29,24 @@ namespace exception {
 
 using namespace keyple::common;
 
-class KeypleRuntimeException
-: public Exception,public std::enable_shared_from_this<KeypleRuntimeException> {
+class EXPORT KeypleRuntimeException
+: public Exception,
+  public std::enable_shared_from_this<KeypleRuntimeException> {
 public:
     /**
      *
      */
-    KeypleRuntimeException(const std::string &message);
+    KeypleRuntimeException(const std::string& message) : Exception(message)
+    {
+    }
 
     /**
      *
      */
-    KeypleRuntimeException(const std::string &message, std::runtime_error cause);
+    KeypleRuntimeException(const std::string& message, std::runtime_error cause)
+    : Exception(message, cause)
+    {
+    }
 };
 
 }

@@ -26,6 +26,7 @@
 #include "SeResponse.h"
 
 /* Common */
+#include "Export.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -55,7 +56,6 @@ enum class InternalEvent {
     /** A timeout has occurred (not yet implemented) */
     TIME_OUT
 };
-
 
 /**
  * This abstract class is used to manage the matter of observing SE events in
@@ -121,7 +121,7 @@ enum class InternalEvent {
  * mode (ObservableReader.PollingMode).
  * </ol>
  */
-class AbstractObservableLocalReader : public AbstractLocalReader {
+class EXPORT AbstractObservableLocalReader : public AbstractLocalReader {
 public:
     /**
      * Reader constructor
@@ -134,7 +134,6 @@ public:
      */
     AbstractObservableLocalReader(const std::string& pluginName,
                                   const std::string& readerName);
-
 
     /**
      * Check the presence of a SE
@@ -193,9 +192,9 @@ public:
      *        MATCHED_ONLY)
      */
     void setDefaultSelectionRequest(
-             std::shared_ptr<AbstractDefaultSelectionsRequest>
-                 defaultSelectionsRequest,
-             const ObservableReader::NotificationMode notificationMode);
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        const ObservableReader::NotificationMode notificationMode);
 
     /**
      * A combination of defining the default selection request and starting the
@@ -211,10 +210,10 @@ public:
      *        made.
      */
     void setDefaultSelectionRequest(
-            std::shared_ptr<AbstractDefaultSelectionsRequest>
-                defaultSelectionsRequest,
-            const ObservableReader::NotificationMode notificationMode,
-            const ObservableReader::PollingMode pollingMode);
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        const ObservableReader::NotificationMode notificationMode,
+        const ObservableReader::PollingMode pollingMode);
 
     /**
      * This method is invoked when a SE is inserted in the case of an observable
@@ -224,7 +223,7 @@ public:
      * NfcAdapter callback method onTagDiscovered in the case of a Android NFC
      * plugin.
      * <p>
-     * It will fire a ReaderEvent in the following cases:
+     * It will return a ReaderEvent in the following cases:
      * <ul>
      * <li>SE_INSERTED: if no default selection request was defined
      * <li>SE_MATCHED: if a default selection request was defined in any mode
@@ -234,13 +233,14 @@ public:
      * however transmitted)
      * </ul>
      * <p>
-     * It will do nothing if a default selection is defined in MATCHED_ONLY mode
+     * It returns null if a default selection is defined in MATCHED_ONLY mode
      * but no SE matched the selection.
      *
-     * @return true if the notification was actually sent to the application,
-     *         false if not
+     * @return ReaderEvent that should be notified to observers, contains the
+     *         results of the default selection if any, can be null if no event
+     *         should be sent
      */
-    bool processSeInserted();
+    std::shared_ptr<ReaderEvent> processSeInserted();
 
     /**
      * Sends a neutral APDU to the SE to check its presence. The status of the
@@ -329,15 +329,15 @@ protected:
      * @return initialized state stateService with possible states and the init
      * state
      */
-    virtual std::shared_ptr<ObservableReaderStateService> initStateService();
+    virtual std::shared_ptr<ObservableReaderStateService>
+    initStateService() = 0;
 
 private:
     /**
      * Logger
     */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(AbstractObservableLocalReader));
-
+        LoggerFactory::getLogger(typeid(AbstractObservableLocalReader));
 
     /**
      * The default DefaultSelectionsRequest to be executed upon SE insertion
@@ -355,7 +355,6 @@ private:
      */
     ObservableReader::PollingMode currentPollingMode =
         ObservableReader::PollingMode::SINGLESHOT;
-
 };
 
 }

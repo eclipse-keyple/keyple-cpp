@@ -52,7 +52,8 @@ public:
     /**
      *
      */
-    CustomProtocols(const std::string& nameValue, InnerEnum innerEnum, const std::string& name, TransmissionMode transmissionMode);
+    CustomProtocols(const std::string& nameValue, InnerEnum innerEnum,
+                    const std::string& name, TransmissionMode transmissionMode);
 
     /**
      *
@@ -67,12 +68,12 @@ public:
     /**
      *
      */
-    bool operator == (const CustomProtocols &other);
+    bool operator==(const CustomProtocols& other);
 
     /**
      *
      */
-    bool operator != (const CustomProtocols &other);
+    bool operator!=(const CustomProtocols& other);
 
     /**
      *
@@ -92,7 +93,7 @@ public:
     /**
      *
      */
-    static CustomProtocols valueOf(const std::string &name);
+    static CustomProtocols valueOf(const std::string& name);
 
 private:
     /**

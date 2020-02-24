@@ -20,12 +20,14 @@ public:
     /**
      *
      */
-    virtual ~Serializable() {}
+    virtual ~Serializable()
+    {
+    }
 
     /**
      *
      */
-	virtual std::string toString() = 0;
+    virtual std::string toString() = 0;
 };
 
 }

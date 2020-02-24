@@ -24,7 +24,9 @@ public:
     /**
      *
      */
-    CommandsTable() {}
+    CommandsTable()
+    {
+    }
 
     /**
      *
@@ -37,7 +39,9 @@ public:
     /**
      *
      */
-    virtual ~CommandsTable() {}
+    virtual ~CommandsTable()
+    {
+    }
 
     /**
      *
@@ -58,7 +62,6 @@ public:
      *
      */
     virtual const std::type_info& getResponseParserClass() const = 0;
-
 };
 
 }

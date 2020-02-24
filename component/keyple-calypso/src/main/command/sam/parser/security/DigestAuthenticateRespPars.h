@@ -46,7 +46,9 @@ public:
     /**
      *
      */
-    virtual ~DigestAuthenticateRespPars() {}
+    virtual ~DigestAuthenticateRespPars()
+    {
+    }
 
 protected:
     /**
@@ -54,7 +56,8 @@ protected:
      */
     std::shared_ptr<DigestAuthenticateRespPars> shared_from_this()
     {
-        return std::static_pointer_cast<DigestAuthenticateRespPars>(AbstractSamResponseParser::shared_from_this());
+        return std::static_pointer_cast<DigestAuthenticateRespPars>(
+            AbstractSamResponseParser::shared_from_this());
     }
 };
 

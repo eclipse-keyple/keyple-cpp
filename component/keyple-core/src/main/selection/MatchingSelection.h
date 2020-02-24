@@ -19,10 +19,36 @@
 #include "Export.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace selection { class AbstractMatchingSe; } } }
-namespace keyple { namespace core { namespace selection { class AbstractSeSelectionRequest; } } }
-namespace keyple { namespace core { namespace seproxy { namespace message { class SeResponse; } } } }
-namespace keyple { namespace core { namespace command { class AbstractApduResponseParser; } } }
+namespace keyple {
+namespace core {
+namespace selection {
+class AbstractMatchingSe;
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace selection {
+class AbstractSeSelectionRequest;
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SeResponse;
+}
+}
+}
+}
+namespace keyple {
+namespace core {
+namespace command {
+class AbstractApduResponseParser;
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -34,7 +60,8 @@ using namespace keyple::core::seproxy::message;
 /**
  * The MatchingSelection class holds the result of a single selection case.
  */
-class EXPORT MatchingSelection final : public std::enable_shared_from_this<MatchingSelection> {
+class EXPORT MatchingSelection final
+: public std::enable_shared_from_this<MatchingSelection> {
 private:
     /**
      *
@@ -65,8 +92,11 @@ private:
      * @param selectionSeResponse the selection SeResponse
      */
 public:
-    MatchingSelection(int selectionIndex, std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
-                      std::shared_ptr<AbstractMatchingSe> matchingSe, std::shared_ptr<SeResponse> selectionSeResponse);
+    MatchingSelection(
+        int selectionIndex,
+        std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
+        std::shared_ptr<AbstractMatchingSe> matchingSe,
+        std::shared_ptr<SeResponse> selectionSeResponse);
 
     /**
      * @return the AbstractMatchingSe
@@ -79,7 +109,8 @@ public:
      * @param commandIndex the command index
      * @return a parser object
      */
-    std::shared_ptr<AbstractApduResponseParser> getResponseParser(int commandIndex);
+    std::shared_ptr<AbstractApduResponseParser>
+    getResponseParser(int commandIndex);
 
     /**
      * @return the info string provided with the Selector

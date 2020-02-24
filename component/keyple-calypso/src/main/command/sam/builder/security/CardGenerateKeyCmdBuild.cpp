@@ -27,12 +27,12 @@ using namespace keyple::calypso;
 using namespace keyple::calypso::command::sam;
 
 CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
-  SamRevision revision, std::shared_ptr<KeyReference> cipheringKey,
-  std::shared_ptr<KeyReference> sourceKey)
+    SamRevision revision, std::shared_ptr<KeyReference> cipheringKey,
+    std::shared_ptr<KeyReference> sourceKey)
 : AbstractSamCommandBuilder(CalypsoSamCommands::CARD_GENERATE_KEY, nullptr)
 {
     //if (revision != nullptr) {
-        this->defaultRevision = revision;
+    this->defaultRevision = revision;
     //}
     if (sourceKey == nullptr) {
         throw std::invalid_argument("The source key reference can't be null.");
@@ -48,7 +48,7 @@ CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
         p1 = 0xFF;
         p2 = 0x00;
 
-        data = std::vector<uint8_t>(3);
+        data    = std::vector<uint8_t>(3);
         data[0] = sourceKey->getKif();
         data[1] = sourceKey->getKvc();
         data[2] = 0x90;
@@ -56,7 +56,7 @@ CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
         p1 = 0xFF;
         p2 = 0xFF;
 
-        data = std::vector<uint8_t>(5);
+        data    = std::vector<uint8_t>(5);
         data[0] = cipheringKey->getKif();
         data[1] = cipheringKey->getKvc();
         data[2] = sourceKey->getKif();

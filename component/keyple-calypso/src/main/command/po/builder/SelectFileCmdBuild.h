@@ -48,11 +48,7 @@ public:
     /**
      *
      */
-    enum SelectControl {
-        FIRST,
-        NEXT,
-        CURRENT_DF
-    };
+    enum SelectControl { FIRST, NEXT, CURRENT_DF };
 
     /**
      * Instantiates a new SelectFileCmdBuild to select the first, next or
@@ -77,8 +73,7 @@ public:
      *
      */
     std::shared_ptr<SelectFileRespPars>
-        createResponseParser(std::shared_ptr<ApduResponse> apduResponse)
-        override;
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -87,8 +82,7 @@ protected:
     std::shared_ptr<SelectFileCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<SelectFileCmdBuild>(
-                   AbstractPoCommandBuilder<SelectFileRespPars>
-                       ::shared_from_this());
+            AbstractPoCommandBuilder<SelectFileRespPars>::shared_from_this());
     }
 
 private:

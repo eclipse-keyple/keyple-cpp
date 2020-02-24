@@ -29,22 +29,22 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::core::seproxy::message;
 
 OpenSession31RespPars::OpenSession31RespPars(
-  std::shared_ptr<ApduResponse> response)
+    std::shared_ptr<ApduResponse> response)
 : AbstractOpenSessionRespPars(response, PoRevision::REV3_1)
 {
     std::vector<uint8_t> data = response->getDataOut();
-    this->secureSession = toSecureSession(data);
+    this->secureSession       = toSecureSession(data);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-    OpenSession31RespPars::toSecureSession(
-        const std::vector<uint8_t>& apduResponseData)
+OpenSession31RespPars::toSecureSession(
+    const std::vector<uint8_t>& apduResponseData)
 {
     std::shared_ptr<SecureSession> secureSession;
-    bool previousSessionRatified = (apduResponseData[4] == 0x00);
+    bool previousSessionRatified       = (apduResponseData[4] == 0x00);
     bool manageSecureSessionAuthorized = false;
 
-    uint8_t kif = apduResponseData[5];
+    uint8_t kif    = apduResponseData[5];
     int dataLength = apduResponseData[7];
     std::vector<uint8_t> data =
         Arrays::copyOfRange(apduResponseData, 8, 8 + dataLength);
@@ -55,10 +55,9 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
         Arrays::copyOfRange(apduResponseData, 3, 4);
 
     return std::make_shared<SecureSession>(
-               challengeTransactionCounter, challengeRandomNumber,
-               previousSessionRatified, manageSecureSessionAuthorized,
-               kif, std::make_shared<Byte>(apduResponseData[6]), data,
-               apduResponseData);
+        challengeTransactionCounter, challengeRandomNumber,
+        previousSessionRatified, manageSecureSessionAuthorized, kif,
+        std::make_shared<Byte>(apduResponseData[6]), data, apduResponseData);
 }
 
 }

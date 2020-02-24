@@ -5,9 +5,9 @@ namespace common {
 
 template <class T> class LinkedHashSet {
 public:
-	LinkedHashSet(T t){
-
-	}
+    LinkedHashSet(T t)
+    {
+    }
 };
 
 }

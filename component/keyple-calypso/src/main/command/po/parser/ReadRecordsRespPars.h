@@ -57,7 +57,8 @@ public:
      * @param readDataStructure the type of content in the response to parse
      */
     ReadRecordsRespPars(std::shared_ptr<ApduResponse> apduResponse,
-                        ReadDataStructure readDataStructure, uint8_t recordNumber);
+                        ReadDataStructure readDataStructure,
+                        uint8_t recordNumber);
 
     /**
      * Indicates whether the parser is associated with a counter file.
@@ -104,9 +105,9 @@ protected:
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<
-        AbstractApduResponseParser::StatusProperties>> getStatusTable()
-            const override;
+    std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+    getStatusTable() const override;
 
     /**
      *
@@ -114,15 +115,16 @@ protected:
     std::shared_ptr<ReadRecordsRespPars> shared_from_this()
     {
         return std::static_pointer_cast<ReadRecordsRespPars>(
-                   AbstractPoResponseParser::shared_from_this());
+            AbstractPoResponseParser::shared_from_this());
     }
 
 private:
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<
-               AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        STATUS_TABLE;
 
     /**
      *
@@ -147,8 +149,6 @@ private:
      * Number of the first record read
      */
     char recordNumber = 0;
-
-
 };
 
 }

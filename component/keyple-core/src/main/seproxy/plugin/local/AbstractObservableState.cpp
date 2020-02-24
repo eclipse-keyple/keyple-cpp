@@ -29,16 +29,16 @@ namespace plugin {
 namespace local {
 
 AbstractObservableState::AbstractObservableState(
-  MonitoringState state, AbstractObservableLocalReader* reader,
-  std::shared_ptr<MonitoringJob> monitoringJob,
-  std::shared_ptr<MonitoringPool> executorService)
+    MonitoringState state, AbstractObservableLocalReader* reader,
+    std::shared_ptr<MonitoringJob> monitoringJob,
+    std::shared_ptr<MonitoringPool> executorService)
 : state(state), reader(reader), monitoringJob(monitoringJob),
   executorService(executorService), cancellationFlag()
 {
 }
 
 AbstractObservableState::AbstractObservableState(
-  MonitoringState state, AbstractObservableLocalReader* reader)
+    MonitoringState state, AbstractObservableLocalReader* reader)
 : state(state), reader(reader), cancellationFlag()
 {
 }
@@ -80,11 +80,15 @@ void AbstractObservableState::onDeactivate()
             std::future_status::ready) {
 
         logger->debug("onDeactivate - cancelling monitoring job\n");
+        monitoringJob->stop();
+
+        /* TODO this could be inside the stop method? */
         cancellationFlag = true;
         monitoringEvent->wait();
         cancellationFlag = false;
-        logger->trace("[%s] onDeactivate => cancel runnable waitForCarPresent" \
-                      " by thead interruption\n", reader->getName());
+        logger->trace("[%s] onDeactivate => cancel runnable waitForCarPresent"
+                      " by thead interruption\n",
+                      reader->getName());
     }
 }
 

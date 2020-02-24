@@ -54,7 +54,6 @@ private:
      *
      */
     const std::string pluginName;
-
 };
 
 }

@@ -26,9 +26,9 @@ using namespace keyple::calypso::command::sam;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
 
-SamSelector::SamSelector(
-  const SamRevision& samRevision, const std::string& serialNumber,
-  const std::string& extraInfo)
+SamSelector::SamSelector(const SamRevision& samRevision,
+                         const std::string& serialNumber,
+                         const std::string& extraInfo)
 : SeSelector(SeCommonProtocols::PROTOCOL_ISO7816_3,
              std::make_shared<SeSelector::AtrFilter>(""), nullptr, extraInfo)
 {
@@ -56,7 +56,7 @@ SamSelector::SamSelector(
     case SamRevision::InnerEnum::S1D:
     case SamRevision::InnerEnum::S1E:
         atrRegex = "3B(.{6}|.{10})805A..80" +
-                   samRevision.getApplicationTypeMask() +  "20.{4}" + snRegex +
+                   samRevision.getApplicationTypeMask() + "20.{4}" + snRegex +
                    "829000";
         break;
     case SamRevision::InnerEnum::AUTO:
@@ -70,10 +70,10 @@ SamSelector::SamSelector(
     this->getAtrFilter()->setAtrRegex(atrRegex);
 }
 
-SamSelector::SamSelector(
-  const SamIdentifier& samIdentifier, const std::string& extraInfo)
+SamSelector::SamSelector(const SamIdentifier& samIdentifier,
+                         const std::string& extraInfo)
 : SamSelector(samIdentifier.getSamRevision(), samIdentifier.getSerialNumber(),
-  extraInfo)
+              extraInfo)
 {
 }
 

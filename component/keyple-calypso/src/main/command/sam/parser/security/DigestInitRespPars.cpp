@@ -26,7 +26,6 @@ using namespace keyple::core::seproxy::message;
 DigestInitRespPars::DigestInitRespPars(std::shared_ptr<ApduResponse> response)
 : AbstractSamResponseParser(response)
 {
-
 }
 
 }

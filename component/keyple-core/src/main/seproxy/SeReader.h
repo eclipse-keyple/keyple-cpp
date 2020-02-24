@@ -22,8 +22,15 @@
 #include "TransmissionMode.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace protocol {
-    class SeProtocolSetting; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace protocol {
+class SeProtocolSetting;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -43,13 +50,14 @@ using namespace keyple::core::seproxy::protocol;
  * </ul>
  * Interface used by applications processing SE.
  */
-class SeReader
-: public virtual Nameable, public virtual Configurable {
+class SeReader : public virtual Nameable, public virtual Configurable {
 public:
     /**
      *
      */
-    virtual ~SeReader() {}
+    virtual ~SeReader()
+    {
+    }
 
     /**
      * Checks if is SE present.
@@ -84,7 +92,7 @@ public:
      * @param protocolRule a string use to define how to identify the protocol
      */
     virtual void addSeProtocolSetting(SeProtocol& seProtocol,
-                                      const std::string &protocolRule) = 0;
+                                      const std::string& protocolRule) = 0;
 
     /**
      * Complete the current setting map with the provided map
@@ -92,7 +100,7 @@ public:
      * @param protocolSetting the protocol setting map
      */
     virtual void setSeProtocolSetting(
-                const std::map<SeProtocol, std::string>& protocolSetting) = 0;
+        const std::map<SeProtocol, std::string>& protocolSetting) = 0;
 
     /**
      * @return the transmission mode in use with this SE reader

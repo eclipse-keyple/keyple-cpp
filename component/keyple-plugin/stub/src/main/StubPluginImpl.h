@@ -31,7 +31,6 @@ namespace keyple {
 namespace plugin {
 namespace stub {
 
-
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::plugin;
 
@@ -43,8 +42,8 @@ using namespace keyple::core::seproxy::plugin;
  * singleton, use StubPlugin#getInstance to access it
  *
  */
-class StubPluginImpl
-: public AbstractThreadedObservablePlugin, public StubPlugin {
+class StubPluginImpl : public AbstractThreadedObservablePlugin,
+                       public StubPlugin {
 public:
     /**
      * Constructor
@@ -65,45 +64,45 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string> getParameters()
-        override;
+    const std::map<const std::string, const std::string>
+    getParameters() override;
 
     /**
      *
      */
-    void setParameter(const std::string& key, const std::string& value)
-        override;
-
-    /**
-     *
-     */
-    void plugStubReader(const std::string& readerName, bool synchronous) override;
+    void setParameter(const std::string& key,
+                      const std::string& value) override;
 
     /**
      *
      */
     void plugStubReader(const std::string& readerName,
-                       TransmissionMode transmissionMode,
-                       bool synchronous) override;
+                        bool synchronous) override;
+
+    /**
+     *
+     */
+    void plugStubReader(const std::string& readerName,
+                        TransmissionMode transmissionMode,
+                        bool synchronous) override;
 
     /**
      *
      */
     void plugStubReaders(const std::set<std::string>& readerNames,
-        bool synchronous) override;
+                         bool synchronous) override;
 
     /**
      *
      */
-    void unplugStubReader(const std::string& readerName, bool synchronous)
-        override;
+    void unplugStubReader(const std::string& readerName,
+                          bool synchronous) override;
 
     /**
      *
      */
     void unplugStubReaders(const std::set<std::string>& readerNames,
-        bool synchronous) override;
-
+                           bool synchronous) override;
 
     /**
      * Fetch the list of connected native reader (from a simulated list) and
@@ -142,8 +141,8 @@ protected:
      * @param readerName name of the reader
      * @return the reader object
      */
-    std::shared_ptr<SeReader> fetchNativeReader(const std::string& readerName)
-        override;
+    std::shared_ptr<SeReader>
+    fetchNativeReader(const std::string& readerName) override;
 
 private:
     // private static final StubPlugin uniqueInstance = new StubPlugin();

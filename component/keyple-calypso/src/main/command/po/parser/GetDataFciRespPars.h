@@ -164,13 +164,13 @@ protected:
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(GetDataFciRespPars));
+        LoggerFactory::getLogger(typeid(GetDataFciRespPars));
 
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<StatusProperties>> getStatusTable()
-        const override;
+    std::unordered_map<int, std::shared_ptr<StatusProperties>>
+    getStatusTable() const override;
 
     /**
      *
@@ -178,15 +178,16 @@ protected:
     std::shared_ptr<GetDataFciRespPars> shared_from_this()
     {
         return std::static_pointer_cast<GetDataFciRespPars>(
-                   AbstractPoResponseParser::shared_from_this());
+            AbstractPoResponseParser::shared_from_this());
     }
 
 private:
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<
-               AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        STATUS_TABLE;
 
     /**
      *
@@ -246,26 +247,25 @@ private:
     /**
      * Attributes result of th FCI parsing
      */
-    bool isDfInvalidated_Renamed = false;
+    bool isDfInvalidated_Renamed   = false;
     bool isValidCalypsoFCI_Renamed = false;
     std::vector<uint8_t> dfName;
     std::vector<uint8_t> applicationSN;
     char siBufferSizeIndicator = 0;
-    char siPlatform = 0;
-    char siApplicationType = 0;
-    char siApplicationSubtype = 0;
-    char siSoftwareIssuer = 0;
-    char siSoftwareVersion = 0;
-    char siSoftwareRevision = 0;
+    char siPlatform            = 0;
+    char siApplicationType     = 0;
+    char siApplicationSubtype  = 0;
+    char siSoftwareIssuer      = 0;
+    char siSoftwareVersion     = 0;
+    char siSoftwareRevision    = 0;
 
     /**
      * Application type bitmasks features
      */
-    static constexpr char APP_TYPE_WITH_CALYPSO_PIN = 0x01;
-    static constexpr char APP_TYPE_WITH_CALYPSO_SV = 0x02;
+    static constexpr char APP_TYPE_WITH_CALYPSO_PIN              = 0x01;
+    static constexpr char APP_TYPE_WITH_CALYPSO_SV               = 0x02;
     static constexpr char APP_TYPE_RATIFICATION_COMMAND_REQUIRED = 0x04;
-    static constexpr char APP_TYPE_CALYPSO_REV_32_MODE = 0x08;
-
+    static constexpr char APP_TYPE_CALYPSO_REV_32_MODE           = 0x08;
 };
 
 }

@@ -20,11 +20,14 @@ namespace core {
 namespace seproxy {
 namespace message {
 
-SelectionStatus::SelectionStatus(std::shared_ptr<AnswerToReset> atr, std::shared_ptr<ApduResponse> fci, bool isMatching)
+SelectionStatus::SelectionStatus(std::shared_ptr<AnswerToReset> atr,
+                                 std::shared_ptr<ApduResponse> fci,
+                                 bool isMatching)
 : atr(atr), fci(fci), isMatching(isMatching)
 {
     if (atr == nullptr && fci == nullptr) {
-        throw std::invalid_argument("Atr and Fci can't be null at the same time.");
+        throw std::invalid_argument(
+            "Atr and Fci can't be null at the same time.");
     }
 }
 
@@ -53,26 +56,29 @@ bool SelectionStatus::equals(std::shared_ptr<void> o)
         return false;
     }
 
-    std::shared_ptr<SelectionStatus> selectionStatus = std::static_pointer_cast<SelectionStatus>(o);
+    std::shared_ptr<SelectionStatus> selectionStatus =
+        std::static_pointer_cast<SelectionStatus>(o);
 
-    return selectionStatus->getAtr() == nullptr ? this->atr == nullptr :
-           selectionStatus->getAtr()->equals(this->atr) && selectionStatus->getFci() == nullptr ? this->fci == nullptr :
-           selectionStatus->getFci()->equals(this->fci) && selectionStatus->hasMatched() == isMatching;
+    return selectionStatus->getAtr() == nullptr
+               ? this->atr == nullptr
+               : selectionStatus->getAtr()->equals(this->atr) &&
+                         selectionStatus->getFci() == nullptr
+                     ? this->fci == nullptr
+                     : selectionStatus->getFci()->equals(this->fci) &&
+                           selectionStatus->hasMatched() == isMatching;
 }
 
 int SelectionStatus::hashCode()
 {
     int hash = 17;
-    hash = 19 * hash + (isMatching ? 0 : 1);
+    hash     = 19 * hash + (isMatching ? 0 : 1);
     hash = 31 * hash + (atr == nullptr ? 0 : Arrays::hashCode(atr->getBytes()));
     hash = 7 * hash + (fci == nullptr ? 0 : Arrays::hashCode(fci->getBytes()));
     return hash;
 }
 
-
 void SelectionStatus::finalize()
 {
-
 }
 
 }

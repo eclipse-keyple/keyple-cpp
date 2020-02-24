@@ -27,9 +27,10 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
-SamWriteKeyCmdBuild::SamWriteKeyCmdBuild(
-  SamRevision& revision, uint8_t writingMode, uint8_t keyReference,
-  std::vector<uint8_t>& keyData)
+SamWriteKeyCmdBuild::SamWriteKeyCmdBuild(SamRevision& revision,
+                                         uint8_t writingMode,
+                                         uint8_t keyReference,
+                                         std::vector<uint8_t>& keyData)
 : AbstractSamCommandBuilder(CalypsoSamCommands::WRITE_KEY, nullptr)
 {
     this->defaultRevision = revision;
@@ -40,7 +41,7 @@ SamWriteKeyCmdBuild::SamWriteKeyCmdBuild(
         throw IllegalArgumentException("Key data null!");
 
     if (keyData.size() < 48 && keyData.size() > 80)
-        throw IllegalArgumentException("Key data should be between 40 and 80 " \
+        throw IllegalArgumentException("Key data should be between 40 and 80 "
                                        "bytes long!");
 
     request = setApduRequest(cla, command, writingMode, keyReference, keyData);

@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-    #include "CalypsoClassicInfo.h"
+#include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "CalypsoUtilities.h"
 #include "KeypleReaderNotFoundException.h"
@@ -48,7 +48,7 @@ class UseCase_Calypso4_PoAuthentication_Stub {
 const std::shared_ptr<Logger> logger =
     LoggerFactory::getLogger(typeid(UseCase_Calypso4_PoAuthentication_Stub));
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
     /*
      * Get a PO and a SAM reader ready to work with a Calypso PO.
      */
-    std::shared_ptr<StubReader> poReader  =
+    std::shared_ptr<StubReader> poReader =
         std::dynamic_pointer_cast<StubReader>(stubPlugin.getReader("poReader"));
     std::shared_ptr<StubReader> samReader =
         std::dynamic_pointer_cast<StubReader>(
@@ -83,14 +83,13 @@ int main(int argc, char **argv)
     /* Check if the reader exists */
     if (poReader == nullptr || samReader == nullptr) {
         throw std::make_shared<IllegalStateException>(
-                  "Bad PO or SAM reader setup");
+            "Bad PO or SAM reader setup");
     }
 
     samReader->addSeProtocolSetting(
         SeCommonProtocols::PROTOCOL_ISO7816_3,
-        StubProtocolSetting::STUB_PROTOCOL_SETTING[
-            SeCommonProtocols::PROTOCOL_ISO7816_3]);
-
+        StubProtocolSetting::STUB_PROTOCOL_SETTING
+            [SeCommonProtocols::PROTOCOL_ISO7816_3]);
 
     /* Create 'virtual' Calypso PO */
     std::shared_ptr<StubSecureElement> calypsoStubSe =
@@ -117,29 +116,27 @@ int main(int argc, char **argv)
     /* Check if the readers exists */
     if (poReader == nullptr || samReader == nullptr) {
         throw std::make_shared<IllegalStateException>(
-                  "Bad PO or SAM reader setup");
+            "Bad PO or SAM reader setup");
     }
 
-
-
-    logger->info("=============== UseCase Calypso #4: Po Authentication =====" \
+    logger->info("=============== UseCase Calypso #4: Po Authentication ====="
                  "=============\n");
     logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
     logger->info("= SAM Reader  NAME = %s\n", samReader->getName().c_str());
 
     poReader->addSeProtocolSetting(
         SeCommonProtocols::PROTOCOL_ISO14443_4,
-        StubProtocolSetting::STUB_PROTOCOL_SETTING[
-            SeCommonProtocols::PROTOCOL_ISO14443_4]);
+        StubProtocolSetting::STUB_PROTOCOL_SETTING
+            [SeCommonProtocols::PROTOCOL_ISO14443_4]);
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
 
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
-        logger->info("= 1st PO exchange: AID based selection with reading of " \
+        logger->info("= 1st PO exchange: AID based selection with reading of "
                      "Environment file.         =\n");
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
 
         /*
@@ -199,51 +196,48 @@ int main(int argc, char **argv)
             /*
              * Go on with the reading of the first record of the EventLog file
              */
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
-            logger->info("= 2nd PO exchange: open and close a secure session " \
+            logger->info("= 2nd PO exchange: open and close a secure session "
                          "to perform authentication.    =\n");
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
 
             std::shared_ptr<PoTransaction> poTransaction =
                 std::make_shared<PoTransaction>(
-                    std::make_shared<PoResource>(
-                        poReader, calypsoPo), samResource,
-                        CalypsoUtilities::getSecuritySettings());
+                    std::make_shared<PoResource>(poReader, calypsoPo),
+                    samResource, CalypsoUtilities::getSecuritySettings());
 
             /*
              * Prepare the reading order and keep the associated parser for
              * later use once the transaction has been processed.
              */
-            int readEventLogParserIndex =
-                poTransaction->prepareReadRecordsCmd(
+            int readEventLogParserIndex = poTransaction->prepareReadRecordsCmd(
+                CalypsoClassicInfo::SFI_EventLog,
+                ReadDataStructure::SINGLE_RECORD_DATA,
+                CalypsoClassicInfo::RECORD_NUMBER_1,
+                StringHelper::formatSimple(
+                    "EventLog (SFI=%02X, recnbr=%d))",
                     CalypsoClassicInfo::SFI_EventLog,
-                    ReadDataStructure::SINGLE_RECORD_DATA,
-                    CalypsoClassicInfo::RECORD_NUMBER_1,
-                    StringHelper::formatSimple(
-                        "EventLog (SFI=%02X, recnbr=%d))",
-                        CalypsoClassicInfo::SFI_EventLog,
-                        CalypsoClassicInfo::RECORD_NUMBER_1));
+                    CalypsoClassicInfo::RECORD_NUMBER_1));
 
             (void)readEventLogParserIndex;
 
             /*
              * Open Session for the debit key
              */
-            bool poProcessStatus =
-                poTransaction->processOpening(
-                    PoTransaction::ModificationMode::ATOMIC,
-                    PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT,
-                    static_cast<char>(0), static_cast<char>(0));
+            bool poProcessStatus = poTransaction->processOpening(
+                PoTransaction::ModificationMode::ATOMIC,
+                PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT,
+                static_cast<char>(0), static_cast<char>(0));
 
             if (!poProcessStatus) {
                 throw std::make_shared<IllegalStateException>(
-                          "processingOpening failure.");
+                    "processingOpening failure.");
             }
 
             if (!poTransaction->wasRatified()) {
-                logger->info("========= Previous Secure Session was not " \
+                logger->info("========= Previous Secure Session was not "
                              "ratified. =====================\n");
             }
 
@@ -258,8 +252,8 @@ int main(int argc, char **argv)
                     CalypsoClassicInfo::RECORD_NUMBER_1,
                     StringHelper::formatSimple(
                         "EventLog (SFI=%02X, recnbr=%d))",
-                         CalypsoClassicInfo::SFI_EventLog,
-                         CalypsoClassicInfo::RECORD_NUMBER_1));
+                        CalypsoClassicInfo::SFI_EventLog,
+                        CalypsoClassicInfo::RECORD_NUMBER_1));
 
             poProcessStatus = poTransaction->processPoCommandsInSession();
 
@@ -272,9 +266,8 @@ int main(int argc, char **argv)
                     poTransaction->getResponseParser(
                         readEventLogParserIndexBis));
             std::vector<uint8_t> eventLog =
-                (*(parser->getRecords().get()))[
-                    CalypsoClassicInfo::RECORD_NUMBER_1];
-
+                (*(parser->getRecords()
+                       .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
             /* Log the result */
             logger->info("EventLog file data: %s\n",
@@ -282,14 +275,14 @@ int main(int argc, char **argv)
 
             if (!poProcessStatus) {
                 throw std::make_shared<IllegalStateException>(
-                          "processPoCommandsInSession failure.");
+                    "processPoCommandsInSession failure.");
             }
 
             /*
              * Close the Secure Session.
              */
             if (logger->isInfoEnabled()) {
-                logger->info("========= PO Calypso session ======= Closing ==" \
+                logger->info("========= PO Calypso session ======= Closing =="
                              "==========================\n");
             }
 
@@ -301,14 +294,14 @@ int main(int argc, char **argv)
 
             if (!poProcessStatus) {
                 throw std::make_shared<IllegalStateException>(
-                          "processClosing failure.");
+                    "processClosing failure.");
             }
 
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
-            logger->info("= End of the Calypso PO processing.                " \
+            logger->info("= End of the Calypso PO processing.                "
                          "                              =\n");
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
         } else {
             logger->error("The selection of the PO has failed\n");
@@ -319,4 +312,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-

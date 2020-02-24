@@ -36,7 +36,7 @@ public:
      *
      * @param pluginName : pluginName that has not been found
      */
-    KeyplePluginNotFoundException(const std::string &pluginName)
+    KeyplePluginNotFoundException(const std::string& pluginName)
     : KeyplePluginException("Plugin with name " + pluginName + " was not found")
     {
     }

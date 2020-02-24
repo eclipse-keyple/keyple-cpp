@@ -54,7 +54,9 @@ public:
         /**
          *
          */
-        virtual ~ReaderObserver() {}
+        virtual ~ReaderObserver()
+        {
+        }
 
         /**
          *
@@ -85,10 +87,7 @@ public:
         /**
          *
          */
-        enum class InnerEnum {
-            ALWAYS,
-            MATCHED_ONLY
-        };
+        enum class InnerEnum { ALWAYS, MATCHED_ONLY };
 
         /*
          * Alex: removed 'const'
@@ -105,8 +104,8 @@ public:
         /**
          *
          */
-        NotificationMode(const std::string &nameValue, InnerEnum innerEnum,
-                         const std::string &name);
+        NotificationMode(const std::string& nameValue, InnerEnum innerEnum,
+                         const std::string& name);
 
         /**
          *
@@ -116,13 +115,14 @@ public:
         /**
          *
          */
-        virtual ~NotificationMode() {}
+        virtual ~NotificationMode()
+        {
+        }
 
         /**
          *
          */
         virtual std::string getName();
-
 
         /**
          * This method can be used for reverse lookup purpose
@@ -130,17 +130,17 @@ public:
          * @param name the enum name
          * @return the corresponding enum
          */
-        static NotificationMode get(const std::string &name);
+        static NotificationMode get(const std::string& name);
 
         /**
          *
          */
-        bool operator==(const NotificationMode &other);
+        bool operator==(const NotificationMode& other);
 
         /**
          *
          */
-        bool operator!=(const NotificationMode &other);
+        bool operator!=(const NotificationMode& other);
 
         /**
          *
@@ -165,7 +165,7 @@ public:
         /**
          *
          */
-        static NotificationMode valueOf(const std::string &name);
+        static NotificationMode valueOf(const std::string& name);
 
     protected:
         /**
@@ -203,7 +203,6 @@ public:
          *
          */
         static int nextOrdinal;
-
 
         /**
          * Reverse Lookup Implementation
@@ -254,7 +253,9 @@ public:
     /**
      *
      */
-    virtual ~ObservableReader() {}
+    virtual ~ObservableReader()
+    {
+    }
 
     /**
      * Add a reader observer.
@@ -289,7 +290,7 @@ public:
     /**
      * Remove all observers at once
      */
-    void clearObservers();
+    virtual void clearObservers() = 0;
 
     /**
      * @return the number of observers
@@ -301,9 +302,9 @@ public:
      * of the arrival of an SE.
      *
      * @param pollingMode indicates the action to be followed after processing
-     *        the SE: if CONTINUE, the SE detection is restarted, if STOP, the
-     *        SE detection is stopped until a new call to startSeDetection is
-     *        made.
+     *        the SE: if REPEATING, the SE detection is restarted, if
+     *        SINGLESHOT, the SE detection is stopped until a new call to
+     *        startSeDetection is made.
      */
     virtual void startSeDetection(PollingMode pollingMode) = 0;
 
@@ -326,10 +327,10 @@ public:
      *        notified even if the selection has failed (ALWAYS) or whether the
      *        SE insertion should be ignored in this case (MATCHED_ONLY).
      */
-    virtual void setDefaultSelectionRequest(
-                std::shared_ptr<AbstractDefaultSelectionsRequest>
-                    defaultSelectionsRequest,
-                NotificationMode notificationMode) = 0;
+    virtual void
+    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
+                                   defaultSelectionsRequest,
+                               NotificationMode notificationMode) = 0;
 
     /**
      * A combination of defining the default selection request and starting the
@@ -345,8 +346,7 @@ public:
      *        made.
      */
     void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
+        AbstractDefaultSelectionsRequest& defaultSelectionsRequest,
         NotificationMode notificationMode, PollingMode pollingMode);
 
     /**
@@ -359,6 +359,19 @@ public:
      * <p>
      * The action to be continued will be the one defined by the PollingMode
      * used to start the SE detection.
+     * <p>
+     * The call of this method is mandatory only if the current transaction
+     * performed via an observed reader did not end with a call to an operation
+     * causing a physical channel closing (CLOSE_AFTER). The main objective here
+     * is to achieve the closing of the physical channel. A typical use of this
+     * method is in handling exceptions (catch) that may occur during a
+     * transaction that would prevent reaching the last operation closing the
+     * physical channel.
+     * <p>
+     * The channel closing here refers to the application's intention to no
+     * longer communicate with the SE. This may take the form of an immediate
+     * physical channel closing in the case of an unobserved reader or a delayed
+     * closing upon removal of the SE (removal sequence).
      */
     void notifySeProcessed();
 };

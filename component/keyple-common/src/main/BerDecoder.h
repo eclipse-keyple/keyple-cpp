@@ -34,7 +34,8 @@ private:
      * Resets this decode to start parsing from the initial offset
      * (ie., same state as after calling the constructor).
      */
-    void reset() {
+    void reset()
+    {
         offset = origOffset;
     }
 
@@ -42,7 +43,8 @@ public:
     /**
      * Creates a BER decoder that reads bytes from the specified buffer.
      */
-    BerDecoder(std::vector<char> buf, int offset, int bufsize) : origOffset(offset), buf(buf), bufsize(bufsize)
+    BerDecoder(std::vector<char> buf, int offset, int bufsize)
+    : origOffset(offset), buf(buf), bufsize(bufsize)
     {
         reset();
     }
@@ -70,11 +72,11 @@ public:
         }
         return buf[offset] & 0xff;
     }
-    
+
     /**
       * Parses a possibly variable length field.
       */
-    int parseLength() 
+    int parseLength()
     {
 
         int lengthbyte = parseByte();
@@ -97,11 +99,11 @@ public:
 
             int retval = 0;
 
-            for( int i = 0; i < lengthbyte; i++) {
+            for (int i = 0; i < lengthbyte; i++) {
                 retval = (retval << 8) + (buf[offset++] & 0xff);
             }
             if (retval < 0) {
-              throw std::runtime_error("Invalid length bytes");
+                throw std::runtime_error("Invalid length bytes");
             }
             return retval;
         } else {
@@ -131,7 +133,8 @@ public:
 
         if ((st = parseByte()) != tag) {
 
-            throw std::runtime_error(StringHelper::formatSimple("Encountered ASN.1 tag %x (expected tag %x)", st, tag));
+            throw std::runtime_error(StringHelper::formatSimple(
+                "Encountered ASN.1 tag %x (expected tag %x)", st, tag));
         }
 
         int len = parseLength();
@@ -149,11 +152,10 @@ public:
         if (!rlen.empty()) {
             rlen[0] = offset - origOffset;
         }
-        
+
         return retarr;
     }
 };
 
 }
 }
-

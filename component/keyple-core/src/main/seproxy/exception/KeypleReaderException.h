@@ -56,15 +56,17 @@ public:
     /**
      *
      */
-    virtual ~KeypleReaderException() {}
+    virtual ~KeypleReaderException()
+    {
+    }
 
     /**
      * Setters and Getters for List of SeResponseSet and SeResponse
      */
     virtual std::list<std::shared_ptr<SeResponse>>& getSeResponseSet();
 
-    virtual void setSeResponseSet(
-                std::list<std::shared_ptr<SeResponse>> seResponseList);
+    virtual void
+    setSeResponseSet(std::list<std::shared_ptr<SeResponse>> seResponseList);
 
     virtual std::shared_ptr<SeResponse> getSeResponse();
 

@@ -24,7 +24,7 @@ namespace plugin {
 namespace local {
 
 AbstractObservableLocalReader::AbstractObservableLocalReader(
-  const std::string& pluginName, const std::string& readerName)
+    const std::string& pluginName, const std::string& readerName)
 : AbstractLocalReader(pluginName, readerName)
 {
 }
@@ -49,8 +49,9 @@ bool AbstractObservableLocalReader::isSePresent()
 void AbstractObservableLocalReader::startSeDetection(
     const ObservableReader::PollingMode pollingMode)
 {
-    logger->trace("[%s] startSeDetection => start Se Detection with " \
-                  "pollingMode %d\n", this->getName(), pollingMode);
+    logger->trace("[%s] startSeDetection => start Se Detection with "
+                  "pollingMode %d\n",
+                  this->getName(), pollingMode);
     this->currentPollingMode = pollingMode;
     this->stateService->onEvent(InternalEvent::START_DETECT);
 }
@@ -86,12 +87,13 @@ void AbstractObservableLocalReader::setDefaultSelectionRequest(
 
 void AbstractObservableLocalReader::startRemovalSequence()
 {
-    logger->trace("[%s] startRemovalSequence => start removal sequence of " \
-                  "the reader\n", this->getName());
+    logger->trace("[%s] startRemovalSequence => start removal sequence of "
+                  "the reader\n",
+                  this->getName());
     this->stateService->onEvent(InternalEvent::SE_PROCESSED);
 }
 
-bool AbstractObservableLocalReader::processSeInserted()
+std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
 {
     logger->trace("[%s] processSeInserted => process the inserted se\n",
                   this->getName());
@@ -99,15 +101,15 @@ bool AbstractObservableLocalReader::processSeInserted()
     bool presenceNotified = false;
 
     if (defaultSelectionsRequest == nullptr) {
-        logger->trace("[%s] processSeInserted => no default selection request" \
-                      " defined, notify SE_INSERTED\n", this->getName());
+        logger->trace("[%s] processSeInserted => no default selection request"
+                      " defined, notify SE_INSERTED\n",
+                      this->getName());
 
         /* No default request is defined, just notify the SE insertion */
-        notifyObservers(
-            std::make_shared<ReaderEvent>(this->pluginName, this->name,
-                                          ReaderEvent::EventType::SE_INSERTED,
-                                          nullptr));
         presenceNotified = true;
+        return std::make_shared<ReaderEvent>(
+            this->pluginName, this->name, ReaderEvent::EventType::SE_INSERTED,
+            nullptr);
     } else {
         /*
          * A default request is defined, send it and notify according to the
@@ -116,69 +118,70 @@ bool AbstractObservableLocalReader::processSeInserted()
         bool aSeMatched = false;
 
         try {
-            std::list<std::shared_ptr<SeResponse>> seResponseList =
-                 transmitSet(
-                     defaultSelectionsRequest->getSelectionSeRequestSet(),
-                     defaultSelectionsRequest->getMultiSeRequestProcessing(),
-                     defaultSelectionsRequest->getChannelControl());
+            std::list<std::shared_ptr<SeResponse>> seResponseList = transmitSet(
+                defaultSelectionsRequest->getSelectionSeRequestSet(),
+                defaultSelectionsRequest->getMultiSeRequestProcessing(),
+                defaultSelectionsRequest->getChannelControl());
 
             for (auto seResponse : seResponseList) {
                 if (seResponse != nullptr &&
                     seResponse->getSelectionStatus()->hasMatched()) {
-                    logger->trace("[%s] processSeInserted => a default " \
-                                  "selection has matched\n", this->getName());
+                    logger->trace("[%s] processSeInserted => a default "
+                                  "selection has matched\n",
+                                  this->getName());
                     aSeMatched = true;
                     break;
                 }
             }
 
             if (notificationMode ==
-                    ObservableReader::NotificationMode::MATCHED_ONLY) {
+                ObservableReader::NotificationMode::MATCHED_ONLY) {
                 /*
                  * Notify only if a SE matched the selection, just ignore if not
                  */
                 if (aSeMatched) {
-                    notifyObservers(
-                        std::make_shared<ReaderEvent>(
-                            this->pluginName, this->name,
-                            ReaderEvent::EventType::SE_MATCHED,
-                            std::make_shared<DefaultSelectionsResponse>(
-                                seResponseList)));
                     presenceNotified = true;
+                    return std::make_shared<ReaderEvent>(
+                        this->pluginName, this->name,
+                        ReaderEvent::EventType::SE_MATCHED,
+                        std::make_shared<DefaultSelectionsResponse>(
+                            seResponseList));
                 } else {
-                    logger->trace("[%s] processSeInserted => selection hasn't" \
-                                  " matched, do not throw any event because " \
-                                  "of MATCHED_ONLY flag\n", this->getName());
+                    logger->trace("[%s] processSeInserted => selection hasn't"
+                                  " matched, do not throw any event because "
+                                  "of MATCHED_ONLY flag\n",
+                                  this->getName());
+                    return nullptr;
                 }
             } else {
                 /* ObservableReader::NotificationMode::ALWAYS */
                 if (aSeMatched) {
+                    presenceNotified = true;
                     /*
                      * The SE matched, notify a SE_MATCHED event with the
                      * received response.
                      */
-                    notifyObservers(
-                        std::make_shared<ReaderEvent>(
-                            this->pluginName, this->name,
-                            ReaderEvent::EventType::SE_MATCHED,
-                            std::make_shared<DefaultSelectionsResponse>(
-                                seResponseList)));
+                    return std::make_shared<ReaderEvent>(
+                        this->pluginName, this->name,
+                        ReaderEvent::EventType::SE_MATCHED,
+                        std::make_shared<DefaultSelectionsResponse>(
+                            seResponseList));
                 } else {
                     /*
                      * The SE didn't match, notify an SE_INSERTED event with the
                      * received response
                      */
-                    logger->trace("[%s] processSeInserted => none of %d " \
+                    logger->trace("[%s] processSeInserted => none of %d "
                                   "default selection matched\n",
                                   this->getName(), seResponseList.size());
-                    notifyObservers(
-                        std::make_shared<ReaderEvent>(
-                            this->pluginName, this->name,
-                            ReaderEvent::EventType::SE_INSERTED,
-                            std::make_shared<DefaultSelectionsResponse>(
-                                seResponseList)));
+
+                    presenceNotified = true;
+                    return std::make_shared<ReaderEvent>(
+                        this->pluginName, this->name,
+                        ReaderEvent::EventType::SE_INSERTED,
+                        std::make_shared<DefaultSelectionsResponse>(
+                            seResponseList));
                 }
-                presenceNotified = true;
             }
         } catch (const KeypleReaderException& e) {
             /*
@@ -186,8 +189,9 @@ bool AbstractObservableLocalReader::processSeInserted()
              * channels.
              */
             closeLogicalAndPhysicalChannels();
-            logger->debug("An IO Exception occurred while processing the " \
-                          "default selection. %s\n", e.getMessage());
+            logger->debug("An IO Exception occurred while processing the "
+                          "default selection. %s\n",
+                          e.getMessage());
             /*
              * In this case the SE has been removed or not read correctly, do
              * not throw event
@@ -208,7 +212,8 @@ bool AbstractObservableLocalReader::processSeInserted()
         }
     }
 
-    return presenceNotified;
+    /* No event returned */
+    return nullptr;
 }
 
 bool AbstractObservableLocalReader::isSePresentPing()
@@ -221,8 +226,9 @@ bool AbstractObservableLocalReader::isSePresentPing()
         logger->trace("[%s] Ping SE\n", this->getName());
         transmitApdu(apdu);
     } catch (const KeypleIOReaderException& e) {
-        logger->trace("[%s] Exception occurred in isSePresentPing. Message: " \
-                      "%s\n", this->getName(), e.getMessage());
+        logger->trace("[%s] Exception occurred in isSePresentPing. Message: "
+                      "%s\n",
+                      this->getName(), e.getMessage());
         return false;
     }
 
@@ -232,10 +238,9 @@ bool AbstractObservableLocalReader::isSePresentPing()
 void AbstractObservableLocalReader::processSeRemoved()
 {
     closeLogicalAndPhysicalChannels();
-    notifyObservers(
-        std::make_shared<ReaderEvent>(
-            this->pluginName, this->name,
-            ReaderEvent::EventType::SE_REMOVED, nullptr));
+    notifyObservers(std::make_shared<ReaderEvent>(
+        this->pluginName, this->name, ReaderEvent::EventType::SE_REMOVED,
+        nullptr));
 }
 
 ObservableReader::PollingMode AbstractObservableLocalReader::getPollingMode()
@@ -243,8 +248,7 @@ ObservableReader::PollingMode AbstractObservableLocalReader::getPollingMode()
     return currentPollingMode;
 }
 
-void AbstractObservableLocalReader::switchState(
-    const MonitoringState stateId)
+void AbstractObservableLocalReader::switchState(const MonitoringState stateId)
 {
     this->stateService->switchState(stateId);
 }

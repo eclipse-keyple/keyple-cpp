@@ -35,9 +35,8 @@ NotificationMode NotificationMode::MATCHED_ONLY("MATCHED_ONLY",
 std::vector<NotificationMode> NotificationMode::valueList;
 int NotificationMode::nextOrdinal = 0;
 
-NotificationMode::NotificationMode(const std::string &nameValue,
-                                   InnerEnum innerEnum,
-                                   const std::string &name)
+NotificationMode::NotificationMode(const std::string& nameValue,
+                                   InnerEnum innerEnum, const std::string& name)
 : innerEnumValue(innerEnum), name(name), nameValue(nameValue),
   ordinalValue(nextOrdinal++)
 {
@@ -54,12 +53,12 @@ std::string NotificationMode::getName()
     return this->name;
 }
 
-const std::map<std::string, NotificationMode>
-NotificationMode::lookup = std::map<std::string, NotificationMode>();
+const std::map<std::string, NotificationMode> NotificationMode::lookup =
+    std::map<std::string, NotificationMode>();
 
 NotificationMode::StaticConstructor NotificationMode::staticConstructor;
 
-NotificationMode NotificationMode::get(const std::string &name)
+NotificationMode NotificationMode::get(const std::string& name)
 {
     std::map<std::string, NotificationMode>::const_iterator it =
         lookup.find(name);
@@ -67,12 +66,12 @@ NotificationMode NotificationMode::get(const std::string &name)
     return it->second;
 }
 
-bool NotificationMode::operator==(const NotificationMode &other)
+bool NotificationMode::operator==(const NotificationMode& other)
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool NotificationMode::operator!=(const NotificationMode &other)
+bool NotificationMode::operator!=(const NotificationMode& other)
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -80,9 +79,9 @@ bool NotificationMode::operator!=(const NotificationMode &other)
 NotificationMode& NotificationMode::operator=(NotificationMode o)
 {
     this->innerEnumValue = o.innerEnumValue;
-    this->name = o.name;
-    this->nameValue = o.nameValue;
-    this->ordinalValue = o.ordinalValue;
+    this->name           = o.name;
+    this->nameValue      = o.nameValue;
+    this->ordinalValue   = o.ordinalValue;
 
     return *this;
 }
@@ -102,7 +101,7 @@ std::string NotificationMode::toString()
     return nameValue;
 }
 
-NotificationMode NotificationMode::valueOf(const std::string &name)
+NotificationMode NotificationMode::valueOf(const std::string& name)
 {
     for (auto enumInstance : NotificationMode::valueList) {
         if (enumInstance.nameValue == name) {

@@ -52,15 +52,9 @@ public:
     /**
      *
      */
-    void (*getMonitoringJob())(AbstractObservableState* state,
-                               std::atomic<bool>& cancellationFlag) override;
-
-    /**
-     *
-     */
-    std::future<void> startMonitoring(
-        AbstractObservableState* state,
-        std::atomic<bool>& cancellationFlag) override;
+    std::future<void>
+    startMonitoring(AbstractObservableState* state,
+                    std::atomic<bool>& cancellationFlag) override;
 
     /**
      *
@@ -68,12 +62,17 @@ public:
     void monitoringJob(AbstractObservableState* state,
                        std::atomic<bool>& cancellationFlag);
 
+    /**
+     *
+     */
+    void stop() override;
+
 private:
     /**
      *
      */
     const std::shared_ptr<Logger> logger =
-              LoggerFactory::getLogger(typeid(SmartInsertionMonitoringJob));
+        LoggerFactory::getLogger(typeid(SmartInsertionMonitoringJob));
 
     /**
      *

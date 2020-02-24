@@ -37,7 +37,6 @@ ReaderPlugin& StubPoolPluginFactory::getPluginInstance()
     return uniqueInstance;
 }
 
-
 }
 }
 }

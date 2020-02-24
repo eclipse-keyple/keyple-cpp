@@ -27,7 +27,7 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
 
 AbstractSeSelectionRequest::AbstractSeSelectionRequest(
-  std::shared_ptr<SeSelector> seSelector)
+    std::shared_ptr<SeSelector> seSelector)
 : seSelector(seSelector)
 {
 }
@@ -46,20 +46,23 @@ std::shared_ptr<SeSelector> AbstractSeSelectionRequest::getSeSelector()
     return seSelector;
 }
 
-void AbstractSeSelectionRequest::addApduRequest(std::shared_ptr<ApduRequest> apduRequest)
+void AbstractSeSelectionRequest::addApduRequest(
+    std::shared_ptr<ApduRequest> apduRequest)
 {
     seSelectionApduRequestList.push_back(apduRequest);
 }
 
-std::shared_ptr<AbstractApduResponseParser> AbstractSeSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse,
-                                                                                         int commandIndex)
+std::shared_ptr<AbstractApduResponseParser>
+AbstractSeSelectionRequest::getCommandParser(
+    std::shared_ptr<SeResponse> seResponse, int commandIndex)
 {
     (void)seResponse;
     (void)commandIndex;
 
     /* not yet implemented in keyple-core */
     // TODO add a generic command parser
-    throw std::make_shared<IllegalStateException>("No parsers available for this request.");
+    throw std::make_shared<IllegalStateException>(
+        "No parsers available for this request.");
 }
 
 }

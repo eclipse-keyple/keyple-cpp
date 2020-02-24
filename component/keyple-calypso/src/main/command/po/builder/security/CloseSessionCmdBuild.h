@@ -28,7 +28,7 @@ namespace calypso {
 namespace command {
 namespace po {
 namespace builder {
-namespace security{
+namespace security {
 
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
@@ -69,8 +69,7 @@ public:
      *
      */
     std::shared_ptr<CloseSessionRespPars>
-        createResponseParser(std::shared_ptr<ApduResponse> apduResponse)
-        override;
+    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -79,8 +78,7 @@ protected:
     std::shared_ptr<CloseSessionCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<CloseSessionCmdBuild>(
-                   AbstractPoCommandBuilder<CloseSessionRespPars>
-                       ::shared_from_this());
+            AbstractPoCommandBuilder<CloseSessionRespPars>::shared_from_this());
     }
 
 private:

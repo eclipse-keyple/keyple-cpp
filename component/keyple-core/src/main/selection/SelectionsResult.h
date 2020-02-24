@@ -18,7 +18,13 @@
 #include "Export.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace selection { class MatchingSelection; } } }
+namespace keyple {
+namespace core {
+namespace selection {
+class MatchingSelection;
+}
+}
+}
 
 namespace keyple {
 namespace core {
@@ -32,7 +38,8 @@ namespace selection {
  * provides a set of methods to retrieve the active selection (getActiveSelection) or a particular
  * selection specified by its index.
  */
-class EXPORT SelectionsResult final : public std::enable_shared_from_this<SelectionsResult> {
+class EXPORT SelectionsResult final
+: public std::enable_shared_from_this<SelectionsResult> {
 public:
     /**
      * Constructor
@@ -45,7 +52,8 @@ public:
      *
      * @param matchingSelection the item to add
      */
-    void addMatchingSelection(std::shared_ptr<MatchingSelection> matchingSelection);
+    void
+    addMatchingSelection(std::shared_ptr<MatchingSelection> matchingSelection);
 
     /**
      * @return the currently active (matching) selection
@@ -81,7 +89,8 @@ private:
     /**
      *
      */
-    std::vector<std::shared_ptr<MatchingSelection>> matchingSelectionList = std::vector<std::shared_ptr<MatchingSelection>>();
+    std::vector<std::shared_ptr<MatchingSelection>> matchingSelectionList =
+        std::vector<std::shared_ptr<MatchingSelection>>();
 };
 
 }

@@ -37,28 +37,29 @@ std::unordered_map<int, std::shared_ptr<StatusProperties>>
 
 SelectFileRespPars::StaticConstructor::StaticConstructor()
 {
-    std::unordered_map<int, std::shared_ptr<StatusProperties>>
-        m(AbstractApduResponseParser::STATUS_TABLE);
+    std::unordered_map<int, std::shared_ptr<StatusProperties>> m(
+        AbstractApduResponseParser::STATUS_TABLE);
 
-    m.emplace(0x6A88,
+    m.emplace(
+        0x6A88,
+        std::make_shared<StatusProperties>(
+            false, "Data object not found (optional mode not available)."));
+    m.emplace(0x6B00,
               std::make_shared<StatusProperties>(
                   false,
-                  "Data object not found (optional mode not available)."));
-    m.emplace(0x6B00,
-            std::make_shared<StatusProperties>(
-                false,
-                "P1 or P2 value not supported (<>004fh, 0062h, 006Fh, 00C0h, " \
-                "00D0h, 0185h and 5F52h, according to availabl optional " \
-                "modes)."));
+                  "P1 or P2 value not supported (<>004fh, 0062h, 006Fh, 00C0h, "
+                  "00D0h, 0185h and 5F52h, according to availabl optional "
+                  "modes)."));
 
     STATUS_TABLE = m;
 }
 
 SelectFileRespPars::StaticConstructor SelectFileRespPars::staticConstructor;
 
-void SelectFileRespPars::parseResponse() {
+void SelectFileRespPars::parseResponse()
+{
     std::vector<uint8_t> inFileParameters = response->getDataOut();
-    int iter = 0;
+    int iter                              = 0;
 
     if (!response->isSuccessful()) {
         // the command was not successful, we stop here
@@ -80,27 +81,25 @@ void SelectFileRespPars::parseResponse() {
     System::arraycopy(inFileParameters, 0, fileBinaryData, 0,
                       inFileParameters.size());
 
-    sfi = inFileParameters[iter++];
+    sfi      = inFileParameters[iter++];
     fileType = inFileParameters[iter++];
-    efType = inFileParameters[iter++];
+    efType   = inFileParameters[iter++];
 
     if (fileType == FILE_TYPE_EF && efType == EF_TYPE_BINARY) {
 
         recSize = ((inFileParameters[iter] << 8) & 0x0000ff00) |
-                  (inFileParameters[iter + 1]   & 0x000000ff);
+                  (inFileParameters[iter + 1] & 0x000000ff);
         numRec = 1;
         iter += 2;
 
-    }
-    else if (fileType == FILE_TYPE_EF) {
+    } else if (fileType == FILE_TYPE_EF) {
 
         recSize = inFileParameters[iter++];
-        numRec = inFileParameters[iter++];
-    }
-    else {
+        numRec  = inFileParameters[iter++];
+    } else {
         // no record for non EF types
         recSize = 0;
-        numRec = 0;
+        numRec  = 0;
         iter += 2;
     }
 
@@ -119,10 +118,9 @@ void SelectFileRespPars::parseResponse() {
         if (efType == EF_TYPE_SIMULATED_COUNTERS) {
 
             simulatedCounterFileSfi = inFileParameters[iter++];
-            simulatedCounterNumber = inFileParameters[iter++];
+            simulatedCounterNumber  = inFileParameters[iter++];
 
-        }
-        else {
+        } else {
 
             sharedEf = ((inFileParameters[iter] << 8) & 0x0000ff00) |
                        (inFileParameters[iter + 1] & 0x000000ff);
@@ -133,8 +131,7 @@ void SelectFileRespPars::parseResponse() {
         System::arraycopy(inFileParameters, iter, rfu, 0, 5);
         iter += 5; // RFU fields;
 
-    }
-    else {
+    } else {
 
         kvcInfo = std::vector<uint8_t>(3);
         System::arraycopy(inFileParameters, iter, kvcInfo, 0, 3);
@@ -144,8 +141,7 @@ void SelectFileRespPars::parseResponse() {
         System::arraycopy(inFileParameters, iter, kifInfo, 0, 3);
         iter += 3;
 
-
-        rfu = std::vector<uint8_t>(1);
+        rfu    = std::vector<uint8_t>(1);
         rfu[0] = inFileParameters[iter++];
     }
 

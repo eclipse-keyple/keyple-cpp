@@ -27,9 +27,9 @@ WaitForStartDetect::WaitForStartDetect(AbstractObservableLocalReader* reader)
 }
 
 WaitForStartDetect::WaitForStartDetect(
-  AbstractObservableLocalReader* reader,
-  std::shared_ptr<MonitoringJob> monitoringJob,
-  std::shared_ptr<MonitoringPool> executorService)
+    AbstractObservableLocalReader* reader,
+    std::shared_ptr<MonitoringJob> monitoringJob,
+    std::shared_ptr<MonitoringPool> executorService)
 : AbstractObservableState(MonitoringState::WAIT_FOR_START_DETECTION, reader,
                           monitoringJob, executorService)
 {

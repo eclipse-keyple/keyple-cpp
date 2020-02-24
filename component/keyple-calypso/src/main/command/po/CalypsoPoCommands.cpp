@@ -28,40 +28,54 @@ namespace po {
 using namespace keyple::common;
 using namespace keyple::core::command;
 
-CalypsoPoCommands CalypsoPoCommands::GET_DATA_FCI(
-    "GET_DATA_FCI", InnerEnum::GET_DATA_FCI, "Get Data'FCI'", 0xCA);
-CalypsoPoCommands CalypsoPoCommands::OPEN_SESSION_10(
-    "OPEN_SESSION_10", InnerEnum::OPEN_SESSION_10, "Open Secure Session V1",
-    0x8A);
-CalypsoPoCommands CalypsoPoCommands::OPEN_SESSION_24(
-    "OPEN_SESSION_24", InnerEnum::OPEN_SESSION_24, "Open Secure Session V2.4",
-    0x8A);
-CalypsoPoCommands CalypsoPoCommands::OPEN_SESSION_31(
-    "OPEN_SESSION_31", InnerEnum::OPEN_SESSION_31, "Open Secure Session V3.1",
-    0x8A);
-CalypsoPoCommands CalypsoPoCommands::OPEN_SESSION_32(
-    "OPEN_SESSION_32", InnerEnum::OPEN_SESSION_32, "Open Secure Session V3.2",
-    0x8A);
-CalypsoPoCommands CalypsoPoCommands::CLOSE_SESSION(
-    "CLOSE_SESSION", InnerEnum::CLOSE_SESSION, "Close Secure Session", 0x8E);
-CalypsoPoCommands CalypsoPoCommands::READ_RECORDS(
-    "READ_RECORDS", InnerEnum::READ_RECORDS, "Read Records", 0xB2);
-CalypsoPoCommands CalypsoPoCommands::UPDATE_RECORD(
-    "UPDATE_RECORD", InnerEnum::UPDATE_RECORD, "Update Record", 0xDC);
-CalypsoPoCommands CalypsoPoCommands::WRITE_RECORD(
-    "WRITE_RECORD", InnerEnum::WRITE_RECORD, "Write Record", 0xD2);
-CalypsoPoCommands CalypsoPoCommands::APPEND_RECORD(
-    "APPEND_RECORD", InnerEnum::APPEND_RECORD, "Append Record", 0xE2);
-CalypsoPoCommands CalypsoPoCommands::GET_CHALLENGE(
-    "GET_CHALLENGE", InnerEnum::GET_CHALLENGE, "Get Challenge", 0x84);
-CalypsoPoCommands CalypsoPoCommands::INCREASE(
-    "INCREASE", InnerEnum::INCREASE, "Increase", 0x32);
-CalypsoPoCommands CalypsoPoCommands::DECREASE(
-    "DECREASE", InnerEnum::DECREASE, "Decrease", 0x30);
-CalypsoPoCommands CalypsoPoCommands::SELECT_FILE(
-    "SELECT_FILE", InnerEnum::SELECT_FILE, "Select File", 0xA4);
-CalypsoPoCommands CalypsoPoCommands::CHANGE_KEY(
-    "CHANGE_KEY", InnerEnum::CHANGE_KEY, "Change Key", 0xD8);
+CalypsoPoCommands CalypsoPoCommands::GET_DATA_FCI("GET_DATA_FCI",
+                                                  InnerEnum::GET_DATA_FCI,
+                                                  "Get Data'FCI'", 0xCA);
+CalypsoPoCommands CalypsoPoCommands::OPEN_SESSION_10("OPEN_SESSION_10",
+                                                     InnerEnum::OPEN_SESSION_10,
+                                                     "Open Secure Session V1",
+                                                     0x8A);
+CalypsoPoCommands CalypsoPoCommands::OPEN_SESSION_24("OPEN_SESSION_24",
+                                                     InnerEnum::OPEN_SESSION_24,
+                                                     "Open Secure Session V2.4",
+                                                     0x8A);
+CalypsoPoCommands CalypsoPoCommands::OPEN_SESSION_31("OPEN_SESSION_31",
+                                                     InnerEnum::OPEN_SESSION_31,
+                                                     "Open Secure Session V3.1",
+                                                     0x8A);
+CalypsoPoCommands CalypsoPoCommands::OPEN_SESSION_32("OPEN_SESSION_32",
+                                                     InnerEnum::OPEN_SESSION_32,
+                                                     "Open Secure Session V3.2",
+                                                     0x8A);
+CalypsoPoCommands CalypsoPoCommands::CLOSE_SESSION("CLOSE_SESSION",
+                                                   InnerEnum::CLOSE_SESSION,
+                                                   "Close Secure Session",
+                                                   0x8E);
+CalypsoPoCommands CalypsoPoCommands::READ_RECORDS("READ_RECORDS",
+                                                  InnerEnum::READ_RECORDS,
+                                                  "Read Records", 0xB2);
+CalypsoPoCommands CalypsoPoCommands::UPDATE_RECORD("UPDATE_RECORD",
+                                                   InnerEnum::UPDATE_RECORD,
+                                                   "Update Record", 0xDC);
+CalypsoPoCommands CalypsoPoCommands::WRITE_RECORD("WRITE_RECORD",
+                                                  InnerEnum::WRITE_RECORD,
+                                                  "Write Record", 0xD2);
+CalypsoPoCommands CalypsoPoCommands::APPEND_RECORD("APPEND_RECORD",
+                                                   InnerEnum::APPEND_RECORD,
+                                                   "Append Record", 0xE2);
+CalypsoPoCommands CalypsoPoCommands::GET_CHALLENGE("GET_CHALLENGE",
+                                                   InnerEnum::GET_CHALLENGE,
+                                                   "Get Challenge", 0x84);
+CalypsoPoCommands CalypsoPoCommands::INCREASE("INCREASE", InnerEnum::INCREASE,
+                                              "Increase", 0x32);
+CalypsoPoCommands CalypsoPoCommands::DECREASE("DECREASE", InnerEnum::DECREASE,
+                                              "Decrease", 0x30);
+CalypsoPoCommands CalypsoPoCommands::SELECT_FILE("SELECT_FILE",
+                                                 InnerEnum::SELECT_FILE,
+                                                 "Select File", 0xA4);
+CalypsoPoCommands CalypsoPoCommands::CHANGE_KEY("CHANGE_KEY",
+                                                InnerEnum::CHANGE_KEY,
+                                                "Change Key", 0xD8);
 
 std::vector<CalypsoPoCommands> CalypsoPoCommands::valueList;
 
@@ -86,21 +100,21 @@ CalypsoPoCommands::StaticConstructor::StaticConstructor()
 CalypsoPoCommands::StaticConstructor CalypsoPoCommands::staticConstructor;
 int CalypsoPoCommands::nextOrdinal = 0;
 
-CalypsoPoCommands::CalypsoPoCommands(
-  const std::string& nameValue, InnerEnum innerEnum,
-  const std::string& name, uint8_t instructionByte)
+CalypsoPoCommands::CalypsoPoCommands(const std::string& nameValue,
+                                     InnerEnum innerEnum,
+                                     const std::string& name,
+                                     uint8_t instructionByte)
 : innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++),
   name(name), instructionbyte(instructionByte)
 {
 }
 
 CalypsoPoCommands::CalypsoPoCommands(const CalypsoPoCommands& other)
-: CommandsTable(),
-  innerEnumValue(other.innerEnumValue), nameValue(other.nameValue),
-  ordinalValue(other.ordinalValue), name(other.name),
-  instructionbyte(other.instructionbyte)
+: CommandsTable(), innerEnumValue(other.innerEnumValue),
+  nameValue(other.nameValue), ordinalValue(other.ordinalValue),
+  name(other.name), instructionbyte(other.instructionbyte)
 {
-	(void)other;
+    (void)other;
 }
 
 const std::string& CalypsoPoCommands::getName() const
@@ -126,17 +140,17 @@ CalypsoPoCommands& CalypsoPoCommands::getOpenSessionForRev(PoRevision rev)
     case PoRevision::REV3_2:
         return OPEN_SESSION_32;
     default:
-        throw IllegalStateException("Any revision should have a matching " \
+        throw IllegalStateException("Any revision should have a matching "
                                     "command");
     }
 }
 
-bool CalypsoPoCommands::operator == (const CalypsoPoCommands &other)
+bool CalypsoPoCommands::operator==(const CalypsoPoCommands& other)
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool CalypsoPoCommands::operator != (const CalypsoPoCommands &other)
+bool CalypsoPoCommands::operator!=(const CalypsoPoCommands& other)
 {
     return this->ordinalValue != other.ordinalValue;
 }

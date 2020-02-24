@@ -49,7 +49,7 @@ bool AnswerToReset::equals(std::shared_ptr<void> o)
 int AnswerToReset::hashCode()
 {
     int hash = 17;
-    hash = 19 * hash + (atrBytes.empty() ? 0 : Arrays::hashCode(atrBytes));
+    hash     = 19 * hash + (atrBytes.empty() ? 0 : Arrays::hashCode(atrBytes));
     return hash;
 }
 

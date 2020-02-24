@@ -50,7 +50,9 @@ public:
     /**
      *
      */
-    virtual ~SamGetChallengeCmdBuild() {}
+    virtual ~SamGetChallengeCmdBuild()
+    {
+    }
 
 protected:
     /**
@@ -59,7 +61,7 @@ protected:
     std::shared_ptr<SamGetChallengeCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<SamGetChallengeCmdBuild>(
-                   AbstractSamCommandBuilder::shared_from_this());
+            AbstractSamCommandBuilder::shared_from_this());
     }
 
 private:
@@ -67,7 +69,6 @@ private:
      * The command reference
      */
     CalypsoSamCommands& command = CalypsoSamCommands::GET_CHALLENGE;
-
 };
 
 }

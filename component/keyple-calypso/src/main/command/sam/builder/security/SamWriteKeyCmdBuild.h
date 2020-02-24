@@ -48,7 +48,6 @@ private:
      * The command reference
      */
     CalypsoSamCommands command = CalypsoSamCommands::WRITE_KEY;
-
 };
 
 }

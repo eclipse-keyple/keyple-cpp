@@ -51,15 +51,14 @@ using namespace keyple::plugin::pcsc;
 
 class UseCase_Calypso2_DefaultSelectionNotification_Pcsc
 : public std::enable_shared_from_this<
-             UseCase_Calypso2_DefaultSelectionNotification_Pcsc>,
+      UseCase_Calypso2_DefaultSelectionNotification_Pcsc>,
   public ObservableReader::ReaderObserver {
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
-            LoggerFactory::getLogger(
-                typeid(UseCase_Calypso2_DefaultSelectionNotification_Pcsc));
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(
+        typeid(UseCase_Calypso2_DefaultSelectionNotification_Pcsc));
 
     /**
      *
@@ -97,10 +96,10 @@ public:
         /* Check if the reader exists */
         if (poReader == nullptr) {
             throw std::make_shared<IllegalStateException>(
-                      "Bad PO reader setup");
+                "Bad PO reader setup");
         }
 
-        logger->info("=============== UseCase Calypso #2: AID based default " \
+        logger->info("=============== UseCase Calypso #2: AID based default "
                      "selection ===================\n");
         logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
 
@@ -146,14 +145,13 @@ public:
          * Prepare the reading order and keep the associated parser for later
          * use once the selection has been made.
          */
-        readEnvironmentParserIndex =
-            poSelectionRequest->prepareReadRecordsCmd(
-                CalypsoClassicInfo::SFI_EnvironmentAndHolder,
-                ReadDataStructure::SINGLE_RECORD_DATA,
-                CalypsoClassicInfo::RECORD_NUMBER_1,
-                StringHelper::formatSimple(
-                    "EnvironmentAndHolder (SFI=%02X)",
-                     CalypsoClassicInfo::SFI_EnvironmentAndHolder));
+        readEnvironmentParserIndex = poSelectionRequest->prepareReadRecordsCmd(
+            CalypsoClassicInfo::SFI_EnvironmentAndHolder,
+            ReadDataStructure::SINGLE_RECORD_DATA,
+            CalypsoClassicInfo::RECORD_NUMBER_1,
+            StringHelper::formatSimple(
+                "EnvironmentAndHolder (SFI=%02X)",
+                CalypsoClassicInfo::SFI_EnvironmentAndHolder));
 
         /*
          * Add the selection case to the current selection (we could have added
@@ -176,54 +174,58 @@ public:
         (std::dynamic_pointer_cast<ObservableReader>(poReader))
             ->addObserver(shared_from_this());
 
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
-        logger->info("= Wait for a PO. The default AID based selection with " \
+        logger->info("= Wait for a PO. The default AID based selection with "
                      "reading of Environment     =\n");
-        logger->info("= file is ready to be processed as soon as the PO is " \
+        logger->info("= file is ready to be processed as soon as the PO is "
                      "detected.                   =\n");
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
 
         /* Wait for ever (exit with CTRL-C) */
-        while(1);
+        while (1)
+            ;
     }
 
     /**
      *
      */
-    virtual ~UseCase_Calypso2_DefaultSelectionNotification_Pcsc() {}
+    virtual ~UseCase_Calypso2_DefaultSelectionNotification_Pcsc()
+    {
+    }
 
     void update(std::shared_ptr<ReaderEvent> event)
     {
         ReaderEvent::EventType type = event->getEventType();
 
         if (type == ReaderEvent::EventType::SE_MATCHED) {
-            std::shared_ptr<MatchingSelection> matchingSelection
-                = seSelection->processDefaultSelection(
-                      event->getDefaultSelectionsResponse())
-                      ->getActiveSelection();
+            std::shared_ptr<MatchingSelection> matchingSelection =
+                seSelection
+                    ->processDefaultSelection(
+                        event->getDefaultSelectionsResponse())
+                    ->getActiveSelection();
 
             std::shared_ptr<SeReader> poReader;
             try {
-                poReader = SeProxyService::getInstance().getPlugin(
-                               event->getPluginName())
+                poReader = SeProxyService::getInstance()
+                               .getPlugin(event->getPluginName())
                                ->getReader(event->getReaderName());
             } catch (KeyplePluginNotFoundException& e) {
-                logger->error("update - caught KeyplePluginNotFoundException " \
-                              "(msg: %s, cause: %s)\n", e.getMessage().c_str(),
-                              e.getCause().what());
+                logger->error("update - caught KeyplePluginNotFoundException "
+                              "(msg: %s, cause: %s)\n",
+                              e.getMessage().c_str(), e.getCause().what());
             } catch (KeypleReaderNotFoundException& e) {
-                logger->error("update - caught KeypleReaderNotFoundException " \
-                              "(msg: %s, cause: %s)\n", e.getMessage().c_str(),
-                              e.getCause().what());
+                logger->error("update - caught KeypleReaderNotFoundException "
+                              "(msg: %s, cause: %s)\n",
+                              e.getMessage().c_str(), e.getCause().what());
             }
 
             std::shared_ptr<CalypsoPo> calypsoPo =
                 std::dynamic_pointer_cast<CalypsoPo>(
                     matchingSelection->getMatchingSe());
 
-            logger->info("Observer notification: the selection of the PO has " \
+            logger->info("Observer notification: the selection of the PO has "
                          "succeeded\n");
 
             std::shared_ptr<ReadRecordsRespPars> readEnvironmentParser =
@@ -232,8 +234,8 @@ public:
                         readEnvironmentParserIndex));
 
             std::vector<uint8_t> environmentAndHolder =
-                (*(readEnvironmentParser->getRecords().get()))[
-                    static_cast<int>(CalypsoClassicInfo::RECORD_NUMBER_1)];
+                (*(readEnvironmentParser->getRecords().get()))[static_cast<int>(
+                    CalypsoClassicInfo::RECORD_NUMBER_1)];
 
             logger->info("Environment file data: %s\n",
                          ByteArrayUtil::toHex(environmentAndHolder).c_str());
@@ -241,11 +243,11 @@ public:
             /*
              * Go on with the reading of the first record of the EventLog file
              */
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
-            logger->info("= 2nd PO exchange: reading transaction of the " \
+            logger->info("= 2nd PO exchange: reading transaction of the "
                          "EventLog file.                     =\n");
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
 
             std::shared_ptr<PoTransaction> poTransaction =
@@ -256,23 +258,22 @@ public:
              * Prepare the reading order and keep the associated parser for
              * later use once the transaction has been processed.
              */
-            int readEventLogParserIndex =
-                poTransaction->prepareReadRecordsCmd(
+            int readEventLogParserIndex = poTransaction->prepareReadRecordsCmd(
+                CalypsoClassicInfo::SFI_EventLog,
+                ReadDataStructure::SINGLE_RECORD_DATA,
+                CalypsoClassicInfo::RECORD_NUMBER_1,
+                StringHelper::formatSimple(
+                    "EventLog (SFI=%02X, recnbr=%d))",
                     CalypsoClassicInfo::SFI_EventLog,
-                    ReadDataStructure::SINGLE_RECORD_DATA,
-                    CalypsoClassicInfo::RECORD_NUMBER_1,
-                    StringHelper::formatSimple(
-                        "EventLog (SFI=%02X, recnbr=%d))",
-                        CalypsoClassicInfo::SFI_EventLog,
-                        CalypsoClassicInfo::RECORD_NUMBER_1));
+                    CalypsoClassicInfo::RECORD_NUMBER_1));
 
             /*
              * Actual PO communication: send the prepared read order, then close
              * the channel with the PO
              */
             try {
-                if (poTransaction->processPoCommands(ChannelState::CLOSE_AFTER))
-                {
+                if (poTransaction->processPoCommands(
+                        ChannelState::CLOSE_AFTER)) {
                     logger->info("The reading of the EventLog has succeeded\n");
 
                     /*
@@ -284,28 +285,28 @@ public:
                             poTransaction->getResponseParser(
                                 readEventLogParserIndex));
                     std::vector<uint8_t> eventLog =
-                        (*(parser->getRecords().get()))[
-                            CalypsoClassicInfo::RECORD_NUMBER_1];
+                        (*(parser->getRecords()
+                               .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
                     /* Log the result */
                     logger->info("EventLog file data: %s\n",
                                  ByteArrayUtil::toHex(eventLog).c_str());
                 }
-            } catch (const KeypleReaderException &e) {
-                logger->error("update - caught KeypleReaderException " \
-                              "(msg: %s, cause: %s)\n", e.getMessage().c_str(),
-                              e.getCause().what());
+            } catch (const KeypleReaderException& e) {
+                logger->error("update - caught KeypleReaderException "
+                              "(msg: %s, cause: %s)\n",
+                              e.getMessage().c_str(), e.getCause().what());
             }
 
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
-            logger->info("= End of the Calypso PO processing.                " \
+            logger->info("= End of the Calypso PO processing.                "
                          "                              =\n");
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
 
         } else if (type == ReaderEvent::EventType::SE_INSERTED) {
-            logger->error("SE_INSERTED event: should not have occurred due to "\
+            logger->error("SE_INSERTED event: should not have occurred due to "
                           "the MATCHED_ONLY selection mode\n");
         } else if (type == ReaderEvent::EventType::SE_REMOVAL) {
             logger->info("The PO has been removed\n");
@@ -314,7 +315,7 @@ public:
     }
 };
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
@@ -323,4 +324,3 @@ int main(int argc, char **argv)
     std::shared_ptr<UseCase_Calypso2_DefaultSelectionNotification_Pcsc> m =
         std::make_shared<UseCase_Calypso2_DefaultSelectionNotification_Pcsc>();
 }
-

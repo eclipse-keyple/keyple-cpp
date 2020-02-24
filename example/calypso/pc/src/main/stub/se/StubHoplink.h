@@ -25,7 +25,6 @@ namespace pc {
 namespace stub {
 namespace se {
 
-
 using StubSecureElement = org::eclipse::keyple::plugin::stub::StubSecureElement;
 
 /**
@@ -65,7 +64,9 @@ protected:
      */
     std::shared_ptr<StubHoplink> shared_from_this()
     {
-        return std::static_pointer_cast<StubHoplink>(org.eclipse.keyple.plugin.stub.StubSecureElement::shared_from_this());
+        return std::static_pointer_cast<StubHoplink>(
+            org.eclipse.keyple.plugin.stub
+                .StubSecureElement::shared_from_this());
     }
 };
 

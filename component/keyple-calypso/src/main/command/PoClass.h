@@ -43,11 +43,7 @@ public:
     /**
      *
      */
-    enum class InnerEnum
-    {
-        LEGACY,
-        ISO
-    };
+    enum class InnerEnum { LEGACY, ISO };
 
     /**
      *
@@ -62,7 +58,7 @@ public:
     /**
      *
      */
-    PoClass(const std::string &name, InnerEnum innerEnum, char cla);
+    PoClass(const std::string& name, InnerEnum innerEnum, char cla);
 
     /**
      *
@@ -72,17 +68,19 @@ public:
     /**
      *
      */
-    virtual ~PoClass() {}
+    virtual ~PoClass()
+    {
+    }
 
     /**
      *
      */
-    bool operator==(const PoClass &other);
+    bool operator==(const PoClass& other);
 
     /**
      *
      */
-    bool operator!=(const PoClass &other);
+    bool operator!=(const PoClass& other);
 
     /**
      *
@@ -107,7 +105,7 @@ public:
     /**
      *
      */
-    static PoClass valueOf(const std::string &name);
+    static PoClass valueOf(const std::string& name);
 
 private:
     /**
@@ -139,7 +137,7 @@ private:
      *
      */
     class StaticConstructor {
-      public:
+    public:
         StaticConstructor();
     };
 
@@ -147,7 +145,6 @@ private:
      *
      */
     static StaticConstructor staticConstructor;
-
 };
 
 }

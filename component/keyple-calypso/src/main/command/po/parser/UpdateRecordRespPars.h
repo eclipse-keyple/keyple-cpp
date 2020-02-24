@@ -49,9 +49,9 @@ protected:
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<
-        AbstractApduResponseParser::StatusProperties>> getStatusTable()
-            const override;
+    std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+    getStatusTable() const override;
 
     /**
      *
@@ -59,15 +59,16 @@ protected:
     std::shared_ptr<UpdateRecordRespPars> shared_from_this()
     {
         return std::static_pointer_cast<UpdateRecordRespPars>(
-                   AbstractPoResponseParser::shared_from_this());
+            AbstractPoResponseParser::shared_from_this());
     }
 
 private:
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<
-               AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        STATUS_TABLE;
 
     /**
      *
@@ -82,7 +83,6 @@ private:
      *
      */
     static UpdateRecordRespPars::StaticConstructor staticConstructor;
-
 };
 
 }

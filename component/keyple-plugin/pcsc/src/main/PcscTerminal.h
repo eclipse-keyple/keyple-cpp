@@ -12,18 +12,18 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
- #pragma once
+#pragma once
 
- /* Common */
+/* Common */
 #include "Export.h"
 #include "LoggerFactory.h"
 
 /* PC/SC */
-#if defined(WIN32) || defined(__MINGW32__) || defined (__MINGW64__)
-#  include <winscard.h>
+#if defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
+#include <winscard.h>
 #else
-#  include <PCSC/winscard.h>
-#  include <PCSC/wintypes.h>
+#include <PCSC/winscard.h>
+#include <PCSC/wintypes.h>
 #endif
 
 namespace keyple {

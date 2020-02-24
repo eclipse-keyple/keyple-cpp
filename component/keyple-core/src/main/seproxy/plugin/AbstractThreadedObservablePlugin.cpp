@@ -28,10 +28,10 @@ using namespace keyple::core::seproxy::exception;
 
 std::set<std::string> _set;
 std::shared_ptr<std::set<std::string>> nativeReadersNames =
-     std::make_shared<std::set<std::string>>(_set);
+    std::make_shared<std::set<std::string>>(_set);
 
 AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(
-  const std::string& name)
+    const std::string& name)
 : AbstractPlugin(name)
 {
     logger->debug("constructor (name: %s)\n", name.c_str());
@@ -53,14 +53,14 @@ void AbstractThreadedObservablePlugin::addObserver(
 
     if (AbstractPlugin::countObservers() == 1) {
         logger->debug("Start monitoring the plugin %s\n", this->getName());
-        thread = std::make_shared<EventThread>(shared_from_this(),
-                                               this->getName());
+        thread =
+            std::make_shared<EventThread>(shared_from_this(), this->getName());
         thread->start();
     }
 }
 
 void AbstractThreadedObservablePlugin::removeObserver(
-        std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+    std::shared_ptr<ObservablePlugin::PluginObserver> observer)
 {
     AbstractPlugin::removeObserver(observer);
 
@@ -88,8 +88,8 @@ bool AbstractThreadedObservablePlugin::isMonitoring()
 }
 
 AbstractThreadedObservablePlugin::EventThread::EventThread(
-  std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance,
-  const std::string &pluginName)
+    std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance,
+    const std::string& pluginName)
 : outerInstance(outerInstance), pluginName(pluginName)
 {
 }
@@ -102,7 +102,7 @@ void AbstractThreadedObservablePlugin::EventThread::end()
     this->interrupt();
 }
 
-void *AbstractThreadedObservablePlugin::EventThread::run()
+void* AbstractThreadedObservablePlugin::EventThread::run()
 {
     outerInstance->logger->debug("starting event thread\n");
 
@@ -129,8 +129,8 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                 changedReaderNames->clear();
 
                 for (auto it : outerInstance->readers) {
-                        if (actualNativeReadersNames.find(it->getName()) ==
-                            actualNativeReadersNames.end()) {
+                    if (actualNativeReadersNames.find(it->getName()) ==
+                        actualNativeReadersNames.end()) {
                         changedReaderNames->insert(it->getName());
                     }
                 }
@@ -148,18 +148,21 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                         if (actualNativeReadersNames.find(it->getName()) !=
                             actualNativeReadersNames.end()) {
                             /*
-                             * Remove any possible observers before removing the
-                             * reader.
+                             * Removes any possible observers before removing
+                             * the reader.
                              */
                             std::shared_ptr<ObservableReader> observableR =
-                                std::dynamic_pointer_cast<ObservableReader>(
-                                    it);
-                            if (observableR)
+                                std::dynamic_pointer_cast<ObservableReader>(it);
+                            if (observableR) {
                                 observableR->clearObservers();
+
+                                /* In case where Reader was detected SE */
+                                observableR->stopSeDetection();
+                            }
 
                             outerInstance->readers.erase(it);
                             outerInstance->logger->trace(
-                                "[%s][%s] Plugin thread => Remove unplugged " \
+                                "[%s][%s] Plugin thread => Remove unplugged "
                                 "reader from readers list.",
                                 this->pluginName.c_str(),
                                 it->getName().c_str());
@@ -167,8 +170,8 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                             /* remove reader name from the current list */
                             outerInstance->nativeReadersNames.erase(
                                 it->getName());
+                        }
                     }
-                }
                     /* clean the list for a possible connection notification */
                     changedReaderNames->clear();
                 }
@@ -186,8 +189,9 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
                         /* add to the notification list */
                         changedReaderNames->insert(readerName);
                         outerInstance->logger->trace(
-                            "[%s][%s] Plugin thread => Add plugged reader to " \
-                            "readers list.", this->pluginName.c_str(),
+                            "[%s][%s] Plugin thread => Add plugged reader to "
+                            "readers list.",
+                            this->pluginName.c_str(),
                             reader->getName().c_str());
 
                         /* add reader name to the current list */
@@ -207,8 +211,8 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
             /* sleep for a while. */
             Thread::sleep((long)outerInstance->threadWaitTimeout);
         }
-    } catch (const InterruptedException &e) {
-        outerInstance->logger->warn("[%s] An exception occurred while " \
+    } catch (const InterruptedException& e) {
+        outerInstance->logger->warn("[%s] An exception occurred while "
                                     "monitoring plugin: %s, cause %s",
                                     this->pluginName.c_str(),
                                     e.getMessage().c_str(),
@@ -216,8 +220,8 @@ void *AbstractThreadedObservablePlugin::EventThread::run()
 
         /* Restore interrupted state */
         //Thread::currentThread().interrupt();
-    } catch (const KeypleReaderException &e) {
-        outerInstance->logger->warn("[%s] An exception occurred while " \
+    } catch (const KeypleReaderException& e) {
+        outerInstance->logger->warn("[%s] An exception occurred while "
                                     "monitoring plugin: %s, cause %s",
                                     this->pluginName.c_str(), e.what(),
                                     e.getCause().what());

@@ -34,7 +34,7 @@ private:
      */
     class ByteCache {
     public:
-        static std::vector<Byte *> cache;
+        static std::vector<Byte*> cache;
 
         /*
          *
@@ -44,7 +44,6 @@ private:
             for (int i = 0; i < 256; i++)
                 cache.push_back(new Byte((unsigned char)(i - 128)));
         }
-
     };
 
     /*
@@ -87,7 +86,9 @@ public:
     /**
      *
      */
-    virtual ~Byte() {}
+    virtual ~Byte()
+    {
+    }
 
     /**
      *
@@ -218,4 +219,3 @@ public:
 
 }
 }
-

@@ -36,7 +36,8 @@ namespace postructure {
  * </li>
  * </ul>
  */
-class CalypsoClassicInfo : public std::enable_shared_from_this<CalypsoClassicInfo> {
+class CalypsoClassicInfo
+: public std::enable_shared_from_this<CalypsoClassicInfo> {
     /** Calypso default AID */
 public:
     static const std::string AID;
@@ -53,9 +54,9 @@ public:
     static constexpr char RECORD_NUMBER_4 = 4;
 
     static const char SFI_EnvironmentAndHolder = static_cast<char>(0x07);
-    static const char SFI_EventLog = static_cast<char>(0x08);
-    static const char SFI_ContractList = static_cast<char>(0x1E);
-    static const char SFI_Contracts = static_cast<char>(0x09);
+    static const char SFI_EventLog             = static_cast<char>(0x08);
+    static const char SFI_ContractList         = static_cast<char>(0x1E);
+    static const char SFI_Contracts            = static_cast<char>(0x09);
 
     static const std::string eventLog_dataFill;
 };

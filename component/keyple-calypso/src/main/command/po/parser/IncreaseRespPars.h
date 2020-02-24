@@ -46,7 +46,7 @@ public:
      *
      * @param response response to parse
      */
-     IncreaseRespPars(std::shared_ptr<ApduResponse> response);
+    IncreaseRespPars(std::shared_ptr<ApduResponse> response);
 
     /**
      * Returns the new counter value as an int between 0
@@ -66,9 +66,9 @@ protected:
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<
-        AbstractApduResponseParser::StatusProperties>> getStatusTable()
-            const override;
+    std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+    getStatusTable() const override;
 
     /**
      *
@@ -76,22 +76,23 @@ protected:
     std::shared_ptr<IncreaseRespPars> shared_from_this()
     {
         return std::static_pointer_cast<IncreaseRespPars>(
-                   AbstractPoResponseParser::shared_from_this());
+            AbstractPoResponseParser::shared_from_this());
     }
 
 private:
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<
-               AbstractApduResponseParser::StatusProperties>> STATUS_TABLE;
+    static std::unordered_map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        STATUS_TABLE;
 
     /**
      *
      */
     class StaticConstructor
     : public std::enable_shared_from_this<StaticConstructor> {
-        public:
+    public:
         StaticConstructor();
     };
 
@@ -99,8 +100,6 @@ private:
      *
      */
     static IncreaseRespPars::StaticConstructor staticConstructor;
-
-
 };
 
 }

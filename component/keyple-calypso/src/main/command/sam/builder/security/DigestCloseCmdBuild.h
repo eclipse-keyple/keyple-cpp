@@ -51,7 +51,9 @@ public:
     /**
      *
      */
-    virtual ~DigestCloseCmdBuild() {}
+    virtual ~DigestCloseCmdBuild()
+    {
+    }
 
 protected:
     /**
@@ -60,7 +62,7 @@ protected:
     std::shared_ptr<DigestCloseCmdBuild> shared_from_this()
     {
         return std::static_pointer_cast<DigestCloseCmdBuild>(
-                   AbstractSamCommandBuilder::shared_from_this());
+            AbstractSamCommandBuilder::shared_from_this());
     }
 
 private:

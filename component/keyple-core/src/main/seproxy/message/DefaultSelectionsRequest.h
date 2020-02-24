@@ -22,8 +22,15 @@
 #include "ObservableReader_Import.h"
 
 /* Forward class declarations */
-namespace keyple { namespace core { namespace seproxy { namespace message {
-    class SeRequestSet; } } } }
+namespace keyple {
+namespace core {
+namespace seproxy {
+namespace message {
+class SeRequestSet;
+}
+}
+}
+}
 
 namespace keyple {
 namespace core {

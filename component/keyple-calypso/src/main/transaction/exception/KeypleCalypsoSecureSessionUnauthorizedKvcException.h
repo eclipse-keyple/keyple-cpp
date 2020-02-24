@@ -35,7 +35,7 @@ public:
      *
      */
     KeypleCalypsoSecureSessionUnauthorizedKvcException(
-        const std::string &message);
+        const std::string& message);
 
     KeypleCalypsoSecureSessionUnauthorizedKvcException(
         const KeypleCalypsoSecureSessionUnauthorizedKvcException& o);
@@ -43,8 +43,9 @@ public:
     /**
      *
      */
-    virtual ~KeypleCalypsoSecureSessionUnauthorizedKvcException() {}
-
+    virtual ~KeypleCalypsoSecureSessionUnauthorizedKvcException()
+    {
+    }
 };
 
 }
