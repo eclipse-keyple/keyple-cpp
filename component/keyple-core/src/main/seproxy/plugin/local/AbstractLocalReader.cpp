@@ -49,6 +49,7 @@ using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::plugin::local;
 
 using NotificationMode = ObservableReader::NotificationMode;
 

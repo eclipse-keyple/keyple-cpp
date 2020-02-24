@@ -499,6 +499,11 @@ void PcscReaderImpl::clearObservers()
     AbstractObservableLocalReader::clearObservers();
 }
 
+void PcscReaderImpl::notifySeProcessed()
+{
+    AbstractObservableLocalReader::notifySeProcessed();
+}
+
 }
 }
 }

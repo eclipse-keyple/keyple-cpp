@@ -373,7 +373,7 @@ public:
      * physical channel closing in the case of an unobserved reader or a delayed
      * closing upon removal of the SE (removal sequence).
      */
-    void notifySeProcessed();
+    virtual void notifySeProcessed() = 0;
 };
 
 }

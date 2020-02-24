@@ -160,6 +160,11 @@ public:
      */
     void clearObservers() override;
 
+    /**
+     *
+     */
+    void notifySeProcessed() override;
+
 protected:
     /**
      *

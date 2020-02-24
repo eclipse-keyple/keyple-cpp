@@ -14,6 +14,9 @@
 
 #pragma once
 
+/* Common */
+#include "Export.h"
+
 /* Core */
 #include "SeReader.h"
 #include "SeSelector_Import.h"
@@ -32,7 +35,7 @@ namespace local {
  * Interface implemented by readers able to handle natively the SE selection
  * process (e.g. Android OMAPI readers).
  */
-class SmartSelectionReader : public SeReader {
+class EXPORT SmartSelectionReader : public SeReader {
 public:
     /**
      * Opens a logical channel for the provided AID
@@ -44,7 +47,7 @@ public:
      * @throws KeypleApplicationSelectionException if selection error occurs
      */
     virtual std::shared_ptr<ApduResponse>
-    openChannelForAid(SeSelector::AidSelector& aidSelector);
+        openChannelForAid(SeSelector::AidSelector& aidSelector) = 0;
 };
 
 }

@@ -240,6 +240,39 @@ protected:
             AbstractObservableLocalReader::shared_from_this());
     }
 
+    /**
+     *
+     */
+    void addObserver(std::shared_ptr<ReaderObserver> observer) override;
+
+    /**
+     *
+     */
+    void removeObserver(std::shared_ptr<ReaderObserver> observer) override;
+
+    /**
+     *
+     */
+    void startSeDetection(PollingMode pollingMode) override;
+
+    /**
+     *
+     */
+    void stopSeDetection() override;
+
+    /**
+     *
+     */
+    void notifySeProcessed() override;
+
+    /**
+     *
+     */
+    void
+    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
+                                   defaultSelectionsRequest,
+                               NotificationMode notificationMode) override;
+
 private:
     /**
      *
@@ -328,103 +361,8 @@ private:
     const std::shared_ptr<Logger> logger =
         LoggerFactory::getLogger(typeid(PcscReaderImpl));
 
-    /**
-     * Add a reader observer.
-     * <p>
-     * The observer will receive all the events produced by this reader (card
-     * insertion, removal, etc.)
-     *
-     * @param observer the observer object
-     *
-     * /!\/!\/!\
-     *
-     * Function addObserver() is present in two base classes (AbstractReader and
-     * ObservableReader). AbstractReader implements the virtual function but
-     * ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::addObserver() is considered virtual. Override needed in
-     * this class.
-     */
-    void addObserver(std::shared_ptr<ReaderObserver> observer) override;
-
-    /**
-     * Remove a reader observer.
-     * <p>
-     * The observer will not receive any of the events produced by this reader.
-     *
-     * @param observer the observer object
-     *
-     * /!\/!\/!\
-     *
-     * Function removeObserver() is present in two base classes (AbstractReader
-     * and ObservableReader). AbstractReader implements the virtual function
-     * but ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::removeObserver() is considered virtual. Override needed
-     * in this class.
-     */
-    void removeObserver(std::shared_ptr<ReaderObserver> observer) override;
-
-    /**
-     * Starts the SE detection. Once activated, the application can be notified
-     * of the arrival of an SE.
-     *
-     * @param pollingMode indicates the action to be followed after processing
-     *        the SE: if CONTINUE, the SE detection is restarted, if STOP, the
-     *        SE detection is stopped until a new call to startSeDetection is
-     *        made.
-     *
-     * /!\/!\/!\
-     *
-     * Function startSeDetection() is present in two base classes (
-     * AbstractObservableLocalReader and ObservableReader).
-     * AbstractObservableLocalReader implements the virtual function but
-     * ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::startSeDetection() is considered virtual. Override
-     * needed in this class.
-     */
-    void startSeDetection(PollingMode pollingMode) override;
-
-    /**
-     * Stops the SE detection.
-     * <p>
-     * This method must be overloaded by readers depending on the particularity
-     * of their management of the start of SE detection.
-     *
-     * /!\/!\/!\
-     *
-     * Function removeObserver() is present in two base classes (
-     * AbstractObservableLocalReader and ObservableReader).
-     * AbstractObservableLocalReader implements the virtual function but
-     * ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::removeObserver() is considered virtual. Override needed
-     * in this class.
-     */
-    void stopSeDetection() override;
-
-    /**
-     * Defines the selection request to be processed when an SE is inserted.
-     * Depending on the SE and the notificationMode parameter, a SE_INSERTED,
-     * SE_MATCHED or no event at all will be notified to the application
-     * observers.
-     *
-     * @param defaultSelectionsRequest the selection request to be operated
-     * @param notificationMode indicates whether a SE_INSERTED event should be
-     *        notified even if the selection has failed (ALWAYS) or whether the
-     *        SE insertion should be ignored in this case (MATCHED_ONLY).
-     *
-     * /!\/!\/!\
-     *
-     * Function setDefaultSelectionRequest() is present in two base classes (
-     * AbstractObservableLocalReader and ObservableReader).
-     * AbstractObservableLocalReader implements the virtual function but
-     * ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::setDefaultSelectionRequest() is considered virtual.
-     * Override needed in this class.
-     */
-    void
-    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
-                                   defaultSelectionsRequest,
-                               NotificationMode notificationMode) override;
 };
+
 
 }
 }

@@ -329,6 +329,11 @@ void StubReaderImpl::clearObservers()
     AbstractObservableLocalReader::clearObservers();
 }
 
+void StubReaderImpl::notifySeProcessed()
+{
+    AbstractObservableLocalReader::notifySeProcessed();
+}
+
 }
 }
 }
