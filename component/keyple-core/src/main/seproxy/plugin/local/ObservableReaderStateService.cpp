@@ -38,7 +38,7 @@ void ObservableReaderStateService::switchState(const MonitoringState stateId)
 {
     if (currentState != nullptr) {
         logger->trace("[%s] Switch currentState from %d to %d\n",
-                      this->reader->getName(),
+                      this->reader->getName().c_str(),
                       this->currentState->getMonitoringState(), stateId);
 
         currentState->onDeactivate();
@@ -50,7 +50,8 @@ void ObservableReaderStateService::switchState(const MonitoringState stateId)
     /* Switch currentState */
     currentState = this->states.find(stateId)->second;
 
-    logger->debug("[%s] New currentState %d\n", this->reader->getName().c_str(),
+    logger->debug("[%s] New currentState %d\n",
+                  this->reader->getName().c_str(),
                   currentState->getMonitoringState());
 
     /* onActivate the new current state */
