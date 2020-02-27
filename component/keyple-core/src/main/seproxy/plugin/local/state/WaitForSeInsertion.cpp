@@ -44,7 +44,7 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
     std::shared_ptr<ReaderEvent> seEvent;
 
     logger->trace("[%s] onEvent => Event %d received in currentState %d\n",
-                  reader->getName(), event, state);
+                  reader->getName().c_str(), event, state);
 
     /*
      * Process InternalEvent
@@ -66,7 +66,7 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
              * to relaunch the monitoring job
              */
             logger->trace("[%s] onEvent => Inserted SE hasn't matched\n",
-                          reader->getName());
+                          reader->getName().c_str());
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         }
         break;
@@ -87,7 +87,7 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
         break;
     default:
         logger->warn("[%s] Ignore =>  Event %d received in currentState %d\n",
-                     reader->getName(), event, state);
+                     reader->getName().c_str(), event, state);
         break;
     }
 }

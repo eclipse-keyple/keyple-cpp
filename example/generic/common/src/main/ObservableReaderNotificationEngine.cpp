@@ -153,8 +153,9 @@ void ObservableReaderNotificationEngine::SpecificPluginObserver::update(
                          .getPlugin(event->getPluginName())
                          ->getReader(reader->getName());
         } catch (KeyplePluginNotFoundException& e) {
-
+            (void)e;
         } catch (KeypleReaderNotFoundException& e) {
+            (void)e;
         }
 
         switch (event->getEventType().innerEnumValue) {

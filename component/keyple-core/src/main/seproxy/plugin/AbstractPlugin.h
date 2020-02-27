@@ -57,8 +57,9 @@ using namespace keyple::common;
 /**
  * Observable plugin. These plugin can report when a reader is added or removed.
  */
-class EXPORT AbstractPlugin : public Observable<PluginEvent>,
-                              public virtual ReaderPlugin {
+class EXPORT AbstractPlugin
+: public Observable<PluginEvent>, public virtual ReaderPlugin,
+  public std::enable_shared_from_this<AbstractPlugin> {
 public:
     /**
      *

@@ -51,7 +51,7 @@ void AbstractObservableLocalReader::startSeDetection(
 {
     logger->trace("[%s] startSeDetection => start Se Detection with "
                   "pollingMode %d\n",
-                  this->getName(), pollingMode);
+                  this->getName().c_str(), pollingMode);
     this->currentPollingMode = pollingMode;
     this->stateService->onEvent(InternalEvent::START_DETECT);
 }
@@ -59,7 +59,7 @@ void AbstractObservableLocalReader::startSeDetection(
 void AbstractObservableLocalReader::stopSeDetection()
 {
     logger->trace("[%s] stopSeDetection => stop Se Detection\n",
-                  this->getName());
+                  this->getName().c_str());
 
     this->stateService->onEvent(InternalEvent::STOP_DETECT);
 }
@@ -89,21 +89,21 @@ void AbstractObservableLocalReader::startRemovalSequence()
 {
     logger->trace("[%s] startRemovalSequence => start removal sequence of "
                   "the reader\n",
-                  this->getName());
+                  this->getName().c_str());
     this->stateService->onEvent(InternalEvent::SE_PROCESSED);
 }
 
 std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
 {
     logger->trace("[%s] processSeInserted => process the inserted se\n",
-                  this->getName());
+                  this->getName().c_str());
 
     bool presenceNotified = false;
 
     if (defaultSelectionsRequest == nullptr) {
         logger->trace("[%s] processSeInserted => no default selection request"
                       " defined, notify SE_INSERTED\n",
-                      this->getName());
+                      this->getName().c_str());
 
         /* No default request is defined, just notify the SE insertion */
         presenceNotified = true;
@@ -128,7 +128,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
                     seResponse->getSelectionStatus()->hasMatched()) {
                     logger->trace("[%s] processSeInserted => a default "
                                   "selection has matched\n",
-                                  this->getName());
+                                  this->getName().c_str());
                     aSeMatched = true;
                     break;
                 }
@@ -150,7 +150,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
                     logger->trace("[%s] processSeInserted => selection hasn't"
                                   " matched, do not throw any event because "
                                   "of MATCHED_ONLY flag\n",
-                                  this->getName());
+                                  this->getName().c_str());
                     return nullptr;
                 }
             } else {
@@ -173,7 +173,8 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
                      */
                     logger->trace("[%s] processSeInserted => none of %d "
                                   "default selection matched\n",
-                                  this->getName(), seResponseList.size());
+                                  this->getName().c_str(),
+                                  seResponseList.size());
 
                     presenceNotified = true;
                     return std::make_shared<ReaderEvent>(
@@ -228,7 +229,7 @@ bool AbstractObservableLocalReader::isSePresentPing()
     } catch (const KeypleIOReaderException& e) {
         logger->trace("[%s] Exception occurred in isSePresentPing. Message: "
                       "%s\n",
-                      this->getName(), e.getMessage());
+                      this->getName().c_str(), e.getMessage());
         return false;
     }
 

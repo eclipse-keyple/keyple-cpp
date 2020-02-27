@@ -74,7 +74,7 @@ void AbstractPlugin::addObserver(
     std::shared_ptr<ObservablePlugin::PluginObserver> observer)
 {
     logger->trace("[] addObserver => Adding <fixme> as an observer of '%s'\n",
-                  this->name);
+                  this->name.c_str());
 
     Observable<PluginEvent>::addObserver(observer);
 }
@@ -124,8 +124,8 @@ void AbstractPlugin::notifyObservers(std::shared_ptr<PluginEvent> event)
 {
     logger->trace("[%s] AbstractPlugin => Notifying a plugin event to %d "
                   "observers. EVENTNAME = %s\n",
-                  this->name, this->countObservers(),
-                  event->getEventType().getName());
+                  this->name.c_str(), this->countObservers(),
+                  event->getEventType().getName().c_str());
 
     setChanged();
 

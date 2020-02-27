@@ -52,9 +52,11 @@ void AbstractThreadedObservablePlugin::addObserver(
     AbstractPlugin::addObserver(observer);
 
     if (AbstractPlugin::countObservers() == 1) {
-        logger->debug("Start monitoring the plugin %s\n", this->getName());
-        thread =
-            std::make_shared<EventThread>(shared_from_this(), this->getName());
+        logger->debug("Start monitoring the plugin %s\n",
+                      this->getName().c_str());
+        std::shared_ptr<AbstractThreadedObservablePlugin> atop =
+            std::shared_ptr<AbstractThreadedObservablePlugin>(this);
+        thread = std::make_shared<EventThread>(atop, this->getName());
         thread->start();
     }
 }

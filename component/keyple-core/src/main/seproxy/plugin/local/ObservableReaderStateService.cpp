@@ -44,13 +44,13 @@ void ObservableReaderStateService::switchState(const MonitoringState stateId)
         currentState->onDeactivate();
     } else {
         logger->trace("[%s] Switch to a new currentState %d\n",
-                      this->reader->getName(), stateId);
+                      this->reader->getName().c_str(), stateId);
     }
 
     /* Switch currentState */
     currentState = this->states.find(stateId)->second;
 
-    logger->debug("[%s] New currentState %d", this->reader->getName(),
+    logger->debug("[%s] New currentState %d\n", this->reader->getName().c_str(),
                   currentState->getMonitoringState());
 
     /* onActivate the new current state */
