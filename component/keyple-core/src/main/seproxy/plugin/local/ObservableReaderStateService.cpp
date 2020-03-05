@@ -22,7 +22,7 @@ namespace local {
 
 ObservableReaderStateService::ObservableReaderStateService(
     AbstractObservableLocalReader* reader,
-    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>& states,
+    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>> states,
     const MonitoringState initState)
 : reader(reader), states(states)
 {

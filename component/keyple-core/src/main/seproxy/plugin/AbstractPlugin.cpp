@@ -105,14 +105,13 @@ std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string& name)
                   name.c_str(), readers.size());
 
     for (auto reader : readers) {
-        logger->debug("getReader - reader: %s\n", reader->getName().c_str());
-
         if (reader->getName() == name) {
             return std::shared_ptr<SeReader>(
                 std::dynamic_pointer_cast<SeReader>(reader));
         }
     }
-    throw std::make_shared<KeypleReaderNotFoundException>(name);
+
+    throw KeypleReaderNotFoundException(name);
 }
 
 const std::string& AbstractPlugin::getName() const

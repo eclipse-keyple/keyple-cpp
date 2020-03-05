@@ -14,6 +14,9 @@
 
 #include "StubPluginImpl.h"
 
+/* Core */
+#include "AbstractObservableState.h"
+
 /* Stub Plugin */
 #include "StubReaderImpl.h"
 
@@ -129,6 +132,13 @@ void StubPluginImpl::unplugStubReader(const std::string& readerName,
             logger->debug("synchronous unplug\n");
             connectedStubNames.erase(readerName);
             std::shared_ptr<SeReader> readerToErase = getReader(readerName);
+
+            /* In case where Reader was detecting SE */
+            std::shared_ptr<AbstractObservableLocalReader> observableR =
+                std::dynamic_pointer_cast<AbstractObservableLocalReader>(
+                    readerToErase);
+            observableR->stopSeDetection();
+
             readers.erase(readerToErase);
         } else {
             logger->debug("asynchronous unplug\n");
@@ -173,7 +183,9 @@ void StubPluginImpl::unplugStubReaders(const std::set<std::string>& readerNames,
 
 const std::set<std::string>& StubPluginImpl::fetchNativeReadersNames()
 {
-    if (connectedStubNames.empty()) {
+    logger->debug("fetching native reader names\n");
+
+    if (connectedStubNames.size() == 0) {
         logger->trace("No reader available\n");
     }
 

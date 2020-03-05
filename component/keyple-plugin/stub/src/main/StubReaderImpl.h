@@ -165,6 +165,23 @@ public:
      */
     void notifySeProcessed() override;
 
+    /**
+     * Stops the SE detection.
+     * <p>
+     * This method must be overloaded by readers depending on the particularity
+     * of their management of the start of SE detection.
+     *
+     * /!\/!\/!\
+     *
+     * Function removeObserver() is present in two base classes (
+     * AbstractObservableLocalReader and ObservableReader).
+     * AbstractObservableLocalReader implements the virtual function but
+     * ObservableReader and its derived classes don't, therefore function
+     * ObservableReader::removeObserver() is considered virtual. Override needed
+     * in this class.
+     */
+    void stopSeDetection() override;
+
 protected:
     /**
      *
@@ -282,23 +299,6 @@ private:
      * needed in this class.
      */
     void startSeDetection(PollingMode pollingMode) override;
-
-    /**
-     * Stops the SE detection.
-     * <p>
-     * This method must be overloaded by readers depending on the particularity
-     * of their management of the start of SE detection.
-     *
-     * /!\/!\/!\
-     *
-     * Function removeObserver() is present in two base classes (
-     * AbstractObservableLocalReader and ObservableReader).
-     * AbstractObservableLocalReader implements the virtual function but
-     * ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::removeObserver() is considered virtual. Override needed
-     * in this class.
-     */
-    void stopSeDetection() override;
 
     /**
      * Defines the selection request to be processed when an SE is inserted.

@@ -17,6 +17,9 @@
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "KeypleIOReaderException.h"
+#include "InterruptedException.h"
+
+using namespace keyple::core::seproxy::exception;
 
 namespace keyple {
 namespace core {
@@ -40,6 +43,9 @@ void SmartInsertionMonitoringJob::monitoringJob(
                   reader->getName().c_str());
 
     try {
+        if (cancellationFlag)
+            throw InterruptedException("monitoring job interrupted");
+
         if (reader->waitForCardPresent()) {
             state->onEvent(InternalEvent::SE_INSERTED);
         }

@@ -88,7 +88,7 @@ void AbstractObservableState::onDeactivate()
         cancellationFlag = false;
         logger->trace("[%s] onDeactivate => cancel runnable waitForCarPresent"
                       " by thead interruption\n",
-                      reader->getName());
+                      reader->getName().c_str());
     }
 }
 

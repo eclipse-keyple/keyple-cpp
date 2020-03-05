@@ -208,7 +208,10 @@ bool StubReaderImpl::waitForCardPresent()
 {
     loopWaitSe = true;
 
+    logger->debug("[%s] waiting for card present\n", this->name.c_str());
+
     while (loopWaitSe) {
+        logger->debug("[%s] checking for SE presence\n", this->name.c_str());
         if (checkSePresence()) {
             return true;
         }
@@ -217,9 +220,10 @@ bool StubReaderImpl::waitForCardPresent()
             Thread::sleep(10);
         } catch (InterruptedException& e) {
             (void)e;
-            logger->debug("Sleep was interrupted\n");
+            logger->debug("[%s] Sleep was interrupted\n", this->name.c_str());
         }
     }
+
     return false;
     // logger.trace("[{}] no card was inserted", this.getName());
     // return false;
