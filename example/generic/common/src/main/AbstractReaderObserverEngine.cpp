@@ -12,12 +12,15 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include <thread>
+
 /* Examples */
 #include "AbstractReaderObserverEngine.h"
 
 /* Core */
-#include "ReaderEvent_Import.h"
 #include "AbstractDefaultSelectionsResponse.h"
+#include "ReaderEvent_Import.h"
+#include "SeProxyService.h"
 
 namespace keyple {
 namespace example {
@@ -26,28 +29,77 @@ namespace common {
 
 using namespace keyple::core::seproxy::event;
 
-void AbstractReaderObserverEngine::update(std::shared_ptr<ReaderEvent> event)
+void* AbstractReaderObserverEngine::runSeInsertedThread(void* args)
 {
-    logger->debug("update\n");
+    ReaderEvent* event = (ReaderEvent*)args;
 
-    if (event->getEventType() != ReaderEvent::EventType::SE_INSERTED &&
-        logger->isInfoEnabled()) {
-        logger->info("%s\n", event->getReaderName().c_str());
-        logger->info("Start the processing of the SE...\n");
+    currentlyProcessingSe = true;
+    processSeInserted();
+
+    /**
+     * Informs the underlying layer of the end of the SE processing, in order to
+     * manage the removal sequence.
+     * <p>
+     * If closing has already been requested, this method will do nothing.
+     */
+    try {
+        std::dynamic_pointer_cast<ObservableReader>(
+            SeProxyService::getInstance().getPlugin(event->getPluginName())
+                ->getReader(event->getReaderName()))->notifySeProcessed();
+    } catch (KeypleReaderNotFoundException& e) {
+        logger->debug("KeypleReaderNotFoundException: %s\n", e.getMessage());
+    } catch (KeyplePluginNotFoundException& e) {
+        logger->debug("KeyplePluginNotFoundException: %s\n", e.getMessage());
     }
 
-    ReaderEvent::EventType eventType = event->getEventType();
-    if (eventType == ReaderEvent::EventType::SE_INSERTED) {
-        currentlyProcessingSe = true;
-        processSeInsertion(); // optional, to process alternative AID selection
-        currentlyProcessingSe = false;
-    } else if (eventType == ReaderEvent::EventType::SE_MATCHED) {
-        currentlyProcessingSe = true;
-        processSeMatch(
-            event->getDefaultSelectionsResponse()); // to process the selected
-        // application
-        currentlyProcessingSe = false;
-    } else if (eventType == ReaderEvent::EventType::SE_REMOVAL) {
+    currentlyProcessingSe = false;
+
+    return NULL;
+}
+
+void* AbstractReaderObserverEngine::runSeMatchedThread(void* args)
+{
+    ReaderEvent* event = (ReaderEvent*)args;
+
+    currentlyProcessingSe = true;
+    processSeMatch(event->getDefaultSelectionsResponse());
+
+    /**
+     * Informs the underlying layer of the end of the SE processing, in order to
+     * manage the removal sequence.
+     * <p>
+     * If closing has already been requested, this method will do nothing.
+     */
+    try {
+        std::dynamic_pointer_cast<ObservableReader>(
+            SeProxyService::getInstance().getPlugin(event->getPluginName())
+                ->getReader(event->getReaderName()))->notifySeProcessed();
+    } catch (KeypleReaderNotFoundException& e) {
+        logger->debug("KeypleReaderNotFoundException: %s\n", e.getMessage());
+    } catch (KeyplePluginNotFoundException& e) {
+        logger->debug("KeyplePluginNotFoundException: %s\n", e.getMessage());
+    }
+
+    currentlyProcessingSe = false;
+
+    return NULL;
+}
+
+void AbstractReaderObserverEngine::update(std::shared_ptr<ReaderEvent> event)
+{
+    logger->info("New reader event: %s\n", event->getReaderName().c_str());
+
+    if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED) {
+        /* Run the PO processing asynchronously in a detach thread */
+        new std::thread(&AbstractReaderObserverEngine::runSeInsertedThread,
+                        this, event.get());
+
+    } else if (event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
+        /* Run the PO processing asynchronously in a detach thread */
+        new std::thread(&AbstractReaderObserverEngine::runSeMatchedThread,
+                        this, event.get());
+
+    } else if (event->getEventType() ==ReaderEvent::EventType::SE_REMOVED) {
         if (currentlyProcessingSe) {
             processUnexpectedSeRemoval(); // to clean current SE processing
             logger->error("Unexpected SE Removal\n");
@@ -58,9 +110,14 @@ void AbstractReaderObserverEngine::update(std::shared_ptr<ReaderEvent> event)
             }
         }
         currentlyProcessingSe = false;
-    } else {
 
-        logger->error("IO Error\n");
+     } else if (event->getEventType() == ReaderEvent::EventType::TIMEOUT_ERROR){
+        logger->error("Timeout error: the processing time or the time limit " \
+                      "for removing the SE has been exceeded\n");
+        /*
+         * Do the appropriate processing here but do not prevent the return of
+         * this update method (e.g. by raising an exception).
+         */
     }
 }
 

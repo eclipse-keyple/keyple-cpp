@@ -65,9 +65,9 @@ protected:
                        defaultSelectionsResponse) = 0;
 
     /**
-     *
+     * Alternative AID selection
      */
-    virtual void processSeInsertion() = 0; // alternative AID selection
+    virtual void processSeInserted() = 0;
 
     /**
      *
@@ -85,6 +85,16 @@ private:
      */
     const std::shared_ptr<Logger> logger =
         LoggerFactory::getLogger(typeid(AbstractReaderObserverEngine));
+
+    /**
+     *
+     */
+    void* runSeInsertedThread(void *args);
+
+    /**
+     *
+     */
+    void* runSeMatchedThread(void *args);
 };
 
 }
