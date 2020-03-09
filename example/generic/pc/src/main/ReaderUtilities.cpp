@@ -14,6 +14,7 @@
 
 #include "KeypleReaderNotFoundException.h"
 #include "KeypleBaseException.h"
+#include "Pattern.h"
 #include "PcscReadersSettings.h"
 #include "PcscReader_Import.h"
 #include "PcscProtocolSetting_Import.h"
@@ -40,7 +41,7 @@ ReaderUtilities::getReaderByName(const std::string& pattern)
     SeProxyService& proxy = SeProxyService::getInstance();
 
     for (auto plugin : proxy.getPlugins()) {
-        for (auto reader : *plugin->getReaders()) {
+        for (auto reader : plugin->getReaders()) {
             Matcher* matcher = p->matcher(reader->getName());
             if (matcher->matches()) {
                 return reader;
@@ -62,9 +63,6 @@ std::shared_ptr<SeReader> ReaderUtilities::getDefaultContactLessSeReader()
 
 void ReaderUtilities::setContactlessSettings(std::shared_ptr<SeReader> reader)
 {
-    /* Enable logging */
-    reader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");
-
     /* Contactless SE works with T1 protocol */
     reader->setParameter(PcscReader::SETTING_KEY_PROTOCOL,
                          PcscReader::SETTING_PROTOCOL_T1);
@@ -93,9 +91,6 @@ void ReaderUtilities::setContactlessSettings(std::shared_ptr<SeReader> reader)
 
 void ReaderUtilities::setContactsSettings(std::shared_ptr<SeReader> reader)
 {
-    /* Enable logging */
-    reader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");
-
     /* Contactless SE works with T0 protocol */
     reader->setParameter(PcscReader::SETTING_KEY_PROTOCOL,
                          PcscReader::SETTING_PROTOCOL_T0);

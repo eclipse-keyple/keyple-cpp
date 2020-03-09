@@ -49,7 +49,6 @@ public:
     static const std::string SETTING_DISCONNECT_UNPOWER;
     static const std::string SETTING_DISCONNECT_LEAVE;
     static const std::string SETTING_DISCONNECT_EJECT;
-    static const std::string SETTING_KEY_THREAD_TIMEOUT;
 };
 
 }

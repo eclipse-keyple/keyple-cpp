@@ -14,11 +14,11 @@
 
 #include "AbstractMatchingSe.h"
 #include "ByteArrayUtil.h"
-#include "ChannelState.h"
 #include "GenericSeSelectionRequest.h"
 #include "KeypleBaseException.h"
 #include "MatchingSelection.h"
 #include "PcscPlugin.h"
+#include "PcscPluginFactory.h"
 #include "ReaderUtilities.h"
 #include "SeCommonProtocols_Import.h"
 #include "SelectionStatus.h"
@@ -42,22 +42,42 @@ using namespace keyple::example::generic::pc;
 //static std::string seAid = "A0000004040125090101";
 static std::string seAid = "A000000291";
 //static std::string seAid = "A00000019102";
+/**
+ * <h1>Use Case ‘generic 1’ – Explicit Selection Aid (PC/SC)</h1>
+ * <ul>
+ * <li>
+ * <h2>Scenario:</h2>
+ * <ul>
+ * <li>Check if a ISO 14443-4 SE is in the reader, select a SE (here a Calypso PO).</li>
+ * <li><code>
+ Explicit Selection
+ </code> means that it is the terminal application which start the SE processing.</li>
+ * <li>SE messages:
+ * <ul>
+ * <li>A single SE message to select the application in the reader</li>
+ * </ul>
+ * </li>
+ * </ul>
+ * </li>
+ * </ul>
+ */
+class ExplicitSelectionAid_Pcsc {
+
+};
+
+const std::shared_ptr<Logger> logger =
+    LoggerFactory::getLogger(typeid(ExplicitSelectionAid_Pcsc));
 
 int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
 
-    /* Get the instance of the PC/SC plugin */
-    PcscPlugin pcscplugin = PcscPlugin::getInstance();
-    pcscplugin.initReaders();
-
-    /*
-     * Get the instance of the SeProxyService (Singleton pattern) and assign
-     * PcscPlugin to the SeProxyService
-     */
+    /* Get the instance of the SeProxyService (Singleton pattern) */
     SeProxyService& seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(std::make_shared<PcscPlugin>(pcscplugin));
+
+    /* Assign PcscPlugin to the SeProxyService */
+    seProxyService.registerPlugin(new PcscPluginFactory());
 
     /*
      * Get a SE reader ready to work with generic SE. Use the getReader helper
@@ -71,27 +91,21 @@ int main(int argc, char** argv)
         throw IllegalStateException("Bad SE reader setup");
     }
 
-    std::cout << "=============== UseCase Generic #1: AID based explicit "
-                 "selection =================="
-              << std::endl;
-    std::cout << "= SE Reader  NAME = " << seReader->getName() << std::endl;
+    logger->info("=============== UseCase Generic #1: AID based explicit " \
+                "selection ==================\n");
+    logger->info("= SE Reader  NAME = %s\n", seReader->getName().c_str());
 
     /* Check if a SE is present in the reader */
     if (seReader->isSePresent()) {
 
-        std::cout << "========================================================="
-                     "========================="
-                  << std::endl;
-        std::cout << "= AID based selection.                                   "
-                     "                        ="
-                  << std::endl;
-        std::cout << "========================================================="
-                     "========================="
-                  << std::endl;
+        logger->info("=======================================================" \
+                     "===========================\n");
+        logger->info("= AID based selection.                                 " \
+                     "                          =\n");
+        logger->info("=======================================================" \
+                     "===========================\n");
 
-        /*
-         * Prepare the SE selection
-         */
+        /* Prepare the SE selection */
         std::shared_ptr<SeSelection> seSelection =
             std::make_shared<SeSelection>();
 
@@ -117,8 +131,7 @@ int main(int argc, char** argv)
             std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4,
                                          nullptr, aidSelector, "AID:" + seAid);
         std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
-            std::make_shared<GenericSeSelectionRequest>(
-                seSelector, ChannelState::KEEP_OPEN);
+            std::make_shared<GenericSeSelectionRequest>(seSelector);
 
         /*
          * Add the selection case to the current selection (we could have added
@@ -136,24 +149,22 @@ int main(int argc, char** argv)
         if (selectionsResult->hasActiveSelection()) {
             std::shared_ptr<AbstractMatchingSe> matchedSe =
                 selectionsResult->getActiveSelection()->getMatchingSe();
-            std::cout << "The selection of the SE has succeeded." << std::endl;
-            std::cout << "Application FCI = "
-                      << matchedSe->getSelectionStatus()->getFci() << std::endl;
+            logger->info("The selection of the SE has succeeded\n");
+            logger->info("Application FCI = %s\n",
+                         matchedSe->getSelectionStatus()->getFci()->toString()
+                             .c_str());
 
-            std::cout << "====================================================="
-                         "============================="
-                      << std::endl;
-            std::cout << "= End of the generic SE processing.                  "
-                         "                            ="
-                      << std::endl;
-            std::cout << "====================================================="
-                         "============================="
-                      << std::endl;
+            logger->info("===================================================" \
+                         "===============================\n");
+            logger->info("= End of the generic SE processing.                " \
+                         "                              =\n");
+            logger->info("===================================================" \
+                         "===============================\n");
         } else {
-            std::cout << "The selection of the SE has failed." << std::endl;
+            logger->info("The selection of the SE has failed\n");
         }
     } else {
-        std::cout << "No SE were detected." << std::endl;
+        logger->info("No SE were detected\n");
     }
 
     return 0;

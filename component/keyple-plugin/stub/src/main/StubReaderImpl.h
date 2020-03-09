@@ -88,7 +88,8 @@ public:
     /**
      *
      */
-    std::vector<uint8_t> transmitApdu(std::vector<uint8_t>& apduIn) override;
+    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn)
+        override;
 
     /**
      *
@@ -320,10 +321,15 @@ private:
      * ObservableReader::setDefaultSelectionRequest() is considered virtual.
      * Override needed in this class.
      */
-    void
-    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
+    void setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
                                    defaultSelectionsRequest,
                                NotificationMode notificationMode) override;
+
+
+    void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode, PollingMode pollingMode) override;
 };
 
 }

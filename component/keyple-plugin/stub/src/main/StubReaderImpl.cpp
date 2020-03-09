@@ -89,7 +89,8 @@ void StubReaderImpl::closePhysicalChannel()
     }
 }
 
-std::vector<uint8_t> StubReaderImpl::transmitApdu(std::vector<uint8_t>& apduIn)
+std::vector<uint8_t> StubReaderImpl::transmitApdu(
+    const std::vector<uint8_t>& apduIn)
 {
     if (se == nullptr) {
         throw KeypleIOReaderException("No SE available.");
@@ -326,6 +327,15 @@ void StubReaderImpl::setDefaultSelectionRequest(
 {
     AbstractObservableLocalReader::setDefaultSelectionRequest(
         defaultSelectionsRequest, notificationMode);
+}
+
+void StubReaderImpl::setDefaultSelectionRequest(
+    std::shared_ptr<AbstractDefaultSelectionsRequest>
+        defaultSelectionsRequest,
+    NotificationMode notificationMode, PollingMode pollingMode)
+{
+    AbstractObservableLocalReader::setDefaultSelectionRequest(
+        defaultSelectionsRequest, notificationMode, pollingMode);
 }
 
 void StubReaderImpl::clearObservers()

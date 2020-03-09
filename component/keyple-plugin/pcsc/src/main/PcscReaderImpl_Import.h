@@ -187,7 +187,8 @@ protected:
      * @return apduOut buffer
      * @throws KeypleIOReaderException if the transmission failed
      */
-    std::vector<uint8_t> transmitApdu(std::vector<uint8_t>& apduIn) override;
+    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn)
+        override;
 
     /**
      * Tells if the current SE protocol matches the provided protocol flag. If
@@ -268,10 +269,15 @@ protected:
     /**
      *
      */
-    void
-    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
-                                   defaultSelectionsRequest,
-                               NotificationMode notificationMode) override;
+    void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode) override;
+
+    void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode, PollingMode pollingMode) override;
 
 private:
     /**

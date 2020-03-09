@@ -188,7 +188,7 @@ protected:
      * @throws KeypleIOReaderException if a reader error occurs
      */
     virtual std::shared_ptr<SelectionStatus>
-    openLogicalChannel(std::shared_ptr<SeSelector> seSelector);
+        openLogicalChannel(std::shared_ptr<SeSelector> seSelector);
 
     /**
      * Open (if needed) a physical channel and try to establish a logical
@@ -219,7 +219,7 @@ protected:
      *         fails
      */
     std::shared_ptr<SelectionStatus>
-    openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector);
+        openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector);
 
     /**
      * Attempts to open the physical channel
@@ -336,7 +336,8 @@ protected:
      * @throws KeypleIOReaderException if the transmission fails
      */
 
-    virtual std::vector<uint8_t> transmitApdu(std::vector<uint8_t>& apduIn) = 0;
+    virtual std::vector<uint8_t> transmitApdu(
+        const std::vector<uint8_t>& apduIn) = 0;
 
     /**
      *

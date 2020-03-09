@@ -345,8 +345,9 @@ public:
      *        SE detection is stopped until a new call to startSeDetection is
      *        made.
      */
-    void setDefaultSelectionRequest(
-        AbstractDefaultSelectionsRequest& defaultSelectionsRequest,
+    virtual void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
         NotificationMode notificationMode, PollingMode pollingMode);
 
     /**

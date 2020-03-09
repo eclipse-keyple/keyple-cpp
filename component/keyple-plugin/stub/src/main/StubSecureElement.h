@@ -106,7 +106,8 @@ public:
      * @return APDU response
      * @throws KeypleIOReaderException if the transmission fails
      */
-    virtual std::vector<uint8_t> processApdu(std::vector<uint8_t>& apduIn);
+    virtual std::vector<uint8_t> processApdu(
+        const std::vector<uint8_t>& apduIn);
 
 private:
     /**

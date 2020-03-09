@@ -238,7 +238,8 @@ void PcscReaderImpl::stopWaitForCardRemoval()
     loopWaitSeRemoval = false;
 }
 
-std::vector<uint8_t> PcscReaderImpl::transmitApdu(std::vector<uint8_t>& apduIn)
+std::vector<uint8_t> PcscReaderImpl::transmitApdu(
+    const std::vector<uint8_t>& apduIn)
 {
     logger->debug("transmitApdu\n");
 
@@ -500,6 +501,14 @@ void PcscReaderImpl::setDefaultSelectionRequest(
 {
     AbstractObservableLocalReader::setDefaultSelectionRequest(
         defaultSelectionsRequest, notificationMode);
+}
+
+void PcscReaderImpl::setDefaultSelectionRequest(
+    std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
+    NotificationMode notificationMode, PollingMode pollingMode)
+{
+    AbstractObservableLocalReader::setDefaultSelectionRequest(
+        defaultSelectionsRequest, notificationMode, pollingMode);
 }
 
 void PcscReaderImpl::clearObservers()

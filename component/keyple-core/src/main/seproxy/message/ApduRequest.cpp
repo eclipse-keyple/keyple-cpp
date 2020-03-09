@@ -70,7 +70,7 @@ std::string ApduRequest::getName()
     return name;
 }
 
-std::vector<uint8_t> ApduRequest::getBytes()
+const std::vector<uint8_t>& ApduRequest::getBytes()
 {
     return this->bytes;
 }

@@ -36,8 +36,6 @@ const std::string PcscReader::SETTING_DISCONNECT_RESET   = "reset";
 const std::string PcscReader::SETTING_DISCONNECT_UNPOWER = "unpower";
 const std::string PcscReader::SETTING_DISCONNECT_LEAVE   = "leave";
 const std::string PcscReader::SETTING_DISCONNECT_EJECT   = "eject";
-const std::string PcscReader::SETTING_KEY_THREAD_TIMEOUT =
-    "thread_wait_timeout";
 
 }
 }
