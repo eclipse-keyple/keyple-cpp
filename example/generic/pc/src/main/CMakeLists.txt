@@ -22,7 +22,7 @@ SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 SET(CMAKE_MACOSX_RPATH 1)
 SET(CMAKE_CXX_STANDARD 11)
 
-#INCLUDE(CMakeLists.txt.demo_observablereadernotification_pcsc)
+INCLUDE(CMakeLists.txt.demo_observablereadernotification_pcsc)
 INCLUDE(CMakeLists.txt.demo_observablereadernotification_stub)
 #INCLUDE(CMakeLists.txt.demo_seprotocoldetection_pcsc)
 INCLUDE(CMakeLists.txt.demo_seprotocoldetection_stub)

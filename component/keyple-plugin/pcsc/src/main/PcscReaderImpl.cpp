@@ -58,16 +58,20 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
     this->executorService = std::make_shared<MonitoringPool>();
 
     logger->debug("[%s] constructor => using terminal %s\n",
-                  terminal.getName());
+                  terminal.getName().c_str());
 
     /*
      * Using null values to use the standard method for defining default values
+     *
+     * /!\ Must use hardcoded strings here as
+     *     PcscReader::SETTING_KEY_TRANSMISSION_MODE and the three other strings
+     *     are not yet instantiated.
      */
     try {
-        setParameter(SETTING_KEY_TRANSMISSION_MODE, "");
-        setParameter(SETTING_KEY_PROTOCOL, "");
-        setParameter(SETTING_KEY_MODE, "");
-        setParameter(SETTING_KEY_DISCONNECT, "");
+        setParameter("transmission_mode", "");
+        setParameter("protocol", "");
+        setParameter("mode", "");
+        setParameter("disconnect", "");
     } catch (KeypleBaseException& e) {
         (void)e;
         /* Can not fail with null value */
@@ -314,8 +318,7 @@ bool PcscReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
 
 void PcscReaderImpl::setParameter(const std::string& name,
                                   const std::string& value)
-{
-    logger->debug("[%s] setParameter => PCSC: Set a parameter. NAME = %s,"
+{    logger->debug("[%s] setParameter => PCSC: Set a parameter. NAME = %s,"
                   " VALUE = %s\n",
                   this->getName().c_str(), name.c_str(), value.c_str());
 
@@ -323,31 +326,36 @@ void PcscReaderImpl::setParameter(const std::string& name,
         throw std::invalid_argument("Parameter shouldn't be null\n");
     }
 
-    if (name == SETTING_KEY_TRANSMISSION_MODE) {
+    /*
+     * /!\ Must use hardcoded strings here as
+     *     PcscReader::SETTING_KEY_TRANSMISSION_MODE and the three other strings
+     *     are not yet instantiated.
+     */
+    if (name == "transmission_mode") {
         if (value == "")
             transmissionMode = static_cast<TransmissionMode>(0);
-        else if (value == SETTING_TRANSMISSION_MODE_CONTACTS)
+        else if (value == "contacts")
             transmissionMode = TransmissionMode::CONTACTS;
-        else if (value == SETTING_TRANSMISSION_MODE_CONTACTLESS)
+        else if (value == "contactless")
             transmissionMode = TransmissionMode::CONTACTLESS;
         else
             throw std::invalid_argument("Bad tranmission mode " + name + " : " +
                                         value);
 
-    } else if (name == SETTING_KEY_PROTOCOL) {
-        if (value == "" || value == SETTING_PROTOCOL_TX)
+    } else if (name == "protocol") {
+        if (value == "" || value == "Tx")
             parameterCardProtocol = "*";
-        else if (value == SETTING_PROTOCOL_T0)
+        else if (value == "T0")
             parameterCardProtocol = "T=0";
-        else if (value == SETTING_PROTOCOL_T1)
+        else if (value == "T1")
             parameterCardProtocol = "T=1";
-        else if (value == SETTING_PROTOCOL_T_CL)
+        else if (value == "TCL")
             parameterCardProtocol = "T=CL";
         else
             throw std::invalid_argument("Bad protocol " + name + " : " + value);
 
-    } else if (name == SETTING_KEY_MODE) {
-        if (value == "" || value == SETTING_MODE_SHARED) {
+    } else if (name == "mode") {
+        if (value == "" || value == "shared") {
             if (cardExclusiveMode) {
                 try {
                     terminal.endExclusive();
@@ -358,19 +366,19 @@ void PcscReaderImpl::setParameter(const std::string& name,
                 }
             }
             cardExclusiveMode = false;
-        } else if (value == SETTING_MODE_EXCLUSIVE) {
+        } else if (value == "exclusive") {
             cardExclusiveMode = true;
         } else {
             throw std::invalid_argument("Parameter value not supported " +
                                         name + " : " + value);
         }
-    } else if (name == SETTING_KEY_DISCONNECT) {
-        if (value == "" || value == SETTING_DISCONNECT_RESET) {
+    } else if (name == "disconnect") {
+        if (value == "" || value == "reset") {
             cardReset = true;
-        } else if (value == SETTING_DISCONNECT_UNPOWER) {
+        } else if (value == "unpower") {
             cardReset = false;
-        } else if (value == SETTING_DISCONNECT_EJECT ||
-                   value == SETTING_DISCONNECT_LEAVE) {
+        } else if (value == "eject" ||
+                   value == "leave") {
             throw std::invalid_argument("This disconnection parameter is not "
                                         "supported by this plugin" +
                                         name + " : " + value);
@@ -379,7 +387,7 @@ void PcscReaderImpl::setParameter(const std::string& name,
                                         " : " + value);
         }
     } else {
-        throw std::invalid_argument("This parameter is unknown !" + name +
+        throw std::invalid_argument("This parameter is unknown! " + name +
                                     " : " + value);
     }
 }

@@ -24,7 +24,7 @@ const std::string PcscReader::SETTING_TRANSMISSION_MODE_CONTACTS = "contacts";
 const std::string PcscReader::SETTING_TRANSMISSION_MODE_CONTACTLESS =
     "contactless";
 const std::string PcscReader::SETTING_KEY_PROTOCOL       = "protocol";
-const std::string PcscReader::SETTING_PROTOCOL_T0        = "TO";
+const std::string PcscReader::SETTING_PROTOCOL_T0        = "T0";
 const std::string PcscReader::SETTING_PROTOCOL_T1        = "T1";
 const std::string PcscReader::SETTING_PROTOCOL_T_CL      = "TCL";
 const std::string PcscReader::SETTING_PROTOCOL_TX        = "Tx";
