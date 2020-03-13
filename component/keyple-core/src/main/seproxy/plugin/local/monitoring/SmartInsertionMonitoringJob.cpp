@@ -47,14 +47,18 @@ void SmartInsertionMonitoringJob::monitoringJob(
             throw InterruptedException("monitoring job interrupted");
 
         if (reader->waitForCardPresent()) {
+            logger->debug("throwing card inserted event\n");
             state->onEvent(InternalEvent::SE_INSERTED);
         }
+
     } catch (KeypleIOReaderException& e) {
         logger->trace("[%s] waitForCardPresent => Error while polling SE with"
                       " waitForCardPresent. %s\n",
                       reader->getName().c_str(), e.getMessage());
         state->onEvent(InternalEvent::STOP_DETECT);
     }
+
+    logger->debug("SmartInsertionMonitoringJob complete\n");
 }
 
 std::future<void> SmartInsertionMonitoringJob::startMonitoring(

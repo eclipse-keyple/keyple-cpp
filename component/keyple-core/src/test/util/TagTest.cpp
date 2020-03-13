@@ -1,4 +1,3 @@
-
 /******************************************************************************
  * Copyright (c) 2018 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
@@ -26,7 +25,7 @@ using namespace bertlv;
 
 int TagTest::sample()
 {
-    std::vector<char> local = {'A', 'B', 'C', 'D'};
+    std::vector<uint8_t> local = {'A', 'B', 'C', 'D'};
 
     Tag pLocal = Tag(local, 0);
     //pLocal.parse();

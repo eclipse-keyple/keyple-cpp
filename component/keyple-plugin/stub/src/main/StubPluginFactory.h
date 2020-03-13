@@ -43,7 +43,6 @@ public:
      */
     const std::string& getPluginName() override;
 
-protected:
     /**
      * Returns an instance of the {@link PcscPlugin} if the platform is ready
      *

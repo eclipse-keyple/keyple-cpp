@@ -84,7 +84,7 @@ void AbstractObservableState::onDeactivate()
 
         /* TODO this could be inside the stop method? */
         cancellationFlag = true;
-        monitoringEvent->wait();
+        //monitoringEvent->wait();
         cancellationFlag = false;
         logger->trace("[%s] onDeactivate => cancel runnable waitForCarPresent"
                       " by thead interruption\n",

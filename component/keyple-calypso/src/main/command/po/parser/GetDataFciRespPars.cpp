@@ -205,7 +205,7 @@ GetDataFciRespPars::getApplicationSerialNumber() const
     return applicationSN;
 }
 
-char GetDataFciRespPars::getBufferSizeIndicator()
+uint8_t GetDataFciRespPars::getBufferSizeIndicator()
 {
     return siBufferSizeIndicator;
 }
@@ -215,12 +215,12 @@ int GetDataFciRespPars::getBufferSizeValue()
     return BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE[getBufferSizeIndicator()];
 }
 
-char GetDataFciRespPars::getPlatformByte()
+uint8_t GetDataFciRespPars::getPlatformByte()
 {
     return siPlatform;
 }
 
-char GetDataFciRespPars::getApplicationTypeByte()
+uint8_t GetDataFciRespPars::getApplicationTypeByte()
 {
     return siApplicationType;
 }
@@ -245,22 +245,22 @@ bool GetDataFciRespPars::hasCalypsoPin()
     return (siApplicationSubtype & APP_TYPE_WITH_CALYPSO_PIN) != 0;
 }
 
-char GetDataFciRespPars::getApplicationSubtypeByte()
+uint8_t GetDataFciRespPars::getApplicationSubtypeByte()
 {
     return siApplicationSubtype;
 }
 
-char GetDataFciRespPars::getSoftwareIssuerByte()
+uint8_t GetDataFciRespPars::getSoftwareIssuerByte()
 {
     return siSoftwareIssuer;
 }
 
-char GetDataFciRespPars::getSoftwareVersionByte()
+uint8_t GetDataFciRespPars::getSoftwareVersionByte()
 {
     return siSoftwareVersion;
 }
 
-char GetDataFciRespPars::getSoftwareRevisionByte()
+uint8_t GetDataFciRespPars::getSoftwareRevisionByte()
 {
     return siSoftwareRevision;
 }

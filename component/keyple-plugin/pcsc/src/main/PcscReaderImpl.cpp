@@ -54,8 +54,8 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
 : AbstractObservableLocalReader(pluginName, terminal.getName()),
   terminal(terminal)
 {
-    this->stateService    = initStateService();
     this->executorService = std::make_shared<MonitoringPool>();
+    this->stateService    = initStateService();
 
     logger->debug("[%s] constructor => using terminal %s\n",
                   terminal.getName().c_str());
@@ -141,7 +141,7 @@ bool PcscReaderImpl::checkSePresence()
 {
     try {
         logger->debug("checkSePresence - calling isCardPresent\n");
-        return terminal.isCardPresent();
+        return terminal.isCardPresent(true);
 
     } catch (PcscTerminalException& e) {
         logger->debug("[%s] checkSePresence - caught PcscTerminalException "
@@ -156,7 +156,7 @@ bool PcscReaderImpl::checkSePresence()
 bool PcscReaderImpl::waitForCardPresent()
 {
     logger->debug("[%s] waitForCardPresent => loop with latency of %d ms\n",
-                  this->getName(), insertLatency);
+                  this->getName().c_str(), insertLatency);
 
     /* Activate loop */
     loopWaitSe = true;
@@ -164,7 +164,7 @@ bool PcscReaderImpl::waitForCardPresent()
     try {
         while (loopWaitSe) {
             logger->trace("[%s] waitForCardPresent => looping\n",
-                          this->getName());
+                          this->getName().c_str());
             if (terminal.waitForCardPresent(insertLatency)) {
                 /* Card inserted */
                 return true;
@@ -175,7 +175,7 @@ bool PcscReaderImpl::waitForCardPresent()
                     logger->debug("[%s] waitForCardPresent => task has been " \
                                   cancelled\n", this->getName());
 */                    /* Task has been cancelled */
-                return false;
+                //return false;
                 //                  }
             }
         }
@@ -199,15 +199,14 @@ void PcscReaderImpl::stopWaitForCard()
 bool PcscReaderImpl::waitForCardAbsentNative()
 {
     logger->debug("[%s] waitForCardAbsentNative => loop with latency of "
-                  "%s ms\n",
-                  this->getName(), removalLatency);
+                  "%d ms\n", this->getName().c_str(), removalLatency);
 
     loopWaitSeRemoval = true;
 
     try {
         while (loopWaitSeRemoval) {
             logger->trace("[%s] waitForCardAbsentNative => looping\n",
-                          this->getName());
+                          this->getName().c_str());
             if (terminal.waitForCardAbsent(removalLatency)) {
                 /* Card removed */
                 return true;
@@ -218,7 +217,7 @@ bool PcscReaderImpl::waitForCardAbsentNative()
                     logger->debug("[%s] waitForCardAbsentNative => task " \
                                     "has been cancelled\n", this->getName());
 */                        /* Task has been cancelled */
-                return false;
+                //return false;
                 //                    }
             }
         }
@@ -472,7 +471,7 @@ TransmissionMode PcscReaderImpl::getTransmissionMode()
 
 void PcscReaderImpl::notifyObservers(std::shared_ptr<ReaderEvent> event)
 {
-    (void)event;
+    AbstractObservableLocalReader::notifyObservers(event);
 }
 
 void PcscReaderImpl::addObserver(std::shared_ptr<ReaderObserver> observer)

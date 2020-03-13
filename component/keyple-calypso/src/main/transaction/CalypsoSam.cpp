@@ -64,15 +64,15 @@ CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
 
         // determine SAM revision from Application Subtype
         switch (applicationSubType) {
-        case static_cast<char>(0xC1):
+        case 0xC1:
             samRevision = SamRevision(SamRevision::C1);
             break;
-        case static_cast<char>(0xD0):
-        case static_cast<char>(0xD1):
-        case static_cast<char>(0xD2):
+        case 0xD0:
+        case 0xD1:
+        case 0xD2:
             samRevision = SamRevision(SamRevision::S1D);
             break;
-        case static_cast<char>(0xE1):
+        case 0xE1:
             samRevision = SamRevision(SamRevision::S1E);
             break;
         default:
@@ -111,37 +111,37 @@ SamRevision CalypsoSam::getSamRevision()
     return samRevision;
 }
 
-std::vector<char> CalypsoSam::getSerialNumber()
+std::vector<uint8_t> CalypsoSam::getSerialNumber()
 {
     return serialNumber;
 }
 
-char CalypsoSam::getPlatform()
+uint8_t CalypsoSam::getPlatform()
 {
     return platform;
 }
 
-char CalypsoSam::getApplicationType()
+uint8_t CalypsoSam::getApplicationType()
 {
     return applicationType;
 }
 
-char CalypsoSam::getApplicationSubType()
+uint8_t CalypsoSam::getApplicationSubType()
 {
     return applicationSubType;
 }
 
-char CalypsoSam::getSoftwareIssuer()
+uint8_t CalypsoSam::getSoftwareIssuer()
 {
     return softwareIssuer;
 }
 
-char CalypsoSam::getSoftwareVersion()
+uint8_t CalypsoSam::getSoftwareVersion()
 {
     return softwareVersion;
 }
 
-char CalypsoSam::getSoftwareRevision()
+uint8_t CalypsoSam::getSoftwareRevision()
 {
     return softwareRevision;
 }

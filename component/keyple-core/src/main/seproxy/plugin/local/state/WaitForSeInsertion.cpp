@@ -52,12 +52,16 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
     switch (event) {
     case InternalEvent::SE_INSERTED:
         /* Process default selection if any, return an event, can be null */
+        logger->debug("processing se inserted\n");
         seEvent = this->reader->processSeInserted();
 
         if (seEvent != nullptr) {
             /* Switch internal state */
+            logger->debug("switching to WAIT_FOR_SE_PROCESSING state\n");
             switchState(MonitoringState::WAIT_FOR_SE_PROCESSING);
+
             /* Notify the external observer of the event */
+            logger->debug("notifying observers\n");
             reader->notifyObservers(seEvent);
         } else {
             /*
@@ -71,6 +75,7 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
         }
         break;
     case InternalEvent::STOP_DETECT:
+        logger->debug("switching to WAIT_FOR_SE_PROCESSING state\n");
         switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         break;
     case InternalEvent::SE_REMOVED:
@@ -80,8 +85,10 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
          */
         if (reader->getPollingMode() ==
             ObservableReader::PollingMode::REPEATING) {
+            logger->debug("switching to WAIT_FOR_SE_INSERTION state\n");
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         } else {
+            logger->debug("switching to WAIT_FOR_START_DETECTION state\n");
             switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         }
         break;

@@ -47,7 +47,7 @@ public:
     /**
      *
      */
-    bool isCardPresent();
+    bool isCardPresent(bool release);
 
     /**
      *

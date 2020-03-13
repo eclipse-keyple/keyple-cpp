@@ -42,16 +42,19 @@ using namespace keyple::example::generic::pc;
 //static std::string seAid = "A0000004040125090101";
 static std::string seAid = "A000000291";
 //static std::string seAid = "A00000019102";
+
 /**
  * <h1>Use Case ‘generic 1’ – Explicit Selection Aid (PC/SC)</h1>
  * <ul>
  * <li>
  * <h2>Scenario:</h2>
  * <ul>
- * <li>Check if a ISO 14443-4 SE is in the reader, select a SE (here a Calypso PO).</li>
+ * <li>Check if a ISO 14443-4 SE is in the reader, select a SE (here a Calypso
+ * PO).</li>
  * <li><code>
- Explicit Selection
- </code> means that it is the terminal application which start the SE processing.</li>
+ * Explicit Selection
+ * </code> means that it is the terminal application which start the SE
+ * processing.</li>
  * <li>SE messages:
  * <ul>
  * <li>A single SE message to select the application in the reader</li>

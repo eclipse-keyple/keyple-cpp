@@ -17,6 +17,7 @@
 /* Common */
 #include "exceptionhelper.h"
 #include "System.h"
+#include "Thread.h"
 
 /* PC/SC plugin */
 #include "PcscTerminal.h"
@@ -101,12 +102,17 @@ void PcscTerminal::establishContext()
 {
     LONG ret;
 
+    logger->debug("establishContext - contextEstablished: %s\n",
+                  contextEstablished ? "yes" : "no");
+
     if (this->contextEstablished)
         return;
 
     ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &this->context);
     if (ret != SCARD_S_SUCCESS) {
         this->contextEstablished = false;
+        logger->error("SCardEstablishContext failed with error: %s\n",
+                      pcsc_stringify_error(ret));
         throw PcscTerminalException("SCardEstablishContext failed");
     }
 
@@ -115,14 +121,19 @@ void PcscTerminal::establishContext()
 
 void PcscTerminal::releaseContext()
 {
+    logger->debug("releaseContext - contextEstablished: %s\n",
+                  contextEstablished ? "yes" : "no");
+
     if (!this->contextEstablished)
         return;
+
+    logger->debug("releaseContext - releasing context\n");
 
     SCardReleaseContext(this->context);
     this->contextEstablished = false;
 }
 
-bool PcscTerminal::isCardPresent()
+bool PcscTerminal::isCardPresent(bool release)
 {
     DWORD protocol;
     SCARDHANDLE hCard;
@@ -132,8 +143,8 @@ bool PcscTerminal::isCardPresent()
         establishContext();
     } catch (PcscTerminalException& e) {
         logger->error("isCardPresent - caught PcscTerminalException (msg: %s"
-                      ", cause: %s)\n",
-                      e.getMessage().c_str(), e.getCause().what());
+                      ", cause: %s)\n", e.getMessage().c_str(),
+                      e.getCause().what());
         throw e;
     }
 
@@ -141,14 +152,18 @@ bool PcscTerminal::isCardPresent()
                       SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
                       &hCard, &protocol);
     if (rv != SCARD_S_SUCCESS) {
-        if (rv != (int)SCARD_E_NO_SMARTCARD)
+        if (rv != SCARD_E_NO_SMARTCARD)
             logger->debug("isCardPresent - error connecting to card (%s)\n",
                           pcsc_stringify_error(rv));
-        releaseContext();
+        if (release)
+            releaseContext();
+
         return false;
     }
 
-    releaseContext();
+    if (release)
+        releaseContext();
+
     return true;
 }
 
@@ -158,12 +173,17 @@ bool PcscTerminal::waitForCardPresent(long long timeout)
     long current;
     long start = System::currentTimeMillis();
 
+    logger->debug("waitForCardPresent - waiting for card insertion for %d ms\n",
+                  timeout);
+
     do {
-        present = isCardPresent();
+        present = isCardPresent(false);
         if (present) {
             logger->debug("waitForCardPresent - card present\n");
             return true;
         }
+
+        Thread::sleep(100);
 
         if (timeout == INFINITE)
             continue;
@@ -250,7 +270,7 @@ void PcscTerminal::openAndConnect(std::string protocol)
 
 void PcscTerminal::closeAndDisconnect(bool reset)
 {
-    logger->debug("closeAndDisconnect\n");
+    logger->debug("closeAndDisconnect - reset: %s\n", reset ? "yes" : "no");
 
     SCardDisconnect(this->context, reset ? SCARD_LEAVE_CARD : SCARD_RESET_CARD);
 
@@ -261,21 +281,26 @@ bool PcscTerminal::waitForCardAbsent(long long timeout)
 {
     bool present;
     long current;
-    long start = System::currentTimeMillis();
+    long long start = System::currentTimeMillis();
+
+    logger->debug("waitForCardAbsent - waiting for card removal for %d ms\n",
+                  timeout);
 
     do {
-        present = isCardPresent();
+        present = isCardPresent(false);
         if (!present) {
-            logger->debug("waitForCardPresent - card absent\n");
+            logger->debug("waitForCardAbsent - card absent\n");
             return true;
         }
+
+        Thread::sleep(100);
 
         if (timeout == INFINITE)
             continue;
 
         current = System::currentTimeMillis();
         if (current > (start + timeout)) {
-            logger->debug("waitForCardPresent - timeout\n");
+            logger->debug("waitForCardAbsent - timeout\n");
             return false;
         }
 

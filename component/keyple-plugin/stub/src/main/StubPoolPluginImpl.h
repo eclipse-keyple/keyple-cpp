@@ -45,7 +45,7 @@ public:
     /**
      *
      */
-    StubPluginImpl& stubPlugin;
+    StubPluginImpl stubPlugin;
 
     /**
      * groupReference, seReader = limitation each

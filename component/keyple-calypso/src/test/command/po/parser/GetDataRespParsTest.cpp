@@ -31,20 +31,20 @@ void GetDataRespParsTest::testFCIparser_FCI_OK()
 {
     std::string dfName                  = "00112233445566778899";
     std::string appSerialNumber         = "AABBCCDDEEFF0011";
-    unsigned char siBufferSizeIndicator = 11;
-    unsigned char siPlatform            = static_cast<char>(0x55);
-    unsigned char siApplicationType     = static_cast<char>(0xAA);
-    unsigned char siApplicationSubtype  = static_cast<char>(0x55);
-    unsigned char siSoftwareIssuer      = static_cast<char>(0xAA);
-    unsigned char siSoftwareVersion     = static_cast<char>(0x55);
-    unsigned char siSoftwareRevision    = static_cast<char>(0xAA);
+    uint8_t siBufferSizeIndicator = 11;
+    uint8_t siPlatform            = 0x55;
+    uint8_t siApplicationType     = 0xAA;
+    uint8_t siApplicationSubtype  = 0x55;
+    uint8_t siSoftwareIssuer      = 0xAA;
+    uint8_t siSoftwareVersion     = 0x55;
+    uint8_t siSoftwareRevision    = 0xAA;
     char buff[100];
     snprintf(buff, sizeof(buff), "%02X%02X%02X%02X%02X%02X%02X",
              siBufferSizeIndicator, siPlatform, siApplicationType,
              siApplicationSubtype, siSoftwareIssuer, siSoftwareVersion,
              siSoftwareRevision);
     std::string startupInformation = buff;
-    std::vector<char> resp         = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> resp         = ByteArrayUtils::fromHex(
         "6F 24 84 0A " + dfName + " A5 16 BF0C 13 C7 08 " + appSerialNumber +
         " 53 07 " + startupInformation + "9000");
     std::shared_ptr<ApduResponse> apduResponse =
@@ -62,40 +62,40 @@ void GetDataRespParsTest::testFCIparser_FCI_OK()
     ASSERT_EQ(appSerialNumber,
               ByteArrayUtils::toHex(parser->getApplicationSerialNumber()));
     /* Buffer size indicator and value */
-    ASSERT_EQ((char)siBufferSizeIndicator, parser->getBufferSizeIndicator());
+    ASSERT_EQ(siBufferSizeIndicator, parser->getBufferSizeIndicator());
     ASSERT_EQ(512, parser->getBufferSizeValue());
     /* Platform */
-    ASSERT_EQ((char)siPlatform, parser->getPlatformByte());
+    ASSERT_EQ(siPlatform, parser->getPlatformByte());
     /* ApplicationType */
-    ASSERT_EQ((char)siApplicationType, parser->getApplicationTypeByte());
+    ASSERT_EQ(siApplicationType, parser->getApplicationTypeByte());
     ASSERT_TRUE(parser->isRev3_2ModeAvailable());
     ASSERT_TRUE(parser->isRatificationCommandRequired());
     ASSERT_TRUE(parser->hasCalypsoPin());
     ASSERT_FALSE(parser->hasCalypsoStoredValue());
     /* ApplicationSubType */
-    ASSERT_EQ((char)siApplicationSubtype, parser->getApplicationSubtypeByte());
+    ASSERT_EQ(siApplicationSubtype, parser->getApplicationSubtypeByte());
     /* SoftwareIssuer */
-    ASSERT_EQ((char)siSoftwareIssuer, parser->getSoftwareIssuerByte());
+    ASSERT_EQ(siSoftwareIssuer, parser->getSoftwareIssuerByte());
     /* SoftwareVersion */
-    ASSERT_EQ((char)siSoftwareVersion, parser->getSoftwareVersionByte());
+    ASSERT_EQ(siSoftwareVersion, parser->getSoftwareVersionByte());
     /* SoftwareRevision */
-    ASSERT_EQ((char)siSoftwareRevision, parser->getSoftwareRevisionByte());
+    ASSERT_EQ(siSoftwareRevision, parser->getSoftwareRevisionByte());
 
     /* Change startup information */
     siBufferSizeIndicator = 16;
-    siPlatform            = static_cast<char>(0xAA);
-    siApplicationType     = static_cast<char>(0x55);
-    siApplicationSubtype  = static_cast<char>(0xAA);
-    siSoftwareIssuer      = static_cast<char>(0x55);
-    siSoftwareVersion     = static_cast<char>(0xAA);
-    siSoftwareRevision    = static_cast<char>(0x55);
+    siPlatform            = 0xAA;
+    siApplicationType     = 0x55;
+    siApplicationSubtype  = 0xAA;
+    siSoftwareIssuer      = 0x55;
+    siSoftwareVersion     = 0xAA;
+    siSoftwareRevision    = 0x55;
 
     snprintf(buff, sizeof(buff), "%02X%02X%02X%02X%02X%02X%02X",
              siBufferSizeIndicator, siPlatform, siApplicationType,
              siApplicationSubtype, siSoftwareIssuer, siSoftwareVersion,
              siSoftwareRevision);
     startupInformation      = buff;
-    std::vector<char> resp2 = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> resp2 = ByteArrayUtils::fromHex(
         "6F 24 84 0A " + dfName + " A5 16 BF0C 13 C7 08 " + appSerialNumber +
         " 53 07 " + startupInformation + "9000");
     apduResponse = std::make_shared<ApduResponse>(resp2, nullptr);
@@ -111,37 +111,37 @@ void GetDataRespParsTest::testFCIparser_FCI_OK()
     ASSERT_EQ(appSerialNumber,
               ByteArrayUtils::toHex(parser->getApplicationSerialNumber()));
     /* Buffer size indicator and value */
-    ASSERT_EQ((char)siBufferSizeIndicator, parser->getBufferSizeIndicator());
+    ASSERT_EQ(siBufferSizeIndicator, parser->getBufferSizeIndicator());
     ASSERT_EQ(1217, parser->getBufferSizeValue());
     /* Platform */
-    ASSERT_EQ((char)siPlatform, parser->getPlatformByte());
+    ASSERT_EQ(siPlatform, parser->getPlatformByte());
     /* ApplicationType */
-    ASSERT_EQ((char)siApplicationType, parser->getApplicationTypeByte());
+    ASSERT_EQ(siApplicationType, parser->getApplicationTypeByte());
     ASSERT_FALSE(parser->isRev3_2ModeAvailable());
     ASSERT_FALSE(parser->isRatificationCommandRequired());
     ASSERT_FALSE(parser->hasCalypsoPin());
     ASSERT_TRUE(parser->hasCalypsoStoredValue());
     /* ApplicationSubType */
-    ASSERT_EQ((char)siApplicationSubtype, parser->getApplicationSubtypeByte());
+    ASSERT_EQ(siApplicationSubtype, parser->getApplicationSubtypeByte());
     /* SoftwareIssuer */
-    ASSERT_EQ((char)siSoftwareIssuer, parser->getSoftwareIssuerByte());
+    ASSERT_EQ(siSoftwareIssuer, parser->getSoftwareIssuerByte());
     /* SoftwareVersion */
-    ASSERT_EQ((char)siSoftwareVersion, parser->getSoftwareVersionByte());
+    ASSERT_EQ(siSoftwareVersion, parser->getSoftwareVersionByte());
     /* SoftwareRevision */
-    ASSERT_EQ((char)siSoftwareRevision, parser->getSoftwareRevisionByte());
+    ASSERT_EQ(siSoftwareRevision, parser->getSoftwareRevisionByte());
 }
 
 void GetDataRespParsTest::testFCIparser_FCI_Invalidated()
 {
     std::string dfName                  = "00112233445566778899";
     std::string appSerialNumber         = "AABBCCDDEEFF0011";
-    unsigned char siBufferSizeIndicator = 11;
-    unsigned char siPlatform            = static_cast<char>(0x55);
-    unsigned char siApplicationType     = static_cast<char>(0xAA);
-    unsigned char siApplicationSubtype  = static_cast<char>(0x55);
-    unsigned char siSoftwareIssuer      = static_cast<char>(0xAA);
-    unsigned char siSoftwareVersion     = static_cast<char>(0x55);
-    unsigned char siSoftwareRevision    = static_cast<char>(0xAA);
+    uint8_t siBufferSizeIndicator = 11;
+    uint8_t siPlatform            = 0x55;
+    uint8_t siApplicationType     = 0xAA;
+    uint8_t siApplicationSubtype  = 0x55;
+    uint8_t siSoftwareIssuer      = 0xAA;
+    uint8_t siSoftwareVersion     = 0x55;
+    uint8_t siSoftwareRevision    = 0xAA;
 
     char buff[100];
     snprintf(buff, sizeof(buff), "%02X%02X%02X%02X%02X%02X%02X",
@@ -150,7 +150,7 @@ void GetDataRespParsTest::testFCIparser_FCI_Invalidated()
              siSoftwareRevision);
     std::string startupInformation = buff;
 
-    std::vector<char> resp = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> resp = ByteArrayUtils::fromHex(
         "6F 24 84 0A " + dfName + " A5 16 BF0C 13 C7 08 " + appSerialNumber +
         " 53 07 " + startupInformation + "6283");
     std::shared_ptr<ApduResponse> apduResponse =
@@ -167,13 +167,13 @@ void GetDataRespParsTest::testFCIparser_FCI_BadTags()
 {
     std::string dfName                  = "00112233445566778899";
     std::string appSerialNumber         = "AABBCCDDEEFF0011";
-    unsigned char siBufferSizeIndicator = 11;
-    unsigned char siPlatform            = static_cast<char>(0x55);
-    unsigned char siApplicationType     = static_cast<char>(0xAA);
-    unsigned char siApplicationSubtype  = static_cast<char>(0x55);
-    unsigned char siSoftwareIssuer      = static_cast<char>(0xAA);
-    unsigned char siSoftwareVersion     = static_cast<char>(0x55);
-    unsigned char siSoftwareRevision    = static_cast<char>(0xAA);
+    uint8_t siBufferSizeIndicator = 11;
+    uint8_t siPlatform            = 0x55;
+    uint8_t siApplicationType     = 0xAA;
+    uint8_t siApplicationSubtype  = 0x55;
+    uint8_t siSoftwareIssuer      = 0xAA;
+    uint8_t siSoftwareVersion     = 0x55;
+    uint8_t siSoftwareRevision    = 0xAA;
 
     char buff[100];
     snprintf(buff, sizeof(buff), "%02X%02X%02X%02X%02X%02X%02X",
@@ -183,7 +183,7 @@ void GetDataRespParsTest::testFCIparser_FCI_BadTags()
     std::string startupInformation = buff;
 
     /* bad tag FCI Template (not constructed) */
-    std::vector<char> resp = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> resp = ByteArrayUtils::fromHex(
         "4F 24 84 0A " + dfName + " A5 16 BF0C 13 C7 08 " + appSerialNumber +
         " 53 07 " + startupInformation + "9000");
     std::shared_ptr<ApduResponse> apduResponse =
@@ -195,7 +195,7 @@ void GetDataRespParsTest::testFCIparser_FCI_BadTags()
     ASSERT_FALSE(parser->isValidCalypsoFCI());
 
     /* bad tag DF Name (constructed) */
-    std::vector<char> resp2 = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> resp2 = ByteArrayUtils::fromHex(
         "6F 24 C4 0A " + dfName + " A5 16 BF0C 13 C7 08 " + appSerialNumber +
         " 53 07 " + startupInformation + "9000");
     apduResponse = std::make_shared<ApduResponse>(resp2, nullptr);
@@ -205,7 +205,7 @@ void GetDataRespParsTest::testFCIparser_FCI_BadTags()
     ASSERT_FALSE(parser->isValidCalypsoFCI());
 
     /* bad tag FCI Proprietary Template (not constructed) */
-    std::vector<char> resp3 = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> resp3 = ByteArrayUtils::fromHex(
         "6F 24 84 0A " + dfName + " 85 16 BF0C 13 C7 08 " + appSerialNumber +
         " 53 07 " + startupInformation + "9000");
     apduResponse = std::make_shared<ApduResponse>(resp3, nullptr);
@@ -215,7 +215,7 @@ void GetDataRespParsTest::testFCIparser_FCI_BadTags()
     ASSERT_FALSE(parser->isValidCalypsoFCI());
 
     /* bad tag FCI Issuer Discretionary */
-    std::vector<char> resp4 = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> resp4 = ByteArrayUtils::fromHex(
         "6F 24 84 0A " + dfName + " A5 16 BF0D 13 C7 08 " + appSerialNumber +
         " 53 07 " + startupInformation + "9000");
     apduResponse = std::make_shared<ApduResponse>(resp4, nullptr);
@@ -225,7 +225,7 @@ void GetDataRespParsTest::testFCIparser_FCI_BadTags()
     ASSERT_FALSE(parser->isValidCalypsoFCI());
 
     /* bad tag Application Serial Number */
-    std::vector<char> resp5 = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> resp5 = ByteArrayUtils::fromHex(
         "6F 24 84 0A " + dfName + " A5 16 BF0C 13 87 08 " + appSerialNumber +
         " 53 07 " + startupInformation + "9000");
     apduResponse = std::make_shared<ApduResponse>(resp5, nullptr);
@@ -235,7 +235,7 @@ void GetDataRespParsTest::testFCIparser_FCI_BadTags()
     ASSERT_FALSE(parser->isValidCalypsoFCI());
 
     /* bad tag Discretionary Data */
-    std::vector<char> resp6 = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> resp6 = ByteArrayUtils::fromHex(
         "6F 24 84 0A " + dfName + " A5 16 BF0C 13 C7 08 " + appSerialNumber +
         " 43 07 " + startupInformation + "9000");
     apduResponse = std::make_shared<ApduResponse>(resp6, nullptr);

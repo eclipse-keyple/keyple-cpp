@@ -147,6 +147,21 @@ public:
      */
     void clearObservers() override;
 
+    void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode, PollingMode pollingMode) override;
+
+    /**
+     *
+     */
+    void addObserver(std::shared_ptr<ReaderObserver> observer) override;
+
+    /**
+     *
+     */
+    void notifySeProcessed() override;
+
 protected:
     /**
      *
@@ -244,11 +259,6 @@ protected:
     /**
      *
      */
-    void addObserver(std::shared_ptr<ReaderObserver> observer) override;
-
-    /**
-     *
-     */
     void removeObserver(std::shared_ptr<ReaderObserver> observer) override;
 
     /**
@@ -264,20 +274,10 @@ protected:
     /**
      *
      */
-    void notifySeProcessed() override;
-
-    /**
-     *
-     */
     void
     setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
                                    defaultSelectionsRequest,
                                NotificationMode notificationMode) override;
-
-    void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
-        NotificationMode notificationMode, PollingMode pollingMode) override;
 
 private:
     /**

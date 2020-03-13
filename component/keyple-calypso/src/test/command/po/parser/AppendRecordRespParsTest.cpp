@@ -16,7 +16,6 @@
 #include "ApduResponse.h"
 #include "SelectionStatus.h"
 #include "SeResponse.h"
-#include "SeResponseSet.h"
 #include "ByteArrayUtil.h"
 #include "AppendRecordRespPars.h"
 #include "AbstractApduResponseParser_Import.h"
@@ -29,36 +28,37 @@ namespace command {
 namespace po {
 namespace parser {
 namespace security {
+
 using AbstractApduResponseParser =
     keyple::core::command::AbstractApduResponseParser;
 using ApduResponse    = keyple::core::seproxy::message::ApduResponse;
 using SeResponse      = keyple::core::seproxy::message::SeResponse;
-using SeResponseSet   = keyple::core::seproxy::message::SeResponseSet;
 using SelectionStatus = keyple::core::seproxy::message::SelectionStatus;
 using ByteArrayUtils  = keyple::core::util::ByteArrayUtil;
 
 void AppendRecordRespParsTest::appendRecordRespPars()
 {
     std::vector<std::shared_ptr<ApduResponse>> responses;
-    std::vector<char> ApduRequest = {90, 0};
+    std::vector<uint8_t> ApduRequest = {90, 0};
     std::shared_ptr<ApduResponse> apduResponse =
         std::make_shared<ApduResponse>(ApduRequest, nullptr);
     responses.push_back(apduResponse);
-    std::vector<char> cResp1 = ByteArrayUtils::fromHex("9000");
+    std::vector<uint8_t> cResp1 = ByteArrayUtils::fromHex("9000");
     std::shared_ptr<keyple::core::seproxy::message::AnswerToReset> atrBytes = {
         0};
-    std::shared_ptr<SeResponseSet> seResponse =
-        std::make_shared<SeResponseSet>(std::make_shared<SeResponse>(
+
+    std::shared_ptr<SeResponse> seResponse =
+        std::make_shared<SeResponse>(
             true, true,
             std::make_shared<SelectionStatus>(
                 atrBytes, std::make_shared<ApduResponse>(cResp1, nullptr),
                 true),
-            responses));
+            responses);
 
     std::shared_ptr<AbstractApduResponseParser> apduResponseParser =
         std::make_shared<AppendRecordRespPars>(apduResponse);
     apduResponseParser->setApduResponse(
-        seResponse->getSingleResponse()->getApduResponses()[0]);
+        seResponse->getApduResponses()[0]);
     ASSERT_EQ(ByteArrayUtils::toHex(ApduRequest),
               ByteArrayUtils::toHex(
                   apduResponseParser->getApduResponse()->getBytes()));

@@ -97,7 +97,7 @@ public:
     /**
      *
      */
-    char getBufferSizeIndicator();
+    uint8_t getBufferSizeIndicator();
 
     /**
      *
@@ -107,12 +107,12 @@ public:
     /**
      *
      */
-    char getPlatformByte();
+    uint8_t getPlatformByte();
 
     /**
      *
      */
-    char getApplicationTypeByte();
+    uint8_t getApplicationTypeByte();
 
     /**
      *
@@ -137,22 +137,22 @@ public:
     /**
      *
      */
-    char getApplicationSubtypeByte();
+    uint8_t getApplicationSubtypeByte();
 
     /**
      *
      */
-    char getSoftwareIssuerByte();
+    uint8_t getSoftwareIssuerByte();
 
     /**
      *
      */
-    char getSoftwareVersionByte();
+    uint8_t getSoftwareVersionByte();
 
     /**
      *
      */
-    char getSoftwareRevisionByte();
+    uint8_t getSoftwareRevisionByte();
 
     /**
      *
@@ -251,21 +251,21 @@ private:
     bool isValidCalypsoFCI_Renamed = false;
     std::vector<uint8_t> dfName;
     std::vector<uint8_t> applicationSN;
-    char siBufferSizeIndicator = 0;
-    char siPlatform            = 0;
-    char siApplicationType     = 0;
-    char siApplicationSubtype  = 0;
-    char siSoftwareIssuer      = 0;
-    char siSoftwareVersion     = 0;
-    char siSoftwareRevision    = 0;
+    uint8_t siBufferSizeIndicator = 0;
+    uint8_t siPlatform            = 0;
+    uint8_t siApplicationType     = 0;
+    uint8_t siApplicationSubtype  = 0;
+    uint8_t siSoftwareIssuer      = 0;
+    uint8_t siSoftwareVersion     = 0;
+    uint8_t siSoftwareRevision    = 0;
 
     /**
      * Application type bitmasks features
      */
-    static constexpr char APP_TYPE_WITH_CALYPSO_PIN              = 0x01;
-    static constexpr char APP_TYPE_WITH_CALYPSO_SV               = 0x02;
-    static constexpr char APP_TYPE_RATIFICATION_COMMAND_REQUIRED = 0x04;
-    static constexpr char APP_TYPE_CALYPSO_REV_32_MODE           = 0x08;
+    static constexpr uint8_t APP_TYPE_WITH_CALYPSO_PIN              = 0x01;
+    static constexpr uint8_t APP_TYPE_WITH_CALYPSO_SV               = 0x02;
+    static constexpr uint8_t APP_TYPE_RATIFICATION_COMMAND_REQUIRED = 0x04;
+    static constexpr uint8_t APP_TYPE_CALYPSO_REV_32_MODE           = 0x08;
 };
 
 }

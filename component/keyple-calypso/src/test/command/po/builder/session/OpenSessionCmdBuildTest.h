@@ -77,8 +77,7 @@ class OpenSessionCmdBuildTest
 : public std::enable_shared_from_this<OpenSessionCmdBuildTest> {
 
 private:
-    std::vector<char> samChallenge = std::vector<char>{
-        static_cast<char>(0xA8), 0x31, static_cast<char>(0xC3), 0x3E};
+    std::vector<uint8_t> samChallenge = {0xA8, 0x31, 0xC3, 0x3E};
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder;
 

@@ -62,9 +62,9 @@ using LoggerFactory = keyple::common::LoggerFactory;
 
 int TLVTest::sample()
 {
-    std::vector<char> local  = {'A', 'B', 'C', 'D'};
-    std::vector<char> apdu   = {'A', 'B', 'C', 'D'};
-    std::vector<char> result = ByteArrayUtil::fromHex("9000");
+    std::vector<uint8_t> local  = {'A', 'B', 'C', 'D'};
+    std::vector<uint8_t> apdu   = {'A', 'B', 'C', 'D'};
+    std::vector<uint8_t> result = ByteArrayUtil::fromHex("9000");
     std::shared_ptr<Tag> tag = std::make_shared<Tag>(local, 0);
     std::shared_ptr<ApduResponse> selectApplicationResponse =
         std::make_shared<ApduResponse>(result,
@@ -79,7 +79,7 @@ int TLVTest::sample()
     pLocal.toString();
     local = pLocal.getValue();
 
-    const std::vector<char> response = selectApplicationResponse->getBytes();
+    const std::vector<uint8_t> response = selectApplicationResponse->getBytes();
     std::shared_ptr<TLV> tlv;
 
     /* check the command status to determine if the DF has been invalidated */
@@ -92,7 +92,7 @@ int TLVTest::sample()
 
     /* init TLV object with the raw data and extract the FCI Template */
     logger->debug("response: %s\n", ByteArrayUtil::toHex(response));
-    std::vector<char> vec = response;
+    std::vector<uint8_t> vec = response;
     tlv                   = std::make_shared<TLV>(vec);
 
     /* Get the FCI template */
@@ -140,7 +140,7 @@ int TLVTest::sample()
     //                            return;
     //                        }
 
-    std::vector<char> discretionaryData = tlv->getValue();
+    std::vector<uint8_t> discretionaryData = tlv->getValue();
 
     if (logger->isDebugEnabled()) {
         logger->debug("Discretionary Data = %s\n",

@@ -20,16 +20,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "CalypsoPo.h"
-#include "ApduResponse.h"
-#include "ByteArrayUtil.h"
-#include "SelectionStatus.h"
-#include "PoSelectionRequest.h"
-#include "ChannelState.h"
-#include "SeSelector_Import.h"
-#include "SeCommonProtocols.h"
 #include "PoRevision.h"
-#include "SeResponse.h"
 
 namespace keyple {
 namespace calypso {
@@ -43,6 +34,8 @@ namespace keyple {
 namespace calypso {
 namespace transaction {
 
+using namespace keyple::calypso::command::po;
+
 class CalypsoPoTest : public std::enable_shared_from_this<CalypsoPoTest> {
 public:
     /*
@@ -52,7 +45,7 @@ public:
 
     //static std::shared_ptr<CalypsoPo>
     //    getPoApplicationByte(char applicationByte);
-    PoRevision getPoApplicationByte(char applicationByte);
+    PoRevision getPoApplicationByte(uint8_t applicationByte);
 
     virtual void computePoRevision();
 };
