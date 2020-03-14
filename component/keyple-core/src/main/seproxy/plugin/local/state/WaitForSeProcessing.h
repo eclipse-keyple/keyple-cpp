@@ -65,6 +65,11 @@ public:
     /**
      *
      */
+    virtual ~WaitForSeProcessing() = default;
+
+    /**
+     *
+     */
     void onEvent(const InternalEvent event) override;
 
 private:

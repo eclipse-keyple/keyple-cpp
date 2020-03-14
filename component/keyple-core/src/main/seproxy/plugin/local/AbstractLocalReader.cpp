@@ -218,7 +218,7 @@ AbstractLocalReader::openLogicalChannel(std::shared_ptr<SeSelector> seSelector)
                          "SELECTOR = %s, ATR = %s",
                          this->getName().c_str(),
                          seSelector->toString().c_str(),
-                         ByteArrayUtil::toHex(atr));
+                         ByteArrayUtil::toHex(atr).c_str());
 
             selectionHasMatched = false;
         }

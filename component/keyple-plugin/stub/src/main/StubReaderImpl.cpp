@@ -128,7 +128,7 @@ bool StubReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
     if (!p->matcher(protocol)->matches()) {
         logger->trace("[%s] protocolFlagMatches => unmatching SE. "
                       "PROTOCOLFLAG = %s\n",
-                      this->getName(), protocolFlag.toString());
+                      this->getName().c_str(), protocolFlag.toString().c_str());
         result = false;
     } else {
         logger->trace("[%s] protocolFlagMatches => matching SE. "
@@ -185,7 +185,7 @@ void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> _se)
             closePhysicalChannel();
         } catch (KeypleReaderException& e) {
             logger->error("Error while closing channel reader. %s\n",
-                          e.getMessage());
+                          e.getMessage().c_str());
         }
     }
     if (_se != nullptr) {
@@ -241,7 +241,7 @@ bool StubReaderImpl::waitForCardAbsentNative()
 
     while (loopWaitSeRemoval) {
         if (!checkSePresence()) {
-            logger->trace("[%s] card removed\n", this->getName());
+            logger->trace("[%s] card removed\n", this->getName().c_str());
             return true;
         }
 

@@ -382,8 +382,10 @@ private:
 
     /**
      * Notification status flag used to avoid redundant notifications
+     *
+     * /!\ clang compiler error - field not used
      */
-    bool presenceNotified = false;
+    //bool presenceNotified = false;
 
     /**
      * Timestamp recorder

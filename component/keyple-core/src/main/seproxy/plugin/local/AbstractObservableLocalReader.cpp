@@ -192,7 +192,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
             closeLogicalAndPhysicalChannels();
             logger->debug("An IO Exception occurred while processing the "
                           "default selection. %s\n",
-                          e.getMessage());
+                          e.getMessage().c_str());
             /*
              * In this case the SE has been removed or not read correctly, do
              * not throw event
@@ -209,7 +209,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
             closePhysicalChannel();
         } catch (const KeypleChannelControlException& e) {
             logger->error("Error while closing physical channel. %s\n",
-                          e.getMessage());
+                          e.getMessage().c_str());
         }
     }
 
@@ -224,12 +224,12 @@ bool AbstractObservableLocalReader::isSePresentPing()
 
     /* Transmits the APDU and checks for the IO exception */
     try {
-        logger->trace("[%s] Ping SE\n", this->getName());
+        logger->trace("[%s] Ping SE\n", this->getName().c_str());
         transmitApdu(apdu);
     } catch (const KeypleIOReaderException& e) {
         logger->trace("[%s] Exception occurred in isSePresentPing. Message: "
                       "%s\n",
-                      this->getName().c_str(), e.getMessage());
+                      this->getName().c_str(), e.getMessage().c_str());
         return false;
     }
 

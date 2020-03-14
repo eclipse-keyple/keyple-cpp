@@ -99,10 +99,12 @@ void ObservableReaderNotificationEngine::SpecificReaderObserver::update(
             observableReader->notifySeProcessed();
         } catch (KeypleReaderNotFoundException& e) {
             outerInstance->logger->debug(
-                "Caught KeypleReaderNotFoundException: %s\n", e.getMessage());
+                "Caught KeypleReaderNotFoundException: %s\n",
+                 e.getMessage().c_str());
         } catch (KeyplePluginNotFoundException& e) {
             outerInstance->logger->debug(
-                "Caught KeyplePluginNotFoundException: %s\n", e.getMessage());
+                "Caught KeyplePluginNotFoundException: %s\n",
+                e.getMessage().c_str());
         }
         break;
 

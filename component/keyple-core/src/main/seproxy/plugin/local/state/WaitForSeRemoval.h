@@ -58,6 +58,11 @@ public:
     /**
      *
      */
+    virtual ~WaitForSeRemoval() = default;
+
+    /**
+     *
+     */
     void onEvent(const InternalEvent event) override;
 
 private:

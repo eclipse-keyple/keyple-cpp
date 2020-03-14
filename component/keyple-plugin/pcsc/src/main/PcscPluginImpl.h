@@ -123,12 +123,12 @@ protected:
     /**
      *
      */
-    void addObserver(std::shared_ptr<PluginObserver> observer);
+    void addObserver(std::shared_ptr<PluginObserver> observer) override;
 
     /**
      *
      */
-    void removeObserver(std::shared_ptr<PluginObserver> observer);
+    void removeObserver(std::shared_ptr<PluginObserver> observer) override;
 
 private:
     /**
@@ -148,9 +148,9 @@ private:
     static PcscPluginImpl uniqueInstance;
 
     /**
-     *
+     * /!\ clang compiler warning - not used
      */
-    bool logging = false;
+    //bool logging = false;
 
     /**
      *

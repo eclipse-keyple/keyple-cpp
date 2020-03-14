@@ -61,6 +61,11 @@ public:
     /**
      *
      */
+    virtual ~WaitForStartDetect() = default;
+
+    /**
+     *
+     */
     void onEvent(const InternalEvent event) override;
 
 private:
