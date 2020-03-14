@@ -52,6 +52,11 @@ public:
     /**
      *
      */
+    virtual ~SmartInsertionMonitoringJob() = default;
+
+    /**
+     *
+     */
     std::future<void>
     startMonitoring(AbstractObservableState* state,
                     std::atomic<bool>& cancellationFlag) override;

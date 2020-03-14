@@ -78,7 +78,7 @@ void WaitForSeProcessing::onEvent(const InternalEvent event)
 
     default:
         logger->warn("[%s] Ignore =>  Event %d received in currentState %d\n",
-                     reader->getName(), event, state);
+                     reader->getName().c_str(), event, state);
         break;
     }
 }

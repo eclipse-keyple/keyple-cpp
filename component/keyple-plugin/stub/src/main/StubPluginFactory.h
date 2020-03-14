@@ -41,6 +41,11 @@ public:
     /**
      *
      */
+    virtual ~StubPluginFactory() = default;
+
+    /**
+     *
+     */
     const std::string& getPluginName() override;
 
     /**

@@ -111,17 +111,17 @@ public:
     /**
      * STATE CONTROLLERS FOR INSERTING AND REMOVING SECURE ELEMENT
      */
-    void insertSe(std::shared_ptr<StubSecureElement> _se);
+    void insertSe(std::shared_ptr<StubSecureElement> _se) override;
 
     /**
      *
      */
-    void removeSe();
+    void removeSe() override;
 
     /**
      *
      */
-    std::shared_ptr<StubSecureElement> getSe();
+    std::shared_ptr<StubSecureElement> getSe() override;
 
     /**
      * This method is called by the monitoring thread to check SE presence

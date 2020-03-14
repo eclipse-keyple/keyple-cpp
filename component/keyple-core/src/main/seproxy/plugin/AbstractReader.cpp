@@ -218,7 +218,7 @@ void AbstractReader::addObserver(
     std::shared_ptr<ObservableReader::ReaderObserver> observer)
 {
     logger->trace("[%s] addObserver => Adding '%s' as an observer of '%s'\n",
-                  typeid(this).name(), typeid(observer).name(), name);
+                  typeid(this).name(), typeid(observer).name(), name.c_str());
     Observable<ReaderEvent>::addObserver(observer);
 }
 
@@ -226,7 +226,7 @@ void AbstractReader::removeObserver(
     std::shared_ptr<ObservableReader::ReaderObserver> observer)
 {
     logger->trace("[%s] removeObserver => Deleting a reader observer\n",
-                  this->getName());
+                  this->getName().c_str());
     Observable<ReaderEvent>::removeObserver(observer);
 }
 
@@ -240,7 +240,7 @@ void AbstractReader::notifySeProcessed()
                           " removal sequence\n");
         } catch (KeypleReaderException& e) {
             logger->error("KeypleReaderException while terminating: %s\n",
-                          e.getMessage());
+                          e.getMessage().c_str());
         }
     } else {
         logger->trace("Explicit physical channel closing already requested\n");

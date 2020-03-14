@@ -83,15 +83,15 @@ void AbstractPlugin::removeObserver(
     std::shared_ptr<ObservablePlugin::PluginObserver> observer)
 {
     logger->trace("[%s] removeObserver => Deleting a plugin observer\n",
-                  this->name);
+                  this->name.c_str());
 
     Observable<PluginEvent>::removeObserver(observer);
 }
 
 int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
 {
-    logger->debug("compareTo - comparing %s to %s\n", this->name,
-                  plugin->getName());
+    logger->debug("compareTo - comparing %s to %s\n", this->name.c_str(),
+                  plugin->getName().c_str());
 
     return this->name.compare(plugin->getName());
 }

@@ -76,13 +76,6 @@ public:
     /**
      *
      */
-    virtual ~ObservablePlugin()
-    {
-    }
-
-    /**
-     *
-     */
     virtual void addObserver(std::shared_ptr<PluginObserver> observer) = 0;
 
     /**

@@ -302,9 +302,9 @@ private:
     const long removalLatency = 500;
 
     /**
-     *
+     * clang compiler warning - not used
      */
-    const long insertWaitTimeout = 200;
+    //const long insertWaitTimeout = 200;
 
     /**
      *
@@ -322,9 +322,9 @@ private:
     std::shared_ptr<MonitoringPool> executorService;
 
     /**
-     *
+     * clang compiler warning - not used
      */
-    bool logging;
+    //bool logging;
 
     /**
      *

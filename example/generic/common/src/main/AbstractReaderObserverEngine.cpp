@@ -47,9 +47,11 @@ void* AbstractReaderObserverEngine::runSeInsertedThread(void* args)
             SeProxyService::getInstance().getPlugin(event->getPluginName())
                 ->getReader(event->getReaderName()))->notifySeProcessed();
     } catch (KeypleReaderNotFoundException& e) {
-        logger->debug("KeypleReaderNotFoundException: %s\n", e.getMessage());
+        logger->debug("KeypleReaderNotFoundException: %s\n",
+                      e.getMessage().c_str());
     } catch (KeyplePluginNotFoundException& e) {
-        logger->debug("KeyplePluginNotFoundException: %s\n", e.getMessage());
+        logger->debug("KeyplePluginNotFoundException: %s\n",
+                      e.getMessage().c_str());
     }
 
     currentlyProcessingSe = false;
@@ -75,9 +77,11 @@ void* AbstractReaderObserverEngine::runSeMatchedThread(void* args)
             SeProxyService::getInstance().getPlugin(event->getPluginName())
                 ->getReader(event->getReaderName()))->notifySeProcessed();
     } catch (KeypleReaderNotFoundException& e) {
-        logger->debug("KeypleReaderNotFoundException: %s\n", e.getMessage());
+        logger->debug("KeypleReaderNotFoundException: %s\n",
+                      e.getMessage().c_str());
     } catch (KeyplePluginNotFoundException& e) {
-        logger->debug("KeyplePluginNotFoundException: %s\n", e.getMessage());
+        logger->debug("KeyplePluginNotFoundException: %s\n",
+                      e.getMessage().c_str());
     }
 
     currentlyProcessingSe = false;
