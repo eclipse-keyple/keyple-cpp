@@ -27,13 +27,13 @@ namespace common {
 
 class System {
 public:
-    static long nanoTime()
+    static unsigned long long nanoTime()
     {
 #if defined(WIN32)
         SYSTEMTIME time;
         GetSystemTime(&time);
-        return static_cast<long>(((time.wSecond * 1000) + time.wMilliseconds) *
-                                 pow(10, 6));
+        return static_cast<long long>(((time.wSecond * 1000) +
+                                      time.wMilliseconds) * pow(10, 6));
 #else
         timespec ts;
         // clock_gettime(CLOCK_MONOTONIC, &ts); // Works on FreeBSD
@@ -66,9 +66,9 @@ public:
         }
     }
 
-    static long currentTimeMillis()
+    static unsigned long long currentTimeMillis()
     {
-        return (long)(nanoTime() * pow(10, 6));
+        return nanoTime() / pow(10, 6);
     }
 };
 

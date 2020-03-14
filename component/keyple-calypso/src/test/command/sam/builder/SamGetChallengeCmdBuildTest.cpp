@@ -36,12 +36,11 @@ using ApduRequest = keyple::core::seproxy::message::ApduRequest;
 
 void SamGetChallengeCmdBuildTest::getChallengeCmdBuild()
 {
-    std::vector<char> request = {static_cast<char>(0x94),
-                                 static_cast<char>(0x84), 0x00, 0x00, 0x04};
+    std::vector<uint8_t> request = {0x94, 0x84, 0x00, 0x00, 0x04};
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder =
         std::make_shared<SamGetChallengeCmdBuild>(
-            SamRevision::S1D, static_cast<char>(0x04)); // 94
+            SamRevision::S1D, 0x04); // 94
     std::shared_ptr<ApduRequest> apduRequest =
         apduCommandBuilder->getApduRequest();
 

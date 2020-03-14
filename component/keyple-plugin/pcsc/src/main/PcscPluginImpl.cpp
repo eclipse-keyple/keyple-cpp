@@ -34,11 +34,12 @@ PcscPluginImpl PcscPluginImpl::uniqueInstance;
 
 PcscPluginImpl::PcscPluginImpl() : AbstractThreadedObservablePlugin(PLUGIN_NAME)
 {
+    this->readers = initNativeReaders();
 }
 
 PcscPluginImpl& PcscPluginImpl::getInstance()
 {
-    if (uniqueInstance.readers.empty())
+    if (uniqueInstance.readers.size() == 0)
         throw KeypleRuntimeException("Reader list is not accessible");
 
     return uniqueInstance;
@@ -111,7 +112,7 @@ std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
     logger->debug("initNativeReaders - getting card terminals\n");
     std::vector<PcscTerminal>& terminals = getTerminals();
     logger->trace("[%s] initNativeReaders => CardTerminal in list: %s\n",
-                  this->getName(), "terminals <fixme>");
+                  this->getName().c_str(), "terminals <fixme>");
 
     if (terminals.empty()) {
         logger->trace("No reader available\n");

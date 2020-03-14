@@ -92,7 +92,7 @@ public:
      *
      * @return a {@link SelectionStatus} object.
      */
-    std::shared_ptr<SelectionStatus> getSelectionStatus();
+    const std::shared_ptr<SelectionStatus> getSelectionStatus() const;
 
     /**
      * Gets the apdu responses.

@@ -125,7 +125,7 @@ protected:
      * @throws KeypleReaderException if a reader error occurs
      */
     virtual std::shared_ptr<SeReader>
-    fetchNativeReader(const std::string& name) = 0;
+        fetchNativeReader(const std::string& name) = 0;
 
     /**
      * Check weither the background job is monitoring for new readers

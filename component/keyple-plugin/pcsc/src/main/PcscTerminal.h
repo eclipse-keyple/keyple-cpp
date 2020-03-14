@@ -47,7 +47,7 @@ public:
     /**
      *
      */
-    bool isCardPresent();
+    bool isCardPresent(bool release);
 
     /**
      *
@@ -82,7 +82,7 @@ public:
     /**
      *
      */
-    std::vector<uint8_t> transmitApdu(std::vector<uint8_t> apduIn);
+    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn);
 
     /**
      *

@@ -147,7 +147,8 @@ std::unique_ptr<SamResource>
 SamResourceManager::allocateSamResource(const AllocationMode allocationMode,
                                         const SamIdentifier& samIdentifier)
 {
-    long maxBlockingDate     = System::currentTimeMillis() + MAX_BLOCKING_TIME;
+    unsigned long long maxBlockingDate =
+        System::currentTimeMillis() + MAX_BLOCKING_TIME;
     bool noSamResourceLogged = false;
 
     logger->debug("Allocating SAM reader channel...\n");

@@ -7,6 +7,7 @@
 #
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+include(toolchain.cmake)
 
 SET(CMAKE_LEGACY_CYGWIN_WIN32 0)
 SET(CMAKE_CXX_STANDARD 11)
@@ -28,7 +29,8 @@ ENDIF(WIN32)
 # Set common output directory
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(GOOGLETEST_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Add projects
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/component/)
-#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/example/)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/example/)

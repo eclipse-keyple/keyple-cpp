@@ -65,7 +65,7 @@ public:
     /**
      *
      */
-    virtual bool hasMatched();
+    bool hasMatched() const;
 
     /**
      *

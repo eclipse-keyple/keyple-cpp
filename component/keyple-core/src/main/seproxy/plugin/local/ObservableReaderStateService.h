@@ -41,7 +41,7 @@ public:
      */
     ObservableReaderStateService(
         AbstractObservableLocalReader* reader,
-        std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>&
+        std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>
             states,
         const MonitoringState initState);
 
@@ -92,7 +92,7 @@ private:
     /**
      * Map of all instantiated states possible
      */
-    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>& states;
+    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>> states;
 
     /**
      * Current currentState of the Observable Reader

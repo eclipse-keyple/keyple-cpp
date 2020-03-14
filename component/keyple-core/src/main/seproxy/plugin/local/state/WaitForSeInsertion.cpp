@@ -44,7 +44,7 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
     std::shared_ptr<ReaderEvent> seEvent;
 
     logger->trace("[%s] onEvent => Event %d received in currentState %d\n",
-                  reader->getName(), event, state);
+                  reader->getName().c_str(), event, state);
 
     /*
      * Process InternalEvent
@@ -52,12 +52,16 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
     switch (event) {
     case InternalEvent::SE_INSERTED:
         /* Process default selection if any, return an event, can be null */
+        logger->debug("processing se inserted\n");
         seEvent = this->reader->processSeInserted();
 
         if (seEvent != nullptr) {
             /* Switch internal state */
+            logger->debug("switching to WAIT_FOR_SE_PROCESSING state\n");
             switchState(MonitoringState::WAIT_FOR_SE_PROCESSING);
+
             /* Notify the external observer of the event */
+            logger->debug("notifying observers\n");
             reader->notifyObservers(seEvent);
         } else {
             /*
@@ -66,11 +70,12 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
              * to relaunch the monitoring job
              */
             logger->trace("[%s] onEvent => Inserted SE hasn't matched\n",
-                          reader->getName());
+                          reader->getName().c_str());
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         }
         break;
     case InternalEvent::STOP_DETECT:
+        logger->debug("switching to WAIT_FOR_SE_PROCESSING state\n");
         switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         break;
     case InternalEvent::SE_REMOVED:
@@ -80,14 +85,16 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
          */
         if (reader->getPollingMode() ==
             ObservableReader::PollingMode::REPEATING) {
+            logger->debug("switching to WAIT_FOR_SE_INSERTION state\n");
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         } else {
+            logger->debug("switching to WAIT_FOR_START_DETECTION state\n");
             switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         }
         break;
     default:
         logger->warn("[%s] Ignore =>  Event %d received in currentState %d\n",
-                     reader->getName(), event, state);
+                     reader->getName().c_str(), event, state);
         break;
     }
 }

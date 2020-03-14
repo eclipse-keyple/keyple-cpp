@@ -38,7 +38,7 @@ WaitForSeProcessing::WaitForSeProcessing(
 void WaitForSeProcessing::onEvent(const InternalEvent event)
 {
     logger->trace("[%s] onEvent => Event %d received in currentState %d\n",
-                  reader->getName(), event, state);
+                  reader->getName().c_str(), event, state);
 
     /*
      * Process InternalEvent

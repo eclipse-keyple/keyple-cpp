@@ -127,7 +127,7 @@ public:
      *
      * @return Name of the APDU request
      */
-    std::vector<uint8_t> getBytes();
+    const std::vector<uint8_t>& getBytes();
 
     /**
      *

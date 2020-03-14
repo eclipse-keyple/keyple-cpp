@@ -14,7 +14,11 @@
 
 #pragma once
 
+/* Core */
 #include "AbstractPluginFactory.h"
+
+/* Common */
+#include "Export.h"
 
 namespace keyple {
 namespace plugin {
@@ -25,7 +29,7 @@ using namespace keyple::core::seproxy;
 /**
  * Builds a {@link StubPlugin}
  */
-class StubPluginFactory : public AbstractPluginFactory {
+class EXPORT StubPluginFactory : public AbstractPluginFactory {
 public:
     /**
      * Create the factory
@@ -39,7 +43,6 @@ public:
      */
     const std::string& getPluginName() override;
 
-protected:
     /**
      * Returns an instance of the {@link PcscPlugin} if the platform is ready
      *

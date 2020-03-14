@@ -41,7 +41,7 @@ std::shared_ptr<ApduResponse> SelectionStatus::getFci()
     return fci;
 }
 
-bool SelectionStatus::hasMatched()
+bool SelectionStatus::hasMatched() const
 {
     return isMatching;
 }

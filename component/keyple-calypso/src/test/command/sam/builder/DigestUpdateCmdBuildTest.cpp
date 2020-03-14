@@ -36,17 +36,10 @@ using ApduRequest = keyple::core::seproxy::message::ApduRequest;
 
 void DigestUpdateCmdBuildTest::digestUpdateCmdBuild()
 {
-    std::vector<char> digestDAta = {static_cast<char>(0x94),
-                                    static_cast<char>(0xAE), 0x01, 0x02};
-    std::vector<char> request    = {static_cast<char>(0x94),
-                                 static_cast<char>(0x8C),
-                                 0x00,
-                                 static_cast<char>(0x80),
-                                 static_cast<char>(digestDAta.size()),
-                                 static_cast<char>(0x94),
-                                 static_cast<char>(0xAE),
-                                 0x01,
-                                 0x02};
+    std::vector<uint8_t> digestDAta = {0x94, 0xAE, 0x01, 0x02};
+    std::vector<uint8_t> request = {
+        0x94, 0x8C, 0x00, 0x80, static_cast<uint8_t>(digestDAta.size()), 0x94,
+        0xAE, 0x01, 0x02};
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder =
         std::make_shared<DigestUpdateCmdBuild>(SamRevision::S1D, true,
@@ -56,15 +49,9 @@ void DigestUpdateCmdBuildTest::digestUpdateCmdBuild()
 
     ASSERT_EQ(request, apduRequest->getBytes());
 
-    std::vector<char> request2 = {static_cast<char>(0x80),
-                                  static_cast<char>(0x8C),
-                                  0x00,
-                                  static_cast<char>(0x80),
-                                  static_cast<char>(digestDAta.size()),
-                                  static_cast<char>(0x94),
-                                  static_cast<char>(0xAE),
-                                  0x01,
-                                  0x02};
+    std::vector<uint8_t> request2 = {
+        0x80, 0x8C, 0x00, 0x80, static_cast<uint8_t>(digestDAta.size()), 0x94,
+        0xAE, 0x01, 0x02};
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder2 =
         std::make_shared<DigestUpdateCmdBuild>(SamRevision::C1, true,

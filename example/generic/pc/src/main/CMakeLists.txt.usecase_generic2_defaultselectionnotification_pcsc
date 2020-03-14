@@ -30,6 +30,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin/local
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util

@@ -35,8 +35,9 @@ void SelectDiversifierRespParsTest::selectDiversifierResp()
      * We check here that the value returned by getApduResponse matches the
      * value provided at construct time.
      */
-    std::vector<char> cResp  = {static_cast<char>(0x90), 0x00};
-    std::vector<char> cResp2 = {static_cast<char>(0x80), 0x00};
+    std::vector<uint8_t> cResp  = {0x90, 0x00};
+    std::vector<uint8_t> cResp2 = {0x80, 0x00};
+
     std::shared_ptr<ApduResponse> apduResponse =
         std::make_shared<ApduResponse>(cResp, nullptr);
     std::shared_ptr<ApduResponse> apduResponse1 =

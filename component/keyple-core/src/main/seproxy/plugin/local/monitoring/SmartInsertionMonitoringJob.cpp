@@ -17,6 +17,9 @@
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "KeypleIOReaderException.h"
+#include "InterruptedException.h"
+
+using namespace keyple::core::seproxy::exception;
 
 namespace keyple {
 namespace core {
@@ -37,18 +40,25 @@ void SmartInsertionMonitoringJob::monitoringJob(
     (void)cancellationFlag;
 
     logger->trace("[%s] Invoke waitForCardPresent asynchronously\n",
-                  reader->getName());
+                  reader->getName().c_str());
 
     try {
+        if (cancellationFlag)
+            throw InterruptedException("monitoring job interrupted");
+
         if (reader->waitForCardPresent()) {
+            logger->debug("throwing card inserted event\n");
             state->onEvent(InternalEvent::SE_INSERTED);
         }
+
     } catch (KeypleIOReaderException& e) {
         logger->trace("[%s] waitForCardPresent => Error while polling SE with"
                       " waitForCardPresent. %s\n",
-                      reader->getName(), e.getMessage());
+                      reader->getName().c_str(), e.getMessage());
         state->onEvent(InternalEvent::STOP_DETECT);
     }
+
+    logger->debug("SmartInsertionMonitoringJob complete\n");
 }
 
 std::future<void> SmartInsertionMonitoringJob::startMonitoring(
@@ -61,7 +71,8 @@ std::future<void> SmartInsertionMonitoringJob::startMonitoring(
 
 void SmartInsertionMonitoringJob::stop()
 {
-    logger->trace("[%s] stopWaitForCard on reader\n", reader->getName());
+    logger->trace("[%s] stopWaitForCard on reader\n",
+                  reader->getName().c_str());
     reader->stopWaitForCard();
 }
 

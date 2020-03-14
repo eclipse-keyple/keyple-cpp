@@ -237,7 +237,7 @@ void AbstractReader::notifySeProcessed()
             /* Close the physical channel thanks to CLOSE_AFTER flag */
             processSeRequest(nullptr, ChannelControl::CLOSE_AFTER);
             logger->trace("Explicit communication closing requested, starting"
-                          " removal sequence.");
+                          " removal sequence\n");
         } catch (KeypleReaderException& e) {
             logger->error("KeypleReaderException while terminating: %s\n",
                           e.getMessage());
@@ -250,9 +250,9 @@ void AbstractReader::notifySeProcessed()
 void AbstractReader::notifyObservers(std::shared_ptr<ReaderEvent> event)
 {
     logger->trace("[%s] AbstractReader => Notifying a reader event to %d "
-                  "observers. EVENTNAME = %s",
-                  this->getName(), this->countObservers(),
-                  event->getEventType().getName());
+                  "observers. EVENTNAME = %s\n",
+                  this->getName().c_str(), this->countObservers(),
+                  event->getEventType().getName().c_str());
 
     setChanged();
 

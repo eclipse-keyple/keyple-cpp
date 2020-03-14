@@ -95,13 +95,13 @@ ENDIF()
 
 ADD_EXECUTABLE(keyplepluginpcsctest
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/PcscPluginTests.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/SmartCardIOReaderTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/PcscPluginTests.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/SmartCardIOReaderTest.cpp
 
 	#${CMAKE_CURRENT_SOURCE_DIR}/PcscProtocolSetting.cpp
     #${CMAKE_CURRENT_SOURCE_DIR}/PcscReaderSettings.cpp
 #   ${CMAKE_CURRENT_SOURCE_DIR}/PcscReaderActualTest.cpp
-#   ${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple/plugin/pcsc/SmartCardIOPluginTest.cpp
+#   ${CMAKE_CURRENT_SOURCE_DIR}/SmartCardIOPluginTest.cpp
 )
 
 TARGET_LINK_LIBRARIES(keyplepluginpcsctest keyplepluginpcsc gtest gmock ${PCSC})

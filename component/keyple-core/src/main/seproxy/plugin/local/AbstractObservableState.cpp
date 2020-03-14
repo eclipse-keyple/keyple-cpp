@@ -55,7 +55,7 @@ void AbstractObservableState::switchState(const MonitoringState stateId)
 
 void AbstractObservableState::onActivate()
 {
-    logger->trace("[%s] onActivate => %s\n", this->reader->getName(),
+    logger->trace("[%s] onActivate => %d\n", this->reader->getName().c_str(),
                   this->getMonitoringState());
 
     /* Launch the monitoringJob is necessary */
@@ -71,7 +71,7 @@ void AbstractObservableState::onActivate()
 
 void AbstractObservableState::onDeactivate()
 {
-    logger->trace("[%s] onDeactivate => %s\n", this->reader->getName(),
+    logger->trace("[%s] onDeactivate => %d\n", this->reader->getName().c_str(),
                   this->getMonitoringState());
 
     /* Cancel the monitoringJob is necessary */
@@ -84,11 +84,11 @@ void AbstractObservableState::onDeactivate()
 
         /* TODO this could be inside the stop method? */
         cancellationFlag = true;
-        monitoringEvent->wait();
+        //monitoringEvent->wait();
         cancellationFlag = false;
         logger->trace("[%s] onDeactivate => cancel runnable waitForCarPresent"
                       " by thead interruption\n",
-                      reader->getName());
+                      reader->getName().c_str());
     }
 }
 

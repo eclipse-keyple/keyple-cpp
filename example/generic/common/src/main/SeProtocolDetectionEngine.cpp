@@ -18,7 +18,7 @@
 #include "AbstractDefaultSelectionsRequest.h"
 #include "ApduRequest.h"
 #include "ByteArrayUtil.h"
-#include "ChannelState.h"
+#include "ChannelControl.h"
 #include "MatchingSelection.h"
 #include "SeCommonProtocols_Import.h"
 #include "SeReader.h"
@@ -71,13 +71,12 @@ SeProtocolDetectionEngine::prepareSeSelection()
             std::shared_ptr<PoSelectionRequest> poSelectionRequest =
                 std::make_shared<PoSelectionRequest>(
                     std::make_shared<PoSelector>(
-                        SeCommonProtocols::PROTOCOL_ISO14443_3A, nullptr,
+                        SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
                         std::make_shared<PoSelector::PoAidSelector>(
                             std::make_shared<SeSelector::AidSelector::IsoAid>(
                                 aid),
                             PoSelector::InvalidatedPo::REJECT),
-                        "Hoplink selector"),
-                    ChannelState::KEEP_OPEN);
+                        "Hoplink selector"));
 
             std::vector<uint8_t> apdu = ByteArrayUtil::fromHex("FFCA000000");
             poSelectionRequest->preparePoCustomReadCmd("Standard Get Data",
@@ -101,10 +100,9 @@ SeProtocolDetectionEngine::prepareSeSelection()
             seSelection->prepareSelection(
                 std::make_shared<GenericSeSelectionRequest>(
                     std::make_shared<SeSelector>(
-                        SeCommonProtocols::PROTOCOL_ISO14443_3A,
+                        SeCommonProtocols::PROTOCOL_ISO14443_4,
                         std::make_shared<SeSelector::AtrFilter>(".*"), nullptr,
-                        "Default selector"),
-                    ChannelState::KEEP_OPEN));
+                        "Default selector")));
             break;
         }
     }
@@ -130,7 +128,7 @@ void SeProtocolDetectionEngine::processSeMatch(
     }
 }
 
-void SeProtocolDetectionEngine::processSeInsertion()
+void SeProtocolDetectionEngine::processSeInserted()
 {
     std::cout << "Unexpected SE insertion event" << std::endl;
 }

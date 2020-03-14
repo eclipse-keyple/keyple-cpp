@@ -68,37 +68,37 @@ public:
     /**
      *
      */
-    virtual std::vector<char> getSerialNumber();
+    virtual std::vector<uint8_t> getSerialNumber();
 
     /**
      *
      */
-    virtual char getPlatform();
+    virtual uint8_t getPlatform();
 
     /**
      *
      */
-    virtual char getApplicationType();
+    virtual uint8_t getApplicationType();
 
     /**
      *
      */
-    virtual char getApplicationSubType();
+    virtual uint8_t getApplicationSubType();
 
     /**
      *
      */
-    virtual char getSoftwareIssuer();
+    virtual uint8_t getSoftwareIssuer();
 
     /**
      *
      */
-    virtual char getSoftwareVersion();
+    virtual uint8_t getSoftwareVersion();
 
     /**
      *
      */
-    virtual char getSoftwareRevision();
+    virtual uint8_t getSoftwareRevision();
 
 protected:
     /**
@@ -125,37 +125,37 @@ private:
     /**
      *
      */
-    std::vector<char> serialNumber = std::vector<char>(4);
+    std::vector<uint8_t> serialNumber = std::vector<uint8_t>(4);
 
     /**
      *
      */
-    char platform = 0;
+    uint8_t platform = 0;
 
     /**
      *
      */
-    char applicationType = 0;
+    uint8_t applicationType = 0;
 
     /**
      *
      */
-    char applicationSubType = 0;
+    uint8_t applicationSubType = 0;
 
     /**
      *
      */
-    char softwareIssuer = 0;
+    uint8_t softwareIssuer = 0;
 
     /**
      *
      */
-    char softwareVersion = 0;
+    uint8_t softwareVersion = 0;
 
     /**
      *
      */
-    char softwareRevision = 0;
+    uint8_t softwareRevision = 0;
 };
 
 }

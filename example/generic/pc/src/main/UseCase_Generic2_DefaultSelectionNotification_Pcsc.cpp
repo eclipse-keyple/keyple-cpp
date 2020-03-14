@@ -14,12 +14,13 @@
 
 #include "AbstractMatchingSe.h"
 #include "ByteArrayUtil.h"
-#include "ChannelState.h"
 #include "GenericSeSelectionRequest.h"
 #include "KeypleBaseException.h"
 #include "MatchingSelection.h"
 #include "ObservableReader_Import.h"
 #include "PcscPlugin.h"
+#include "PcscPluginFactory.h"
+#include "PcscReaderImpl.h"
 #include "ReaderUtilities.h"
 #include "SeCommonProtocols_Import.h"
 #include "SelectionStatus.h"
@@ -41,6 +42,28 @@ using namespace keyple::plugin::pcsc;
 using namespace keyple::example::generic::common;
 using namespace keyple::example::generic::pc;
 
+/**
+ * <h1>Use Case ‘generic 2’ – Default Selection Notification (PC/SC)</h1>
+ * <ul>
+ * <li>
+ * <h2>Scenario:</h2>
+ * <ul>
+ * <li>Define a default selection of ISO 14443-4 (here a Calypso PO) and set it
+ * to an observable reader, on SE detection in case the selection is successful,
+ * notify the terminal application with the SE information.</li>
+ * <li><code>
+ * Default Selection Notification
+ * </code> means that the SE processing is automatically started when detected.
+ * </li>
+ * <li>PO messages:
+ * <ul>
+ * <li>A single SE message handled at SeReader level</li>
+ * </ul>
+ * </li>
+ * </ul>
+ * </li>
+ * </ul>
+ */
 class UseCase_Generic2_DefaultSelectionNotification_Pcsc
 : public std::enable_shared_from_this<
       UseCase_Generic2_DefaultSelectionNotification_Pcsc>,
@@ -66,12 +89,6 @@ private:
      *
      */
     std::shared_ptr<SeReader> seReader;
-
-    /**
-     *
-     */
-    PcscPlugin pcscplugin;
-
 public:
     /**
      *
@@ -80,15 +97,12 @@ public:
         typeid(UseCase_Generic2_DefaultSelectionNotification_Pcsc));
 
     UseCase_Generic2_DefaultSelectionNotification_Pcsc()
-    : pcscplugin(PcscPlugin::getInstance())
     {
-        /* Get the instance of the PC/SC plugin */
-        //pcscplugin = PcscPlugin::getInstance();
-        pcscplugin.initReaders();
+        /* Get the instance of the SeProxyService (Singleton pattern) */
+        SeProxyService& seProxyService = SeProxyService::getInstance();
 
         /* Assign PcscPlugin to the SeProxyService */
-        SeProxyService& seProxyService = SeProxyService::getInstance();
-        seProxyService.addPlugin(std::make_shared<PcscPlugin>(pcscplugin));
+        seProxyService.registerPlugin(new PcscPluginFactory());
 
         /*
          * Get a SE reader ready to work with contactless SE. Use the getReader
@@ -131,8 +145,8 @@ public:
             std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4,
                                          nullptr, aidSelector, "AID:" + seAid);
         std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
-            std::make_shared<GenericSeSelectionRequest>(
-                seSelector, ChannelState::KEEP_OPEN);
+            std::make_shared<GenericSeSelectionRequest>(seSelector);
+
         /*
          * Add the selection case to the current selection (we could have added
          * other cases here)
@@ -143,11 +157,11 @@ public:
          * Provide the SeReader with the selection operation to be processed
          * when a SE is inserted.
          */
-        std::shared_ptr<ObservableReader> observable =
-            std::dynamic_pointer_cast<ObservableReader>(seReader);
-        observable->setDefaultSelectionRequest(
-            seSelection->getSelectionOperation(),
-            ObservableReader::NotificationMode::MATCHED_ONLY);
+        (std::dynamic_pointer_cast<PcscReaderImpl>(seReader))
+            ->setDefaultSelectionRequest(
+                seSelection->getSelectionOperation(),
+                ObservableReader::NotificationMode::MATCHED_ONLY,
+                ObservableReader::PollingMode::REPEATING);
 
         logger->debug("end of constructor\n");
     }
@@ -159,7 +173,7 @@ public:
     void doSomething()
     {
         /* Set the current class as Observer of the first reader */
-        (std::dynamic_pointer_cast<ObservableReader>(seReader))
+        (std::dynamic_pointer_cast<PcscReaderImpl>(seReader))
             ->addObserver(shared_from_this());
 
         logger->info("======================================================="
@@ -172,8 +186,7 @@ public:
                      "===========================\n");
 
         /* Wait for ever (exit with CTRL-C) */
-        while (1)
-            ;
+        while (1);
     }
 
     void update(std::shared_ptr<ReaderEvent> event)
@@ -203,12 +216,36 @@ public:
                               "selection mode\n");
             }
         } else if (event->getEventType() ==
-                   ReaderEvent::EventType::SE_INSERTED) {
+                       ReaderEvent::EventType::SE_INSERTED) {
             logger->error("SE_INSERTED event: should not have occurred due to"
                           " the MATCHED_ONLY selection mode\n");
         } else if (event->getEventType() ==
-                   ReaderEvent::EventType::SE_REMOVAL) {
-            logger->info("The SE has been removed.");
+                       ReaderEvent::EventType::SE_REMOVED) {
+            logger->info("The SE has been removed\n");
+        } else {
+            logger->debug("Unhandled case\n");
+        }
+
+        if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED ||
+            event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
+            /*
+             * Informs the underlying layer of the end of the SE processing, in
+             * order to manage the removal sequence. <p>If closing has already
+             * been requested, this method will do nothing.
+             */
+            try {
+                std::dynamic_pointer_cast<PcscReaderImpl>(
+                    SeProxyService::getInstance()
+                        .getPlugin(event->getPluginName())
+                        ->getReader(event->getReaderName()))
+                    ->notifySeProcessed();
+            } catch (KeypleReaderNotFoundException& e) {
+                logger->debug("KeypleReaderNotFoundException: %s - %s\n",
+                              e.getMessage().c_str(), e.getCause().what());
+            } catch (KeyplePluginNotFoundException& e) {
+                logger->debug("KeyplePluginNotFoundException: %s - %s\n",
+                              e.getMessage().c_str(), e.getCause().what());
+            }
         }
     }
 };

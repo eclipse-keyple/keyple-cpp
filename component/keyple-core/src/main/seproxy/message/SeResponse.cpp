@@ -44,9 +44,9 @@ bool SeResponse::isLogicalChannelOpen()
     return logicalChannelIsOpen;
 }
 
-std::shared_ptr<SelectionStatus> SeResponse::getSelectionStatus()
+const std::shared_ptr<SelectionStatus> SeResponse::getSelectionStatus() const
 {
-    return this->selectionStatus;
+    return selectionStatus;
 }
 
 std::vector<std::shared_ptr<ApduResponse>> SeResponse::getApduResponses()
@@ -64,8 +64,8 @@ std::string SeResponse::toString()
     std::string string;
     if (selectionStatus != nullptr) {
         string = StringHelper::formatSimple(
-            "SeResponse:{RESPONSES = %s, ATR = %s, FCI = %s, HASMATCHED = %b"
-            "CHANNELWASOPEN = %b}",
+            "SeResponse:{RESPONSES = %s, ATR = %s, FCI = %s, HASMATCHED = %d," \
+            " CHANNELWASOPEN = %d}",
             "to fix!" /*getApduResponses()*/,
             selectionStatus->getAtr()->getBytes().empty()
                 ? "null"
@@ -75,7 +75,7 @@ std::string SeResponse::toString()
     } else {
         string = StringHelper::formatSimple(
             "SeResponse:{RESPONSES = %s, ATR = null, FCI = null, "
-            "HASMATCHED = false CHANNELWASOPEN = %b}",
+            "HASMATCHED = false, CHANNELWASOPEN = %d}",
             "to fix!" /*getApduResponses()*/, wasChannelPreviouslyOpen());
     }
 

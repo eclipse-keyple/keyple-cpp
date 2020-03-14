@@ -144,17 +144,18 @@ void ObservableReaderNotificationEngine::SpecificPluginObserver::update(
         std::shared_ptr<SeReader> reader = nullptr;
         outerInstance->logger->info(
             "PluginEvent: PLUGINNAME = %s, READERNAME = %s, EVENTTYPE = %s\n",
-            event->getPluginName().c_str(), reader->getName().c_str(),
+            event->getPluginName().c_str(), readerName.c_str(),
             event->getEventType().getName().c_str());
 
         /* We retrieve the reader object from its name. */
         try {
             reader = SeProxyService::getInstance()
                          .getPlugin(event->getPluginName())
-                         ->getReader(reader->getName());
+                         ->getReader(readerName);
         } catch (KeyplePluginNotFoundException& e) {
-
+            (void)e;
         } catch (KeypleReaderNotFoundException& e) {
+            (void)e;
         }
 
         switch (event->getEventType().innerEnumValue) {

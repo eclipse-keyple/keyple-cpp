@@ -16,7 +16,6 @@
 #include "ApduResponse.h"
 #include "SelectionStatus.h"
 #include "SeResponse.h"
-#include "SeResponseSet.h"
 #include "ByteArrayUtil.h"
 #include "DigestInitRespPars.h"
 #include "AbstractApduResponseParser_Import.h"
@@ -36,29 +35,30 @@ using AbstractApduResponseParser =
     keyple::core::command::AbstractApduResponseParser;
 using ApduResponse    = keyple::core::seproxy::message::ApduResponse;
 using SeResponse      = keyple::core::seproxy::message::SeResponse;
-using SeResponseSet   = keyple::core::seproxy::message::SeResponseSet;
 using SelectionStatus = keyple::core::seproxy::message::SelectionStatus;
 using ByteArrayUtils  = keyple::core::util::ByteArrayUtil;
 
 void DigestInitRespParsTest::digestInitRespPars()
 {
     std::vector<std::shared_ptr<ApduResponse>> responses;
-    std::vector<char> cResp1 = {static_cast<char>(0x90), 0x00};
+    std::vector<uint8_t> cResp1 = {0x90, 0x00};
     std::shared_ptr<ApduResponse> apduResponse =
         std::make_shared<ApduResponse>(cResp1, nullptr);
     responses.push_back(apduResponse);
-    std::vector<char> cResp2 = ByteArrayUtils::fromHex("9000");
-    std::shared_ptr<SeResponseSet> seResponse =
-        std::make_shared<SeResponseSet>(std::make_shared<SeResponse>(
+
+    std::vector<uint8_t> cResp2 = ByteArrayUtils::fromHex("9000");
+    std::shared_ptr<SeResponse> seResponse =
+        std::make_shared<SeResponse>(
             true, true,
             std::make_shared<SelectionStatus>(
                 nullptr, std::make_shared<ApduResponse>(cResp2, nullptr), true),
-            responses));
+            responses);
 
     std::shared_ptr<AbstractApduResponseParser> apduResponseParser =
         std::make_shared<DigestInitRespPars>(
-            seResponse->getSingleResponse()->getApduResponses()[0]);
-    std::vector<char> cResp = {static_cast<char>(0x90), 0x00};
+            seResponse->getApduResponses()[0]);
+
+    std::vector<uint8_t> cResp = {0x90, 0x00};
     ASSERT_EQ(ByteArrayUtils::toHex(cResp),
               ByteArrayUtils::toHex(
                   apduResponseParser->getApduResponse()->getBytes()));

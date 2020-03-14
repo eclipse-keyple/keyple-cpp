@@ -37,8 +37,8 @@ WaitForSeRemoval::WaitForSeRemoval(
 
 void WaitForSeRemoval::onEvent(const InternalEvent event)
 {
-    logger->trace("[%s] onEvent => Event %s received in currentState %d\n",
-                  reader->getName(), event, state);
+    logger->trace("[%s] onEvent => Event %d received in currentState %d\n",
+                  reader->getName().c_str(), event, state);
 
     /*
      * Process InternalEvent

@@ -74,7 +74,7 @@ void AbstractPlugin::addObserver(
     std::shared_ptr<ObservablePlugin::PluginObserver> observer)
 {
     logger->trace("[] addObserver => Adding <fixme> as an observer of '%s'\n",
-                  this->name);
+                  this->name.c_str());
 
     Observable<PluginEvent>::addObserver(observer);
 }
@@ -105,14 +105,13 @@ std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string& name)
                   name.c_str(), readers.size());
 
     for (auto reader : readers) {
-        logger->debug("getReader - reader: %s\n", reader->getName().c_str());
-
         if (reader->getName() == name) {
             return std::shared_ptr<SeReader>(
                 std::dynamic_pointer_cast<SeReader>(reader));
         }
     }
-    throw std::make_shared<KeypleReaderNotFoundException>(name);
+
+    throw KeypleReaderNotFoundException(name);
 }
 
 const std::string& AbstractPlugin::getName() const
@@ -124,8 +123,8 @@ void AbstractPlugin::notifyObservers(std::shared_ptr<PluginEvent> event)
 {
     logger->trace("[%s] AbstractPlugin => Notifying a plugin event to %d "
                   "observers. EVENTNAME = %s\n",
-                  this->name, this->countObservers(),
-                  event->getEventType().getName());
+                  this->name.c_str(), this->countObservers(),
+                  event->getEventType().getName().c_str());
 
     setChanged();
 

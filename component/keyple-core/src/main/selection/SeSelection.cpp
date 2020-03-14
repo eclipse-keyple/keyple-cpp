@@ -68,9 +68,8 @@ int SeSelection::prepareSelection(
     return selectionIndex++;
 }
 
-std::shared_ptr<SelectionsResult>
-SeSelection::processSelection(std::shared_ptr<AbstractDefaultSelectionsResponse>
-                                  defaultSelectionsResponse)
+std::shared_ptr<SelectionsResult> SeSelection::processSelection(
+   std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
 {
     int index = 0;
 
@@ -78,7 +77,7 @@ SeSelection::processSelection(std::shared_ptr<AbstractDefaultSelectionsResponse>
         std::make_shared<SelectionsResult>();
 
     /* Check SeResponses */
-    for (auto seResponse :
+    for (const auto& seResponse :
          (std::dynamic_pointer_cast<DefaultSelectionsResponse>(
               defaultSelectionsResponse))
              ->getSelectionSeResponseSet()) {
