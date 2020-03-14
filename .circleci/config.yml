@@ -39,6 +39,7 @@ workflows:
   version: 2
   build_and_test:
     jobs:
+      - build_kunitoki_gcc_7
       - build_gcc_7
       - build_gcc_6
       - doxygen
