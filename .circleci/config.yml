@@ -1,5 +1,14 @@
 version: 2.0
 jobs:
+  build_kunitoki_gcc_7:
+    docker:
+      - image: kunitoki/gcc-7
+    steps:
+      - checkout
+      - run: apt-get update
+      - run: apt-get install libpcsclite-dev -y
+      - run: cmake .
+      - run: make
   build_gcc_7:
     docker:
       - image: rikorose/gcc-cmake:gcc-7
