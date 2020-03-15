@@ -14,6 +14,7 @@
 
 #include "ApduResponse.h"
 #include "ByteArrayUtil.h"
+#include "ChannelControl.h"
 #include "GenericSeSelectionRequest.h"
 #include "KeypleBaseException.h"
 #include "MatchingSelection.h"
@@ -82,14 +83,15 @@ int main(int argc, char** argv)
 
         /* CLOSE_AFTER pour assurer la sélection de toutes les applications */
         std::shared_ptr<SeSelection> seSelection =
-            std::make_shared<SeSelection>();
+            std::make_shared<SeSelection>(MultiSeRequestProcessing::PROCESS_ALL,
+                                          ChannelControl::CLOSE_AFTER);
 
         /*
          * Operate SE selection (change the AID here to adapt it to the SE used
          * for the test)
          */
         //std::string seAidPrefix = "A000000404012509";
-        std::string seAidPrefix = "304554502E494341";
+        std::string seAidPrefix = "315449432E494341";
         std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
 
         /* AID based selection (1st selection, later indexed 0 */
@@ -144,17 +146,17 @@ int main(int argc, char** argv)
                 std::shared_ptr<AbstractMatchingSe> matchingSe =
                     matchingSelection->getMatchingSe();
                 logger->info(
-                    "Selection status for selection \"%s\" (indexed %d): "
-                    "\n\t\tATR: %s\n\t\tFCI: %s\n",
+                    "Selection status for selection \"%s\" (indexed %d):\n",
                     matchingSelection->getExtraInfo().c_str(),
-                    matchingSelection->getSelectionIndex(),
-                    ByteArrayUtil::toHex(
-                        matchingSe->getSelectionStatus()->getAtr()->getBytes())
-                        .c_str(),
-                    ByteArrayUtil::toHex(matchingSe->getSelectionStatus()
-                                             ->getFci()
-                                             ->getDataOut())
-                        .c_str());
+                    matchingSelection->getSelectionIndex());
+                logger->info("  ATR: %s\n",
+                             ByteArrayUtil::toHex(
+                                 matchingSe->getSelectionStatus()->getAtr()
+                                     ->getBytes()).c_str());
+                logger->info("  FCI: %s\n",
+                             ByteArrayUtil::toHex(
+                                 matchingSe->getSelectionStatus()->getFci()
+                                    ->getDataOut()).c_str());
             }
         } else {
             logger->info("No SE matched the selection\n");
