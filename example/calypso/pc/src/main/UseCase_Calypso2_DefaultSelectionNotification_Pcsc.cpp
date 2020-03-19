@@ -24,9 +24,10 @@
 #include "MatchingSelection.h"
 #include "ObservableReader_Import.h"
 #include "PcscPlugin.h"
+#include "PcscPluginFactory.h"
 #include "PcscReader.h"
+#include "PcscReaderImpl.h"
 #include "PcscReadersSettings.h"
-#include "PcscReaderSettings_Import.h"
 #include "PcscReadersSettings.h"
 #include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
@@ -76,15 +77,11 @@ public:
      */
     UseCase_Calypso2_DefaultSelectionNotification_Pcsc()
     {
-        /* Get the instance of the PC/SC plugin */
-        PcscPlugin pcscPlugin = PcscPlugin::getInstance();
-        pcscPlugin.initReaders();
-        std::shared_ptr<PcscPlugin> shared_plugin =
-            std::shared_ptr<PcscPlugin>(&pcscPlugin);
+        /* Get the instance of the SeProxyService (Singleton pattern) */
+        SeProxyService& seProxyService = SeProxyService::getInstance();
 
         /* Assign PcscPlugin to the SeProxyService */
-        SeProxyService& seProxyService = SeProxyService::getInstance();
-        seProxyService.addPlugin(shared_plugin);
+        seProxyService.registerPlugin(new PcscPluginFactory());
 
         /*
          * Get a PO reader ready to work with Calypso PO. Use the getReader
@@ -138,8 +135,7 @@ public:
                             CalypsoClassicInfo::AID),
                         PoSelector::InvalidatedPo::REJECT),
                     StringHelper::formatSimple("AID: %s",
-                                               CalypsoClassicInfo::AID)),
-                ChannelState::KEEP_OPEN);
+                                               CalypsoClassicInfo::AID)));
 
         /*
          * Prepare the reading order and keep the associated parser for later
@@ -273,7 +269,7 @@ public:
              */
             try {
                 if (poTransaction->processPoCommands(
-                        ChannelState::CLOSE_AFTER)) {
+                        ChannelControl::CLOSE_AFTER)) {
                     logger->info("The reading of the EventLog has succeeded\n");
 
                     /*
@@ -308,9 +304,31 @@ public:
         } else if (type == ReaderEvent::EventType::SE_INSERTED) {
             logger->error("SE_INSERTED event: should not have occurred due to "
                           "the MATCHED_ONLY selection mode\n");
-        } else if (type == ReaderEvent::EventType::SE_REMOVAL) {
+        } else if (type == ReaderEvent::EventType::SE_REMOVED) {
             logger->info("The PO has been removed\n");
         } else {
+        }
+
+        if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED ||
+            event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
+            /*
+             * Informs the underlying layer of the end of the SE processing, in
+             * order to manage the removal sequence. <p>If closing has already
+             * been requested, this method will do nothing.
+             */
+            try {
+                std::dynamic_pointer_cast<PcscReaderImpl>(
+                    SeProxyService::getInstance()
+                        .getPlugin(event->getPluginName())
+                        ->getReader(event->getReaderName()))
+                    ->notifySeProcessed();
+            } catch (KeypleReaderNotFoundException& e) {
+                logger->debug("KeypleReaderNotFoundException: %s - %s\n",
+                              e.getMessage().c_str(), e.getCause().what());
+            } catch (KeyplePluginNotFoundException& e) {
+                logger->debug("KeyplePluginNotFoundException: %s - %s\n",
+                              e.getMessage().c_str(), e.getCause().what());
+            }
         }
     }
 };

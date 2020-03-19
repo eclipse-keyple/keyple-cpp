@@ -29,7 +29,7 @@
 #include "TransmissionMode.h"
 
 /* PC/SC plugin */
-#include "PcscReader.h"
+#include "PcscReader_Import.h"
 #include "PcscTerminal.h"
 
 namespace keyple {
@@ -146,6 +146,22 @@ public:
      * /!\ Required to MSVC to authorize PcscReaderImpl instance.
      */
     void clearObservers() override;
+
+    /**
+     *
+     */
+    void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode) override;
+
+    /**
+     *
+     */
+    void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode, PollingMode pollingMode) override;
 
 protected:
     /**
@@ -265,19 +281,6 @@ protected:
      *
      */
     void notifySeProcessed() override;
-
-    /**
-     *
-     */
-    void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
-        NotificationMode notificationMode) override;
-
-    void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
-        NotificationMode notificationMode, PollingMode pollingMode) override;
 
 private:
     /**

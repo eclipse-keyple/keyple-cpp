@@ -51,8 +51,6 @@ ApduResponse::ApduResponse(std::vector<uint8_t>& buffer,
 
 bool ApduResponse::isSuccessful()
 {
-    logger->debug("successful: %d\n", successful);
-
     return successful;
 }
 

@@ -22,9 +22,9 @@
 #include "MatchingSelection.h"
 #include "ObservableReader_Import.h"
 #include "PcscPlugin.h"
+#include "PcscPluginFactory.h"
 #include "PcscReader.h"
 #include "PcscReadersSettings.h"
-#include "PcscReaderSettings_Import.h"
 #include "PcscReadersSettings.h"
 #include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
@@ -62,15 +62,11 @@ int main(int argc, char** argv)
     (void)argc;
     (void)argv;
 
-    /* Get the instance of the PC/SC plugin */
-    PcscPlugin pcscPlugin = PcscPlugin::getInstance();
-    pcscPlugin.initReaders();
-    std::shared_ptr<PcscPlugin> shared_plugin =
-        std::shared_ptr<PcscPlugin>(&pcscPlugin);
+    /* Get the instance of the SeProxyService (Singleton pattern) */
+    SeProxyService& seProxyService = SeProxyService::getInstance();
 
     /* Assign PcscPlugin to the SeProxyService */
-    SeProxyService& seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(shared_plugin);
+    seProxyService.registerPlugin(new PcscPluginFactory());
 
     /*
      * Get a PO reader ready to work with Calypso PO. Use the getReader helper
@@ -121,8 +117,7 @@ int main(int argc, char** argv)
                 std::make_shared<PoSelector>(
                     SeCommonProtocols::PROTOCOL_ISO14443_4,
                     std::make_shared<PoSelector::PoAtrFilter>(poAtrRegex),
-                    nullptr, StringHelper::formatSimple("ATR: ", poAtrRegex)),
-                ChannelState::KEEP_OPEN);
+                    nullptr, StringHelper::formatSimple("ATR: ", poAtrRegex)));
 
         /*
          * Prepare the selection of the DF RT.
@@ -224,7 +219,7 @@ int main(int argc, char** argv)
              * Actual PO communication: send the prepared read order, then close
              * the channel with the PO
              */
-            if (poTransaction->processPoCommands(ChannelState::CLOSE_AFTER)) {
+            if (poTransaction->processPoCommands(ChannelControl::CLOSE_AFTER)) {
                 logger->info("The reading of the EventLog has succeeded.");
 
                 /*

@@ -1,23 +1,26 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
-#include <unordered_map>
-
+#include "ByteArrayUtil.h"
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "CalypsoUtilities.h"
+#include "ChannelControl.h"
 #include "KeypleBaseException.h"
 #include "SeProxyService.h"
 #include "PcscPlugin.h"
+#include "PcscPluginFactory.h"
 #include "SeReader.h"
 #include "PcscReadersSettings.h"
 #include "ReaderUtilities.h"
@@ -26,7 +29,6 @@
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
 #include "PcscReader.h"
-#include "PcscReaderSettings_Import.h"
 #include "PcscReadersSettings.h"
 #include "PcscProtocolSetting_Import.h"
 #include "PcscReadersSettings.h"
@@ -58,19 +60,15 @@ int main(int argc, char** argv)
     (void)argc;
     (void)argv;
 
-    /* Get the instance of the PC/SC plugin */
-    PcscPlugin pcscPlugin = PcscPlugin::getInstance();
-    pcscPlugin.initReaders();
-    std::shared_ptr<PcscPlugin> shared_plugin =
-        std::shared_ptr<PcscPlugin>(&pcscPlugin);
+    /* Get the instance of the SeProxyService (Singleton pattern) */
+    SeProxyService& seProxyService = SeProxyService::getInstance();
 
     /* Assign PcscPlugin to the SeProxyService */
-    SeProxyService& seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(shared_plugin);
+    seProxyService.registerPlugin(new PcscPluginFactory());
 
     /*
-     * Get a PO reader ready to work with Calypso PO. Use the getReader helper method from the
-     * CalypsoUtilities class.
+     * Get a PO reader ready to work with Calypso PO. Use the getReader helper
+     * method from the CalypsoUtilities class.
      */
     std::shared_ptr<SeReader> poReader = CalypsoUtilities::getDefaultPoReader();
 
@@ -102,13 +100,15 @@ int main(int argc, char** argv)
         /*
          * Setting of an AID based selection of a Calypso REV3 PO
          *
-         * Select the first application matching the selection AID whatever the SE communication
-         * protocol keep the logical channel open after the selection
+         * Select the first application matching the selection AID whatever the
+         * SE communication protocol keep the logical channel open after the
+         * selection
          */
 
         /*
-         * Calypso selection: configures a PoSelector with all the desired attributes to make
-         * the selection and read additional information afterwards
+         * Calypso selection: configures a PoSelector with all the desired
+         * attributes to make the selection and read additional information
+         * afterwards
          */
         std::shared_ptr<PoSelectionRequest> poSelectionRequest =
             std::make_shared<PoSelectionRequest>(
@@ -119,12 +119,11 @@ int main(int argc, char** argv)
                             CalypsoClassicInfo::AID),
                         PoSelector::InvalidatedPo::REJECT),
                     StringHelper::formatSimple("AID: %s",
-                                               CalypsoClassicInfo::AID)),
-                ChannelState::KEEP_OPEN);
+                                               CalypsoClassicInfo::AID)));
 
         /*
-         * Prepare the reading order and keep the associated parser for later use once the
-         * selection has been made.
+         * Prepare the reading order and keep the associated parser for later
+         * use once the selection has been made.
          */
         int readEnvironmentParserIndex =
             poSelectionRequest->prepareReadRecordsCmd(
@@ -136,16 +135,16 @@ int main(int argc, char** argv)
                     CalypsoClassicInfo::SFI_EnvironmentAndHolder));
 
         /*
-         * Add the selection case to the current selection (we could have added other cases
-         * here)
+         * Add the selection case to the current selection (we could have added
+         * other cases here)
          *
          * Ignore the returned index since we have only one selection here.
          */
         seSelection->prepareSelection(poSelectionRequest);
 
         /*
-         * Actual PO communication: operate through a single request the Calypso PO selection
-         * and the file read
+         * Actual PO communication: operate through a single request the Calypso
+         * PO selection and the file read
          */
         std::shared_ptr<SelectionsResult> selectionResult =
             seSelection->processExplicitSelection(poReader);
@@ -164,7 +163,10 @@ int main(int argc, char** argv)
                     matchingSelection->getResponseParser(
                         readEnvironmentParserIndex));
 
-            /* Retrieve the data read from the parser updated during the selection process */
+            /*
+             * Retrieve the data read from the parser updated during the
+             * selection process
+             */
             std::vector<uint8_t> environmentAndHolder =
                 (*(readEnvironmentParser->getRecords().get()))[static_cast<int>(
                     CalypsoClassicInfo::RECORD_NUMBER_1)];
@@ -173,7 +175,9 @@ int main(int argc, char** argv)
             logger->info("Environment file data: %s\n",
                          ByteArrayUtil::toHex(environmentAndHolder).c_str());
 
-            /* Go on with the reading of the first record of the EventLog file */
+            /*
+             * Go on with the reading of the first record of the EventLog file
+             */
             logger->info("====================================================="
                          "=============================\n");
             logger->info("= 2nd PO exchange: reading transaction of the "
@@ -186,8 +190,8 @@ int main(int argc, char** argv)
                     std::make_shared<PoResource>(poReader, calypsoPo));
 
             /*
-             * Prepare the reading order and keep the associated parser for later use once the
-             * transaction has been processed.
+             * Prepare the reading order and keep the associated parser for
+             * later use once the transaction has been processed.
              */
             int readEventLogParserIndex = poTransaction->prepareReadRecordsCmd(
                 CalypsoClassicInfo::SFI_EventLog,
@@ -199,14 +203,15 @@ int main(int argc, char** argv)
                     CalypsoClassicInfo::RECORD_NUMBER_1));
 
             /*
-             * Actual PO communication: send the prepared read order, then close the channel
-             * with the PO
+             * Actual PO communication: send the prepared read order, then close
+             * the channel with the PO
              */
-            if (poTransaction->processPoCommands(ChannelState::CLOSE_AFTER)) {
+            if (poTransaction->processPoCommands(ChannelControl::CLOSE_AFTER)) {
                 logger->info("The reading of the EventLog has succeeded.");
 
                 /*
-                 * Retrieve the data read from the parser updated during the transaction process
+                 * Retrieve the data read from the parser updated during the
+                 * transaction process
                  */
                 std::shared_ptr<ReadRecordsRespPars> parser =
                     std::dynamic_pointer_cast<ReadRecordsRespPars>(

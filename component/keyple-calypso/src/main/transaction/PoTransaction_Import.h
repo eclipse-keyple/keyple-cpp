@@ -662,11 +662,10 @@ private:
     /**
      * Change SendableInSession List to ApduRequest List .
      *
-     * @param poOrSamCommandsInsideSession a po or sam commands list to be sent in session
+     * @param poOrSamCommandsInsideSession a po or sam commands list to be sent
+     *        in session
      * @return the ApduRequest list
      */
-    //JAVA TO C++ CONVERTER TODO TASK: There is no native C++ template equivalent to this generic constraint:
-    //ORIGINAL LINE: private List<ApduRequest> getApduRequestsToSendInSession(List<? extends org.eclipse.keyple.calypso.command.CalypsoBuilderParser> poOrSamCommandsInsideSession)
     std::vector<std::shared_ptr<ApduRequest>> getApduRequestsToSendInSession(
         std::vector<std::shared_ptr<PoBuilderParser<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>>>
@@ -675,18 +674,18 @@ private:
     /**
      * Process PO commands in a Secure Session.
      * <ul>
-     * <li>On the PO reader, generates a SeRequest with channelControl set to KEEP_OPEN, and
-     * ApduRequests with the PO commands.</li>
-     * <li>In case the secure session is active, the "cache" of SAM commands is completed with the
-     * corresponding Digest Update commands.</li>
-     * <li>If a session is open and channelControl is set to CLOSE_AFTER, the current PO session is
-     * aborted</li>
+     * <li>On the PO reader, generates a SeRequest with channelControl set to
+     * KEEP_OPEN, and ApduRequests with the PO commands.</li>
+     * <li>In case the secure session is active, the "cache" of SAM commands is
+     * completed with the corresponding Digest Update commands.</li>
+     * <li>If a session is open and channelControl is set to CLOSE_AFTER, the
+     * current PO session is aborted</li>
      * <li>Returns the corresponding PO SeResponse.</li>
      * </ul>
      *
      * @param poBuilderParsers the po commands inside session
-     * @param channelControl indicated if the SE channel of the PO reader must be closed after the
-     *        last command
+     * @param channelControl indicated if the SE channel of the PO reader must
+     *        be closed after the last command
      * @return SeResponse all responses to the provided commands
      *
      * @throws KeypleReaderException IO Reader exception
@@ -694,12 +693,13 @@ private:
     std::shared_ptr<SeResponse> processAtomicPoCommands(
         std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
             AbstractPoResponseParser>>>>& poBuilderParsers,
-        channelControl channelControl);
+        ChannelControl channelControl);
 
     /**
      * Process SAM commands.
      * <ul>
-     * <li>On the SAM reader, transmission of a SeRequest with channelControl set to KEEP_OPEN.</li>
+     * <li>On the SAM reader, transmission of a SeRequest with channelControl
+     * set to KEEP_OPEN.</li>
      * <li>Returns the corresponding SAM SeResponse.</li>
      * </ul>
      *
@@ -743,93 +743,106 @@ private:
     /**
      * Close the Secure Session.
      * <ul>
-     * <li>The SAM cache is completed with the Digest Update commands related to the new PO commands
-     * to be sent and their anticipated responses. A Digest Close command is also added to the SAM
-     * command cache.</li>
-     * <li>On the SAM session reader side, a SeRequest is transmitted with SAM commands from the
-     * command cache. The SAM command cache is emptied.</li>
-     * <li>The SAM certificate is retrieved from the Digest Close response. The terminal signature
-     * is identified.</li>
-     * <li>Then, on the PO reader, a SeRequest is transmitted with the provided channelControl, and
-     * apduRequests including the new PO commands to send in the session, a Close Session command
-     * (defined with the SAM certificate), and optionally a ratificationCommand.
+     * <li>The SAM cache is completed with the Digest Update commands related to
+     * the new PO commands to be sent and their anticipated responses. A Digest
+     * Close command is also added to the SAM command cache.</li>
+     * <li>On the SAM session reader side, a SeRequest is transmitted with SAM
+     * commands from the command cache. The SAM command cache is emptied.</li>
+     * <li>The SAM certificate is retrieved from the Digest Close response. The
+     * terminal signature is identified.</li>
+     * <li>Then, on the PO reader, a SeRequest is transmitted with the provided
+     * channelControl, and apduRequests including the new PO commands to send in
+     * the session, a Close Session command (defined with the SAM certificate),
+     * and optionally a ratificationCommand.
      * <ul>
-     * <li>The management of ratification is conditioned by the mode of communication.
+     * <li>The management of ratification is conditioned by the mode of
+     * communication.
      * <ul>
-     * <li>If the communication mode is CONTACTLESS, a specific ratification command is sent after
-     * the Close Session command. No ratification is requested in the Close Session command.</li>
-     * <li>If the communication mode is CONTACTS, no ratification command is sent after the Close
-     * Session command. Ratification is requested in the Close Session command.</li>
+     * <li>If the communication mode is CONTACTLESS, a specific ratification
+     * command is sent after the Close Session command. No ratification is
+     * requested in the Close Session command.</li>
+     * <li>If the communication mode is CONTACTS, no ratification command is
+     * sent after the Close Session command. Ratification is requested in the
+     * Close Session command.</li>
      * </ul>
      * </li>
-     * <li>Otherwise, the PO Close Secure Session command is defined to directly set the PO as
-     * ratified.</li>
+     * <li>Otherwise, the PO Close Secure Session command is defined to directly
+     * set the PO was ratified.</li>
      * </ul>
      * </li>
      * <li>The PO responses of the poModificationCommands are compared with the
-     * poAnticipatedResponses. The PO signature is identified from the PO Close Session
-     * response.</li>
-     * <li>The PO certificate is recovered from the Close Session response. The card signature is
-     * identified.</li>
-     * <li>Finally, on the SAM session reader, a Digest Authenticate is automatically operated in
-     * order to verify the PO signature.</li>
+     * poAnticipatedResponses. The PO signature is identified from the PO Close
+     * Session response.</li>
+     * <li>The PO certificate is recovered from the Close Session response. The
+     * card signature is identified.</li>
+     * <li>Finally, on the SAM session reader, a Digest Authenticate is
+     * automatically operated in order to verify the PO signature.</li>
      * <li>Returns the corresponding PO SeResponse.</li>
      * </ul>
      *
-     * The method is marked as deprecated because the advanced variant defined below must be used at
-     * the application level.
+     * The method is marked as deprecated because the advanced variant defined
+     * below must be used at the application level.
      *
-     * @param poModificationCommands a list of commands that can modify the PO memory content
-     * @param poAnticipatedResponses a list of anticipated PO responses to the modification commands
-     * @param transmissionMode the communication mode. If the communication mode is CONTACTLESS, a
-     *        ratification command will be generated and sent to the PO after the Close Session
-     *        command; the ratification will not be requested in the Close Session command. On the
-     *        contrary, if the communication mode is CONTACTS, no ratification command will be sent
-     *        to the PO and ratification will be requested in the Close Session command
-     * @param channelControl indicates if the SE channel of the PO reader must be closed after the
-     *        last command
+     * @param poModificationCommands a list of commands that can modify the PO
+     *        memory content
+     * @param poAnticipatedResponses a list of anticipated PO responses to the
+     *        modification commands
+     * @param transmissionMode the communication mode. If the communication mode
+     *        is CONTACTLESS, a ratification command will be generated and sent
+     *        to the PO after the Close Session command; the ratification will
+     *        not be requested in the Close Session command. On the contrary, if
+     *        the communication mode is CONTACTS, no ratification command will
+     *        be sent to the PO and ratification will be requested in the Close
+     *        Session command
+     * @param channelControl indicates if the SE channel of the PO reader must
+     *        be closed after the last command
      * @return SeResponse close session response
-     * @throws KeypleReaderException the IO reader exception This method is deprecated.
+     * @throws KeypleReaderException the IO reader exception This method is
+     *         deprecated.
      *         <ul>
-     *         <li>The argument of the ratification command is replaced by an indication of the PO
-     *         communication mode.</li>
+     *         <li>The argument of the ratification command is replaced by an
+     *         indication of the PO communication mode.</li>
      *         </ul>
      */
     std::shared_ptr<SeResponse> processAtomicClosing(
         std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
             AbstractPoResponseParser>>>>& poModificationCommands,
         std::vector<std::shared_ptr<ApduResponse>>& poAnticipatedResponses,
-        TransmissionMode transmissionMode, channelControl channelControl);
+        TransmissionMode transmissionMode, ChannelControl channelControl);
 
     /**
-     * Advanced variant of processAtomicClosing in which the list of expected responses is
-     * determined from previous reading operations.
+     * Advanced variant of processAtomicClosing in which the list of expected
+     * responses is determined from previous reading operations.
      *
-     * @param poBuilderParsers a list of commands that can modify the PO memory content
-     * @param transmissionMode the communication mode. If the communication mode is CONTACTLESS, a
-     *        ratification command will be generated and sent to the PO after the Close Session
-     *        command; the ratification will not be requested in the Close Session command. On the
-     *        contrary, if the communication mode is CONTACTS, no ratification command will be sent
-     *        to the PO and ratification will be requested in the Close Session command
-     * @param channelControl indicates if the SE channel of the PO reader must be closed after the
-     *        last command
+     * @param poBuilderParsers a list of commands that can modify the PO memory
+     *        content
+     * @param transmissionMode the communication mode. If the communication mode
+     *        is CONTACTLESS, a ratification command will be generated and sent
+     *        to the PO after the Close Session command; the ratification will
+     *        not be requested in the Close Session command. On the contrary, if
+     *        the communication mode is CONTACTS, no ratification command will
+     *        be sent to the PO and ratification will be requested in the Close
+     *        Session command
+     * @param channelControl indicates if the SE channel of the PO reader must
+     *        be closed after the last command
      * @return SeResponse close session response
-     * @throws KeypleReaderException the IO reader exception This method is deprecated.
+     * @throws KeypleReaderException the IO reader exception This method is
+     *         deprecated.
      *         <ul>
-     *         <li>The argument of the ratification command is replaced by an indication of the PO
-     *         communication mode.</li>
+     *         <li>The argument of the ratification command is replaced by an
+     *         indication of the PO communication mode.</li>
      *         </ul>
      */
     std::shared_ptr<SeResponse> processAtomicClosing(
         std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
             AbstractPoResponseParser>>>>& poBuilderParsers,
-        TransmissionMode transmissionMode, channelControl channelControl);
+        TransmissionMode transmissionMode, ChannelControl channelControl);
 
     /**
      * Get the Secure Session Status.
      * <ul>
-     * <li>To check the result of a closed secure session, returns true if the SAM Digest
-     * Authenticate is successful.</li>
+     * <li>To check the result of a closed secure session, returns true if the
+     * SAM Digest Authenticate is successful.</li>
      * </ul>
      *
      * @return the {@link PoTransaction}.transactionResult

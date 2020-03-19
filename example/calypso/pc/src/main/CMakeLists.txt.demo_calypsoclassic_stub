@@ -19,10 +19,10 @@ INCLUDE_DIRECTORIES(
 
     # Example generic common
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/common/src/main
-    
+
     # Example generic pc
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/pc/src/main
-    
+
 	# Example calypso common
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main//postructure
@@ -47,7 +47,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/stub/src/main
 
 	# Smartcard I/O
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main	
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main
 	# Calypso
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po
@@ -75,8 +75,12 @@ IF(APPLE)
 ENDIF(APPLE)
 
 IF(UNIX)
-    FIND_LIBRARY(WINSCARD pcsclite)
+	SET(SPEC_LIBS pthread)
 ENDIF(UNIX)
+
+IF(APPLE)
+	SET(SPEC_LIBS pthread)
+ENDIF(APPLE)
 
 ADD_EXECUTABLE(demo_calypsoclassic_stub
 
@@ -94,4 +98,4 @@ ADD_EXECUTABLE(demo_calypsoclassic_stub
 	${CMAKE_CURRENT_SOURCE_DIR}/Demo_CalypsoClassic_Stub.cpp
 )
 
-TARGET_LINK_LIBRARIES(demo_calypsoclassic_stub keyplepluginpcsc keyplepluginstub keyplecore keyplecalypso ${WINSCARD})
+TARGET_LINK_LIBRARIES(demo_calypsoclassic_stub keyplepluginpcsc keyplepluginstub keyplecore keyplecalypso ${SPEC_LIBS})

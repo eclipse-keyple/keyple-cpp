@@ -12,6 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "ByteArrayUtil.h"
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "CalypsoUtilities.h"
@@ -31,6 +32,7 @@
 #include "StubSamCalypsoClassic.h"
 #include "StubProtocolSetting_Import.h"
 #include "StubPlugin.h"
+#include "StubPluginFactory.h"
 #include "StubReader.h"
 
 using namespace keyple::example::calypso::common::transaction;
@@ -54,31 +56,25 @@ int main(int argc, char** argv)
     (void)argv;
 
     /* Get the instance of the SeProxyService (Singleton pattern) */
-    SeProxyService seProxyService = SeProxyService::getInstance();
+    SeProxyService& seProxyService = SeProxyService::getInstance();
 
-    /* Get the instance of the Stub plugin */
-    StubPlugin& stubPlugin = StubPlugin::getInstance();
-    stubPlugin.initReaders();
-    std::shared_ptr<StubPlugin> shared_stub =
-        std::make_shared<StubPlugin>(stubPlugin);
+    const std::string STUB_PLUGIN_NAME = "stub1";
 
-    /* Assign StubPlugin to the SeProxyService */
-    seProxyService.addPlugin(shared_stub);
+    /* Register Stub plugin in the platform */
+    seProxyService.registerPlugin(new StubPluginFactory(STUB_PLUGIN_NAME));
+    ReaderPlugin* stubPlugin = seProxyService.getPlugin(STUB_PLUGIN_NAME);
 
-    /* Plug the PO stub reader */
-    stubPlugin.plugStubReader("poReader", true);
+    /* Plug PO and SAM stub reader. */
+    dynamic_cast<StubPlugin*>(stubPlugin)->plugStubReader("poReader", true);
+    dynamic_cast<StubPlugin*>(stubPlugin)->plugStubReader("samReader", true);
 
-    /* Plug the SAM stub reader. */
-    stubPlugin.plugStubReader("samReader", true);
-
-    /*
-     * Get a PO and a SAM reader ready to work with a Calypso PO.
-     */
+    /* Get a PO and a SAM reader ready to work with a Calypso PO */
     std::shared_ptr<StubReader> poReader =
-        std::dynamic_pointer_cast<StubReader>(stubPlugin.getReader("poReader"));
+        std::dynamic_pointer_cast<StubReader>(
+            stubPlugin->getReader("poReader"));
     std::shared_ptr<StubReader> samReader =
         std::dynamic_pointer_cast<StubReader>(
-            stubPlugin.getReader("samReader"));
+            stubPlugin->getReader("samReader"));
 
     /* Check if the reader exists */
     if (poReader == nullptr || samReader == nullptr) {
@@ -167,8 +163,7 @@ int main(int argc, char** argv)
                             CalypsoClassicInfo::AID),
                         PoSelector::InvalidatedPo::REJECT),
                     StringHelper::formatSimple("AID: %s",
-                                               CalypsoClassicInfo::AID)),
-                ChannelState::KEEP_OPEN);
+                                               CalypsoClassicInfo::AID)));
 
         /*
          * Add the selection case to the current selection (we could have added
@@ -228,8 +223,7 @@ int main(int argc, char** argv)
              */
             bool poProcessStatus = poTransaction->processOpening(
                 PoTransaction::ModificationMode::ATOMIC,
-                PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT,
-                static_cast<char>(0), static_cast<char>(0));
+                PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT, 0, 0);
 
             if (!poProcessStatus) {
                 throw std::make_shared<IllegalStateException>(
@@ -242,8 +236,8 @@ int main(int argc, char** argv)
             }
 
             /*
-             * Prepare the reading order and keep the associated parser for later use once the
-             * transaction has been processed.
+             * Prepare the reading order and keep the associated parser for
+             * later use once the transaction has been processed.
              */
             int readEventLogParserIndexBis =
                 poTransaction->prepareReadRecordsCmd(
@@ -290,7 +284,7 @@ int main(int argc, char** argv)
              * A ratification command will be sent (CONTACTLESS_MODE).
              */
             poProcessStatus =
-                poTransaction->processClosing(ChannelState::CLOSE_AFTER);
+                poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
 
             if (!poProcessStatus) {
                 throw std::make_shared<IllegalStateException>(

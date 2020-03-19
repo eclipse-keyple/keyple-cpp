@@ -68,7 +68,7 @@ void doAndAnalyseSelection(std::shared_ptr<SeReader> seReader,
                         matchingSe->getSelectionStatus()->getAtr()
                             ->getBytes()).c_str());
         logger->info("  FCI: %s\n",
-                        ByteArrayUtil::toHex(
+                     ByteArrayUtil::toHex(
                         matchingSe->getSelectionStatus()->getFci()
                         ->getDataOut()).c_str());
     } else {
