@@ -98,4 +98,4 @@ ADD_EXECUTABLE(demo_calypsoclassic_stub
 	${CMAKE_CURRENT_SOURCE_DIR}/Demo_CalypsoClassic_Stub.cpp
 )
 
-TARGET_LINK_LIBRARIES(demo_calypsoclassic_stub keyplepluginstub keyplecore keyplecalypso ${SPEC_LIBS})
+TARGET_LINK_LIBRARIES(demo_calypsoclassic_stub keyplepluginpcsc keyplepluginstub keyplecore keyplecalypso ${SPEC_LIBS})
