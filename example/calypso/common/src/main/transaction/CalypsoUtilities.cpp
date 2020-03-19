@@ -17,7 +17,7 @@
 #include "CalypsoClassicInfo.h"
 #include "CalypsoSam.h"
 #include "CalypsoUtilities.h"
-#include "ChannelState.h"
+#include "ChannelControl.h"
 #include "KeypleBaseException.h"
 #include "KeypleReaderException.h"
 #include "MatchingSelection.h"
@@ -51,8 +51,8 @@ CalypsoUtilities::StaticConstructor::StaticConstructor()
     properties = std::make_shared<Properties>();
 
     std::string propertiesFileName =
-        "/Volumes/macbook-air-extension/git/cna/"
-        "github.com.calypsonet.keyple-cpp/build/bin/config.properties";
+        "/mnt/data/code/git/cna/github.com.calypsonet.keyple-cpp/" \
+        "example/calypso/config.properties";
 
     std::ifstream inputStream;
     inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -118,8 +118,8 @@ CalypsoUtilities::checkSamAndOpenChannel(std::shared_ptr<SeReader> samReader)
         SamRevision::C1, ".*", "Selection SAM C1");
 
     /* Prepare selector, ignore MatchingSe here */
-    samSelection->prepareSelection(std::make_shared<SamSelectionRequest>(
-        samSelector, ChannelState::KEEP_OPEN));
+    samSelection->prepareSelection(
+        std::make_shared<SamSelectionRequest>(samSelector));
     std::shared_ptr<CalypsoSam> calypsoSam = nullptr;
 
     try {

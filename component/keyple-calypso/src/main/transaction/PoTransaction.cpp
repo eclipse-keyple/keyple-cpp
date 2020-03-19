@@ -1791,7 +1791,7 @@ bool PoTransaction::willOverflowBuffer(
             modificationsCounter = modificationsCounter - bufferRequirement;
         } else {
             logger->trace("Modifications buffer overflow! BYTESMODE, "
-                          "CURRENTCOUNTER = %s, REQUIREMENT = %s\n",
+                          "CURRENTCOUNTER = %d, REQUIREMENT = %d\n",
                           modificationsCounter, bufferRequirement);
             willOverflow = true;
         }
@@ -1800,7 +1800,7 @@ bool PoTransaction::willOverflowBuffer(
             modificationsCounter--;
         } else {
             logger->trace("Modifications buffer overflow! COMMANDSMODE, "
-                          "CURRENTCOUNTER = %s, REQUIREMENT = %s\n",
+                          "CURRENTCOUNTER = %d, REQUIREMENT = %d\n",
                           modificationsCounter, 1);
             willOverflow = true;
         }
@@ -1812,8 +1812,8 @@ bool PoTransaction::willOverflowBuffer(
 
 void PoTransaction::resetModificationsBufferCounter()
 {
-    logger->trace("Modifications buffer counter reset: PREVIOUSVALUE = %s, "
-                  "NEWVALUE = %s\n",
+    logger->trace("Modifications buffer counter reset: PREVIOUSVALUE = %d, "
+                  "NEWVALUE = %d\n",
                   modificationsCounter, modificationsCounterMax);
 
     modificationsCounter = modificationsCounterMax;
@@ -1851,7 +1851,7 @@ int PoTransaction::prepareSelectFileCmd(const std::vector<uint8_t>& path,
     (void)extraInfo;
 
     if (logger->isTraceEnabled()) {
-        logger->trace("Select File: PATH = %s",
+        logger->trace("Select File: PATH = %s\n",
                       ByteArrayUtil::toHex(path).c_str());
     }
 

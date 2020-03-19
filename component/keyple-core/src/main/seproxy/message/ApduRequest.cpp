@@ -84,6 +84,7 @@ std::string ApduRequest::toString()
     if (isCase4()) {
         string.append(", case4");
     }
+
     if (successfulStatusCodes != nullptr) {
         string.append(", additional successful status codes = ");
         std::set<int>::const_iterator iterator = successfulStatusCodes->begin();
@@ -95,6 +96,7 @@ std::string ApduRequest::toString()
             iterator++;
         }
     }
+
     return string;
 }
 

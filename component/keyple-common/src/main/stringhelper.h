@@ -185,6 +185,8 @@ public:
         std::ostringstream ss;
         int lastFormatChar = -1;
         int percent        = -1;
+        int argIndex = 1;
+
         while ((percent = input.find('%', percent + 1)) > -1) {
             if (percent + 1 < (int)input.length()) {
                 if (input[percent + 1] == '%') {
@@ -196,7 +198,8 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = "1";
+                        index     = std::to_string(argIndex);
+                        argIndex++;
                         formatEnd = i;
                         break;
                     } else if (input[i] == '$' && i + 1 < (int)input.length() &&
@@ -239,6 +242,8 @@ public:
         std::ostringstream ss;
         int lastFormatChar = -1;
         int percent        = -1;
+        int argIndex = 1;
+
         while ((percent = input.find('%', percent + 1)) > -1) {
             if (percent + 1 < (int)input.length()) {
                 if (input[percent + 1] == '%') {
@@ -250,7 +255,8 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = "1";
+                        index     = std::to_string(argIndex);
+                        argIndex++;
                         formatEnd = i;
                         break;
                     } else if (input[i] == '$' && i + 1 < (int)input.length() &&
@@ -295,6 +301,8 @@ public:
         std::ostringstream ss;
         int lastFormatChar = -1;
         int percent        = -1;
+        int argIndex = 1;
+
         while ((percent = input.find('%', percent + 1)) > -1) {
             if (percent + 1 < (int)input.length()) {
                 if (input[percent + 1] == '%') {
@@ -306,7 +314,8 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = "1";
+                        index     = std::to_string(argIndex);
+                        argIndex++;
                         formatEnd = i;
                         break;
                     } else if (input[i] == '$' && i + 1 < (int)input.length() &&
@@ -353,6 +362,8 @@ public:
         std::ostringstream ss;
         int lastFormatChar = -1;
         int percent        = -1;
+        int argIndex = 1;
+
         while ((percent = input.find('%', percent + 1)) > -1) {
             if (percent + 1 < (int)input.length()) {
                 if (input[percent + 1] == '%') {
@@ -364,7 +375,8 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = "1";
+                        index     = std::to_string(argIndex);
+                        argIndex++;
                         formatEnd = i;
                         break;
                     } else if (input[i] == '$' && i + 1 < (int)input.length() &&
@@ -414,6 +426,8 @@ public:
         std::ostringstream ss;
         int lastFormatChar = -1;
         int percent        = -1;
+        int argIndex = 1;
+
         while ((percent = input.find('%', percent + 1)) > -1) {
             if (percent + 1 < (int)input.length()) {
                 if (input[percent + 1] == '%') {
@@ -425,7 +439,8 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = "1";
+                        index     = std::to_string(argIndex);
+                        argIndex++;
                         formatEnd = i;
                         break;
                     } else if (input[i] == '$' && i + 1 < (int)input.length() &&
@@ -477,6 +492,8 @@ public:
         std::ostringstream ss;
         int lastFormatChar = -1;
         int percent        = -1;
+        int argIndex = 1;
+
         while ((percent = input.find('%', percent + 1)) > -1) {
             if (percent + 1 < (int)input.length()) {
                 if (input[percent + 1] == '%') {
@@ -488,7 +505,8 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = "1";
+                        index     = std::to_string(argIndex);
+                        argIndex++;
                         formatEnd = i;
                         break;
                     } else if (input[i] == '$' && i + 1 < (int)input.length() &&

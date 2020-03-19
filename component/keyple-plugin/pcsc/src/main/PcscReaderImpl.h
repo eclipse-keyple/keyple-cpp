@@ -147,6 +147,17 @@ public:
      */
     void clearObservers() override;
 
+    /**
+     *
+     */
+    void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode) override;
+
+    /**
+     *
+     */
     void setDefaultSelectionRequest(
         std::shared_ptr<AbstractDefaultSelectionsRequest>
             defaultSelectionsRequest,
@@ -270,14 +281,6 @@ protected:
      *
      */
     void stopSeDetection() override;
-
-    /**
-     *
-     */
-    void
-    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
-                                   defaultSelectionsRequest,
-                               NotificationMode notificationMode) override;
 
 private:
     /**

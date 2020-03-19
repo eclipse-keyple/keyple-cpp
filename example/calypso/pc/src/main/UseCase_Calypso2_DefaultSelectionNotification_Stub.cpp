@@ -12,6 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "ByteArrayUtil.h"
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "KeypleReaderNotFoundException.h"
@@ -30,7 +31,9 @@
 #include "StubSamCalypsoClassic.h"
 #include "StubProtocolSetting_Import.h"
 #include "StubPlugin.h"
+#include "StubPluginFactory.h"
 #include "StubReader.h"
+#include "StubReaderImpl.h"
 
 /* Common */
 #include "Thread.h"
@@ -78,24 +81,20 @@ public:
         /* Get the instance of the SeProxyService (Singleton pattern) */
         SeProxyService& seProxyService = SeProxyService::getInstance();
 
-        /* Get the instance of the Stub plugin */
-        StubPlugin& stubPlugin = StubPlugin::getInstance();
-        stubPlugin.initReaders();
-        std::shared_ptr<StubPlugin> shared_stub =
-            std::make_shared<StubPlugin>(stubPlugin);
+        const std::string STUB_PLUGIN_NAME = "stub1";
 
-        /* Assign StubPlugin to the SeProxyService */
-        seProxyService.addPlugin(shared_stub);
+        /* Register Stub plugin in the platform */
+        seProxyService.registerPlugin(new StubPluginFactory(STUB_PLUGIN_NAME));
+        ReaderPlugin* stubPlugin = seProxyService.getPlugin(STUB_PLUGIN_NAME);
 
         /* Plug the PO stub reader */
-        stubPlugin.plugStubReader("poReader", true);
+        dynamic_cast<StubPlugin*>(stubPlugin)->plugStubReader(
+            "poReader", true);
 
-        /*
-         * Get a PO reader ready to work with Calypso PO.
-         */
+        /* Get a PO reader ready to work with Calypso PO */
         std::shared_ptr<StubReader> poReader =
             std::dynamic_pointer_cast<StubReader>(
-                stubPlugin.getReader("poReader"));
+                stubPlugin->getReader("poReader"));
 
         /* Check if the reader exists */
         if (poReader == nullptr) {
@@ -120,13 +119,15 @@ public:
         /*
          * Setting of an AID based selection of a Calypso REV3 PO
          *
-         * Select the first application matching the selection AID whatever the SE communication
-         * protocol keep the logical channel open after the selection
+         * Select the first application matching the selection AID whatever the
+         * SE communication protocol keep the logical channel open after the
+         * selection
          */
 
         /*
-         * Calypso selection: configures a PoSelector with all the desired attributes to make the
-         * selection and read additional information afterwards
+         * Calypso selection: configures a PoSelector with all the desired
+         * attributes to make the selection and read additional information
+         * afterwards
          */
         std::shared_ptr<PoSelectionRequest> poSelectionRequest =
             std::make_shared<PoSelectionRequest>(
@@ -137,12 +138,11 @@ public:
                             CalypsoClassicInfo::AID),
                         PoSelector::InvalidatedPo::REJECT),
                     StringHelper::formatSimple("AID: %s",
-                                               CalypsoClassicInfo::AID)),
-                ChannelState::KEEP_OPEN);
+                                               CalypsoClassicInfo::AID)));
 
         /*
-         * Prepare the reading order and keep the associated parser for later use once the selection
-         * has been made.
+         * Prepare the reading order and keep the associated parser for later
+         * use once the selection has been made.
          */
         readEnvironmentParserIndex = poSelectionRequest->prepareReadRecordsCmd(
             CalypsoClassicInfo::SFI_EnvironmentAndHolder,
@@ -153,12 +153,14 @@ public:
                 CalypsoClassicInfo::SFI_EnvironmentAndHolder));
 
         /*
-         * Add the selection case to the current selection (we could have added other cases here)
+         * Add the selection case to the current selection (we could have added
+         * other cases here)
          */
         seSelection->prepareSelection(poSelectionRequest);
 
         /*
-         * Provide the SeReader with the selection operation to be processed when a PO is inserted
+         * Provide the SeReader with the selection operation to be processed
+         * when a PO is inserted
          */
         std::dynamic_pointer_cast<ObservableReader>(poReader)
             ->setDefaultSelectionRequest(
@@ -189,7 +191,7 @@ public:
         poReader->insertSe(calypsoStubSe);
 
         /* Wait a while */
-        Thread::sleep(100);
+        Thread::sleep(1000);
 
         logger->info("Remove stub PO.\n");
         poReader->removeSe();
@@ -305,7 +307,7 @@ public:
                  */
                 try {
                     if (poTransaction->processPoCommands(
-                            ChannelState::CLOSE_AFTER)) {
+                            ChannelControl::CLOSE_AFTER)) {
 
                         logger->info("The reading of the EventLog has "
                                      "succeeded\n");
@@ -347,10 +349,32 @@ public:
         } else if (type == ReaderEvent::EventType::SE_INSERTED) {
             logger->error("update - SE_INSERTED event: should not have "
                           "occurred due to the MATCHED_ONLY selection mode\n");
-        } else if (type == ReaderEvent::EventType::SE_REMOVAL) {
+        } else if (type == ReaderEvent::EventType::SE_REMOVED) {
             logger->info("update - the PO has been removed\n");
         } else {
             logger->info("update - unexpected event\n");
+        }
+
+        if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED ||
+            event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
+            /*
+             * Informs the underlying layer of the end of the SE processing, in
+             * order to manage the removal sequence. <p>If closing has already
+             * been requested, this method will do nothing.
+             */
+            try {
+                std::dynamic_pointer_cast<StubReaderImpl>(
+                    SeProxyService::getInstance()
+                        .getPlugin(event->getPluginName())
+                        ->getReader(event->getReaderName()))
+                    ->notifySeProcessed();
+            } catch (KeypleReaderNotFoundException& e) {
+                logger->debug("KeypleReaderNotFoundException: %s - %s\n",
+                              e.getMessage().c_str(), e.getCause().what());
+            } catch (KeyplePluginNotFoundException& e) {
+                logger->debug("KeyplePluginNotFoundException: %s - %s\n",
+                              e.getMessage().c_str(), e.getCause().what());
+            }
         }
     }
 };

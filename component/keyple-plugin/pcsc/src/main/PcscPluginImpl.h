@@ -118,7 +118,7 @@ protected:
      * @throws KeypleReaderException if a reader error occurs
      */
     std::shared_ptr<SeReader>
-    fetchNativeReader(const std::string& name) override;
+        fetchNativeReader(const std::string& name) override;
 
     /**
      *

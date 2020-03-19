@@ -12,6 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "ByteArrayUtil.h"
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "KeypleReaderNotFoundException.h"
@@ -29,6 +30,7 @@
 #include "StubSamCalypsoClassic.h"
 #include "StubProtocolSetting_Import.h"
 #include "StubPlugin.h"
+#include "StubPluginFactory.h"
 #include "StubReader.h"
 
 using namespace keyple::example::calypso::common::transaction;
@@ -52,25 +54,23 @@ int main(int argc, char** argv)
     (void)argv;
 
     /* Get the instance of the SeProxyService (Singleton pattern) */
-    SeProxyService seProxyService = SeProxyService::getInstance();
+    SeProxyService& seProxyService = SeProxyService::getInstance();
 
-    /* Get the instance of the Stub plugin */
-    StubPlugin& stubPlugin = StubPlugin::getInstance();
-    stubPlugin.initReaders();
-    std::shared_ptr<StubPlugin> shared_stub =
-        std::make_shared<StubPlugin>(stubPlugin);
+    const std::string STUB_PLUGIN_NAME = "stub1";
 
-    /* Assign StubPlugin to the SeProxyService */
-    seProxyService.addPlugin(shared_stub);
+    /* Register Stub plugin in the platform */
+    seProxyService.registerPlugin(new StubPluginFactory(STUB_PLUGIN_NAME));
+    ReaderPlugin* stubPlugin = seProxyService.getPlugin(STUB_PLUGIN_NAME);
 
     /* Plug the PO stub reader */
-    stubPlugin.plugStubReader("poReader", true);
+    dynamic_cast<StubPlugin*>(stubPlugin)->plugStubReader("poReader", true);
 
     /*
      * Get a PO reader ready to work with Calypso PO.
      */
     std::shared_ptr<StubReader> poReader =
-        std::dynamic_pointer_cast<StubReader>(stubPlugin.getReader("poReader"));
+        std::dynamic_pointer_cast<StubReader>(
+            stubPlugin->getReader("poReader"));
 
     /* Check if the reader exists */
     if (poReader == nullptr) {
@@ -123,8 +123,7 @@ int main(int argc, char** argv)
                             CalypsoClassicInfo::AID),
                         PoSelector::InvalidatedPo::REJECT),
                     StringHelper::formatSimple("AID: %s",
-                                               CalypsoClassicInfo::AID)),
-                ChannelState::KEEP_OPEN);
+                                               CalypsoClassicInfo::AID)));
 
         /*
          * Prepare the reading order and keep the associated parser for later
@@ -163,15 +162,15 @@ int main(int argc, char** argv)
                     matchingSelection->getMatchingSe());
             logger->info("The selection of the PO has succeeded\n");
 
+            /*
+             * Retrieve the data read from the parser updated during the
+             * selection process
+             */
             std::shared_ptr<ReadRecordsRespPars> readEnvironmentParser =
                 std::dynamic_pointer_cast<ReadRecordsRespPars>(
                     matchingSelection->getResponseParser(
                         readEnvironmentParserIndex));
 
-            /*
-             * Retrieve the data read from the parser updated during the
-             * selection process
-             */
             std::vector<uint8_t> environmentAndHolder =
                 (*(readEnvironmentParser->getRecords().get()))[static_cast<int>(
                     CalypsoClassicInfo::RECORD_NUMBER_1)];
@@ -211,7 +210,7 @@ int main(int argc, char** argv)
              * Actual PO communication: send the prepared read order, then close
              * the channel with the PO
              */
-            if (poTransaction->processPoCommands(ChannelState::CLOSE_AFTER)) {
+            if (poTransaction->processPoCommands(ChannelControl::CLOSE_AFTER)) {
                 logger->info("The reading of the EventLog has succeeded\n");
 
                 /*

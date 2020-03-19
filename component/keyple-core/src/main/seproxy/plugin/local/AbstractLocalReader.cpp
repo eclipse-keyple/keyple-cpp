@@ -215,7 +215,7 @@ AbstractLocalReader::openLogicalChannel(std::shared_ptr<SeSelector> seSelector)
 
         if (!seSelector->getAtrFilter()->atrMatches(atr)) {
             logger->info("[%s] openLogicalChannel => ATR didn't match. "
-                         "SELECTOR = %s, ATR = %s",
+                         "SELECTOR = %s, ATR = %s\n",
                          this->getName().c_str(),
                          seSelector->toString().c_str(),
                          ByteArrayUtil::toHex(atr).c_str());
@@ -688,6 +688,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
     long long timeStamp = System::nanoTime();
     double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
     this->before     = timeStamp;
+
     logger->debug("[%s] processApduRequest => %s, elapsed %d ms\n",
                   this->getName().c_str(), apduRequest->toString().c_str(),
                   elapsedMs);
@@ -745,9 +746,9 @@ AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
     timeStamp    = System::nanoTime();
     elapsedMs    = static_cast<double>((timeStamp - before) / 100000) / 10;
     this->before = timeStamp;
-    logger->debug("[%s] case4HackGetResponse => Internal %s, elapsed %s ms\n",
+    logger->debug("[%s] case4HackGetResponse => Internal %s, elapsed %d ms\n",
                   this->getName().c_str(),
-                  "<to print>getResponseHackResponseBytes",
+                  ByteArrayUtil::toHex(getResponseHackRequestBytes).c_str(),
                   elapsedMs);
 
     if (getResponseHackResponse->isSuccessful()) {

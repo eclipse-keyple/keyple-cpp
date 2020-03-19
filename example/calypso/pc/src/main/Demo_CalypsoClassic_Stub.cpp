@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #include "CalypsoClassicTransactionEngine.h"
 #include "KeypleReaderNotFoundException.h"
@@ -22,6 +24,7 @@
 #include "StubSamCalypsoClassic.h"
 #include "StubProtocolSetting_Import.h"
 #include "StubPlugin.h"
+#include "StubPluginFactory.h"
 #include "StubReader.h"
 
 using namespace keyple::example::calypso::common::transaction;
@@ -44,35 +47,31 @@ int main(int argc, char** argv)
     (void)argv;
 
     /* Get the instance of the SeProxyService (Singleton pattern) */
-    SeProxyService seProxyService = SeProxyService::getInstance();
+    SeProxyService& seProxyService = SeProxyService::getInstance();
 
-    std::set<std::shared_ptr<ReaderPlugin>> pluginsSet;
+    const std::string STUB_PLUGIN_NAME = "stub1";
 
-    StubPlugin& stubPlugin = StubPlugin::getInstance();
-    stubPlugin.initReaders();
-
-    /* Get the instance of the PcscPlugin (Singleton pattern) */
-    pluginsSet.insert(std::make_shared<StubPlugin>(stubPlugin));
-
-    /* Assign StubPlugin to the SeProxyService */
-    seProxyService.setPlugins(pluginsSet);
+    /* Register Stub plugin in the platform */
+    seProxyService.registerPlugin(new StubPluginFactory(STUB_PLUGIN_NAME));
+    ReaderPlugin* stubPlugin = seProxyService.getPlugin(STUB_PLUGIN_NAME);
 
     /* Setting up the transaction engine (implements Observer) */
     std::shared_ptr<CalypsoClassicTransactionEngine> transactionEngine =
         std::make_shared<CalypsoClassicTransactionEngine>();
 
+
     /*
      * Plug PO and SAM stub readers.
      */
-    stubPlugin.plugStubReader("poReader", true);
-    stubPlugin.plugStubReader("samReader", true);
+    dynamic_cast<StubPlugin*>(stubPlugin)->plugStubReader("poReader", true);
+    dynamic_cast<StubPlugin*>(stubPlugin)->plugStubReader("samReader", true);
 
     std::shared_ptr<StubReader> poReader = nullptr, samReader = nullptr;
     try {
         poReader = std::dynamic_pointer_cast<StubReader>(
-            stubPlugin.getReader("poReader"));
+            stubPlugin->getReader("poReader"));
         samReader = std::dynamic_pointer_cast<StubReader>(
-            stubPlugin.getReader("samReader"));
+            stubPlugin->getReader("samReader"));
     } catch (const KeypleReaderNotFoundException& e) {
         logger->error("update - caught KeypleReaderNotFoundException "
                       "(msg: %s, cause: %s)\n",
@@ -88,16 +87,12 @@ int main(int argc, char** argv)
     logger->info("SAM Reader  NAME = %s\n", samReader->getName().c_str());
 
     /* Set the PO reader protocol flag */
-    poReader->addSeProtocolSetting(
-        SeCommonProtocols::PROTOCOL_ISO14443_4,
-        StubProtocolSetting::STUB_PROTOCOL_SETTING
-            [SeCommonProtocols::PROTOCOL_ISO14443_4]);
+    poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO14443_4,
+                                   StubProtocolSetting::STUB_PROTOCOL_SETTING
+                                      [SeCommonProtocols::PROTOCOL_ISO14443_4]);
     poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_B_PRIME,
                                    StubProtocolSetting::STUB_PROTOCOL_SETTING
                                        [SeCommonProtocols::PROTOCOL_B_PRIME]);
-    poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO7816_3,
-                                   StubProtocolSetting::STUB_PROTOCOL_SETTING
-                                       [SeCommonProtocols::PROTOCOL_ISO7816_3]);
 
     /* Assign readers to the Hoplink transaction engine */
     transactionEngine->setReaders(poReader, samReader);

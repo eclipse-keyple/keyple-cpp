@@ -19,17 +19,17 @@ INCLUDE_DIRECTORIES(
 
     # Example generic common
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/common/src/main/
-    
+
     # Example generic pc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/pc/src/main/java/org/eclipse/keyple/example/generic/pc
-    
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/pc/src/main
+
 	# Example calypso common
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main//postructure
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main//transaction
 
 	# Core
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main/
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/command
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/selection
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy
@@ -37,15 +37,13 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/exception
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin/local
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util
 
 	# Plugin - PC/SC
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/pcsc/src/main/java/org/eclipse/keyple/plugin/pcsc
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/pcsc/src/main
 
-	# Smartcard I/O
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main/java/org/eclipse/keyple/smartcardio
-	
 	# Calypso
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po
@@ -76,8 +74,12 @@ IF(APPLE)
 ENDIF(APPLE)
 
 IF(UNIX)
-	FIND_LIBRARY(WINSCARD pcsclite)
+	SET(SPEC_LIBS pthread pcsclite)
 ENDIF(UNIX)
+
+IF(APPLE)
+	SET(SPEC_LIBS pthread)
+ENDIF(APPLE)
 
 ADD_EXECUTABLE(demo_calypsoclassic_pcsc
 
@@ -94,4 +96,4 @@ ADD_EXECUTABLE(demo_calypsoclassic_pcsc
 	${CMAKE_CURRENT_SOURCE_DIR}/Demo_CalypsoClassic_Pcsc.cpp
 )
 
-TARGET_LINK_LIBRARIES(demo_calypsoclassic_pcsc keyplepluginpcsc keyplecore keyplecalypso ${WINSCARD})
+TARGET_LINK_LIBRARIES(demo_calypsoclassic_pcsc keyplepluginpcsc keyplecore keyplecalypso ${SPEC_LIBS})

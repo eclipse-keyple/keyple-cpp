@@ -17,7 +17,7 @@
 #include "CalypsoUtilities.h"
 #include "CalypsoPo.h"
 #include "CalypsoClassicInfo.h"
-#include "ChannelState.h"
+#include "ChannelControl.h"
 #include "KeypleReaderException.h"
 #include "Logger.h"
 #include "LoggerFactory.h"
@@ -104,8 +104,8 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
                  "============================\n");
 
     /*
-     * Open Session for the debit key - with reading of the first record of the cyclic EF of
-     * Environment and Holder file
+     * Open Session for the debit key - with reading of the first record of the
+     * cyclic EF of Environment and Holder file
      */
     poProcessStatus = poTransaction->processOpening(
         PoTransaction::ModificationMode::ATOMIC,
@@ -130,8 +130,8 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
         /*
          * [------------------------------------]
          *
-         * The previous Secure Session has not been ratified, so we simply close the Secure
-         * Session.
+         * The previous Secure Session has not been ratified, so we simply close
+         * the Secure Session.
          *
          * We would analyze here the event log read during the opening phase.
          *
@@ -145,24 +145,29 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
          * A ratification command will be sent (CONTACTLESS_MODE).
          */
         poProcessStatus =
-            poTransaction->processClosing(ChannelState::KEEP_OPEN);
+            poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
 
     } else {
         /*
          * [------------------------------------]
          *
-         * Place to analyze the PO profile available in seResponse: Environment/Holder,
-         * EventLog, ContractList.
+         * Place to analyze the PO profile available in seResponse:
+         * Environment/Holder, EventLog, ContractList.
          *
-         * The information available allows the determination of the contract to be read.
+         * The information available allows the determination of the contract to
+         * be read.
          *
          * [------------------------------------]
          */
         logger->info("========= PO Calypso session ======= Processing of PO "
                      "commands =======================\n");
 
-        /* Read contract command (we assume we have determine Contract #1 to be read. */
-        /* prepare Contract #1 read record */
+        /*
+         * Read contract command (we assume we have determine Contract #1 to be
+         * read.
+         */
+
+        /* Prepare Contract #1 read record */
         int readContractsParserIndex = poTransaction->prepareReadRecordsCmd(
             CalypsoClassicInfo::SFI_Contracts,
             ReadDataStructure::MULTIPLE_RECORD_DATA,
@@ -206,7 +211,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
          * A ratification command will be sent (CONTACTLESS_MODE).
          */
         poProcessStatus =
-            poTransaction->processClosing(ChannelState::KEEP_OPEN);
+            poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
 
         logger->info("Parsing Append EventLog file: %s\n",
                      poTransaction->getResponseParser(appendEventLogParserIndex)
@@ -224,7 +229,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
 }
 
 std::shared_ptr<AbstractDefaultSelectionsRequest>
-CalypsoClassicTransactionEngine::preparePoSelection()
+    CalypsoClassicTransactionEngine::preparePoSelection()
 {
     /*
      * Initialize the selection process for the poReader
@@ -245,11 +250,11 @@ CalypsoClassicTransactionEngine::preparePoSelection()
             std::make_shared<PoSelector::PoAidSelector>(
                 std::make_shared<SeSelector::AidSelector::IsoAid>(poFakeAid1),
                 PoSelector::InvalidatedPo::REJECT),
-            "Selector with fake AID1"),
-        ChannelState::KEEP_OPEN));
+            "Selector with fake AID1")));
 
     /*
-     * Add selection case 2: Calypso application, protocol ISO, target rev 2 or 3
+     * Add selection case 2: Calypso application, protocol ISO, target rev 2 or
+     * 3
      *
      * addition of read commands to execute following the selection
      */
@@ -262,8 +267,7 @@ CalypsoClassicTransactionEngine::preparePoSelection()
                     std::make_shared<SeSelector::AidSelector::IsoAid>(
                         CalypsoClassicInfo::AID),
                     PoSelector::InvalidatedPo::ACCEPT),
-                "Calypso selector"),
-            ChannelState::KEEP_OPEN);
+                "Calypso selector"));
 
     logger->debug("preparePoSelection - case 2 prepareReadRecordsCmd\n");
     poSelectionRequestCalypsoAid->prepareReadRecordsCmd(
@@ -283,8 +287,7 @@ CalypsoClassicTransactionEngine::preparePoSelection()
             std::make_shared<PoSelector::PoAidSelector>(
                 std::make_shared<SeSelector::AidSelector::IsoAid>(poFakeAid2),
                 PoSelector::InvalidatedPo::REJECT),
-            "Selector with fake AID2"),
-        ChannelState::KEEP_OPEN));
+            "Selector with fake AID2")));
 
     /*
      * Add selection case 4: ATR selection, rev 1 atrregex
@@ -294,8 +297,7 @@ CalypsoClassicTransactionEngine::preparePoSelection()
         std::make_shared<PoSelector>(SeCommonProtocols::PROTOCOL_B_PRIME,
                                      std::make_shared<PoSelector::PoAtrFilter>(
                                          CalypsoClassicInfo::ATR_REV1_REGEX),
-                                     nullptr, "Selector with fake AID2"),
-        ChannelState::KEEP_OPEN));
+                                     nullptr, "Selector with fake AID2")));
 
     return seSelection->getSelectionOperation();
 }
@@ -315,18 +317,14 @@ void CalypsoClassicTransactionEngine::processSeMatch(
         try {
             /* first time: check SAM */
             if (!this->samChannelOpen) {
-                /* the following method will throw an exception if the SAM is not available. */
+                /*
+                 * The following method will throw an exception if the SAM is
+                 * not available.
+                 */
                 this->samResource =
                     CalypsoUtilities::checkSamAndOpenChannel(samReader);
                 this->samChannelOpen = true;
             }
-
-            //std::shared_ptr<Profiler> profiler = std::make_shared<Profiler>("Entire transaction");
-
-            /* Time measurement */
-            //profiler->start("Initial selection");
-
-            //profiler->start("Calypso1");
 
             std::shared_ptr<PoTransaction> poTransaction =
                 std::make_shared<PoTransaction>(
@@ -335,8 +333,6 @@ void CalypsoClassicTransactionEngine::processSeMatch(
 
             doCalypsoReadWriteTransaction(poTransaction, true);
 
-            //profiler->stop();
-            //logger->warn(System::getProperty("line.separator") + "{}", profiler);
         } catch (const Exception& e) {
             logger->error("processSeMatch - caught Exception (msg: %s, "
                           "cause: %s)\n",
@@ -345,9 +341,9 @@ void CalypsoClassicTransactionEngine::processSeMatch(
     }
 }
 
-void CalypsoClassicTransactionEngine::processSeInsertion()
+void CalypsoClassicTransactionEngine::processSeInserted()
 {
-    logger->trace("processSeInsertion - Unexpected SE insertion event\n");
+    logger->trace("processSeInserted - Unexpected SE insertion event\n");
 }
 
 void CalypsoClassicTransactionEngine::processSeRemoval()

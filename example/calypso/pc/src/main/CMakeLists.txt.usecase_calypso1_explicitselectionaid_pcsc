@@ -19,10 +19,10 @@ INCLUDE_DIRECTORIES(
 
     # Example generic common
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/common/src/main
-    
+
     # Example generic pc
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/pc/src/main
-    
+
 	# Example calypso common
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/postructure
@@ -45,7 +45,7 @@ INCLUDE_DIRECTORIES(
 
 	# Smartcard I/O
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main
-	
+
 	# Calypso
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po
@@ -76,7 +76,7 @@ IF(APPLE)
 ENDIF(APPLE)
 
 IF(UNIX)
-	FIND_LIBRARY(WINSCARD pcsclite)
+	SET(WINSCARD pthread pcsclite)
 ENDIF(UNIX)
 
 ADD_EXECUTABLE(usecase_calypso1_explicitselectionaid_pcsc

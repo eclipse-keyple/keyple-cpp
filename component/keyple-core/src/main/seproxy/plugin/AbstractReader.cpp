@@ -218,7 +218,8 @@ void AbstractReader::addObserver(
     std::shared_ptr<ObservableReader::ReaderObserver> observer)
 {
     logger->trace("[%s] addObserver => Adding '%s' as an observer of '%s'\n",
-                  typeid(this).name(), typeid(observer).name(), name.c_str());
+                  typeid(this).name(), typeid(observer).name(),
+                  name.c_str());
     Observable<ReaderEvent>::addObserver(observer);
 }
 

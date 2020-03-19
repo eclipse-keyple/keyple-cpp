@@ -25,6 +25,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/event
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin/local
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util
 
 	# Plugin - PC/SC

@@ -102,11 +102,10 @@ void PcscTerminal::establishContext()
 {
     LONG ret;
 
-    logger->debug("establishContext - contextEstablished: %s\n",
-                  contextEstablished ? "yes" : "no");
-
     if (this->contextEstablished)
         return;
+
+    logger->debug("establishContext - establishing context\n");
 
     ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &this->context);
     if (ret != SCARD_S_SUCCESS) {

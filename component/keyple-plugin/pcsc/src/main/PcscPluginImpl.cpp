@@ -20,7 +20,7 @@
 #include "KeypleRuntimeException.h"
 
 /* PC/SC plugin */
-#include "PcscReader.h"
+#include "PcscReader_Import.h"
 #include "PcscReaderImpl_Import.h"
 #include "PcscTerminalException.h"
 
