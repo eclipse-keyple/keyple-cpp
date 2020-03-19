@@ -64,23 +64,21 @@ IF(WIN32)
     SET(CMAKE_FIND_LIBRARY_PREFIXES "")
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
     SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
-    SET(WINSCARD winscard.lib)
+    SET(PCSC winscard.lib)
 ENDIF(WIN32)
 
 IF(APPLE)
     SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
     SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
-    SET(WINSCARD "-framework PCSC")
+    SET(PCSC "-framework PCSC")
+	SET(THREAD pthread)
 ENDIF(APPLE)
 
 IF(UNIX)
-	SET(SPEC_LIBS pthread)
+	SET(THREAD pthread)
+    SET(PCSC pcsclite)
 ENDIF(UNIX)
-
-IF(APPLE)
-	SET(SPEC_LIBS pthread)
-ENDIF(APPLE)
 
 ADD_EXECUTABLE(demo_calypsoclassic_stub
 
