@@ -7,7 +7,7 @@
 #
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-include(toolchain.cmake)
+#include(toolchain.cmake)
 
 SET(CMAKE_LEGACY_CYGWIN_WIN32 0)
 SET(CMAKE_CXX_STANDARD 11)

@@ -59,13 +59,17 @@ CalypsoUtilities::StaticConstructor::StaticConstructor()
     try {
         inputStream.open(propertiesFileName, std::ifstream::in);
     } catch (int errorCode) {
+        (void)errorCode;
     } catch (std::ifstream::failure& e) {
+        (void)e;
     }
 
     try {
         properties->load(inputStream);
     } catch (const FileNotFoundException& e) {
+        (void)e;
     } catch (const IOException& e) {
+        (void)e;
     }
 }
 
@@ -96,6 +100,7 @@ std::shared_ptr<SamResource> CalypsoUtilities::getDefaultSamResource()
     try {
         return checkSamAndOpenChannel(samReader);
     } catch (IllegalStateException& e) {
+        (void)e;
         throw;
     }
 }
@@ -107,7 +112,7 @@ std::shared_ptr<SecuritySettings> CalypsoUtilities::getSecuritySettings()
 }
 
 std::shared_ptr<SamResource>
-CalypsoUtilities::checkSamAndOpenChannel(std::shared_ptr<SeReader> samReader)
+    CalypsoUtilities::checkSamAndOpenChannel(std::shared_ptr<SeReader> samReader)
 {
     /*
      * check the availability of the SAM doing a ATR based selection, open its physical and

@@ -68,7 +68,7 @@ public:
 
     static unsigned long long currentTimeMillis()
     {
-        return nanoTime() / pow(10, 6);
+        return (unsigned long long)(nanoTime() / pow(10, 6));
     }
 };
 

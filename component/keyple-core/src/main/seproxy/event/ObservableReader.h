@@ -348,7 +348,7 @@ public:
     virtual void setDefaultSelectionRequest(
         std::shared_ptr<AbstractDefaultSelectionsRequest>
             defaultSelectionsRequest,
-        NotificationMode notificationMode, PollingMode pollingMode);
+        NotificationMode notificationMode, PollingMode pollingMode) = 0;
 
     /**
      * Signal sent by the application to the reader to indicate the end of the

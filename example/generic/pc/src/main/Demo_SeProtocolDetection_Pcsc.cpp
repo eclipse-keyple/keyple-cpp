@@ -131,6 +131,7 @@ int main(int argc, char** argv)
                 c = input[0];
 
         } catch (const IOException& e) {
+            (void)e;
             //e.printStackTrace();
         }
         if (c == 0x0A) {
