@@ -57,7 +57,7 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
     this->executorService = std::make_shared<MonitoringPool>();
     this->stateService    = initStateService();
 
-    logger->debug("[%s] constructor => using terminal %s\n",
+    logger->debug("[PcscReaderImpl] constructor => using terminal %s\n",
                   terminal.getName().c_str());
 
     /*
