@@ -341,7 +341,7 @@ std::shared_ptr<AidSelector> SeSelector::getAidSelector()
     return aidSelector;
 }
 
-std::string SeSelector::getExtraInfo()
+const std::string& SeSelector::getExtraInfo() const
 {
     return extraInfo;
 }

@@ -303,7 +303,7 @@ std::shared_ptr<AbstractDefaultSelectionsRequest>
 }
 
 void CalypsoClassicTransactionEngine::processSeMatch(
-    std::shared_ptr<AbstractDefaultSelectionsResponse>
+    const std::shared_ptr<AbstractDefaultSelectionsResponse>
         defaultSelectionsResponse)
 {
     logger->debug("processSeMatch\n");

@@ -91,12 +91,12 @@ private:
     /**
      *
      */
-    void* runSeInsertedThread(void *args);
+    void* runSeInsertedThread(std::shared_ptr<ReaderEvent> event);
 
     /**
      *
      */
-    void* runSeMatchedThread(void *args);
+    void* runSeMatchedThread(std::shared_ptr<ReaderEvent> event);
 };
 
 }

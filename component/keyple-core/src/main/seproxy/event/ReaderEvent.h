@@ -208,8 +208,8 @@ public:
     /**
      *
      */
-    std::shared_ptr<AbstractDefaultSelectionsResponse>
-    getDefaultSelectionsResponse();
+    const std::shared_ptr<AbstractDefaultSelectionsResponse>
+        getDefaultSelectionsResponse() const;
 
 private:
     /**

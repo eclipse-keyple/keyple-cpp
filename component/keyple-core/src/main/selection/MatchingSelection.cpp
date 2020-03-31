@@ -49,7 +49,7 @@ MatchingSelection::getResponseParser(int commandIndex)
                                                 commandIndex);
 }
 
-std::string MatchingSelection::getExtraInfo()
+const std::string& MatchingSelection::getExtraInfo() const
 {
     return seSelectionRequest->getSeSelector()->getExtraInfo();
 }

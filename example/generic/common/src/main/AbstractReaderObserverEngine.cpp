@@ -29,10 +29,9 @@ namespace common {
 
 using namespace keyple::core::seproxy::event;
 
-void* AbstractReaderObserverEngine::runSeInsertedThread(void* args)
+void* AbstractReaderObserverEngine::runSeInsertedThread(
+    std::shared_ptr<ReaderEvent> event)
 {
-    ReaderEvent* event = (ReaderEvent*)args;
-
     currentlyProcessingSe = true;
     processSeInserted();
 
@@ -59,10 +58,9 @@ void* AbstractReaderObserverEngine::runSeInsertedThread(void* args)
     return NULL;
 }
 
-void* AbstractReaderObserverEngine::runSeMatchedThread(void* args)
+void* AbstractReaderObserverEngine::runSeMatchedThread(
+    std::shared_ptr<ReaderEvent> event)
 {
-    ReaderEvent* event = (ReaderEvent*)args;
-
     currentlyProcessingSe = true;
     processSeMatch(event->getDefaultSelectionsResponse());
 
@@ -96,12 +94,12 @@ void AbstractReaderObserverEngine::update(std::shared_ptr<ReaderEvent> event)
     if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED) {
         /* Run the PO processing asynchronously in a detach thread */
         new std::thread(&AbstractReaderObserverEngine::runSeInsertedThread,
-                        this, event.get());
+                        this, event);
 
     } else if (event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
         /* Run the PO processing asynchronously in a detach thread */
         new std::thread(&AbstractReaderObserverEngine::runSeMatchedThread,
-                        this, event.get());
+                        this, event);
 
     } else if (event->getEventType() ==ReaderEvent::EventType::SE_REMOVED) {
         if (currentlyProcessingSe) {

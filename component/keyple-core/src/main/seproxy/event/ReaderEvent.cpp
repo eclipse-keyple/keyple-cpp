@@ -128,8 +128,8 @@ ReaderEvent::EventType ReaderEvent::getEventType()
     return eventType;
 }
 
-std::shared_ptr<AbstractDefaultSelectionsResponse>
-ReaderEvent::getDefaultSelectionsResponse()
+const std::shared_ptr<AbstractDefaultSelectionsResponse>
+    ReaderEvent::getDefaultSelectionsResponse() const
 {
     return defaultResponseSet;
 }

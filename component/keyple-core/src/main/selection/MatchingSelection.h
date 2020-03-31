@@ -115,11 +115,11 @@ public:
     /**
      * @return the info string provided with the Selector
      */
-    std::string getExtraInfo();
+    const std::string& getExtraInfo() const;
 
     /**
-     * @return the index of the selection (order in the prepareSelection command). 0 is the first
-     *         selection.
+     * @return the index of the selection (order in the prepareSelection
+     *         command). 0 is the first selection.
      */
     int getSelectionIndex();
 };

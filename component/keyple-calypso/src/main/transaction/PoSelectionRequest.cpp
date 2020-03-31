@@ -237,8 +237,8 @@ PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
      * members won't be initialized
      */
     return std::make_shared<CalypsoPo>(
-        seResponse, seSelector->getSeProtocol().getTransmissionMode(),
-        seSelector->getExtraInfo());
+               seResponse, seSelector->getSeProtocol().getTransmissionMode(),
+               seSelector->getExtraInfo());
 }
 
 }

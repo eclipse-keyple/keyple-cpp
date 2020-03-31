@@ -108,7 +108,7 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(
 }
 
 std::shared_ptr<SelectionsResult> SeSelection::processDefaultSelection(
-    std::shared_ptr<AbstractDefaultSelectionsResponse>
+    const std::shared_ptr<AbstractDefaultSelectionsResponse>
         defaultSelectionsResponse)
 {
     /* Null pointer exception protection */

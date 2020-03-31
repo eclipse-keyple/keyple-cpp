@@ -589,7 +589,7 @@ public:
      *
      * @return a string to be printed in logs
      */
-    std::string getExtraInfo();
+    const std::string& getExtraInfo() const;
 
     /**
      *

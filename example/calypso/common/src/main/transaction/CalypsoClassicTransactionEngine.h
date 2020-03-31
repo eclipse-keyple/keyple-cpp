@@ -148,8 +148,9 @@ public:
     /**
      * Do the PO selection and possibly go on with Calypso transactions.
      */
-    void processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse>
-                            selectionResponse) override;
+    void processSeMatch(
+        const std::shared_ptr<AbstractDefaultSelectionsResponse>
+                  selectionResponse) override;
 
     /**
      *
