@@ -33,13 +33,13 @@ AbstractObservableState::AbstractObservableState(
     std::shared_ptr<MonitoringJob> monitoringJob,
     std::shared_ptr<MonitoringPool> executorService)
 : state(state), reader(reader), monitoringJob(monitoringJob),
-  executorService(executorService), cancellationFlag()
+  executorService(executorService), cancellationFlag(), monitoringEvent(nullptr)
 {
 }
 
 AbstractObservableState::AbstractObservableState(
     MonitoringState state, AbstractObservableLocalReader* reader)
-: state(state), reader(reader), cancellationFlag()
+: state(state), reader(reader), cancellationFlag(), monitoringEvent(nullptr)
 {
 }
 
