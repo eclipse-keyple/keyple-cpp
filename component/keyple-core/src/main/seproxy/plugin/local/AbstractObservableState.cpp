@@ -58,6 +58,8 @@ void AbstractObservableState::onActivate()
     logger->trace("[%s] onActivate => %d\n", this->reader->getName().c_str(),
                   this->getMonitoringState());
 
+    cancellationFlag = false;
+
     /* Launch the monitoringJob is necessary */
     if (monitoringJob != nullptr) {
         if (executorService == nullptr) {
@@ -84,8 +86,7 @@ void AbstractObservableState::onDeactivate()
 
         /* TODO this could be inside the stop method? */
         cancellationFlag = true;
-        //monitoringEvent->wait();
-        cancellationFlag = false;
+        monitoringEvent = nullptr;
         logger->trace("[%s] onDeactivate => cancel runnable waitForCarPresent"
                       " by thead interruption\n",
                       reader->getName().c_str());

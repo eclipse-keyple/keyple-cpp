@@ -37,8 +37,6 @@ SmartInsertionMonitoringJob::SmartInsertionMonitoringJob(
 void SmartInsertionMonitoringJob::monitoringJob(
     AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
 {
-    (void)cancellationFlag;
-
     logger->trace("[%s] Invoke waitForCardPresent asynchronously\n",
                   reader->getName().c_str());
 

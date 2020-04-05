@@ -75,6 +75,7 @@ int main(int argc, char** argv)
         poReader = std::dynamic_pointer_cast<StubReader>(
             stubPlugin->getReader("poReader"));
     } catch (const KeypleReaderNotFoundException& e) {
+        (void)e;
         //e.printStackTrace();
     }
 

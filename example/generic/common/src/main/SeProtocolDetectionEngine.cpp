@@ -111,7 +111,7 @@ SeProtocolDetectionEngine::prepareSeSelection()
 }
 
 void SeProtocolDetectionEngine::processSeMatch(
-    const std::shared_ptr<AbstractDefaultSelectionsResponse>&
+    const std::shared_ptr<AbstractDefaultSelectionsResponse>
         defaultSelectionsResponse)
 {
     std::shared_ptr<SelectionsResult> selectionsResult =

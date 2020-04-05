@@ -13,6 +13,8 @@
  ******************************************************************************/
 
 /* Core */
+#include "AbstractObservableLocalReader.h"
+#include "AbstractReader.h"
 #include "KeypleBaseException.h"
 #include "ObservableReader_Import.h"
 #include "SeProtocol_Import.h"
@@ -33,6 +35,8 @@
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::plugin;
+using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::example::generic::common;
 using namespace keyple::example::generic::pc;
@@ -110,11 +114,11 @@ int main(int argc, char** argv)
             "|3B8D.*");
 
     /* Set terminal as Observer of the first reader */
-    (std::dynamic_pointer_cast<ObservableReader>(poReader))
+    (std::dynamic_pointer_cast<AbstractReader>(poReader))
         ->addObserver(observer);
 
     /* Set Default selection */
-    (std::dynamic_pointer_cast<ObservableReader>(poReader))
+    (std::dynamic_pointer_cast<AbstractObservableLocalReader>(poReader))
         ->setDefaultSelectionRequest(observer->prepareSeSelection(),
                                      ObservableReader::NotificationMode::ALWAYS,
                                      ObservableReader::PollingMode::REPEATING);

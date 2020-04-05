@@ -162,21 +162,16 @@ bool PcscReaderImpl::waitForCardPresent()
     loopWaitSe = true;
 
     try {
-        while (loopWaitSe) {
-            logger->trace("[%s] waitForCardPresent => looping\n",
+        logger->trace("[%s] waitForCardPresent => looping...\n",
                           this->getName().c_str());
+        while (loopWaitSe) {
             if (terminal.waitForCardPresent(insertLatency)) {
                 /* Card inserted */
+                 logger->debug("[%s] waitForCardPresent => card inserted\n",
+                               this->getName().c_str());
                 return true;
             } else {
-                logger->debug("FIXME. Do we need to handle a thread"
-                              "interruption here?\n");
-                /*                if (Thread.interrupted()) {
-                    logger->debug("[%s] waitForCardPresent => task has been " \
-                                  cancelled\n", this->getName());
-*/                    /* Task has been cancelled */
-                //return false;
-                //                  }
+                /* Check if task has been cancelled ? */
             }
         }
 
@@ -274,19 +269,16 @@ bool PcscReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
         openPhysicalChannel();
     }
 
-    logger->debug("protocolFlagMatches - going through protocols map\n");
     std::map<SeProtocol, std::string>::iterator it = protocolsMap.begin();
     while (it != protocolsMap.end()) {
         SeProtocol p = it->first;
-        logger->debug("available protocol: %s - %s\n", p.getName().c_str(),
-                      it->second.c_str());
         it++;
     }
 
     /*
-         * The requestSet will be executed only if the protocol match the
-         * requestElement.
-         */
+     * The requestSet will be executed only if the protocol match the
+     * requestElement.
+     */
     std::string selectionMask = protocolsMap[protocolFlag];
     logger->debug("protocolFlagMatches - selectionMask: %s\n",
                   selectionMask.c_str());

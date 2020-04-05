@@ -105,8 +105,6 @@ void PcscTerminal::establishContext()
     if (this->contextEstablished)
         return;
 
-    logger->debug("establishContext - establishing context\n");
-
     ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &this->context);
     if (ret != SCARD_S_SUCCESS) {
         this->contextEstablished = false;
@@ -151,7 +149,7 @@ bool PcscTerminal::isCardPresent(bool release)
                       SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
                       &hCard, &protocol);
     if (rv != SCARD_S_SUCCESS) {
-        if (rv != SCARD_E_NO_SMARTCARD)
+        if (rv != SCARD_E_NO_SMARTCARD && rv != SCARD_W_REMOVED_CARD)
             logger->debug("isCardPresent - error connecting to card (%s)\n",
                           pcsc_stringify_error(rv));
         if (release)
@@ -211,7 +209,7 @@ void PcscTerminal::openAndConnect(std::string protocol)
     try {
         establishContext();
     } catch (PcscTerminalException& e) {
-        logger->error("isCardPresent - caught PcscTerminalException (msg: %s"
+        logger->error("openAndConnect - caught PcscTerminalException (msg: %s"
                       ", cause: %s)\n",
                       e.getMessage().c_str(), e.getCause().what());
         throw e;
