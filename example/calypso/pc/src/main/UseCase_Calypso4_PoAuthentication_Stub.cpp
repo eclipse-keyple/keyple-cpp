@@ -275,10 +275,8 @@ int main(int argc, char** argv)
             /*
              * Close the Secure Session.
              */
-            if (logger->isInfoEnabled()) {
-                logger->info("========= PO Calypso session ======= Closing =="
-                             "==========================\n");
-            }
+            logger->info("========= PO Calypso session ======= Closing =="
+                         "==========================\n");
 
             /*
              * A ratification command will be sent (CONTACTLESS_MODE).

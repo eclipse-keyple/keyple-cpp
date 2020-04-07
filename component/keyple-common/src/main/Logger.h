@@ -41,6 +41,18 @@ namespace common {
 class EXPORT Logger {
 public:
     /**
+     *
+     */
+    enum class Level {
+        NO_LOG = 0,
+        ERROR,
+        WARN,
+        INFO,
+        TRACE,
+        DEBUG
+    };
+
+    /**
      * Constructor
      */
     Logger(const std::string& className, std::mutex* mtx);
@@ -53,57 +65,12 @@ public:
     /**
      *
      */
-    bool isTraceEnabled();
-
-    /**
-     *
-     */
-    bool isDebugEnabled();
-
-    /**
-     *
-     */
-    bool isWarnEnabled();
-
-    /**
-     *
-     */
-    bool isInfoEnabled();
-
-    /**
-     *
-     */
-    bool isErrorEnabled();
-
-    /**
-     *
-     */
     std::string getClassName();
 
     /**
      *
      */
-    void setTraceEnabled(bool enabled);
-
-    /**
-     *
-     */
-    void setDebugEnabled(bool enabled);
-
-    /**
-     *
-     */
-    void setWarnEnabled(bool enabled);
-
-    /**
-     *
-     */
-    void setInfoEnabled(bool enabled);
-
-    /**
-     *
-     */
-    void setErrorEnabled(bool enabled);
+    static void setLoggerLevel(Level level);
 
     /**
      *
@@ -139,27 +106,7 @@ private:
     /**
      *
      */
-    bool traceEnabled;
-
-    /**
-     *
-     */
-    bool debugEnabled;
-
-    /**
-     *
-     */
-    bool warnEnabled;
-
-    /**
-     *
-     */
-    bool infoEnabled;
-
-    /**
-     *
-     */
-    bool errorEnabled;
+    static Level level;
 
     /**
      *

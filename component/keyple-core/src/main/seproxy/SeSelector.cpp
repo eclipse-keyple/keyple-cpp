@@ -312,18 +312,14 @@ SeSelector::SeSelector(SeProtocol& seProtocol,
 : seProtocol(seProtocol), aidSelector(aidSelector), atrFilter(atrFilter),
   extraInfo(extraInfo)
 {
-    if (logger->isTraceEnabled()) {
-        logger->trace(
-            "Selection data: AID = %s ATRREGEX = %s, EXTRAINFO = %s\n",
-            this->aidSelector == nullptr
-                ? "null"
-                : ByteArrayUtil::toHex(
-                      this->aidSelector->getAidToSelect()->getValue())
-                      .c_str(),
-            this->atrFilter == nullptr ? "null"
-                                       : this->atrFilter->getAtrRegex().c_str(),
-            extraInfo.c_str());
-    }
+    logger->trace("Selection data: AID = %s ATRREGEX = %s, EXTRAINFO = %s\n",
+                  this->aidSelector == nullptr ? "null" :
+                      ByteArrayUtil::toHex(
+                          this->aidSelector->getAidToSelect()->getValue())
+                          .c_str(),
+                  this->atrFilter == nullptr ? "null" :
+                      this->atrFilter->getAtrRegex().c_str(),
+                  extraInfo.c_str());
 }
 
 const SeProtocol& SeSelector::getSeProtocol()

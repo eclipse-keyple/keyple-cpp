@@ -1,14 +1,17 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
 #include <cstdarg>
 
 #include "Logger.h"
@@ -19,45 +22,17 @@ namespace common {
 
 class LoggerFactory;
 
-Logger::Logger(const std::string& className, std::mutex* mtx)
-: className(demangle(className.c_str()))
-{
-    traceEnabled = 1;
-    debugEnabled = 1;
-    warnEnabled  = 1;
-    infoEnabled  = 1;
-    errorEnabled = 1;
+using Level = Logger::Level;
 
-    this->mtx = mtx;
+Level Logger::level = Level::DEBUG;
+
+Logger::Logger(const std::string& className, std::mutex* mtx)
+: className(demangle(className.c_str())), mtx(mtx)
+{
 }
 
 Logger::~Logger()
 {
-}
-
-bool Logger::isTraceEnabled()
-{
-    return traceEnabled;
-}
-
-bool Logger::isDebugEnabled()
-{
-    return debugEnabled;
-}
-
-bool Logger::isWarnEnabled()
-{
-    return warnEnabled;
-}
-
-bool Logger::isInfoEnabled()
-{
-    return infoEnabled;
-}
-
-bool Logger::isErrorEnabled()
-{
-    return errorEnabled;
 }
 
 std::string Logger::getClassName()
@@ -65,34 +40,14 @@ std::string Logger::getClassName()
     return className;
 }
 
-void Logger::setTraceEnabled(bool enabled)
+void Logger::setLoggerLevel(Level level)
 {
-    traceEnabled = enabled;
-}
-
-void Logger::setDebugEnabled(bool enabled)
-{
-    debugEnabled = enabled;
-}
-
-void Logger::setWarnEnabled(bool enabled)
-{
-    warnEnabled = enabled;
-}
-
-void Logger::setInfoEnabled(bool enabled)
-{
-    infoEnabled = enabled;
-}
-
-void Logger::setErrorEnabled(bool enabled)
-{
-    errorEnabled = enabled;
+    Logger::level = level;
 }
 
 void Logger::trace(const std::string s, ...)
 {
-    if (traceEnabled) {
+    if (level >= Level::TRACE) {
         va_list arg;
         va_start(arg, s);
         log("TRACE", s, arg);
@@ -102,7 +57,7 @@ void Logger::trace(const std::string s, ...)
 
 void Logger::debug(const std::string s, ...)
 {
-    if (debugEnabled) {
+    if (level >= Level::DEBUG) {
         va_list arg;
         va_start(arg, s);
         log("DEBUG", s, arg);
@@ -112,7 +67,7 @@ void Logger::debug(const std::string s, ...)
 
 void Logger::warn(const std::string s, ...)
 {
-    if (warnEnabled) {
+    if (level >= Level::WARN) {
         va_list arg;
         va_start(arg, s);
         log("WARN", s, arg);
@@ -122,7 +77,7 @@ void Logger::warn(const std::string s, ...)
 
 void Logger::info(const std::string s, ...)
 {
-    if (infoEnabled) {
+    if (level >= Level::INFO) {
         va_list arg;
         va_start(arg, s);
         log("INFO", s, arg);
@@ -132,12 +87,14 @@ void Logger::info(const std::string s, ...)
 
 void Logger::error(const std::string s, ...)
 {
-    if (errorEnabled) {
+    if (level >= Level::ERROR) {
         va_list arg;
         va_start(arg, s);
         log("ERROR", s, arg);
         va_end(arg);
     }
 }
+
 }
 }
+

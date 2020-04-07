@@ -82,22 +82,19 @@ AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
 
     std::list<std::shared_ptr<SeResponse>> responseSet;
 
-    if (logger->isDebugEnabled()) {
-        long long timeStamp = System::nanoTime();
-        double elapsedMs =
-            static_cast<double>((timeStamp - this->before) / 100000) / 10;
-        this->before = timeStamp;
-        logger->debug("[%s] transmit => SEREQUESTSET = %s, elapsed %d ms\n",
-                      this->getName().c_str(), "requestSet <to fix>",
-                      elapsedMs);
-    }
+    long long timeStamp = System::nanoTime();
+    double elapsedMs =
+        static_cast<double>((timeStamp - this->before) / 100000) / 10;
+    this->before = timeStamp;
+    logger->debug("[%s] transmit => SEREQUESTSET = %s, elapsed %d ms\n",
+                  this->getName().c_str(), "requestSet <to fix>", elapsedMs);
 
     try {
         responseSet = processSeRequestSet(requestSet, multiSeRequestProcessing,
                                           channelControl);
     } catch (const KeypleChannelControlException& ex) {
-        long long timeStamp = System::nanoTime();
-        double elapsedMs =
+        timeStamp = System::nanoTime();
+        elapsedMs =
             static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
         logger->debug("transmit => SEREQUESTSET channel failure. elapsed %d\n",
@@ -106,8 +103,8 @@ AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
         logger->debug("exception message: %s\n", ex.getMessage().c_str());
         throw ex;
     } catch (const KeypleIOReaderException& ex) {
-        long long timeStamp = System::nanoTime();
-        double elapsedMs =
+        timeStamp = System::nanoTime();
+        elapsedMs =
             static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
         logger->debug("transmit => SEREQUESTSET IO failure. elapsed %d\n",
@@ -118,15 +115,11 @@ AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
         throw ex;
     }
 
-    if (logger->isDebugEnabled()) {
-        long long timeStamp = System::nanoTime();
-        double elapsedMs =
-            static_cast<double>((timeStamp - before) / 100000) / 10;
-        this->before = timeStamp;
-        logger->debug("[%s] transmit => SERESPONSESET = %s, elapsed %d ms\n",
-                      this->getName().c_str(), "responseSet <to fix>",
-                      elapsedMs);
-    }
+    timeStamp = System::nanoTime();
+    elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
+    this->before = timeStamp;
+    logger->debug("[%s] transmit => SERESPONSESET = %s, elapsed %d ms\n",
+                  this->getName().c_str(), "responseSet <to fix>", elapsedMs);
 
     return responseSet;
 }
@@ -151,22 +144,20 @@ AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest,
 
     std::shared_ptr<SeResponse> seResponse = nullptr;
 
-    if (logger->isDebugEnabled()) {
-        long long timeStamp = System::nanoTime();
-        double elapsedMs =
-            static_cast<double>((timeStamp - this->before) / 100000) / 10;
-        this->before = timeStamp;
+    long long timeStamp = System::nanoTime();
+    double elapsedMs =
+        static_cast<double>((timeStamp - this->before) / 100000) / 10;
+    this->before = timeStamp;
 
-        logger->debug("[%s] transmit => SEREQUEST = %s, elapsed %d ms\n",
-                      this->getName().c_str(), seRequest->toString().c_str(),
-                      elapsedMs);
-    }
+    logger->debug("[%s] transmit => SEREQUEST = %s, elapsed %d ms\n",
+                  this->getName().c_str(), seRequest->toString().c_str(),
+                  elapsedMs);
 
     try {
         seResponse = processSeRequest(seRequest, channelControl);
     } catch (const KeypleChannelControlException& ex) {
-        long long timeStamp = System::nanoTime();
-        double elapsedMs =
+        timeStamp = System::nanoTime();
+        elapsedMs =
             static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
 
@@ -179,8 +170,8 @@ AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest,
          */
         throw ex;
     } catch (const KeypleIOReaderException& ex) {
-        long long timeStamp = System::nanoTime();
-        double elapsedMs =
+        timeStamp = System::nanoTime();
+        elapsedMs =
             static_cast<double>((timeStamp - this->before) / 100000) / 10;
         this->before = timeStamp;
 
@@ -194,16 +185,13 @@ AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest,
         throw ex;
     }
 
-    if (logger->isDebugEnabled()) {
-        long long timeStamp = System::nanoTime();
-        double elapsedMs =
-            static_cast<double>((timeStamp - before) / 100000) / 10;
-        this->before = timeStamp;
+    timeStamp = System::nanoTime();
+    elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
+    this->before = timeStamp;
 
-        logger->debug("[%s] transmit => SERESPONSE = %s, elapsed %d ms\n",
-                      this->getName().c_str(), seResponse->toString().c_str(),
-                      elapsedMs);
-    }
+    logger->debug("[%s] transmit => SERESPONSE = %s, elapsed %d ms\n",
+                  this->getName().c_str(), seResponse->toString().c_str(),
+                  elapsedMs);
 
     return seResponse;
 }

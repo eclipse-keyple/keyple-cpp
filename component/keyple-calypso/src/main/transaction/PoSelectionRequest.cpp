@@ -55,9 +55,7 @@ PoSelectionRequest::PoSelectionRequest(std::shared_ptr<PoSelector> poSelector)
         poClass = PoClass::ISO;
     }
 
-    if (logger->isTraceEnabled()) {
-        logger->trace("Calypso %s selector\n", poClass.toString().c_str());
-    }
+    logger->trace("Calypso %s selector\n", poClass.toString().c_str());
 }
 
 int PoSelectionRequest::prepareReadRecordsCmdInternal(

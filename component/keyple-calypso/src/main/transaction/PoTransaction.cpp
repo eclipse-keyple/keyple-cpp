@@ -138,12 +138,10 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
      */
     std::vector<std::shared_ptr<ApduRequest>> samApduRequestList;
 
-    if (logger->isDebugEnabled()) {
-        logger->debug("processAtomicOpening => Identification: DFNAME = %s, "
-                      "SERIALNUMBER = %s\n",
-                      ByteArrayUtil::toHex(poCalypsoInstanceAid).c_str(),
-                      ByteArrayUtil::toHex(poCalypsoInstanceSerial).c_str());
-    }
+    logger->debug("processAtomicOpening => Identification: DFNAME = %s, "
+                  "SERIALNUMBER = %s\n",
+                  ByteArrayUtil::toHex(poCalypsoInstanceAid).c_str(),
+                  ByteArrayUtil::toHex(poCalypsoInstanceSerial).c_str());
 
     /* diversify only if this has not already been done. */
     if (!isDiversificationDone) {
@@ -614,10 +612,8 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         sessionTerminalSignature = respPars->getSignature();
     }
 
-    if (logger->isDebugEnabled()) {
-        logger->debug("processAtomicClosing => SIGNATURE = %s\n",
-                      ByteArrayUtil::toHex(sessionTerminalSignature).c_str());
-    }
+    logger->debug("processAtomicClosing => SIGNATURE = %s\n",
+                  ByteArrayUtil::toHex(sessionTerminalSignature).c_str());
 
     std::shared_ptr<PoCustomReadCommandBuilder> ratificationCommand;
     bool ratificationAsked;
@@ -977,15 +973,18 @@ void PoTransaction::DigestProcessor::initialize(
     keyKIF          = workKeyKif;
     keyKVC          = workKeyKVC;
 
-    /*
-        * Alex: logger is not static...
-    if (logger->isDebugEnabled()) {
-        logger->debug("PoTransaction.DigestProcessor => initialize: POREVISION = %d, SAMREVISION = %d, SESSIONENCRYPTION = %d", static_cast<int>(poRev), static_cast<int>(samRev.ordinal()), securityEncryption, verificationMode);
-        logger->debug("PoTransaction.DigestProcessor => initialize: VERIFICATIONMODE = %d, REV32MODE = %d KEYRECNUMBER = %d", verificationMode, rev3_2Mode, workKeyRecordNumber);
-        logger->debug("PoTransaction.DigestProcessor => initialize: KIF = %s, KVC %ds DIGESTDATA = %s", StringHelper::formatSimple("%02X", workKeyKif),
-                        StringHelper::formatSimple("%02X", workKeyKVC), keyple::util::ByteArrayUtil::toHex(digestData));
-    }
-    */
+    logger->debug("PoTransaction.DigestProcessor => initialize: POREVISION =" \
+                  " %d, SAMREVISION = %d, SESSIONENCRYPTION = %d\n",
+                  static_cast<int>(poRev), static_cast<int>(samRev.ordinal()),
+                  sessionEncryption, verificationMode);
+    logger->debug("PoTransaction.DigestProcessor => initialize: " \
+                  "VERIFICATIONMODE = %d, REV32MODE = %d KEYRECNUMBER = %d\n",
+                  verificationMode, rev3_2Mode, workKeyRecordNumber);
+    logger->debug("PoTransaction.DigestProcessor => initialize: KIF = %s, " \
+                  "KVC %ds DIGESTDATA = %s\n",
+                  StringHelper::formatSimple("%02X", workKeyKif),
+                  StringHelper::formatSimple("%02X", workKeyKVC),
+                  ByteArrayUtil::toHex(digestData).c_str());
 
     /* Clear data cache */
     poDigestDataCache.clear();
@@ -1850,10 +1849,8 @@ int PoTransaction::prepareSelectFileCmd(const std::vector<uint8_t>& path,
 {
     (void)extraInfo;
 
-    if (logger->isTraceEnabled()) {
-        logger->trace("Select File: PATH = %s\n",
-                      ByteArrayUtil::toHex(path).c_str());
-    }
+    logger->trace("Select File: PATH = %s\n",
+                  ByteArrayUtil::toHex(path).c_str());
 
     /* Create and keep the PoBuilderParser, return the command index */
     std::shared_ptr<SelectFileCmdBuild> select =
@@ -1875,10 +1872,7 @@ int PoTransaction::prepareSelectFileCmd(
 {
     (void)extraInfo;
 
-    if (logger->isTraceEnabled()) {
-        logger->trace("Navigate: CONTROL = %d",
-                      static_cast<int>(selectControl));
-    }
+    logger->trace("Navigate: CONTROL = %d", static_cast<int>(selectControl));
 
     /* Create and keep the PoBuilderParser, return the command index */
     std::shared_ptr<SelectFileCmdBuild> select =

@@ -109,9 +109,7 @@ void AbstractReaderObserverEngine::update(std::shared_ptr<ReaderEvent> event)
             logger->error("Unexpected SE Removal\n");
         } else {
             processSeRemoval();
-            if (logger->isInfoEnabled()) {
-                logger->info("Waiting for a SE...\n");
-            }
+            logger->info("Waiting for a SE...\n");
         }
         currentlyProcessingSe = false;
 
