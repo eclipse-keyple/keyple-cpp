@@ -149,9 +149,11 @@ bool PcscTerminal::isCardPresent(bool release)
                       SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
                       &hCard, &protocol);
     if (rv != SCARD_S_SUCCESS) {
-        if (rv != SCARD_E_NO_SMARTCARD && rv != SCARD_W_REMOVED_CARD)
+        if (rv != static_cast<LONG>(SCARD_E_NO_SMARTCARD) &&
+            rv != static_cast<LONG>(SCARD_W_REMOVED_CARD))
             logger->debug("isCardPresent - error connecting to card (%s)\n",
                           pcsc_stringify_error(rv));
+
         if (release)
             releaseContext();
 

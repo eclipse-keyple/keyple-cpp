@@ -53,7 +53,8 @@ IF(APPLE)
 ENDIF(APPLE)
 
 IF(UNIX)
-	FIND_LIBRARY(WINSCARD pcsclite)
+	SET(WINSCARD pcsclite)
+	SET(SPEC_LIBS rt)
 ENDIF(UNIX)
 
 ADD_EXECUTABLE(demo_observablereadernotification_pcsc
@@ -65,4 +66,4 @@ ADD_EXECUTABLE(demo_observablereadernotification_pcsc
 	${CMAKE_CURRENT_SOURCE_DIR}/Demo_ObservableReaderNotification_Pcsc.cpp
 )
 
-TARGET_LINK_LIBRARIES(demo_observablereadernotification_pcsc keyplepluginpcsc ${WINSCARD})
+TARGET_LINK_LIBRARIES(demo_observablereadernotification_pcsc keyplepluginpcsc ${WINSCARD} ${SPEC_LIBS})
