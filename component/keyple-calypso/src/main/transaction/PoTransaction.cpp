@@ -981,9 +981,9 @@ void PoTransaction::DigestProcessor::initialize(
                   "VERIFICATIONMODE = %d, REV32MODE = %d KEYRECNUMBER = %d\n",
                   verificationMode, rev3_2Mode, workKeyRecordNumber);
     logger->debug("PoTransaction.DigestProcessor => initialize: KIF = %s, " \
-                  "KVC %ds DIGESTDATA = %s\n",
-                  StringHelper::formatSimple("%02X", workKeyKif),
-                  StringHelper::formatSimple("%02X", workKeyKVC),
+                  "KVC %s DIGESTDATA = %s\n",
+                  StringHelper::formatSimple("%02X", workKeyKif).c_str(),
+                  StringHelper::formatSimple("%02X", workKeyKVC).c_str(),
                   ByteArrayUtil::toHex(digestData).c_str());
 
     /* Clear data cache */
@@ -1238,7 +1238,7 @@ PoTransaction::AnticipatedResponseBuilder::getResponses(
                                 poBuilderParser->getCommandBuilder()) != nullptr
                                 ? "Decrease"
                                 : "Increase",
-                            std::to_string(sfi)),
+                            StringHelper::to_string(sfi)),
                         poBuilderParser->getCommandBuilder()->getApduRequest(),
                         nullptr);
                 }

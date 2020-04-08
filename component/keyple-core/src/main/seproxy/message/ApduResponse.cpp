@@ -14,7 +14,10 @@
 
 #include "ApduResponse.h"
 #include "ByteArrayUtil.h"
+
+/* Common */
 #include "Arrays.h"
+#include "stringhelper.h"
 
 namespace keyple {
 namespace core {
@@ -33,7 +36,7 @@ ApduResponse::ApduResponse(std::vector<uint8_t>& buffer,
     } else {
         if (buffer.size() < 2) {
             throw std::invalid_argument("Bad buffer (length < 2): " +
-                                        std::to_string(buffer.size()));
+                                        StringHelper::to_string(buffer.size()));
         }
 
         int statusCode = ((buffer[buffer.size() - 2] & 0x000000FF) << 8) +

@@ -14,8 +14,10 @@
 
 #pragma once
 
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <mutex>
 #include <stdexcept>
 #include <string>

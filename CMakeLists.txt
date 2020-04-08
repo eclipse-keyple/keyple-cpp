@@ -12,6 +12,12 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 SET(CMAKE_LEGACY_CYGWIN_WIN32 0)
 SET(CMAKE_CXX_STANDARD 11)
 
+# Compilers¬
+SET(CMAKE_C_COMPILER_WORKS 1)
+SET(CMAKE_CXX_COMPILER_WORKS 1)
+
+project(Project)
+
 IF(UNIX OR APPLE)
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Werror -Wall -Wextra -Wdeprecated -Wno-overloaded-virtual -pedantic -pedantic-errors -std=c++11")
 ENDIF(UNIX OR APPLE)

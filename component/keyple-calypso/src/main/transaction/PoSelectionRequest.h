@@ -14,10 +14,11 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-#include <stdexcept>
 #include <memory>
+#include <stdexcept>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 /* Core */
 #include "AbstractMatchingSe.h"
@@ -227,14 +228,12 @@ private:
     /**
      *
      */
-    std::unordered_map<int, uint8_t> readRecordFirstRecordNumberMap =
-        std::unordered_map<int, uint8_t>();
+    std::unordered_map<int, uint8_t> readRecordFirstRecordNumberMap;
 
     /**
      *
      */
-    std::unordered_map<int, ReadDataStructure> readRecordDataStructureMap =
-        std::unordered_map<int, ReadDataStructure>();
+    std::unordered_map<int, ReadDataStructure> readRecordDataStructureMap;
 
     /**
      *

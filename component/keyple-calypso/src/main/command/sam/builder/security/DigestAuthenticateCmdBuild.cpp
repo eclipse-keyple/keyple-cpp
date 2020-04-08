@@ -14,6 +14,9 @@
 
 #include "DigestAuthenticateCmdBuild.h"
 
+/* Common */
+#include "stringhelper.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -37,7 +40,7 @@ DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
         signature.size() != 16) {
         throw std::invalid_argument("Signature is not the right length : "
                                     "length is " +
-                                    std::to_string(signature.size()));
+                                    StringHelper::to_string(signature.size()));
     }
 
     uint8_t cla = SamRevision::S1D == (this->defaultRevision) ? 0x94 : 0x80;

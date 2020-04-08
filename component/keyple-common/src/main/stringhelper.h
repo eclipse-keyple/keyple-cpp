@@ -12,11 +12,12 @@
 
 #pragma once
 
-#include <string>
 #include <sstream>
 #include <vector>
 #include <exception>
 #include <cctype>
+#include <stdexcept>
+#include <string>
 
 namespace keyple {
 namespace common {
@@ -198,7 +199,7 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = std::to_string(argIndex);
+                        index     = to_string(argIndex);
                         argIndex++;
                         formatEnd = i;
                         break;
@@ -255,7 +256,7 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = std::to_string(argIndex);
+                        index     = to_string(argIndex);
                         argIndex++;
                         formatEnd = i;
                         break;
@@ -314,7 +315,7 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = std::to_string(argIndex);
+                        index     = to_string(argIndex);
                         argIndex++;
                         formatEnd = i;
                         break;
@@ -375,7 +376,7 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = std::to_string(argIndex);
+                        index     = to_string(argIndex);
                         argIndex++;
                         formatEnd = i;
                         break;
@@ -439,7 +440,7 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = std::to_string(argIndex);
+                        index     = to_string(argIndex);
                         argIndex++;
                         formatEnd = i;
                         break;
@@ -505,7 +506,7 @@ public:
                 std::string index;
                 for (int i = percent + 1; i < (int)input.length(); i++) {
                     if (input[i] == 's') {
-                        index     = std::to_string(argIndex);
+                        index     = to_string(argIndex);
                         argIndex++;
                         formatEnd = i;
                         break;
@@ -550,6 +551,18 @@ public:
             ss << input.substr(lastFormatChar + 1);
 
         return ss.str();
+    }
+
+    /**
+     *
+     */
+    static std::string to_string(int number)
+    {
+        std::stringstream ss;
+        ss << number;
+        std::string s;
+        ss >> s;
+        return s;
     }
 };
 

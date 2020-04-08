@@ -18,6 +18,9 @@
 #include "ByteArrayUtil.h"
 #include "SeRequest.h"
 
+/* Common */
+#include "stringhelper.h"
+
 namespace keyple {
 namespace core {
 namespace seproxy {
@@ -191,7 +194,7 @@ SeSelector::AidSelector::IsoAid::IsoAid(const std::vector<uint8_t>& aid)
     if (aid.size() < AID_MIN_LENGTH || aid.size() > AID_MAX_LENGTH) {
         value.clear();
         throw std::invalid_argument(
-            "Bad AID length: " + std::to_string(aid.size()) +
+            "Bad AID length: " + StringHelper::to_string(aid.size()) +
             ". The AID length should be " + "between 5 and 15.");
     } else {
         value = aid;

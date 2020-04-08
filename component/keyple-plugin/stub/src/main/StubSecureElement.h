@@ -13,10 +13,10 @@
  ******************************************************************************/
 #pragma once
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <memory>
 
 /* Common */
 #include "stringhelper.h"
@@ -80,8 +80,7 @@ public:
     /**
      *
      */
-    std::unordered_map<std::string, std::string> hexCommands =
-        std::unordered_map<std::string, std::string>();
+    std::unordered_map<std::string, std::string> hexCommands;
 
     /**
      * Add more simulated commands to the Stub SE
