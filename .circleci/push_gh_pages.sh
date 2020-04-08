@@ -15,10 +15,6 @@ remote=$(git config remote.origin.url)
 mkdir gh-pages-branch
 cd gh-pages-branch
 
-if [ "$GH_EMAIL" = "" ]; then
-    GH_EMAIL=florent.clairambault@gmail.com
-fi
-
 if [ "$GH_NAME" = "" ]; then
     GH_NAME="CircleCI"
 fi
