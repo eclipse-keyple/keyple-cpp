@@ -29,10 +29,8 @@ SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(
 {
     this->defaultRevision = revision;
 
-    if (diversifier.empty() ||
-        (diversifier.size() != 4 && diversifier.size() != 8)) {
+    if (diversifier.size() != 4 && diversifier.size() != 8)
         throw std::invalid_argument("Bad diversifier value!");
-    }
 
     char cla = this->defaultRevision.getClassByte();
 

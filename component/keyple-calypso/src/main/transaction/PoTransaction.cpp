@@ -149,12 +149,18 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
          * Build the SAM Select Diversifier command to provide the SAM with the
          * PO S/N
          */
-        std::shared_ptr<AbstractApduCommandBuilder> selectDiversifier =
-            std::make_shared<SelectDiversifierCmdBuild>(
-                this->samRevision, poCalypsoInstanceSerial);
-
-        samApduRequestList.push_back(selectDiversifier->getApduRequest());
-
+        try {
+            std::shared_ptr<AbstractApduCommandBuilder> selectDiversifier =
+                std::make_shared<SelectDiversifierCmdBuild>(
+                    this->samRevision, poCalypsoInstanceSerial);
+            samApduRequestList.push_back(selectDiversifier->getApduRequest());
+        } catch (std::invalid_argument& e) {
+            logger->error("PoTransaction - caught std::invalid_argument "
+                          "exception, msg: %s\n",
+                          e.what());
+            throw e;
+		}
+        
         /* increment command number */
         numberOfSamCmd++;
 

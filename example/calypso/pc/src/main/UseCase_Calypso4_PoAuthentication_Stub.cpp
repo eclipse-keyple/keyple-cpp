@@ -155,15 +155,14 @@ int main(int argc, char** argv)
          * afterwards
          */
         std::shared_ptr<PoSelectionRequest> poSelectionRequest =
-            std::make_shared<PoSelectionRequest>(
-                std::make_shared<PoSelector>(
-                    SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
-                    std::make_shared<PoSelector::PoAidSelector>(
-                        std::make_shared<SeSelector::AidSelector::IsoAid>(
-                            CalypsoClassicInfo::AID),
-                        PoSelector::InvalidatedPo::REJECT),
-                    StringHelper::formatSimple("AID: %s",
-                                               CalypsoClassicInfo::AID)));
+            std::make_shared<PoSelectionRequest>(std::make_shared<PoSelector>(
+                SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
+                std::make_shared<PoSelector::PoAidSelector>(
+                    std::make_shared<SeSelector::AidSelector::IsoAid>(
+                        CalypsoClassicInfo::AID),
+                    PoSelector::InvalidatedPo::REJECT),
+                StringHelper::formatSimple("AID: %s",
+                                           CalypsoClassicInfo::AID)));
 
         /*
          * Add the selection case to the current selection (we could have added
@@ -221,72 +220,78 @@ int main(int argc, char** argv)
             /*
              * Open Session for the debit key
              */
-            bool poProcessStatus = poTransaction->processOpening(
-                PoTransaction::ModificationMode::ATOMIC,
-                PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT, 0, 0);
+            try {
+                bool poProcessStatus = poTransaction->processOpening(
+                    PoTransaction::ModificationMode::ATOMIC,
+                    PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT, 0, 0);
 
-            if (!poProcessStatus) {
-                throw std::make_shared<IllegalStateException>(
-                    "processingOpening failure.");
-            }
+                if (!poProcessStatus) {
+                    throw std::make_shared<IllegalStateException>(
+                        "processingOpening failure.");
+                }
+            
+				if (!poTransaction->wasRatified()) {
+					logger->info("========= Previous Secure Session was not "
+								 "ratified. =====================\n");
+				}
 
-            if (!poTransaction->wasRatified()) {
-                logger->info("========= Previous Secure Session was not "
-                             "ratified. =====================\n");
-            }
+				/*
+				 * Prepare the reading order and keep the associated parser for
+				 * later use once the transaction has been processed.
+				 */
+				int readEventLogParserIndexBis =
+					poTransaction->prepareReadRecordsCmd(
+						CalypsoClassicInfo::SFI_EventLog,
+						ReadDataStructure::SINGLE_RECORD_DATA,
+						CalypsoClassicInfo::RECORD_NUMBER_1,
+						StringHelper::formatSimple(
+							"EventLog (SFI=%02X, recnbr=%d))",
+							CalypsoClassicInfo::SFI_EventLog,
+							CalypsoClassicInfo::RECORD_NUMBER_1));
 
-            /*
-             * Prepare the reading order and keep the associated parser for
-             * later use once the transaction has been processed.
-             */
-            int readEventLogParserIndexBis =
-                poTransaction->prepareReadRecordsCmd(
-                    CalypsoClassicInfo::SFI_EventLog,
-                    ReadDataStructure::SINGLE_RECORD_DATA,
-                    CalypsoClassicInfo::RECORD_NUMBER_1,
-                    StringHelper::formatSimple(
-                        "EventLog (SFI=%02X, recnbr=%d))",
-                        CalypsoClassicInfo::SFI_EventLog,
-                        CalypsoClassicInfo::RECORD_NUMBER_1));
+				poProcessStatus = poTransaction->processPoCommandsInSession();
 
-            poProcessStatus = poTransaction->processPoCommandsInSession();
+				/*
+				 * Retrieve the data read from the parser updated during the
+				 * transaction process
+				 */
+				std::shared_ptr<ReadRecordsRespPars> parser =
+					std::dynamic_pointer_cast<ReadRecordsRespPars>(
+						poTransaction->getResponseParser(
+							readEventLogParserIndexBis));
+				std::vector<uint8_t> eventLog =
+					(*(parser->getRecords()
+						   .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
-            /*
-             * Retrieve the data read from the parser updated during the
-             * transaction process
-             */
-            std::shared_ptr<ReadRecordsRespPars> parser =
-                std::dynamic_pointer_cast<ReadRecordsRespPars>(
-                    poTransaction->getResponseParser(
-                        readEventLogParserIndexBis));
-            std::vector<uint8_t> eventLog =
-                (*(parser->getRecords()
-                       .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
+				/* Log the result */
+				logger->info("EventLog file data: %s\n",
+							 ByteArrayUtil::toHex(eventLog).c_str());
 
-            /* Log the result */
-            logger->info("EventLog file data: %s\n",
-                         ByteArrayUtil::toHex(eventLog).c_str());
+				if (!poProcessStatus) {
+					throw std::make_shared<IllegalStateException>(
+						"processPoCommandsInSession failure.");
+				}
 
-            if (!poProcessStatus) {
-                throw std::make_shared<IllegalStateException>(
-                    "processPoCommandsInSession failure.");
-            }
+				/*
+				 * Close the Secure Session.
+				 */
+				logger->info("========= PO Calypso session ======= Closing =="
+							 "==========================\n");
 
-            /*
-             * Close the Secure Session.
-             */
-            logger->info("========= PO Calypso session ======= Closing =="
-                         "==========================\n");
+				/*
+				 * A ratification command will be sent (CONTACTLESS_MODE).
+				 */
+				poProcessStatus =
+					poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
 
-            /*
-             * A ratification command will be sent (CONTACTLESS_MODE).
-             */
-            poProcessStatus =
-                poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
-
-            if (!poProcessStatus) {
-                throw std::make_shared<IllegalStateException>(
-                    "processClosing failure.");
+				if (!poProcessStatus) {
+					throw std::make_shared<IllegalStateException>(
+						"processClosing failure.");
+				}
+            } catch (const std::invalid_argument& e) {
+                logger->error("main - caught std::invalid_argument, msg: %s\n",
+                              e.what());
+                return -1;
             }
 
             logger->info("==================================================="
