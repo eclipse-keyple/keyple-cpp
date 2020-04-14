@@ -73,4 +73,4 @@ IF(UNIX)
 	SET(SPEC_LIBS rt)
 ENDIF(UNIX)
 
-TARGET_LINK_LIBRARIES(usecase_generic4_sequentialmultiselection_pcsc keyplepluginpcsc keyplecalypso keyplecore ${WINSCARD} rt)
+TARGET_LINK_LIBRARIES(usecase_generic4_sequentialmultiselection_pcsc keyplepluginpcsc keyplecalypso keyplecore ${WINSCARD})
