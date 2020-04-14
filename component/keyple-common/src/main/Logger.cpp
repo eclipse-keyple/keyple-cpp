@@ -24,7 +24,7 @@ class LoggerFactory;
 
 using Level = Logger::Level;
 
-Level Logger::level = Level::DEBUG;
+Level Logger::level = Level::logDebug;
 
 Logger::Logger(const std::string& className, std::mutex* mtx)
 : className(demangle(className.c_str())), mtx(mtx)
@@ -47,7 +47,7 @@ void Logger::setLoggerLevel(Level level)
 
 void Logger::trace(const std::string s, ...)
 {
-    if (level >= Level::TRACE) {
+    if (level >= Level::logTrace) {
         va_list arg;
         va_start(arg, s);
         log("TRACE", s, arg);
@@ -57,7 +57,7 @@ void Logger::trace(const std::string s, ...)
 
 void Logger::debug(const std::string s, ...)
 {
-    if (level >= Level::DEBUG) {
+    if (level >= Level::logDebug) {
         va_list arg;
         va_start(arg, s);
         log("DEBUG", s, arg);
@@ -67,7 +67,7 @@ void Logger::debug(const std::string s, ...)
 
 void Logger::warn(const std::string s, ...)
 {
-    if (level >= Level::WARN) {
+    if (level >= Level::logWarn) {
         va_list arg;
         va_start(arg, s);
         log("WARN", s, arg);
@@ -77,7 +77,7 @@ void Logger::warn(const std::string s, ...)
 
 void Logger::info(const std::string s, ...)
 {
-    if (level >= Level::INFO) {
+    if (level >= Level::logInfo) {
         va_list arg;
         va_start(arg, s);
         log("INFO", s, arg);
@@ -87,7 +87,7 @@ void Logger::info(const std::string s, ...)
 
 void Logger::error(const std::string s, ...)
 {
-    if (level >= Level::ERROR) {
+    if (level >= Level::logError) {
         va_list arg;
         va_start(arg, s);
         log("ERROR", s, arg);
