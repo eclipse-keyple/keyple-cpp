@@ -129,6 +129,12 @@ public:
     virtual std::shared_ptr<AbstractMatchingSe>
     parse(std::shared_ptr<SeResponse> seResponse) = 0;
 
+	/**
+	 *
+	 */
+    friend std::ostream& operator<<(std::ostream& os,
+                                    const AbstractSeSelectionRequest& asr);
+
 protected:
     /**
      * Add an additional {@link ApduRequest} to be executed after the selection

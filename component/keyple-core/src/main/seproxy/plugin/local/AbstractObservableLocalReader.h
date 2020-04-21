@@ -357,6 +357,12 @@ private:
         ObservableReader::PollingMode::SINGLESHOT;
 };
 
+
+/**
+ *
+ */
+EXPORT std::ostream& operator<<(std::ostream& os, const InternalEvent& ie);
+
 }
 }
 }

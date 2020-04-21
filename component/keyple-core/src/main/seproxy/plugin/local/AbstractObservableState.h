@@ -144,6 +144,8 @@ private:
         LoggerFactory::getLogger(typeid(AbstractObservableState));
 };
 
+EXPORT std::ostream& operator<<(std::ostream& os, const MonitoringState& ms);
+
 }
 }
 }

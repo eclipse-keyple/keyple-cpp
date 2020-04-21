@@ -30,7 +30,6 @@
 
 /* Common */
 #include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 namespace keyple {

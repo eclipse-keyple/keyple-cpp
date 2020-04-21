@@ -98,6 +98,12 @@ public:
      */
     virtual std::string getSelectionExtraInfo();
 
+	/**
+	 *
+	 */
+    friend EXPORT std::ostream& operator<<(std::ostream & os,
+                                           const AbstractMatchingSe& ams);
+
 private:
     /**
      *

@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <list>
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -57,7 +58,6 @@ using namespace keyple::common;
  * @see SeRequest
  */
 class EXPORT SeResponse final : public std::enable_shared_from_this<SeResponse>,
-                                public Serializable,
                                 public Object {
 public:
     /**
@@ -78,14 +78,14 @@ public:
      *
      * @return the previous currentState of the logical channel.
      */
-    bool wasChannelPreviouslyOpen();
+    bool wasChannelPreviouslyOpen() const;
 
     /**
      * Get the logical channel status
      *
      * @return true if the logical channel is open
      */
-    bool isLogicalChannelOpen();
+    bool isLogicalChannelOpen() const;
 
     /**
      * Gets the selection status and its associated data.
@@ -100,12 +100,7 @@ public:
      * @return the group of APDUs responses returned by the SE application for
      *         this instance of SEResponse.
      */
-    std::vector<std::shared_ptr<ApduResponse>> getApduResponses();
-
-    /**
-     *
-     */
-    std::string toString() override;
+    std::vector<std::shared_ptr<ApduResponse>> getApduResponses() const;
 
     /**
      *
@@ -116,6 +111,24 @@ public:
      *
      */
     int hashCode() override;
+
+	/**
+	 *
+	 */
+    friend EXPORT std::ostream& operator<<(std::ostream& os,
+                                           const SeResponse& sr);
+
+    /**
+	 *
+	 */
+    friend EXPORT std::ostream& operator<<(
+		std::ostream& os, const std::shared_ptr<SeResponse>& sr);
+   
+	/**
+	 *
+	 */
+    friend EXPORT std::ostream& operator<<(
+		std::ostream& os, const std::list<std::shared_ptr<SeResponse>>& sr);
 
 protected:
     /**

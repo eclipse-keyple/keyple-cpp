@@ -15,6 +15,7 @@
 #ifndef KEYPLE_SEPROXY_READER_EVENT_H
 #define KEYPLE_SEPROXY_READER_EVENT_H
 
+#include <ostream>
 #include <string>
 #include <vector>
 #include <memory>
@@ -109,12 +110,12 @@ public:
         /**
          *
          */
-        bool operator==(const EventType& other);
+        bool operator==(const EventType& other) const;
 
         /**
          *
          */
-        bool operator!=(const EventType& other);
+        bool operator!=(const EventType& other) const;
 
         /**
          *
@@ -135,6 +136,11 @@ public:
          *
          */
         static EventType valueOf(const std::string& name);
+
+		/**
+		 *
+		 */
+		friend EXPORT std::ostream& operator<<(std::ostream& os, const EventType& et);
 
     private:
         /**
@@ -204,6 +210,11 @@ public:
      *
      */
     EventType getEventType();
+
+	/**
+	 *
+	 */
+	friend EXPORT std::ostream& operator<<(std::ostream& os, const ReaderEvent& re);
 
     /**
      *

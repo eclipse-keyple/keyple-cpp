@@ -50,7 +50,7 @@ ApduRequest::ApduRequest(const std::string& name,
     this->name = name;
 }
 
-bool ApduRequest::isCase4()
+bool ApduRequest::isCase4() const
 {
     return case4;
 }
@@ -65,7 +65,7 @@ std::shared_ptr<std::set<int>> ApduRequest::getSuccessfulStatusCodes()
     return successfulStatusCodes;
 }
 
-std::string ApduRequest::getName()
+std::string ApduRequest::getName() const
 {
     return name;
 }
@@ -75,7 +75,7 @@ const std::vector<uint8_t>& ApduRequest::getBytes()
     return this->bytes;
 }
 
-std::string ApduRequest::toString()
+std::string ApduRequest::toString() const
 {
     std::string string = StringHelper::formatSimple(
         "ApduRequest: NAME = %s, RAWDATA = %s", this->getName(),
@@ -113,6 +113,58 @@ int hashCode()
 {
     /* To be implemented */
     return 0;
+}
+
+std::ostream& operator<<(std::ostream& os, const ApduRequest& se)
+{
+	os << "APDUREQUEST: {"
+	   << "NAME = " << se.getName() << ", "
+	   << "RAWDATA = " << se.bytes << ", "
+	   << "CASE4 = " << se.case4;
+
+    if (se.successfulStatusCodes != nullptr) {
+        os << "ADD.SUCCESFULSTATUSCODES: {";
+        std::set<int>::const_iterator iterator =
+			se.successfulStatusCodes->begin();
+        while (iterator != se.successfulStatusCodes->end()) {
+            os << std::hex << std::setfill('0') << std::setw(4)
+			   << static_cast<int>(*iterator);
+            if (iterator != se.successfulStatusCodes->end()) {
+                os << ", ";
+            }
+            iterator++;
+        }
+		os << "}";
+    }
+
+	os << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+	                     const std::shared_ptr<ApduRequest>& se)
+{
+    if (se)
+		os << *(se.get());
+    else
+		os << "APDUREQUEST: null";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::vector<std::shared_ptr<ApduRequest>>& se)
+{
+	os << "ApduRequests: {";
+	for (const auto& r : se) {
+		os << *r.get();
+		if (r != se.back())
+			os << ", ";
+	}
+	os << "}";
+
+	return os;
 }
 
 }

@@ -34,12 +34,12 @@ SeResponse::SeResponse(
     this->apduResponses         = apduResponses;
 }
 
-bool SeResponse::wasChannelPreviouslyOpen()
+bool SeResponse::wasChannelPreviouslyOpen() const
 {
     return channelPreviouslyOpen;
 }
 
-bool SeResponse::isLogicalChannelOpen()
+bool SeResponse::isLogicalChannelOpen() const
 {
     return logicalChannelIsOpen;
 }
@@ -49,37 +49,48 @@ const std::shared_ptr<SelectionStatus> SeResponse::getSelectionStatus() const
     return selectionStatus;
 }
 
-std::vector<std::shared_ptr<ApduResponse>> SeResponse::getApduResponses()
+std::vector<std::shared_ptr<ApduResponse>> SeResponse::getApduResponses() const
 {
     return apduResponses;
 }
 
-std::string SeResponse::toString()
+std::ostream& operator<<(std::ostream& os, const SeResponse& sr)
 {
-    /*
-     * getAtr() can return null, we must check it to avoid the call to
-     * getBytes() that would raise an exception. In case of a null value,
-     * String.format prints "null" in the string, the same is done here.
-     */
-    std::string string;
-    if (selectionStatus != nullptr) {
-        string = StringHelper::formatSimple(
-            "SeResponse:{RESPONSES = %s, ATR = %s, FCI = %s, HASMATCHED = %d," \
-            " CHANNELWASOPEN = %d}",
-            "to fix!" /*getApduResponses()*/,
-            selectionStatus->getAtr()->getBytes().empty()
-                ? "null"
-                : ByteArrayUtil::toHex(selectionStatus->getAtr()->getBytes()),
-            ByteArrayUtil::toHex(selectionStatus->getFci()->getBytes()),
-            selectionStatus->hasMatched(), wasChannelPreviouslyOpen());
-    } else {
-        string = StringHelper::formatSimple(
-            "SeResponse:{RESPONSES = %s, ATR = null, FCI = null, "
-            "HASMATCHED = false, CHANNELWASOPEN = %d}",
-            "to fix!" /*getApduResponses()*/, wasChannelPreviouslyOpen());
-    }
+     os << "SERESPONSE: {"
+        << "RESPONSES = " << sr.apduResponses << ", "
+        << "SELECTIONSTATUS = " << sr.selectionStatus << ", "
+        << "CHANNELWASOPEN = " << sr.channelPreviouslyOpen
+	    << "}";
 
-    return string;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+	                     const std::shared_ptr<SeResponse>& sr)
+{
+    if (sr)
+		os << *(sr.get());
+    else
+		os << "SERESPONSE: null";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::list<std::shared_ptr<SeResponse>>& sr)
+{
+	os << "SERESPONSES: { ";
+	for (const auto& r : sr) {
+		if (r)
+			os << *(r.get());
+        else
+			os << "SERESPONSE: null";
+		if (r != sr.back())
+			os << ", ";
+    }
+	os << "}";
+
+	return os;
 }
 
 bool SeResponse::equals(std::shared_ptr<void> o)

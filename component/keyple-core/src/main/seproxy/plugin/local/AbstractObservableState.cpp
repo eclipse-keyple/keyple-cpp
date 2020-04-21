@@ -54,8 +54,8 @@ void AbstractObservableState::switchState(const MonitoringState stateId)
 
 void AbstractObservableState::onActivate()
 {
-    logger->trace("[%s] onActivate => %d\n", this->reader->getName().c_str(),
-                  this->getMonitoringState());
+    logger->trace("[%] onActivate => %\n", reader->getName(),
+                  getMonitoringState());
 
     cancellationFlag = false;
 
@@ -72,8 +72,8 @@ void AbstractObservableState::onActivate()
 
 void AbstractObservableState::onDeactivate()
 {
-    logger->trace("[%s] onDeactivate => %d\n", this->reader->getName().c_str(),
-                  this->getMonitoringState());
+    logger->trace("[%] onDeactivate => %\n", reader->getName(),
+                  getMonitoringState());
 
     /* Cancel the monitoringJob is necessary */
     if (monitoringEvent != nullptr &&
@@ -86,10 +86,29 @@ void AbstractObservableState::onDeactivate()
         /* TODO this could be inside the stop method? */
         cancellationFlag = true;
         monitoringEvent = nullptr;
-        logger->trace("[%s] onDeactivate => cancel runnable waitForCarPresent"
-                      " by thead interruption\n",
-                      reader->getName().c_str());
+        logger->trace("[%] onDeactivate => cancel runnable waitForCarPresent"
+                      " by thead interruption\n", reader->getName());
     }
+}
+
+std::ostream& operator<<(std::ostream& os, const MonitoringState& ms)
+{
+    switch (ms) {
+    case MonitoringState::WAIT_FOR_START_DETECTION:
+        os << "WAIT_FOR_START_DETECTION";
+        break;
+    case MonitoringState::WAIT_FOR_SE_INSERTION:
+        os << "WAIT_FOR_SE_INSERTION";
+        break;
+    case MonitoringState::WAIT_FOR_SE_PROCESSING:
+        os << "WAIT_FOR_SE_PROCESSING";
+        break;
+    case MonitoringState::WAIT_FOR_SE_REMOVAL:
+        os << "WAIT_FOR_SE_REMOVAL";
+        break;
+    }
+
+    return os;
 }
 
 }

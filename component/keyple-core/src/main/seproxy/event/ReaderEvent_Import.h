@@ -109,12 +109,12 @@ public:
         /**
          *
          */
-        bool operator==(const EventType& other);
+        bool operator==(const EventType& other) const;
 
         /**
          *
          */
-        bool operator!=(const EventType& other);
+        bool operator!=(const EventType& other) const;
 
         /**
          *
@@ -135,6 +135,12 @@ public:
          *
          */
         static EventType valueOf(const std::string& name);
+
+		/**
+		 *
+		 */
+        friend IMPORT std::ostream& operator<<(std::ostream& os,
+			                                   const EventType& et);
 
     private:
         /**
@@ -204,6 +210,12 @@ public:
      *
      */
     EventType getEventType();
+
+    /**
+	 *
+	 */
+    friend IMPORT std::ostream& operator<<(std::ostream& os,
+		                                   const ReaderEvent& re);
 
     /**
      *

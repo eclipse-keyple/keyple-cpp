@@ -102,7 +102,8 @@ public:
     /**
      *
      */
-    friend std::ostream& operator<<(std::ostream& os, const SeProtocol& se);
+    friend EXPORT std::ostream& operator<<(std::ostream& os,
+		                                   const SeProtocol& se);
 
     /**
      * 

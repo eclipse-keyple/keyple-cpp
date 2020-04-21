@@ -21,7 +21,6 @@
 /* Common*/
 #include "Configurable.h"
 #include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "Nameable.h"
 

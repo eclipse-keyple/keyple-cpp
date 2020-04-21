@@ -28,7 +28,6 @@
 
 /* Common */
 #include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "Thread.h"
 

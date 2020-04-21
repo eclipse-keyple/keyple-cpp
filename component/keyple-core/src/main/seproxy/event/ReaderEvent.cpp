@@ -66,12 +66,12 @@ std::string EventType::getName()
     return this->name;
 }
 
-bool EventType::operator==(const EventType& other)
+bool EventType::operator==(const EventType& other) const
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool EventType::operator!=(const EventType& other)
+bool EventType::operator!=(const EventType& other) const
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -128,8 +128,40 @@ ReaderEvent::EventType ReaderEvent::getEventType()
     return eventType;
 }
 
+std::ostream& operator<<(std::ostream& os, const ReaderEvent::EventType& et)
+{
+    std::string value;
+
+    if (et == ReaderEvent::EventType::TIMEOUT_ERROR)
+        value = "TIMEOUT_ERROR";
+    else if (et == ReaderEvent::EventType::SE_INSERTED)
+        value = "SE_INSERTED";
+    else if (et == ReaderEvent::EventType::SE_MATCHED)
+        value = "SE_MATCHED";
+    else if (et == ReaderEvent::EventType::SE_REMOVED)
+        value = "SE_REMOVED";
+
+    os << "EVENTTYPE: {"
+       << "NAME = " << et.name << ", "
+       << "VALUE = " << value << ", "
+       << "ORDINAL = " << et.ordinalValue << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const ReaderEvent& re)
+{
+	os << "READEREVENT: {"
+	   << "EVENTTYPE = " << re.eventType << ", "
+	   << "PLUGINNAME = " << re.pluginName << ", "
+	   << "READERNAME = " << re.readerName
+	   << "}";
+
+	return os;
+}
+
 const std::shared_ptr<AbstractDefaultSelectionsResponse>
-    ReaderEvent::getDefaultSelectionsResponse() const
+ReaderEvent::getDefaultSelectionsResponse() const
 {
     return defaultResponseSet;
 }

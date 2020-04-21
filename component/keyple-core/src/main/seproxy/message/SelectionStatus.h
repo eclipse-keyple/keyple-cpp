@@ -77,6 +77,17 @@ public:
      */
     int hashCode() override;
 
+	/**
+	 *
+	 */
+    friend std::ostream& operator<<(std::ostream& os, const SelectionStatus& s);
+
+    /**
+	 *
+	 */
+    friend std::ostream& operator<<(std::ostream& os,
+		                            const std::shared_ptr<SelectionStatus>& s);
+
 protected:
     /**
      *

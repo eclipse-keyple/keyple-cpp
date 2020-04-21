@@ -345,10 +345,11 @@ public:
      *        SE detection is stopped until a new call to startSeDetection is
      *        made.
      */
-    virtual void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
-        NotificationMode notificationMode, PollingMode pollingMode) = 0;
+    virtual void
+    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
+                                   defaultSelectionsRequest,
+                               NotificationMode notificationMode,
+                               PollingMode pollingMode) = 0;
 
     /**
      * Signal sent by the application to the reader to indicate the end of the
@@ -376,6 +377,12 @@ public:
      */
     virtual void notifySeProcessed() = 0;
 };
+
+/**
+ *
+ */
+EXPORT std::ostream& operator<<(std::ostream& os,
+                                const ObservableReader::PollingMode& pm);
 
 }
 }

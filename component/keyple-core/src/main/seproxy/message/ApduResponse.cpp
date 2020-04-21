@@ -52,15 +52,15 @@ ApduResponse::ApduResponse(std::vector<uint8_t>& buffer,
     }
 }
 
-bool ApduResponse::isSuccessful()
+bool ApduResponse::isSuccessful() const
 {
     return successful;
 }
 
-int ApduResponse::getStatusCode()
+int ApduResponse::getStatusCode() const
 {
     if (bytes.size() < 2) {
-        logger->debug("bad response length (%d)\n", bytes.size());
+        logger->debug("bad response length (%)\n", bytes.size());
         return 0;
     }
 
@@ -72,26 +72,19 @@ int ApduResponse::getStatusCode()
 
 const std::vector<uint8_t>& ApduResponse::getBytes() const
 {
-    logger->debug("getBytes - 'bytes' size is %d\n", this->bytes.size());
+    logger->debug("getBytes - 'bytes' size is %\n", this->bytes.size());
 
     return this->bytes;
 }
 
 std::vector<uint8_t> ApduResponse::getDataOut() const
 {
-    logger->debug("getDataOut - byte size is %d\n", this->bytes.size());
+    logger->debug("getDataOut - byte size is %\n", this->bytes.size());
 
     if (this->bytes.size() < 2)
         return std::vector<uint8_t>();
 
     return Arrays::copyOfRange(this->bytes, 0, this->bytes.size() - 2);
-}
-
-std::string ApduResponse::toString()
-{
-    std::string status = isSuccessful() ? "SUCCESS" : "FAILURE";
-    return StringHelper::formatSimple("ApduResponse: %s, RAWDATA = %s", status,
-                                      ByteArrayUtil::toHex(this->bytes));
 }
 
 bool ApduResponse::equals(std::shared_ptr<void> o)
@@ -121,6 +114,43 @@ int ApduResponse::hashCode()
 
 void ApduResponse::finalize()
 {
+}
+
+std::ostream& operator<<(std::ostream& os, const ApduResponse& r)
+{
+    const std::string status = r.successful ? "SUCCESS" : "FAILURE";
+
+	os << "R-APDU: {"
+	   << "STATUS = " << status << ", "
+	   << "BYTES (" << r.bytes.size() << ") = " << r.bytes
+	   << "}";
+    
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+	                     const std::shared_ptr<ApduResponse>& r)
+{
+    if (r)
+		os << *(r.get());
+    else
+		os << "R-APDU: null";
+
+    return os;
+}
+
+std::ostream& operator<<(
+	std::ostream& os, const std::vector<std::shared_ptr<ApduResponse>>& v)
+{
+    os << "APDURESPONSES: {";
+	for (int i = 0; i < (int)v.size(); i++) {
+		os << *(v[i].get());
+		if (i != (int)v.size() - 1)
+			os << ", ";
+    }
+	os << "}";
+
+	return os;
 }
 
 }

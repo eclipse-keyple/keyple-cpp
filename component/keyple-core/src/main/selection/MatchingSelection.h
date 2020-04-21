@@ -122,6 +122,12 @@ public:
      *         command). 0 is the first selection.
      */
     int getSelectionIndex();
+
+	/**
+	 *
+	 */
+	friend EXPORT std::ostream& operator<<(std::ostream& os,
+		                            const MatchingSelection& ms);
 };
 
 }

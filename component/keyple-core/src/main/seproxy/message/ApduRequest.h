@@ -21,6 +21,7 @@
 
 /* Common */
 #include "Export.h"
+#include "LoggerFactory.h"
 #include "stringbuilder.h"
 #include "Pattern.h"
 #include "Serializable.h"
@@ -36,8 +37,7 @@ using namespace keyple::common;
  * Single APDU request wrapper
   */
 class EXPORT ApduRequest final
-: public std::enable_shared_from_this<ApduRequest>,
-  public Serializable {
+: public std::enable_shared_from_this<ApduRequest> {
 public:
     /**
      *
@@ -99,7 +99,7 @@ public:
      *
      * @return the case4 flag.
      */
-    bool isCase4();
+    bool isCase4() const;
 
     /**
      * Name this APDU request
@@ -120,7 +120,7 @@ public:
      *
      * @return Name of the APDU request
      */
-    std::string getName();
+    std::string getName() const;
 
     /**
      * Get the buffer of this APDU
@@ -132,17 +132,26 @@ public:
     /**
      *
      */
-    std::string toString() override;
+    std::string toString() const;
 
     /**
-     *¬
+     *
      */
-    friend std::ostream& operator<<(std::ostream& os, ApduRequest& se)
-    {
-        os << se.toString();
+    friend EXPORT std::ostream& operator<<(std::ostream& os,
+		                                   const ApduRequest& se);
 
-        return os;
-    }
+	/**
+     *
+     */
+    friend EXPORT std::ostream& operator<<(
+		std::ostream& os, const std::shared_ptr<ApduRequest>& se);
+
+    /**
+     *
+     */
+    friend EXPORT std::ostream& operator<<(
+		std::ostream& os, const std::vector<std::shared_ptr<ApduRequest>>& se);
+	
 
 private:
     /**

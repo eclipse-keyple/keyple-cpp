@@ -59,6 +59,18 @@ int MatchingSelection::getSelectionIndex()
     return selectionIndex;
 }
 
+std::ostream& operator<<(std::ostream& os, const MatchingSelection& ms)
+{
+	os << "MATCHINGSELECTION: {"
+	   << "MATCHINGSE = " << ms.matchingSe << ", "
+	   << "SELECTIONREQUEST = " << ms.seSelectionRequest << ", "
+	   << "SELECTIONRESPONSE = " << ms.selectionSeResponse << ", "
+	   << "SELECTIONINDEX = " << ms.selectionIndex
+	   << "}";
+
+	return os;
+}
+
 }
 }
 }

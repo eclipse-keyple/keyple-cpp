@@ -153,7 +153,7 @@ void AbstractLocalReader::cardInserted()
             /* The last transmission failed, close the logical channel */
             closeLogicalChannel();
             logger->error("cardInserted - caught KeypleReaderException " \
-                          "(message: %s, cause: %s)\n", e.getMessage().c_str(),
+                          "(message: %, cause: %)\n", e.getMessage(),
                           e.getCause().what());
 
 
@@ -182,9 +182,8 @@ void AbstractLocalReader::cardRemoved()
         closePhysicalChannel();
     }
     catch (const KeypleChannelStateException &e) {
-        logger->trace("[%s] Exception occured in waitForCardAbsent. Message:" \
-                      "%s",
-                      AbstractLoggedObservable<ReaderEvent>::getName().c_str(),
+        logger->trace("[%] Exception occured in waitForCardAbsent. Message: %",
+                      AbstractLoggedObservable<ReaderEvent>::getName(),
                       e.what());
         /* No stack trace throwable? */
     }
@@ -209,16 +208,12 @@ AbstractLocalReader::openLogicalChannel(std::shared_ptr<SeSelector> seSelector)
             throw KeypleIOReaderException("Didn't get an ATR from the SE");
         }
 
-        logger->debug("[%s] openLogicalChannel => ATR = %s\n",
-                      this->getName().c_str(),
-                      ByteArrayUtil::toHex(atr).c_str());
+        logger->debug("[%] openLogicalChannel => ATR = %\n",
+                      getName(), atr);
 
         if (!seSelector->getAtrFilter()->atrMatches(atr)) {
-            logger->info("[%s] openLogicalChannel => ATR didn't match. "
-                         "SELECTOR = %s, ATR = %s\n",
-                         this->getName().c_str(),
-                         seSelector->toString().c_str(),
-                         ByteArrayUtil::toHex(atr).c_str());
+            logger->info("[%] openLogicalChannel => ATR didn't match. "
+                         "SELECTOR = %, ATR = %\n", getName(), seSelector, atr);
 
             selectionHasMatched = false;
         }
@@ -316,9 +311,8 @@ bool AbstractLocalReader::isLogicalChannelOpen()
 
 void AbstractLocalReader::closeLogicalChannel()
 {
-    logger->trace("[%s] closeLogicalChannel => Closing of the logical "
-                  "channel\n",
-                  this->getName().c_str());
+    logger->trace("[%] closeLogicalChannel => Closing of the logical "
+                  "channel\n", getName());
 
     logicalChannelIsOpen = false;
     aidCurrentlySelected.reset();
@@ -328,8 +322,8 @@ void AbstractLocalReader::closeLogicalChannel()
 void AbstractLocalReader::addSeProtocolSetting(SeProtocol& seProtocol,
                                                const std::string& protocolRule)
 {
-    logger->debug("setSeProcotolSetting - adding 1 protocol to map: %s-%s\n",
-                  seProtocol.getName().c_str(), protocolRule.c_str());
+    logger->debug("setSeProcotolSetting - adding 1 protocol to map: % : %\n",
+                  seProtocol.getName(), protocolRule);
 
     this->protocolsMap.emplace(seProtocol, protocolRule);
 }
@@ -337,7 +331,7 @@ void AbstractLocalReader::addSeProtocolSetting(SeProtocol& seProtocol,
 void AbstractLocalReader::setSeProtocolSetting(
     const std::map<SeProtocol, std::string>& protocolSetting)
 {
-    logger->debug("setSeProcotolSetting - adding %d protocols to map\n",
+    logger->debug("setSeProcotolSetting - adding % protocols to map\n",
                   protocolSetting.size());
 
     this->protocolsMap.insert(protocolSetting.begin(), protocolSetting.end());
@@ -390,12 +384,11 @@ std::list<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequestSet(
     bool stopProcess = false;
 
     for (auto request : requestSet) {
-        logger->debug("processSeRequestSet - stopProcess ? %d\n", stopProcess);
+        logger->debug("processSeRequestSet - stopProcess ? %\n", stopProcess);
         if (!stopProcess) {
             if (requestMatchesProtocol[requestIndex]) {
-                logger->debug("[%s] processSeRequestSet => transmit %s\n",
-                              this->getName().c_str(),
-                              request->toString().c_str());
+                logger->debug("[%] processSeRequestSet => transmit %\n",
+                              this->getName(), request);
 
                 std::shared_ptr<SeResponse> response = nullptr;
 
@@ -415,17 +408,15 @@ std::list<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequestSet(
 
                     /* Build a SeResponseSet with the available data. */
                     ex.setSeResponseSet(responses);
-                    logger->debug(
-                        "[%s] processSeRequestSet => transmit : process "
-                        "interrupted, collect previous responses %s\n",
-                        this->getName().c_str(), "<to print>responses");
+                    logger->debug("[%] processSeRequestSet => transmit : " \
+						          "process interrupted, collect previous " \
+						          "responses %\n", getName(), responses);
                     throw ex;
                 }
 
                 responses.push_back(response);
-                logger->debug("[%s] processSeRequestSet => receive %s\n",
-                              this->getName().c_str(),
-                              response->toString().c_str());
+                logger->debug("[%] processSeRequestSet => receive %\n",
+                              this->getName(), response);
             } else {
                 /*
                  * in case the protocolFlag of a SeRequest doesn't match the
@@ -531,8 +522,8 @@ std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(
 
     std::vector<std::shared_ptr<ApduResponse>> apduResponseList;
 
-    logger->debug("[%s] processSeRequest => Logical channel open = %d\n",
-                  this->getName().c_str(), isLogicalChannelOpen());
+    logger->debug("[%] processSeRequest => Logical channel open = %\n",
+                  getName(), isLogicalChannelOpen());
 
     /*
      * Unless the selector is null, we try to open a logical channel; if the
@@ -561,10 +552,9 @@ std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(
                     ->getAidSelector()
                     ->getFileOccurrence() ==
                 SeSelector::AidSelector::FileOccurrence::NEXT) {
-                logger->trace("[%s] processSeRequest => The current selection"
+                logger->trace("[%] processSeRequest => The current selection"
                               " is a next selection, close the logical "
-                              "channel\n",
-                              this->getName().c_str());
+                              "channel\n", getName());
 
                 /*
                  * Close the channel (will reset the current selection status)
@@ -580,13 +570,10 @@ std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(
                  * channel.
                  */
                 logger->debug(
-                    "[%s] processSeRequest => The AID changed, "
-                    "close the logical channel. AID = %s, "
-                    "EXPECTEDAID = %s",
-                    this->getName().c_str(),
-                    ByteArrayUtil::toHex(aidCurrentlySelected->getValue())
-                        .c_str(),
-                    seRequest->getSeSelector()->toString().c_str());
+                    "[%] processSeRequest => The AID changed, "
+                    "close the logical channel. AID = %, "
+                    "EXPECTEDAID = %", getName(), aidCurrentlySelected,
+					seRequest->getSeSelector());
 
                 /*
                  * Close the channel (will reset the current selection status)
@@ -608,14 +595,12 @@ std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(
             try {
                 selectionStatus =
                     openLogicalChannelAndSelect(seRequest->getSeSelector());
-                logger->trace("[%s] processSeRequest => Logical channel "
-                              "opening success\n",
-                              this->getName().c_str());
+                logger->trace("[%] processSeRequest => Logical channel "
+                              "opening success\n", getName());
             } catch (const KeypleApplicationSelectionException& e) {
                 (void)e;
-                logger->debug("[%s] processSeRequest => Logical channel "
-                              "opening failure\n",
-                              this->getName().c_str());
+                logger->debug("[%] processSeRequest => Logical channel "
+                              "opening failure\n", getName());
                 closeLogicalChannel();
 
                 /*
@@ -651,8 +636,8 @@ std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(
          */
         if (!isLogicalChannelOpen()) {
             throw IllegalStateException(StringHelper::formatSimple(
-                "[%s] processSeRequest => No logical channel opened!",
-                this->getName().c_str()));
+                "[%] processSeRequest => No logical channel opened!",
+                getName()));
         }
     }
 
@@ -689,9 +674,8 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
     double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
     this->before     = timeStamp;
 
-    logger->debug("[%s] processApduRequest => %s, elapsed %d ms\n",
-                  this->getName().c_str(), apduRequest->toString().c_str(),
-                  elapsedMs);
+    logger->debug("[%] processApduRequest => %, elapsed % ms\n", getName(),
+		          apduRequest, elapsedMs);
 
     const std::vector<uint8_t>& buffer = apduRequest->getBytes();
     std::vector<uint8_t> rapdu  = transmitApdu(buffer);
@@ -707,9 +691,9 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
     timeStamp    = System::nanoTime();
     elapsedMs    = static_cast<double>((timeStamp - before) / 100000) / 10;
     this->before = timeStamp;
-    logger->debug("[%s] processApduRequest => %s, elapsed %d ms\n",
-                  this->getName().c_str(), apduResponse->toString().c_str(),
-                  elapsedMs);
+
+    logger->debug("[%] processApduRequest => %, elapsed % ms\n",
+                  getName(), apduResponse, elapsedMs);
 
     return apduResponse;
 }
@@ -730,11 +714,9 @@ AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
     double elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
     this->before     = timeStamp;
 
-    logger->debug("[%s] case4HackGetResponse => ApduRequest: NAME = "
-                  "\"Internal Get Response\", RAWDATA = %s, elapsed = %s\n",
-                  this->getName().c_str(),
-                  ByteArrayUtil::toHex(getResponseHackRequestBytes).c_str(),
-                  elapsedMs);
+    logger->debug("[%] case4HackGetResponse => ApduRequest: NAME = "
+                  "\"Internal Get Response\", RAWDATA = %, elapsed = %\n",
+                  getName(), getResponseHackRequestBytes, elapsedMs);
 
     std::vector<uint8_t> getResponseHackResponseBytes =
         transmitApdu(getResponseHackRequestBytes);
@@ -746,10 +728,8 @@ AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
     timeStamp    = System::nanoTime();
     elapsedMs    = static_cast<double>((timeStamp - before) / 100000) / 10;
     this->before = timeStamp;
-    logger->debug("[%s] case4HackGetResponse => Internal %s, elapsed %d ms\n",
-                  this->getName().c_str(),
-                  ByteArrayUtil::toHex(getResponseHackRequestBytes).c_str(),
-                  elapsedMs);
+    logger->debug("[%] case4HackGetResponse => Internal %, elapsed % ms\n",
+                  getName(), getResponseHackRequestBytes, elapsedMs);
 
     if (getResponseHackResponse->isSuccessful()) {
         /* Replace the two last status word bytes by the original status word */
@@ -769,9 +749,9 @@ void AbstractLocalReader::closeLogicalAndPhysicalChannels()
     try {
         closePhysicalChannel();
     } catch (KeypleChannelControlException& e) {
-        logger->debug("[%s] Exception occurred in "
-                      "closeLogicalAndPhysicalChannels. Message: %s\n",
-                      this->getName().c_str(), e.getMessage().c_str());
+        logger->debug("[%] Exception occurred in "
+                      "closeLogicalAndPhysicalChannels. Message: %\n",
+                      getName(), e.getMessage());
     }
 }
 
@@ -786,9 +766,8 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processExplicitAidSelection(
             "AID must not be null for an AidSelector");
     }
 
-    logger->debug("[%s] openLogicalChannel => Select Application with AID = "
-                  "%s\n", this->getName().c_str(),
-                  ByteArrayUtil::toHex(aid).c_str());
+    logger->debug("[%] openLogicalChannel => Select Application with AID = %\n",
+		          getName(), aid);
 
     /*
      * build a get response command the actual length expected by the SE in the
@@ -819,9 +798,8 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processExplicitAidSelection(
         aidSelector.getSuccessfulSelectionStatusCodes()));
 
     if (!fciResponse->isSuccessful()) {
-        logger->debug("[%s] openLogicalChannel => Application Selection "
-                      "failed. SELECTOR = %s\n", this->getName().c_str(),
-                      aidSelector.toString().c_str());
+        logger->debug("[%] openLogicalChannel => Application Selection "
+                      "failed. SELECTOR = %\n", getName(), aidSelector);
     }
 
     return fciResponse;
@@ -844,9 +822,8 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::recoverSelectionFciData(
         aidSelector.getSuccessfulSelectionStatusCodes()));
 
     if (!fciResponse->isSuccessful()) {
-        logger->debug("[%s] selectionGetData => Get data failed. SELECTOR = "
-                      "%s\n", this->getName().c_str(),
-                      aidSelector.toString().c_str());
+        logger->debug("[%] selectionGetData => Get data failed. SELECTOR = "
+                      "%\n", getName(), aidSelector);
     }
 
     return fciResponse;
