@@ -265,6 +265,9 @@ std::ostream& operator<<(std::ostream& os, const InternalEvent& ie)
         os << "SE_REMOVED";
         break;
     case InternalEvent::SE_PROCESSED:
+        os << "SE_PROCESSED";
+        break;
+    case InternalEvent::START_DETECT:
         os << "START_DETECT";
         break;
     case InternalEvent::STOP_DETECT:

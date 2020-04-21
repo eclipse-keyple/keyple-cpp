@@ -61,7 +61,7 @@ void doAndAnalyseSelection(std::shared_ptr<SeReader> seReader,
         std::shared_ptr<AbstractMatchingSe> matchingSe =
             selectionsResult->getMatchingSelection(0)->getMatchingSe();
 
-        logger->info("The SE matched the selection %\n", matchingSe);
+        logger->info("The SE matched the selection %: %\n", index, matchingSe);
     } else {
         logger->info(
             "The selection 2 process did not return any selected SE\n");
