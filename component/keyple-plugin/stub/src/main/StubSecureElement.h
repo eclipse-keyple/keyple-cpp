@@ -21,7 +21,6 @@
 /* Common */
 #include "stringhelper.h"
 #include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 /* Core - Seproxy - Exception */
@@ -107,6 +106,18 @@ public:
      */
     virtual std::vector<uint8_t> processApdu(
         const std::vector<uint8_t>& apduIn);
+
+	/**
+	 *
+	 */
+	friend std::ostream& operator<<(std::ostream& os,
+		                            const StubSecureElement& s);
+
+	/**
+	 *
+	 */
+    friend std::ostream& operator<<(
+		std::ostream& os, const std::shared_ptr<StubSecureElement>& s);
 
 private:
     /**

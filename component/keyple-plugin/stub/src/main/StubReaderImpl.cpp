@@ -126,14 +126,12 @@ bool StubReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
     Pattern* p                  = Pattern::compile(selectionMask);
     const std::string& protocol = se->getSeProcotol();
     if (!p->matcher(protocol)->matches()) {
-        logger->trace("[%s] protocolFlagMatches => unmatching SE. "
-                      "PROTOCOLFLAG = %s\n",
-                      this->getName().c_str(), protocolFlag.toString().c_str());
+        logger->trace("[%] protocolFlagMatches => unmatching SE. "
+                      "PROTOCOLFLAG = %\n", getName(), protocolFlag);
         result = false;
     } else {
-        logger->trace("[%s] protocolFlagMatches => matching SE. "
-                      "PROTOCOLFLAG = %s\n",
-                      this->getName().c_str(), protocolFlag.toString().c_str());
+        logger->trace("[%] protocolFlagMatches => matching SE. PROTOCOLFLAG =" \
+			          " %\n", getName(), protocolFlag);
         result = true;
     }
     //} else {
@@ -177,15 +175,15 @@ TransmissionMode StubReaderImpl::getTransmissionMode()
 
 void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> _se)
 {
-    logger->debug("Insert SE %s\n", "_se<fixme>");
+    logger->debug("Insert SE %\n", _se);
 
     /* Clean channels status */
     if (isPhysicalChannelOpen()) {
         try {
             closePhysicalChannel();
         } catch (KeypleReaderException& e) {
-            logger->error("Error while closing channel reader. %s\n",
-                          e.getMessage().c_str());
+            logger->error("Error while closing channel reader. %\n",
+                          e.getMessage());
         }
     }
     if (_se != nullptr) {
@@ -195,7 +193,7 @@ void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> _se)
 
 void StubReaderImpl::removeSe()
 {
-    logger->debug("Remove SE %s\n", se != nullptr ? "se<fixme>" : "none");
+    logger->debug("Remove SE %\n", se);
 
     se = nullptr;
 }
@@ -209,10 +207,10 @@ bool StubReaderImpl::waitForCardPresent()
 {
     loopWaitSe = true;
 
-    logger->debug("[%s] waiting for card present\n", this->name.c_str());
+    logger->debug("[%] waiting for card present\n", name);
 
     while (loopWaitSe) {
-        logger->debug("[%s] checking for SE presence\n", this->name.c_str());
+        logger->debug("[%] checking for SE presence\n", name);
         if (checkSePresence()) {
             return true;
         }
@@ -221,7 +219,7 @@ bool StubReaderImpl::waitForCardPresent()
             Thread::sleep(10);
         } catch (InterruptedException& e) {
             (void)e;
-            logger->debug("[%s] Sleep was interrupted\n", this->name.c_str());
+            logger->debug("[%] Sleep was interrupted\n", name);
         }
     }
 
@@ -241,7 +239,7 @@ bool StubReaderImpl::waitForCardAbsentNative()
 
     while (loopWaitSeRemoval) {
         if (!checkSePresence()) {
-            logger->trace("[%s] card removed\n", this->getName().c_str());
+            logger->trace("[%] card removed\n", getName());
             return true;
         }
 

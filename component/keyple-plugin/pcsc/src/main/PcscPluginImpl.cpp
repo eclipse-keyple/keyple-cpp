@@ -72,16 +72,15 @@ const std::set<std::string>& PcscPluginImpl::fetchNativeReadersNames()
             logger->trace("fetchNativeReadersNames - no reader available\n");
         } else {
             for (auto& term : terminals) {
-                logger->debug("fetchNativeReadersNames - reader: %s\n",
-                              term.getName().c_str());
+                logger->debug("fetchNativeReadersNames - reader: %\n",
+                              term.getName());
                 nativeReadersNames.insert(term.getName());
             }
         }
     } catch (PcscTerminalException& e) {
         logger->trace("fetchNativeReadersNames - terminal list is not "
-                      "accessible, name: %s, exception: %s, cause: %s\n",
-                      this->getName().c_str(), e.getMessage().c_str(),
-                      e.getCause().what());
+                      "accessible, name: %, exception: %, cause: %\n",
+                      getName(), e.getMessage(), e.getCause().what());
         throw KeypleReaderException("Could not access terminals list", e);
     }
 
@@ -100,7 +99,7 @@ std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
      */
 #ifdef _WIN32
     scardNoServiceHackNeeded = true;
-    logger->info("System detected : %d", scardNoServiceHackNeeded);
+    logger->info("System detected : %\n", scardNoServiceHackNeeded);
 #else
     scardNoServiceHackNeeded = false;
 #endif
@@ -111,8 +110,8 @@ std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
      */
     logger->debug("initNativeReaders - getting card terminals\n");
     std::vector<PcscTerminal>& terminals = getTerminals();
-    logger->trace("[%s] initNativeReaders => CardTerminal in list: %s\n",
-                  this->getName().c_str(), "terminals <fixme>");
+    logger->trace("[%] initNativeReaders => CardTerminal in list: %\n",
+                  getName(), terminals);
 
     if (terminals.empty()) {
         logger->trace("No reader available\n");
@@ -123,12 +122,11 @@ std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
         for (auto& term : terminals) {
             logger->debug("initNativeReaders - inserting terminal into list\n");
             nativeReaders.insert(std::dynamic_pointer_cast<SeReader>(
-                std::make_shared<PcscReaderImpl>(this->getName(), term)));
+                std::make_shared<PcscReaderImpl>(getName(), term)));
         }
     } catch (PcscTerminalException& e) {
-        logger->trace("[%s] terminal list not accessible, msg: %s, cause: %s",
-                      this->getName().c_str(), e.getMessage().c_str(),
-                      e.getCause().what());
+        logger->trace("[%] terminal list not accessible, msg: %, cause: %",
+                      getName(), e.getMessage(), e.getCause().what());
         /*
          * Throw new KeypleReaderException("Could not access terminals list",
          * e); do not propagate exception at the constructor will propagate it
@@ -165,10 +163,8 @@ PcscPluginImpl::fetchNativeReader(const std::string& name)
             }
         }
     } catch (PcscTerminalException& e) {
-        logger->trace("[%s] caught PcscTerminalException (msg: %s, cause: "
-                      "%s)\n",
-                      this->getName().c_str(), e.getMessage().c_str(),
-                      e.getCause().what());
+        logger->trace("[%] caught PcscTerminalException (msg: %, cause: %)\n",
+                      getName(), e.getMessage(), e.getCause().what());
         throw KeypleReaderException("Could not access terminals list", e);
     }
 

@@ -23,7 +23,6 @@
 #include "gtest/gtest.h"
 
 /* Common */
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 #include "StubPluginImpl.h"

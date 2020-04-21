@@ -32,7 +32,6 @@
 #include "gtest/gtest.h"
 
 /* Common */
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:

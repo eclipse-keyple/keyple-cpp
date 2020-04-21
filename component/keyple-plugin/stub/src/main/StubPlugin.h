@@ -25,7 +25,6 @@
 
 /* Common */
 #include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "InterruptedException.h"
 #include "ObservablePlugin.h"

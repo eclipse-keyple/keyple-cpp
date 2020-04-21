@@ -23,7 +23,6 @@
 /* Common */
 #include "exceptionhelper.h"
 #include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 /* Core */

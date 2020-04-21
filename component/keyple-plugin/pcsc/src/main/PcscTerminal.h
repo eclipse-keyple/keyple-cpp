@@ -94,6 +94,27 @@ public:
      */
     void endExclusive();
 
+	/**
+	 *
+	 */
+	friend std::ostream& operator<<(std::ostream& os, const PcscTerminal& t);
+
+	/**
+	 *
+	 */
+    friend std::ostream& operator<<(std::ostream& os,
+                                    const std::vector<PcscTerminal>& vt);
+
+	/**
+	 *
+	 */
+	bool operator==(const PcscTerminal& o) const;
+
+	/**
+	 *
+	 */
+	bool operator!=(const PcscTerminal& o) const;
+
 private:
     /**
      *
