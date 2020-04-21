@@ -14,7 +14,6 @@
 
 #include "CalypsoClassicTransactionEngine.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "ObservableReader_Import.h"
 #include "ReaderPlugin.h"
@@ -73,9 +72,7 @@ int main(int argc, char** argv)
         samReader = std::dynamic_pointer_cast<StubReader>(
             stubPlugin->getReader("samReader"));
     } catch (const KeypleReaderNotFoundException& e) {
-        logger->error("update - caught KeypleReaderNotFoundException "
-                      "(msg: %s, cause: %s)\n",
-                      e.getMessage().c_str(), e.getCause().what());
+        logger->error("update - KeypleReaderNotFoundException: %\n", e);
     }
 
     /* Both readers are expected not null */
@@ -83,8 +80,8 @@ int main(int argc, char** argv)
         throw std::make_shared<IllegalStateException>("Bad PO/SAM setup");
     }
 
-    logger->info("PO Reader  NAME = %s\n", poReader->getName().c_str());
-    logger->info("SAM Reader  NAME = %s\n", samReader->getName().c_str());
+    logger->info("PO Reader  NAME = %\n", poReader->getName());
+    logger->info("SAM Reader  NAME = %\n", samReader->getName());
 
     /* Set the PO reader protocol flag */
     poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO14443_4,

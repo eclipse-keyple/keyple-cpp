@@ -117,7 +117,7 @@ public:
 
         logger->info("=============== UseCase Generic #2: AID based default "
                      "selection ===================\n");
-        logger->info("= SE Reader  NAME = %s\n", seReader->getName().c_str());
+        logger->info("= SE Reader  NAME = %\n", seReader->getName());
 
         /*
          * Prepare a SE selection
@@ -240,11 +240,9 @@ public:
                         ->getReader(event->getReaderName()))
                     ->notifySeProcessed();
             } catch (KeypleReaderNotFoundException& e) {
-                logger->debug("KeypleReaderNotFoundException: %s - %s\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                logger->debug("update - KeypleReaderNotFoundException: %\n", e);
             } catch (KeyplePluginNotFoundException& e) {
-                logger->debug("KeyplePluginNotFoundException: %s - %s\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                logger->debug("update - KeyplePluginNotFoundException: %\n", e);
             }
         }
     }

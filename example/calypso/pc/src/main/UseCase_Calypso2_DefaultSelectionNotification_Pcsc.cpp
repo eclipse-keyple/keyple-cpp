@@ -19,7 +19,6 @@
 #include "KeypleBaseException.h"
 #include "ReaderUtilities.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
 #include "ObservableReader_Import.h"
@@ -98,7 +97,7 @@ public:
 
         logger->info("=============== UseCase Calypso #2: AID based default "
                      "selection ===================\n");
-        logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
+        logger->info("= PO Reader  NAME = %\n", poReader->getName());
 
         /*
          * Prepare a Calypso PO selection
@@ -209,12 +208,10 @@ public:
                                ->getReader(event->getReaderName());
             } catch (KeyplePluginNotFoundException& e) {
                 logger->error("update - caught KeyplePluginNotFoundException "
-                              "(msg: %s, cause: %s)\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                              "(msg: %, cause: %)\n", e.getMessage(),
+					          e.getCause().what());
             } catch (KeypleReaderNotFoundException& e) {
-                logger->error("update - caught KeypleReaderNotFoundException "
-                              "(msg: %s, cause: %s)\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                logger->error("update - KeypleReaderNotFoundException: %\n", e);
             }
 
             std::shared_ptr<CalypsoPo> calypsoPo =
@@ -233,8 +230,7 @@ public:
                 (*(readEnvironmentParser->getRecords().get()))[static_cast<int>(
                     CalypsoClassicInfo::RECORD_NUMBER_1)];
 
-            logger->info("Environment file data: %s\n",
-                         ByteArrayUtil::toHex(environmentAndHolder).c_str());
+            logger->info("Environment file data: %\n", environmentAndHolder);
 
             /*
              * Go on with the reading of the first record of the EventLog file
@@ -285,13 +281,10 @@ public:
                                .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
                     /* Log the result */
-                    logger->info("EventLog file data: %s\n",
-                                 ByteArrayUtil::toHex(eventLog).c_str());
+                    logger->info("EventLog file data: %\n", eventLog);
                 }
             } catch (const KeypleReaderException& e) {
-                logger->error("update - caught KeypleReaderException "
-                              "(msg: %s, cause: %s)\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                logger->error("update - KeypleReaderException: %\n", e);
             }
 
             logger->info("==================================================="
@@ -323,11 +316,9 @@ public:
                         ->getReader(event->getReaderName()))
                     ->notifySeProcessed();
             } catch (KeypleReaderNotFoundException& e) {
-                logger->debug("KeypleReaderNotFoundException: %s - %s\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                logger->debug("update - KeypleReaderNotFoundException: %\n", e);
             } catch (KeyplePluginNotFoundException& e) {
-                logger->debug("KeyplePluginNotFoundException: %s - %s\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                logger->debug("update - KeyplePluginNotFoundException: %\n", e);
             }
         }
     }

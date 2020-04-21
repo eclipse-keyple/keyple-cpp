@@ -65,7 +65,6 @@ static std::string seAid = "A000000291";
  * </ul>
  */
 class ExplicitSelectionAid_Pcsc {
-
 };
 
 const std::shared_ptr<Logger> logger =
@@ -94,18 +93,18 @@ int main(int argc, char** argv)
         throw IllegalStateException("Bad SE reader setup");
     }
 
-    logger->info("=============== UseCase Generic #1: AID based explicit " \
-                "selection ==================\n");
-    logger->info("= SE Reader  NAME = %s\n", seReader->getName().c_str());
+    logger->info("=============== UseCase Generic #1: AID based explicit "
+                 "selection ==================\n");
+    logger->info("= SE Reader  NAME = %\n", seReader->getName());
 
     /* Check if a SE is present in the reader */
     if (seReader->isSePresent()) {
 
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
-        logger->info("= AID based selection.                                 " \
+        logger->info("= AID based selection.                                 "
                      "                          =\n");
-        logger->info("=======================================================" \
+        logger->info("======================================================="
                      "===========================\n");
 
         /* Prepare the SE selection */
@@ -153,15 +152,14 @@ int main(int argc, char** argv)
             std::shared_ptr<AbstractMatchingSe> matchedSe =
                 selectionsResult->getActiveSelection()->getMatchingSe();
             logger->info("The selection of the SE has succeeded\n");
-            logger->info("Application FCI = %s\n",
-                         matchedSe->getSelectionStatus()->getFci()->toString()
-                             .c_str());
+            logger->info("Application FCI = %\n",
+                         matchedSe->getSelectionStatus()->getFci());
 
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
-            logger->info("= End of the generic SE processing.                " \
+            logger->info("= End of the generic SE processing.                "
                          "                              =\n");
-            logger->info("===================================================" \
+            logger->info("==================================================="
                          "===============================\n");
         } else {
             logger->info("The selection of the SE has failed\n");

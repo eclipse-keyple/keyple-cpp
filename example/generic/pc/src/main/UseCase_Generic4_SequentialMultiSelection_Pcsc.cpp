@@ -17,7 +17,6 @@
 #include "ByteArrayUtil.h"
 #include "ChannelControl.h"
 #include "GenericSeSelectionRequest.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "KeypleBaseException.h"
 #include "KeypleReaderException.h"
@@ -62,15 +61,7 @@ void doAndAnalyseSelection(std::shared_ptr<SeReader> seReader,
         std::shared_ptr<AbstractMatchingSe> matchingSe =
             selectionsResult->getMatchingSelection(0)->getMatchingSe();
 
-        logger->info("The SE matched the selection %d:\n", index);
-        logger->info("  ATR: %s\n",
-                     ByteArrayUtil::toHex(
-                        matchingSe->getSelectionStatus()->getAtr()
-                            ->getBytes()).c_str());
-        logger->info("  FCI: %s\n",
-                     ByteArrayUtil::toHex(
-                        matchingSe->getSelectionStatus()->getFci()
-                        ->getDataOut()).c_str());
+        logger->info("The SE matched the selection %\n", matchingSe);
     } else {
         logger->info(
             "The selection 2 process did not return any selected SE\n");
@@ -102,7 +93,7 @@ int main(int argc, char** argv)
 
     logger->info("=============== UseCase Generic #4: AID based sequential "
                  "explicit multiple selection ==================\n");
-    logger->info("= SE Reader  NAME = %s\n", seReader->getName().c_str());
+    logger->info("= SE Reader  NAME = %\n", seReader->getName());
 
     std::shared_ptr<AbstractMatchingSe> matchingSe;
 

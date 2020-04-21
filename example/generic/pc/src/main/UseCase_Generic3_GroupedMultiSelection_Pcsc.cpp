@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 
     logger->info("=============== UseCase Generic #3: AID based grouped "
                  "explicit multiple selection ==================\n");
-    logger->info("= SE Reader  NAME = %s\n", seReader->getName().c_str());
+    logger->info("= SE Reader  NAME = %\n", seReader->getName());
 
     /* Check if a SE is present in the reader */
     if (seReader->isSePresent()) {
@@ -145,18 +145,8 @@ int main(int argc, char** argv)
                  selectionsResult->getMatchingSelections()) {
                 std::shared_ptr<AbstractMatchingSe> matchingSe =
                     matchingSelection->getMatchingSe();
-                logger->info(
-                    "Selection status for selection \"%s\" (indexed %d):\n",
-                    matchingSelection->getExtraInfo().c_str(),
-                    matchingSelection->getSelectionIndex());
-                logger->info("  ATR: %s\n",
-                             ByteArrayUtil::toHex(
-                                 matchingSe->getSelectionStatus()->getAtr()
-                                     ->getBytes()).c_str());
-                logger->info("  FCI: %s\n",
-                             ByteArrayUtil::toHex(
-                                 matchingSe->getSelectionStatus()->getFci()
-                                    ->getDataOut()).c_str());
+                logger->info("Selection status for selection: %\n",
+                             matchingSelection);
             }
         } else {
             logger->info("No SE matched the selection\n");

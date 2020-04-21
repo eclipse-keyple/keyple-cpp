@@ -17,7 +17,6 @@
 #include "KeypleBaseException.h"
 #include "ReaderUtilities.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
 #include "ObservableReader_Import.h"

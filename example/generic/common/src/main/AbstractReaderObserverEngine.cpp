@@ -48,11 +48,9 @@ void* AbstractReaderObserverEngine::runSeInsertedThread(
             SeProxyService::getInstance().getPlugin(event->getPluginName())
                 ->getReader(event->getReaderName()))->notifySeProcessed();
     } catch (KeypleReaderNotFoundException& e) {
-        logger->debug("KeypleReaderNotFoundException: %s\n",
-                      e.getMessage().c_str());
+        logger->debug("KeypleReaderNotFoundException: %\n", e);
     } catch (KeyplePluginNotFoundException& e) {
-        logger->debug("KeyplePluginNotFoundException: %s\n",
-                      e.getMessage().c_str());
+        logger->debug("KeyplePluginNotFoundException: %\n", e);
     }
 
     currentlyProcessingSe = false;
@@ -77,11 +75,9 @@ void* AbstractReaderObserverEngine::runSeMatchedThread(
             SeProxyService::getInstance().getPlugin(event->getPluginName())
                 ->getReader(event->getReaderName()))->notifySeProcessed();
     } catch (KeypleReaderNotFoundException& e) {
-        logger->debug("KeypleReaderNotFoundException: %s\n",
-                      e.getMessage().c_str());
+        logger->debug("KeypleReaderNotFoundException: %\n", e);
     } catch (KeyplePluginNotFoundException& e) {
-        logger->debug("KeyplePluginNotFoundException: %s\n",
-                      e.getMessage().c_str());
+        logger->debug("KeyplePluginNotFoundException: %\n", e);
     }
 
     currentlyProcessingSe = false;
@@ -91,7 +87,7 @@ void* AbstractReaderObserverEngine::runSeMatchedThread(
 
 void AbstractReaderObserverEngine::update(std::shared_ptr<ReaderEvent> event)
 {
-    logger->info("New reader event: %s\n", event->getReaderName().c_str());
+    logger->info("New reader event: %\n", event->getReaderName());
 
     if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED) {
         /* Run the PO processing asynchronously in a detach thread */

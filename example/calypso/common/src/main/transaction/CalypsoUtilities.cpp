@@ -56,7 +56,7 @@ CalypsoUtilities::StaticConstructor::StaticConstructor()
         "example/calypso/config.properties";
 */    
     std::string propertiesFileName =
-        "E:\\code\\git\\cna\\github.com.calypsonet.keyple-cpp\\example\\calypso\\config.properties";
+        "C:\\Users\\alexandre.munsch\\Documents\\GitHub\\keyple-cpp\\example\\calypso\\config.properties";
 
     std::ifstream inputStream;
     inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);

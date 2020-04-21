@@ -21,7 +21,6 @@
 #include "ObservablePlugin.h"
 
 /* Common */
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
