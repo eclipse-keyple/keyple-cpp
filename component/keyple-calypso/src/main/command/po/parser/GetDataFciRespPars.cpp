@@ -110,7 +110,7 @@ GetDataFciRespPars::GetDataFciRespPars(
     /* parse the raw data with the help of the TLV class */
     try {
         /* init TLV object with the raw data and extract the FCI Template */
-        logger->debug("response: %s\n", ByteArrayUtil::toHex(response).c_str());
+        logger->debug("response: %\n", response);
         std::vector<uint8_t> vec = response;
         tlv                      = std::make_shared<TLV>(vec);
 
@@ -127,7 +127,7 @@ GetDataFciRespPars::GetDataFciRespPars(
         }
 
         dfName = tlv->getValue();
-        logger->debug("DF Name = %s\n", ByteArrayUtil::toHex(dfName).c_str());
+        logger->debug("DF Name = %\n", dfName);
 
         /* Get the FCI Proprietary Template */
         if (!tlv->parse(TAG_FCI_PROPRIETARY_TEMPLATE, tlv->getPosition())) {
@@ -151,8 +151,7 @@ GetDataFciRespPars::GetDataFciRespPars(
         }
 
         applicationSN = tlv->getValue();
-        logger->debug("Application Serial Number = %s\n",
-                      ByteArrayUtil::toHex(applicationSN).c_str());
+        logger->debug("Application Serial Number = %\n", applicationSN);
 
         /* Get the Discretionary Data */
         if (!tlv->parse(TAG_DISCRETIONARY_DATA, tlv->getPosition())) {
@@ -163,8 +162,7 @@ GetDataFciRespPars::GetDataFciRespPars(
 
         std::vector<uint8_t> discretionaryData = tlv->getValue();
 
-        logger->debug("Discretionary Data = %s\n",
-                      ByteArrayUtil::toHex(discretionaryData).c_str());
+        logger->debug("Discretionary Data = %\n", discretionaryData);
 
         /*
          * split discretionary data in as many individual startup information
@@ -182,8 +180,7 @@ GetDataFciRespPars::GetDataFciRespPars(
     } catch (const std::runtime_error& e) {
         /* Silently ignore problems decoding TLV structure. Just log. */
         logger->debug("Error while parsing the FCI BER-TLV data structure "
-                      "(%s)\n",
-                      e.what());
+                      "(%)\n", e.what());
     }
 }
 

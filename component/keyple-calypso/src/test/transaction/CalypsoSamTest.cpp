@@ -22,7 +22,6 @@
 #include "ByteArrayUtil.h"
 #include "SeResponse.h"
 
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 using namespace keyple::calypso::transaction;

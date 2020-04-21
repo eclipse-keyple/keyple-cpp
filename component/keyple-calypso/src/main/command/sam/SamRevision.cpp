@@ -74,7 +74,7 @@ char SamRevision::getClassByte()
     return classByte;
 }
 
-bool SamRevision::operator==(const SamRevision& other)
+bool SamRevision::operator==(const SamRevision& other) const
 {
     return this->ordinalValue == other.ordinalValue;
 }
@@ -121,6 +121,21 @@ SamRevision SamRevision::valueOf(const std::string& name)
 
     /* Compiler fix */
     return SamRevision("Dummy", InnerEnum::AUTO, "Dummy", "Dummy", 0);
+}
+
+std::ostream& operator<<(std::ostream& os, const SamRevision& sr)
+{
+    if (sr == SamRevision::NO_REV)
+        os << "NO_REV";
+    else if (sr == SamRevision::C1)
+        os << "C1";
+    else if (sr == SamRevision::S1E)
+        os << "S1E";
+	else if (sr == SamRevision::S1D)
+        os << "S1D";
+	else if (sr == SamRevision::AUTO)
+        os << "AUTO";
+    return os;
 }
 
 }

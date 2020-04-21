@@ -23,7 +23,6 @@
 
 /* Common */
 #include "Arrays.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "Matcher.h"
 #include "Pattern.h"

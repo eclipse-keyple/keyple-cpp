@@ -79,6 +79,19 @@ std::shared_ptr<SelectFileRespPars> SelectFileCmdBuild::createResponseParser(
     return std::make_shared<SelectFileRespPars>(apduResponse);
 }
 
+std::ostream& operator<<(std::ostream& os,
+                         const SelectFileCmdBuild::SelectControl& sc)
+{
+    if (sc == SelectFileCmdBuild::SelectControl::FIRST)
+        os << "FIRST";
+    else if (sc == SelectFileCmdBuild::SelectControl::NEXT)
+        os << "NEXT";
+    else if (sc == SelectFileCmdBuild::SelectControl::CURRENT_DF)
+		os << "CURRENT_DF";
+
+	return os;
+}
+
 }
 }
 }

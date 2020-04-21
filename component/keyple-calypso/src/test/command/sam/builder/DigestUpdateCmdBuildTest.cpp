@@ -13,7 +13,6 @@
  ******************************************************************************/
 
 #include "DigestUpdateCmdBuildTest.h"
-//#include "SamRevision.h"
 #include "DigestUpdateCmdBuild.h"
 #include "AbstractApduCommandBuilder.h"
 #include "ApduRequest.h"

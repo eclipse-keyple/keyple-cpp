@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -75,12 +76,12 @@ public:
     /**
      *
      */
-    bool operator==(const PoClass& other);
+    bool operator==(const PoClass& other) const;
 
     /**
      *
      */
-    bool operator!=(const PoClass& other);
+    bool operator!=(const PoClass& other) const;
 
     /**
      *
@@ -100,12 +101,12 @@ public:
     /**
      *
      */
-    std::string toString();
-
-    /**
-     *
-     */
     static PoClass valueOf(const std::string& name);
+
+	/**
+	 *
+	 */
+	friend std::ostream& operator<<(std::ostream& os, const PoClass& pc);
 
 private:
     /**

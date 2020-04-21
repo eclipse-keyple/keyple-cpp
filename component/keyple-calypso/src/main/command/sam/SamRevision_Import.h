@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -105,7 +106,7 @@ public:
     /**
      *
      */
-    bool operator==(const SamRevision& other);
+    bool operator==(const SamRevision& other) const;
 
     /**
      *
@@ -136,6 +137,11 @@ public:
      *
      */
     static SamRevision valueOf(const std::string& name);
+
+	/**
+	 *
+	 */
+	friend std::ostream& operator<<(std::ostream& os, const SamRevision& sr);
 
 private:
     /**
