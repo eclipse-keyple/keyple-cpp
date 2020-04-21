@@ -21,7 +21,7 @@
 
 /* Common*/
 #include "Export.h"
-#include "Logger.h"
+#include "Logger_Import.h"
 
 namespace keyple {
 namespace common {

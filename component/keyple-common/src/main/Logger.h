@@ -22,6 +22,9 @@
 #include <stdexcept>
 #include <string>
 #include <cstdio>
+#include <ostream>
+#include <sstream>
+#include <vector>
 
 #ifdef __GNUG__ // gnu C++ compiler
 #include <cxxabi.h>
@@ -29,13 +32,6 @@
 
 /* Common*/
 #include "Export.h"
-
-/* Forward declaration */
-namespace keyple {
-namespace common {
-class LoggerFactory;
-}
-}
 
 namespace keyple {
 namespace common {
@@ -77,38 +73,63 @@ public:
     /**
      *
      */
-    void trace(const std::string s, ...);
+    template <typename... Args>
+    void trace(const std::string& format, Args... args)
+    {
+        if (level >= Level::logTrace)
+            log("TRACE", format, std::forward<Args>(args)...);
+    }
 
     /**
-     *
-     */
-    void debug(const std::string s, ...);
+	 *
+	 */
+    template <typename... Args>
+    void debug(const std::string& format, Args... args)
+    {
+        if (level >= Level::logDebug)
+            log("DEBUG", format, std::forward<Args>(args)...);
+    }
 
     /**
-     *
-     */
-    void warn(const std::string s, ...);
+	 *
+	 */
+    template <typename... Args>
+    void warn(const std::string& format, Args... args)
+    {
+        if (level >= Level::logWarn)
+            log("WARN", format, std::forward<Args>(args)...);
+    }
 
     /**
-     *
-     */
-    void info(const std::string s, ...);
+	 *
+	 */
+    template <typename... Args>
+    void info(const std::string& format, Args... args)
+    {
+        if (level >= Level::logInfo)
+            log("INFO", format, std::forward<Args>(args)...);
+    }
 
     /**
-     *
-     */
-    void error(const std::string s, ...);
+	 *
+	 */
+    template <typename... Args>
+    void error(const std::string& format, Args... args)
+    {
+        if (level >= Level::logError)
+            log("ERROR", format, std::forward<Args>(args)...);
+    }
 
 private:
     /**
      *
      */
-    const size_t maxClassNameLength = 100;
+    static Level level;
 
     /**
      *
      */
-    static Level level;
+    const size_t maxClassNameLength = 100;
 
     /**
      *
@@ -120,7 +141,7 @@ private:
      */
     std::mutex* mtx;
 
-/**
+    /**
      *
      */
 #ifdef __GNUG__ // gnu C++ compiler
@@ -146,20 +167,68 @@ private:
     }
 #endif // _GNUG_
 
+    void printf(std::ostringstream& os, const char* s)
+    {
+        while (s && *s) {
+            if (*s == '%' && *(s + 1) != '%')
+                throw std::runtime_error("invalid format: missing arguments");
+            os << *s++;
+        }
+    }
+
+    template <typename T, typename... Args>
+    void printf(std::ostringstream& os, const char* s, T& value, Args... args)
+    {
+        while (s && *s) {
+            if (*s == '%' && *(s + 1) != '%') {
+                os << value;
+                return printf(os, ++s, args...);
+            }
+            os << *s++;
+        }
+        throw std::runtime_error("extra arguments provided to printf");
+    }
+
+    template <typename T, typename... Args>
+    void printf(std::ostringstream& os, const char* s, T* value, Args... args)
+    {
+        while (s && *s) {
+            if (*s == '%' && *(s + 1) != '%') {
+                os << *value;
+                return printf(os, ++s, args...);
+            }
+            os << *s++;
+        }
+        throw std::runtime_error("extra arguments provided to printf");
+    }
+
     /**
-     *
-     */
+	 * Because of variadic templates usage, the function must be declared and
+	 * defined in the header file.
+	 */
     template <typename... Args>
-    void log(const std::string label, const std::string format, va_list args)
+    void log(const std::string& label, const std::string& format, Args... args)
     {
         mtx->lock();
 
         std::printf("[%5s]   [%-100s]   ", label.c_str(), className.c_str());
-        std::vprintf(format.c_str(), args);
+        std::ostringstream os;
+        printf(os, format.c_str(), args...);
+        const std::string& str = os.str();
+        std::printf(str.c_str());
 
         mtx->unlock();
     }
 };
 
 }
+}
+
+
+namespace std {
+/**
+ * Helper functions
+ */
+EXPORT std::ostream& operator<<(std::ostream& os,
+                                const std::vector<uint8_t>& v);
 }
