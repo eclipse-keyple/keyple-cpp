@@ -214,7 +214,7 @@ private:
         std::ostringstream os;
         printf(os, format.c_str(), args...);
         const std::string& str = os.str();
-        std::printf(str.c_str());
+        std::printf("%s", str.c_str());
 
         mtx->unlock();
     }

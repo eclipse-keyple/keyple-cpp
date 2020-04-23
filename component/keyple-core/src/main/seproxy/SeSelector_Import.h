@@ -53,9 +53,9 @@ public:
     class IMPORT AidSelector
     : public std::enable_shared_from_this<AidSelector> {
     public:
-		/**
-	     *
-		 */
+        /**
+         *
+         */
         friend std::ostream& operator<<(std::ostream& os, const AidSelector& a);
 
         /**
@@ -335,8 +335,8 @@ public:
             virtual bool startsWith(std::shared_ptr<IsoAid> aid);
 
             /**
-			 *
-			 */
+             *
+             */
             friend std::ostream& operator<<(std::ostream& os, const IsoAid& a);
 
         private:
@@ -389,11 +389,14 @@ public:
             std::shared_ptr<std::set<int>> successfulSelectionStatusCodes);
 
         /**
+         * Copy constructor
+         */
+        AidSelector(const AidSelector& o);
+
+        /**
          * Destructor
          */
-        virtual ~AidSelector()
-        {
-        }
+        virtual ~AidSelector();
 
         /**
          * Getter for the AID provided at construction time

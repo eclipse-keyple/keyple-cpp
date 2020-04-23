@@ -54,8 +54,8 @@ public:
     : public std::enable_shared_from_this<AidSelector> {
     public:
         /**
-	     *
-		 */
+         *
+         */
         friend std::ostream& operator<<(std::ostream& os, const AidSelector& a);
 
         /**
@@ -334,10 +334,10 @@ public:
              */
             virtual bool startsWith(std::shared_ptr<IsoAid> aid);
 
-			/**
-			 *
-			 */
-			friend std::ostream& operator<<(std::ostream& os, const IsoAid& a);
+            /**
+             *
+             */
+            friend std::ostream& operator<<(std::ostream& os, const IsoAid& a);
 
         private:
             /**
@@ -389,11 +389,14 @@ public:
             std::shared_ptr<std::set<int>> successfulSelectionStatusCodes);
 
         /**
+         * Copy constructor
+         */
+        AidSelector(const AidSelector& o);
+
+        /**
          * Destructor
          */
-        virtual ~AidSelector()
-        {
-        }
+        virtual ~AidSelector();
 
         /**
          * Getter for the AID provided at construction time
@@ -495,10 +498,10 @@ public:
         */
         virtual bool atrMatches(const std::vector<uint8_t>& atr);
 
-		/**
-		 *
-		 */
-		friend std::ostream& operator<<(std::ostream& os, const AtrFilter& af);
+        /**
+         *
+         */
+        friend std::ostream& operator<<(std::ostream& os, const AtrFilter& af);
 
     private:
         /**
@@ -579,17 +582,17 @@ public:
      */
     const std::string& getExtraInfo() const;
 
-	/**
-	 *
-	 */
-	friend EXPORT std::ostream& operator<<(std::ostream& os,
-		                                   const SeSelector& ss);
+    /**
+     *
+     */
+     friend EXPORT std::ostream& operator<<(std::ostream& os,
+                                            const SeSelector& ss);
 
-	/**
-	 *
-	 */
+    /**
+     *
+     */
     friend EXPORT std::ostream& operator<<(
-		std::ostream& os, const std::shared_ptr<SeSelector>& ss);
+        std::ostream& os, const std::shared_ptr<SeSelector>& ss);
 
 private:
     /**

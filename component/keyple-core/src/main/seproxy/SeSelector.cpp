@@ -234,6 +234,19 @@ AidSelector::AidSelector(
 {
 }
 
+AidSelector::AidSelector(const AidSelector& o)
+: std::enable_shared_from_this<AidSelector>(o),
+  fileOccurrence(o.fileOccurrence),
+  fileControlInformation(o.fileControlInformation),
+  aidToSelect(o.aidToSelect),
+  successfulSelectionStatusCodes(o.successfulSelectionStatusCodes)
+{
+}
+
+AidSelector::~AidSelector()
+{
+}
+
 std::shared_ptr<IsoAid> AidSelector::getAidToSelect()
 {
     return aidToSelect;
