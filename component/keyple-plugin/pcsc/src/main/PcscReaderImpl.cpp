@@ -52,7 +52,7 @@ const std::string PcscReaderImpl::PROTOCOL_ANY  = "T=0";
 PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
                                PcscTerminal& terminal)
 : AbstractObservableLocalReader(pluginName, terminal.getName()),
-  terminal(terminal)
+  loopWaitSeRemoval(true), terminal(terminal)
 {
     this->executorService = std::make_shared<MonitoringPool>();
     this->stateService    = initStateService();
@@ -81,7 +81,7 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
 PcscReaderImpl::PcscReaderImpl(const PcscReaderImpl& o)
 : Nameable(), Configurable(),
   AbstractObservableLocalReader(o.pluginName, o.terminal.getName()),
-  executorService(o.executorService), terminal(o.terminal),
+  loopWaitSeRemoval(true), executorService(o.executorService), terminal(o.terminal),
   parameterCardProtocol(o.parameterCardProtocol),
   cardExclusiveMode(o.cardExclusiveMode), cardReset(o.cardReset),
   transmissionMode(o.transmissionMode)
@@ -158,6 +158,9 @@ bool PcscReaderImpl::waitForCardPresent()
     /* Activate loop */
     loopWaitSe = true;
 
+    /* Rearm flag for removal process as well */
+    loopWaitSeRemoval = true;
+
     try {
         logger->trace("[%] waitForCardPresent => looping...\n", getName());
         while (loopWaitSe) {
@@ -192,7 +195,9 @@ bool PcscReaderImpl::waitForCardAbsentNative()
     logger->debug("[%] waitForCardAbsentNative => loop with latency of "
                   "% ms\n", getName(), removalLatency);
 
-    loopWaitSeRemoval = true;
+    while(!loopWaitSeRemoval)
+        /* A stopWaitForCardRemoval() has been triggered. Wait for finish. */
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     try {
         while (loopWaitSeRemoval) {
@@ -210,8 +215,11 @@ bool PcscReaderImpl::waitForCardAbsentNative()
                 //return false;
                 //                    }
             }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
 
+        loopWaitSeRemoval = true;
         return false;
 
     } catch (PcscTerminalException& e) {
