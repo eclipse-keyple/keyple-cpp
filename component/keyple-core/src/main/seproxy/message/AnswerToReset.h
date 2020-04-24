@@ -20,6 +20,7 @@
 /* Common*/
 #include "Object.h"
 #include "Export.h"
+#include "LoggerFactory.h"
 
 namespace keyple {
 namespace core {
@@ -62,6 +63,17 @@ public:
      *
      */
     int hashCode() override;
+
+	/**
+	 *
+	 */
+	friend std::ostream& operator<<(std::ostream& os, const AnswerToReset& atr);
+
+	/**
+	 *
+	 */
+	friend std::ostream& operator<<(std::ostream& os,
+		                            const std::shared_ptr<AnswerToReset>& atr);
 
 protected:
     /**
