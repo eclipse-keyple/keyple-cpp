@@ -23,7 +23,6 @@
 
 /* Common */
 #include "Object.h"
-#include "Serializable.h"
 #include "stringhelper.h"
 #include "LoggerFactory.h"
 

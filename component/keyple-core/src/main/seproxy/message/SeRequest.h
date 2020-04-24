@@ -26,9 +26,6 @@
 #include "KeypleCoreExport.h"
 #include "SeProtocol.h"
 
-/* Common */
-#include "Serializable.h"
-
 /* Forward declaration */
 namespace keyple {
 namespace core {

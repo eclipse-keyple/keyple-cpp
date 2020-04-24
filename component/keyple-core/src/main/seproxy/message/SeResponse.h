@@ -21,7 +21,6 @@
 #include <memory>
 
 /* Common */
-#include "Serializable.h"
 #include "Object.h"
 
 /* Core */

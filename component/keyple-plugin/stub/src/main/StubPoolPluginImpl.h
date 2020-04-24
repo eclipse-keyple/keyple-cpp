@@ -128,9 +128,7 @@ public:
     std::shared_ptr<SeReader> getReader(const std::string& name) override;
 
     /**
-     * This function overrides AbstractPlugin's or AbstractReader's function
-     * through the Comparable class. We don't have that class in C++, no need
-     * for override keyword.
+     * 
      */
     int compareTo(std::shared_ptr<ReaderPlugin> plugin);
 

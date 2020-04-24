@@ -24,7 +24,6 @@
 #include "LoggerFactory.h"
 #include "stringbuilder.h"
 #include "Pattern.h"
-#include "Serializable.h"
 
 namespace keyple {
 namespace core {
