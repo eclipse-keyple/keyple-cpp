@@ -18,17 +18,17 @@
 #include <mutex>
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
 #include "ObservablePlugin.h"
-#include "ObservableReader_Import.h"
-#include "PluginEvent_Import.h"
-#include "ReaderEvent_Import.h"
+#include "ObservableReader.h"
+#include "PluginEvent.h"
+#include "ReaderEvent.h"
 #include "ReaderPlugin.h"
 
 /* Calypso */
+#include "KeypleCalypsoExport.h"
 #include "SamIdentifier.h"
 #include "SamResource.h"
 

@@ -24,11 +24,11 @@
 #include "LoggerFactory.h"
 
 /* Core */
-#include "Tag_Import.h"
+#include "Tag.h"
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 
 namespace keyple {
 namespace calypso {

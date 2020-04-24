@@ -20,7 +20,7 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 #include "LoggerFactory.h"
 #include "stringbuilder.h"
 #include "Pattern.h"
@@ -36,7 +36,7 @@ using namespace keyple::common;
 /**
  * Single APDU request wrapper
   */
-class EXPORT ApduRequest final
+class KEYPLECORE_API ApduRequest final
 : public std::enable_shared_from_this<ApduRequest> {
 public:
     /**
@@ -137,19 +137,19 @@ public:
     /**
      *
      */
-    friend EXPORT std::ostream& operator<<(std::ostream& os,
-		                                   const ApduRequest& se);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+		                                           const ApduRequest& se);
 
 	/**
      *
      */
-    friend EXPORT std::ostream& operator<<(
+    friend KEYPLECORE_API std::ostream& operator<<(
 		std::ostream& os, const std::shared_ptr<ApduRequest>& se);
 
     /**
      *
      */
-    friend EXPORT std::ostream& operator<<(
+    friend KEYPLECORE_API std::ostream& operator<<(
 		std::ostream& os, const std::vector<std::shared_ptr<ApduRequest>>& se);
 	
 

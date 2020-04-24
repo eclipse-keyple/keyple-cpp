@@ -23,10 +23,10 @@
 /* Core */
 #include "ChannelControl.h"
 #include "ApduRequest.h"
-#include "SeProtocol_Import.h"
+#include "KeypleCoreExport.h"
+#include "SeProtocol.h"
 
 /* Common */
-#include "Export.h"
 #include "Serializable.h"
 
 /* Forward declaration */
@@ -51,7 +51,8 @@ using namespace keyple::core::seproxy::protocol;
  *
  * @see SeResponse
  */
-class EXPORT SeRequest final : public std::enable_shared_from_this<SeRequest> {
+class KEYPLECORE_API SeRequest final
+: public std::enable_shared_from_this<SeRequest> {
 public:
     /**
      * The constructor called by a ProxyReader in order to open a logical
@@ -103,19 +104,20 @@ public:
     /**
      *¬
      */
-    friend EXPORT
-		std::ostream& operator<<(std::ostream& os, const SeRequest& se);
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const SeRequest& se);
 
     /**
 	 *
 	 */
-    friend EXPORT std::ostream&
+    friend KEYPLECORE_API std::ostream&
         operator<<(std::ostream& os, const std::shared_ptr<SeRequest>& s);
 
 	/**
 	 *
 	 */
-	friend EXPORT std::ostream& operator<<(
+    friend KEYPLECORE_API std::ostream&
+    operator<<(
 		std::ostream& os, const std::set<std::shared_ptr<SeRequest>>& s);
 
 private:

@@ -15,10 +15,10 @@
 #pragma once
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
+#include "KeypleCoreExport.h"
 #include "MonitoringJob.h"
 #include "MonitoringPool.h"
 
@@ -48,7 +48,7 @@ enum class MonitoringState {
  * {@link AbstractObservableLocalReader.InternalEvent} that might results on a
  * switch of state.
  */
-class EXPORT AbstractObservableState {
+class KEYPLECORE_API AbstractObservableState {
 public:
     /**
      * Get the current state identifier of the state machine
@@ -144,7 +144,8 @@ private:
         LoggerFactory::getLogger(typeid(AbstractObservableState));
 };
 
-EXPORT std::ostream& operator<<(std::ostream& os, const MonitoringState& ms);
+KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                        const MonitoringState& ms);
 
 }
 }

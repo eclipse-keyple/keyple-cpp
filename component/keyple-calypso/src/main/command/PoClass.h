@@ -19,7 +19,7 @@
 #include <vector>
 
 /* Common */
-#include "Export.h"
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -29,7 +29,7 @@ namespace command {
  * Class for the Calypso command: LEGACY for REV1 / BPRIME type PO, ISO for
  * REV2/3 / B type
  */
-class EXPORT PoClass final {
+class KEYPLECALYPSO_API PoClass final {
 public:
     /**
      *

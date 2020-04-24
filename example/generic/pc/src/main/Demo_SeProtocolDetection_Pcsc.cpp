@@ -16,16 +16,16 @@
 #include "AbstractObservableLocalReader.h"
 #include "AbstractReader.h"
 #include "KeypleBaseException.h"
-#include "ObservableReader_Import.h"
-#include "SeProtocol_Import.h"
+#include "ObservableReader.h"
+#include "SeProtocol.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 
 /* Plugin */
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
-#include "PcscReader_Import.h"
-#include "PcscProtocolSetting_Import.h"
+#include "PcscReader.h"
+#include "PcscProtocolSetting.h"
 
 /* Example */
 #include "ReaderUtilities.h"

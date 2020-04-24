@@ -20,12 +20,12 @@
 
 /* Common*/
 #include "Configurable.h"
-#include "Export.h"
 #include "LoggerFactory.h"
 #include "Nameable.h"
 
 /* Core*/
 #include "AbstractReader.h"
+#include "KeypleCoreExport.h"
 #include "ReaderPlugin.h"
 #include "ObservablePlugin.h"
 #include "PluginEvent.h"
@@ -56,7 +56,7 @@ using namespace keyple::common;
 /**
  * Observable plugin. These plugin can report when a reader is added or removed.
  */
-class EXPORT AbstractPlugin
+class KEYPLECORE_API AbstractPlugin
 : public Observable<PluginEvent>, public virtual ReaderPlugin,
   public std::enable_shared_from_this<AbstractPlugin> {
 public:

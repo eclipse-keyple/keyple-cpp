@@ -15,11 +15,11 @@
 #pragma once
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
 #include "AbstractObservableState.h"
+#include "KeypleCoreExport.h"
 #include "MonitoringJob.h"
 #include "SmartRemovalReader.h"
 
@@ -50,7 +50,7 @@ using namespace keyple::common;
  * an internal
  * STOP_DETECT event is fired.
  */
-class EXPORT SmartRemovalMonitoringJob : public MonitoringJob {
+class KEYPLECORE_API SmartRemovalMonitoringJob : public MonitoringJob {
 public:
     /**
      *

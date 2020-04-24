@@ -27,7 +27,7 @@
 #include "SelectionsResult.h"
 #include "SelectionStatus.h"
 #include "SeReader.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 
 namespace keyple {
 namespace core {

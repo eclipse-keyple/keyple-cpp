@@ -24,7 +24,7 @@
 #include "KeyplePluginNotFoundException.h"
 #include "MatchingSelection.h"
 #include "ReaderPoolPlugin.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 #include "SeSelection.h"
@@ -33,7 +33,7 @@
 #include "SamResourceManager.h"
 #include "SamSelectionRequest.h"
 #include "SamSelector.h"
-#include "SamRevision_Import.h"
+#include "SamRevision.h"
 
 namespace keyple {
 namespace calypso {

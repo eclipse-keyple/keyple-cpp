@@ -21,7 +21,7 @@
 #include "KeypleReaderNotFoundException.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
 #include "PcscReader.h"
@@ -31,7 +31,7 @@
 #include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 

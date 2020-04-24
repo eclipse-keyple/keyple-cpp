@@ -22,11 +22,13 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
 #include "Object.h"
 #include "Serializable.h"
 #include "stringhelper.h"
 #include "LoggerFactory.h"
+
+/* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -38,8 +40,8 @@ using namespace keyple::common;
 /**
  * Single APDU response wrapper
  */
-class EXPORT ApduResponse : public std::enable_shared_from_this<ApduResponse>,
-                            public Object {
+class KEYPLECORE_API ApduResponse
+: public std::enable_shared_from_this<ApduResponse>, public Object {
 public:
     /**
      *
@@ -106,19 +108,19 @@ public:
     /**
      *
      */
-    friend EXPORT std::ostream& operator<<(std::ostream& os,
-                                           const ApduResponse& r);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const ApduResponse& r);
 
     /**
      *
      */
-    friend EXPORT std::ostream& operator<<(
-		std::ostream& os, const std::shared_ptr<ApduResponse>& r);
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<ApduResponse>& r);
 
 	/**
 	 *
 	 */
-    friend EXPORT std::ostream& operator<<(
+    friend KEYPLECORE_API std::ostream& operator<<(
 		std::ostream& os, const std::vector<std::shared_ptr<ApduResponse>>& v);
 
 protected:

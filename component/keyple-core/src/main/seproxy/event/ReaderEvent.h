@@ -12,8 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#ifndef KEYPLE_SEPROXY_READER_EVENT_H
-#define KEYPLE_SEPROXY_READER_EVENT_H
+#pragma once
 
 #include <ostream>
 #include <string>
@@ -21,7 +20,7 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 
 /* Core */
 #include "AbstractDefaultSelectionsResponse.h"
@@ -37,7 +36,7 @@ using namespace keyple::core::seproxy::message;
 /**
  * ReaderEvent used to notify changes at reader level
  */
-class EXPORT ReaderEvent final
+class KEYPLECORE_API ReaderEvent final
 : public std::enable_shared_from_this<ReaderEvent> {
 
 public:
@@ -45,7 +44,7 @@ public:
      * The different types of reader events, reflecting the status of the reader
      * regarding the presence of the card
      */
-    class EXPORT EventType final {
+    class KEYPLECORE_API EventType final {
     public:
         /**
          * An timeout error occurred.
@@ -140,7 +139,8 @@ public:
 		/**
 		 *
 		 */
-		friend EXPORT std::ostream& operator<<(std::ostream& os, const EventType& et);
+        friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                       const EventType& et);
 
     private:
         /**
@@ -214,7 +214,8 @@ public:
 	/**
 	 *
 	 */
-	friend EXPORT std::ostream& operator<<(std::ostream& os, const ReaderEvent& re);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const ReaderEvent& re);
 
     /**
      *
@@ -250,5 +251,3 @@ private:
 }
 }
 }
-
-#endif

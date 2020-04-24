@@ -1,10 +1,16 @@
-#
-# Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-#
-# All rights reserved. This program and the accompanying materials are made available under the
-# terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
-# available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
-#
+#******************************************************************************
+#* Copyright (c) 2018 Calypso Networks Association                            *
+#* https://www.calypsonet-asso.org/                                           *
+#*                                                                            *
+#* See the NOTICE file(s) distributed with this work for additional           *
+#* information regarding copyright ownership.                                 *
+#*                                                                            *
+#* This program and the accompanying materials are made available under the   *
+#* terms of the Eclipse Public License 2.0 which is available at              *
+#* http://www.eclipse.org/legal/epl-2.0                                       *
+#*                                                                            *
+#* SPDX-License-Identifier: EPL-2.0                                           *
+#******************************************************************************/
 
 PROJECT(KeypleCommon C CXX)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
@@ -24,9 +30,7 @@ SET(CMAKE_CXX_STANDARD 11)
 
 SET(LIBRARY_NAME keyplecommon)
 
-IF(WIN32)
-	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
-ENDIF(WIN32)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DKEYPLECOMMON_EXPORT")
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}

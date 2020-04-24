@@ -29,10 +29,10 @@
 #include "MatchingSelection.h"
 #include "PcscReader.h"
 #include "PcscReadersSettings.h"
-#include "PcscProtocolSetting_Import.h"
+#include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 
 /* Common */
 #include "stringhelper.h"

@@ -17,14 +17,14 @@
 #include <memory>
 
 /* Core */
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -42,7 +42,8 @@ using namespace keyple::common;
  * <p>
  * The FCI structure is analyzed and all subfields are made available through as many getters.
  */
-class EXPORT SelectFileRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API SelectFileRespPars final
+: public AbstractPoResponseParser {
 public:
     /**
      * File Type Values

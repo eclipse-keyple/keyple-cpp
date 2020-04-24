@@ -19,11 +19,11 @@
 #include <map>
 #include <memory>
 
-/* Common */
-#include "Export.h"
+/* Plugin */
+#include "KeyplePluginStubExport.h"
 
 /* Core */
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 
 /* Forward class declarations */
 namespace keyple {
@@ -49,7 +49,7 @@ using namespace keyple::core::seproxy::protocol;
  * <p>
  * The application can choose to add all parameters or only a subset.
  */
-class EXPORT StubProtocolSetting
+class KEYPLEPLUGINSTUB_API StubProtocolSetting
 : public std::enable_shared_from_this<StubProtocolSetting> {
 public:
     /**

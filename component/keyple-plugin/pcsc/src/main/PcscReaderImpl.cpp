@@ -21,7 +21,7 @@
 #include "KeypleIOReaderException.h"
 #include "KeypleReaderException.h"
 #include "ObservableReaderStateService.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "SmartInsertionMonitoringJob.h"
 #include "SmartRemovalMonitoringJob.h"
 #include "WaitForStartDetect.h"

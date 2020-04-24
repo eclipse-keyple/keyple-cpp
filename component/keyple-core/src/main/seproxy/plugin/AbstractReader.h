@@ -20,16 +20,16 @@
 
 /* Common */
 #include "Configurable.h"
-#include "Export.h"
 #include "Nameable.h"
 #include "Observable.h"
 
 /* Core */
 #include "DefaultSelectionsRequest.h"
 #include "KeypleChannelControlException.h"
+#include "KeypleCoreExport.h"
 #include "KeypleIOReaderException.h"
 #include "KeypleReaderException.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "ProxyReader.h"
 
 namespace keyple {
@@ -58,10 +58,9 @@ using ReaderObserver = ObservableReader::ReaderObserver;
  * <li>Plugin naming management</li>
  * </ul>
  */
-class EXPORT AbstractReader : public Observable<ReaderEvent>,
-                              public ProxyReader,
-                              public virtual Nameable,
-                              public virtual Configurable {
+class KEYPLECORE_API AbstractReader
+: public Observable<ReaderEvent>, public ProxyReader,
+  public virtual Nameable, public virtual Configurable {
 public:
     /**
      * Compare the name of the current SeReader to the name of the SeReader

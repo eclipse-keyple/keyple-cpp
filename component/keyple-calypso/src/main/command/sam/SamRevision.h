@@ -18,8 +18,8 @@
 #include <string>
 #include <vector>
 
-/* Common */
-#include "Export.h"
+/* Calypso */
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -30,7 +30,7 @@ namespace sam {
     * This enumeration registers all supported revisions of SAM.
     *
     */
-class EXPORT SamRevision final {
+class KEYPLECALYPSO_API SamRevision final {
 public:
     /**
      * The revision of C1 and S1E SAM. CLA 0x00 or 0x80

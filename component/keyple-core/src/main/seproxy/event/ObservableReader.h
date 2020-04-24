@@ -18,13 +18,11 @@
 #include <vector>
 #include <memory>
 
-/* Common */
-#include "Export.h"
-
 /* Core */
 #include "AbstractDefaultSelectionsRequest.h"
+#include "KeypleCoreExport.h"
 #include "Observable.h"
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "SeReader.h"
 
 namespace keyple {
@@ -44,7 +42,7 @@ using namespace keyple::core::seproxy::event;
  * <li>Definition of polling and notification modes
  * </ul>
  */
-class EXPORT ObservableReader : public virtual SeReader {
+class KEYPLECORE_API ObservableReader : public virtual SeReader {
 public:
     /**
      * Interface to be implemented by reader observers.
@@ -68,7 +66,7 @@ public:
      * The NotificationMode defines the expected behavior when processing a
      * default selection.
      */
-    class EXPORT NotificationMode final {
+    class KEYPLECORE_API NotificationMode final {
     public:
         /**
          * All SEs presented to readers are notified regardless of the result of
@@ -381,8 +379,8 @@ public:
 /**
  *
  */
-EXPORT std::ostream& operator<<(std::ostream& os,
-                                const ObservableReader::PollingMode& pm);
+KEYPLECORE_API std::ostream& operator<<(
+    std::ostream& os, const ObservableReader::PollingMode& pm);
 
 }
 }

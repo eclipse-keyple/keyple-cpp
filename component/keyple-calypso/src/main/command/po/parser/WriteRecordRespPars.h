@@ -18,7 +18,7 @@
 #include <memory>
 
 /* Core */
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 #include "AbstractPoResponseParser.h"
 #include "ApduResponse.h"
 

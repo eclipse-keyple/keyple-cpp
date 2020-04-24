@@ -17,8 +17,8 @@
 /* Core */
 #include "AbstractPluginFactory.h"
 
-/* Common */
-#include "Export.h"
+/* Plugin */
+#include "KeyplePluginPcscExport.h"
 
 namespace keyple {
 namespace plugin {
@@ -29,7 +29,7 @@ using namespace keyple::core::seproxy;
 /**
  * Builds a {@link PcscPlugin}
  */
-class EXPORT PcscPluginFactory : public AbstractPluginFactory {
+class KEYPLEPLUGINPCSC_API PcscPluginFactory : public AbstractPluginFactory {
 public:
     /**
      *

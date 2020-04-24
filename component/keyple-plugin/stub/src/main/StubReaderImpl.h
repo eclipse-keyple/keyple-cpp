@@ -21,19 +21,19 @@
 
 /* Common */
 #include "exceptionhelper.h"
-#include "Export.h"
 #include "LoggerFactory.h"
 #include "stringhelper.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "MonitoringPool.h"
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "SmartInsertionReader.h"
 #include "SmartRemovalReader.h"
 #include "TransmissionMode.h"
 
 /* Stub */
+#include "KeyplePluginStubExport.h"
 #include "StubReader.h"
 
 /* Forward declarations */
@@ -57,10 +57,9 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::common;
 
-class EXPORT StubReaderImpl : public AbstractObservableLocalReader,
-                              public StubReader,
-                              public SmartInsertionReader,
-                              public SmartRemovalReader {
+class KEYPLEPLUGINSTUB_API StubReaderImpl
+: public AbstractObservableLocalReader, public StubReader,
+  public SmartInsertionReader, public SmartRemovalReader {
 public:
     /**
      * Do not use directly

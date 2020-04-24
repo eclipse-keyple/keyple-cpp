@@ -19,8 +19,10 @@
 
 /* Common*/
 #include "Object.h"
-#include "Export.h"
 #include "LoggerFactory.h"
+
+/* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -34,8 +36,8 @@ using namespace keyple::common;
  * <p>
  * (May be enhanced to provide analysis methods)
  */
-class EXPORT AnswerToReset : public std::enable_shared_from_this<AnswerToReset>,
-                             public Object {
+class KEYPLECORE_API AnswerToReset
+: public std::enable_shared_from_this<AnswerToReset>, public Object {
 public:
     /**
      *

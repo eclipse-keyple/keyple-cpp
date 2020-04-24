@@ -21,7 +21,7 @@
 #include "StubPluginFactory.h"
 #include "StubPluginImpl.h"
 #include "SeProxyService.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "SeReader.h"
 #include "StubReader.h"
 

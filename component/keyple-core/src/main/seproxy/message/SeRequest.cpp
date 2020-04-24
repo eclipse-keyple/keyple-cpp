@@ -15,7 +15,7 @@
 #include "SeRequest.h"
 #include "SeSelector.h"
 #include "ApduRequest.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "Pattern.h"
 
 namespace keyple {

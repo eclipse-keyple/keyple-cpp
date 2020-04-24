@@ -23,13 +23,13 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
 #include "ApduRequest.h"
 #include "ChannelControl.h"
-#include "SeProtocol_Import.h"
+#include "KeypleCoreExport.h"
+#include "SeProtocol.h"
 
 namespace keyple {
 namespace core {
@@ -44,13 +44,14 @@ using namespace keyple::common;
  * The SeSelector class groups the information and methods used to select a
  * particular secure element
  */
-class EXPORT SeSelector : public std::enable_shared_from_this<SeSelector> {
+class KEYPLECORE_API SeSelector
+: public std::enable_shared_from_this<SeSelector> {
 public:
     /**
      * Static nested class to hold the data elements used to perform an AID
      * based selection
      */
-    class EXPORT AidSelector
+    class KEYPLECORE_API AidSelector
     : public std::enable_shared_from_this<AidSelector> {
     public:
         /**
@@ -65,7 +66,7 @@ public:
          * The getIsoBitMask method provides the bit mask to be used to set P2
          * in the select command (ISO/IEC 7816-4.2)
          */
-        class EXPORT FileOccurrence final {
+        class KEYPLECORE_API FileOccurrence final {
         public:
             static FileOccurrence FIRST;
             static FileOccurrence LAST;
@@ -177,7 +178,7 @@ public:
          * The getIsoBitMask method provides the bit mask to be used to set P2
          * in the select command (ISO/IEC 7816-4.2)
          */
-        class EXPORT FileControlInformation final {
+        class KEYPLECORE_API FileControlInformation final {
         public:
             static FileControlInformation FCI;
             static FileControlInformation FCP;
@@ -285,7 +286,8 @@ public:
         /**
          *
          */
-        class EXPORT IsoAid : public std::enable_shared_from_this<IsoAid> {
+        class KEYPLECORE_API IsoAid
+        : public std::enable_shared_from_this<IsoAid> {
         public:
             /**
              *
@@ -459,7 +461,8 @@ public:
      * Static nested class to hold the data elements used to perform an ATR
      * based filtering
      */
-    class EXPORT AtrFilter : public std::enable_shared_from_this<AtrFilter> {
+    class KEYPLECORE_API AtrFilter
+    : public std::enable_shared_from_this<AtrFilter> {
     public:
         /**
          * Regular expression based filter
@@ -585,13 +588,13 @@ public:
     /**
      *
      */
-     friend EXPORT std::ostream& operator<<(std::ostream& os,
-                                            const SeSelector& ss);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const SeSelector& ss);
 
     /**
      *
      */
-    friend EXPORT std::ostream& operator<<(
+     friend KEYPLECORE_API std::ostream& operator<<(
         std::ostream& os, const std::shared_ptr<SeSelector>& ss);
 
 private:

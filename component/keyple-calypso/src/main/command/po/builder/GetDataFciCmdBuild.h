@@ -22,8 +22,8 @@
 #include "GetDataFciRespPars.h"
 #include "PoClass.h"
 
-/* Common */
-#include "Export.h"
+/* Calypso */
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -44,7 +44,7 @@ using namespace keyple::core::seproxy::message;
 * status in contact mode and thus make calculation of the digest impossible.
 *
 */
-class EXPORT GetDataFciCmdBuild final
+class KEYPLECALYPSO_API GetDataFciCmdBuild final
 : public AbstractPoCommandBuilder<GetDataFciRespPars> {
 private:
     /**

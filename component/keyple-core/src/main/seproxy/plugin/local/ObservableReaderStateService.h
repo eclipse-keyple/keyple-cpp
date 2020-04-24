@@ -17,12 +17,12 @@
 #include <map>
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "AbstractObservableState.h"
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -34,7 +34,7 @@ namespace local {
  * Manages the internal state of an AbstractObservableLocalReader Process
  * InternalEvent against the current state
  */
-class EXPORT ObservableReaderStateService {
+class KEYPLECORE_API ObservableReaderStateService {
 public:
     /**
      *

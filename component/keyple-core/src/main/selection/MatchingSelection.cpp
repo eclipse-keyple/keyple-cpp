@@ -16,8 +16,8 @@
 #include "AbstractMatchingSe.h"
 #include "AbstractSeSelectionRequest.h"
 #include "SeResponse.h"
-#include "SeSelector_Import.h"
-#include "AbstractApduResponseParser_Import.h"
+#include "SeSelector.h"
+#include "AbstractApduResponseParser.h"
 
 namespace keyple {
 namespace core {

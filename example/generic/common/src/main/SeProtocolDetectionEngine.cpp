@@ -20,9 +20,9 @@
 #include "ByteArrayUtil.h"
 #include "ChannelControl.h"
 #include "MatchingSelection.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SeReader.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 
 /* Calypso */
 #include "PoSelector.h"

@@ -35,6 +35,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util
 
 	# Calypso
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po

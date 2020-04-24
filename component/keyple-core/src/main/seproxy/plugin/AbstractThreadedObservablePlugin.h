@@ -22,12 +22,12 @@
 
 /* Core */
 #include "AbstractPlugin.h"
+#include "KeypleCoreExport.h"
 #include "ObservablePlugin.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "SeReader.h"
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 #include "Thread.h"
 
@@ -55,7 +55,7 @@ using namespace keyple::common;
  * The {@link AbstractThreadedObservablePlugin} class provides the means to
  * observe a plugin (insertion/removal of readers) using a monitoring thread.
  */
-class EXPORT AbstractThreadedObservablePlugin : public AbstractPlugin {
+class KEYPLECORE_API AbstractThreadedObservablePlugin : public AbstractPlugin {
 public:
     /**
      * Add a plugin observer.

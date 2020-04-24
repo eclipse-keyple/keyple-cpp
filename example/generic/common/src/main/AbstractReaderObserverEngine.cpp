@@ -20,7 +20,7 @@
 /* Core */
 #include "AbstractDefaultSelectionsResponse.h"
 #include "AbstractReader.h"
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "SeProxyService.h"
 
 namespace keyple {

@@ -31,6 +31,7 @@ INCLUDE_DIRECTORIES(
 	# Example calypso pc
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../pc/src/main
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../pc/src/main/stub/se
+
 	# Core
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/command
@@ -46,10 +47,11 @@ INCLUDE_DIRECTORIES(
 	# Plugin - Stub
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/stub/src/main
 
-	# Smartcard I/O
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main
+	# Common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
 	
 	# Calypso
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po/builder

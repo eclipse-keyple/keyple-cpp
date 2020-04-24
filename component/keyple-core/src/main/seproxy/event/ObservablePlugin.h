@@ -16,11 +16,9 @@
 #include <memory>
 
 /* Core */
+#include "KeypleCoreExport.h"
 #include "ReaderPlugin.h"
 #include "Observable.h"
-
-/* Common */
-#include "Export.h"
 
 /* Forward class declarations */
 namespace keyple {
@@ -40,7 +38,7 @@ namespace event {
 
 using namespace keyple::core::seproxy;
 
-class EXPORT ObservablePlugin : public virtual ReaderPlugin {
+class KEYPLECORE_API ObservablePlugin : public virtual ReaderPlugin {
 public:
     /**
      *

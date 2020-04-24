@@ -15,12 +15,12 @@
 #pragma once
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "AbstractObservableState.h"
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -41,7 +41,7 @@ namespace state {
  * WAIT_FOR_SE_DETECTION.
  * </ul>
  */
-class EXPORT WaitForSeRemoval : public AbstractObservableState {
+class KEYPLECORE_API WaitForSeRemoval : public AbstractObservableState {
 public:
     /**
      *

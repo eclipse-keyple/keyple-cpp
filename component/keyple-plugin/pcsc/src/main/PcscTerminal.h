@@ -15,8 +15,10 @@
 #pragma once
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
+
+/* Plugin */
+#include "KeyplePluginPcscExport.h"
 
 /* PC/SC */
 #if defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
@@ -32,7 +34,7 @@ namespace pcsc {
 
 using namespace keyple::common;
 
-class EXPORT PcscTerminal {
+class KEYPLEPLUGINPCSC_API PcscTerminal {
 public:
     /**
      *

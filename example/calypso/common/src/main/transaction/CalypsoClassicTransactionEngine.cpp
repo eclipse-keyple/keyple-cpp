@@ -21,15 +21,15 @@
 #include "KeypleReaderException.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "PoResource.h"
 #include "PoSelectionRequest.h"
 #include "PoSelector.h"
 #include "ReadDataStructure.h"
 #include "ReadRecordsRespPars.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SeReader.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 #include "TransmissionMode.h"
 
 namespace keyple {

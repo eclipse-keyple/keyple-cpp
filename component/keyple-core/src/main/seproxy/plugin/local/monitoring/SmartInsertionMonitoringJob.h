@@ -15,11 +15,11 @@
 #pragma once
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
 #include "AbstractObservableState.h"
+#include "KeypleCoreExport.h"
 #include "MonitoringJob.h"
 #include "SmartInsertionReader.h"
 
@@ -42,7 +42,7 @@ namespace monitoring {
  * If a communication problem with the reader occurs (KeypleIOReaderException)
  * an internal STOP_DETECT event is fired.
  */
-class EXPORT SmartInsertionMonitoringJob : public MonitoringJob {
+class KEYPLECORE_API SmartInsertionMonitoringJob : public MonitoringJob {
 public:
     /**
      *

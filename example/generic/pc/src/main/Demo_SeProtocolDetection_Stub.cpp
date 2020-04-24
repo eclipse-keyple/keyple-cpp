@@ -14,17 +14,17 @@
 
 /* Core */
 #include "KeypleReaderNotFoundException.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "ReaderPlugin.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SeProxyService.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "SeReader.h"
 #include "StubReader.h"
 
 /* Stub plugin */
 #include "StubPlugin.h"
-#include "StubProtocolSetting_Import.h"
+#include "StubProtocolSetting.h"
 
 /* Example */
 #include "SeProtocolDetectionEngine.h"

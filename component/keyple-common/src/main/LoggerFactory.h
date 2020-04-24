@@ -20,13 +20,13 @@
 #include <vector>
 
 /* Common*/
-#include "Export.h"
-#include "Logger_Import.h"
+#include "KeypleCommonExport.h"
+#include "Logger.h"
 
 namespace keyple {
 namespace common {
 
-class EXPORT LoggerFactory {
+class KEYPLECOMMON_API LoggerFactory {
 public:
     /**
      * Mutex for critical sections (std::cout usage)

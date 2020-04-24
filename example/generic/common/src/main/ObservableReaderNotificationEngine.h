@@ -17,7 +17,7 @@
 #include <memory>
 
 /* Core - Event */
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "ObservablePlugin.h"
 
 /* Common */

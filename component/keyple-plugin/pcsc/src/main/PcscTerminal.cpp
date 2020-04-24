@@ -167,8 +167,8 @@ bool PcscTerminal::isCardPresent(bool release)
 bool PcscTerminal::waitForCardPresent(long long timeout)
 {
     bool present;
-    long current;
-    long start = System::currentTimeMillis();
+    long long current;
+    long long start = System::currentTimeMillis();
 
     logger->debug("waitForCardPresent - waiting for card insertion for % ms\n",
                   timeout);
@@ -275,7 +275,7 @@ void PcscTerminal::closeAndDisconnect(bool reset)
 bool PcscTerminal::waitForCardAbsent(long long timeout)
 {
     bool present;
-    long current;
+    long long current;
     long long start = System::currentTimeMillis();
 
     logger->debug("waitForCardAbsent - waiting for card removal for % ms\n",

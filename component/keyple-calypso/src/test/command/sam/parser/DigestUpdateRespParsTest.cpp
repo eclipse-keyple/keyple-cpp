@@ -18,7 +18,7 @@
 #include "SeResponse.h"
 #include "ByteArrayUtil.h"
 #include "DigestUpdateRespPars.h"
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 
 using namespace keyple::calypso::command::sam::parser;
 

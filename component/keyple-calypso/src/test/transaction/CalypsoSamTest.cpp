@@ -13,7 +13,7 @@
  ******************************************************************************/
 
 #include "CalypsoSamTest.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SamSelectionRequest.h"
 #include "ChannelControl.h"
 #include "CalypsoSam.h"

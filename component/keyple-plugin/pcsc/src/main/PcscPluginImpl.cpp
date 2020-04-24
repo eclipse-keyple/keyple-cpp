@@ -20,8 +20,8 @@
 #include "KeypleRuntimeException.h"
 
 /* PC/SC plugin */
-#include "PcscReader_Import.h"
-#include "PcscReaderImpl_Import.h"
+#include "PcscReader.h"
+#include "PcscReaderImpl.h"
 #include "PcscTerminalException.h"
 
 namespace keyple {

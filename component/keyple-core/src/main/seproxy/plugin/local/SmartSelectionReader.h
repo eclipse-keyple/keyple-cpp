@@ -14,16 +14,14 @@
 
 #pragma once
 
-/* Common */
-#include "Export.h"
-
 /* Core */
-#include "SeReader.h"
-#include "SeSelector_Import.h"
+#include "ApduResponse.h"
 #include "KeypleApplicationSelectionException.h"
 #include "KeypleChannelControlException.h"
+#include "KeypleCoreExport.h"
 #include "KeypleIOReaderException.h"
-#include "ApduResponse.h"
+#include "SeReader.h"
+#include "SeSelector.h"
 
 namespace keyple {
 namespace core {
@@ -35,7 +33,7 @@ namespace local {
  * Interface implemented by readers able to handle natively the SE selection
  * process (e.g. Android OMAPI readers).
  */
-class EXPORT SmartSelectionReader : public SeReader {
+class KEYPLECORE_API SmartSelectionReader : public SeReader {
 public:
     /**
      * Opens a logical channel for the provided AID

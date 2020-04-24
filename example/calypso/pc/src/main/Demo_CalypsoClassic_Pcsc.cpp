@@ -23,12 +23,12 @@
 #include "LoggerFactory.h"
 #include "PcscPluginFactory.h"
 #include "PcscPluginImpl.h"
-#include "PcscReader_Import.h"
-#include "PcscReaderImpl_Import.h"
+#include "PcscReader.h"
+#include "PcscReaderImpl.h"
 #include "PcscReadersSettings.h"
-#include "PcscProtocolSetting_Import.h"
+#include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 
 using namespace keyple::common;
 using namespace keyple::core::seproxy;

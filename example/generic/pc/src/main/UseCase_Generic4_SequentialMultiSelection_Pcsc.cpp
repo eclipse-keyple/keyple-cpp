@@ -25,13 +25,13 @@
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
 #include "ReaderUtilities.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SelectionStatus.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 #include "SeResponse.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 #include "SeSelection.h"
 
 using namespace keyple::common;

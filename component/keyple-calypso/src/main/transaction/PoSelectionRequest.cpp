@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 #include "AbstractMatchingSe.h"
 #include "ApduRequest.h"
 #include "ByteArrayUtil.h"
@@ -22,9 +22,9 @@
 #include "PoCustomModificationCommandBuilder.h"
 #include "ReadRecordsRespPars.h"
 #include "ReadRecordsCmdBuild.h"
-#include "SeCommonProtocols_Import.h"
-#include "SeSelector_Import.h"
-#include "SeProtocol_Import.h"
+#include "SeCommonProtocols.h"
+#include "SeSelector.h"
+#include "SeProtocol.h"
 #include "SelectFileRespPars.h"
 #include "SelectFileCmdBuild.h"
 #include "SeResponse.h"

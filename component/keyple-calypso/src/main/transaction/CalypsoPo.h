@@ -26,7 +26,7 @@
 #include "TransmissionMode.h"
 
 /* Common */
-#include "Export.h"
+#include "KeypleCalypsoExport.h"
 #include "exceptionhelper.h"
 #include "LoggerFactory.h"
 
@@ -60,7 +60,7 @@ using namespace keyple::core::seproxy::protocol;
  * <li>The invalidation status
  * </ul>
  */
-class EXPORT CalypsoPo final : public AbstractMatchingSe {
+class KEYPLECALYPSO_API CalypsoPo final : public AbstractMatchingSe {
 public:
     /**
      * Constructor.

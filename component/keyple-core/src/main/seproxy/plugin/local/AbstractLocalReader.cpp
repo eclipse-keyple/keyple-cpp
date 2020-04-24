@@ -27,13 +27,13 @@
 #include "KeypleReaderException.h"
 #include "KeypleIOReaderException.h"
 #include "KeypleApplicationSelectionException.h"
-#include "ObservableReader_Import.h"
-#include "ReaderEvent_Import.h"
+#include "ObservableReader.h"
+#include "ReaderEvent.h"
 #include "SeRequest.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "SeResponse.h"
 #include "SeRequest.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 #include "SmartSelectionReader.h"
 
 namespace keyple {

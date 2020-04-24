@@ -29,7 +29,7 @@
 #include "SeProxyService.h"
 #include "SeReader.h"
 #include "SeSelection.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 
 namespace keyple {
 namespace example {

@@ -17,10 +17,8 @@
 #include <list>
 #include <memory>
 
-/* Common */
-#include "Export.h"
-
 /* Core */
+#include "KeypleCoreExport.h"
 #include "SeResponse.h"
 
 namespace keyple {
@@ -36,7 +34,7 @@ using namespace keyple::core::seproxy::message;
  * <p>
  * The default selections response provides a list of {@link SeResponse}
  */
-class EXPORT AbstractDefaultSelectionsResponse
+class KEYPLECORE_API AbstractDefaultSelectionsResponse
 : public std::enable_shared_from_this<AbstractDefaultSelectionsResponse> {
 public:
     /**

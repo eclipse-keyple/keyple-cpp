@@ -29,7 +29,6 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/transaction
 
 	# Core
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/selection
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy
@@ -43,10 +42,11 @@ INCLUDE_DIRECTORIES(
 	# Plugin - PC/SC
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/pcsc/src/mai
 
-	# Smartcard I/O
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main
+	# Common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
 
 	# Calypso
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po/builder

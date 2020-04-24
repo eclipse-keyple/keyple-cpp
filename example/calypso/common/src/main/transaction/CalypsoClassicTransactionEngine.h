@@ -20,7 +20,7 @@
 #include <memory>
 
 #include "AbstractReaderObserverEngine.h"
-#include "PoTransaction_Import.h"
+#include "PoTransaction.h"
 #include "SeSelection.h"
 
 namespace keyple {

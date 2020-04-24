@@ -28,12 +28,12 @@
 
 /* Common */
 #include "exceptionhelper.h"
-#include "Export.h"
+#include "KeypleCalypsoExport.h"
 #include "LoggerFactory.h"
 
 /* Core */
-#include "AbstractApduResponseParser_Import.h"
-#include "SeProtocol_Import.h"
+#include "AbstractApduResponseParser.h"
+#include "SeProtocol.h"
 
 /* Calypso */
 #include "PoSelector.h"
@@ -61,7 +61,8 @@ using namespace keyple::calypso::transaction;
  * Specialized selection request to manage the specific characteristics of
  * Calypso POs
  */
-class EXPORT PoSelectionRequest final : public AbstractSeSelectionRequest {
+class KEYPLECALYPSO_API PoSelectionRequest final
+: public AbstractSeSelectionRequest {
 public:
     /**
      * Constructor.

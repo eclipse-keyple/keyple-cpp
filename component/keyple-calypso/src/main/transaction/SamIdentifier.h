@@ -14,10 +14,9 @@
 
 #pragma once
 
-/* Common */
-#include "Export.h"
-
-#include "SamRevision_Import.h"
+/* Calypso */
+#include "KeypleCalypsoExport.h"
+#include "SamRevision.h"
 
 namespace keyple {
 namespace calypso {

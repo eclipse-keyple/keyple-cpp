@@ -17,10 +17,10 @@
 /* Core */
 #include "AbstractObservableState.h"
 #include "AbstractObservableLocalReader.h"
+#include "KeypleCoreExport.h"
 #include "MonitoringJob.h"
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -46,7 +46,7 @@ using namespace keyple::core::seproxy::plugin::local;
  * WAIT_FOR_SE_DETECTION.
  * </ul>
  */
-class EXPORT WaitForSeInsertion : public AbstractObservableState {
+class KEYPLECORE_API WaitForSeInsertion : public AbstractObservableState {
 public:
     /**
      *

@@ -31,12 +31,12 @@
 #endif
 
 /* Common*/
-#include "Export.h"
+#include "KeypleCommonExport.h"
 
 namespace keyple {
 namespace common {
 
-class EXPORT Logger {
+class KEYPLECOMMON_API Logger {
 public:
     /**
      *
@@ -229,6 +229,6 @@ namespace std {
 /**
  * Helper functions
  */
-EXPORT std::ostream& operator<<(std::ostream& os,
+KEYPLECOMMON_API std::ostream& operator<<(std::ostream& os,
                                 const std::vector<uint8_t>& v);
 }

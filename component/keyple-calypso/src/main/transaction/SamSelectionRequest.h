@@ -23,11 +23,9 @@
 
 /* Core */
 #include "AbstractSeSelectionRequest.h"
-#include "SeProtocol_Import.h"
+#include "KeypleCalypsoExport.h"
+#include "SeProtocol.h"
 #include "SeResponse.h"
-
-/* Common */
-#include "Export.h"
 
 namespace keyple {
 namespace calypso {
@@ -44,7 +42,8 @@ using namespace keyple::core::seproxy::message;
  * Specialized selection request to manage the specific characteristics of
  * Calypso SAMs
  */
-class EXPORT SamSelectionRequest : public AbstractSeSelectionRequest {
+class KEYPLECALYPSO_API SamSelectionRequest
+: public AbstractSeSelectionRequest {
 public:
     /**
      * Create a {@link SamSelectionRequest}
