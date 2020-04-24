@@ -30,7 +30,7 @@ ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
+	#${CMAKE_CURRENT_SOURCE_DIR}/java/org/eclipse/keyple
 
 	# Core
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/util
