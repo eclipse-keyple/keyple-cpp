@@ -302,4 +302,7 @@ build-eclipse
 .project
 .cproject
 .settings
+
+# Visual Studio
 .vscode
+CMakeSettings.json

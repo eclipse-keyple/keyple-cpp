@@ -1,5 +1,6 @@
 # The name of the target operating system
 SET(CMAKE_SYSTEM_NAME Linux)
+SET(TOOLCHAIN_FILE "arm-unknown-gnueabi-linux.cmake")
 
 # Path
 SET(ARM_TOOLCHAIN_DIR /home/amunsch/toolchain/yt/imx)

@@ -18,19 +18,13 @@ SET(CMAKE_CXX_COMPILER_WORKS 1)
 
 project(Project)
 
-IF(UNIX OR APPLE)
+IF(APPLE)
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Werror -Wall -Wextra -Wdeprecated -Wno-overloaded-virtual -pedantic -pedantic-errors -std=c++11")
-ENDIF(UNIX OR APPLE)
-
-# -fmax-errors stops compiler after a certain number of errors.
-# This is quite useful then file contains loads of errors...
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmax-errors=10")
-ENDIF()
-
-IF(WIN32)
-	ADD_COMPILE_OPTIONS(/wd4275 /wd4251 /wd4290 /wd4250 /wd4309)
-ENDIF(WIN32)
+ELSE(APPLE)
+	IF(NOT TOOLCHAIN_FILE)
+		MESSAGE(FATAL_ERROR "Toolchain file not specified")
+	ENDIF()
+ENDIF(APPLE)
 
 # Set common output directory
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

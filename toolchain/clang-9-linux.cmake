@@ -1,5 +1,6 @@
 # The name of the target operating system
 SET(CMAKE_SYSTEM_NAME Linux)
+SET(TOOLCHAIN_FILE "clang-9-linux.cmake")
 
 # Path
 SET(CLANG_TOOLCHAIN_DIR /usr)

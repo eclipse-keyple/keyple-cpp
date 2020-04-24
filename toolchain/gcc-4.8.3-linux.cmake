@@ -1,5 +1,6 @@
 # The name of the target operating system
 SET(CMAKE_SYSTEM_NAME Linux)
+SET(TOOLCHAIN_FILE "gcc-4.8.3-linux.cmake")
 
 # Path
 SET(GCC_TOOLCHAIN_DIR /home/amunsch/Downloads/gcc-4.8.3)
