@@ -22,8 +22,6 @@
 #include "exceptionhelper.h"
 
 /* Common */
-#include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "System.h"
 
@@ -34,10 +32,11 @@
 #include "ByteArrayUtil.h"
 #include "ChannelControl.h"
 #include "KeypleApplicationSelectionException.h"
+#include "KeypleCoreExport.h"
 #include "MultiSeRequestProcessing.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "SelectionStatus.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 
 namespace keyple {
 namespace core {
@@ -57,7 +56,7 @@ using namespace keyple::common;
  * Manage the loop processing for SeRequest transmission in a set and for
  * SeResponse reception in a set
  */
-class EXPORT AbstractLocalReader : public AbstractReader {
+class KEYPLECORE_API AbstractLocalReader : public AbstractReader {
 public:
     /**
      * Reader constructor

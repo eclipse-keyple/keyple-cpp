@@ -16,19 +16,19 @@
 
 /* Common */
 #include "exceptionhelper.h"
-#include "Export.h"
 #include "LoggerFactory.h"
 #include "stringhelper.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "MonitoringPool.h"
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "SmartInsertionReader.h"
 #include "SmartRemovalReader.h"
 #include "TransmissionMode.h"
 
 /* PC/SC plugin */
+#include "KeyplePluginPcscExport.h"
 #include "PcscReader.h"
 #include "PcscTerminal.h"
 
@@ -42,10 +42,9 @@ using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::protocol;
 
-class EXPORT PcscReaderImpl : public AbstractObservableLocalReader,
-                              public PcscReader,
-                              public SmartInsertionReader,
-                              public SmartRemovalReader {
+class KEYPLEPLUGINPCSC_API PcscReaderImpl
+: public AbstractObservableLocalReader, public PcscReader,
+  public SmartInsertionReader, public SmartRemovalReader {
 public:
     /**
      * This constructor should only be called by PcscPlugin PCSC reader

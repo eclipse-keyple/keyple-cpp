@@ -14,10 +14,11 @@
 
 #pragma once
 
-/* Common */
-#include "Export.h"
+/* Calypso */
+#include "KeypleCalypsoExport.h"
 
-#include "AbstractApduResponseParser_Import.h"
+/* Core */
+#include "AbstractApduResponseParser.h"
 
 namespace keyple {
 namespace calypso {
@@ -27,7 +28,8 @@ namespace po {
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
-class EXPORT AbstractPoResponseParser : public AbstractApduResponseParser {
+class KEYPLECALYPSO_API AbstractPoResponseParser
+: public AbstractApduResponseParser {
 public:
     /**
      * the generic abstract constructor to build a parser of the APDU response.

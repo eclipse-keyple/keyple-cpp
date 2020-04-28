@@ -20,9 +20,9 @@
 #include "ByteArrayUtil.h"
 #include "ChannelControl.h"
 #include "MatchingSelection.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SeReader.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 
 /* Calypso */
 #include "PoSelector.h"
@@ -111,11 +111,12 @@ SeProtocolDetectionEngine::prepareSeSelection()
 }
 
 void SeProtocolDetectionEngine::processSeMatch(
-    std::shared_ptr<AbstractDefaultSelectionsResponse>
+    const std::shared_ptr<AbstractDefaultSelectionsResponse>
         defaultSelectionsResponse)
 {
     std::shared_ptr<SelectionsResult> selectionsResult =
         seSelection->processDefaultSelection(defaultSelectionsResponse);
+
     /* get the SE that matches one of the two selection targets */
     std::shared_ptr<AbstractMatchingSe> selectedSe =
         selectionsResult->getActiveSelection()->getMatchingSe();

@@ -43,8 +43,8 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
 {
     std::shared_ptr<ReaderEvent> seEvent;
 
-    logger->trace("[%s] onEvent => Event %d received in currentState %d\n",
-                  reader->getName().c_str(), event, state);
+    logger->trace("[%] onEvent => Event % received in currentState %\n",
+                  reader->getName(), event, state);
 
     /*
      * Process InternalEvent

@@ -17,10 +17,9 @@
 #include "KeypleBaseException.h"
 #include "ReaderUtilities.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
 #include "PcscReader.h"
@@ -29,8 +28,8 @@
 #include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "PoTransaction_Import.h"
-#include "ReaderEvent_Import.h"
+#include "PoTransaction.h"
+#include "ReaderEvent.h"
 #include "SamResource.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
@@ -88,9 +87,9 @@ int main(int argc, char** argv)
 
     logger->info("=============== UseCase Calypso #4: Po Authentication ====="
                  "=============\n");
-    logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
-    logger->info("= SAM Reader  NAME = %s\n",
-                 samResource->getSeReader()->getName().c_str());
+    logger->info("= PO Reader  NAME = %\n", poReader->getName());
+    logger->info("= SAM Reader  NAME = %\n",
+		         samResource->getSeReader()->getName());
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
@@ -228,8 +227,7 @@ int main(int argc, char** argv)
                        .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
             /* Log the result */
-            logger->info("EventLog file data: %s\n",
-                         ByteArrayUtil::toHex(eventLog).c_str());
+            logger->info("EventLog file data: %\n", eventLog);
 
             if (!poProcessStatus) {
                 throw IllegalStateException(

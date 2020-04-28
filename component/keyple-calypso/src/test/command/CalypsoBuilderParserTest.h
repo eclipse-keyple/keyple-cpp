@@ -21,7 +21,6 @@
 #include "gtest/gtest.h"
 
 #include "CalypsoBuilderParser.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 namespace keyple {

@@ -22,8 +22,6 @@
 
 /* Common */
 #include "exceptionhelper.h"
-#include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 /* Core */
@@ -35,6 +33,7 @@
 #include "KeypleReaderNotFoundException.h"
 
 /* PC/SC plugin */
+#include "KeyplePluginPcscExport.h"
 #include "PcscPlugin.h"
 #include "PcscTerminal.h"
 
@@ -48,8 +47,8 @@ using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::common;
 
-class EXPORT PcscPluginImpl : public AbstractThreadedObservablePlugin,
-                              public virtual PcscPlugin {
+class KEYPLEPLUGINPCSC_API PcscPluginImpl
+: public AbstractThreadedObservablePlugin, public virtual PcscPlugin {
 public:
     /**
      *

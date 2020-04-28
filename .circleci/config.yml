@@ -7,7 +7,16 @@ jobs:
       - checkout
       - run: apt-get update
       - run: apt-get install libpcsclite-dev -y
-      - run: cmake .
+      - run: cmake -DCMAKE_TOOLCHAIN_FILE=toolchain/gcc-linux.cmake .
+      - run: make
+  build_kunitoki_clang_8:
+    docker:
+      - image: kunitoki/clang-8
+    steps:
+      - checkout
+      - run: apt-get update
+      - run: apt-get install libpcsclite-dev -y
+      - run: cmake -DCMAKE_TOOLCHAIN_FILE=toolchain/clang-linux.cmake .
       - run: make
   build_gcc_7:
     docker:
@@ -16,7 +25,7 @@ jobs:
       - checkout
       - run: apt-get update
       - run: apt-get install libpcsclite-dev -y
-      - run: cmake .
+      - run: cmake -DCMAKE_TOOLCHAIN_FILE=toolchain/gcc-linux.cmake .
       - run: make
   build_gcc_6:
     docker:
@@ -25,7 +34,7 @@ jobs:
       - checkout
       - run: apt-get update
       - run: apt-get install libpcsclite-dev -y
-      - run: cmake .
+      - run: cmake -DCMAKE_TOOLCHAIN_FILE=toolchain/gcc-linux.cmake .
       - run: make
   doxygen:
     docker:
@@ -40,6 +49,7 @@ workflows:
   build_and_test:
     jobs:
       - build_kunitoki_gcc_7
+      - build_kunitoki_clang_8
       - build_gcc_7
       - build_gcc_6
       - doxygen

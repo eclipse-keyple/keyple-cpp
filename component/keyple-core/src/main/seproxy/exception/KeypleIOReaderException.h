@@ -17,7 +17,7 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 
 /* Core */
 #include "KeypleReaderException.h"
@@ -30,7 +30,7 @@ namespace exception {
 /**
  * Exception thrown when IO operations failed in a {@link ProxyReader}
  */
-class EXPORT KeypleIOReaderException : public KeypleReaderException {
+class KEYPLECORE_API KeypleIOReaderException : public KeypleReaderException {
 public:
     /**
      * New exception to be thrown

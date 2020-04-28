@@ -15,7 +15,7 @@
 #include "SelectDiversifierRespParsTest.h"
 #include "ApduResponse.h"
 #include "SelectDiversifierRespPars.h"
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 
 namespace keyple {
 namespace calypso {

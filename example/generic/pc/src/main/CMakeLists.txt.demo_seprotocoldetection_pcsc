@@ -35,10 +35,11 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util
 
 	# Calypso
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po/builder
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po/builder
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po/parser
 
 	# Plugin - Pcsc
@@ -50,7 +51,7 @@ ADD_EXECUTABLE(demo_seprotocoldetection_pcsc
 	# Example - Common
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/AbstractReaderObserverEngine.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/CustomProtocols.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/GenericSeSelectionRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/GenericSeSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/SeProtocolDetectionEngine.cpp
 
 	# Example - PC
@@ -60,7 +61,7 @@ ADD_EXECUTABLE(demo_seprotocoldetection_pcsc
 )
 
 IF(UNIX)
-	SET(SPEC_LIBS pthread pcsclite)
+	SET(SPEC_LIBS pthread pcsclite rt)
 ENDIF(UNIX)
 
 IF(APPLE)

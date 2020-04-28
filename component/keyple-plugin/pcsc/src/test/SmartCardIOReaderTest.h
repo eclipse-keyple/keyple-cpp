@@ -29,7 +29,7 @@
 #include "ResponseAPDU.h"
 
 /* PC/SC plugin */
-#include "PcscReader_Import.h"
+#include "PcscReader.h"
 
 using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
 using Card           = org::eclipse::keyple::smartcardio::Card;

@@ -17,18 +17,18 @@
 #include "GenericSeSelectionRequest.h"
 #include "KeypleBaseException.h"
 #include "MatchingSelection.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
 #include "PcscReaderImpl.h"
 #include "ReaderUtilities.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SelectionStatus.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 #include "SeSelection.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 
 using namespace keyple::common;
 using namespace keyple::core::selection;
@@ -117,7 +117,7 @@ public:
 
         logger->info("=============== UseCase Generic #2: AID based default "
                      "selection ===================\n");
-        logger->info("= SE Reader  NAME = %s\n", seReader->getName().c_str());
+        logger->info("= SE Reader  NAME = %\n", seReader->getName());
 
         /*
          * Prepare a SE selection
@@ -240,11 +240,9 @@ public:
                         ->getReader(event->getReaderName()))
                     ->notifySeProcessed();
             } catch (KeypleReaderNotFoundException& e) {
-                logger->debug("KeypleReaderNotFoundException: %s - %s\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                logger->debug("update - KeypleReaderNotFoundException: %\n", e);
             } catch (KeyplePluginNotFoundException& e) {
-                logger->debug("KeyplePluginNotFoundException: %s - %s\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                logger->debug("update - KeyplePluginNotFoundException: %\n", e);
             }
         }
     }

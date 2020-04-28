@@ -14,15 +14,17 @@
 
 #pragma once
 
+#include <list>
 #include <string>
 #include <vector>
 #include <stdexcept>
 #include <memory>
 
 /* Common */
-#include "Export.h"
-#include "Serializable.h"
 #include "Object.h"
+
+/* Core */
+#include "KeypleCoreExport.h"
 
 /* Forward class declarations */
 namespace keyple {
@@ -56,9 +58,8 @@ using namespace keyple::common;
  *
  * @see SeRequest
  */
-class EXPORT SeResponse final : public std::enable_shared_from_this<SeResponse>,
-                                public Serializable,
-                                public Object {
+class KEYPLECORE_API SeResponse final
+: public std::enable_shared_from_this<SeResponse>, public Object {
 public:
     /**
      * the constructor called by a ProxyReader during the processing of the
@@ -78,14 +79,14 @@ public:
      *
      * @return the previous currentState of the logical channel.
      */
-    bool wasChannelPreviouslyOpen();
+    bool wasChannelPreviouslyOpen() const;
 
     /**
      * Get the logical channel status
      *
      * @return true if the logical channel is open
      */
-    bool isLogicalChannelOpen();
+    bool isLogicalChannelOpen() const;
 
     /**
      * Gets the selection status and its associated data.
@@ -100,12 +101,7 @@ public:
      * @return the group of APDUs responses returned by the SE application for
      *         this instance of SEResponse.
      */
-    std::vector<std::shared_ptr<ApduResponse>> getApduResponses();
-
-    /**
-     *
-     */
-    std::string toString() override;
+    std::vector<std::shared_ptr<ApduResponse>> getApduResponses() const;
 
     /**
      *
@@ -116,6 +112,24 @@ public:
      *
      */
     int hashCode() override;
+
+	/**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const SeResponse& sr);
+
+    /**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream& operator<<(
+		std::ostream& os, const std::shared_ptr<SeResponse>& sr);
+   
+	/**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream& operator<<(
+		std::ostream& os, const std::list<std::shared_ptr<SeResponse>>& sr);
 
 protected:
     /**

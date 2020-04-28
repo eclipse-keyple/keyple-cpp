@@ -37,10 +37,8 @@ SmartInsertionMonitoringJob::SmartInsertionMonitoringJob(
 void SmartInsertionMonitoringJob::monitoringJob(
     AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
 {
-    (void)cancellationFlag;
-
-    logger->trace("[%s] Invoke waitForCardPresent asynchronously\n",
-                  reader->getName().c_str());
+    logger->trace("[%] Invoke waitForCardPresent asynchronously\n",
+                  reader->getName());
 
     try {
         if (cancellationFlag)
@@ -52,9 +50,9 @@ void SmartInsertionMonitoringJob::monitoringJob(
         }
 
     } catch (KeypleIOReaderException& e) {
-        logger->trace("[%s] waitForCardPresent => Error while polling SE with"
-                      " waitForCardPresent. %s\n",
-                      reader->getName().c_str(), e.getMessage().c_str());
+        logger->trace("[%] waitForCardPresent => Error while polling SE with"
+                      " waitForCardPresent. %\n",
+                      reader->getName(), e.getMessage());
         state->onEvent(InternalEvent::STOP_DETECT);
     }
 
@@ -71,8 +69,7 @@ std::future<void> SmartInsertionMonitoringJob::startMonitoring(
 
 void SmartInsertionMonitoringJob::stop()
 {
-    logger->trace("[%s] stopWaitForCard on reader\n",
-                  reader->getName().c_str());
+    logger->trace("[%] stopWaitForCard on reader\n", reader->getName());
     reader->stopWaitForCard();
 }
 

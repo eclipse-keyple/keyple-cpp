@@ -17,10 +17,9 @@
 #include "KeypleBaseException.h"
 #include "ReaderUtilities.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
 #include "PcscReader.h"
@@ -29,7 +28,7 @@
 #include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 #include "SeSelection.h"
@@ -81,7 +80,7 @@ int main(int argc, char** argv)
 
     logger->info("=============== UseCase Calypso #1: ATR based explicit "
                  "selection (PO Rev1) ===========\n");
-    logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
+    logger->info("= PO Reader  NAME = %\n", poReader->getName());
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
@@ -171,10 +170,8 @@ int main(int argc, char** argv)
                     matchingSelection->getResponseParser(
                         readEnvironmentParserIndex));
 
-            logger->info(
-                "DF RT FCI: %s\n",
-                ByteArrayUtil::toHex(selectFileRespPars->getSelectionData())
-                    .c_str());
+            logger->info("DF RT FCI: %\n",
+				         selectFileRespPars->getSelectionData());
 
             /*
              * Retrieve the data read from the parser updated during the
@@ -185,8 +182,7 @@ int main(int argc, char** argv)
                     CalypsoClassicInfo::RECORD_NUMBER_1)];
 
             /* Log the result */
-            logger->info("Environment file data: %s\n",
-                         ByteArrayUtil::toHex(environmentAndHolder).c_str());
+            logger->info("Environment file data: %\n", environmentAndHolder);
 
             /*
              * Go on with the reading of the first record of the EventLog file
@@ -236,8 +232,7 @@ int main(int argc, char** argv)
                            .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
                 /* Log the result */
-                logger->info("EventLog file data: %s\n",
-                             ByteArrayUtil::toHex(eventLog).c_str());
+                logger->info("EventLog file data: %\n", eventLog);
             }
 
             logger->info("==================================================="

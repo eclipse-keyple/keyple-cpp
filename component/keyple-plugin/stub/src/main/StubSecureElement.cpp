@@ -69,28 +69,47 @@ void StubSecureElement::removeHexCommand(const std::string& command)
     hexCommands.erase(StringHelper::trim(command));
 }
 
-std::vector<uint8_t> StubSecureElement::processApdu(
-    const std::vector<uint8_t>& apduIn)
+std::vector<uint8_t>
+StubSecureElement::processApdu(const std::vector<uint8_t>& apduIn)
 {
-    if (apduIn.empty())
+    if (!apduIn.size())
         return apduIn;
 
     /* Convert apduIn to hexa */
     std::string hexApdu = ByteArrayUtil::toHex(apduIn);
 
-    logger->debug("processApdu - looking for response to %s\n",
-                  hexApdu.c_str());
+    logger->debug("processApdu - looking for response to %\n", hexApdu);
 
     /* Return matching hexa response if found */
     if (hexCommands.find(hexApdu) != hexCommands.end()) {
-        logger->debug("processApdu - response found: %s\n",
-                      hexCommands[hexApdu].c_str());
+        logger->debug("processApdu - response found: %\n",
+                      hexCommands[hexApdu]);
         return ByteArrayUtil::fromHex(hexCommands[hexApdu]);
     }
 
     /* Throw a KeypleIOReaderException if not found */
     logger->debug("processApdu - response not found\n");
     throw KeypleIOReaderException("No response available for this request.");
+}
+
+std::ostream& operator<<(std::ostream& os, const StubSecureElement& s)
+{
+	os << "STUBSECUREELEMENT: {"
+	   << "ISPHYSICALCHANNELOPEN = " << s.isPhysicalChannelOpen_Renamed
+	   << "}";
+
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+	                     const std::shared_ptr<StubSecureElement>& s)
+{
+    if (s)
+		os << *(s.get());
+    else
+		os << "STUBSECUREELEMENT: null";
+
+    return os;
 }
 
 }

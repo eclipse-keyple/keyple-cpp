@@ -19,18 +19,17 @@
 #include "CalypsoClassicInfo.h"
 #include "ChannelControl.h"
 #include "KeypleReaderException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "PoResource.h"
 #include "PoSelectionRequest.h"
 #include "PoSelector.h"
 #include "ReadDataStructure.h"
 #include "ReadRecordsRespPars.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SeReader.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 #include "TransmissionMode.h"
 
 namespace keyple {
@@ -86,7 +85,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
     int readEventLogParserIndex = poTransaction->prepareReadRecordsCmd(
         CalypsoClassicInfo::SFI_EventLog, ReadDataStructure::SINGLE_RECORD_DATA,
         CalypsoClassicInfo::RECORD_NUMBER_1,
-        StringHelper::formatSimple("EventLog (SFI=%02X, recnbr=%d))",
+        StringHelper::formatSimple("EventLog (SFI=%02x, recnbr=%d))",
                                    CalypsoClassicInfo::SFI_EventLog,
                                    CalypsoClassicInfo::RECORD_NUMBER_1));
 
@@ -97,7 +96,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
         CalypsoClassicInfo::SFI_ContractList,
         ReadDataStructure::SINGLE_RECORD_DATA,
         CalypsoClassicInfo::RECORD_NUMBER_1,
-        StringHelper::formatSimple("ContractList (SFI=%02X))",
+        StringHelper::formatSimple("ContractList (SFI=%02x))",
                                    CalypsoClassicInfo::SFI_ContractList));
 
     logger->info("========= PO Calypso session ======= Opening "
@@ -113,15 +112,13 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
         CalypsoClassicInfo::SFI_EnvironmentAndHolder,
         CalypsoClassicInfo::RECORD_NUMBER_1);
 
-    logger->info("Parsing Read EventLog file: %s\n",
+    logger->info("Parsing Read EventLog file: %\n",
                  poTransaction->getResponseParser(readEventLogParserIndex)
-                     ->getStatusInformation()
-                     .c_str());
+                     ->getStatusInformation());
 
-    logger->info("Parsing Read ContractList file: %s\n",
+    logger->info("Parsing Read ContractList file: %\n",
                  poTransaction->getResponseParser(readContractListParserIndex)
-                     ->getStatusInformation()
-                     .c_str());
+                     ->getStatusInformation());
 
     if (!poTransaction->wasRatified()) {
         logger->info("========= Previous Secure Session was not ratified. "
@@ -172,17 +169,16 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
             CalypsoClassicInfo::SFI_Contracts,
             ReadDataStructure::MULTIPLE_RECORD_DATA,
             CalypsoClassicInfo::RECORD_NUMBER_1,
-            StringHelper::formatSimple("Contracts (SFI=%02X, recnbr=%d)",
+            StringHelper::formatSimple("Contracts (SFI=%02x, recnbr=%d)",
                                        CalypsoClassicInfo::SFI_Contracts,
                                        CalypsoClassicInfo::RECORD_NUMBER_1));
 
         /* proceed with the sending of commands, don't close the channel */
         poProcessStatus = poTransaction->processPoCommandsInSession();
 
-        logger->info("Parsing Read Contract file: %s",
+        logger->info("Parsing Read Contract file: %",
                      poTransaction->getResponseParser(readContractsParserIndex)
-                         ->getStatusInformation()
-                         .c_str());
+                         ->getStatusInformation());
 
         logger->info("========= PO Calypso session ======= Closing "
                      "============================\n");
@@ -204,7 +200,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
             ByteArrayUtil::fromHex(CalypsoClassicInfo::eventLog_dataFill);
         int appendEventLogParserIndex = poTransaction->prepareAppendRecordCmd(
             CalypsoClassicInfo::SFI_EventLog, eventlog,
-            StringHelper::formatSimple("EventLog (SFI=%02X)",
+            StringHelper::formatSimple("EventLog (SFI=%02x)",
                                        CalypsoClassicInfo::SFI_EventLog));
 
         /*
@@ -213,10 +209,9 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
         poProcessStatus =
             poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
 
-        logger->info("Parsing Append EventLog file: %s\n",
+        logger->info("Parsing Append EventLog file: %\n",
                      poTransaction->getResponseParser(appendEventLogParserIndex)
-                         ->getStatusInformation()
-                         .c_str());
+                         ->getStatusInformation());
     }
 
     if (poTransaction->isSuccessful()) {
@@ -303,7 +298,7 @@ std::shared_ptr<AbstractDefaultSelectionsRequest>
 }
 
 void CalypsoClassicTransactionEngine::processSeMatch(
-    std::shared_ptr<AbstractDefaultSelectionsResponse>
+    const std::shared_ptr<AbstractDefaultSelectionsResponse>
         defaultSelectionsResponse)
 {
     logger->debug("processSeMatch\n");
@@ -334,9 +329,7 @@ void CalypsoClassicTransactionEngine::processSeMatch(
             doCalypsoReadWriteTransaction(poTransaction, true);
 
         } catch (const Exception& e) {
-            logger->error("processSeMatch - caught Exception (msg: %s, "
-                          "cause: %s)\n",
-                          e.getMessage().c_str(), e.getCause().what());
+            logger->error("processSeMatch - Exception %\n", e);
         }
     }
 }

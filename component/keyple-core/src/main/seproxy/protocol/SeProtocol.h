@@ -17,8 +17,8 @@
 
 #include "TransmissionMode.h"
 
-/* Common */
-#include "Export.h"
+/* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -27,7 +27,7 @@ namespace protocol {
 
 using namespace keyple::core::seproxy::protocol;
 
-class EXPORT SeProtocol {
+class KEYPLECORE_API SeProtocol {
 public:
     /**
      *
@@ -102,7 +102,8 @@ public:
     /**
      *
      */
-    friend std::ostream& operator<<(std::ostream& os, const SeProtocol& se);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+		                                           const SeProtocol& se);
 
     /**
      * 

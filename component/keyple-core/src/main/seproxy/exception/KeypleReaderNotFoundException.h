@@ -16,7 +16,7 @@
 #include "KeypleReaderException.h"
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -28,7 +28,8 @@ namespace exception {
  * Exception thrown when {@link org.eclipse.keyple.seproxy.message.ProxyReader}
  * is not found
  */
-class EXPORT KeypleReaderNotFoundException : public KeypleReaderException {
+class KEYPLECORE_API KeypleReaderNotFoundException
+: public KeypleReaderException {
 public:
     KeypleReaderNotFoundException(const std::string& readerName)
     : KeypleReaderException(StringHelper::formatSimple(

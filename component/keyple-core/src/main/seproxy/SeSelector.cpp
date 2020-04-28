@@ -18,6 +18,9 @@
 #include "ByteArrayUtil.h"
 #include "SeRequest.h"
 
+/* Common */
+#include "stringhelper.h"
+
 namespace keyple {
 namespace core {
 namespace seproxy {
@@ -92,11 +95,6 @@ int FileOccurrence::ordinal()
     return ordinalValue;
 }
 
-std::string FileOccurrence::toString()
-{
-    return nameValue;
-}
-
 FileOccurrence FileOccurrence::valueOf(const std::string& name)
 {
     for (auto enumInstance : FileOccurrence::valueList) {
@@ -169,11 +167,6 @@ int FileControlInformation::ordinal()
     return ordinalValue;
 }
 
-std::string FileControlInformation::toString()
-{
-    return nameValue;
-}
-
 FileControlInformation FileControlInformation::valueOf(const std::string& name)
 {
     for (auto enumInstance : FileControlInformation::valueList) {
@@ -191,7 +184,7 @@ SeSelector::AidSelector::IsoAid::IsoAid(const std::vector<uint8_t>& aid)
     if (aid.size() < AID_MIN_LENGTH || aid.size() > AID_MAX_LENGTH) {
         value.clear();
         throw std::invalid_argument(
-            "Bad AID length: " + std::to_string(aid.size()) +
+            "Bad AID length: " + StringHelper::to_string(aid.size()) +
             ". The AID length should be " + "between 5 and 15.");
     } else {
         value = aid;
@@ -241,6 +234,19 @@ AidSelector::AidSelector(
 {
 }
 
+AidSelector::AidSelector(const AidSelector& o)
+: std::enable_shared_from_this<AidSelector>(o),
+  fileOccurrence(o.fileOccurrence),
+  fileControlInformation(o.fileControlInformation),
+  aidToSelect(o.aidToSelect),
+  successfulSelectionStatusCodes(o.successfulSelectionStatusCodes)
+{
+}
+
+AidSelector::~AidSelector()
+{
+}
+
 std::shared_ptr<IsoAid> AidSelector::getAidToSelect()
 {
     return aidToSelect;
@@ -259,14 +265,6 @@ FileControlInformation AidSelector::getFileControlInformation()
 std::shared_ptr<std::set<int>> AidSelector::getSuccessfulSelectionStatusCodes()
 {
     return successfulSelectionStatusCodes;
-}
-
-std::string SeSelector::AidSelector::toString()
-{
-    return StringHelper::formatSimple(
-        "AID:%s", aidToSelect == nullptr
-                      ? "null"
-                      : ByteArrayUtil::toHex(aidToSelect->getValue()));
 }
 
 SeSelector::AtrFilter::AtrFilter(const std::string& atrRegex)
@@ -299,12 +297,6 @@ bool SeSelector::AtrFilter::atrMatches(const std::vector<uint8_t>& atr)
     return m;
 }
 
-std::string SeSelector::AtrFilter::toString()
-{
-    return StringHelper::formatSimple(
-        "ATR regex:%s", atrRegex.length() != 0 ? atrRegex : "empty");
-}
-
 SeSelector::SeSelector(SeProtocol& seProtocol,
                        std::shared_ptr<AtrFilter> atrFilter,
                        std::shared_ptr<AidSelector> aidSelector,
@@ -312,46 +304,86 @@ SeSelector::SeSelector(SeProtocol& seProtocol,
 : seProtocol(seProtocol), aidSelector(aidSelector), atrFilter(atrFilter),
   extraInfo(extraInfo)
 {
-    if (logger->isTraceEnabled()) {
-        logger->trace(
-            "Selection data: AID = %s ATRREGEX = %s, EXTRAINFO = %s\n",
-            this->aidSelector == nullptr
-                ? "null"
-                : ByteArrayUtil::toHex(
-                      this->aidSelector->getAidToSelect()->getValue())
-                      .c_str(),
-            this->atrFilter == nullptr ? "null"
-                                       : this->atrFilter->getAtrRegex().c_str(),
-            extraInfo.c_str());
-    }
 }
 
-const SeProtocol& SeSelector::getSeProtocol()
+const SeProtocol& SeSelector::getSeProtocol() const
 {
     return seProtocol;
 }
 
-std::shared_ptr<AtrFilter> SeSelector::getAtrFilter()
+std::shared_ptr<AtrFilter> SeSelector::getAtrFilter() const
 {
     return atrFilter;
 }
 
-std::shared_ptr<AidSelector> SeSelector::getAidSelector()
+std::shared_ptr<AidSelector> SeSelector::getAidSelector() const
 {
     return aidSelector;
 }
 
-std::string SeSelector::getExtraInfo()
+const std::string& SeSelector::getExtraInfo() const
 {
     return extraInfo;
 }
 
-std::string SeSelector::toString()
+std::ostream& operator<<(std::ostream& os,
+                         const SeSelector::AidSelector::IsoAid& a)
 {
-    return "SeSelector: AID_SELECTOR = " +
-           (aidSelector == nullptr ? "null" : aidSelector->toString()) +
-           ", ATR_FILTER " + "= " +
-           (atrFilter == nullptr ? "null" : atrFilter->toString());
+	os << a.value;
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const SeSelector::AtrFilter& af)
+{
+    os << "ATRFILTER: {REGEX: " << af.atrRegex << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const SeSelector::AidSelector& a)
+{
+    const std::shared_ptr<SeSelector::AidSelector::IsoAid>& aid = a.aidToSelect;
+
+    os << "AID: ";
+	if (aid)
+		os << *(aid.get());
+    else
+		os << "null";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const SeSelector& ss)
+{
+    os << "SESELECTOR: {AID_SELECTOR = ";
+
+    if (ss.aidSelector)
+        os << *(ss.aidSelector.get());
+    else
+        os << "null";
+
+    os << ", ATR_FILTER = ";
+
+    if (ss.atrFilter)
+        os << *(ss.atrFilter.get());
+    else
+		os << "null";
+	
+    os << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::shared_ptr<SeSelector>& ss)
+{
+	if (ss)
+		os << *(ss.get());
+    else
+		os << "SESELECTOR: null";
+
+    return os;
 }
 
 }

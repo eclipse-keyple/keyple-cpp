@@ -17,8 +17,8 @@
 /* Core */
 #include "AbstractPluginFactory.h"
 
-/* Common */
-#include "Export.h"
+/* Plugin */
+#include "KeyplePluginStubExport.h"
 
 namespace keyple {
 namespace plugin {
@@ -29,7 +29,7 @@ using namespace keyple::core::seproxy;
 /**
  * Builds a {@link StubPlugin}
  */
-class EXPORT StubPluginFactory : public AbstractPluginFactory {
+class KEYPLEPLUGINSTUB_API StubPluginFactory : public AbstractPluginFactory {
 public:
     /**
      * Create the factory

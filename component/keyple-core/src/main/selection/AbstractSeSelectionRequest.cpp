@@ -65,6 +65,17 @@ AbstractSeSelectionRequest::getCommandParser(
         "No parsers available for this request.");
 }
 
+
+std::ostream& operator<<(std::ostream& os,
+	                     const AbstractSeSelectionRequest& asr)
+{
+    os << "ABSTRACTSELECTIONREQUEST: {"
+	   << "APDUREQUESTLIST = " << asr.seSelectionApduRequestList
+	   << "}";
+
+	return os;
+}
+
 }
 }
 }

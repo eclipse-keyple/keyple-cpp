@@ -20,7 +20,7 @@
 #include <memory>
 
 #include "AbstractReaderObserverEngine.h"
-#include "PoTransaction_Import.h"
+#include "PoTransaction.h"
 #include "SeSelection.h"
 
 namespace keyple {
@@ -148,8 +148,9 @@ public:
     /**
      * Do the PO selection and possibly go on with Calypso transactions.
      */
-    void processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse>
-                            selectionResponse) override;
+    void processSeMatch(
+        const std::shared_ptr<AbstractDefaultSelectionsResponse>
+                  selectionResponse) override;
 
     /**
      *

@@ -1,5 +1,5 @@
 /* Core */
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "KeypleReaderException.h"
 
 /* PC/SC plugin */

@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -22,12 +24,11 @@
 #include "TransmissionMode.h"
 
 /* Calypso */
-#include "SamRevision_Import.h"
+#include "SamRevision.h"
 
 /* Common */
-#include "Export.h"
+#include "KeypleCalypsoExport.h"
 #include "exceptionhelper.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -41,13 +42,14 @@ using namespace keyple::core::selection;
 using namespace keyple::common;
 using namespace keyple::core::seproxy::protocol;
 
-class EXPORT CalypsoSam : public AbstractMatchingSe {
+class KEYPLECALYPSO_API CalypsoSam : public AbstractMatchingSe {
 public:
     /**
      * Constructor.
      *
      * @param selectionResponse the selection response from the SAM
-     * @param transmissionMode the current {@link TransmissionMode} (contacts or contactless)
+     * @param transmissionMode the current {@link TransmissionMode} (contacts or
+     *        contactless)
      * @param extraInfo textual information
      */
     CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,

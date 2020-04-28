@@ -13,7 +13,7 @@
  ******************************************************************************/
 
 #include "CalypsoSamTest.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SamSelectionRequest.h"
 #include "ChannelControl.h"
 #include "CalypsoSam.h"
@@ -22,7 +22,6 @@
 #include "ByteArrayUtil.h"
 #include "SeResponse.h"
 
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 using namespace keyple::calypso::transaction;

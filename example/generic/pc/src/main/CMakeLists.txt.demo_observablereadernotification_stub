@@ -47,7 +47,7 @@ ADD_EXECUTABLE(demo_observablereadernotification_stub
 )
 
 IF(UNIX)
-	SET(SPEC_LIBS pthread)
+	SET(SPEC_LIBS pthread rt)
 ENDIF(UNIX)
 
 IF(APPLE)

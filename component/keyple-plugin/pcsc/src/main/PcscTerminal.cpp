@@ -28,12 +28,12 @@ namespace plugin {
 namespace pcsc {
 
 #ifdef WIN32
-static char* pcsc_stringify_error(LONG rv)
+std::string pcsc_stringify_error(LONG rv)
 {
     static char out[20];
     sprintf_s(out, sizeof(out), "0x%08X", rv);
 
-    return out;
+    return std::string(out);
 }
 #endif
 
@@ -105,12 +105,10 @@ void PcscTerminal::establishContext()
     if (this->contextEstablished)
         return;
 
-    logger->debug("establishContext - establishing context\n");
-
     ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &this->context);
     if (ret != SCARD_S_SUCCESS) {
         this->contextEstablished = false;
-        logger->error("SCardEstablishContext failed with error: %s\n",
+        logger->error("SCardEstablishContext failed with error: %\n",
                       pcsc_stringify_error(ret));
         throw PcscTerminalException("SCardEstablishContext failed");
     }
@@ -120,7 +118,7 @@ void PcscTerminal::establishContext()
 
 void PcscTerminal::releaseContext()
 {
-    logger->debug("releaseContext - contextEstablished: %s\n",
+    logger->debug("releaseContext - contextEstablished: %\n",
                   contextEstablished ? "yes" : "no");
 
     if (!this->contextEstablished)
@@ -141,9 +139,7 @@ bool PcscTerminal::isCardPresent(bool release)
     try {
         establishContext();
     } catch (PcscTerminalException& e) {
-        logger->error("isCardPresent - caught PcscTerminalException (msg: %s"
-                      ", cause: %s)\n", e.getMessage().c_str(),
-                      e.getCause().what());
+        logger->error("isCardPresent - caught PcscTerminalException %\n", e);
         throw e;
     }
 
@@ -151,9 +147,11 @@ bool PcscTerminal::isCardPresent(bool release)
                       SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
                       &hCard, &protocol);
     if (rv != SCARD_S_SUCCESS) {
-        if (rv != SCARD_E_NO_SMARTCARD)
-            logger->debug("isCardPresent - error connecting to card (%s)\n",
+        if (rv != static_cast<LONG>(SCARD_E_NO_SMARTCARD) &&
+            rv != static_cast<LONG>(SCARD_W_REMOVED_CARD))
+            logger->debug("isCardPresent - error connecting to card (%)\n",
                           pcsc_stringify_error(rv));
+
         if (release)
             releaseContext();
 
@@ -169,10 +167,10 @@ bool PcscTerminal::isCardPresent(bool release)
 bool PcscTerminal::waitForCardPresent(long long timeout)
 {
     bool present;
-    long current;
-    long start = System::currentTimeMillis();
+    long long current;
+    long long start = System::currentTimeMillis();
 
-    logger->debug("waitForCardPresent - waiting for card insertion for %d ms\n",
+    logger->debug("waitForCardPresent - waiting for card insertion for % ms\n",
                   timeout);
 
     do {
@@ -211,9 +209,7 @@ void PcscTerminal::openAndConnect(std::string protocol)
     try {
         establishContext();
     } catch (PcscTerminalException& e) {
-        logger->error("isCardPresent - caught PcscTerminalException (msg: %s"
-                      ", cause: %s)\n",
-                      e.getMessage().c_str(), e.getCause().what());
+        logger->error("openAndConnect - caught PcscTerminalException %\n", e);
         throw e;
     }
 
@@ -230,14 +226,14 @@ void PcscTerminal::openAndConnect(std::string protocol)
         throw IllegalArgumentException("Unsupported protocol " + protocol);
     }
 
-    logger->debug("openAndConnect - connecting with protocol: %s, "
-                  "connectProtocol: %d and sharingMode: %d\n",
-                  protocol.c_str(), connectProtocol, sharingMode);
+    logger->debug("openAndConnect - connecting with protocol: %, "
+                  "connectProtocol: % and sharingMode: %\n",
+                  protocol, connectProtocol, sharingMode);
 
     rv = SCardConnect(this->context, this->name.c_str(), sharingMode,
                       connectProtocol, &this->handle, &this->protocol);
     if (rv != SCARD_S_SUCCESS) {
-        logger->error("openAndConnect - SCardConnect failed (%s)\n",
+        logger->error("openAndConnect - SCardConnect failed (%)\n",
                       pcsc_stringify_error(rv));
         releaseContext();
         throw PcscTerminalException("openAndConnect failed");
@@ -255,12 +251,12 @@ void PcscTerminal::openAndConnect(std::string protocol)
     rv = SCardStatus(this->handle, (LPSTR)reader, &readerLen, &this->state,
                      &this->protocol, _atr, &atrLen);
     if (rv != SCARD_S_SUCCESS) {
-        logger->error("openAndConnect - SCardStatus failed (%s)\n",
+        logger->error("openAndConnect - SCardStatus failed (s)\n",
                       pcsc_stringify_error(rv));
         releaseContext();
         throw PcscTerminalException("openAndConnect failed");
     } else {
-        logger->debug("openAndConnect - card state: %d\n", this->state);
+        logger->debug("openAndConnect - card state: %\n", state);
     }
 
     this->atr.clear();
@@ -269,7 +265,7 @@ void PcscTerminal::openAndConnect(std::string protocol)
 
 void PcscTerminal::closeAndDisconnect(bool reset)
 {
-    logger->debug("closeAndDisconnect - reset: %s\n", reset ? "yes" : "no");
+    logger->debug("closeAndDisconnect - reset: %\n", reset ? "yes" : "no");
 
     SCardDisconnect(this->context, reset ? SCARD_LEAVE_CARD : SCARD_RESET_CARD);
 
@@ -279,10 +275,10 @@ void PcscTerminal::closeAndDisconnect(bool reset)
 bool PcscTerminal::waitForCardAbsent(long long timeout)
 {
     bool present;
-    long current;
+    long long current;
     long long start = System::currentTimeMillis();
 
-    logger->debug("waitForCardAbsent - waiting for card removal for %d ms\n",
+    logger->debug("waitForCardAbsent - waiting for card removal for % ms\n",
                   timeout);
 
     do {
@@ -311,7 +307,8 @@ const std::vector<uint8_t>& PcscTerminal::getATR()
     return this->atr;
 }
 
-std::vector<uint8_t> PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
+std::vector<uint8_t>
+PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
 {
     if (apduIn.size() == 0)
         throw IllegalArgumentException("command cannot be empty");
@@ -382,7 +379,7 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(const std::vector<uint8_t>& apdu
                 _apduIn[2] = 0;
                 _apduIn[3] = 0;
                 _apduIn[4] = response[rn - 1];
-                n         = 5;
+                n          = 5;
                 continue;
             }
         }
@@ -398,6 +395,38 @@ void PcscTerminal::beginExclusive()
 
 void PcscTerminal::endExclusive()
 {
+}
+
+bool PcscTerminal::operator==(const PcscTerminal& o) const
+{
+    return !name.compare(o.name);
+}
+
+bool PcscTerminal::operator!=(const PcscTerminal& o) const
+{
+	return !(*this == o);
+}
+
+std::ostream& operator<<(std::ostream& os, const PcscTerminal& t)
+{
+    os << "PCSCTERMINAL: {"
+       << "NAME = " << t.name
+	   << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::vector<PcscTerminal>& vt)
+{
+    os << "PCSCTERMINALS: {";
+    for (const auto& t : vt) {
+        os << t;
+        if (t != vt.back())
+            os << ", ";
+    }
+	os << "}";
+
+    return os;
 }
 
 }

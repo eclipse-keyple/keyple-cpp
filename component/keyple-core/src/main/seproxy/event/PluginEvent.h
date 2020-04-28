@@ -20,10 +20,10 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 
 /* Core */
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 
 namespace keyple {
 namespace core {
@@ -45,10 +45,10 @@ namespace event {
  * <p>
  * However, only one type of event is notified at a time.
  */
-class EXPORT PluginEvent final
+class KEYPLECORE_API PluginEvent final
 : public std::enable_shared_from_this<PluginEvent> {
 public:
-    class EXPORT EventType final {
+    class KEYPLECORE_API EventType final {
     public:
         /**
          *
@@ -96,12 +96,12 @@ public:
         /**
          *
          */
-        bool operator==(const EventType& other);
+        bool operator==(const EventType& other) const;
 
         /**
          *
          */
-        bool operator!=(const EventType& other);
+        bool operator!=(const EventType& other) const;
 
         /**
          *
@@ -116,12 +116,8 @@ public:
         /**
          *
          */
-        friend std::ostream& operator<<(std::ostream& os, const EventType& e)
-        {
-            os << "name: " << e.name;
-
-            return os;
-        }
+        friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                       const EventType& et);
 
         /**
          *
@@ -203,6 +199,12 @@ public:
      *
      */
     EventType getEventType();
+
+    /**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, 
+		                                           const PluginEvent& re);
 
 private:
     /**

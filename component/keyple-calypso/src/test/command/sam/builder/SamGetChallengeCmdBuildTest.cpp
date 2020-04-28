@@ -13,7 +13,6 @@
  ******************************************************************************/
 
 #include "SamGetChallengeCmdBuildTest.h"
-//#include "SamRevision.h"
 #include "SamGetChallengeCmdBuild.h"
 #include "AbstractApduCommandBuilder.h"
 #include "ApduRequest.h"

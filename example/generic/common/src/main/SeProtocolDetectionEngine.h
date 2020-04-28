@@ -75,15 +75,16 @@ public:
      *
      */
     virtual std::shared_ptr<AbstractDefaultSelectionsRequest>
-    prepareSeSelection();
+        prepareSeSelection();
 
     /**
-     * This method is called when a SE is inserted (or presented to the reader's antenna). It
-     * executes a {@link DefaultSelectionRequest} and processes the {@link SelectionResponse}
-     * showing the APDUs exchanges
+     * This method is called when a SE is inserted (or presented to the
+     * reader's antenna). It executes a {@link DefaultSelectionRequest} and
+     * processes the {@link SelectionResponse} showing the APDUs exchanges
      */
-    void processSeMatch(std::shared_ptr<AbstractDefaultSelectionsResponse>
-                            selectionResponse) override;
+    void processSeMatch(
+        const std::shared_ptr<AbstractDefaultSelectionsResponse>
+                  selectionResponse) override;
 
     /**
      *

@@ -25,15 +25,14 @@
 #include "PcscReadersSettings.h"
 #include "ReaderUtilities.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
 #include "PcscReader.h"
 #include "PcscReadersSettings.h"
-#include "PcscProtocolSetting_Import.h"
+#include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 
 /* Common */
 #include "stringhelper.h"
@@ -79,7 +78,7 @@ int main(int argc, char** argv)
 
     logger->info("=============== UseCase Calypso #1: AID based explicit "
                  "selection ==================\n");
-    logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
+    logger->info("= PO Reader  NAME = %\n", poReader->getName());
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
@@ -222,8 +221,7 @@ int main(int argc, char** argv)
                            .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
                 /* Log the result */
-                logger->info("EventLog file data: %s\n",
-                             ByteArrayUtil::toHex(eventLog).c_str());
+                logger->info("EventLog file data: %\n", eventLog);
             }
             logger->info("====================================================="
                          "=============================\n");

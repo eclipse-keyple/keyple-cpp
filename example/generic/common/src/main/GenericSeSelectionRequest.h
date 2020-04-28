@@ -14,7 +14,7 @@
 
 #include "AbstractMatchingSe.h"
 #include "AbstractSeSelectionRequest.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 #include "TransmissionMode.h"
 
 namespace keyple {

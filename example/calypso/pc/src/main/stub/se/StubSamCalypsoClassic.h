@@ -19,7 +19,6 @@
 #include <memory>
 
 /* Common */
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 /* Plugin */

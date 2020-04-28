@@ -12,12 +12,22 @@
 
 #pragma once
 
+#include <ostream>
+
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace protocol {
 
+/**
+ *
+ */
 enum class TransmissionMode { NO_MODE = 0, CONTACTS, CONTACTLESS };
+
+/**
+ *
+ */
+std::ostream& operator<<(std::ostream& os, const TransmissionMode& tm);
 
 }
 }

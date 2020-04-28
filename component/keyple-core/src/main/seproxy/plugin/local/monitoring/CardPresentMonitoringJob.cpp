@@ -38,24 +38,21 @@ void CardPresentMonitoringJob::monitoringJob(
 {
     long retries = 0;
 
-    logger->debug("[%s] Polling from isSePresentPing\n",
-                  reader->getName().c_str());
+    logger->debug("[%] Polling from isSePresentPing\n", reader->getName());
 
     /* Re-init loop value to true */
     loop = true;
 
     while (loop) {
         if (cancellationFlag) {
-            logger->debug("[%s] monitoring job cancelled\n",
-                          reader->getName().c_str());
+            logger->debug("[%] monitoring job cancelled\n", reader->getName());
             return;
         }
 
         try {
             /* Polls for SE_INSERTED */
             if (monitorInsertion && reader->isSePresent()) {
-                logger->debug("[%s] The SE is present\n",
-                              reader->getName().c_str());
+                logger->debug("[%] The SE is present\n", reader->getName());
                 loop = false;
                 state->onEvent(InternalEvent::SE_INSERTED);
                 return;
@@ -63,8 +60,7 @@ void CardPresentMonitoringJob::monitoringJob(
 
             /* Polls for SE_REMOVED */
             if (!monitorInsertion && !reader->isSePresent()) {
-                logger->debug("[%s] The SE is not present\n",
-                              reader->getName().c_str());
+                logger->debug("[%] The SE is not present\n", reader->getName());
                 loop = false;
                 state->onEvent(InternalEvent::SE_REMOVED);
                 return;
@@ -78,8 +74,8 @@ void CardPresentMonitoringJob::monitoringJob(
 
         retries++;
 
-        logger->trace("[%s] isSePresent polling retries : %d\n",
-                      reader->getName().c_str(), retries);
+        logger->trace("[%] isSePresent polling retries : %\n",
+                      reader->getName(), retries);
 
         try {
             /* Wait a bit */
@@ -92,12 +88,12 @@ void CardPresentMonitoringJob::monitoringJob(
         }
     }
 
-    logger->trace("[%s] Looping has been stopped\n", reader->getName().c_str());
+    logger->trace("[%] Looping has been stopped\n", reader->getName());
 }
 
 void CardPresentMonitoringJob::stop()
 {
-    logger->debug("[%s] Stop Polling\n", reader->getName().c_str());
+    logger->debug("[%] Stop Polling\n", reader->getName());
     loop = false;
 }
 

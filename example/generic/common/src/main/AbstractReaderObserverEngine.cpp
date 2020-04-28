@@ -19,7 +19,8 @@
 
 /* Core */
 #include "AbstractDefaultSelectionsResponse.h"
-#include "ReaderEvent_Import.h"
+#include "AbstractReader.h"
+#include "ReaderEvent.h"
 #include "SeProxyService.h"
 
 namespace keyple {
@@ -28,11 +29,11 @@ namespace generic {
 namespace common {
 
 using namespace keyple::core::seproxy::event;
+using namespace keyple::core::seproxy::plugin;
 
-void* AbstractReaderObserverEngine::runSeInsertedThread(void* args)
+void* AbstractReaderObserverEngine::runSeInsertedThread(
+    std::shared_ptr<ReaderEvent> event)
 {
-    ReaderEvent* event = (ReaderEvent*)args;
-
     currentlyProcessingSe = true;
     processSeInserted();
 
@@ -43,15 +44,13 @@ void* AbstractReaderObserverEngine::runSeInsertedThread(void* args)
      * If closing has already been requested, this method will do nothing.
      */
     try {
-        std::dynamic_pointer_cast<ObservableReader>(
+        std::dynamic_pointer_cast<AbstractReader>(
             SeProxyService::getInstance().getPlugin(event->getPluginName())
                 ->getReader(event->getReaderName()))->notifySeProcessed();
     } catch (KeypleReaderNotFoundException& e) {
-        logger->debug("KeypleReaderNotFoundException: %s\n",
-                      e.getMessage().c_str());
+        logger->debug("KeypleReaderNotFoundException: %\n", e);
     } catch (KeyplePluginNotFoundException& e) {
-        logger->debug("KeyplePluginNotFoundException: %s\n",
-                      e.getMessage().c_str());
+        logger->debug("KeyplePluginNotFoundException: %\n", e);
     }
 
     currentlyProcessingSe = false;
@@ -59,10 +58,9 @@ void* AbstractReaderObserverEngine::runSeInsertedThread(void* args)
     return NULL;
 }
 
-void* AbstractReaderObserverEngine::runSeMatchedThread(void* args)
+void* AbstractReaderObserverEngine::runSeMatchedThread(
+    std::shared_ptr<ReaderEvent> event)
 {
-    ReaderEvent* event = (ReaderEvent*)args;
-
     currentlyProcessingSe = true;
     processSeMatch(event->getDefaultSelectionsResponse());
 
@@ -73,15 +71,13 @@ void* AbstractReaderObserverEngine::runSeMatchedThread(void* args)
      * If closing has already been requested, this method will do nothing.
      */
     try {
-        std::dynamic_pointer_cast<ObservableReader>(
+        std::dynamic_pointer_cast<AbstractReader>(
             SeProxyService::getInstance().getPlugin(event->getPluginName())
                 ->getReader(event->getReaderName()))->notifySeProcessed();
     } catch (KeypleReaderNotFoundException& e) {
-        logger->debug("KeypleReaderNotFoundException: %s\n",
-                      e.getMessage().c_str());
+        logger->debug("KeypleReaderNotFoundException: %\n", e);
     } catch (KeyplePluginNotFoundException& e) {
-        logger->debug("KeyplePluginNotFoundException: %s\n",
-                      e.getMessage().c_str());
+        logger->debug("KeyplePluginNotFoundException: %\n", e);
     }
 
     currentlyProcessingSe = false;
@@ -91,17 +87,17 @@ void* AbstractReaderObserverEngine::runSeMatchedThread(void* args)
 
 void AbstractReaderObserverEngine::update(std::shared_ptr<ReaderEvent> event)
 {
-    logger->info("New reader event: %s\n", event->getReaderName().c_str());
+    logger->info("New reader event: %\n", event->getReaderName());
 
     if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED) {
         /* Run the PO processing asynchronously in a detach thread */
         new std::thread(&AbstractReaderObserverEngine::runSeInsertedThread,
-                        this, event.get());
+                        this, event);
 
     } else if (event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
         /* Run the PO processing asynchronously in a detach thread */
         new std::thread(&AbstractReaderObserverEngine::runSeMatchedThread,
-                        this, event.get());
+                        this, event);
 
     } else if (event->getEventType() ==ReaderEvent::EventType::SE_REMOVED) {
         if (currentlyProcessingSe) {
@@ -109,9 +105,7 @@ void AbstractReaderObserverEngine::update(std::shared_ptr<ReaderEvent> event)
             logger->error("Unexpected SE Removal\n");
         } else {
             processSeRemoval();
-            if (logger->isInfoEnabled()) {
-                logger->info("Waiting for a SE...\n");
-            }
+            logger->info("Waiting for a SE...\n");
         }
         currentlyProcessingSe = false;
 

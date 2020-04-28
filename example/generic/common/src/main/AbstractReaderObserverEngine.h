@@ -17,12 +17,11 @@
 #include <memory>
 
 /* Core */
-#include "ObservableReader_Import.h"
-#include "ReaderEvent_Import.h"
+#include "ObservableReader.h"
+#include "ReaderEvent.h"
 #include "AbstractDefaultSelectionsResponse.h"
 
 /* Common */
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -91,12 +90,12 @@ private:
     /**
      *
      */
-    void* runSeInsertedThread(void *args);
+    void* runSeInsertedThread(std::shared_ptr<ReaderEvent> event);
 
     /**
      *
      */
-    void* runSeMatchedThread(void *args);
+    void* runSeMatchedThread(std::shared_ptr<ReaderEvent> event);
 };
 
 }

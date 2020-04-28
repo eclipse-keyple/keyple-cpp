@@ -15,12 +15,12 @@
 #pragma once
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "AbstractObservableState.h"
+#include "KeypleCoreExport.h"
 #include "MonitoringJob.h"
 
 namespace keyple {
@@ -46,7 +46,7 @@ using namespace keyple::common;
  * <p>
  * By default a delay of 200 ms is inserted between each APDU sending .
  */
-class EXPORT CardAbsentPingMonitoringJob : public MonitoringJob {
+class KEYPLECORE_API CardAbsentPingMonitoringJob : public MonitoringJob {
 public:
     /**
      * Create a job monitor job that ping the SE with the method

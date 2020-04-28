@@ -34,15 +34,14 @@ void SeProxyService::registerPlugin(AbstractPluginFactory* pluginFactory)
 
     if (!isRegistered(pluginFactory->getPluginName())) {
         std::lock_guard<std::mutex> guard(MONITOR);
-        logger->info("Registering a new Plugin to the platform : %s\n",
-                     pluginFactory->getPluginName().c_str());
+        logger->info("Registering a new Plugin to the platform : %\n",
+                     pluginFactory->getPluginName());
         ReaderPlugin& newPlugin = pluginFactory->getPluginInstance();
         this->plugins.insert(&newPlugin);
 
     } else {
         logger->warn("Plugin has already been registered to the platform "
-                     ": %s\n",
-                     pluginFactory->getPluginName().c_str());
+                     ": %\n", pluginFactory->getPluginName());
     }
 }
 
@@ -55,13 +54,13 @@ bool SeProxyService::unregisterPlugin(const std::string& pluginName)
 
         std::lock_guard<std::mutex> guard(MONITOR);
         readerPlugin = this->getPlugin(pluginName);
-        logger->info("Unregistering a plugin from the platform : %s\n",
-                     readerPlugin->getName().c_str());
+        logger->info("Unregistering a plugin from the platform : %\n",
+                     readerPlugin->getName());
         ret = plugins.erase(readerPlugin);
 
     } catch (KeyplePluginNotFoundException& e) {
-        logger->info("Plugin is not registered to the platform : %s. %s\n",
-                     pluginName.c_str(), e.getMessage().c_str());
+        logger->info("Plugin is not registered to the platform : %. %\n",
+                     pluginName, e);
     }
 
     return ret;

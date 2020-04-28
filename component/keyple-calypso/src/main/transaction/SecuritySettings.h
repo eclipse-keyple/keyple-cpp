@@ -21,7 +21,9 @@
 
 /* Common */
 #include "Byte.h"
-#include "Export.h"
+
+/* Calypso */
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -38,7 +40,7 @@ using namespace keyple::common;
  * <p>
  * The getKeyInfo method returns the specified setting value.
  */
-class EXPORT SecuritySettings
+class KEYPLECALYPSO_API SecuritySettings
 : public std::enable_shared_from_this<SecuritySettings> {
 public:
     /**

@@ -50,7 +50,7 @@ public:
     static std::string toString(int i, int radix)
     {
         if (radix == 10)
-            return std::to_string(i);
+            return StringHelper::to_string(i);
         else
             return "radix != 10 not handled yet";
     }

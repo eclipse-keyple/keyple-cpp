@@ -16,19 +16,18 @@
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "PoSelectionRequest.h"
 #include "PoSelector.h"
 #include "ReaderPlugin.h"
 #include "ReadRecordsRespPars.h"
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 #include "SeProxyService.h"
 #include "StubCalypsoClassic.h"
 #include "StubSamCalypsoClassic.h"
-#include "StubProtocolSetting_Import.h"
+#include "StubProtocolSetting.h"
 #include "StubPlugin.h"
 #include "StubPluginFactory.h"
 #include "StubReader.h"
@@ -91,7 +90,7 @@ int main(int argc, char** argv)
 
     logger->info("=============== UseCase Calypso #1: AID based explicit "
                  "selection ==================\n");
-    logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
+    logger->info("= PO Reader  NAME = %\n", poReader->getName());
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
@@ -176,8 +175,7 @@ int main(int argc, char** argv)
                     CalypsoClassicInfo::RECORD_NUMBER_1)];
 
             /* Log the result */
-            logger->info("Environment file data: %s\n",
-                         ByteArrayUtil::toHex(environmentAndHolder).c_str());
+            logger->info("Environment file data: %\n", environmentAndHolder);
 
             /*
              * Go on with the reading of the first record of the EventLog file
@@ -226,8 +224,7 @@ int main(int argc, char** argv)
                            .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
                 /* Log the result */
-                logger->info("EventLog file data: %s\n",
-                             ByteArrayUtil::toHex(eventLog).c_str());
+                logger->info("EventLog file data: %\n", eventLog);
             }
             logger->info("==================================================="
                          "===============================\n");

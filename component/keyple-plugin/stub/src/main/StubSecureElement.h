@@ -13,20 +13,21 @@
  ******************************************************************************/
 #pragma once
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <memory>
 
 /* Common */
 #include "stringhelper.h"
-#include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 /* Core - Seproxy - Exception */
 #include "KeypleChannelControlException.h"
 #include "KeypleIOReaderException.h"
+
+/* Plugin */
+#include "KeyplePluginStubExport.h"
 
 namespace keyple {
 namespace plugin {
@@ -35,7 +36,7 @@ namespace stub {
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::common;
 
-class EXPORT StubSecureElement
+class KEYPLEPLUGINSTUB_API StubSecureElement
 : public std::enable_shared_from_this<StubSecureElement> {
 public:
     /**
@@ -80,8 +81,7 @@ public:
     /**
      *
      */
-    std::unordered_map<std::string, std::string> hexCommands =
-        std::unordered_map<std::string, std::string>();
+    std::unordered_map<std::string, std::string> hexCommands;
 
     /**
      * Add more simulated commands to the Stub SE
@@ -108,6 +108,18 @@ public:
      */
     virtual std::vector<uint8_t> processApdu(
         const std::vector<uint8_t>& apduIn);
+
+	/**
+	 *
+	 */
+	friend std::ostream& operator<<(std::ostream& os,
+		                            const StubSecureElement& s);
+
+	/**
+	 *
+	 */
+    friend std::ostream& operator<<(
+		std::ostream& os, const std::shared_ptr<StubSecureElement>& s);
 
 private:
     /**
