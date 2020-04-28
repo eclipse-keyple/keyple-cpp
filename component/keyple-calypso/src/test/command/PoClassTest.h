@@ -21,7 +21,6 @@
 #include "gtest/gtest.h"
 
 #include "PoClass.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 namespace keyple {

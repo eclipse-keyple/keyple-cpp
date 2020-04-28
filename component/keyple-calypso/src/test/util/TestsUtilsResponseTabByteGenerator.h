@@ -45,23 +45,23 @@ class TestsUtilsResponseTabByteGenerator
      * @return The complete array containing the appended data
      */
 private:
-    static std::vector<char> append(std::vector<char>& arrays);
+    static std::vector<uint8_t> append(std::vector<uint8_t>& arrays);
 
 public:
-    virtual std::vector<char> generate4MultiRecordsTabByte();
+    virtual std::vector<uint8_t> generate4MultiRecordsTabByte();
 
 private:
-    static std::vector<char> generateResponseOkTabByteRev2_4();
+    static std::vector<uint8_t> generateResponseOkTabByteRev2_4();
 
-    static std::vector<char> generateDataOpenTabByte();
+    static std::vector<uint8_t> generateDataOpenTabByte();
 
-    static std::vector<char> generateFciTabByte();
+    static std::vector<uint8_t> generateFciTabByte();
 
-    static std::vector<char> generateTerminalSessionSignatureTabByte();
+    static std::vector<uint8_t> generateTerminalSessionSignatureTabByte();
 
-    static std::vector<char> generateResponseOkTabByteRev3_1();
+    static std::vector<uint8_t> generateResponseOkTabByteRev3_1();
 
-    static std::vector<char> generateResponseOkTabByteRev3_2();
+    static std::vector<uint8_t> generateResponseOkTabByteRev3_2();
 
 public:
     static std::shared_ptr<ApduResponse> generateApduResponseValidRev2_4();

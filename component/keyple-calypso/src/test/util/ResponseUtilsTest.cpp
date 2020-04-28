@@ -35,40 +35,18 @@ using Byte           = keyple::common::Byte;
 
 void ResponseUtilsTest::TestToSecureSession()
 {
-    std::vector<char> apduResponse = {static_cast<char>(0x8F),
-                                      0x05,
-                                      0x75,
-                                      0x1A,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x30,
-                                      0x7E,
-                                      static_cast<char>(0x1D),
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00,
-                                      0x00};
+    std::vector<uint8_t> apduResponse = {
+        0x8F, 0x05, 0x75, 0x1A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x30, 0x7E, 0x1D, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-    std::vector<char> transactionCounter = {static_cast<char>(0x8F), 0x05,
-                                            0x75};
-    std::vector<char> randomNumber       = {0x1A, 0x00, 0x00, 0x00, 0x00};
-    char kif                             = 0x00;
-    std::shared_ptr<Byte> kvc = std::make_shared<Byte>(static_cast<char>(0x00));
+    std::vector<uint8_t> transactionCounter = {0x8F, 0x05, 0x75};
+    std::vector<uint8_t> randomNumber       = {0x1A, 0x00, 0x00, 0x00, 0x00};
+    uint8_t kif                             = 0x00;
+    std::shared_ptr<Byte> kvc = std::make_shared<Byte>(0x00);
 
     bool isPreviousSessionRatifiedExpected       = true;
     bool isManageSecureSessionAuthorizedExpected = false;
-    std::vector<char> originalData(0);
+    std::vector<uint8_t> originalData(0);
 
     std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
         SecureSessionExpected =
@@ -103,20 +81,14 @@ void ResponseUtilsTest::TestToSecureSessionRev2()
 {
 
     // Case Else
-    std::vector<char> apduResponse = {
-        static_cast<char>(0x7E), static_cast<char>(0x03),
-        static_cast<char>(0x0D), static_cast<char>(0x14),
-        static_cast<char>(0x53)};
-
-    std::vector<char> transactionCounter = {static_cast<char>(0x03),
-                                            static_cast<char>(0x0D),
-                                            static_cast<char>(0x14)};
-    std::vector<char> randomNumber       = {static_cast<char>(0x53)};
-    std::shared_ptr<Byte> kvc = std::make_shared<Byte>(static_cast<char>(0x7E));
+    std::vector<uint8_t> apduResponse       = {0x7E, 0x03, 0x0D, 0x14, 0x53};
+    std::vector<uint8_t> transactionCounter = {0x03, 0x0D, 0x14};
+    std::vector<uint8_t> randomNumber       = {0x53};
+    std::shared_ptr<Byte> kvc = std::make_shared<Byte>(0x7E);
 
     bool isPreviousSessionRatifiedExpected       = false;
     bool isManageSecureSessionAuthorizedExpected = false;
-    std::vector<char> originalData;
+    std::vector<uint8_t> originalData;
 
     std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
         SecureSessionExpected =
@@ -150,10 +122,10 @@ void ResponseUtilsTest::TestToSecureSessionRev2()
     // byte[] originalDataCaseTwo = new byte[] {(byte) 0x7E, (byte) 0x03,
     // (byte) 0x0D, (byte) 0x14,
     // (byte) 0x53, (byte) 0xFF, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
-    std::vector<char> apduResponseCaseTwo = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> apduResponseCaseTwo = ByteArrayUtils::fromHex(
         "7E 030D1453 9999 00112233445566778899AABBCCDDEEFF "
         "00112233445566778899AABBCC");
-    std::vector<char> originalDataCaseTwo = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> originalDataCaseTwo = ByteArrayUtils::fromHex(
         "7E 030D1453 9999 00112233445566778899AABBCCDDEEFF "
         "00112233445566778899AABBCC");
 
@@ -192,10 +164,10 @@ void ResponseUtilsTest::TestToSecureSessionRev2()
     // (byte) 0x0D, (byte) 0x14, (byte) 0x53, (byte) 0xFF, 0x00, 0x04, 0x01,
     // 0x02, 0x03, 0x04};
 
-    std::vector<char> apduResponseCaseThree = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> apduResponseCaseThree = ByteArrayUtils::fromHex(
         "7E 030D1453 9999 00112233445566778899AABBCCDDEEFF "
         "00112233445566778899AABBCC");
-    std::vector<char> originalDataCaseThree = ByteArrayUtils::fromHex(
+    std::vector<uint8_t> originalDataCaseThree = ByteArrayUtils::fromHex(
         "7E 030D1453 9999 00112233445566778899AABBCCDDEEFF "
         "00112233445566778899AABBCC");
 

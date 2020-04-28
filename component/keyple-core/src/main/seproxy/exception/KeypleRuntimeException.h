@@ -20,7 +20,9 @@
 
 /* Common */
 #include "Exception.h"
-#include "Export.h"
+
+/* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -29,7 +31,7 @@ namespace exception {
 
 using namespace keyple::common;
 
-class EXPORT KeypleRuntimeException
+class KEYPLECORE_API KeypleRuntimeException
 : public Exception,
   public std::enable_shared_from_this<KeypleRuntimeException> {
 public:

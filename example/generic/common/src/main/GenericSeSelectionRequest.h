@@ -14,7 +14,7 @@
 
 #include "AbstractMatchingSe.h"
 #include "AbstractSeSelectionRequest.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 #include "TransmissionMode.h"
 
 namespace keyple {
@@ -35,15 +35,14 @@ public:
     /**
      *
      */
-    GenericSeSelectionRequest(std::shared_ptr<SeSelector> seSelector,
-                              ChannelState channelState);
+    GenericSeSelectionRequest(std::shared_ptr<SeSelector> seSelector);
 
 protected:
     /**
      *
      */
     std::shared_ptr<AbstractMatchingSe>
-    parse(std::shared_ptr<SeResponse> seResponse) override;
+        parse(std::shared_ptr<SeResponse> seResponse) override;
 
 private:
     /**

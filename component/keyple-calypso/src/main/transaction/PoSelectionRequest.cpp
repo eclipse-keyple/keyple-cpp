@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 #include "AbstractMatchingSe.h"
 #include "ApduRequest.h"
 #include "ByteArrayUtil.h"
@@ -22,9 +22,9 @@
 #include "PoCustomModificationCommandBuilder.h"
 #include "ReadRecordsRespPars.h"
 #include "ReadRecordsCmdBuild.h"
-#include "SeCommonProtocols_Import.h"
-#include "SeSelector_Import.h"
-#include "SeProtocol_Import.h"
+#include "SeCommonProtocols.h"
+#include "SeSelector.h"
+#include "SeProtocol.h"
 #include "SelectFileRespPars.h"
 #include "SelectFileCmdBuild.h"
 #include "SeResponse.h"
@@ -55,9 +55,7 @@ PoSelectionRequest::PoSelectionRequest(std::shared_ptr<PoSelector> poSelector)
         poClass = PoClass::ISO;
     }
 
-    if (logger->isTraceEnabled()) {
-        logger->trace("Calypso %s selector\n", poClass.toString().c_str());
-    }
+    logger->trace("Calypso % selector\n", poClass);
 }
 
 int PoSelectionRequest::prepareReadRecordsCmdInternal(
@@ -82,9 +80,10 @@ int PoSelectionRequest::prepareReadRecordsCmdInternal(
 
     addApduRequest(rrcmd->getApduRequest());
 
-    logger->trace("ReadRecords: SFI = %02x, RECNUMBER = %d, JUSTONE = %d, "
-                  "EXPECTEDLENGTH = %d\n",
-                  sfi, firstRecordNumber, readJustOneRecord, expectedLength);
+    logger->trace("ReadRecords: SFI = %, RECNUMBER = %, JUSTONE = %, "
+                  "EXPECTEDLENGTH = %\n", sfi,
+		          static_cast<int>(firstRecordNumber),
+		          readJustOneRecord, expectedLength);
 
     /* keep read record parameters in the dedicated Maps */
     readRecordFirstRecordNumberMap.emplace(commandIndex, firstRecordNumber);
@@ -136,8 +135,7 @@ int PoSelectionRequest::prepareSelectFileCmd(const std::vector<uint8_t>& path,
     addApduRequest((std::make_shared<SelectFileCmdBuild>(poClass, path))
                        ->getApduRequest());
 
-    logger->trace("Select File: PATH = %s\n",
-                  ByteArrayUtil::toHex(path).c_str());
+    logger->trace("Select File: PATH = %\n", path);
 
     /* set the parser for the response of this command */
     parsingClassList.push_back(typeid(SelectFileRespPars).name());
@@ -156,7 +154,7 @@ int PoSelectionRequest::prepareSelectFileCmd(
         (std::make_shared<SelectFileCmdBuild>(poClass, selectControl))
             ->getApduRequest());
 
-    logger->trace("Navigate: CONTROL = %d\n", static_cast<int>(selectControl));
+    logger->trace("Navigate: CONTROL = %\n", selectControl);
 
     /* set the parser for the response of this command */
     parsingClassList.push_back(typeid(SelectFileRespPars).name());
@@ -175,8 +173,7 @@ int PoSelectionRequest::preparePoCustomReadCmd(const std::string& name,
         (std::make_shared<PoCustomReadCommandBuilder>(name, apduRequest))
             ->getApduRequest());
 
-    logger->trace("CustomReadCommand: APDUREQUEST = %s\n",
-                  apduRequest->toString().c_str());
+    logger->trace("CustomReadCommand: APDUREQUEST = %\n", apduRequest);
 
     /* return and post increment the command index */
     return commandIndex++;
@@ -189,8 +186,7 @@ int PoSelectionRequest::preparePoCustomModificationCmd(
                         name, apduRequest))
                        ->getApduRequest());
 
-    logger->trace("CustomModificationCommand: APDUREQUEST = %s\n",
-                  apduRequest->toString().c_str());
+    logger->trace("CustomModificationCommand: APDUREQUEST = %\n", apduRequest);
 
     /* return and post increment the command index */
     return commandIndex++;
@@ -237,8 +233,8 @@ PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
      * members won't be initialized
      */
     return std::make_shared<CalypsoPo>(
-        seResponse, seSelector->getSeProtocol().getTransmissionMode(),
-        seSelector->getExtraInfo());
+               seResponse, seSelector->getSeProtocol().getTransmissionMode(),
+               seSelector->getExtraInfo());
 }
 
 }

@@ -15,7 +15,7 @@
 #pragma once
 
 /* Core */
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 
 namespace keyple {
 namespace core {

@@ -21,8 +21,8 @@
 /* Core */
 #include "CommandsTable.h"
 
-/* Common */
-#include "Export.h"
+/* Calypso */
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -31,7 +31,7 @@ namespace sam {
 
 using namespace keyple::core::command;
 
-class EXPORT CalypsoSamCommands final : public CommandsTable {
+class KEYPLECALYPSO_API CalypsoSamCommands final : public CommandsTable {
 public:
     /** The sam select diversifier. */
     static CalypsoSamCommands SELECT_DIVERSIFIER;

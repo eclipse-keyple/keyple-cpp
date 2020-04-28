@@ -20,6 +20,7 @@
 
 /* Common */
 #include "Arrays.h"
+#include "stringhelper.h"
 
 namespace keyple {
 namespace calypso {
@@ -82,9 +83,9 @@ void CloseSessionRespPars::parse(const std::vector<uint8_t>& response)
         signatureLo = Arrays::copyOfRange(response, 0, 4);
     } else {
         if (response.size() != 0) {
-            throw std::invalid_argument("Unexpected length in response to "
-                                        "CloseSecureSession command: " +
-                                        std::to_string(response.size()));
+            throw std::invalid_argument(
+                      "Unexpected length in response to CloseSecureSession " \
+                      "command: " + StringHelper::to_string(response.size()));
         }
     }
 }

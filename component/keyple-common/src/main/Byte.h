@@ -129,19 +129,6 @@ public:
     }
 
     /*
-     * Returns a string object representing this Byte's value. The value is
-     * converted to signed decimal representation and returned as a string,
-     * exactly as if the integer value were given as an argument to the
-     * toString method.
-     * 
-     * @return a string representation of the value of this object in base 10
-     */
-    std::string toString()
-    {
-        return Integer::toString((int)value);
-    }
-
-    /*
      * Returns a hash code for this Byte, equal to the result of invoking
      * intValue().
      * 
@@ -214,6 +201,15 @@ public:
     bool operator==(const Byte& other)
     {
         return this->value == other.value;
+    }
+
+    /**
+	 *
+	 */
+    friend std::ostream& operator<<(std::ostream& os, const Byte& b)
+    {
+        os << b.value;
+		return os;
     }
 };
 

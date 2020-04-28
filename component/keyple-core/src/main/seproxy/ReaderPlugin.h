@@ -17,11 +17,9 @@
 #include <set>
 #include <string>
 
-/* Common */
-#include "Export.h"
-
 /* Core */
 #include "Configurable.h"
+#include "KeypleCoreExport.h"
 #include "KeypleReaderNotFoundException.h"
 #include "Nameable.h"
 
@@ -44,8 +42,8 @@ using namespace keyple::core::util;
 /**
     * Card readers plugin interface.
     */
-class EXPORT ReaderPlugin : public virtual Nameable,
-                            public virtual Configurable {
+class KEYPLECORE_API ReaderPlugin
+: public virtual Nameable, public virtual Configurable {
 public:
     /**
      *

@@ -17,6 +17,31 @@ namespace calypso {
 namespace command {
 namespace po {
 
+std::ostream& operator<<(std::ostream& os, const PoRevision& pr)
+{
+    switch (pr) {
+    case PoRevision::NO_REV:
+        os << "NO_REV";
+        break;
+    case PoRevision::REV1_0:
+        os << "REV1_0";
+        break;
+    case PoRevision::REV2_4:
+        os << "REV2_4";
+        break;
+    case PoRevision::REV3_1:
+        os << "REV3_1";
+        break;
+    case PoRevision::REV3_1_CLAP:
+        os << "REV3_1_CLAP";
+        break;
+    case PoRevision::REV3_2:
+        os << "REV3_2";
+        break;
+    }
+    return os;
+}
+
 }
 }
 }

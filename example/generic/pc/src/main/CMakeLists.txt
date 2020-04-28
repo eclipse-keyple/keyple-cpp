@@ -1,10 +1,16 @@
-#
-# Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-#
-# All rights reserved. This program and the accompanying materials are made available under the
-# terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
-# available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
-#
+#******************************************************************************
+#* Copyright (c) 2018 Calypso Networks Association                            *
+#* https://www.calypsonet-asso.org/                                           *
+#*                                                                            *
+#* See the NOTICE file(s) distributed with this work for additional           *
+#* information regarding copyright ownership.                                 *
+#*                                                                            *
+#* This program and the accompanying materials are made available under the   *
+#* terms of the Eclipse Public License 2.0 which is available at              *
+#* http://www.eclipse.org/legal/epl-2.0                                       *
+#*                                                                            *
+#* SPDX-License-Identifier: EPL-2.0                                           *
+#******************************************************************************/
 
 PROJECT(ExamplePc C CXX)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
@@ -22,11 +28,11 @@ SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 SET(CMAKE_MACOSX_RPATH 1)
 SET(CMAKE_CXX_STANDARD 11)
 
-#INCLUDE(CMakeLists.txt.demo_observablereadernotification_pcsc)
+INCLUDE(CMakeLists.txt.demo_observablereadernotification_pcsc)
 INCLUDE(CMakeLists.txt.demo_observablereadernotification_stub)
-#INCLUDE(CMakeLists.txt.demo_seprotocoldetection_pcsc)
-#INCLUDE(CMakeLists.txt.demo_seprotocoldetection_stub)
-#INCLUDE(CMakeLists.txt.usecase_generic1_explicitselectionaid_pcsc)
-#INCLUDE(CMakeLists.txt.usecase_generic2_defaultselectionnotification_pcsc)
-#INCLUDE(CMakeLists.txt.usecase_generic3_groupedmultiselection_pcsc)
-#INCLUDE(CMakeLists.txt.usecase_generic4_sequentialmultiselection_pcsc)
+INCLUDE(CMakeLists.txt.demo_seprotocoldetection_pcsc)
+INCLUDE(CMakeLists.txt.demo_seprotocoldetection_stub)
+INCLUDE(CMakeLists.txt.usecase_generic1_explicitselectionaid_pcsc)
+INCLUDE(CMakeLists.txt.usecase_generic2_defaultselectionnotification_pcsc)
+INCLUDE(CMakeLists.txt.usecase_generic3_groupedmultiselection_pcsc)
+INCLUDE(CMakeLists.txt.usecase_generic4_sequentialmultiselection_pcsc)

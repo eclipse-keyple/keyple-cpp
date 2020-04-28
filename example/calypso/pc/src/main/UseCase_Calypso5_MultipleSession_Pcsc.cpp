@@ -1,34 +1,35 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #include "CalypsoClassicInfo.h"
 #include "CalypsoUtilities.h"
 #include "KeypleBaseException.h"
 #include "ReaderUtilities.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "PcscPlugin.h"
+#include "PcscPluginFactory.h"
 #include "PcscReader.h"
 #include "PcscReadersSettings.h"
-#include "PcscReaderSettings_Import.h"
 #include "PcscReadersSettings.h"
 #include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "PoTransaction_Import.h"
-#include "ReaderEvent_Import.h"
+#include "PoTransaction.h"
+#include "ReaderEvent.h"
 #include "SamResource.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
@@ -60,24 +61,20 @@ int main(int argc, char** argv)
     (void)argc;
     (void)argv;
 
-    /* Get the instance of the PC/SC plugin */
-    PcscPlugin pcscPlugin = PcscPlugin::getInstance();
-    pcscPlugin.initReaders();
-    std::shared_ptr<PcscPlugin> shared_plugin =
-        std::shared_ptr<PcscPlugin>(&pcscPlugin);
+    /* Get the instance of the SeProxyService (Singleton pattern) */
+    SeProxyService& seProxyService = SeProxyService::getInstance();
 
     /* Assign PcscPlugin to the SeProxyService */
-    SeProxyService& seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(shared_plugin);
+    seProxyService.registerPlugin(new PcscPluginFactory());
 
     /*
-     * Get a PO reader ready to work with Calypso PO. Use the getReader helper method from the
-     * CalypsoUtilities class.
+     * Get a PO reader ready to work with Calypso PO. Use the getReader helper
+     * method from the CalypsoUtilities class.
      */
     std::shared_ptr<SeReader> poReader = CalypsoUtilities::getDefaultPoReader();
     /*
-     * Get a SAM reader ready to work with Calypso PO. Use the getReader helper method from the
-     * CalypsoUtilities class.
+     * Get a SAM reader ready to work with Calypso PO. Use the getReader helper
+     * method from the CalypsoUtilities class.
      */
     std::shared_ptr<SamResource> samResource =
         CalypsoUtilities::getDefaultSamResource();
@@ -113,13 +110,15 @@ int main(int argc, char** argv)
         /*
          * Setting of an AID based selection of a Calypso REV3 PO
          *
-         * Select the first application matching the selection AID whatever the SE communication
-         * protocol keep the logical channel open after the selection
+         * Select the first application matching the selection AID whatever the
+         * SE communication protocol keep the logical channel open after the
+         * selection
          */
 
         /*
-         * Calypso selection: configures a PoSelector with all the desired attributes to make
-         * the selection and read additional information afterwards
+         * Calypso selection: configures a PoSelector with all the desired
+         * attributes to make the selection and read additional information
+         * afterwards
          */
         std::shared_ptr<PoSelectionRequest> poSelectionRequest =
             std::make_shared<PoSelectionRequest>(
@@ -130,18 +129,17 @@ int main(int argc, char** argv)
                             CalypsoClassicInfo::AID),
                         PoSelector::InvalidatedPo::REJECT),
                     StringHelper::formatSimple("AID: %s",
-                                               CalypsoClassicInfo::AID)),
-                ChannelState::KEEP_OPEN);
+                                               CalypsoClassicInfo::AID)));
 
         /*
-         * Add the selection case to the current selection (we could have added other cases
-         * here)
+         * Add the selection case to the current selection (we could have added
+         * other cases here)
          */
         seSelection->prepareSelection(poSelectionRequest);
 
         /*
-         * Actual PO communication: operate through a single request the Calypso PO selection
-         * and the file read
+         * Actual PO communication: operate through a single request the Calypso
+         * PO selection and the file read
          */
         std::shared_ptr<SelectionsResult> selectionResult =
             seSelection->processExplicitSelection(poReader);
@@ -173,8 +171,7 @@ int main(int argc, char** argv)
              */
             bool poProcessStatus = poTransaction->processOpening(
                 PoTransaction::ModificationMode::MULTIPLE,
-                PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT,
-                static_cast<char>(0), static_cast<char>(0));
+                PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT, 0, 0);
 
             if (!poProcessStatus) {
                 throw IllegalStateException("processingOpening failure.");
@@ -186,9 +183,9 @@ int main(int argc, char** argv)
             }
 
             /*
-             * Compute the number of append records (29 bytes) commands that will overflow the
-             * PO modifications buffer. Each append records will consume 35 (29 + 6) bytes in
-             * the buffer.
+             * Compute the number of append records (29 bytes) commands that
+             * will overflow the PO modifications buffer. Each append records
+             * will consume 35 (29 + 6) bytes in the buffer.
              *
              * We'll send one more command to demonstrate the MULTIPLE mode
              */
@@ -243,7 +240,7 @@ int main(int argc, char** argv)
              * A ratification command will be sent (CONTACTLESS_MODE).
              */
             poProcessStatus =
-                poTransaction->processClosing(ChannelState::KEEP_OPEN);
+                poTransaction->processClosing(ChannelControl::KEEP_OPEN);
 
             if (!poProcessStatus) {
                 throw new IllegalStateException("processClosing failure.");

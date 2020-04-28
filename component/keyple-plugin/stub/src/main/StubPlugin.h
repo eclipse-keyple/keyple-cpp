@@ -24,12 +24,13 @@
 #include "TransmissionMode.h"
 
 /* Common */
-#include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "InterruptedException.h"
 #include "ObservablePlugin.h"
 #include "KeypleBaseException.h"
+
+/* Plugin */
+#include "KeyplePluginStubExport.h"
 
 namespace keyple {
 namespace plugin {
@@ -46,7 +47,7 @@ using namespace keyple::core::seproxy::protocol;
  * Stubplugin allows to simulate a {@link keyple::core::seproxy::ReaderPlugin}
  * and a {@link StubSecureElement}
  */
-class EXPORT StubPlugin : public ObservablePlugin {
+class KEYPLEPLUGINSTUB_API StubPlugin : public ObservablePlugin {
 public:
     /**
      * Plug a Stub Reader

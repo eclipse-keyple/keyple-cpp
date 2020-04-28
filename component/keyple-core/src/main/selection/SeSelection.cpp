@@ -27,7 +27,7 @@
 #include "SelectionsResult.h"
 #include "SelectionStatus.h"
 #include "SeReader.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 
 namespace keyple {
 namespace core {
@@ -54,9 +54,9 @@ SeSelection::SeSelection()
 int SeSelection::prepareSelection(
     std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest)
 {
-    logger->trace("SELECTORREQUEST = %s, EXTRAINFO = %s\n",
-                  seSelectionRequest->getSelectionRequest()->toString().c_str(),
-                  seSelectionRequest->getSeSelector()->getExtraInfo().c_str());
+    logger->trace("AbstractSeSelectionRequest: {REQUEST = %, EXTRAINFO = %}\n",
+                  seSelectionRequest->getSelectionRequest(),
+                  seSelectionRequest->getSeSelector()->getExtraInfo());
 
     /* build the SeRequest set transmitted to the SE */
     selectionRequestSet.insert(seSelectionRequest->getSelectionRequest());
@@ -68,9 +68,8 @@ int SeSelection::prepareSelection(
     return selectionIndex++;
 }
 
-std::shared_ptr<SelectionsResult>
-SeSelection::processSelection(std::shared_ptr<AbstractDefaultSelectionsResponse>
-                                  defaultSelectionsResponse)
+std::shared_ptr<SelectionsResult> SeSelection::processSelection(
+   std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
 {
     int index = 0;
 
@@ -78,7 +77,7 @@ SeSelection::processSelection(std::shared_ptr<AbstractDefaultSelectionsResponse>
         std::make_shared<SelectionsResult>();
 
     /* Check SeResponses */
-    for (auto seResponse :
+    for (const auto& seResponse :
          (std::dynamic_pointer_cast<DefaultSelectionsResponse>(
               defaultSelectionsResponse))
              ->getSelectionSeResponseSet()) {
@@ -109,7 +108,7 @@ SeSelection::processSelection(std::shared_ptr<AbstractDefaultSelectionsResponse>
 }
 
 std::shared_ptr<SelectionsResult> SeSelection::processDefaultSelection(
-    std::shared_ptr<AbstractDefaultSelectionsResponse>
+    const std::shared_ptr<AbstractDefaultSelectionsResponse>
         defaultSelectionsResponse)
 {
     /* Null pointer exception protection */
@@ -119,7 +118,7 @@ std::shared_ptr<SelectionsResult> SeSelection::processDefaultSelection(
         return nullptr;
     }
 
-    logger->trace("Process default SELECTIONRESPONSE (%d response(s))\n",
+    logger->trace("Process default SELECTIONRESPONSE (% response(s))\n",
                   (std::static_pointer_cast<DefaultSelectionsResponse>(
                        defaultSelectionsResponse))
                       ->getSelectionSeResponseSet()
@@ -135,7 +134,7 @@ SeSelection::processExplicitSelection(std::shared_ptr<SeReader> seReader)
      * Removed 'if (logger-isTraceEnabled())', that check will be done in the
      * trace function already.
      */
-    logger->trace("Transmit SELECTIONREQUEST (%d request(s))\n",
+    logger->trace("Transmit SELECTIONREQUEST (% request(s))\n",
                   selectionRequestSet.size());
 
     if (!seReader) {

@@ -20,12 +20,12 @@
 #include "ChannelControl.h"
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 #include "exceptionhelper.h"
 
 /* Core */
-#include "AbstractApduResponseParser_Import.h"
-#include "SeSelector_Import.h"
+#include "AbstractApduResponseParser.h"
+#include "SeSelector.h"
 
 /* Forward class declarations */
 namespace keyple {
@@ -78,7 +78,7 @@ using namespace keyple::core::seproxy;
  * This class may also be extended to add particular features specific to a SE
  * family.
  */
-class EXPORT AbstractSeSelectionRequest
+class KEYPLECORE_API AbstractSeSelectionRequest
 : public std::enable_shared_from_this<AbstractSeSelectionRequest> {
 public:
     /**
@@ -128,6 +128,12 @@ public:
      */
     virtual std::shared_ptr<AbstractMatchingSe>
     parse(std::shared_ptr<SeResponse> seResponse) = 0;
+
+	/**
+	 *
+	 */
+    friend std::ostream& operator<<(std::ostream& os,
+                                    const AbstractSeSelectionRequest& asr);
 
 protected:
     /**

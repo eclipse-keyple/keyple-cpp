@@ -14,6 +14,9 @@
 
 #include "StubPluginImpl.h"
 
+/* Core */
+#include "AbstractObservableState.h"
+
 /* Stub Plugin */
 #include "StubReaderImpl.h"
 
@@ -54,7 +57,8 @@ void StubPluginImpl::plugStubReader(const std::string& readerName,
                                     TransmissionMode transmissionMode,
                                     bool synchronous)
 {
-    logger->info("Plugging a new reader with readerName %s\n", readerName);
+    logger->info("Plugging a new reader with readerName %s\n",
+                 readerName.c_str());
 
     /* Add the native reader to the native readers list */
     bool exist =
@@ -62,6 +66,8 @@ void StubPluginImpl::plugStubReader(const std::string& readerName,
 
     if (!exist && synchronous) {
         /* add the reader as a new reader to the readers list */
+        logger->debug("Inserting reader %s into 'readers' list\n",
+                 readerName.c_str());
         readers.insert(std::make_shared<StubReaderImpl>(
             this->getName(), readerName, transmissionMode));
     }
@@ -70,7 +76,7 @@ void StubPluginImpl::plugStubReader(const std::string& readerName,
 
     if (exist) {
         logger->error("Reader with readerName %s was already plugged\n",
-                      readerName);
+                      readerName.c_str());
     }
 }
 
@@ -119,20 +125,29 @@ void StubPluginImpl::unplugStubReader(const std::string& readerName,
 {
     if (connectedStubNames.find(readerName) == connectedStubNames.end()) {
         logger->warn("unplugStubReader() No reader found with name %s\n",
-                     readerName);
+                     readerName.c_str());
     } else {
         /* Remove the reader from the readers list */
         if (synchronous) {
+            logger->debug("synchronous unplug\n");
             connectedStubNames.erase(readerName);
-            readers.erase(getReader(readerName));
+            std::shared_ptr<SeReader> readerToErase = getReader(readerName);
+
+            /* In case where Reader was detecting SE */
+            std::shared_ptr<AbstractObservableLocalReader> observableR =
+                std::dynamic_pointer_cast<AbstractObservableLocalReader>(
+                    readerToErase);
+            observableR->stopSeDetection();
+
+            readers.erase(readerToErase);
         } else {
+            logger->debug("asynchronous unplug\n");
             connectedStubNames.erase(readerName);
         }
 
         /* Remove the native reader from the native readers list */
-        logger->info("Unplugged reader with name %s, connectedStubNames size"
-                     "%d\n",
-                     readerName, connectedStubNames.size());
+        logger->info("Unplugged reader with name %s, connectedStubNames size" \
+                     ": %d\n", readerName.c_str(), connectedStubNames.size());
     }
 }
 
@@ -153,7 +168,7 @@ void StubPluginImpl::unplugStubReaders(const std::set<std::string>& readerNames,
         } catch (KeypleReaderNotFoundException& e) {
             (void)e;
             logger->warn("unplugStubReaders() No reader found with name %s\n",
-                         name);
+                         name.c_str());
         }
     }
 
@@ -168,7 +183,9 @@ void StubPluginImpl::unplugStubReaders(const std::set<std::string>& readerNames,
 
 const std::set<std::string>& StubPluginImpl::fetchNativeReadersNames()
 {
-    if (connectedStubNames.empty()) {
+    logger->debug("fetching native reader names\n");
+
+    if (connectedStubNames.size() == 0) {
         logger->trace("No reader available\n");
     }
 

@@ -21,7 +21,7 @@
 
 /* Core */
 #include "AbstractApduCommandBuilder.h"
-#include "Export.h"
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -43,7 +43,8 @@ using namespace keyple::core::seproxy::message;
  * <li>the corresponding AbstractApduResponseParser class.</li>
  * </ul>
  */
-class EXPORT AbstractIso7816CommandBuilder : public AbstractApduCommandBuilder {
+class KEYPLECORE_API AbstractIso7816CommandBuilder
+: public AbstractApduCommandBuilder {
 public:
     /**
      * Abstract constructor to build a command with a command reference and an

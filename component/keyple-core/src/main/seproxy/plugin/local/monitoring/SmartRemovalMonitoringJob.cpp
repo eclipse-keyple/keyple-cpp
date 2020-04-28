@@ -39,14 +39,14 @@ void SmartRemovalMonitoringJob::monitoringJob(
             // timeout is already managed within the task
             state->onEvent(InternalEvent::SE_REMOVED);
         } else {
-            logger->trace("[%s] waitForCardAbsentNative => return false, task"
-                          " interrupted\n",
-                          reader->getName());
+            logger->trace("[%] waitForCardAbsentNative => return false, task"
+                          " interrupted\n", reader->getName());
         }
     } catch (KeypleIOReaderException& e) {
-        logger->trace("[%s] waitForCardAbsent => Error while polling SE with "
-                      "waitForCardAbsent. %s\n",
-                      reader->getName(), e.getMessage());
+        logger->trace("[%] waitForCardAbsent => Error while polling SE with "
+                      "waitForCardAbsent, %\n", reader->getName(),
+			          e.getMessage());
+
         state->onEvent(InternalEvent::STOP_DETECT);
     }
 }
@@ -62,6 +62,8 @@ SmartRemovalMonitoringJob::startMonitoring(AbstractObservableState* state,
 
 void SmartRemovalMonitoringJob::stop()
 {
+    logger->trace("[%] stopWaitForCardRemoval on reader\n", reader->getName());
+
     reader->stopWaitForCardRemoval();
 }
 

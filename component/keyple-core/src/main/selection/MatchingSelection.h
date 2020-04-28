@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -16,7 +18,7 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 
 /* Forward class declarations */
 namespace keyple {
@@ -60,7 +62,7 @@ using namespace keyple::core::seproxy::message;
 /**
  * The MatchingSelection class holds the result of a single selection case.
  */
-class EXPORT MatchingSelection final
+class KEYPLECORE_API MatchingSelection final
 : public std::enable_shared_from_this<MatchingSelection> {
 private:
     /**
@@ -115,13 +117,19 @@ public:
     /**
      * @return the info string provided with the Selector
      */
-    std::string getExtraInfo();
+    const std::string& getExtraInfo() const;
 
     /**
-     * @return the index of the selection (order in the prepareSelection command). 0 is the first
-     *         selection.
+     * @return the index of the selection (order in the prepareSelection
+     *         command). 0 is the first selection.
      */
     int getSelectionIndex();
+
+	/**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const MatchingSelection& ms);
 };
 
 }

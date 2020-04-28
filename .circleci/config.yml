@@ -1,0 +1,55 @@
+version: 2.0
+jobs:
+  build_kunitoki_gcc_7:
+    docker:
+      - image: kunitoki/gcc-7
+    steps:
+      - checkout
+      - run: apt-get update
+      - run: apt-get install libpcsclite-dev -y
+      - run: cmake -DCMAKE_TOOLCHAIN_FILE=toolchain/gcc-linux.cmake .
+      - run: make
+  build_kunitoki_clang_8:
+    docker:
+      - image: kunitoki/clang-8
+    steps:
+      - checkout
+      - run: apt-get update
+      - run: apt-get install libpcsclite-dev -y
+      - run: cmake -DCMAKE_TOOLCHAIN_FILE=toolchain/clang-linux.cmake .
+      - run: make
+  build_gcc_7:
+    docker:
+      - image: rikorose/gcc-cmake:gcc-7
+    steps:
+      - checkout
+      - run: apt-get update
+      - run: apt-get install libpcsclite-dev -y
+      - run: cmake -DCMAKE_TOOLCHAIN_FILE=toolchain/gcc-linux.cmake .
+      - run: make
+  build_gcc_6:
+    docker:
+      - image: rikorose/gcc-cmake:gcc-6
+    steps:
+      - checkout
+      - run: apt-get update
+      - run: apt-get install libpcsclite-dev -y
+      - run: cmake -DCMAKE_TOOLCHAIN_FILE=toolchain/gcc-linux.cmake .
+      - run: make
+  doxygen:
+    docker:
+      - image: nnadeau/docker-doxygen
+    steps:
+      - checkout
+      - run: apk update && apk add git openssh-client
+      - run: .circleci/doxygen.sh
+      - run: .circleci/push_gh_pages.sh
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_kunitoki_gcc_7
+      - build_kunitoki_clang_8
+      - build_gcc_7
+      - build_gcc_6
+      - doxygen

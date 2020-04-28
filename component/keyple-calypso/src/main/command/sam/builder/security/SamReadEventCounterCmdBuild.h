@@ -14,12 +14,11 @@
 
 #pragma once
 
-/* Common */
-#include "Export.h"
-
+/* Calypso */
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommands.h"
-#include "SamRevision_Import.h"
+#include "KeypleCalypsoExport.h"
+#include "SamRevision.h"
 
 namespace keyple {
 namespace calypso {
@@ -33,7 +32,8 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Unlock APDU command.
  */
-class EXPORT SamReadEventCounterCmdBuild : public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API SamReadEventCounterCmdBuild
+: public AbstractSamCommandBuilder {
 public:
     /**
      *

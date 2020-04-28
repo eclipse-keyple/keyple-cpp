@@ -25,19 +25,19 @@ class TestsUtilsStatusCodeGenerator
 : public std::enable_shared_from_this<TestsUtilsStatusCodeGenerator> {
 
 public:
-    static std::vector<char> generateSuccessfulStatusCode();
+    static std::vector<uint8_t> generateSuccessfulStatusCode();
 
-    static std::vector<char> generateCommandForbiddenOnBinaryFilesStatusCode();
+    static std::vector<uint8_t> generateCommandForbiddenOnBinaryFilesStatusCode();
 
-    static std::vector<char> generateFileNotFoundStatusCode();
+    static std::vector<uint8_t> generateFileNotFoundStatusCode();
 
-    static std::vector<char> generateRecordNotFoundStatusCode();
+    static std::vector<uint8_t> generateRecordNotFoundStatusCode();
 
-    static std::vector<char> generateP2ValueNotSupportedStatusCode();
+    static std::vector<uint8_t> generateP2ValueNotSupportedStatusCode();
 
-    static std::vector<char> generateLeValueIncorrectStatusCode();
+    static std::vector<uint8_t> generateLeValueIncorrectStatusCode();
 
-    static std::vector<char> generateAccessForbiddenStatusCode();
+    static std::vector<uint8_t> generateAccessForbiddenStatusCode();
 };
 
 }

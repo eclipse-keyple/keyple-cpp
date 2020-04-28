@@ -1,10 +1,16 @@
-#
-# Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-#
-# All rights reserved. This program and the accompanying materials are made available under the
-# terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
-# available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
-#
+#******************************************************************************
+#* Copyright (c) 2018 Calypso Networks Association                            *
+#* https://www.calypsonet-asso.org/                                           *
+#*                                                                            *
+#* See the NOTICE file(s) distributed with this work for additional           *
+#* information regarding copyright ownership.                                 *
+#*                                                                            *
+#* This program and the accompanying materials are made available under the   *
+#* terms of the Eclipse Public License 2.0 which is available at              *
+#* http://www.eclipse.org/legal/epl-2.0                                       *
+#*                                                                            *
+#* SPDX-License-Identifier: EPL-2.0                                           *
+#******************************************************************************/
 
 # Add projects
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/)

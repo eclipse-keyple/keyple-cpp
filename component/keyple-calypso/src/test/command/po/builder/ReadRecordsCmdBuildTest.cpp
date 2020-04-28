@@ -30,15 +30,15 @@ using ApduRequest = keyple::core::seproxy::message::ApduRequest;
 void ReadRecordsCmdBuildTest::readRecords_rev2_4()
 {
 
-    char cla               = static_cast<char>(0x94);
-    char cmd               = static_cast<char>(0xB2);
+    uint8_t cla               = (0x94);
+    uint8_t cmd               = (0xB2);
     bool readJustOneRecord = false;
-    char sfi               = static_cast<char>(0x08);
-    char p2                = static_cast<char>(static_cast<char>(sfi * 8) + 5);
+    uint8_t sfi               = (0x08);
+    uint8_t p2                = ((sfi * 8) + 5);
     ReadDataStructure readDataStructure;
 
     // revision 2.4
-    std::vector<char> request2_4 = {cla, cmd, record_number, p2, 0x00};
+    std::vector<uint8_t> request2_4 = {cla, cmd, record_number, p2, 0x00};
     apduCommandBuilder           = std::make_shared<ReadRecordsCmdBuild>(
         PoClass::LEGACY, sfi, readDataStructure, record_number,
         readJustOneRecord, expectedLength, "TestRev2_4");
@@ -49,15 +49,15 @@ void ReadRecordsCmdBuildTest::readRecords_rev2_4()
 void ReadRecordsCmdBuildTest::readRecords_rev3_1()
 {
 
-    char cla               = static_cast<char>(0x00);
-    char cmd               = static_cast<char>(0xB2);
+    uint8_t cla               = (0x00);
+    uint8_t cmd               = (0xB2);
     bool readJustOneRecord = false;
-    char sfi               = static_cast<char>(0x08);
-    char p2                = static_cast<char>(static_cast<char>(sfi * 8) + 5);
+    uint8_t sfi               = (0x08);
+    uint8_t p2                = ((sfi * 8) + 5);
     ReadDataStructure readDataStructure;
 
     // revision 3.1
-    std::vector<char> request3_1 = {cla, cmd, record_number, p2, 0x00};
+    std::vector<uint8_t> request3_1 = {cla, cmd, record_number, p2, 0x00};
     apduCommandBuilder           = std::make_shared<ReadRecordsCmdBuild>(
         PoClass::ISO, sfi, readDataStructure, record_number, readJustOneRecord,
         expectedLength, "TestRev3_1");
@@ -67,15 +67,15 @@ void ReadRecordsCmdBuildTest::readRecords_rev3_1()
 
 void ReadRecordsCmdBuildTest::readRecords_rev3_2()
 {
-    char cla               = static_cast<char>(0x00);
-    char cmd               = static_cast<char>(0xB2);
+    uint8_t cla               = (0x00);
+    uint8_t cmd               = (0xB2);
     bool readJustOneRecord = false;
-    char sfi               = static_cast<char>(0x08);
-    char p2                = static_cast<char>(static_cast<char>(sfi * 8) + 5);
+    uint8_t sfi               = (0x08);
+    uint8_t p2                = ((sfi * 8) + 5);
     ReadDataStructure readDataStructure;
 
     // revision 3.2
-    std::vector<char> request3_2 = {cla, cmd, record_number, p2, 0x00};
+    std::vector<uint8_t> request3_2 = {cla, cmd, record_number, p2, 0x00};
     apduCommandBuilder           = std::make_shared<ReadRecordsCmdBuild>(
         PoClass::ISO, sfi, readDataStructure, record_number, readJustOneRecord,
         expectedLength, "TestRev3_2");

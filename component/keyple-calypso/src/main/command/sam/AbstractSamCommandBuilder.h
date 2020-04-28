@@ -17,7 +17,7 @@
 #include <memory>
 
 #include "AbstractIso7816CommandBuilder.h"
-#include "SamRevision_Import.h"
+#include "SamRevision.h"
 #include "CalypsoSamCommands.h"
 
 namespace keyple {

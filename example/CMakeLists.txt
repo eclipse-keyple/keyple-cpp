@@ -8,4 +8,4 @@
 
 # Add projects
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/generic/)
-#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/calypso/)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/calypso/)

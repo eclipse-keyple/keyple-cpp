@@ -25,7 +25,7 @@ using namespace testing;
 
 int ByteArrayUtilTest::sample()
 {
-    std::vector<char> local = {'A', 'B', 'C', 'D'};
+    std::vector<uint8_t> local = {'A', 'B', 'C', 'D'};
     std::string szIn        = "012345";
     int iOffset             = 4;
 

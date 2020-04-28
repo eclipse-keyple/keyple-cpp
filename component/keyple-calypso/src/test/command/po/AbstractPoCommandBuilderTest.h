@@ -20,7 +20,6 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 namespace keyple {

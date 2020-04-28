@@ -22,8 +22,6 @@
 #include "exceptionhelper.h"
 
 /* Common */
-#include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "System.h"
 
@@ -34,10 +32,11 @@
 #include "ByteArrayUtil.h"
 #include "ChannelControl.h"
 #include "KeypleApplicationSelectionException.h"
+#include "KeypleCoreExport.h"
 #include "MultiSeRequestProcessing.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "SelectionStatus.h"
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 
 namespace keyple {
 namespace core {
@@ -57,7 +56,7 @@ using namespace keyple::common;
  * Manage the loop processing for SeRequest transmission in a set and for
  * SeResponse reception in a set
  */
-class EXPORT AbstractLocalReader : public AbstractReader {
+class KEYPLECORE_API AbstractLocalReader : public AbstractReader {
 public:
     /**
      * Reader constructor
@@ -188,7 +187,7 @@ protected:
      * @throws KeypleIOReaderException if a reader error occurs
      */
     virtual std::shared_ptr<SelectionStatus>
-    openLogicalChannel(std::shared_ptr<SeSelector> seSelector);
+        openLogicalChannel(std::shared_ptr<SeSelector> seSelector);
 
     /**
      * Open (if needed) a physical channel and try to establish a logical
@@ -219,7 +218,7 @@ protected:
      *         fails
      */
     std::shared_ptr<SelectionStatus>
-    openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector);
+        openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector);
 
     /**
      * Attempts to open the physical channel
@@ -336,7 +335,8 @@ protected:
      * @throws KeypleIOReaderException if the transmission fails
      */
 
-    virtual std::vector<uint8_t> transmitApdu(std::vector<uint8_t>& apduIn) = 0;
+    virtual std::vector<uint8_t> transmitApdu(
+        const std::vector<uint8_t>& apduIn) = 0;
 
     /**
      *
@@ -381,8 +381,10 @@ private:
 
     /**
      * Notification status flag used to avoid redundant notifications
+     *
+     * /!\ clang compiler error - field not used
      */
-    bool presenceNotified = false;
+    //bool presenceNotified = false;
 
     /**
      * Timestamp recorder
