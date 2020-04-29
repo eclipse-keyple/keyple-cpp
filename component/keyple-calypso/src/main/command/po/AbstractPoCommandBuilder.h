@@ -15,7 +15,7 @@
 #include <memory>
 #include <type_traits>
 
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 #include "AbstractIso7816CommandBuilder.h"
 #include "CalypsoPoCommands.h"
 #include "ApduRequest.h"

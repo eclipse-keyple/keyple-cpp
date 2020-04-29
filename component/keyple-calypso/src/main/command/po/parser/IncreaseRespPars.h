@@ -21,7 +21,7 @@
 #include <memory>
 
 /* Core */
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"

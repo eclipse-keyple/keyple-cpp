@@ -61,12 +61,12 @@ std::string EventType::getName()
     return this->name;
 }
 
-bool EventType::operator==(const EventType& other)
+bool EventType::operator==(const EventType& other) const
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool EventType::operator!=(const EventType& other)
+bool EventType::operator!=(const EventType& other) const
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -120,6 +120,33 @@ std::set<std::string>& PluginEvent::getReaderNames()
 PluginEvent::EventType PluginEvent::getEventType()
 {
     return eventType;
+}
+
+std::ostream& operator<<(std::ostream& os, const PluginEvent::EventType& et)
+{
+    std::string value;
+
+    if (et == PluginEvent::EventType::READER_CONNECTED)
+        value = "READER_CONNECTED";
+    else if (et == PluginEvent::EventType::READER_DISCONNECTED)
+        value = "READER_DISCONNECTED";
+
+    os << "EVENTTYPE: {"
+       << "NAME = " << et.name << ", "
+       << "VALUE = " << value << ", "
+       << "ORDINAL = " << et.ordinalValue << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const PluginEvent& re)
+{
+    os << "READEREVENT: {"
+       << "EVENTTYPE = " << re.eventType << ", "
+       << "PLUGINNAME = " << re.pluginName << ", "
+       << "READERNAME = " << re.readerName << "}";
+
+    return os;
 }
 
 }

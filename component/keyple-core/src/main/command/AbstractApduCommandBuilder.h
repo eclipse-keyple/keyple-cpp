@@ -19,7 +19,7 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 
 /* Core */
 #include "ApduRequest.h"
@@ -44,7 +44,7 @@ using namespace keyple::core::command;
  * <li>the corresponding AbstractApduResponseParser class.</li>
  * </ul>
  */
-class EXPORT AbstractApduCommandBuilder
+class KEYPLECORE_API AbstractApduCommandBuilder
 : public std::enable_shared_from_this<AbstractApduCommandBuilder> {
 
 private:

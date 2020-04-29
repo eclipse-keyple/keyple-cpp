@@ -29,8 +29,7 @@
 #include "SeRequest.h"
 
 /* Common */
-#include "Export.h"
-#include "Logger.h"
+#include "KeypleCoreExport.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -49,7 +48,7 @@ using namespace keyple::common;
  * It provides a way to do explicit SE selection or to post process a default SE
  * selection.
  */
-class EXPORT SeSelection final
+class KEYPLECORE_API SeSelection final
 : public std::enable_shared_from_this<SeSelection> {
 public:
     /**

@@ -19,11 +19,9 @@
 #include <stdexcept>
 #include <memory>
 
-/* Common */
-#include "Export.h"
-
 /* Core */
 #include "KeypleBaseException.h"
+#include "KeypleCoreExport.h"
 #include "SeResponse.h"
 
 namespace keyple {
@@ -36,7 +34,7 @@ using namespace keyple::core::seproxy::message;
 /**
  * Base Exceptions thrown in a {@link ProxyReader} context
  */
-class EXPORT KeypleReaderException : public KeypleBaseException {
+class KEYPLECORE_API KeypleReaderException : public KeypleBaseException {
 public:
     /**
      *

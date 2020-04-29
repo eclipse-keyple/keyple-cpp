@@ -22,12 +22,12 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
 #include "Object.h"
-#include "Serializable.h"
 #include "stringhelper.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
+
+/* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -39,9 +39,8 @@ using namespace keyple::common;
 /**
  * Single APDU response wrapper
  */
-class EXPORT ApduResponse : public std::enable_shared_from_this<ApduResponse>,
-                            public Serializable,
-                            public Object {
+class KEYPLECORE_API ApduResponse
+: public std::enable_shared_from_this<ApduResponse>, public Object {
 public:
     /**
      *
@@ -76,12 +75,12 @@ public:
      *
      * @return the status of the command transmission.
      */
-    bool isSuccessful();
+    bool isSuccessful() const;
 
     /**
      *
      */
-    int getStatusCode();
+    int getStatusCode() const;
 
     /**
      *
@@ -98,11 +97,6 @@ public:
     /**
      *
      */
-    std::string toString() override;
-
-    /**
-     *
-     */
     bool equals(std::shared_ptr<void> o) override;
 
     /**
@@ -113,14 +107,20 @@ public:
     /**
      *
      */
-    friend std::ostream& operator<<(std::ostream& os, const ApduResponse& r)
-    {
-        os << std::string("r-apdu: ");
-        const std::vector<uint8_t> b = r.getBytes();
-        for (int i = 0; i < (int)b.size(); i++)
-            os << StringHelper::formatSimple("%02x ", b[i]);
-        return os;
-    }
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const ApduResponse& r);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<ApduResponse>& r);
+
+	/**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream& operator<<(
+		std::ostream& os, const std::vector<std::shared_ptr<ApduResponse>>& v);
 
 protected:
     /**

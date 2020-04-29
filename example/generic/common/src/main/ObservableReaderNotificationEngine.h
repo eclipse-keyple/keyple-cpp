@@ -17,11 +17,10 @@
 #include <memory>
 
 /* Core - Event */
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "ObservablePlugin.h"
 
 /* Common */
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 namespace keyple {

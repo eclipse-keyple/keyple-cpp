@@ -16,19 +16,19 @@
 
 /* Common */
 #include "exceptionhelper.h"
-#include "Export.h"
 #include "LoggerFactory.h"
 #include "stringhelper.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "MonitoringPool.h"
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "SmartInsertionReader.h"
 #include "SmartRemovalReader.h"
 #include "TransmissionMode.h"
 
 /* PC/SC plugin */
+#include "KeyplePluginPcscExport.h"
 #include "PcscReader.h"
 #include "PcscTerminal.h"
 
@@ -42,10 +42,9 @@ using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::protocol;
 
-class EXPORT PcscReaderImpl : public AbstractObservableLocalReader,
-                              public PcscReader,
-                              public SmartInsertionReader,
-                              public SmartRemovalReader {
+class KEYPLEPLUGINPCSC_API PcscReaderImpl
+: public AbstractObservableLocalReader, public PcscReader,
+  public SmartInsertionReader, public SmartRemovalReader {
 public:
     /**
      * This constructor should only be called by PcscPlugin PCSC reader
@@ -147,6 +146,32 @@ public:
      */
     void clearObservers() override;
 
+    /**
+     *
+     */
+    void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode) override;
+
+    /**
+     *
+     */
+    void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode, PollingMode pollingMode) override;
+
+    /**
+     *
+     */
+    void addObserver(std::shared_ptr<ReaderObserver> observer) override;
+
+    /**
+     *
+     */
+    void notifySeProcessed() override;
+
 protected:
     /**
      *
@@ -187,7 +212,8 @@ protected:
      * @return apduOut buffer
      * @throws KeypleIOReaderException if the transmission failed
      */
-    std::vector<uint8_t> transmitApdu(std::vector<uint8_t>& apduIn) override;
+    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn)
+        override;
 
     /**
      * Tells if the current SE protocol matches the provided protocol flag. If
@@ -240,6 +266,21 @@ protected:
             AbstractObservableLocalReader::shared_from_this());
     }
 
+    /**
+     *
+     */
+    void removeObserver(std::shared_ptr<ReaderObserver> observer) override;
+
+    /**
+     *
+     */
+    void startSeDetection(PollingMode pollingMode) override;
+
+    /**
+     *
+     */
+    void stopSeDetection() override;
+
 private:
     /**
      *
@@ -263,9 +304,9 @@ private:
     const long removalLatency = 500;
 
     /**
-     *
+     * clang compiler warning - not used
      */
-    const long insertWaitTimeout = 200;
+    //const long insertWaitTimeout = 200;
 
     /**
      *
@@ -283,9 +324,9 @@ private:
     std::shared_ptr<MonitoringPool> executorService;
 
     /**
-     *
+     * clang compiler warning - not used
      */
-    bool logging;
+    //bool logging;
 
     /**
      *
@@ -328,103 +369,8 @@ private:
     const std::shared_ptr<Logger> logger =
         LoggerFactory::getLogger(typeid(PcscReaderImpl));
 
-    /**
-     * Add a reader observer.
-     * <p>
-     * The observer will receive all the events produced by this reader (card
-     * insertion, removal, etc.)
-     *
-     * @param observer the observer object
-     *
-     * /!\/!\/!\
-     *
-     * Function addObserver() is present in two base classes (AbstractReader and
-     * ObservableReader). AbstractReader implements the virtual function but
-     * ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::addObserver() is considered virtual. Override needed in
-     * this class.
-     */
-    void addObserver(std::shared_ptr<ReaderObserver> observer) override;
-
-    /**
-     * Remove a reader observer.
-     * <p>
-     * The observer will not receive any of the events produced by this reader.
-     *
-     * @param observer the observer object
-     *
-     * /!\/!\/!\
-     *
-     * Function removeObserver() is present in two base classes (AbstractReader
-     * and ObservableReader). AbstractReader implements the virtual function
-     * but ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::removeObserver() is considered virtual. Override needed
-     * in this class.
-     */
-    void removeObserver(std::shared_ptr<ReaderObserver> observer) override;
-
-    /**
-     * Starts the SE detection. Once activated, the application can be notified
-     * of the arrival of an SE.
-     *
-     * @param pollingMode indicates the action to be followed after processing
-     *        the SE: if CONTINUE, the SE detection is restarted, if STOP, the
-     *        SE detection is stopped until a new call to startSeDetection is
-     *        made.
-     *
-     * /!\/!\/!\
-     *
-     * Function startSeDetection() is present in two base classes (
-     * AbstractObservableLocalReader and ObservableReader).
-     * AbstractObservableLocalReader implements the virtual function but
-     * ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::startSeDetection() is considered virtual. Override
-     * needed in this class.
-     */
-    void startSeDetection(PollingMode pollingMode) override;
-
-    /**
-     * Stops the SE detection.
-     * <p>
-     * This method must be overloaded by readers depending on the particularity
-     * of their management of the start of SE detection.
-     *
-     * /!\/!\/!\
-     *
-     * Function removeObserver() is present in two base classes (
-     * AbstractObservableLocalReader and ObservableReader).
-     * AbstractObservableLocalReader implements the virtual function but
-     * ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::removeObserver() is considered virtual. Override needed
-     * in this class.
-     */
-    void stopSeDetection() override;
-
-    /**
-     * Defines the selection request to be processed when an SE is inserted.
-     * Depending on the SE and the notificationMode parameter, a SE_INSERTED,
-     * SE_MATCHED or no event at all will be notified to the application
-     * observers.
-     *
-     * @param defaultSelectionsRequest the selection request to be operated
-     * @param notificationMode indicates whether a SE_INSERTED event should be
-     *        notified even if the selection has failed (ALWAYS) or whether the
-     *        SE insertion should be ignored in this case (MATCHED_ONLY).
-     *
-     * /!\/!\/!\
-     *
-     * Function setDefaultSelectionRequest() is present in two base classes (
-     * AbstractObservableLocalReader and ObservableReader).
-     * AbstractObservableLocalReader implements the virtual function but
-     * ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::setDefaultSelectionRequest() is considered virtual.
-     * Override needed in this class.
-     */
-    void
-    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
-                                   defaultSelectionsRequest,
-                               NotificationMode notificationMode) override;
 };
+
 
 }
 }

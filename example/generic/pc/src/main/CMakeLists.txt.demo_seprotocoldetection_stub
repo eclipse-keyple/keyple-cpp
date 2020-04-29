@@ -25,6 +25,7 @@ INCLUDE_DIRECTORIES(
 
 	# Core
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/command
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/selection
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/event
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/exception

@@ -16,12 +16,12 @@
 #include <map>
 #include <string>
 
-#include "Export.h"
+#include "KeypleCommonExport.h"
 
 namespace keyple {
 namespace common {
 
-class EXPORT Properties {
+class KEYPLECOMMON_API Properties {
 private:
     /*
      *

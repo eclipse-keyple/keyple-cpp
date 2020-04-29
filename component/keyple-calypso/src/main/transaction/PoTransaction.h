@@ -26,23 +26,21 @@
 #include "CalypsoBuilderParser.h"
 #include "CalypsoPo.h"
 #include "ChannelControl.h"
+#include "KeypleCalypsoExport.h"
 #include "PoBuilderParser.h"
 #include "PoModificationCommand.h"
 #include "PoResource.h"
 #include "SamResource.h"
-#include "SamRevision_Import.h"
+#include "SamRevision.h"
 #include "SecuritySettings.h"
 #include "SelectFileCmdBuild.h"
 
 /* Core */
 #include "ProxyReader.h"
 #include "ReadDataStructure.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "SeRequest.h"
 #include "TransmissionMode.h"
-
-/* Common */
-#include "Export.h"
 
 namespace keyple {
 namespace calypso {
@@ -70,7 +68,7 @@ using namespace keyple::calypso::transaction::exception;
  *
  * @author Calypso Networks Association
  */
-class EXPORT PoTransaction final
+class KEYPLECALYPSO_API PoTransaction final
 : public std::enable_shared_from_this<PoTransaction> {
 private:
     /**
@@ -93,7 +91,7 @@ public:
     /**
      * The PO Transaction Access Level: personalization, loading or debiting
      */
-    class EXPORT SessionAccessLevel final {
+    class KEYPLECALYPSO_API SessionAccessLevel final {
     public:
         /**
          *
@@ -261,7 +259,7 @@ public:
      * - checkPoSignature: Digest Authenticate, verify the PO part of the
      *   signature
      */
-    class EXPORT DigestProcessor
+    class KEYPLECALYPSO_API DigestProcessor
     : public std::enable_shared_from_this<DigestProcessor> {
         /*
          * The digest data cache stores all PO data to be send to SAM during a
@@ -326,7 +324,7 @@ public:
     /**
      * The class handles the anticipated response computation.
      */
-    class EXPORT AnticipatedResponseBuilder
+    class KEYPLECALYPSO_API AnticipatedResponseBuilder
     : public std::enable_shared_from_this<AnticipatedResponseBuilder> {
     private:
         /**

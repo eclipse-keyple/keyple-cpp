@@ -22,12 +22,12 @@
 #include "exceptionhelper.h"
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 #include "Object.h"
 
 /* Core */
 #include "AbstractPluginFactory.h"
+#include "KeypleCoreExport.h"
 #include "KeyplePluginNotFoundException.h"
 
 /* Forward class declarations */
@@ -60,7 +60,7 @@ using namespace keyple::core::seproxy::exception;
  * establish a link with a SE’s application.
  *
  */
-class EXPORT SeProxyService final
+class KEYPLECORE_API SeProxyService final
 : public std::enable_shared_from_this<SeProxyService> {
 public:
     /**

@@ -16,7 +16,9 @@
 #include "ApduResponse.h"
 #include "AbstractOpenSessionRespPars.h"
 
+/* Common */
 #include "Arrays.h"
+#include "stringhelper.h"
 
 namespace keyple {
 namespace calypso {
@@ -83,7 +85,7 @@ OpenSession10RespPars::createSecureSession(
     default:
         throw IllegalStateException(
             "Bad response length to Open Secure Session: " +
-            std::to_string(apduResponseData.size()));
+            StringHelper::to_string(apduResponseData.size()));
     }
 
     /* KVC doesn't exist and is set to null for this type of PO */

@@ -17,6 +17,18 @@ namespace core {
 namespace seproxy {
 namespace protocol {
 
+std::ostream& operator<<(std::ostream& os, const TransmissionMode& tm)
+{
+    if (tm == TransmissionMode::CONTACTLESS)
+        os << "CONTACTLESS";
+    else if (tm == TransmissionMode::CONTACTS)
+        os << "CONTACTS";
+    else if (tm == TransmissionMode::NO_MODE)
+		os << "NO_MODE";
+
+	return os;
+}
+
 }
 }
 }

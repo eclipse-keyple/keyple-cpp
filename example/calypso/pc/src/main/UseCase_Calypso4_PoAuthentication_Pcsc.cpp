@@ -17,20 +17,19 @@
 #include "KeypleBaseException.h"
 #include "ReaderUtilities.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "PcscPlugin.h"
+#include "PcscPluginFactory.h"
 #include "PcscReader.h"
 #include "PcscReadersSettings.h"
-#include "PcscReaderSettings_Import.h"
 #include "PcscReadersSettings.h"
 #include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "PoTransaction_Import.h"
-#include "ReaderEvent_Import.h"
+#include "PoTransaction.h"
+#include "ReaderEvent.h"
 #include "SamResource.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
@@ -62,15 +61,11 @@ int main(int argc, char** argv)
     (void)argc;
     (void)argv;
 
-    /* Get the instance of the PC/SC plugin */
-    PcscPlugin pcscPlugin = PcscPlugin::getInstance();
-    pcscPlugin.initReaders();
-    std::shared_ptr<PcscPlugin> shared_plugin =
-        std::shared_ptr<PcscPlugin>(&pcscPlugin);
+    /* Get the instance of the SeProxyService (Singleton pattern) */
+    SeProxyService& seProxyService = SeProxyService::getInstance();
 
     /* Assign PcscPlugin to the SeProxyService */
-    SeProxyService& seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(shared_plugin);
+    seProxyService.registerPlugin(new PcscPluginFactory());
 
     /*
      * Get a PO reader ready to work with Calypso PO. Use the getReader helper
@@ -92,9 +87,9 @@ int main(int argc, char** argv)
 
     logger->info("=============== UseCase Calypso #4: Po Authentication ====="
                  "=============\n");
-    logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
-    logger->info("= SAM Reader  NAME = %s\n",
-                 samResource->getSeReader()->getName().c_str());
+    logger->info("= PO Reader  NAME = %\n", poReader->getName());
+    logger->info("= SAM Reader  NAME = %\n",
+		         samResource->getSeReader()->getName());
 
     /* Check if a PO is present in the reader */
     if (poReader->isSePresent()) {
@@ -134,8 +129,7 @@ int main(int argc, char** argv)
                             CalypsoClassicInfo::AID),
                         PoSelector::InvalidatedPo::REJECT),
                     StringHelper::formatSimple("AID: %s",
-                                               CalypsoClassicInfo::AID)),
-                ChannelState::KEEP_OPEN);
+                                               CalypsoClassicInfo::AID)));
 
         /*
          * Add the selection case to the current selection (we could have added
@@ -194,8 +188,7 @@ int main(int argc, char** argv)
              */
             bool poProcessStatus = poTransaction->processOpening(
                 PoTransaction::ModificationMode::ATOMIC,
-                PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT,
-                static_cast<char>(0), static_cast<char>(0));
+                PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT, 0, 0);
 
             if (!poProcessStatus) {
                 throw IllegalStateException("processingOpening failure.");
@@ -234,12 +227,11 @@ int main(int argc, char** argv)
                        .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
             /* Log the result */
-            logger->info("EventLog file data: %s\n",
-                         ByteArrayUtil::toHex(eventLog).c_str());
+            logger->info("EventLog file data: %\n", eventLog);
 
             if (!poProcessStatus) {
-                throw std::make_shared<IllegalStateException>(
-                    "processPoCommandsInSession failure.");
+                throw IllegalStateException(
+                    "processPoCommandsInSession failure");
             }
 
             /*
@@ -252,11 +244,10 @@ int main(int argc, char** argv)
              * A ratification command will be sent (CONTACTLESS_MODE).
              */
             poProcessStatus =
-                poTransaction->processClosing(ChannelState::CLOSE_AFTER);
+                poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
 
             if (!poProcessStatus) {
-                throw std::make_shared<IllegalStateException>(
-                    "processClosing failure.");
+                throw IllegalStateException("processClosing failure");
             }
 
             logger->info("==================================================="

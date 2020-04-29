@@ -21,7 +21,7 @@
 #include "KeypleIOReaderException.h"
 #include "KeypleReaderException.h"
 #include "ObservableReaderStateService.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "SmartInsertionMonitoringJob.h"
 #include "SmartRemovalMonitoringJob.h"
 #include "WaitForStartDetect.h"
@@ -52,22 +52,26 @@ const std::string PcscReaderImpl::PROTOCOL_ANY  = "T=0";
 PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
                                PcscTerminal& terminal)
 : AbstractObservableLocalReader(pluginName, terminal.getName()),
-  terminal(terminal)
+  loopWaitSeRemoval(true), terminal(terminal)
 {
-    this->stateService    = initStateService();
     this->executorService = std::make_shared<MonitoringPool>();
+    this->stateService    = initStateService();
 
-    logger->debug("[%s] constructor => using terminal %s\n",
+    logger->debug("[PcscReaderImpl] constructor => using terminal %\n",
                   terminal.getName());
 
     /*
      * Using null values to use the standard method for defining default values
+     *
+     * /!\ Must use hardcoded strings here as
+     *     PcscReader::SETTING_KEY_TRANSMISSION_MODE and the three other strings
+     *     are not yet instantiated.
      */
     try {
-        setParameter(SETTING_KEY_TRANSMISSION_MODE, "");
-        setParameter(SETTING_KEY_PROTOCOL, "");
-        setParameter(SETTING_KEY_MODE, "");
-        setParameter(SETTING_KEY_DISCONNECT, "");
+        setParameter("transmission_mode", "");
+        setParameter("protocol", "");
+        setParameter("mode", "");
+        setParameter("disconnect", "");
     } catch (KeypleBaseException& e) {
         (void)e;
         /* Can not fail with null value */
@@ -77,7 +81,7 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
 PcscReaderImpl::PcscReaderImpl(const PcscReaderImpl& o)
 : Nameable(), Configurable(),
   AbstractObservableLocalReader(o.pluginName, o.terminal.getName()),
-  executorService(o.executorService), terminal(o.terminal),
+  loopWaitSeRemoval(true), executorService(o.executorService), terminal(o.terminal),
   parameterCardProtocol(o.parameterCardProtocol),
   cardExclusiveMode(o.cardExclusiveMode), cardReset(o.cardReset),
   transmissionMode(o.transmissionMode)
@@ -122,7 +126,7 @@ std::shared_ptr<ObservableReaderStateService> PcscReaderImpl::initStateService()
 void PcscReaderImpl::closePhysicalChannel()
 {
     try {
-        logger->debug("[%s] closePhysicalChannel\n", this->getName().c_str());
+        logger->debug("[%] closePhysicalChannel\n", getName());
         terminal.closeAndDisconnect(cardReset);
 
     } catch (PcscTerminalException& e) {
@@ -137,13 +141,10 @@ bool PcscReaderImpl::checkSePresence()
 {
     try {
         logger->debug("checkSePresence - calling isCardPresent\n");
-        return terminal.isCardPresent();
+        return terminal.isCardPresent(true);
 
     } catch (PcscTerminalException& e) {
-        logger->debug("[%s] checkSePresence - caught PcscTerminalException "
-                      " (msg: %s, cause: %ds\n",
-                      terminal.getName().c_str(), e.getMessage().c_str(),
-                      e.getCause().what());
+        logger->debug("[%] checkSePresence - PcscTerminalException %\n", e);
     }
 
     return false;
@@ -151,28 +152,25 @@ bool PcscReaderImpl::checkSePresence()
 
 bool PcscReaderImpl::waitForCardPresent()
 {
-    logger->debug("[%s] waitForCardPresent => loop with latency of %d ms\n",
-                  this->getName(), insertLatency);
+    logger->debug("[%] waitForCardPresent => loop with latency of % ms\n",
+                  getName(), insertLatency);
 
     /* Activate loop */
     loopWaitSe = true;
 
+    /* Rearm flag for removal process as well */
+    loopWaitSeRemoval = true;
+
     try {
+        logger->trace("[%] waitForCardPresent => looping...\n", getName());
         while (loopWaitSe) {
-            logger->trace("[%s] waitForCardPresent => looping\n",
-                          this->getName());
             if (terminal.waitForCardPresent(insertLatency)) {
                 /* Card inserted */
+                 logger->debug("[%] waitForCardPresent => card inserted\n",
+                               getName());
                 return true;
             } else {
-                logger->debug("FIXME. Do we need to handle a thread"
-                              "interruption here?\n");
-                /*                if (Thread.interrupted()) {
-                    logger->debug("[%s] waitForCardPresent => task has been " \
-                                  cancelled\n", this->getName());
-*/                    /* Task has been cancelled */
-                return false;
-                //                  }
+                /* Check if task has been cancelled ? */
             }
         }
 
@@ -194,16 +192,16 @@ void PcscReaderImpl::stopWaitForCard()
 
 bool PcscReaderImpl::waitForCardAbsentNative()
 {
-    logger->debug("[%s] waitForCardAbsentNative => loop with latency of "
-                  "%s ms\n",
-                  this->getName(), removalLatency);
+    logger->debug("[%] waitForCardAbsentNative => loop with latency of "
+                  "% ms\n", getName(), removalLatency);
 
-    loopWaitSeRemoval = true;
+    while(!loopWaitSeRemoval)
+        /* A stopWaitForCardRemoval() has been triggered. Wait for finish. */
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     try {
         while (loopWaitSeRemoval) {
-            logger->trace("[%s] waitForCardAbsentNative => looping\n",
-                          this->getName());
+            logger->trace("[%] waitForCardAbsentNative => looping\n",getName());
             if (terminal.waitForCardAbsent(removalLatency)) {
                 /* Card removed */
                 return true;
@@ -214,18 +212,20 @@ bool PcscReaderImpl::waitForCardAbsentNative()
                     logger->debug("[%s] waitForCardAbsentNative => task " \
                                     "has been cancelled\n", this->getName());
 */                        /* Task has been cancelled */
-                return false;
+                //return false;
                 //                    }
             }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
 
+        loopWaitSeRemoval = true;
         return false;
 
     } catch (PcscTerminalException& e) {
         throw KeypleIOReaderException(StringHelper::formatSimple(
-            "[%s] Exception occurred in waitForCardAbsentNa)tive. "
-            "Message: %s",
-            this->getName(), e.getMessage()));
+            "[%s] Exception occurred in waitForCardAbsentNative. "
+            "Message: %s", getName(), e.getMessage()));
     }
 }
 
@@ -234,7 +234,8 @@ void PcscReaderImpl::stopWaitForCardRemoval()
     loopWaitSeRemoval = false;
 }
 
-std::vector<uint8_t> PcscReaderImpl::transmitApdu(std::vector<uint8_t>& apduIn)
+std::vector<uint8_t> PcscReaderImpl::transmitApdu(
+    const std::vector<uint8_t>& apduIn)
 {
     logger->debug("transmitApdu\n");
 
@@ -243,15 +244,11 @@ std::vector<uint8_t> PcscReaderImpl::transmitApdu(std::vector<uint8_t>& apduIn)
     try {
         response = terminal.transmitApdu(apduIn);
     } catch (PcscTerminalException& e) {
-        logger->error("transmitApdu - caught PcscTerminalException (msg: %s, "
-                      "cause: %s)\n",
-                      e.getMessage().c_str(), e.getCause().what());
+        logger->error("transmitApdu - PcscTerminalException %\n", e);
         throw KeypleIOReaderException("transmitApdu failed", e);
     } catch (std::invalid_argument& e) {
         /* Card could have been removed prematurely */
-        logger->error("transmitApdu - caught std::invalid_argument (cause : "
-                      "%s)\n",
-                      e.what());
+        logger->error("transmitApdu - std::invalid_argument %\n", e.what());
         throw KeypleIOReaderException("transmitApdu failed", e);
     }
 
@@ -270,22 +267,18 @@ bool PcscReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
         openPhysicalChannel();
     }
 
-    logger->debug("protocolFlagMatches - going through protocols map\n");
     std::map<SeProtocol, std::string>::iterator it = protocolsMap.begin();
     while (it != protocolsMap.end()) {
         SeProtocol p = it->first;
-        logger->debug("available protocol: %s - %s\n", p.getName().c_str(),
-                      it->second.c_str());
         it++;
     }
 
     /*
-         * The requestSet will be executed only if the protocol match the
-         * requestElement.
-         */
+     * The requestSet will be executed only if the protocol match the
+     * requestElement.
+     */
     std::string selectionMask = protocolsMap[protocolFlag];
-    logger->debug("protocolFlagMatches - selectionMask: %s\n",
-                  selectionMask.c_str());
+    logger->debug("protocolFlagMatches - selectionMask: %\n", selectionMask);
     if (selectionMask == "") {
         throw KeypleReaderException(
             "Target selector mask not found!"); // nullptr));
@@ -294,14 +287,12 @@ bool PcscReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
     Pattern* p      = Pattern::compile(selectionMask);
     std::string atr = ByteArrayUtil::toHex(this->terminal.getATR());
     if (!p->matcher(atr)->matches()) {
-        logger->debug("[%s] protocolFlagMatches => unmatching SE. "
-                      "PROTOCOLFLAG = %s\n",
-                      this->getName().c_str(), protocolFlag.toString().c_str());
+        logger->debug("[%] protocolFlagMatches => unmatching SE. "
+                      "PROTOCOLFLAG = %\n", getName(), protocolFlag);
         result = false;
     } else {
-        logger->debug("[%s] protocolFlagMatches => matching SE. "
-                      "PROTOCOLFLAG = %s\n",
-                      this->getName().c_str(), protocolFlag.toString().c_str());
+        logger->debug("[%] protocolFlagMatches => matching SE. "
+                      "PROTOCOLFLAG = %\n", getName(), protocolFlag);
         result = true;
     }
     //} else {
@@ -314,63 +305,65 @@ bool PcscReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
 
 void PcscReaderImpl::setParameter(const std::string& name,
                                   const std::string& value)
-{
-    logger->debug("[%s] setParameter => PCSC: Set a parameter. NAME = %s,"
-                  " VALUE = %s\n",
-                  this->getName().c_str(), name.c_str(), value.c_str());
+{    logger->debug("[%] setParameter => PCSC: Set a parameter. NAME = %,"
+                  " VALUE = %\n", getName(), name, value);
 
     if (name == "") {
         throw std::invalid_argument("Parameter shouldn't be null\n");
     }
 
-    if (name == SETTING_KEY_TRANSMISSION_MODE) {
+    /*
+     * /!\ Must use hardcoded strings here as
+     *     PcscReader::SETTING_KEY_TRANSMISSION_MODE and the three other strings
+     *     are not yet instantiated.
+     */
+    if (name == "transmission_mode") {
         if (value == "")
             transmissionMode = static_cast<TransmissionMode>(0);
-        else if (value == SETTING_TRANSMISSION_MODE_CONTACTS)
+        else if (value == "contacts")
             transmissionMode = TransmissionMode::CONTACTS;
-        else if (value == SETTING_TRANSMISSION_MODE_CONTACTLESS)
+        else if (value == "contactless")
             transmissionMode = TransmissionMode::CONTACTLESS;
         else
             throw std::invalid_argument("Bad tranmission mode " + name + " : " +
                                         value);
 
-    } else if (name == SETTING_KEY_PROTOCOL) {
-        if (value == "" || value == SETTING_PROTOCOL_TX)
+    } else if (name == "protocol") {
+        if (value == "" || value == "Tx")
             parameterCardProtocol = "*";
-        else if (value == SETTING_PROTOCOL_T0)
+        else if (value == "T0")
             parameterCardProtocol = "T=0";
-        else if (value == SETTING_PROTOCOL_T1)
+        else if (value == "T1")
             parameterCardProtocol = "T=1";
-        else if (value == SETTING_PROTOCOL_T_CL)
+        else if (value == "TCL")
             parameterCardProtocol = "T=CL";
         else
             throw std::invalid_argument("Bad protocol " + name + " : " + value);
 
-    } else if (name == SETTING_KEY_MODE) {
-        if (value == "" || value == SETTING_MODE_SHARED) {
+    } else if (name == "mode") {
+        if (value == "" || value == "shared") {
             if (cardExclusiveMode) {
                 try {
                     terminal.endExclusive();
                 } catch (PcscTerminalException& e) {
                     throw KeypleReaderException("Couldn't disable exclusive "
-                                                "mode",
-                                                e);
+                                                "mode", e);
                 }
             }
             cardExclusiveMode = false;
-        } else if (value == SETTING_MODE_EXCLUSIVE) {
+        } else if (value == "exclusive") {
             cardExclusiveMode = true;
         } else {
             throw std::invalid_argument("Parameter value not supported " +
                                         name + " : " + value);
         }
-    } else if (name == SETTING_KEY_DISCONNECT) {
-        if (value == "" || value == SETTING_DISCONNECT_RESET) {
+    } else if (name == "disconnect") {
+        if (value == "" || value == "reset") {
             cardReset = true;
-        } else if (value == SETTING_DISCONNECT_UNPOWER) {
+        } else if (value == "unpower") {
             cardReset = false;
-        } else if (value == SETTING_DISCONNECT_EJECT ||
-                   value == SETTING_DISCONNECT_LEAVE) {
+        } else if (value == "eject" ||
+                   value == "leave") {
             throw std::invalid_argument("This disconnection parameter is not "
                                         "supported by this plugin" +
                                         name + " : " + value);
@@ -379,7 +372,7 @@ void PcscReaderImpl::setParameter(const std::string& name,
                                         " : " + value);
         }
     } else {
-        throw std::invalid_argument("This parameter is unknown !" + name +
+        throw std::invalid_argument("This parameter is unknown! " + name +
                                     " : " + value);
     }
 }
@@ -431,13 +424,11 @@ void PcscReaderImpl::openPhysicalChannel()
         this->terminal.openAndConnect(parameterCardProtocol);
         if (cardExclusiveMode) {
             this->terminal.beginExclusive();
-            logger->debug("[%s] Opening of a physical SE channel in "
-                          "exclusive mode\n",
-                          this->getName().c_str());
+            logger->debug("[%] Opening of a physical SE channel in "
+                          "exclusive mode\n", getName());
         } else {
-            logger->debug("[%s] Opening of a physical SE channel in "
-                          "shared mode\n",
-                          this->getName().c_str());
+            logger->debug("[%] Opening of a physical SE channel in "
+                          "shared mode\n", getName());
         }
     } catch (PcscTerminalException& e) {
         throw KeypleChannelControlException(
@@ -463,7 +454,7 @@ TransmissionMode PcscReaderImpl::getTransmissionMode()
 
 void PcscReaderImpl::notifyObservers(std::shared_ptr<ReaderEvent> event)
 {
-    (void)event;
+    AbstractObservableLocalReader::notifyObservers(event);
 }
 
 void PcscReaderImpl::addObserver(std::shared_ptr<ReaderObserver> observer)
@@ -494,9 +485,22 @@ void PcscReaderImpl::setDefaultSelectionRequest(
         defaultSelectionsRequest, notificationMode);
 }
 
+void PcscReaderImpl::setDefaultSelectionRequest(
+    std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
+    NotificationMode notificationMode, PollingMode pollingMode)
+{
+    AbstractObservableLocalReader::setDefaultSelectionRequest(
+        defaultSelectionsRequest, notificationMode, pollingMode);
+}
+
 void PcscReaderImpl::clearObservers()
 {
     AbstractObservableLocalReader::clearObservers();
+}
+
+void PcscReaderImpl::notifySeProcessed()
+{
+    AbstractObservableLocalReader::notifySeProcessed();
 }
 
 }

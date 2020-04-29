@@ -15,12 +15,12 @@
 #pragma once
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "AbstractObservableState.h"
+#include "KeypleCoreExport.h"
 #include "MonitoringJob.h"
 
 namespace keyple {
@@ -36,7 +36,7 @@ using namespace keyple::common;
  * This monitoring job polls the {@link SeReader#isSePresent()} method to detect
  * SE_INSERTED/SE_REMOVED
  */
-class EXPORT CardPresentMonitoringJob : public MonitoringJob {
+class KEYPLECORE_API CardPresentMonitoringJob : public MonitoringJob {
 public:
     /**
      * Build a monitoring job to detect the card insertion

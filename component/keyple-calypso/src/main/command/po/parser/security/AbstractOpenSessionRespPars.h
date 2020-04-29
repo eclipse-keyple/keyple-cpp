@@ -22,7 +22,7 @@
 
 /* Core */
 #include "ApduResponse.h"
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"

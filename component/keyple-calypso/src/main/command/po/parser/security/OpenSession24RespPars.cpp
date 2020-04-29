@@ -16,7 +16,9 @@
 #include "ApduResponse.h"
 #include "AbstractOpenSessionRespPars.h"
 
+/* Common */
 #include "Arrays.h"
+#include "stringhelper.h"
 
 namespace keyple {
 namespace calypso {
@@ -95,7 +97,7 @@ OpenSession24RespPars::createSecureSession(
     default:
         throw IllegalStateException(
             "Bad response length to Open Secure Session: " +
-            std::to_string(apduResponseData.size()));
+            StringHelper::to_string(apduResponseData.size()));
     }
 
     std::vector<uint8_t> challengeTransactionCounter =

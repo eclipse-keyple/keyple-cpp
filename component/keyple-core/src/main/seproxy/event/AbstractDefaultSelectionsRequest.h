@@ -17,10 +17,8 @@
 #include <set>
 #include <memory>
 
-/* Common */
-#include "Export.h"
-
 /* Core */
+#include "KeypleCoreExport.h"
 #include "ChannelControl.h"
 #include "MultiSeRequestProcessing.h"
 #include "SeRequest.h"
@@ -46,7 +44,7 @@ using namespace keyple::core::seproxy::message;
  * should be closed or left open at the end of the selection process
  * </ul>
  */
-class EXPORT AbstractDefaultSelectionsRequest
+class KEYPLECORE_API AbstractDefaultSelectionsRequest
 : public std::enable_shared_from_this<AbstractDefaultSelectionsRequest> {
 public:
     /**

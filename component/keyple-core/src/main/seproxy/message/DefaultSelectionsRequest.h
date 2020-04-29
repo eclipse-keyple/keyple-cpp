@@ -19,7 +19,7 @@
 #include "AbstractDefaultSelectionsRequest.h"
 #include "ChannelControl.h"
 #include "MultiSeRequestProcessing.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 
 /* Forward class declarations */
 namespace keyple {

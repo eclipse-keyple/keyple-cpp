@@ -20,7 +20,7 @@
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommands.h"
 #include "KeyReference.h"
-#include "SamRevision_Import.h"
+#include "SamRevision.h"
 
 namespace keyple {
 namespace calypso {

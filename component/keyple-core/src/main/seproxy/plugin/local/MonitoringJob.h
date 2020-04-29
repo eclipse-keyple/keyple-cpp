@@ -16,8 +16,8 @@
 
 #include <future>
 
-/* Common */
-#include "Export.h"
+/* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -42,7 +42,7 @@ class AbstractObservableState;
  * package but it is possible to define new ones within a plugin reader if
  * necessary, respecting this interface.
  */
-class EXPORT MonitoringJob {
+class KEYPLECORE_API MonitoringJob {
 public:
     /**
      * Define a Runnable task of the monitoring job

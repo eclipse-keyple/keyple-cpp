@@ -20,7 +20,7 @@
 #include <memory>
 
 /* Core */
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 
 namespace keyple {
 namespace calypso {

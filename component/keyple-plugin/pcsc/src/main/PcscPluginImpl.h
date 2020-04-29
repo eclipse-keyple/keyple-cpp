@@ -22,8 +22,6 @@
 
 /* Common */
 #include "exceptionhelper.h"
-#include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 /* Core */
@@ -35,6 +33,7 @@
 #include "KeypleReaderNotFoundException.h"
 
 /* PC/SC plugin */
+#include "KeyplePluginPcscExport.h"
 #include "PcscPlugin.h"
 #include "PcscTerminal.h"
 
@@ -48,8 +47,8 @@ using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::common;
 
-class EXPORT PcscPluginImpl : public AbstractThreadedObservablePlugin,
-                              public virtual PcscPlugin {
+class KEYPLEPLUGINPCSC_API PcscPluginImpl
+: public AbstractThreadedObservablePlugin, public virtual PcscPlugin {
 public:
     /**
      *
@@ -118,17 +117,17 @@ protected:
      * @throws KeypleReaderException if a reader error occurs
      */
     std::shared_ptr<SeReader>
-    fetchNativeReader(const std::string& name) override;
+        fetchNativeReader(const std::string& name) override;
 
     /**
      *
      */
-    void addObserver(std::shared_ptr<PluginObserver> observer);
+    void addObserver(std::shared_ptr<PluginObserver> observer) override;
 
     /**
      *
      */
-    void removeObserver(std::shared_ptr<PluginObserver> observer);
+    void removeObserver(std::shared_ptr<PluginObserver> observer) override;
 
 private:
     /**
@@ -148,9 +147,9 @@ private:
     static PcscPluginImpl uniqueInstance;
 
     /**
-     *
+     * /!\ clang compiler warning - not used
      */
-    bool logging = false;
+    //bool logging = false;
 
     /**
      *

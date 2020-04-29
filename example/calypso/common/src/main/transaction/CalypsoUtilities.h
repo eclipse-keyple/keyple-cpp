@@ -16,11 +16,10 @@
 #include <string>
 
 /* Calypso */
-#include "PoTransaction_Import.h"
+#include "PoTransaction.h"
 
 /* Common */
 #include "exceptionhelper.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "Properties.h"
 

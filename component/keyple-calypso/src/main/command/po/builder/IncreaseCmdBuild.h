@@ -49,7 +49,7 @@ private:
     /**
      * The command
      */
-    CalypsoPoCommands command = CalypsoPoCommands::INCREASE;
+    CalypsoPoCommands& command = CalypsoPoCommands::INCREASE;
 
     /**
      * Instantiates a new increase cmd build from command parameters.

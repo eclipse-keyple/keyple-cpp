@@ -105,21 +105,6 @@ int Tag::getSize()
     return size;
 }
 
-bool Tag::equals(std::shared_ptr<Object> obj)
-{
-    std::shared_ptr<Tag> tag = std::dynamic_pointer_cast<Tag>(obj);
-
-    if (!tag)
-        return false;
-
-    if (tag.get() == this)
-        return true;
-
-    return ((this->tagNumber == tag->tagNumber) &&
-            (this->tagClass == tag->tagClass) &&
-            (this->tagType == tag->tagType));
-}
-
 bool Tag::equals(std::shared_ptr<Tag> tag)
 {
     if (!tag)

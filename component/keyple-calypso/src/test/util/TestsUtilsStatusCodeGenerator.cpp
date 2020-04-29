@@ -18,45 +18,45 @@ namespace keyple {
 namespace calypso {
 namespace util {
 
-std::vector<char> TestsUtilsStatusCodeGenerator::generateSuccessfulStatusCode()
+std::vector<uint8_t> TestsUtilsStatusCodeGenerator::generateSuccessfulStatusCode()
 {
-    return std::vector<char>{static_cast<char>(0x90), 0x00};
+    return std::vector<uint8_t>{0x90, 0x00};
 }
 
-std::vector<char>
+std::vector<uint8_t>
 TestsUtilsStatusCodeGenerator::generateCommandForbiddenOnBinaryFilesStatusCode()
 {
-    return std::vector<char>{static_cast<char>(0x69), static_cast<char>(0x81)};
+    return std::vector<uint8_t>{0x69, 0x81};
 }
 
-std::vector<char>
+std::vector<uint8_t>
 TestsUtilsStatusCodeGenerator::generateFileNotFoundStatusCode()
 {
-    return std::vector<char>{static_cast<char>(0x69), static_cast<char>(0x82)};
+    return std::vector<uint8_t>{0x69, 0x82};
 }
 
-std::vector<char>
+std::vector<uint8_t>
 TestsUtilsStatusCodeGenerator::generateRecordNotFoundStatusCode()
 {
-    return std::vector<char>{static_cast<char>(0x6A), static_cast<char>(0x83)};
+    return std::vector<uint8_t>{0x6A, 0x83};
 }
 
-std::vector<char>
+std::vector<uint8_t>
 TestsUtilsStatusCodeGenerator::generateP2ValueNotSupportedStatusCode()
 {
-    return std::vector<char>{static_cast<char>(0x6B), 0x00};
+    return std::vector<uint8_t>{0x6B, 0x00};
 }
 
-std::vector<char>
+std::vector<uint8_t>
 TestsUtilsStatusCodeGenerator::generateLeValueIncorrectStatusCode()
 {
-    return std::vector<char>{static_cast<char>(0x6C), static_cast<char>(0xFF)};
+    return std::vector<uint8_t>{0x6C, 0xFF};
 }
 
-std::vector<char>
+std::vector<uint8_t>
 TestsUtilsStatusCodeGenerator::generateAccessForbiddenStatusCode()
 {
-    return std::vector<char>{static_cast<char>(0x69), static_cast<char>(0x85)};
+    return std::vector<uint8_t>{0x69, 0x85};
 }
 }
 }

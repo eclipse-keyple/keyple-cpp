@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 #include "ApduResponse.h"
 #include "IncreaseRespPars.h"
 
