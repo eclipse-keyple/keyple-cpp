@@ -14,13 +14,13 @@
 
 #include <string>
 
-#include "Export.h"
+#include "KeypleCommonExport.h"
 #include "Matcher.h"
 
 namespace keyple {
 namespace common {
 
-class EXPORT Pattern {
+class KEYPLECOMMON_API Pattern {
 public:
     /*
 	 *

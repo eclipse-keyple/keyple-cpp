@@ -17,11 +17,9 @@
 #include <string>
 #include <vector>
 
-/* Common */
-#include "Export.h"
-
 /* Core */
-#include "SeProtocol_Import.h"
+#include "KeypleCoreExport.h"
+#include "SeProtocol.h"
 
 namespace keyple {
 namespace core {
@@ -30,7 +28,7 @@ namespace protocol {
 
 using namespace keyple::core::seproxy::protocol;
 
-class EXPORT SeCommonProtocols final : public SeProtocol {
+class KEYPLECORE_API SeCommonProtocols final : public SeProtocol {
 public:
     /* ---- contactless standard / NFC compliant ------------- */
     static SeCommonProtocols PROTOCOL_ISO14443_4;

@@ -19,14 +19,14 @@
 #include <memory>
 
 /* Core */
-#include "SeSelector_Import.h"
+#include "SeSelector.h"
 
 /* Calypso */
 #include "SamIdentifier.h"
-#include "SamRevision_Import.h"
+#include "SamRevision.h"
 
 /* Common */
-#include "Export.h"
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -39,7 +39,7 @@ using namespace keyple::core::seproxy;
  * The {@link SamSelector} class extends {@link SeSelector} to handle specific
  * Calypso SAM needs such as model identification.
  */
-class EXPORT SamSelector : public SeSelector {
+class KEYPLECALYPSO_API SamSelector : public SeSelector {
 public:
     /**
      * Create a SeSelector to perform the SAM selection

@@ -15,8 +15,10 @@
 #pragma once
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
+
+/* Plugin */
+#include "KeyplePluginPcscExport.h"
 
 /* PC/SC */
 #if defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
@@ -32,7 +34,7 @@ namespace pcsc {
 
 using namespace keyple::common;
 
-class EXPORT PcscTerminal {
+class KEYPLEPLUGINPCSC_API PcscTerminal {
 public:
     /**
      *
@@ -47,7 +49,7 @@ public:
     /**
      *
      */
-    bool isCardPresent();
+    bool isCardPresent(bool release);
 
     /**
      *
@@ -82,7 +84,7 @@ public:
     /**
      *
      */
-    std::vector<uint8_t> transmitApdu(std::vector<uint8_t> apduIn);
+    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn);
 
     /**
      *
@@ -93,6 +95,27 @@ public:
      *
      */
     void endExclusive();
+
+	/**
+	 *
+	 */
+	friend std::ostream& operator<<(std::ostream& os, const PcscTerminal& t);
+
+	/**
+	 *
+	 */
+    friend std::ostream& operator<<(std::ostream& os,
+                                    const std::vector<PcscTerminal>& vt);
+
+	/**
+	 *
+	 */
+	bool operator==(const PcscTerminal& o) const;
+
+	/**
+	 *
+	 */
+	bool operator!=(const PcscTerminal& o) const;
 
 private:
     /**

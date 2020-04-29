@@ -12,25 +12,32 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "ByteArrayUtil.h"
+#include "CalypsoPo.h"
 #include "CalypsoPoTest.h"
+#include "SeSelector.h"
+#include "SeResponse.h"
+
+#include "ApduResponse.h"
+#include "SelectionStatus.h"
+#include "SeCommonProtocols.h"
 
 using namespace keyple::calypso::transaction;
 
 namespace keyple {
 namespace calypso {
 namespace transaction {
-using PoRevision        = keyple::calypso::command::po::PoRevision;
-using ChannelState      = keyple::core::seproxy::ChannelState;
-using SeSelector        = keyple::core::seproxy::SeSelector;
-using ApduResponse      = keyple::core::seproxy::message::ApduResponse;
-using SeResponse        = keyple::core::seproxy::message::SeResponse;
-using SelectionStatus   = keyple::core::seproxy::message::SelectionStatus;
-using SeCommonProtocols = keyple::core::seproxy::protocol::SeCommonProtocols;
-using ByteArrayUtils    = keyple::core::util::ByteArrayUtil;
+
+using namespace keyple::calypso::command::po;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::core::util;
+
 using IsoAid = keyple::core::seproxy::SeSelector::AidSelector::IsoAid;
 
 //std::shared_ptr<CalypsoPo>
-PoRevision CalypsoPoTest::getPoApplicationByte(char applicationByte)
+PoRevision CalypsoPoTest::getPoApplicationByte(uint8_t applicationByte)
 {
     char cBuffer[256];
 
@@ -39,7 +46,7 @@ PoRevision CalypsoPoTest::getPoApplicationByte(char applicationByte)
              "0000000011223344 53 07 060A %02X 02200311 9000",
              applicationByte);
     std::string szResp      = cBuffer;
-    std::vector<char> cResp = ByteArrayUtils::fromHex(szResp);
+    std::vector<uint8_t> cResp = ByteArrayUtil::fromHex(szResp);
     std::shared_ptr<ApduResponse> fciData =
         std::make_shared<ApduResponse>(cResp, nullptr);
     std::shared_ptr<AnswerToReset> atrData =
@@ -67,30 +74,16 @@ PoRevision CalypsoPoTest::getPoApplicationByte(char applicationByte)
 
 void CalypsoPoTest::computePoRevision()
 {
-    ASSERT_EQ(getPoApplicationByte(static_cast<char>(0x01)),
-              PoRevision::REV2_4);
-
-    ASSERT_EQ(getPoApplicationByte(static_cast<char>(0x04)),
-              PoRevision::REV2_4);
-
-    ASSERT_EQ(getPoApplicationByte(static_cast<char>(0x06)),
-              PoRevision::REV2_4);
-
-    ASSERT_EQ(getPoApplicationByte(static_cast<char>(0x1F)),
-              PoRevision::REV2_4);
-
-    ASSERT_EQ(getPoApplicationByte(static_cast<char>(0x20)),
-              PoRevision::REV3_1);
-
-    ASSERT_EQ(getPoApplicationByte(static_cast<char>(0x27)),
-              PoRevision::REV3_1);
-
-    ASSERT_EQ(getPoApplicationByte(static_cast<char>(0x28)),
-              PoRevision::REV3_2);
-
-    ASSERT_EQ(getPoApplicationByte(static_cast<char>(0x2F)),
-              PoRevision::REV3_2);
+    ASSERT_EQ(getPoApplicationByte(0x01), PoRevision::REV2_4);
+    ASSERT_EQ(getPoApplicationByte(0x04), PoRevision::REV2_4);
+    ASSERT_EQ(getPoApplicationByte(0x06), PoRevision::REV2_4);
+    ASSERT_EQ(getPoApplicationByte(0x1F), PoRevision::REV2_4);
+    ASSERT_EQ(getPoApplicationByte(0x20), PoRevision::REV3_1);
+    ASSERT_EQ(getPoApplicationByte(0x27), PoRevision::REV3_1);
+    ASSERT_EQ(getPoApplicationByte(0x28), PoRevision::REV3_2);
+    ASSERT_EQ(getPoApplicationByte(0x2F), PoRevision::REV3_2);
 }
+
 }
 }
 }

@@ -17,11 +17,11 @@
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "AbstractObservableState.h"
+#include "KeypleCoreExport.h"
 #include "MonitoringJob.h"
 #include "MonitoringPool.h"
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -44,7 +44,7 @@ using namespace keyple::core::seproxy::plugin::local;
  * WAIT_FOR_SE_INSERTION.
  * </ul>
  */
-class EXPORT WaitForStartDetect : public AbstractObservableState {
+class KEYPLECORE_API WaitForStartDetect : public AbstractObservableState {
 public:
     /**
      *
@@ -57,6 +57,11 @@ public:
     WaitForStartDetect(AbstractObservableLocalReader* reader,
                        std::shared_ptr<MonitoringJob> monitoringJob,
                        std::shared_ptr<MonitoringPool> executorService);
+
+    /**
+     *
+     */
+    virtual ~WaitForStartDetect() = default;
 
     /**
      *

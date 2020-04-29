@@ -73,8 +73,7 @@ const std::set<std::string> AbstractPlugin::getReaderNames()
 void AbstractPlugin::addObserver(
     std::shared_ptr<ObservablePlugin::PluginObserver> observer)
 {
-    logger->trace("[] addObserver => Adding <fixme> as an observer of '%s'\n",
-                  this->name);
+    logger->trace("[] addObserver => Adding observer to %\n", name);
 
     Observable<PluginEvent>::addObserver(observer);
 }
@@ -82,18 +81,17 @@ void AbstractPlugin::addObserver(
 void AbstractPlugin::removeObserver(
     std::shared_ptr<ObservablePlugin::PluginObserver> observer)
 {
-    logger->trace("[%s] removeObserver => Deleting a plugin observer\n",
-                  this->name);
+    logger->trace("[%] removeObserver => Deleting a plugin observer\n", name);
 
     Observable<PluginEvent>::removeObserver(observer);
 }
 
 int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
 {
-    logger->debug("compareTo - comparing %s to %s\n", this->name,
+    logger->debug("compareTo - comparing % to %\n", name,
                   plugin->getName());
 
-    return this->name.compare(plugin->getName());
+    return name.compare(plugin->getName());
 }
 
 /*
@@ -101,18 +99,17 @@ int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
  */
 std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string& name)
 {
-    logger->debug("getReader - looking for reader: %s in list of %d readers\n",
-                  name.c_str(), readers.size());
+    logger->debug("getReader - looking for reader: % in list of % readers\n",
+                  name, readers.size());
 
     for (auto reader : readers) {
-        logger->debug("getReader - reader: %s\n", reader->getName().c_str());
-
         if (reader->getName() == name) {
             return std::shared_ptr<SeReader>(
                 std::dynamic_pointer_cast<SeReader>(reader));
         }
     }
-    throw std::make_shared<KeypleReaderNotFoundException>(name);
+
+    throw KeypleReaderNotFoundException(name);
 }
 
 const std::string& AbstractPlugin::getName() const
@@ -122,10 +119,9 @@ const std::string& AbstractPlugin::getName() const
 
 void AbstractPlugin::notifyObservers(std::shared_ptr<PluginEvent> event)
 {
-    logger->trace("[%s] AbstractPlugin => Notifying a plugin event to %d "
-                  "observers. EVENTNAME = %s\n",
-                  this->name, this->countObservers(),
-                  event->getEventType().getName());
+    logger->trace("[%] AbstractPlugin => Notifying a plugin event to % "
+                  "observers. EVENTNAME = %\n",
+                  name, countObservers(), event->getEventType().getName());
 
     setChanged();
 

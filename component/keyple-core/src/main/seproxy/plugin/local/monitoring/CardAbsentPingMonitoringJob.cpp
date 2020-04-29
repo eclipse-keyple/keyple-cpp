@@ -43,19 +43,19 @@ void CardAbsentPingMonitoringJob::monitoringJob(
 {
     long retries = 0;
 
-    logger->debug("[%s] Polling from isSePresentPing\n", reader->getName());
+    logger->debug("[%] Polling from isSePresentPing\n", reader->getName());
 
     /* Re-init loop value to true */
     loop = true;
 
     while (loop) {
         if (cancellationFlag) {
-            logger->debug("[%s] monitoring job cancelled\n", reader->getName());
+            logger->debug("[%] monitoring job cancelled\n", reader->getName());
             return;
         }
 
         if (!reader->isSePresentPing()) {
-            logger->debug("[%s] The SE stopped responding\n",
+            logger->debug("[%] The SE stopped responding\n",
                           reader->getName());
             loop = false;
             state->onEvent(InternalEvent::SE_REMOVED);
@@ -64,7 +64,7 @@ void CardAbsentPingMonitoringJob::monitoringJob(
 
         retries++;
 
-        logger->trace("[%s] Polling retries : %d\n", reader->getName(),
+        logger->trace("[%] Polling retries : %\n", reader->getName(),
                       retries);
 
         try {
@@ -77,12 +77,12 @@ void CardAbsentPingMonitoringJob::monitoringJob(
         }
     }
 
-    logger->debug("[%s] Polling loop has been stopped\n", reader->getName());
+    logger->debug("[%] Polling loop has been stopped\n", reader->getName());
 }
 
 void CardAbsentPingMonitoringJob::stop()
 {
-    logger->debug("[%s] Stop Polling\n", reader->getName());
+    logger->debug("[%] Stop Polling\n", reader->getName());
     loop = false;
 }
 

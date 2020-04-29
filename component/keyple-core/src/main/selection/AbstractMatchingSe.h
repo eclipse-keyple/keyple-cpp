@@ -20,7 +20,7 @@
 #include "TransmissionMode.h"
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 
 /* Forward class declarations  */
 namespace keyple {
@@ -53,7 +53,7 @@ using namespace keyple::core::seproxy::protocol;
  * AbstractMatchingSe is the class to manage the elements of the result of a
  * selection.
  */
-class EXPORT AbstractMatchingSe
+class KEYPLECORE_API AbstractMatchingSe
 : public std::enable_shared_from_this<AbstractMatchingSe> {
 public:
     /**
@@ -97,6 +97,12 @@ public:
      * @return the selection extra info string
      */
     virtual std::string getSelectionExtraInfo();
+
+	/**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const AbstractMatchingSe& ams);
 
 private:
     /**

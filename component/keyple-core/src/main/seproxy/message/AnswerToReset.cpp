@@ -57,6 +57,30 @@ void AnswerToReset::finalize()
 {
 }
 
+/**
+ * 
+ */
+std::ostream& operator<<(std::ostream& os, const AnswerToReset& atr)
+{
+    os << "ATR = " << atr.atrBytes;
+
+	return os;
+}
+
+/**
+ *
+ */
+std::ostream& operator<<(std::ostream& os,
+                         const std::shared_ptr<AnswerToReset>& atr)
+{
+    if (atr)
+        os << *(atr.get());
+    else
+		os << "ATR = null";
+
+	return os;
+}
+
 }
 }
 }

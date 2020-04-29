@@ -23,7 +23,6 @@
 
 /* Common */
 #include "Arrays.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "Matcher.h"
 #include "Pattern.h"
@@ -64,15 +63,15 @@ CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
 
         // determine SAM revision from Application Subtype
         switch (applicationSubType) {
-        case static_cast<char>(0xC1):
+        case 0xC1:
             samRevision = SamRevision(SamRevision::C1);
             break;
-        case static_cast<char>(0xD0):
-        case static_cast<char>(0xD1):
-        case static_cast<char>(0xD2):
+        case 0xD0:
+        case 0xD1:
+        case 0xD2:
             samRevision = SamRevision(SamRevision::S1D);
             break;
-        case static_cast<char>(0xE1):
+        case 0xE1:
             samRevision = SamRevision(SamRevision::S1E);
             break;
         default:
@@ -86,20 +85,17 @@ CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
         softwareVersion  = atrSubElements[4];
         softwareRevision = atrSubElements[5];
         System::arraycopy(atrSubElements, 6, serialNumber, 0, 4);
-        if (logger->isTraceEnabled()) {
-            logger->trace("%s",
-                          StringHelper::formatSimple(
-                              "SAM %s PLATFORM = %02X, APPTYPE = %02X, "
-                              "APPSUBTYPE = %02X, SWISSUER =%02X, SWVERSION ="
-                              " %02X, SWREVISION = %02X\n",
-                              samRevision.getName().c_str(), platform,
-                              applicationType, applicationSubType,
-                              softwareIssuer, softwareVersion, softwareRevision)
-                              .c_str());
+        logger->trace("%s",
+                      StringHelper::formatSimple(
+                            "SAM %s PLATFORM = %02X, APPTYPE = %02X, "
+                            "APPSUBTYPE = %02X, SWISSUER =%02X, SWVERSION ="
+                            " %02X, SWREVISION = %02X\n",
+                            samRevision.getName().c_str(), platform,
+                            applicationType, applicationSubType, softwareIssuer,
+                            softwareVersion, softwareRevision).c_str());
 
-            logger->trace("SAM SERIALNUMBER = %s\n",
-                          ByteArrayUtil::toHex(serialNumber).c_str());
-        }
+        logger->trace("SAM SERIALNUMBER = %s\n",
+                      ByteArrayUtil::toHex(serialNumber).c_str());
     } else {
         throw IllegalStateException(StringHelper::formatSimple(
             "Unrecognized ATR structure: %s", atrString));
@@ -111,37 +107,37 @@ SamRevision CalypsoSam::getSamRevision()
     return samRevision;
 }
 
-std::vector<char> CalypsoSam::getSerialNumber()
+std::vector<uint8_t> CalypsoSam::getSerialNumber()
 {
     return serialNumber;
 }
 
-char CalypsoSam::getPlatform()
+uint8_t CalypsoSam::getPlatform()
 {
     return platform;
 }
 
-char CalypsoSam::getApplicationType()
+uint8_t CalypsoSam::getApplicationType()
 {
     return applicationType;
 }
 
-char CalypsoSam::getApplicationSubType()
+uint8_t CalypsoSam::getApplicationSubType()
 {
     return applicationSubType;
 }
 
-char CalypsoSam::getSoftwareIssuer()
+uint8_t CalypsoSam::getSoftwareIssuer()
 {
     return softwareIssuer;
 }
 
-char CalypsoSam::getSoftwareVersion()
+uint8_t CalypsoSam::getSoftwareVersion()
 {
     return softwareVersion;
 }
 
-char CalypsoSam::getSoftwareRevision()
+uint8_t CalypsoSam::getSoftwareRevision()
 {
     return softwareRevision;
 }

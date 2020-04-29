@@ -29,24 +29,22 @@ using ApduRequest = keyple::core::seproxy::message::ApduRequest;
 
 void GetDataCmdBuildTest::getDataFCICmdBuild()
 {
-    std::vector<char> request = {static_cast<char>(0x94),
-                                 static_cast<char>(0xCA),
-                                 static_cast<char>(0x00), 0x6F, 0x00};
+    std::vector<uint8_t> request = {0x94, 0xCA, 0x00, 0x6F, 0x00};
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder =
         std::make_shared<GetDataFciCmdBuild>(PoClass::LEGACY);
     std::shared_ptr<ApduRequest> apduReq = apduCommandBuilder->getApduRequest();
     ASSERT_EQ(request, apduReq->getBytes());
 }
+
 void GetDataCmdBuildTest::getDataFCICmdBuild2()
 {
-    std::vector<char> request2 = {static_cast<char>(0x00),
-                                  static_cast<char>(0xCA),
-                                  static_cast<char>(0x00), 0x6F, 0x00};
+    std::vector<uint8_t> request2 = {0x00, 0xCA, 0x00, 0x6F, 0x00};
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder =
         std::make_shared<GetDataFciCmdBuild>(PoClass::ISO);
     std::shared_ptr<ApduRequest> apduReq = apduCommandBuilder->getApduRequest();
     ASSERT_EQ(request2, apduReq->getBytes());
 }
+
 }
 }
 }

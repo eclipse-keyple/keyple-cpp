@@ -18,14 +18,12 @@
 
 /* Calypso */
 #include "CalypsoSam.h"
+#include "KeypleCalypsoExport.h"
 #include "SamIdentifier.h"
 
 /* Core */
 #include "SeResource.h"
 #include "SeReader.h"
-
-/* Common */
-#include "Export.h"
 
 namespace keyple {
 namespace calypso {
@@ -36,7 +34,7 @@ using namespace keyple::calypso;
 using namespace keyple::calypso::transaction;
 using namespace keyple::core::seproxy;
 
-class EXPORT SamResource : public SeResource<CalypsoSam> {
+class KEYPLECALYPSO_API SamResource : public SeResource<CalypsoSam> {
 public:
     /**
      * The free/busy enum status

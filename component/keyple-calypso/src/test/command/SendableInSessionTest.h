@@ -21,7 +21,6 @@
 #include "gtest/gtest.h"
 
 #include "SendableInSession.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 namespace keyple {

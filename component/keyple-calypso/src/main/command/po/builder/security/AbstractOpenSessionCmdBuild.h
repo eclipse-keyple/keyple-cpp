@@ -23,10 +23,8 @@
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommands.h"
+#include "KeypleCalypsoExport.h"
 #include "PoRevision.h"
-
-/* Common */
-#include "Export.h"
 
 namespace keyple {
 namespace calypso {
@@ -44,7 +42,8 @@ using namespace keyple::core::command;
  *
  */
 template <typename T>
-class EXPORT AbstractOpenSessionCmdBuild : public AbstractPoCommandBuilder<T> {
+class KEYPLECALYPSO_API AbstractOpenSessionCmdBuild
+: public AbstractPoCommandBuilder<T> {
 public:
     /**
      * Instantiates a new AbstractOpenSessionCmdBuild.

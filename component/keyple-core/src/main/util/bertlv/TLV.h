@@ -19,8 +19,8 @@
 #include <stdexcept>
 #include <memory>
 
-/* Common */
-#include "Export.h"
+/* Core */
+#include "KeypleCoreExport.h"
 
 /* Forward class declarations */
 namespace keyple {
@@ -43,7 +43,7 @@ namespace bertlv {
  * <p>
  * (ITU-T X.690 / ISO 8825)
  */
-class EXPORT TLV : public std::enable_shared_from_this<TLV> {
+class KEYPLECORE_API TLV : public std::enable_shared_from_this<TLV> {
 public:
     /**
      * Create a TLV object initialized with a byte array

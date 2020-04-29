@@ -13,7 +13,6 @@
  ******************************************************************************/
 
 #include "SamSelectorTest.h"
-//#include "SamRevision.h"
 #include "SamSelector.h"
 #include "ByteArrayUtil.h"
 

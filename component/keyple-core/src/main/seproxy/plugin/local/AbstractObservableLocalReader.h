@@ -17,16 +17,16 @@
 #include "AbstractDefaultSelectionsRequest.h"
 #include "AbstractLocalReader.h"
 #include "KeypleChannelControlException.h"
+#include "KeypleCoreExport.h"
 #include "KeypleIOReaderException.h"
 #include "KeypleReaderException.h"
 #include "DefaultSelectionsRequest.h"
 #include "DefaultSelectionsResponse.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "ReaderEvent.h"
 #include "SeResponse.h"
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -121,7 +121,8 @@ enum class InternalEvent {
  * mode (ObservableReader.PollingMode).
  * </ol>
  */
-class EXPORT AbstractObservableLocalReader : public AbstractLocalReader {
+class KEYPLECORE_API AbstractObservableLocalReader
+: public AbstractLocalReader {
 public:
     /**
      * Reader constructor
@@ -356,6 +357,13 @@ private:
     ObservableReader::PollingMode currentPollingMode =
         ObservableReader::PollingMode::SINGLESHOT;
 };
+
+
+/**
+ *
+ */
+KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                        const InternalEvent& ie);
 
 }
 }

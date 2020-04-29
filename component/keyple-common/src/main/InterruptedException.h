@@ -6,6 +6,11 @@ namespace keyple {
 namespace common {
 
 class InterruptedException : public Exception {
+public:
+    /**
+     *
+     */
+    InterruptedException(const std::string& name) : Exception(name) {}
 };
 
 }

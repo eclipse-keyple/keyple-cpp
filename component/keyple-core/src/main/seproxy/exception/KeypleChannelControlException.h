@@ -19,7 +19,7 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 
 /* Core */
 #include "KeypleReaderException.h"
@@ -33,7 +33,8 @@ namespace exception {
  * Exception thrown when Channel Operations (open/close) failed in a {@link
  * ProxyReader}
  */
-class EXPORT KeypleChannelControlException : public KeypleReaderException {
+class KEYPLECORE_API KeypleChannelControlException
+: public KeypleReaderException {
 public:
     /**
      * New exception to be thrown

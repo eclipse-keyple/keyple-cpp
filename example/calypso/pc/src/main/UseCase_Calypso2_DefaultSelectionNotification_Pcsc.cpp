@@ -19,19 +19,19 @@
 #include "KeypleBaseException.h"
 #include "ReaderUtilities.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 #include "PcscPlugin.h"
+#include "PcscPluginFactory.h"
 #include "PcscReader.h"
+#include "PcscReaderImpl.h"
 #include "PcscReadersSettings.h"
-#include "PcscReaderSettings_Import.h"
 #include "PcscReadersSettings.h"
 #include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 
@@ -76,15 +76,11 @@ public:
      */
     UseCase_Calypso2_DefaultSelectionNotification_Pcsc()
     {
-        /* Get the instance of the PC/SC plugin */
-        PcscPlugin pcscPlugin = PcscPlugin::getInstance();
-        pcscPlugin.initReaders();
-        std::shared_ptr<PcscPlugin> shared_plugin =
-            std::shared_ptr<PcscPlugin>(&pcscPlugin);
+        /* Get the instance of the SeProxyService (Singleton pattern) */
+        SeProxyService& seProxyService = SeProxyService::getInstance();
 
         /* Assign PcscPlugin to the SeProxyService */
-        SeProxyService& seProxyService = SeProxyService::getInstance();
-        seProxyService.addPlugin(shared_plugin);
+        seProxyService.registerPlugin(new PcscPluginFactory());
 
         /*
          * Get a PO reader ready to work with Calypso PO. Use the getReader
@@ -101,7 +97,7 @@ public:
 
         logger->info("=============== UseCase Calypso #2: AID based default "
                      "selection ===================\n");
-        logger->info("= PO Reader  NAME = %s\n", poReader->getName().c_str());
+        logger->info("= PO Reader  NAME = %\n", poReader->getName());
 
         /*
          * Prepare a Calypso PO selection
@@ -138,8 +134,7 @@ public:
                             CalypsoClassicInfo::AID),
                         PoSelector::InvalidatedPo::REJECT),
                     StringHelper::formatSimple("AID: %s",
-                                               CalypsoClassicInfo::AID)),
-                ChannelState::KEEP_OPEN);
+                                               CalypsoClassicInfo::AID)));
 
         /*
          * Prepare the reading order and keep the associated parser for later
@@ -213,12 +208,10 @@ public:
                                ->getReader(event->getReaderName());
             } catch (KeyplePluginNotFoundException& e) {
                 logger->error("update - caught KeyplePluginNotFoundException "
-                              "(msg: %s, cause: %s)\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                              "(msg: %, cause: %)\n", e.getMessage(),
+					          e.getCause().what());
             } catch (KeypleReaderNotFoundException& e) {
-                logger->error("update - caught KeypleReaderNotFoundException "
-                              "(msg: %s, cause: %s)\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                logger->error("update - KeypleReaderNotFoundException: %\n", e);
             }
 
             std::shared_ptr<CalypsoPo> calypsoPo =
@@ -237,8 +230,7 @@ public:
                 (*(readEnvironmentParser->getRecords().get()))[static_cast<int>(
                     CalypsoClassicInfo::RECORD_NUMBER_1)];
 
-            logger->info("Environment file data: %s\n",
-                         ByteArrayUtil::toHex(environmentAndHolder).c_str());
+            logger->info("Environment file data: %\n", environmentAndHolder);
 
             /*
              * Go on with the reading of the first record of the EventLog file
@@ -273,7 +265,7 @@ public:
              */
             try {
                 if (poTransaction->processPoCommands(
-                        ChannelState::CLOSE_AFTER)) {
+                        ChannelControl::CLOSE_AFTER)) {
                     logger->info("The reading of the EventLog has succeeded\n");
 
                     /*
@@ -289,13 +281,10 @@ public:
                                .get()))[CalypsoClassicInfo::RECORD_NUMBER_1];
 
                     /* Log the result */
-                    logger->info("EventLog file data: %s\n",
-                                 ByteArrayUtil::toHex(eventLog).c_str());
+                    logger->info("EventLog file data: %\n", eventLog);
                 }
             } catch (const KeypleReaderException& e) {
-                logger->error("update - caught KeypleReaderException "
-                              "(msg: %s, cause: %s)\n",
-                              e.getMessage().c_str(), e.getCause().what());
+                logger->error("update - KeypleReaderException: %\n", e);
             }
 
             logger->info("==================================================="
@@ -308,9 +297,29 @@ public:
         } else if (type == ReaderEvent::EventType::SE_INSERTED) {
             logger->error("SE_INSERTED event: should not have occurred due to "
                           "the MATCHED_ONLY selection mode\n");
-        } else if (type == ReaderEvent::EventType::SE_REMOVAL) {
+        } else if (type == ReaderEvent::EventType::SE_REMOVED) {
             logger->info("The PO has been removed\n");
         } else {
+        }
+
+        if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED ||
+            event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
+            /*
+             * Informs the underlying layer of the end of the SE processing, in
+             * order to manage the removal sequence. <p>If closing has already
+             * been requested, this method will do nothing.
+             */
+            try {
+                std::dynamic_pointer_cast<PcscReaderImpl>(
+                    SeProxyService::getInstance()
+                        .getPlugin(event->getPluginName())
+                        ->getReader(event->getReaderName()))
+                    ->notifySeProcessed();
+            } catch (KeypleReaderNotFoundException& e) {
+                logger->debug("update - KeypleReaderNotFoundException: %\n", e);
+            } catch (KeyplePluginNotFoundException& e) {
+                logger->debug("update - KeyplePluginNotFoundException: %\n", e);
+            }
         }
     }
 };

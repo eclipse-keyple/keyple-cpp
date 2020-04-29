@@ -21,7 +21,7 @@
 #include <memory>
 
 /* Core */
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 
 /* Calypso */
 #include "ReadDataStructure.h"
@@ -29,7 +29,7 @@
 
 /* Common */
 #include "exceptionhelper.h"
-#include "Export.h"
+#include "KeypleCalypsoExport.h"
 #include "stringbuilder.h"
 
 namespace keyple {
@@ -47,7 +47,8 @@ using namespace keyple::calypso::command::po;
  * according to the file structure profile specified in the command preparation
  * step: SINGLE or MULTIPLE RECORD or COUNTER.
  */
-class EXPORT ReadRecordsRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API ReadRecordsRespPars final
+: public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new ReadRecordsRespPars.

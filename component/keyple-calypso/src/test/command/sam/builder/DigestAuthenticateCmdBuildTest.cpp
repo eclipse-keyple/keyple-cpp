@@ -37,16 +37,9 @@ using ByteArrayUtils = keyple::core::util::ByteArrayUtil;
 void DigestAuthenticateCmdBuildTest::digestAuthenticate()
 {
 
-    std::vector<char> signaturePO = {0x00, 0x01, 0x02, 0x03};
-    std::vector<char> request     = {static_cast<char>(0x94),
-                                 static_cast<char>(0x82),
-                                 0x00,
-                                 0x00,
-                                 0x04,
-                                 0x00,
-                                 0x01,
-                                 0x02,
-                                 0x03};
+    std::vector<uint8_t> signaturePO = {0x00, 0x01, 0x02, 0x03};
+    std::vector<uint8_t> request = {
+        0x94, 0x82, 0x00, 0x00, 0x04, 0x00, 0x01, 0x02, 0x03};
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder =
         std::make_shared<DigestAuthenticateCmdBuild>(SamRevision::S1D,

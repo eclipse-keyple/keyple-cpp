@@ -21,19 +21,19 @@
 
 /* Common */
 #include "exceptionhelper.h"
-#include "Export.h"
 #include "LoggerFactory.h"
 #include "stringhelper.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "MonitoringPool.h"
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "SmartInsertionReader.h"
 #include "SmartRemovalReader.h"
 #include "TransmissionMode.h"
 
 /* Stub */
+#include "KeyplePluginStubExport.h"
 #include "StubReader.h"
 
 /* Forward declarations */
@@ -57,10 +57,9 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::common;
 
-class EXPORT StubReaderImpl : public AbstractObservableLocalReader,
-                              public StubReader,
-                              public SmartInsertionReader,
-                              public SmartRemovalReader {
+class KEYPLEPLUGINSTUB_API StubReaderImpl
+: public AbstractObservableLocalReader, public StubReader,
+  public SmartInsertionReader, public SmartRemovalReader {
 public:
     /**
      * Do not use directly
@@ -88,7 +87,8 @@ public:
     /**
      *
      */
-    std::vector<uint8_t> transmitApdu(std::vector<uint8_t>& apduIn) override;
+    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn)
+        override;
 
     /**
      *
@@ -110,17 +110,17 @@ public:
     /**
      * STATE CONTROLLERS FOR INSERTING AND REMOVING SECURE ELEMENT
      */
-    void insertSe(std::shared_ptr<StubSecureElement> _se);
+    void insertSe(std::shared_ptr<StubSecureElement> _se) override;
 
     /**
      *
      */
-    void removeSe();
+    void removeSe() override;
 
     /**
      *
      */
-    std::shared_ptr<StubSecureElement> getSe();
+    std::shared_ptr<StubSecureElement> getSe() override;
 
     /**
      * This method is called by the monitoring thread to check SE presence
@@ -159,6 +159,28 @@ public:
      * /!\ Required to MSVC to authorize PcscReaderImpl instance.
      */
     void clearObservers() override;
+
+    /**
+     *
+     */
+    void notifySeProcessed() override;
+
+    /**
+     * Stops the SE detection.
+     * <p>
+     * This method must be overloaded by readers depending on the particularity
+     * of their management of the start of SE detection.
+     *
+     * /!\/!\/!\
+     *
+     * Function removeObserver() is present in two base classes (
+     * AbstractObservableLocalReader and ObservableReader).
+     * AbstractObservableLocalReader implements the virtual function but
+     * ObservableReader and its derived classes don't, therefore function
+     * ObservableReader::removeObserver() is considered virtual. Override needed
+     * in this class.
+     */
+    void stopSeDetection() override;
 
 protected:
     /**
@@ -279,23 +301,6 @@ private:
     void startSeDetection(PollingMode pollingMode) override;
 
     /**
-     * Stops the SE detection.
-     * <p>
-     * This method must be overloaded by readers depending on the particularity
-     * of their management of the start of SE detection.
-     *
-     * /!\/!\/!\
-     *
-     * Function removeObserver() is present in two base classes (
-     * AbstractObservableLocalReader and ObservableReader).
-     * AbstractObservableLocalReader implements the virtual function but
-     * ObservableReader and its derived classes don't, therefore function
-     * ObservableReader::removeObserver() is considered virtual. Override needed
-     * in this class.
-     */
-    void stopSeDetection() override;
-
-    /**
      * Defines the selection request to be processed when an SE is inserted.
      * Depending on the SE and the notificationMode parameter, a SE_INSERTED,
      * SE_MATCHED or no event at all will be notified to the application
@@ -315,10 +320,15 @@ private:
      * ObservableReader::setDefaultSelectionRequest() is considered virtual.
      * Override needed in this class.
      */
-    void
-    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
+    void setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
                                    defaultSelectionsRequest,
                                NotificationMode notificationMode) override;
+
+
+    void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode, PollingMode pollingMode) override;
 };
 
 }

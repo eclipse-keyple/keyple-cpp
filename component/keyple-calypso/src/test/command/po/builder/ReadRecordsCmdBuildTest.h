@@ -60,9 +60,9 @@ class ReadRecordsCmdBuildTest
     // Logger logger = Logger.getLogger(ReadRecordsCmdBuildTest.class);
 
 private:
-    const char record_number = 0x01;
+    const uint8_t record_number = 0x01;
 
-    const char expectedLength = 0x00;
+    const uint8_t expectedLength = 0x00;
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder;
 

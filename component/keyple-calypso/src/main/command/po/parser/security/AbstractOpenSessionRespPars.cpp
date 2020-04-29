@@ -14,7 +14,7 @@
 
 #include "AbstractPoResponseParser.h"
 #include "AbstractOpenSessionRespPars.h"
-#include "AbstractApduResponseParser_Import.h"
+#include "AbstractApduResponseParser.h"
 #include "ApduResponse.h"
 #include "OpenSession10RespPars.h"
 #include "OpenSession24RespPars.h"

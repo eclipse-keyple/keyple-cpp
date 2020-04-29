@@ -13,16 +13,19 @@
  ******************************************************************************/
 
 /* Core */
+#include "AbstractObservableLocalReader.h"
+#include "AbstractReader.h"
 #include "KeypleBaseException.h"
-#include "ObservableReader_Import.h"
-#include "SeProtocol_Import.h"
+#include "ObservableReader.h"
+#include "SeProtocol.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 
 /* Plugin */
 #include "PcscPlugin.h"
-#include "PcscReader_Import.h"
-#include "PcscProtocolSetting_Import.h"
+#include "PcscPluginFactory.h"
+#include "PcscReader.h"
+#include "PcscProtocolSetting.h"
 
 /* Example */
 #include "ReaderUtilities.h"
@@ -32,6 +35,8 @@
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::plugin;
+using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::example::generic::common;
 using namespace keyple::example::generic::pc;
@@ -45,11 +50,8 @@ int main(int argc, char** argv)
     /* get the SeProxyService instance */
     SeProxyService& seProxyService = SeProxyService::getInstance();
 
-    /* add the PcscPlugin to the SeProxyService */
-    PcscPlugin pcscPlugin = PcscPlugin::getInstance();
-    pcscPlugin.initReaders();
-    seProxyService.addPlugin(std::dynamic_pointer_cast<ReaderPlugin>(
-        std::make_shared<PcscPlugin>(pcscPlugin)));
+    /* Assign PcscPlugin to the SeProxyService */
+    seProxyService.registerPlugin(new PcscPluginFactory());
 
     /* attempt to get the SeReader (the right reader should be ready here) */
     std::shared_ptr<SeReader> poReader = ReaderUtilities::getReaderByName(
@@ -59,7 +61,7 @@ int main(int argc, char** argv)
         throw IllegalStateException("Bad PO/SAM setup");
     }
 
-    poReader->setParameter(PcscReader::SETTING_KEY_LOGGING, "true");
+    std::cout << "PO Reader : " << poReader->getName() << std::endl;
 
     /* create an observer class to handle the SE operations */
     std::shared_ptr<SeProtocolDetectionEngine> observer =
@@ -71,19 +73,23 @@ int main(int argc, char** argv)
     poReader->setParameter(PcscReader::SETTING_KEY_PROTOCOL,
                            PcscReader::SETTING_PROTOCOL_T1);
 
-    // Protocol detection settings.
-    // add 8 expected protocols with three different methods:
-    // - using a custom enum
-    // - addinf protocols individually
-    // A real application should use only one method.
+    /*
+     * Protocol detection settings.
+     * add 8 expected protocols with three different methods:
+     * - using a custom enum
+     * - addinf protocols individually
+     * A real application should use only one method.
+     */
 
-    // Method 1
-    // add several settings at once with settings an unordered_set
+    /*
+     * Method 1
+     * add several settings at once with settings an unordered_set
+     */
     std::set<SeCommonProtocols> commonProtocols{
         SeCommonProtocols::PROTOCOL_MIFARE_CLASSIC,
         SeCommonProtocols::PROTOCOL_MIFARE_UL};
-    std::unordered_map<SeProtocol, std::string> map;
-    std::unordered_map<SeCommonProtocols, std::string> specificSettings =
+    std::map<SeProtocol, std::string> map;
+    std::map<SeCommonProtocols, std::string> specificSettings =
         PcscProtocolSetting::getSpecificSettings(commonProtocols);
 
     for (auto pair : specificSettings)
@@ -91,25 +97,33 @@ int main(int argc, char** argv)
 
     poReader->setSeProtocolSetting(map);
 
-    // Method 2
-    // add all settings at once with setting enum
+    /*
+     * Method 2
+     * add all settings at once with setting enum
+     */
     poReader->addSeProtocolSetting(
         SeCommonProtocols::PROTOCOL_MEMORY_ST25,
         PcscProtocolSetting::PCSC_PROTOCOL_SETTING
             [SeCommonProtocols::PROTOCOL_MEMORY_ST25]);
 
-    // regiex extended
+    /* Regex extended */
     poReader->addSeProtocolSetting(
         SeCommonProtocols::PROTOCOL_ISO14443_4,
         PcscProtocolSetting::PCSC_PROTOCOL_SETTING
                 [SeCommonProtocols::PROTOCOL_ISO14443_4] +
             "|3B8D.*");
 
-    // Set terminal as Observer of the first reader
-    (std::dynamic_pointer_cast<ObservableReader>(poReader))
+    /* Set terminal as Observer of the first reader */
+    (std::dynamic_pointer_cast<AbstractReader>(poReader))
         ->addObserver(observer);
 
-    // wait for Enter key to exit.
+    /* Set Default selection */
+    (std::dynamic_pointer_cast<AbstractObservableLocalReader>(poReader))
+        ->setDefaultSelectionRequest(observer->prepareSeSelection(),
+                                     ObservableReader::NotificationMode::ALWAYS,
+                                     ObservableReader::PollingMode::REPEATING);
+
+    /* Wait for Enter key to exit */
     std::cout << "Press Enter to exit" << std::endl;
 
     while (true) {
@@ -121,6 +135,7 @@ int main(int argc, char** argv)
                 c = input[0];
 
         } catch (const IOException& e) {
+            (void)e;
             //e.printStackTrace();
         }
         if (c == 0x0A) {

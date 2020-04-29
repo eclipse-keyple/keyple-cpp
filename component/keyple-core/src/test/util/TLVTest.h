@@ -34,15 +34,15 @@ using namespace testing;
 class TLVTest : public std::enable_shared_from_this<TLVTest> {
     bool isDfInvalidated_Renamed   = false;
     bool isValidCalypsoFCI_Renamed = false;
-    std::vector<char> dfName;
-    std::vector<char> applicationSN;
-    char siBufferSizeIndicator = 0;
-    char siPlatform            = 0;
-    char siApplicationType     = 0;
-    char siApplicationSubtype  = 0;
-    char siSoftwareIssuer      = 0;
-    char siSoftwareVersion     = 0;
-    char siSoftwareRevision    = 0;
+    std::vector<uint8_t> dfName;
+    std::vector<uint8_t> applicationSN;
+    uint8_t siBufferSizeIndicator = 0;
+    uint8_t siPlatform            = 0;
+    uint8_t siApplicationType     = 0;
+    uint8_t siApplicationSubtype  = 0;
+    uint8_t siSoftwareIssuer      = 0;
+    uint8_t siSoftwareVersion     = 0;
+    uint8_t siSoftwareRevision    = 0;
 
 public:
     virtual ~TLVTest(){};

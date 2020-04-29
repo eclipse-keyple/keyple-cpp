@@ -10,6 +10,8 @@
 * SPDX-License-Identifier: EPL-2.0
 ********************************************************************************/
 
+#include <stdio.h>
+
 #include "Matcher.h"
 #include "Pattern.h"
 #include "exceptionhelper.h"

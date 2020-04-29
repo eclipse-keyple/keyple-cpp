@@ -17,12 +17,12 @@
 #include <map>
 
 /* Common */
-#include "Export.h"
 #include "LoggerFactory.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "AbstractObservableState.h"
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -34,14 +34,14 @@ namespace local {
  * Manages the internal state of an AbstractObservableLocalReader Process
  * InternalEvent against the current state
  */
-class EXPORT ObservableReaderStateService {
+class KEYPLECORE_API ObservableReaderStateService {
 public:
     /**
      *
      */
     ObservableReaderStateService(
         AbstractObservableLocalReader* reader,
-        std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>&
+        std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>
             states,
         const MonitoringState initState);
 
@@ -92,7 +92,7 @@ private:
     /**
      * Map of all instantiated states possible
      */
-    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>& states;
+    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>> states;
 
     /**
      * Current currentState of the Observable Reader
