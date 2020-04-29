@@ -32,48 +32,54 @@ void SeProxyService::registerPlugin(AbstractPluginFactory* pluginFactory)
     if (pluginFactory == nullptr)
         throw IllegalArgumentException("Factory must not be null");
 
-    std::unique_lock<std::mutex> lock(MONITOR);
-
     if (!isRegistered(pluginFactory->getPluginName())) {
-        logger->info("Registering a new Plugin to the platform : %s\n",
+        std::lock_guard<std::mutex> guard(MONITOR);
+        logger->info("Registering a new Plugin to the platform : %\n",
                      pluginFactory->getPluginName());
         ReaderPlugin& newPlugin = pluginFactory->getPluginInstance();
         this->plugins.insert(&newPlugin);
+
     } else {
         logger->warn("Plugin has already been registered to the platform "
-                     ": %s\n",
-                     pluginFactory->getPluginName());
+                     ": %\n", pluginFactory->getPluginName());
     }
 }
 
 bool SeProxyService::unregisterPlugin(const std::string& pluginName)
 {
+    bool ret = false;
     ReaderPlugin* readerPlugin = nullptr;
 
-    std::unique_lock<std::mutex> lock(MONITOR);
-
     try {
+
+        std::lock_guard<std::mutex> guard(MONITOR);
         readerPlugin = this->getPlugin(pluginName);
-        logger->info("Unregistering a plugin from the platform : %s\n",
+        logger->info("Unregistering a plugin from the platform : %\n",
                      readerPlugin->getName());
-        return plugins.erase(readerPlugin);
+        ret = plugins.erase(readerPlugin);
+
     } catch (KeyplePluginNotFoundException& e) {
-        logger->info("Plugin is not registered to the platform : %s. %s\n",
-                     pluginName, e.getMessage());
-        return false;
+        logger->info("Plugin is not registered to the platform : %. %\n",
+                     pluginName, e);
     }
+
+    return ret;
 }
 
 bool SeProxyService::isRegistered(const std::string& pluginName)
 {
-    std::unique_lock<std::mutex> lock(MONITOR);
+    bool ret = false;
+
+    std::lock_guard<std::mutex> guard(MONITOR);
 
     for (ReaderPlugin* registeredPlugin : plugins) {
         if (registeredPlugin->getName().compare(pluginName)) {
-            return true;
+            ret = true;
+            break;
         }
     }
-    return false;
+
+    return ret;
 }
 
 std::set<ReaderPlugin*>& SeProxyService::getPlugins()

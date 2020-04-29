@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -22,12 +24,11 @@
 #include "TransmissionMode.h"
 
 /* Calypso */
-#include "SamRevision_Import.h"
+#include "SamRevision.h"
 
 /* Common */
-#include "Export.h"
+#include "KeypleCalypsoExport.h"
 #include "exceptionhelper.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
@@ -41,13 +42,14 @@ using namespace keyple::core::selection;
 using namespace keyple::common;
 using namespace keyple::core::seproxy::protocol;
 
-class EXPORT CalypsoSam : public AbstractMatchingSe {
+class KEYPLECALYPSO_API CalypsoSam : public AbstractMatchingSe {
 public:
     /**
      * Constructor.
      *
      * @param selectionResponse the selection response from the SAM
-     * @param transmissionMode the current {@link TransmissionMode} (contacts or contactless)
+     * @param transmissionMode the current {@link TransmissionMode} (contacts or
+     *        contactless)
      * @param extraInfo textual information
      */
     CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
@@ -68,37 +70,37 @@ public:
     /**
      *
      */
-    virtual std::vector<char> getSerialNumber();
+    virtual std::vector<uint8_t> getSerialNumber();
 
     /**
      *
      */
-    virtual char getPlatform();
+    virtual uint8_t getPlatform();
 
     /**
      *
      */
-    virtual char getApplicationType();
+    virtual uint8_t getApplicationType();
 
     /**
      *
      */
-    virtual char getApplicationSubType();
+    virtual uint8_t getApplicationSubType();
 
     /**
      *
      */
-    virtual char getSoftwareIssuer();
+    virtual uint8_t getSoftwareIssuer();
 
     /**
      *
      */
-    virtual char getSoftwareVersion();
+    virtual uint8_t getSoftwareVersion();
 
     /**
      *
      */
-    virtual char getSoftwareRevision();
+    virtual uint8_t getSoftwareRevision();
 
 protected:
     /**
@@ -125,37 +127,37 @@ private:
     /**
      *
      */
-    std::vector<char> serialNumber = std::vector<char>(4);
+    std::vector<uint8_t> serialNumber = std::vector<uint8_t>(4);
 
     /**
      *
      */
-    char platform = 0;
+    uint8_t platform = 0;
 
     /**
      *
      */
-    char applicationType = 0;
+    uint8_t applicationType = 0;
 
     /**
      *
      */
-    char applicationSubType = 0;
+    uint8_t applicationSubType = 0;
 
     /**
      *
      */
-    char softwareIssuer = 0;
+    uint8_t softwareIssuer = 0;
 
     /**
      *
      */
-    char softwareVersion = 0;
+    uint8_t softwareVersion = 0;
 
     /**
      *
      */
-    char softwareRevision = 0;
+    uint8_t softwareRevision = 0;
 };
 
 }

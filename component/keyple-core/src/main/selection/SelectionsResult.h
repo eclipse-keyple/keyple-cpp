@@ -1,21 +1,23 @@
-/********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
 #include <vector>
 #include <memory>
 
-#include "Export.h"
+#include "KeypleCoreExport.h"
 
 /* Forward class declarations */
 namespace keyple {
@@ -35,10 +37,10 @@ namespace selection {
  * <p>
  * embeds a list of {@link MatchingSelection}
  * <p>
- * provides a set of methods to retrieve the active selection (getActiveSelection) or a particular
- * selection specified by its index.
+ * provides a set of methods to retrieve the active selection
+ * (getActiveSelection) or a particular selection specified by its index.
  */
-class EXPORT SelectionsResult final
+class KEYPLECORE_API SelectionsResult final
 : public std::enable_shared_from_this<SelectionsResult> {
 public:
     /**

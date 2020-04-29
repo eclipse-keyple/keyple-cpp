@@ -13,7 +13,7 @@
  ******************************************************************************/
 
 #include "DefaultSelectionsRequest.h"
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 
 namespace keyple {
 namespace core {

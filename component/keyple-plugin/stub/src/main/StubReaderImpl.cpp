@@ -19,7 +19,7 @@
 #include "KeypleIOReaderException.h"
 #include "KeypleReaderException.h"
 #include "ObservableReaderStateService.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "SmartInsertionMonitoringJob.h"
 #include "SmartRemovalMonitoringJob.h"
 #include "WaitForStartDetect.h"
@@ -89,7 +89,8 @@ void StubReaderImpl::closePhysicalChannel()
     }
 }
 
-std::vector<uint8_t> StubReaderImpl::transmitApdu(std::vector<uint8_t>& apduIn)
+std::vector<uint8_t> StubReaderImpl::transmitApdu(
+    const std::vector<uint8_t>& apduIn)
 {
     if (se == nullptr) {
         throw KeypleIOReaderException("No SE available.");
@@ -125,14 +126,12 @@ bool StubReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
     Pattern* p                  = Pattern::compile(selectionMask);
     const std::string& protocol = se->getSeProcotol();
     if (!p->matcher(protocol)->matches()) {
-        logger->trace("[%s] protocolFlagMatches => unmatching SE. "
-                      "PROTOCOLFLAG = %s\n",
-                      this->getName(), protocolFlag.toString());
+        logger->trace("[%] protocolFlagMatches => unmatching SE. "
+                      "PROTOCOLFLAG = %\n", getName(), protocolFlag);
         result = false;
     } else {
-        logger->trace("[%s] protocolFlagMatches => matching SE. "
-                      "PROTOCOLFLAG = %s\n",
-                      this->getName().c_str(), protocolFlag.toString().c_str());
+        logger->trace("[%] protocolFlagMatches => matching SE. PROTOCOLFLAG =" \
+			          " %\n", getName(), protocolFlag);
         result = true;
     }
     //} else {
@@ -176,14 +175,14 @@ TransmissionMode StubReaderImpl::getTransmissionMode()
 
 void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> _se)
 {
-    logger->debug("Insert SE %s\n", "_se<fixme>");
+    logger->debug("Insert SE %\n", _se);
 
     /* Clean channels status */
     if (isPhysicalChannelOpen()) {
         try {
             closePhysicalChannel();
         } catch (KeypleReaderException& e) {
-            logger->error("Error while closing channel reader. %s\n",
+            logger->error("Error while closing channel reader. %\n",
                           e.getMessage());
         }
     }
@@ -194,7 +193,7 @@ void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> _se)
 
 void StubReaderImpl::removeSe()
 {
-    logger->debug("Remove SE %s\n", se != nullptr ? "se<fixme>" : "none");
+    logger->debug("Remove SE %\n", se);
 
     se = nullptr;
 }
@@ -208,7 +207,10 @@ bool StubReaderImpl::waitForCardPresent()
 {
     loopWaitSe = true;
 
+    logger->debug("[%] waiting for card present\n", name);
+
     while (loopWaitSe) {
+        logger->debug("[%] checking for SE presence\n", name);
         if (checkSePresence()) {
             return true;
         }
@@ -217,9 +219,10 @@ bool StubReaderImpl::waitForCardPresent()
             Thread::sleep(10);
         } catch (InterruptedException& e) {
             (void)e;
-            logger->debug("Sleep was interrupted\n");
+            logger->debug("[%] Sleep was interrupted\n", name);
         }
     }
+
     return false;
     // logger.trace("[{}] no card was inserted", this.getName());
     // return false;
@@ -236,7 +239,7 @@ bool StubReaderImpl::waitForCardAbsentNative()
 
     while (loopWaitSeRemoval) {
         if (!checkSePresence()) {
-            logger->trace("[%s] card removed\n", this->getName());
+            logger->trace("[%] card removed\n", getName());
             return true;
         }
 
@@ -324,9 +327,23 @@ void StubReaderImpl::setDefaultSelectionRequest(
         defaultSelectionsRequest, notificationMode);
 }
 
+void StubReaderImpl::setDefaultSelectionRequest(
+    std::shared_ptr<AbstractDefaultSelectionsRequest>
+        defaultSelectionsRequest,
+    NotificationMode notificationMode, PollingMode pollingMode)
+{
+    AbstractObservableLocalReader::setDefaultSelectionRequest(
+        defaultSelectionsRequest, notificationMode, pollingMode);
+}
+
 void StubReaderImpl::clearObservers()
 {
     AbstractObservableLocalReader::clearObservers();
+}
+
+void StubReaderImpl::notifySeProcessed()
+{
+    AbstractObservableLocalReader::notifySeProcessed();
 }
 
 }

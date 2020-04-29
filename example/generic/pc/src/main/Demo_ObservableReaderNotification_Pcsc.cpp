@@ -20,6 +20,7 @@
 
 /* Plugin PC/SC */
 #include "PcscPlugin.h"
+#include "PcscPluginFactory.h"
 
 using namespace keyple::example::generic::common;
 using namespace keyple::plugin::pcsc;
@@ -34,26 +35,11 @@ int main(int argc, char** argv)
     std::shared_ptr<ObservableReaderNotificationEngine> demoEngine =
         std::make_shared<ObservableReaderNotificationEngine>();
 
-    /*
-     * Alex: diamond issue, casting PcscPlugin into ReaderPlugin can take two
-     * routes:
-     * - PcscPlugin -> AbstractThreadedObservablePlugin ->
-     *   AbstractObservablePlugin -> ReaderPlugin
-     * or
-     * - PcscPlugin -> AbstractThreadedObservablePlugin -> ObservablePlugin ->
-     *   ReaderPlugin
-     *
-     * Forcing conversion to ObservablePlugin for now but should be fixed or at
-     * least validated.
-     */
-    PcscPlugin pcscplugin = PcscPlugin::getInstance();
-    pcscplugin.initReaders();
-    std::shared_ptr<PcscPlugin> shared_plugin =
-        std::shared_ptr<PcscPlugin>(&pcscplugin);
-
-    /* Instantiate SeProxyService and add PC/SC plugin */
+    /* Get the instance of the SeProxyService (Singleton pattern) */
     SeProxyService& seProxyService = SeProxyService::getInstance();
-    seProxyService.addPlugin(shared_plugin);
+
+    /* Assign PcscPlugin to the SeProxyService */
+    seProxyService.registerPlugin(new PcscPluginFactory());
 
     /* Set observers */
     demoEngine->setPluginObserver();
@@ -61,10 +47,5 @@ int main(int argc, char** argv)
     std::cout << "Wait for reader or SE insertion/removal" << std::endl;
 
     /* Wait indefinitely. CTRL-C to exit. */
-    //JAVA TO C++ CONVERTER TODO TASK: Multithread locking is not converted to native C++ unless you choose one of the options on the 'Modern C++ Options' dialog:
-    //    synchronized(waitBeforeEnd) {
-    //        waitBeforeEnd->wait();
-    //    }
-    while (1)
-        ;
+    while (1);
 }

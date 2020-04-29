@@ -115,12 +115,12 @@ public:
     /**
      *
      */
-    void addObserver(std::shared_ptr<PluginObserver> observer);
+    void addObserver(std::shared_ptr<PluginObserver> observer) override;
 
     /**
      *
      */
-    void removeObserver(std::shared_ptr<PluginObserver> observer);
+    void removeObserver(std::shared_ptr<PluginObserver> observer) override;
 
 protected:
     /**

@@ -19,7 +19,10 @@
 
 /* Common*/
 #include "Object.h"
-#include "Export.h"
+#include "LoggerFactory.h"
+
+/* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -33,8 +36,8 @@ using namespace keyple::common;
  * <p>
  * (May be enhanced to provide analysis methods)
  */
-class EXPORT AnswerToReset : public std::enable_shared_from_this<AnswerToReset>,
-                             public Object {
+class KEYPLECORE_API AnswerToReset
+: public std::enable_shared_from_this<AnswerToReset>, public Object {
 public:
     /**
      *
@@ -62,6 +65,17 @@ public:
      *
      */
     int hashCode() override;
+
+	/**
+	 *
+	 */
+	friend std::ostream& operator<<(std::ostream& os, const AnswerToReset& atr);
+
+	/**
+	 *
+	 */
+	friend std::ostream& operator<<(std::ostream& os,
+		                            const std::shared_ptr<AnswerToReset>& atr);
 
 protected:
     /**

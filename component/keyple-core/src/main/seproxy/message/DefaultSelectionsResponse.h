@@ -59,7 +59,7 @@ private:
     /**
      * The List of {@link SeResponse}
      */
-    std::list<std::shared_ptr<SeResponse>>& selectionSeResponseSet;
+    std::list<std::shared_ptr<SeResponse>> selectionSeResponseSet;
 };
 
 }

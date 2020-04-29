@@ -35,8 +35,8 @@ StubCalypsoClassic::StubCalypsoClassic()
     /* Select Application */
     addHexCommand("00A4 0400 05 AABBCCDDEE 00", "6A82");
     /* Select Application */
-    addHexCommand("00A4 0400 0A A0000004040125090101 00",
-                  "6F24840AA0000004040125090101A516BF0C13C708 "
+    addHexCommand("00A4 0400 09 315449432E49434131 00",
+                  "6F238409315449432E49434131A516BF0C13C708 "
                   "0000000011223344 53070A3C23121410019000");
     /* Read Records */
     addHexCommand("00B2014400",

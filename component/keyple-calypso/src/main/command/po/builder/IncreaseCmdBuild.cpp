@@ -30,7 +30,8 @@ using namespace keyple::core::seproxy::message;
 IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi,
                                    char counterNumber, int incValue,
                                    const std::string& extraInfo)
-: AbstractPoCommandBuilder<IncreaseRespPars>(command, nullptr)
+: AbstractPoCommandBuilder<IncreaseRespPars>(CalypsoPoCommands::INCREASE,
+                                             nullptr)
 {
 
     // only counter number >= 1 are allowed

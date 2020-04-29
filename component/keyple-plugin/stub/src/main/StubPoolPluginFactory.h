@@ -42,12 +42,17 @@ public:
     /**
      *
      */
+    virtual ~StubPoolPluginFactory() = default;
+
+    /**
+     *
+     */
     const std::string& getPluginName() override;
 
     /**
      *
      */
-    ReaderPlugin& getPluginInstance();
+    ReaderPlugin& getPluginInstance() override;
 
 private:
     /**

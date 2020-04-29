@@ -16,7 +16,7 @@
 #include <vector>
 
 /* Core */
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 
 namespace keyple {
 namespace example {

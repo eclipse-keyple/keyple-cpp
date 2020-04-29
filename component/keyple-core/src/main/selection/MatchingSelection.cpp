@@ -16,8 +16,8 @@
 #include "AbstractMatchingSe.h"
 #include "AbstractSeSelectionRequest.h"
 #include "SeResponse.h"
-#include "SeSelector_Import.h"
-#include "AbstractApduResponseParser_Import.h"
+#include "SeSelector.h"
+#include "AbstractApduResponseParser.h"
 
 namespace keyple {
 namespace core {
@@ -49,7 +49,7 @@ MatchingSelection::getResponseParser(int commandIndex)
                                                 commandIndex);
 }
 
-std::string MatchingSelection::getExtraInfo()
+const std::string& MatchingSelection::getExtraInfo() const
 {
     return seSelectionRequest->getSeSelector()->getExtraInfo();
 }
@@ -57,6 +57,18 @@ std::string MatchingSelection::getExtraInfo()
 int MatchingSelection::getSelectionIndex()
 {
     return selectionIndex;
+}
+
+std::ostream& operator<<(std::ostream& os, const MatchingSelection& ms)
+{
+	os << "MATCHINGSELECTION: {"
+	   << "MATCHINGSE = " << ms.matchingSe << ", "
+	   << "SELECTIONREQUEST = " << ms.seSelectionRequest << ", "
+	   << "SELECTIONRESPONSE = " << ms.selectionSeResponse << ", "
+	   << "SELECTIONINDEX = " << ms.selectionIndex
+	   << "}";
+
+	return os;
 }
 
 }

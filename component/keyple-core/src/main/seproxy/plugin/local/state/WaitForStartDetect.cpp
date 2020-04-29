@@ -37,7 +37,7 @@ WaitForStartDetect::WaitForStartDetect(
 
 void WaitForStartDetect::onEvent(const InternalEvent event)
 {
-    logger->trace("[%s] onEvent => Event %d received in currentState %d\n",
+    logger->trace("[%] onEvent => Event % received in currentState %\n",
                   reader->getName(), event, state);
 
     /*
@@ -49,7 +49,7 @@ void WaitForStartDetect::onEvent(const InternalEvent event)
         break;
 
     default:
-        logger->warn("[%s] Ignore =>  Event %d received in currentState %d\n",
+        logger->warn("[%] Ignore =>  Event % received in currentState %\n",
                      reader->getName(), event, state);
         break;
     }

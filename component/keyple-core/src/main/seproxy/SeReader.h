@@ -18,7 +18,7 @@
 
 #include "Configurable.h"
 #include "Nameable.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 #include "TransmissionMode.h"
 
 /* Forward class declarations */

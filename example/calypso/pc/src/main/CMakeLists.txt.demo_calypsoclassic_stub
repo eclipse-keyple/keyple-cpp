@@ -19,20 +19,20 @@ INCLUDE_DIRECTORIES(
 
     # Example generic common
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/common/src/main
-    
+
     # Example generic pc
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../generic/pc/src/main
-    
+
 	# Example calypso common
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main//postructure
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main//transaction
 
     # Example calypso pc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../pc/src/main/java/org/eclipse/keyple/example/calypso/pc
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../pc/src/main
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../pc/src/main/stub/se
+
 	# Core
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main/java/org/eclipse/keyple/common
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/command
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/selection
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy
@@ -46,9 +46,11 @@ INCLUDE_DIRECTORIES(
 	# Plugin - Stub
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/stub/src/main
 
-	# Smartcard I/O
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main	
+	# Common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
+
 	# Calypso
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po/builder
@@ -64,18 +66,20 @@ IF(WIN32)
     SET(CMAKE_FIND_LIBRARY_PREFIXES "")
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
     SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
-    SET(WINSCARD winscard.lib)
+    SET(PCSC winscard.lib)
 ENDIF(WIN32)
 
 IF(APPLE)
     SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
     SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
-    SET(WINSCARD "-framework PCSC")
+    SET(PCSC "-framework PCSC")
+	SET(THREAD pthread)
 ENDIF(APPLE)
 
 IF(UNIX)
-    FIND_LIBRARY(WINSCARD pcsclite)
+	SET(THREAD pthread)
+    SET(PCSC pcsclite)
 ENDIF(UNIX)
 
 ADD_EXECUTABLE(demo_calypsoclassic_stub
@@ -94,4 +98,4 @@ ADD_EXECUTABLE(demo_calypsoclassic_stub
 	${CMAKE_CURRENT_SOURCE_DIR}/Demo_CalypsoClassic_Stub.cpp
 )
 
-TARGET_LINK_LIBRARIES(demo_calypsoclassic_stub keyplepluginpcsc keyplepluginstub keyplecore keyplecalypso ${WINSCARD})
+TARGET_LINK_LIBRARIES(demo_calypsoclassic_stub keyplepluginpcsc keyplepluginstub keyplecore keyplecalypso ${SPEC_LIBS})

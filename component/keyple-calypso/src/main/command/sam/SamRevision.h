@@ -14,11 +14,12 @@
 
 #pragma once
 
+#include <ostream>
 #include <string>
 #include <vector>
 
-/* Common */
-#include "Export.h"
+/* Calypso */
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -29,7 +30,7 @@ namespace sam {
     * This enumeration registers all supported revisions of SAM.
     *
     */
-class EXPORT SamRevision final {
+class KEYPLECALYPSO_API SamRevision final {
 public:
     /**
      * The revision of C1 and S1E SAM. CLA 0x00 or 0x80
@@ -107,7 +108,7 @@ public:
     /**
      *
      */
-    bool operator==(const SamRevision& other);
+    bool operator==(const SamRevision& other) const;
 
     /**
      *
@@ -137,6 +138,11 @@ public:
      *
      */
     static SamRevision valueOf(const std::string& name);
+
+	/**
+	 *
+	 */
+    friend std::ostream& operator<<(std::ostream & os, const SamRevision& sr);
 
 private:
     /**

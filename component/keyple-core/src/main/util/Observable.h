@@ -21,7 +21,7 @@
 #include <unordered_set>
 
 /* Core */
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 
 /* Common */
 #include "LoggerFactory.h"

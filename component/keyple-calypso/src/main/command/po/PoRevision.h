@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <ostream>
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -49,6 +51,8 @@ enum class PoRevision {
      */
     REV3_2
 };
+
+std::ostream& operator<<(std::ostream& os, const PoRevision& pr);
 
 }
 }

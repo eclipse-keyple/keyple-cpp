@@ -12,6 +12,9 @@
 
 #include "GenericSeSelectionRequest.h"
 
+/* Core */
+#include "ChannelControl.h"
+
 namespace keyple {
 namespace example {
 namespace generic {
@@ -31,8 +34,8 @@ GenericSeSelectionRequest::GenericMatchingSe::~GenericMatchingSe()
 }
 
 GenericSeSelectionRequest::GenericSeSelectionRequest(
-    std::shared_ptr<SeSelector> seSelector, ChannelState channelState)
-: AbstractSeSelectionRequest(seSelector, channelState)
+    std::shared_ptr<SeSelector> seSelector)
+: AbstractSeSelectionRequest(seSelector)
 {
     transmissionMode = seSelector->getSeProtocol().getTransmissionMode();
 }

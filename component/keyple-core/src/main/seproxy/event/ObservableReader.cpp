@@ -13,7 +13,7 @@
  ******************************************************************************/
 
 #include "ObservableReader.h"
-#include "ReaderEvent_Import.h"
+#include "ReaderEvent.h"
 #include "AbstractDefaultSelectionsRequest.h"
 
 namespace keyple {
@@ -110,6 +110,21 @@ NotificationMode NotificationMode::valueOf(const std::string& name)
     }
 
     return NotificationMode::ALWAYS;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const ObservableReader::PollingMode& pm)
+{
+    switch (pm) {
+    case ObservableReader::PollingMode::REPEATING:
+        os << "REPEATING";
+        break;
+    case ObservableReader::PollingMode::SINGLESHOT:
+        os << "SINGLESHOT";
+        break;
+    }
+
+    return os;
 }
 
 }

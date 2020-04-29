@@ -14,6 +14,8 @@
 
 #include "PoClass.h"
 
+#include <iomanip>
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -49,12 +51,12 @@ PoClass::PoClass(const PoClass& o)
 {
 }
 
-bool PoClass::operator==(const PoClass& o)
+bool PoClass::operator==(const PoClass& o) const
 {
     return this->ordinalValue == o.ordinalValue;
 }
 
-bool PoClass::operator!=(const PoClass& o)
+bool PoClass::operator!=(const PoClass& o) const
 {
     return this->ordinalValue != o.ordinalValue;
 }
@@ -79,11 +81,6 @@ int PoClass::ordinal()
     return ordinalValue;
 }
 
-std::string PoClass::toString()
-{
-    return nameValue;
-}
-
 PoClass PoClass::valueOf(const std::string& name)
 {
     for (auto enumInstance : PoClass::valueList) {
@@ -95,6 +92,26 @@ PoClass PoClass::valueOf(const std::string& name)
     /* Compiler fix */
     return PoClass("Dummy", InnerEnum::ISO, 0);
 }
+
+std::ostream& operator<<(std::ostream& os, const PoClass& pc)
+{
+	std::string value;
+	if (pc == PoClass::LEGACY)
+		value = "LEGACY";
+    else if (pc == PoClass::ISO)
+		value = "ISO";
+
+	os << "POCLASS: {"
+	   << "VALUE = " << value << ", "
+	   << "NAME = " << pc.nameValue << ", "
+	   << "ORDINAL = " << pc.ordinalValue << ", "
+	   << "CLASS = " << std::hex << std::setfill('0') << std::setw(2)
+		             << static_cast<int>(pc.cla)
+	   << "}";
+
+	return os;
+}
+
 }
 }
 }

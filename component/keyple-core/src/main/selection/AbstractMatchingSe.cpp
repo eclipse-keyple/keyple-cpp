@@ -66,6 +66,19 @@ std::string AbstractMatchingSe::getSelectionExtraInfo()
 {
     return selectionExtraInfo;
 }
+
+std::ostream& operator<<(std::ostream& os, const AbstractMatchingSe& ams)
+{
+	os << "ABSTRACTMATCHINGSE: {"
+	   << "SELECTIONRESPONSE = " << ams.selectionResponse << ", "
+	   << "TRANSMISSIONMODE = " << ams.transmissionMode << ", "
+	   << "SELECTIONSTATUS = " << ams.selectionStatus << ", "
+	   << "EXTRAINFO = " << ams.selectionExtraInfo
+	   << "}";
+
+	return os;
+}
+
 }
 }
 }

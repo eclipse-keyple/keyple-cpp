@@ -18,8 +18,10 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
 #include "Object.h"
+
+/* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -33,7 +35,7 @@ using namespace keyple::common;
  * <p>
  * (ITU-T X.690 / ISO 8825)
  */
-class EXPORT Tag : public std::enable_shared_from_this<Tag> {
+class KEYPLECORE_API Tag : public std::enable_shared_from_this<Tag> {
 public:
     /**
      *
@@ -72,39 +74,27 @@ public:
     /**
      *
      */
-    virtual ~Tag()
-    {
-    }
+    int getTagNumber();
 
     /**
      *
      */
-    virtual int getTagNumber();
+    char getTagClass();
 
     /**
      *
      */
-    virtual char getTagClass();
+    TagType getTagType();
 
     /**
      *
      */
-    virtual TagType getTagType();
-
+    int getSize();
+	
     /**
      *
      */
-    virtual int getSize();
-
-    /**
-     *
-     */
-    virtual bool equals(std::shared_ptr<Object> obj);
-
-    /**
-     *
-     */
-    virtual bool equals(std::shared_ptr<Tag> tag);
+    bool equals(std::shared_ptr<Tag> tag);
 
     /**
      *

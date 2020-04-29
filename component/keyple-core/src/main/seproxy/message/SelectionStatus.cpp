@@ -41,7 +41,7 @@ std::shared_ptr<ApduResponse> SelectionStatus::getFci()
     return fci;
 }
 
-bool SelectionStatus::hasMatched()
+bool SelectionStatus::hasMatched() const
 {
     return isMatching;
 }
@@ -79,6 +79,27 @@ int SelectionStatus::hashCode()
 
 void SelectionStatus::finalize()
 {
+}
+
+std::ostream& operator<<(std::ostream& os, const SelectionStatus& s)
+{
+    os << "SELECTIONSTATUS: {"
+       << "ATR = " << s.atr << ", "
+       << "FCI = " << s.fci << ", "
+       << "HASMATCHED = " << s.isMatching << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::shared_ptr<SelectionStatus>& s)
+{
+    if (s)
+        os << *(s.get());
+    else
+		os << "SELECTIONSTATUS: null";
+
+    return os;
 }
 
 }

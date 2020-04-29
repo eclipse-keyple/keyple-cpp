@@ -14,10 +14,11 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-#include <stdexcept>
 #include <memory>
+#include <stdexcept>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 /* Core */
 #include "AbstractMatchingSe.h"
@@ -27,13 +28,12 @@
 
 /* Common */
 #include "exceptionhelper.h"
-#include "Export.h"
-#include "Logger.h"
+#include "KeypleCalypsoExport.h"
 #include "LoggerFactory.h"
 
 /* Core */
-#include "AbstractApduResponseParser_Import.h"
-#include "SeProtocol_Import.h"
+#include "AbstractApduResponseParser.h"
+#include "SeProtocol.h"
 
 /* Calypso */
 #include "PoSelector.h"
@@ -61,7 +61,8 @@ using namespace keyple::calypso::transaction;
  * Specialized selection request to manage the specific characteristics of
  * Calypso POs
  */
-class EXPORT PoSelectionRequest final : public AbstractSeSelectionRequest {
+class KEYPLECALYPSO_API PoSelectionRequest final
+: public AbstractSeSelectionRequest {
 public:
     /**
      * Constructor.
@@ -227,14 +228,12 @@ private:
     /**
      *
      */
-    std::unordered_map<int, uint8_t> readRecordFirstRecordNumberMap =
-        std::unordered_map<int, uint8_t>();
+    std::unordered_map<int, uint8_t> readRecordFirstRecordNumberMap;
 
     /**
      *
      */
-    std::unordered_map<int, ReadDataStructure> readRecordDataStructureMap =
-        std::unordered_map<int, ReadDataStructure>();
+    std::unordered_map<int, ReadDataStructure> readRecordDataStructureMap;
 
     /**
      *

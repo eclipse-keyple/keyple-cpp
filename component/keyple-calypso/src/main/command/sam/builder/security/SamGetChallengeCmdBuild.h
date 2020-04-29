@@ -17,7 +17,7 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommands.h"
-#include "SamRevision_Import.h"
+#include "SamRevision.h"
 
 /* Common */
 #include "stringhelper.h"

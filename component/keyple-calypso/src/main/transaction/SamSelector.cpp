@@ -13,7 +13,7 @@
  ******************************************************************************/
 
 /* Core */
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 
 /* Calypso */
 #include "SamSelector.h"

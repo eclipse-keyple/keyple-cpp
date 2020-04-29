@@ -156,13 +156,9 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
         this->softwareRevision                      = poAtr[11];
         this->isDfInvalidated_Renamed               = false;
     }
-    if (logger->isTraceEnabled()) {
-        logger->trace(
-            "REVISION = %d, SERIALNUMBER = %s, DFNAME = %s\n",
-            static_cast<int>(this->revision),
-            ByteArrayUtil::toHex(this->applicationSerialNumber).c_str(),
-            ByteArrayUtil::toHex(this->dfName).c_str());
-    }
+
+    logger->trace("REVISION = %, SERIALNUMBER = %, DFNAME = %\n",
+                  revision, applicationSerialNumber, dfName);
 }
 
 PoRevision CalypsoPo::getRevision()
@@ -267,16 +263,12 @@ PoClass CalypsoPo::getPoClass()
      * class byte
      */
     if (revision == PoRevision::REV1_0 || revision == PoRevision::REV2_4) {
-        if (logger->isTraceEnabled()) {
-            logger->trace("PO revision = %d, PO class = %s\n",
-                          static_cast<int>(revision), "PoClass::LEGACY");
-        }
+        logger->trace("PO revision = %, PO class = %\n", revision,
+			          std::string("PoClass::LEGACY"));
         return PoClass::LEGACY;
     } else {
-        if (logger->isTraceEnabled()) {
-            logger->trace("PO revision = %d, PO class = %s\n",
-                          static_cast<int>(revision), "PoClass::ISO");
-        }
+        logger->trace("PO revision = %, PO class = %\n", revision,
+			          std::string("PoClass::ISO"));
         return PoClass::ISO;
     }
 }

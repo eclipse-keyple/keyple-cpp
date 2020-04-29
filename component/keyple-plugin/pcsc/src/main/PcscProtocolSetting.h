@@ -19,11 +19,11 @@
 #include <map>
 #include <memory>
 
-/* Common */
-#include "Export.h"
+/* Plugin */
+#include "KeyplePluginPcscExport.h"
 
 /* Core */
-#include "SeCommonProtocols_Import.h"
+#include "SeCommonProtocols.h"
 
 /* Forward class declarations */
 namespace keyple {
@@ -54,7 +54,7 @@ using namespace keyple::core::seproxy::protocol;
  * <p>
  * It may be necessary to create a custom parameter set specific to the context.
 */
-class EXPORT PcscProtocolSetting
+class KEYPLEPLUGINPCSC_API PcscProtocolSetting
 : public std::enable_shared_from_this<PcscProtocolSetting> {
 public:
     /**

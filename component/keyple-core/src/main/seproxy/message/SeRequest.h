@@ -23,11 +23,8 @@
 /* Core */
 #include "ChannelControl.h"
 #include "ApduRequest.h"
-#include "SeProtocol_Import.h"
-
-/* Common */
-#include "Export.h"
-#include "Serializable.h"
+#include "KeypleCoreExport.h"
+#include "SeProtocol.h"
 
 /* Forward declaration */
 namespace keyple {
@@ -51,8 +48,8 @@ using namespace keyple::core::seproxy::protocol;
  *
  * @see SeResponse
  */
-class EXPORT SeRequest final : public std::enable_shared_from_this<SeRequest>,
-                               public Serializable {
+class KEYPLECORE_API SeRequest final
+: public std::enable_shared_from_this<SeRequest> {
 public:
     /**
      * The constructor called by a ProxyReader in order to open a logical
@@ -91,7 +88,7 @@ public:
      *
      * @return the current SE seSelector
      */
-    std::shared_ptr<SeSelector> getSeSelector();
+    std::shared_ptr<SeSelector> getSeSelector() const;
 
     /**
      * Gets the apdu requests.
@@ -99,22 +96,26 @@ public:
      * @return the group of APDUs to be transmitted to the SE application for
      *         this instance of SERequest.
      */
-    std::vector<std::shared_ptr<ApduRequest>> getApduRequests();
-
-    /**
-     *
-     */
-    std::string toString() override;
+    std::vector<std::shared_ptr<ApduRequest>> getApduRequests() const;
 
     /**
      *¬
      */
-    friend std::ostream& operator<<(std::ostream& os, SeRequest& se)
-    {
-        os << se.toString();
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const SeRequest& se);
 
-        return os;
-    }
+    /**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream&
+        operator<<(std::ostream& os, const std::shared_ptr<SeRequest>& s);
+
+	/**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream&
+    operator<<(
+		std::ostream& os, const std::set<std::shared_ptr<SeRequest>>& s);
 
 private:
     /**

@@ -89,11 +89,11 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
 {
     bool case4;
 
-    /* sanity check */
-    if (le == 0) {
-        throw std::invalid_argument("Le cannot equal 0 when there is no "
-                                    "incoming data");
-    }
+    /* sanity check  - TO CHECK, BREAKS GetDataFciCmdBuild */
+    //if (le == 0) {
+    //    throw std::invalid_argument("Le cannot equal 0 when there is no "
+    //                                "incoming data");
+    //}
 
     /* Buffer allocation */
     int length = 4; // header

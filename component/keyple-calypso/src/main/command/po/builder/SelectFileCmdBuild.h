@@ -48,7 +48,7 @@ public:
     /**
      *
      */
-    enum SelectControl { FIRST, NEXT, CURRENT_DF };
+    enum class SelectControl { FIRST, NEXT, CURRENT_DF };
 
     /**
      * Instantiates a new SelectFileCmdBuild to select the first, next or
@@ -91,6 +91,12 @@ private:
      */
     CalypsoPoCommands& command = CalypsoPoCommands::SELECT_FILE;
 };
+
+/**
+ *
+ */
+std::ostream& operator<<(std::ostream& os,
+                         const SelectFileCmdBuild::SelectControl& sc);
 
 }
 }

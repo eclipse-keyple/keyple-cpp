@@ -13,7 +13,7 @@
  ******************************************************************************/
 
 #include "StubProtocolSetting.h"
-#include "SeProtocol_Import.h"
+#include "SeProtocol.h"
 
 namespace keyple {
 namespace plugin {

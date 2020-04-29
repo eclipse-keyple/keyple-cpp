@@ -14,13 +14,13 @@
 
 #pragma once
 
+#include "MonitoringJob.h"
+
 #include <future>
 #include <vector>
 
-#include "MonitoringJob.h"
-
-/* Common */
-#include "Export.h"
+/* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -30,7 +30,7 @@ namespace local {
 
 class AbstractObservableState;
 
-class EXPORT MonitoringPool {
+class KEYPLECORE_API MonitoringPool {
 public:
     /**
      *

@@ -66,10 +66,8 @@ void SelectFileRespPars::parseResponse()
         return;
     }
 
-    if (logger->isTraceEnabled()) {
-        logger->trace("Parsing FCI: {}",
-                      ByteArrayUtil::toHex(inFileParameters).c_str());
-    }
+    logger->trace("Parsing FCI: {}",
+                  ByteArrayUtil::toHex(inFileParameters).c_str());
 
     // Check File TLV Tag and length
     if (inFileParameters[iter++] != 0x85 || inFileParameters[iter++] != 0x17) {

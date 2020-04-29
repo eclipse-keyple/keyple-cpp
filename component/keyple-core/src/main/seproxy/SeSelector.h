@@ -23,14 +23,13 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
-#include "Logger.h"
 #include "LoggerFactory.h"
 
 /* Core */
 #include "ApduRequest.h"
 #include "ChannelControl.h"
-#include "SeProtocol_Import.h"
+#include "KeypleCoreExport.h"
+#include "SeProtocol.h"
 
 namespace keyple {
 namespace core {
@@ -45,15 +44,21 @@ using namespace keyple::common;
  * The SeSelector class groups the information and methods used to select a
  * particular secure element
  */
-class EXPORT SeSelector : public std::enable_shared_from_this<SeSelector> {
+class KEYPLECORE_API SeSelector
+: public std::enable_shared_from_this<SeSelector> {
 public:
     /**
      * Static nested class to hold the data elements used to perform an AID
      * based selection
      */
-    class EXPORT AidSelector
+    class KEYPLECORE_API AidSelector
     : public std::enable_shared_from_this<AidSelector> {
     public:
+        /**
+         *
+         */
+        friend std::ostream& operator<<(std::ostream& os, const AidSelector& a);
+
         /**
          * FileOccurrence indicates how to carry out the file occurrence in
          * accordance with ISO7816-4
@@ -61,7 +66,7 @@ public:
          * The getIsoBitMask method provides the bit mask to be used to set P2
          * in the select command (ISO/IEC 7816-4.2)
          */
-        class EXPORT FileOccurrence final {
+        class KEYPLECORE_API FileOccurrence final {
         public:
             static FileOccurrence FIRST;
             static FileOccurrence LAST;
@@ -124,11 +129,6 @@ public:
             /**
              *
              */
-            std::string toString();
-
-            /**
-             *
-             */
             static FileOccurrence valueOf(const std::string& name);
 
         private:
@@ -178,7 +178,7 @@ public:
          * The getIsoBitMask method provides the bit mask to be used to set P2
          * in the select command (ISO/IEC 7816-4.2)
          */
-        class EXPORT FileControlInformation final {
+        class KEYPLECORE_API FileControlInformation final {
         public:
             static FileControlInformation FCI;
             static FileControlInformation FCP;
@@ -236,11 +236,6 @@ public:
             /**
              *
              */
-            std::string toString();
-
-            /**
-             *
-             */
             static FileControlInformation valueOf(const std::string& name);
 
         private:
@@ -291,7 +286,8 @@ public:
         /**
          *
          */
-        class EXPORT IsoAid : public std::enable_shared_from_this<IsoAid> {
+        class KEYPLECORE_API IsoAid
+        : public std::enable_shared_from_this<IsoAid> {
         public:
             /**
              *
@@ -340,6 +336,11 @@ public:
              */
             virtual bool startsWith(std::shared_ptr<IsoAid> aid);
 
+            /**
+             *
+             */
+            friend std::ostream& operator<<(std::ostream& os, const IsoAid& a);
+
         private:
             /**
              *
@@ -347,7 +348,6 @@ public:
             std::vector<uint8_t> value;
         };
 
-    public:
         /**
          * AidSelector with additional select application successful status
          * codes, file occurrence and file control information.
@@ -391,11 +391,14 @@ public:
             std::shared_ptr<std::set<int>> successfulSelectionStatusCodes);
 
         /**
+         * Copy constructor
+         */
+        AidSelector(const AidSelector& o);
+
+        /**
          * Destructor
          */
-        virtual ~AidSelector()
-        {
-        }
+        virtual ~AidSelector();
 
         /**
          * Getter for the AID provided at construction time
@@ -420,14 +423,7 @@ public:
          * @return the list of status codes
          */
         virtual std::shared_ptr<std::set<int>>
-        getSuccessfulSelectionStatusCodes();
-
-        /**
-         * Print out the AID in hex
-         *
-         * @return a string
-         */
-        std::string toString();
+            getSuccessfulSelectionStatusCodes();
 
     private:
         /**
@@ -465,7 +461,8 @@ public:
      * Static nested class to hold the data elements used to perform an ATR
      * based filtering
      */
-    class EXPORT AtrFilter : public std::enable_shared_from_this<AtrFilter> {
+    class KEYPLECORE_API AtrFilter
+    : public std::enable_shared_from_this<AtrFilter> {
     public:
         /**
          * Regular expression based filter
@@ -505,11 +502,9 @@ public:
         virtual bool atrMatches(const std::vector<uint8_t>& atr);
 
         /**
-        * Print out the ATR regex
-        *
-        * @return a string
-        */
-        std::string toString();
+         *
+         */
+        friend std::ostream& operator<<(std::ostream& os, const AtrFilter& af);
 
     private:
         /**
@@ -519,7 +514,6 @@ public:
         std::string atrRegex;
     };
 
-public:
     /**
      * Create a SeSelector to perform the SE selection
      * <p>
@@ -568,33 +562,40 @@ public:
      *
      * @return the {@link SeProtocol} provided at construction time
      */
-    virtual const SeProtocol& getSeProtocol();
+    virtual const SeProtocol& getSeProtocol() const;
 
     /**
      * Getter
      *
      * @return the {@link AtrFilter} provided at construction time
      */
-    virtual std::shared_ptr<AtrFilter> getAtrFilter();
+    virtual std::shared_ptr<AtrFilter> getAtrFilter() const;
 
     /**
      * Getter
      *
      * @return the {@link AidSelector} provided at construction time
      */
-    virtual std::shared_ptr<AidSelector> getAidSelector();
+    virtual std::shared_ptr<AidSelector> getAidSelector() const;
 
     /**
      * Gets the information string
      *
      * @return a string to be printed in logs
      */
-    std::string getExtraInfo();
+    const std::string& getExtraInfo() const;
 
     /**
      *
      */
-    std::string toString();
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const SeSelector& ss);
+
+    /**
+     *
+     */
+     friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<SeSelector>& ss);
 
 private:
     /**

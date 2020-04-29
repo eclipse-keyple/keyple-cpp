@@ -19,7 +19,7 @@
 #include <memory>
 
 /* Common */
-#include "Export.h"
+#include "KeypleCoreExport.h"
 #include "exceptionhelper.h"
 
 /* Core */
@@ -34,18 +34,18 @@ using namespace keyple::core::seproxy::message;
 /**
     * Base class for parsing APDU
     */
-class EXPORT AbstractApduResponseParser
+class KEYPLECORE_API AbstractApduResponseParser
 : public std::enable_shared_from_this<AbstractApduResponseParser> {
 public:
     /**
      * Status code properties
      */
-    class EXPORT StatusProperties
+    class KEYPLECORE_API StatusProperties
     : public std::enable_shared_from_this<StatusProperties> {
     public:
         /**
-         * A map with the double byte of a status as key, and the successful property and ASCII text
-         * information as data.
+         * A map with the double byte of a status as key, and the successful
+         * property and ASCII text information as data.
          *
          * @param successful set successful status
          * @param information additional information

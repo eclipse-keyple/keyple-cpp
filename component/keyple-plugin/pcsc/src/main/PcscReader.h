@@ -16,11 +16,11 @@
 
 #include <string>
 
-/* Common */
-#include "Export.h"
+/* Plugin */
+#include "KeyplePluginPcscExport.h"
 
 /* Core */
-#include "ObservableReader_Import.h"
+#include "ObservableReader.h"
 
 namespace keyple {
 namespace plugin {
@@ -28,7 +28,7 @@ namespace pcsc {
 
 using namespace keyple::core::seproxy::event;
 
-class EXPORT PcscReader : public ObservableReader {
+class KEYPLEPLUGINPCSC_API PcscReader : public ObservableReader {
 public:
     /**
      *
@@ -49,7 +49,6 @@ public:
     static const std::string SETTING_DISCONNECT_UNPOWER;
     static const std::string SETTING_DISCONNECT_LEAVE;
     static const std::string SETTING_DISCONNECT_EJECT;
-    static const std::string SETTING_KEY_THREAD_TIMEOUT;
 };
 
 }

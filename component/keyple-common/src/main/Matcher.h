@@ -18,14 +18,14 @@
 #include <string>
 #include <vector>
 
-#include "Export.h"
+#include "KeypleCommonExport.h"
 
 namespace keyple {
 namespace common {
 
 class Pattern;
 
-class EXPORT Matcher {
+class KEYPLECOMMON_API Matcher {
 private:
     /**
      * The Pattern object that created this Matcher.
