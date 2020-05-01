@@ -59,7 +59,7 @@ public:
      * @return the configuration of the item
      */
     virtual const std::map<const std::string, const std::string>
-    getParameters() = 0;
+        getParameters() = 0;
 
     /**
      * allows to define a proprietary setting for a reader or a plugin
@@ -84,7 +84,7 @@ public:
      * @throws KeypleBaseException if the parameter fails to be set up
      */
     virtual void
-    setParameters(const std::map<std::string, std::string>& parameters) = 0;
+        setParameters(const std::map<std::string, std::string>& parameters) = 0;
 };
 
 }

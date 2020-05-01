@@ -338,15 +338,6 @@ protected:
     virtual std::vector<uint8_t> transmitApdu(
         const std::vector<uint8_t>& apduIn) = 0;
 
-    /**
-     *
-     */
-    std::shared_ptr<AbstractLocalReader> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractLocalReader>(
-            AbstractReader::shared_from_this());
-    }
-
 private:
     /**
      * Logger

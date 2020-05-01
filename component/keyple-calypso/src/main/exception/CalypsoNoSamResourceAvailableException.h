@@ -14,58 +14,42 @@
 
 #pragma once
 
-/* Core */
-#include "AbstractPluginFactory.h"
-#include "ReaderPlugin.h"
+#include <string>
+#include <memory>
 
-/* Stub plugin */
-#include "StubPoolPluginImpl.h"
+#include "KeypleBaseException.h"
 
 namespace keyple {
-namespace plugin {
-namespace stub {
-
-using namespace keyple::core::seproxy;
+namespace core {
+namespace seproxy {
+namespace exception {
 
 /**
- * Instantiate a {@link StubPoolPlugin} with a custom plugin name
+ * The exception {@code CalypsoNoSamResourceAvailableException} indicates that
+ * there are no SAM resources available.
  */
-class StubPoolPluginFactory : public AbstractPluginFactory {
+class CalypsoNoSamResourceAvailableException : public KeypleBaseException {
 public:
     /**
-     * Create the factory
-     *
-     * @param pluginName name of the plugin that will be instantiated
+     * @param message the message to identify the exception context
      */
-    StubPoolPluginFactory(const std::string& pluginName);
+    CalypsoNoSamResourceAvailableException(const std::string& message)
+    : KeypleBaseException(message)
+    {
+    }
 
     /**
-     *
+     * @param message the message to identify the exception context
+     * @param t the cause
      */
-    virtual ~StubPoolPluginFactory() = default;
-
-    /**
-     *
-     */
-    const std::string& getPluginName() override;
-
-    /**
-     * protected in Java ?
-     */
-    ReaderPlugin& getPluginInstance() override;
-
-private:
-    /**
-     *
-     */
-    const std::string pluginName;
-
-    /**
-     *
-     */
-    StubPoolPluginImpl uniqueInstance;
+    CalypsoNoSamResourceAvailableException(const std::string& message,
+                                          const std::exception& cause)
+    : KeypleBaseException(message, cause)
+    {
+    }
 };
 
+}
 }
 }
 }

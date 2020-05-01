@@ -78,6 +78,7 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
     }
 }
 
+/*
 PcscReaderImpl::PcscReaderImpl(const PcscReaderImpl& o)
 : Nameable(), Configurable(),
   AbstractObservableLocalReader(o.pluginName, o.terminal.getName()),
@@ -88,6 +89,7 @@ PcscReaderImpl::PcscReaderImpl(const PcscReaderImpl& o)
 {
     this->stateService = o.stateService;
 }
+*/
 
 std::shared_ptr<ObservableReaderStateService> PcscReaderImpl::initStateService()
 {
@@ -450,57 +452,6 @@ TransmissionMode PcscReaderImpl::getTransmissionMode()
             return TransmissionMode::CONTACTS;
         }
     }
-}
-
-void PcscReaderImpl::notifyObservers(std::shared_ptr<ReaderEvent> event)
-{
-    AbstractObservableLocalReader::notifyObservers(event);
-}
-
-void PcscReaderImpl::addObserver(std::shared_ptr<ReaderObserver> observer)
-{
-    AbstractObservableLocalReader::addObserver(observer);
-}
-
-void PcscReaderImpl::removeObserver(std::shared_ptr<ReaderObserver> observer)
-{
-    AbstractObservableLocalReader::removeObserver(observer);
-}
-
-void PcscReaderImpl::startSeDetection(PollingMode pollingMode)
-{
-    AbstractObservableLocalReader::startSeDetection(pollingMode);
-}
-
-void PcscReaderImpl::stopSeDetection()
-{
-    AbstractObservableLocalReader::stopSeDetection();
-}
-
-void PcscReaderImpl::setDefaultSelectionRequest(
-    std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
-    NotificationMode notificationMode)
-{
-    AbstractObservableLocalReader::setDefaultSelectionRequest(
-        defaultSelectionsRequest, notificationMode);
-}
-
-void PcscReaderImpl::setDefaultSelectionRequest(
-    std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
-    NotificationMode notificationMode, PollingMode pollingMode)
-{
-    AbstractObservableLocalReader::setDefaultSelectionRequest(
-        defaultSelectionsRequest, notificationMode, pollingMode);
-}
-
-void PcscReaderImpl::clearObservers()
-{
-    AbstractObservableLocalReader::clearObservers();
-}
-
-void PcscReaderImpl::notifySeProcessed()
-{
-    AbstractObservableLocalReader::notifySeProcessed();
 }
 
 }

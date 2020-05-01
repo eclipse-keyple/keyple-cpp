@@ -127,15 +127,16 @@ int main(int argc, char** argv)
     /* Assign the readers to the Calypso transaction engine */
     transactionEngine->setReaders(poReader, samReader);
 
+    /* Set terminal as Observer of the first reader */
+    (std::dynamic_pointer_cast<ObservableReader>(poReader))
+        ->addObserver(transactionEngine);
+
     /* Set the default selection operation */
     (std::dynamic_pointer_cast<PcscReaderImpl>(poReader))
         ->setDefaultSelectionRequest(
             transactionEngine->preparePoSelection(),
-            ObservableReader::NotificationMode::MATCHED_ONLY);
-
-    /* Set terminal as Observer of the first reader */
-    (std::dynamic_pointer_cast<ObservableReader>(poReader))
-        ->addObserver(transactionEngine);
+            ObservableReader::NotificationMode::MATCHED_ONLY,
+            ObservableReader::PollingMode::REPEATING);
 
     while (1);
 }

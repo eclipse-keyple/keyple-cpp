@@ -14,56 +14,52 @@
 
 #pragma once
 
-/* Core */
-#include "AbstractPluginFactory.h"
-#include "ReaderPlugin.h"
+#include <map>
 
-/* Stub plugin */
-#include "StubPoolPluginImpl.h"
+#include "Configurable.h"
+#include "Nameable.h"
 
 namespace keyple {
-namespace plugin {
-namespace stub {
+namespace core {
+namespace seproxy {
 
-using namespace keyple::core::seproxy;
+using namespace keyple::core::util;
 
 /**
- * Instantiate a {@link StubPoolPlugin} with a custom plugin name
+ * This abstract class mutualizes the management of the name and part of the
+ * configuration of SeProxy components (plugins and readers)
  */
-class StubPoolPluginFactory : public AbstractPluginFactory {
+class AbstractSeProxyComponent
+: public virtual Nameable, public virtual Configurable {
 public:
     /**
-     * Create the factory
+     * Constructor
      *
-     * @param pluginName name of the plugin that will be instantiated
+     * @param name the name of the component
      */
-    StubPoolPluginFactory(const std::string& pluginName);
+    AbstractSeProxyComponent(const std::string& name);
 
     /**
-     *
+     * @return the name of the component
      */
-    virtual ~StubPoolPluginFactory() = default;
+    virtual const std::string& getName() const final;
 
     /**
+     * Sets at once a set of parameters for a reader
+     * <p>
+     * See {@link #setParameter(String, String)} for more details
      *
+     * @param parameters a Map &lt;String, String&gt; parameter set
+     * @throws KeypleBaseException if one of the parameters could not be set up
      */
-    const std::string& getPluginName() override;
-
-    /**
-     * protected in Java ?
-     */
-    ReaderPlugin& getPluginInstance() override;
+    virtual void setParameters(
+        const std::map<std::string, std::string>& parameters) final;
 
 private:
     /**
      *
      */
-    const std::string pluginName;
-
-    /**
-     *
-     */
-    StubPoolPluginImpl uniqueInstance;
+    const std::string name;
 };
 
 }

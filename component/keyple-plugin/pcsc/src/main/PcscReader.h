@@ -28,7 +28,7 @@ namespace pcsc {
 
 using namespace keyple::core::seproxy::event;
 
-class KEYPLEPLUGINPCSC_API PcscReader : public ObservableReader {
+class KEYPLEPLUGINPCSC_API PcscReader : public virtual ObservableReader {
 public:
     /**
      *

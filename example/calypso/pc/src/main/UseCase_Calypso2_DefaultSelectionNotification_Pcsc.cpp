@@ -161,7 +161,8 @@ public:
         (std::dynamic_pointer_cast<ObservableReader>(poReader))
             ->setDefaultSelectionRequest(
                 seSelection->getSelectionOperation(),
-                ObservableReader::NotificationMode::MATCHED_ONLY);
+                ObservableReader::NotificationMode::MATCHED_ONLY,
+                ObservableReader::PollingMode::REPEATING);
 
         /* Set the current class as Observer of the first reader */
         std::shared_ptr<UseCase_Calypso2_DefaultSelectionNotification_Pcsc>
@@ -192,6 +193,7 @@ public:
 
     void update(std::shared_ptr<ReaderEvent> event)
     {
+        logger->debug("here\n");
         ReaderEvent::EventType type = event->getEventType();
 
         if (type == ReaderEvent::EventType::SE_MATCHED) {

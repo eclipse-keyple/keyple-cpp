@@ -19,7 +19,7 @@
 
 /* Core */
 #include "AbstractDefaultSelectionsResponse.h"
-#include "AbstractReader.h"
+#include "ObservableReader.h"
 #include "ReaderEvent.h"
 #include "SeProxyService.h"
 
@@ -29,7 +29,6 @@ namespace generic {
 namespace common {
 
 using namespace keyple::core::seproxy::event;
-using namespace keyple::core::seproxy::plugin;
 
 void* AbstractReaderObserverEngine::runSeInsertedThread(
     std::shared_ptr<ReaderEvent> event)
@@ -44,7 +43,7 @@ void* AbstractReaderObserverEngine::runSeInsertedThread(
      * If closing has already been requested, this method will do nothing.
      */
     try {
-        std::dynamic_pointer_cast<AbstractReader>(
+        std::dynamic_pointer_cast<ObservableReader>(
             SeProxyService::getInstance().getPlugin(event->getPluginName())
                 ->getReader(event->getReaderName()))->notifySeProcessed();
     } catch (KeypleReaderNotFoundException& e) {
@@ -71,7 +70,7 @@ void* AbstractReaderObserverEngine::runSeMatchedThread(
      * If closing has already been requested, this method will do nothing.
      */
     try {
-        std::dynamic_pointer_cast<AbstractReader>(
+        std::dynamic_pointer_cast<ObservableReader>(
             SeProxyService::getInstance().getPlugin(event->getPluginName())
                 ->getReader(event->getReaderName()))->notifySeProcessed();
     } catch (KeypleReaderNotFoundException& e) {

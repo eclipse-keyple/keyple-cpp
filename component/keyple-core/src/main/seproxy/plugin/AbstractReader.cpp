@@ -36,8 +36,9 @@ using namespace keyple::core::seproxy::message;
 
 AbstractReader::AbstractReader(const std::string& pluginName,
                                const std::string& name)
-: pluginName(pluginName), name(name),
-  notificationMode(ObservableReader::NotificationMode::ALWAYS)
+: AbstractSeProxyComponent(name),
+  notificationMode(ObservableReader::NotificationMode::ALWAYS),
+  pluginName(pluginName)
 {
     /*
      * provides an initial value for measuring the
@@ -50,11 +51,6 @@ AbstractReader::AbstractReader(const std::string& pluginName,
 const std::string& AbstractReader::getPluginName()
 {
     return pluginName;
-}
-
-const std::string& AbstractReader::getName() const
-{
-    return name;
 }
 
 int AbstractReader::compareTo(std::shared_ptr<SeReader> seReader)
@@ -197,62 +193,6 @@ std::shared_ptr<SeResponse>
 AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest)
 {
     return transmit(seRequest, ChannelControl::KEEP_OPEN);
-}
-
-void AbstractReader::addObserver(
-    std::shared_ptr<ObservableReader::ReaderObserver> observer)
-{
-    logger->trace("[%] addObserver => Adding '%' as an observer of '%'\n",
-                  std::string(typeid(this).name()),
-		          std::string(typeid(observer).name()), name);
-
-    Observable<ReaderEvent>::addObserver(observer);
-}
-
-void AbstractReader::removeObserver(
-    std::shared_ptr<ObservableReader::ReaderObserver> observer)
-{
-    logger->trace("[%] removeObserver => Deleting a reader observer\n",
-                  this->getName());
-
-    Observable<ReaderEvent>::removeObserver(observer);
-}
-
-void AbstractReader::notifySeProcessed()
-{
-    if (forceClosing) {
-        try {
-            /* Close the physical channel thanks to CLOSE_AFTER flag */
-            processSeRequest(nullptr, ChannelControl::CLOSE_AFTER);
-            logger->trace("Explicit communication closing requested, starting"
-                          " removal sequence\n");
-        } catch (KeypleReaderException& e) {
-            logger->error("KeypleReaderException while terminating: %\n",
-                          e.getMessage());
-        }
-    } else {
-        logger->trace("Explicit physical channel closing already requested\n");
-    }
-}
-
-void AbstractReader::notifyObservers(std::shared_ptr<ReaderEvent> event)
-{
-    logger->trace("[%] AbstractReader => Notifying a reader event to % "
-                  "observers. EVENTNAME = %\n",
-                  this->getName(), this->countObservers(),
-                  event->getEventType().getName());
-
-    setChanged();
-
-    Observable<ReaderEvent>::notifyObservers(event);
-}
-
-void AbstractReader::setParameters(
-    const std::map<std::string, std::string>& parameters)
-{
-    for (auto& en : parameters) {
-        setParameter(en.first, en.second);
-    }
 }
 
 }

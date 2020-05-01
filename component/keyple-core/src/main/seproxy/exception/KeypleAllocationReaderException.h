@@ -14,58 +14,39 @@
 
 #pragma once
 
-/* Core */
-#include "AbstractPluginFactory.h"
-#include "ReaderPlugin.h"
-
-/* Stub plugin */
-#include "StubPoolPluginImpl.h"
+#include "KeypleBaseException.h"
 
 namespace keyple {
-namespace plugin {
-namespace stub {
+namespace core {
+namespace seproxy {
+namespace exception {
 
-using namespace keyple::core::seproxy;
+using namespace keyple::common;
 
 /**
- * Instantiate a {@link StubPoolPlugin} with a custom plugin name
+ * Base Exception for all Keyple Checked Exception
  */
-class StubPoolPluginFactory : public AbstractPluginFactory {
+class KeypleAllocationReaderException : public KeypleBaseException {
 public:
     /**
-     * Create the factory
      *
-     * @param pluginName name of the plugin that will be instantiated
      */
-    StubPoolPluginFactory(const std::string& pluginName);
+    KeypleAllocationReaderException(const std::string& msg)
+    : KeypleBaseException(msg)
+    {
+    }
 
     /**
      *
      */
-    virtual ~StubPoolPluginFactory() = default;
-
-    /**
-     *
-     */
-    const std::string& getPluginName() override;
-
-    /**
-     * protected in Java ?
-     */
-    ReaderPlugin& getPluginInstance() override;
-
-private:
-    /**
-     *
-     */
-    const std::string pluginName;
-
-    /**
-     *
-     */
-    StubPoolPluginImpl uniqueInstance;
+    KeypleAllocationReaderException(const std::string& msg,
+                                    const std::exception& cause)
+    : KeypleBaseException(msg, cause)
+    {
+    }
 };
 
+}
 }
 }
 }

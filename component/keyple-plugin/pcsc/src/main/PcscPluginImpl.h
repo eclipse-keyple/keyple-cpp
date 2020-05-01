@@ -48,7 +48,7 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::common;
 
 class KEYPLEPLUGINPCSC_API PcscPluginImpl
-: public AbstractThreadedObservablePlugin, public virtual PcscPlugin {
+: public virtual AbstractThreadedObservablePlugin, public virtual PcscPlugin {
 public:
     /**
      *
@@ -118,16 +118,6 @@ protected:
      */
     std::shared_ptr<SeReader>
         fetchNativeReader(const std::string& name) override;
-
-    /**
-     *
-     */
-    void addObserver(std::shared_ptr<PluginObserver> observer) override;
-
-    /**
-     *
-     */
-    void removeObserver(std::shared_ptr<PluginObserver> observer) override;
 
 private:
     /**

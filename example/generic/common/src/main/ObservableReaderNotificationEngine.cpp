@@ -160,8 +160,7 @@ void ObservableReaderNotificationEngine::SpecificPluginObserver::update(
              *
              * We add an observer to this reader if this is possible.
              */
-            if (std::dynamic_pointer_cast<ObservableReader>(reader) !=
-                nullptr) {
+            if (std::dynamic_pointer_cast<ObservableReader>(reader)) {
                 if (readerObserver != nullptr) {
                     outerInstance->logger->info("add observer READERNAME = %\n",
                                                 reader->getName());

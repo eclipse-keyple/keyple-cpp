@@ -114,7 +114,7 @@ int main(int argc, char** argv)
             "|3B8D.*");
 
     /* Set terminal as Observer of the first reader */
-    (std::dynamic_pointer_cast<AbstractReader>(poReader))
+    (std::dynamic_pointer_cast<ObservableReader>(poReader))
         ->addObserver(observer);
 
     /* Set Default selection */

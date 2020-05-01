@@ -12,59 +12,29 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#pragma once
-
-/* Core */
-#include "AbstractPluginFactory.h"
-#include "ReaderPlugin.h"
-
-/* Stub plugin */
-#include "StubPoolPluginImpl.h"
+#include "AbstractSeProxyComponent.h"
 
 namespace keyple {
-namespace plugin {
-namespace stub {
+namespace core {
+namespace seproxy {
 
-using namespace keyple::core::seproxy;
+AbstractSeProxyComponent::AbstractSeProxyComponent(const std::string& name)
+: name(name)
+{
+}
 
-/**
- * Instantiate a {@link StubPoolPlugin} with a custom plugin name
- */
-class StubPoolPluginFactory : public AbstractPluginFactory {
-public:
-    /**
-     * Create the factory
-     *
-     * @param pluginName name of the plugin that will be instantiated
-     */
-    StubPoolPluginFactory(const std::string& pluginName);
+const std::string& AbstractSeProxyComponent::getName() const
+{
+    return name;
+}
 
-    /**
-     *
-     */
-    virtual ~StubPoolPluginFactory() = default;
+void AbstractSeProxyComponent::setParameters(
+    const std::map<std::string, std::string>& parameters)
+{
+    for (const auto& en : parameters)
+        setParameter(en.first, en.second);
 
-    /**
-     *
-     */
-    const std::string& getPluginName() override;
-
-    /**
-     * protected in Java ?
-     */
-    ReaderPlugin& getPluginInstance() override;
-
-private:
-    /**
-     *
-     */
-    const std::string pluginName;
-
-    /**
-     *
-     */
-    StubPoolPluginImpl uniqueInstance;
-};
+}
 
 }
 }

@@ -20,7 +20,7 @@ namespace keyple {
 namespace plugin {
 namespace stub {
 
-class StubReader : public ObservableReader {
+class StubReader : public virtual ObservableReader {
 public:
     const std::string ALLOWED_PARAMETER_1   = "parameter1";
     const std::string ALLOWED_PARAMETER_2   = "parameter2";
