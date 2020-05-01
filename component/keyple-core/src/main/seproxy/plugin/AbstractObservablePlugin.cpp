@@ -53,7 +53,7 @@ void AbstractObservablePlugin::removeObserver(
 
 void AbstractObservablePlugin::clearObservers()
 {
-	observers.empty();
+	observers.clear();
 }
 
 int AbstractObservablePlugin::countObservers()

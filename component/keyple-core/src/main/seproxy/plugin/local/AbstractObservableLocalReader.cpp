@@ -294,7 +294,7 @@ int AbstractObservableLocalReader::countObservers()
 
 void AbstractObservableLocalReader::clearObservers()
 {
-   observers.empty();
+   observers.clear();
 }
 
 void AbstractObservableLocalReader::notifySeProcessed()

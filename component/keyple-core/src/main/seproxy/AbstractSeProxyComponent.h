@@ -16,8 +16,12 @@
 
 #include <map>
 
+/* Common */
 #include "Configurable.h"
 #include "Nameable.h"
+
+/* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -29,7 +33,7 @@ using namespace keyple::core::util;
  * This abstract class mutualizes the management of the name and part of the
  * configuration of SeProxy components (plugins and readers)
  */
-class AbstractSeProxyComponent
+class KEYPLECORE_API AbstractSeProxyComponent
 : public virtual Nameable, public virtual Configurable {
 public:
     /**

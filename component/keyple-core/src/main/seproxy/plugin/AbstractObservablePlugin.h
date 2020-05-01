@@ -18,6 +18,7 @@
 
 /* Core */
 #include "AbstractPlugin.h"
+#include "KeypleCoreExport.h"
 #include "ObservablePlugin.h"
 #include "PluginEvent.h"
 
@@ -34,7 +35,7 @@ namespace plugin {
  * The {@link AbstractObservablePlugin} class provides the means to observe a
  * plugin (insertion/removal of readers).
  */
-class AbstractObservablePlugin
+class KEYPLECORE_API AbstractObservablePlugin
 : public AbstractPlugin, public virtual ObservablePlugin {
 public:
     /**
