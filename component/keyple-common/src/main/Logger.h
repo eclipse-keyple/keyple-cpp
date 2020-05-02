@@ -144,6 +144,11 @@ private:
     /**
      *
      */
+    static const std::string getCurrentTimestamp();
+
+    /**
+     *
+     */
 #ifdef __GNUG__ // gnu C++ compiler
     std::string demangle(const char* mangled_name)
     {
@@ -211,7 +216,11 @@ private:
     {
         mtx->lock();
 
-        std::printf("[%5s]   [%-100s]   ", label.c_str(), className.c_str());
+        /* Header */
+        std::printf("[%s]   [%5s]   [%-100s]   ", getCurrentTimestamp().c_str(),
+                    label.c_str(), className.c_str());
+
+        /* Actual log */
         std::ostringstream os;
         printf(os, format.c_str(), args...);
         const std::string& str = os.str();
