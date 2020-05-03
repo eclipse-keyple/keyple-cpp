@@ -159,7 +159,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
                           e.what());
             throw e;
 		}
-        
+
         /* increment command number */
         numberOfSamCmd++;
 
@@ -1734,7 +1734,7 @@ bool PoTransaction::createResponseParsers(
 
         std::shared_ptr<
             PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>
-            poBuilderParser = *commandIterator;
+            poBuilderParser = *commandIterator++;
         std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
             commandBuilder = poBuilderParser->getCommandBuilder();
         std::shared_ptr<AbstractPoResponseParser> responseParser =
