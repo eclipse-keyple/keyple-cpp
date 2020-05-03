@@ -51,7 +51,8 @@ using namespace keyple::common;
 std::shared_ptr<Logger> CalypsoClassicTransactionEngine::logger =
     LoggerFactory::getLogger(typeid(CalypsoClassicTransactionEngine));
 const std::shared_ptr<SecuritySettings>
-    CalypsoClassicTransactionEngine::securitySettings;
+    CalypsoClassicTransactionEngine::securitySettings =
+        std::make_shared<SecuritySettings>();
 
 CalypsoClassicTransactionEngine::CalypsoClassicTransactionEngine()
 : AbstractReaderObserverEngine()
