@@ -120,8 +120,8 @@ int main(int argc, char** argv)
     poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_B_PRIME,
                                    PcscProtocolSetting::PCSC_PROTOCOL_SETTING
                                        [SeCommonProtocols::PROTOCOL_B_PRIME]);
-    poReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO7816_3,
-                                   PcscProtocolSetting::PCSC_PROTOCOL_SETTING
+    samReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO7816_3,
+                                    PcscProtocolSetting::PCSC_PROTOCOL_SETTING
                                        [SeCommonProtocols::PROTOCOL_ISO7816_3]);
 
     /* Assign the readers to the Calypso transaction engine */
