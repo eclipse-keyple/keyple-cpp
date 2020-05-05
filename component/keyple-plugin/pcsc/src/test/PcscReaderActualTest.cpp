@@ -6,18 +6,14 @@
 #include "PcscReaderActualTest.h"
 #include "PcscPlugin.h"
 
-namespace org {
-    namespace eclipse {
         namespace keyple {
             namespace plugin {
                 namespace pcsc {
-                    using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using AbstractObservableReader = org::eclipse::keyple::seproxy::plugin::AbstractObservableReader;
-                    using Observable = org::eclipse::keyple::util::Observable;
-                    using org::junit::Assert;
-                    using org::junit::Ignore;
-                    using org::junit::Test;
+                    using ReaderEvent = keyple::core::seproxy::event_Renamed::ReaderEvent;
+                    using KeypleReaderException = keyple::core::seproxy::exception::KeypleReaderException;
+                    using AbstractObservableReader = keyple::core::seproxy::plugin::AbstractObservableReader;
+                    using Observable = keyple::core::util::Observable;
+
 
                     PcscReaderActualTest::MyReaderObserver::MyReaderObserver(std::shared_ptr<PcscReaderActualTest> outerInstance) : outerInstance(outerInstance) {
                     }
@@ -103,8 +99,6 @@ namespace org {
                         std::cout << "Waiting for last thread..." << std::endl;
                         secondThread->join();
                         std::cout << "Done !" << std::endl;
-                    }
-                }
             }
         }
     }

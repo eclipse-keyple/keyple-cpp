@@ -4,9 +4,9 @@
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace plugin { namespace pcsc { class PcscPlugin; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace message { class ProxyReader; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
+namespace keyple { namespace plugin { namespace pcsc { class PcscPlugin; } } }
+namespace keyple { namespace core { namespace seproxy { namespace message { class ProxyReader; } } } }
+namespace keyple { namespace core { namespace seproxy { namespace exception { class KeypleReaderException; } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -19,16 +19,14 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-namespace org {
-    namespace eclipse {
         namespace keyple {
             namespace plugin {
                 namespace pcsc {
 
 //JAVA TO C++ CONVERTER TODO TASK: The Java 'import static' statement cannot be converted to C++:
 //                    import static org.junit.Assert.assertEquals;
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
+                    using KeypleReaderException = keyple::core::seproxy::exception::KeypleReaderException;
+                    using ProxyReader = keyple::core::seproxy::message::ProxyReader;
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @RunWith(MockitoJUnitRunner.class) public class SmartCardIOPluginTest
@@ -65,5 +63,4 @@ namespace org {
                 }
             }
         }
-    }
-}
+    

@@ -46,8 +46,8 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/selection
 	
 	/* Helpers */
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main
-    
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main
+
 	# google test and mock
 	${GOOGLETEST_DIRECTORY}/googletest-src
 	${GOOGLETEST_DIRECTORY}/googletest-src/googlemock/include
