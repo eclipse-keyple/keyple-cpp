@@ -20,27 +20,20 @@
 #include <stdexcept>
 #include <memory>
 
-namespace org {
-namespace eclipse {
-namespace keyple {
-namespace seproxy {
-namespace message {
-class ApduRequest;
-}
-}
-}
-}
-}
+#include "ApduRequest.h"
+#include "ByteArrayUtil.h"
 
-namespace org {
-namespace eclipse {
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 namespace message {
 
 class ApduRequestTest : public std::enable_shared_from_this<ApduRequestTest> {
 public:
-    virtual void setUp() throw(std::runtime_error);
+    virtual void setUp();
 
     virtual void testSimpleAPDURequest();
 
@@ -52,14 +45,13 @@ public:
 
     static std::shared_ptr<ApduRequest> getApduSample();
 
-    static std::vector<char> getACommand();
+    static std::vector<uint8_t> getACommand();
 
-    static std::shared_ptr<std::set<Integer>> getASuccessFulStatusCode();
+    static std::shared_ptr<std::set<int>> getASuccessFulStatusCode();
 
     static std::string getAName();
 };
 
-}
 }
 }
 }

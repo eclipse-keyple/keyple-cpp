@@ -40,7 +40,6 @@ using ByteArrayUtils  = keyple::core::util::ByteArrayUtil;
 
 void DigestAuthenticateRespParsTest::digestAuthenticateResp()
 {
-
     std::vector<std::shared_ptr<ApduResponse>> responses;
     std::vector<uint8_t> cResp = {90, 0};
     std::shared_ptr<ApduResponse> apduResponse =

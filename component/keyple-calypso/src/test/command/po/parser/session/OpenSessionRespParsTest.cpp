@@ -45,7 +45,6 @@ void OpenSessionRespParsTest::check(
 
 void OpenSessionRespParsTest::testgetResponse_rev2_4()
 {
-
     // expected response
     std::vector<uint8_t> cResp1 =
         ByteArrayUtils::fromHex("CC 11223344 00112233445566778899AABBCCDDEEFF "

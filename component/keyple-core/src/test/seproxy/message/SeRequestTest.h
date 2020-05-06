@@ -14,63 +14,26 @@
 
 #pragma once
 
-#include "ChannelState.h"
 #include <vector>
 #include <memory>
 
-namespace org {
-namespace eclipse {
-namespace keyple {
-namespace seproxy {
-namespace message {
-class SeRequest;
-}
-}
-}
-}
-}
+#include "ChannelControl.h"
+#include "SeRequest.h"
+#include "ApduRequest.h"
+#include "SeSelector.h"
+#include "ApduRequestTest.h"
+#include "ByteArrayUtil.h"
+#include "SeProtocol.h"
 
-namespace org {
-namespace eclipse {
-namespace keyple {
-namespace seproxy {
-namespace message {
-class ApduRequest;
-}
-}
-}
-}
-}
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
-namespace seproxy {
-namespace protocol {
-class SeProtocol;
-}
-}
-}
-}
-}
-
-namespace org {
-namespace eclipse {
-namespace keyple {
-namespace seproxy {
-class SeSelector;
-}
-}
-}
-}
-
-namespace org {
-namespace eclipse {
-namespace keyple {
+namespace core {
 namespace seproxy {
 namespace message {
 
-using ChannelState = keyple::core::seproxy::ChannelState;
+using ChannelControl = keyple::core::seproxy::ChannelControl;
 using SeSelector   = keyple::core::seproxy::SeSelector;
 using SeProtocol   = keyple::core::seproxy::protocol::SeProtocol;
 
@@ -84,9 +47,9 @@ public:
 
     // attributes
     std::vector<std::shared_ptr<ApduRequest>> apdus;
-    ChannelState channelState = static_cast<ChannelState>(0);
+    ChannelControl channelState = static_cast<ChannelControl>(0);
     std::shared_ptr<SeProtocol> seProtocol;
-    std::shared_ptr<std::set<Integer>> selectionStatusCode;
+    std::shared_ptr<std::set<int>> selectionStatusCode;
     std::shared_ptr<SeSelector> selector;
 
     virtual void setUp();
@@ -126,10 +89,9 @@ public:
     static std::shared_ptr<SeProtocol> getASeProtocol();
 
     static std::shared_ptr<SeSelector>
-    getSelector(std::shared_ptr<std::set<Integer>> selectionStatusCode);
+    getSelector(std::shared_ptr<std::set<int>> selectionStatusCode);
 };
 
-}
 }
 }
 }

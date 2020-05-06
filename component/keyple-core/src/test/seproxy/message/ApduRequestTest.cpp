@@ -13,18 +13,18 @@
  ******************************************************************************/
 
 #include "ApduRequestTest.h"
-#include "ApduRequest.h"
-#include "ByteArrayUtils.h"
 
-namespace org {
-namespace eclipse {
+using namespace testing;
+using namespace keyple::core::seproxy::message;
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 namespace message {
 
-using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
+using ByteArrayUtils = keyple::core::util::ByteArrayUtil;
 
-void ApduRequestTest::setUp() throw(std::runtime_error)
+void ApduRequestTest::setUp()
 {
 }
 
@@ -32,52 +32,59 @@ void ApduRequestTest::testSimpleAPDURequest()
 {
     std::shared_ptr<ApduRequest> request =
         std::make_shared<ApduRequest>(getACommand(), true);
-    assertNotNull(request);
-    assertEquals(nullptr, request->getName());
-    assertTrue(request->isCase4());
-    assertArrayEquals(getACommand(), request->getBytes());
-    assertEquals(nullptr, request->getSuccessfulStatusCodes());
-    assertEquals("ApduRequest: NAME = \"null\", RAWDATA = FEDCBA989005, case4",
+    ASSERT_NE(request, nullptr);
+    ASSERT_EQ("", request->getName());
+    ASSERT_TRUE(request->isCase4());
+    ASSERT_EQ(getACommand(), request->getBytes());
+    ASSERT_EQ(nullptr, request->getSuccessfulStatusCodes());
+    ASSERT_EQ("ApduRequest: NAME = , RAWDATA = FEDCBA989005, case4",
                  request->toString());
 }
 
 void ApduRequestTest::testAPDURequest()
 {
     std::shared_ptr<ApduRequest> request = getApduSample();
-    assertNotNull(request);
-    assertTrue(request->isCase4());
-    assertArrayEquals(getACommand(), request->getBytes());
-    assertEquals(getAName(), request->getName());
-    assertEquals(getASuccessFulStatusCode(),
-                 request->getSuccessfulStatusCodes());
-    assertEquals("ApduRequest: NAME = \"" + getAName() +
-                     "\", RAWDATA = FEDCBA989005, case4, additional successful "
-                     "status codes = 2328",
+    ASSERT_NE(request, nullptr);
+    ASSERT_TRUE(request->isCase4());
+    ASSERT_EQ(getACommand(), request->getBytes());
+    ASSERT_EQ(getAName(), request->getName());
+
+    std::set<int> mySet1 = (*getASuccessFulStatusCode());
+    std::set<int> mySet2 = (*request->getSuccessfulStatusCodes());
+
+    for (std::set<int>::iterator it=mySet1.begin(), it_=mySet2.begin(); it!=mySet1.end(); ++it, ++it_)
+    {
+        EXPECT_EQ( *it, *it_);
+    }
+
+    ASSERT_EQ( "ApduRequest: NAME = " + getAName() +
+                     ", RAWDATA = FEDCBA989005, case4, additional successful "
+                     "status codes = 9000",
                  request->toString());
 }
 
 std::shared_ptr<ApduRequest> ApduRequestTest::getApduSample()
 {
-    std::shared_ptr<std::set<Integer>> successfulStatusCodes =
+    std::shared_ptr<std::set<int>> successfulStatusCodes =
         getASuccessFulStatusCode();
-    Boolean case4             = true;
-    std::vector<char> command = getACommand();
+    bool case4             = true;
+    std::vector<uint8_t> command = getACommand();
     std::shared_ptr<ApduRequest> request =
         std::make_shared<ApduRequest>(command, case4, successfulStatusCodes);
     request->setName(getAName());
     return request;
 }
 
-std::vector<char> ApduRequestTest::getACommand()
+std::vector<uint8_t> ApduRequestTest::getACommand()
 {
-    return ByteArrayUtils::fromHex("FEDCBA98 9005h");
+    return ByteArrayUtils::fromHex("FEDCBA98 9005");
 }
 
 std::shared_ptr<std::set<int>> ApduRequestTest::getASuccessFulStatusCode()
 {
-    std::shared_ptr<std::set<Integer>> successfulStatusCodes =
-        std::unordered_set<Integer>();
-    successfulStatusCodes->add(std::stoi("9000"));
+    std::shared_ptr<std::set<int>> successfulStatusCodes = std::make_shared< std::set<int>>();
+    int iData = std::stoi("9000", 0, 16);
+    successfulStatusCodes->insert(iData);
     return successfulStatusCodes;
 }
 
@@ -89,4 +96,17 @@ std::string ApduRequestTest::getAName()
 }
 }
 }
+
+TEST(ApduRequestTest, testA)
+{
+    std::shared_ptr<ApduRequestTest> LocalTest =
+        std::make_shared<ApduRequestTest>();
+    LocalTest->testSimpleAPDURequest();
+}
+
+TEST(ApduRequestTest, testB)
+{
+    std::shared_ptr<ApduRequestTest> LocalTest =
+        std::make_shared<ApduRequestTest>();
+    LocalTest->testAPDURequest();
 }
