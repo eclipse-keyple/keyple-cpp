@@ -16,23 +16,12 @@
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "CalypsoUtilities.h"
-#include "ChannelControl.h"
-#include "KeypleBaseException.h"
-#include "SeProxyService.h"
-#include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
-#include "SeReader.h"
 #include "PcscReadersSettings.h"
-#include "ReaderUtilities.h"
-#include "KeypleReaderNotFoundException.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "PcscReader.h"
-#include "PcscReadersSettings.h"
-#include "PcscProtocolSetting.h"
-#include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "ObservableReader.h"
+#include "SeCommonProtocols.h"
 
 /* Common */
 #include "stringhelper.h"
@@ -45,7 +34,6 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::example::calypso::common::transaction;
 using namespace keyple::example::calypso::common::postructure;
 using namespace keyple::example::calypso::pc;
-using namespace keyple::example::generic::pc;
 using namespace keyple::plugin::pcsc;
 
 class UseCase_Calypso1_ExplicitSelectionAid_Pcsc {

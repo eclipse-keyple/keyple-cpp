@@ -18,11 +18,7 @@
 #include "KeypleReaderNotFoundException.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader.h"
 #include "PoSelectionRequest.h"
-#include "PoSelector.h"
-#include "ReaderEvent.h"
-#include "ReaderPlugin.h"
 #include "ReadRecordsRespPars.h"
 #include "SeCommonProtocols.h"
 #include "SeProxyService.h"
@@ -32,10 +28,6 @@
 #include "StubPlugin.h"
 #include "StubPluginFactory.h"
 #include "StubReader.h"
-#include "StubReaderImpl.h"
-
-/* Common */
-#include "Thread.h"
 
 using namespace keyple::example::calypso::common::transaction;
 using namespace keyple::example::calypso::common::postructure;
@@ -353,7 +345,7 @@ public:
              * been requested, this method will do nothing.
              */
             try {
-                std::dynamic_pointer_cast<StubReaderImpl>(
+                std::dynamic_pointer_cast<ObservableReader>(
                     SeProxyService::getInstance()
                         .getPlugin(event->getPluginName())
                         ->getReader(event->getReaderName()))

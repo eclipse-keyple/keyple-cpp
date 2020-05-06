@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "ObservableReader.h"
 #include "StubSecureElement.h"
 
 namespace keyple {

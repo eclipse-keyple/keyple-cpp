@@ -16,14 +16,9 @@
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "CalypsoUtilities.h"
-#include "KeypleReaderNotFoundException.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader.h"
 #include "PoSelectionRequest.h"
-#include "PoSelector.h"
-#include "ReaderEvent.h"
-#include "ReaderPlugin.h"
 #include "ReadRecordsRespPars.h"
 #include "SeCommonProtocols.h"
 #include "SeProxyService.h"
@@ -228,7 +223,7 @@ int main(int argc, char** argv)
                     throw std::make_shared<IllegalStateException>(
                         "processingOpening failure.");
                 }
-            
+
 				if (!poTransaction->wasRatified()) {
 					logger->info("========= Previous Secure Session was not "
 								 "ratified. =====================\n");

@@ -12,29 +12,18 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "KeypleBaseException.h"
-#include "SeProxyService.h"
-#include "PcscPlugin.h"
 #include "CalypsoClassicTransactionEngine.h"
-#include "SeReader.h"
 #include "PcscReadersSettings.h"
 #include "ReaderUtilities.h"
-#include "KeypleReaderNotFoundException.h"
 #include "LoggerFactory.h"
 #include "PcscPluginFactory.h"
-#include "PcscPluginImpl.h"
 #include "PcscReader.h"
-#include "PcscReaderImpl.h"
-#include "PcscReadersSettings.h"
 #include "PcscProtocolSetting.h"
-#include "PcscReadersSettings.h"
-#include "ObservableReader.h"
 
 using namespace keyple::common;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
-using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::example::calypso::common::transaction;
 using namespace keyple::example::calypso::pc;
@@ -132,7 +121,7 @@ int main(int argc, char** argv)
         ->addObserver(transactionEngine);
 
     /* Set the default selection operation */
-    (std::dynamic_pointer_cast<PcscReaderImpl>(poReader))
+    (std::dynamic_pointer_cast<ObservableReader>(poReader))
         ->setDefaultSelectionRequest(
             transactionEngine->preparePoSelection(),
             ObservableReader::NotificationMode::MATCHED_ONLY,

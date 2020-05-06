@@ -12,24 +12,17 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "ApduResponse.h"
 #include "ByteArrayUtil.h"
-#include "ChannelControl.h"
 #include "GenericSeSelectionRequest.h"
-#include "KeypleBaseException.h"
 #include "MatchingSelection.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
 #include "ReaderUtilities.h"
 #include "SeCommonProtocols.h"
-#include "SelectionsResult.h"
-#include "SelectionStatus.h"
 #include "SeProtocol.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
-#include "SeResponse.h"
 #include "SeSelection.h"
-#include "SeSelector.h"
 
 /* Examples */
 #include "ReaderUtilities.h"

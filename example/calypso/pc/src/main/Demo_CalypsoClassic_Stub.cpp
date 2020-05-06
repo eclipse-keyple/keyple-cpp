@@ -13,10 +13,7 @@
  ******************************************************************************/
 
 #include "CalypsoClassicTransactionEngine.h"
-#include "KeypleReaderNotFoundException.h"
 #include "LoggerFactory.h"
-#include "ObservableReader.h"
-#include "ReaderPlugin.h"
 #include "SeCommonProtocols.h"
 #include "SeProxyService.h"
 #include "StubCalypsoClassic.h"

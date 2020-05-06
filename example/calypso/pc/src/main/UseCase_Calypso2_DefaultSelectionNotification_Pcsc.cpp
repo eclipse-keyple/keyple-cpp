@@ -16,22 +16,12 @@
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "CalypsoUtilities.h"
-#include "KeypleBaseException.h"
-#include "ReaderUtilities.h"
-#include "KeypleReaderNotFoundException.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader.h"
-#include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
-#include "PcscReader.h"
-#include "PcscReaderImpl.h"
-#include "PcscReadersSettings.h"
 #include "PcscReadersSettings.h"
 #include "PcscProtocolSetting.h"
-#include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "ReaderEvent.h"
 #include "SeProxyService.h"
 #include "SeReader.h"
 
@@ -46,7 +36,6 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::example::calypso::common::transaction;
 using namespace keyple::example::calypso::common::postructure;
 using namespace keyple::example::calypso::pc;
-using namespace keyple::example::generic::pc;
 using namespace keyple::plugin::pcsc;
 
 class UseCase_Calypso2_DefaultSelectionNotification_Pcsc
@@ -312,7 +301,7 @@ public:
              * been requested, this method will do nothing.
              */
             try {
-                std::dynamic_pointer_cast<PcscReaderImpl>(
+                std::dynamic_pointer_cast<ObservableReader>(
                     SeProxyService::getInstance()
                         .getPlugin(event->getPluginName())
                         ->getReader(event->getReaderName()))
