@@ -142,10 +142,8 @@ int TLVTest::sample()
 
     std::vector<uint8_t> discretionaryData = tlv->getValue();
 
-    if (logger->isDebugEnabled()) {
-        logger->debug("Discretionary Data = %s\n",
-                      ByteArrayUtil::toHex(discretionaryData));
-    }
+    logger->debug("Discretionary Data = %s\n",
+                  ByteArrayUtil::toHex(discretionaryData));
 
     /*
      * split discretionary data in as many individual startup information

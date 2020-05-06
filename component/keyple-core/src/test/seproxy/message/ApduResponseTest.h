@@ -14,37 +14,16 @@
 
 #pragma once
 
+#include "ApduResponse.h"
+#include "ByteArrayUtil.h"
+#include "AnswerToReset.h"
+
 #include <unordered_set>
 #include <vector>
 #include <memory>
 
-namespace org {
-namespace eclipse {
 namespace keyple {
-namespace seproxy {
-namespace message {
-class AnswerToReset;
-}
-}
-}
-}
-}
-
-namespace org {
-namespace eclipse {
-namespace keyple {
-namespace seproxy {
-namespace message {
-class ApduResponse;
-}
-}
-}
-}
-}
-
-namespace org {
-namespace eclipse {
-namespace keyple {
+namespace core {
 namespace seproxy {
 namespace message {
 
@@ -71,13 +50,11 @@ public:
     virtual void hashcodeTest();
     virtual void hashcodeNull();
 
-    virtual void testToStringNull();
-
     /*
      * HELPERS
      */
 
-    static std::shared_ptr<std::set<Integer>> getA9005CustomCode();
+    static std::shared_ptr<std::set<int>> getA9005CustomCode();
 
     static std::shared_ptr<AnswerToReset> getAAtr();
 
@@ -92,4 +69,4 @@ public:
 }
 }
 }
-}
+

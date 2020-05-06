@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/util/Observable.h"
+#include "Observable.h"
 #include <iostream>
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace @event { class ReaderEvent; } } } } }
-namespace org { namespace eclipse { namespace keyple { namespace seproxy { namespace exception { class KeypleReaderException; } } } } }
+namespace keyple { namespace core { namespace seproxy { namespace @event { class ReaderEvent; } } } }
+namespace keyple { namespace core { namespace seproxy { namespace exception { class KeypleReaderException; } } } }
 
 /********************************************************************************
  * Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
@@ -19,15 +19,14 @@ namespace org { namespace eclipse { namespace keyple { namespace seproxy { names
  *
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-namespace org {
-    namespace eclipse {
+
         namespace keyple {
             namespace plugin {
                 namespace pcsc {
 
-                    using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using Observable = org::eclipse::keyple::util::Observable;
+                    using ReaderEvent = keyple::core::seproxy::event_Renamed::ReaderEvent;
+                    using KeypleReaderException = keyple::core::seproxy::exception::KeypleReaderException;
+                    using Observable = keyple::core::util::Observable;
 
                     class PcscReaderActualTest : public std::enable_shared_from_this<PcscReaderActualTest> {
 
@@ -70,8 +69,6 @@ namespace org {
                         virtual void testActual() throw(KeypleReaderException, InterruptedException);
                     };
 
-                }
-            }
         }
     }
 }

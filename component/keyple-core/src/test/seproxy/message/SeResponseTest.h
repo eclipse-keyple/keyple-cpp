@@ -14,24 +14,16 @@
 
 #pragma once
 
+#include "SelectionStatus.h"
+#include "SeResponse.h"
+#include "ApduResponseTest.h"
+
 #include <stdexcept>
 #include <memory>
 
-namespace org {
-namespace eclipse {
-namespace keyple {
-namespace seproxy {
-namespace message {
-class SeResponse;
-}
-}
-}
-}
-}
 
-namespace org {
-namespace eclipse {
 namespace keyple {
+namespace core {
 namespace seproxy {
 namespace message {
 
@@ -73,4 +65,4 @@ public:
 }
 }
 }
-}
+

@@ -17,40 +17,41 @@
 #include "CoreBaseTest.h"
 #include "AbstractLocalReader.h"
 #include "TransmissionMode.h"
-#include "ObservableReader.h"
+#include "ReaderEvent.h"
+#include "SelectionStatus.h"
+
 #include <string>
 #include <unordered_map>
 #include <vector>
 #include <stdexcept>
 #include <memory>
 
-namespace org {
-namespace eclipse {
 namespace keyple {
+namespace core {
 namespace seproxy {
-namespace @event
+namespace event_Renamed
 {
     class ReaderEvent;
 }
 }
 }
 }
-}
-namespace org {
-namespace eclipse {
+
+
 namespace keyple {
+namespace core {
 namespace seproxy {
-namespace @event
+namespace event_Renamed
 {
     class ReaderObserver;
 }
 }
 }
 }
-}
-namespace org {
-namespace eclipse {
+
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 namespace plugin {
 class AbstractObservableReader;
@@ -58,10 +59,10 @@ class AbstractObservableReader;
 }
 }
 }
-}
-namespace org {
-namespace eclipse {
+
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 namespace protocol {
 class SeProtocol;
@@ -69,19 +70,19 @@ class SeProtocol;
 }
 }
 }
-}
-namespace org {
-namespace eclipse {
+
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 class SeSelector;
 }
 }
 }
-}
-namespace org {
-namespace eclipse {
+
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 namespace message {
 class SelectionStatus;
@@ -89,20 +90,15 @@ class SelectionStatus;
 }
 }
 }
-}
 
-namespace org {
-namespace eclipse {
 namespace keyple {
+namespace core {
 namespace seproxy {
 namespace plugin {
 
-using CoreBaseTest = org::eclipse::keyple::CoreBaseTest;
-using ObservableReader =
-    org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
-using namespace org::eclipse::keyple::seproxy::exception;
-using org::slf4j::Logger;
-using org::slf4j::LoggerFactory;
+using CoreBaseTest = keyple::core::CoreBaseTest;
+using ObservableReader = keyple::core::seproxy::event::ObservableReader;
+using namespace keyple::core::seproxy::exception;
 
 /**
  * Test methods linked to observability
@@ -270,7 +266,6 @@ protected:
     }
 };
 
-}
 }
 }
 }

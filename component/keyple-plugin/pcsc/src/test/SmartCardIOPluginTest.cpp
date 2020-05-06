@@ -1,23 +1,17 @@
 #include "SmartCardIOPluginTest.h"
-#include "../../../../../../../main/java/org/eclipse/keyple/plugin/pcsc/PcscPlugin.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/message/ProxyReader.h"
-#include "../../../../../../../../../../keyple-core/src/main/java/org/eclipse/keyple/seproxy/exception/KeypleReaderException.h"
+#include "PcscPlugin.h"
+#include "ProxyReader.h"
+#include "KeypleReaderException.h"
 
-namespace org {
-    namespace eclipse {
+
         namespace keyple {
+        namespace core {
             namespace plugin {
                 namespace pcsc {
 //                    import static org.junit.Assert.assertEquals;
-                    using KeypleReaderException = org::eclipse::keyple::seproxy::exception::KeypleReaderException;
-                    using ProxyReader = org::eclipse::keyple::seproxy::message::ProxyReader;
-                    using org::junit::Before;
-                    using org::junit::Test;
-                    using org::junit::runner::RunWith;
-                    using org::mockito::InjectMocks;
-                    using org::mockito::Mock;
-                    using org::mockito::Spy;
-                    using org::mockito::junit::MockitoJUnitRunner;
+                    using KeypleReaderException = keyple::core::seproxy::exception::KeypleReaderException;
+                    using ProxyReader = keyple::core::seproxy::message::ProxyReader;
+
 
 //JAVA TO C++ CONVERTER TODO TASK: Most Java annotations will not have direct C++ equivalents:
 //ORIGINAL LINE: @Before public void setUp() throws org.eclipse.keyple.seproxy.exception.KeypleReaderException, javax.smartcardio.CardException
@@ -36,7 +30,6 @@ namespace org {
                     void SmartCardIOPluginTest::testGetReaders() throw(KeypleReaderException) {
                         assertEquals(plugin->getReaders()->size(), 1);
                         assertEquals("PcscPlugin", plugin->getName());
-                    }
                 }
             }
         }

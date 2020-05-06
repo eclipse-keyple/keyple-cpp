@@ -31,12 +31,12 @@
 /* PC/SC plugin */
 #include "PcscReader.h"
 
-using ByteArrayUtils = org::eclipse::keyple::util::ByteArrayUtils;
-using Card           = org::eclipse::keyple::smartcardio::Card;
-using CardChannel    = org::eclipse::keyple::smartcardio::CardChannel;
-using CardTerminal   = org::eclipse::keyple::smartcardio::CardTerminal;
-using PcscReader     = org::eclipse::keyple::plugin::pcsc::PcscReader;
-using ResponseAPDU   = org::eclipse::keyple::smartcardio::ResponseAPDU;
+using ByteArrayUtils = keyple::core::util::ByteArrayUtils;
+using Card           = keyple::smartcardio::Card;
+using CardChannel    = keyple::smartcardio::CardChannel;
+using CardTerminal   = keyple::smartcardio::CardTerminal;
+using PcscReader     = keyple::plugin::pcsc::PcscReader;
+using ResponseAPDU   = keyple::smartcardio::ResponseAPDU;
 
 class SmartCardIOReaderTest : public ::testing::Test {
 

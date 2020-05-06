@@ -20,27 +20,27 @@
 #include <regex>
 #include <memory>
 
-namespace org {
-namespace eclipse {
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 class SeProxyService;
 }
 }
 }
-}
-namespace org {
-namespace eclipse {
+
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 class ReaderPlugin;
 }
 }
 }
-}
-namespace org {
-namespace eclipse {
+
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 namespace exception {
 class KeyplePluginNotFoundException;
@@ -48,17 +48,15 @@ class KeyplePluginNotFoundException;
 }
 }
 }
-}
 
-namespace org {
-namespace eclipse {
+
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 
 using KeyplePluginNotFoundException =
-    org::eclipse::keyple::seproxy::exception::KeyplePluginNotFoundException;
-using org::slf4j::Logger;
-using org::slf4j::LoggerFactory;
+    keyple::core::seproxy::exception::KeyplePluginNotFoundException;
 
 class SeProxyServiceTest
 : public std::enable_shared_from_this<SeProxyServiceTest> {
@@ -95,7 +93,6 @@ private:
     getPluginList();
 };
 
-}
 }
 }
 }

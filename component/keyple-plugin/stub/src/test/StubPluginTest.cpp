@@ -282,7 +282,6 @@ void StubPluginTest::testF_PlugUnplugMultiReadersEvent()
     //ASSERT_TRUE(readerDisconnected->await(5, TimeUnit::SECONDS));
 
     sleep(1000); // Todo fix me, should works without sleep
-    logger->debug("Stub Readers connected {}", stubPlugin->getReaderNames());
     ASSERT_EQ(0, stubPlugin->getReaders().size());
     ASSERT_EQ(0, readerConnected->getCount());
     ASSERT_EQ(0, readerDisconnected->getCount());

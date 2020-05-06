@@ -27,7 +27,6 @@ using SelectDiversifierRespPars =
 using AbstractApduResponseParser =
     keyple::core::command::AbstractApduResponseParser;
 using ApduResponse = keyple::core::seproxy::message::ApduResponse;
-//using org::hamcrest::core::IsNot;
 
 void SelectDiversifierRespParsTest::selectDiversifierResp()
 {

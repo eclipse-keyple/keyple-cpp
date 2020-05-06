@@ -13,30 +13,21 @@
  ******************************************************************************/
 
 #include "AbstractObservableReaderTest.h"
-#include "ReaderEvent.h"
-#include "AbstractObservableReader.h"
-#include "SeProtocol.h"
-#include "SeSelector.h"
-#include "SelectionStatus.h"
 
-namespace org {
-namespace eclipse {
 namespace keyple {
+namespace core {
 namespace seproxy {
 namespace plugin {
 
-using CoreBaseTest = org::eclipse::keyple::CoreBaseTest;
+using CoreBaseTest = keyple::core::CoreBaseTest;
 using SeSelector   = keyple::core::seproxy::SeSelector;
-using ObservableReader =
-    org::eclipse::keyple::seproxy::event_Renamed::ObservableReader;
-using ReaderEvent = org::eclipse::keyple::seproxy::event_Renamed::ReaderEvent;
-using namespace org::eclipse::keyple::seproxy::exception;
-using SelectionStatus = org::eclipse::keyple::seproxy::message::SelectionStatus;
-using SeProtocol      = org::eclipse::keyple::seproxy::protocol::SeProtocol;
-using TransmissionMode =
-    org::eclipse::keyple::seproxy::protocol::TransmissionMode;
-using org::slf4j::Logger;
-using org::slf4j::LoggerFactory;
+using ObservableReader = keyple::core::seproxy::event_Renamed::ObservableReader;
+using ReaderEvent = keyple::core::seproxy::event_Renamed::ReaderEvent;
+using namespace keyple::core::seproxy::exception;
+using SelectionStatus = keyple::core::seproxy::message::SelectionStatus;
+using SeProtocol      = keyple::core::seproxy::protocol::SeProtocol;
+using TransmissionMode = keyple::core::seproxy::protocol::TransmissionMode;
+
 const std::shared_ptr<org::slf4j::Logger> AbstractObservableReaderTest::logger =
     org::slf4j::LoggerFactory::getLogger(AbstractObservableReaderTest::typeid);
 

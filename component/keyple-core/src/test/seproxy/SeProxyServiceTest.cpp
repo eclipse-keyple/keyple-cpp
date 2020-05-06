@@ -17,20 +17,14 @@
 #include "ReaderPlugin.h"
 #include "KeyplePluginNotFoundException.h"
 
-namespace org {
-namespace eclipse {
+
 namespace keyple {
+namespace core {
 namespace seproxy {
 
 using KeyplePluginNotFoundException =
-    org::eclipse::keyple::seproxy::exception::KeyplePluginNotFoundException;
-using org::junit::Before;
-using org::junit::Test;
-using org::junit::runner::RunWith;
-using org::mockito::Mock;
-using org::mockito::junit::MockitoJUnitRunner;
-using org::slf4j::Logger;
-using org::slf4j::LoggerFactory;
+    keyple::core::seproxy::exception::KeyplePluginNotFoundException;
+
 const std::shared_ptr<org::slf4j::Logger> SeProxyServiceTest::logger =
     org::slf4j::LoggerFactory::getLogger(SeProxyServiceTest::typeid);
 std::string SeProxyServiceTest::PLUGIN_NAME = "plugin1";
@@ -68,8 +62,8 @@ void SeProxyServiceTest::testGetSetPlugins()
 
     // test
     proxyService->setPlugins(plugins);
-    assertArrayEquals(plugins->toArray(),
-                      proxyService->getPlugins()->toArray());
+    assertArrayEquals(plugins,
+                      proxyService->getPlugins());
 }
 
 void SeProxyServiceTest::testGetPlugin() throw(KeyplePluginNotFoundException)

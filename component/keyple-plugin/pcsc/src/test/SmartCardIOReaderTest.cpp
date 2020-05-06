@@ -7,7 +7,7 @@
 #include "SmartCardIOReaderTest.h"
 
 using testing::Return;
-using NoStackTraceThrowable = org::eclipse::keyple::seproxy::exception::NoStackTraceThrowable;
+using NoStackTraceThrowable = keyple::core::seproxy::exception::NoStackTraceThrowable;
 
 TEST_F(SmartCardIOReaderTest, testSmartCardIOReader)
 {
@@ -63,7 +63,7 @@ void SmartCardIOReaderTest::testTransmitCardNotPresent() throw(CardException, Ke
 
     std::vector<std::shared_ptr<ApduRequest>> apduRequests;
     apduRequests.push_back(apduRequestMF);
-    std::shared_ptr<SeRequestSet> seApplicationRequest = std::make_shared<SeRequestSet>(std::make_shared<SeRequest>(apduRequests, ChannelState::KEEP_OPEN));
+    std::shared_ptr<SeRequestSet> seApplicationRequest = std::make_shared<SeRequestSet>(std::make_shared<SeRequest>(apduRequests, ChannelControl::KEEP_OPEN));
 
     std::shared_ptr<SeResponseSet> reponseActuelle = reader->transmitSet(seApplicationRequest);
 
@@ -88,7 +88,7 @@ void SmartCardIOReaderTest::testTransmitToCardWithoutAidToSelect() throw(CardExc
 
     std::vector<std::shared_ptr<ApduRequest>> apduRequests;
     apduRequests.push_back(apduRequestMF);
-    std::shared_ptr<SeRequestSet> seApplicationRequest = std::make_shared<SeRequestSet>(std::make_shared<SeRequest>(apduRequests, ChannelState::KEEP_OPEN));
+    std::shared_ptr<SeRequestSet> seApplicationRequest = std::make_shared<SeRequestSet>(std::make_shared<SeRequest>(apduRequests, ChannelControl::KEEP_OPEN));
 
     std::shared_ptr<PcscReader> spiedReader = spy(this->reader);
     std::shared_ptr<SeResponseSet> reponseActuelle = spiedReader->transmitSet(seApplicationRequest);
@@ -115,7 +115,7 @@ void SmartCardIOReaderTest::testTransmitToCardWithAidToSelect() throw(CardExcept
 
     std::vector<std::shared_ptr<ApduRequest>> apduRequests;
     apduRequests.push_back(apduRequestMF);
-    std::shared_ptr<SeRequestSet> seApplicationRequest = std::make_shared<SeRequestSet>(std::make_shared<SeRequest>(apduRequests, ChannelState::KEEP_OPEN));
+    std::shared_ptr<SeRequestSet> seApplicationRequest = std::make_shared<SeRequestSet>(std::make_shared<SeRequest>(apduRequests, ChannelControl::KEEP_OPEN));
 
     std::shared_ptr<PcscReader> spiedReader = spy(this->reader);
 
@@ -137,7 +137,7 @@ void SmartCardIOReaderTest::testTransmitToCardAndDisconnect() throw(CardExceptio
 
     std::vector<std::shared_ptr<ApduRequest>> apduRequests;
     apduRequests.push_back(apduRequestMF);
-    std::shared_ptr<SeRequestSet> seApplicationRequest = std::make_shared<SeRequestSet>(std::make_shared<SeRequest>(apduRequests, ChannelState::KEEP_OPEN));
+    std::shared_ptr<SeRequestSet> seApplicationRequest = std::make_shared<SeRequestSet>(std::make_shared<SeRequest>(apduRequests, ChannelControl::KEEP_OPEN));
 
     std::shared_ptr<PcscReader> spiedReader = spy(this->reader);
 
