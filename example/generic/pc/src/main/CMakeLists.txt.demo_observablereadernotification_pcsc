@@ -1,0 +1,75 @@
+#******************************************************************************
+#* Copyright (c) 2018 Calypso Networks Association                            *
+#* https://www.calypsonet-asso.org/                                           *
+#*                                                                            *
+#* See the NOTICE file(s) distributed with this work for additional           *
+#* information regarding copyright ownership.                                 *
+#*                                                                            *
+#* This program and the accompanying materials are made available under the   *
+#* terms of the Eclipse Public License 2.0 which is available at              *
+#* http://www.eclipse.org/legal/epl-2.0                                       *
+#*                                                                            *
+#* SPDX-License-Identifier: EPL-2.0                                           *
+#******************************************************************************/
+
+SET(CMAKE_MACOSX_RPATH 1)
+SET(CMAKE_CXX_STANDARD 11)
+
+IF(WIN32)
+	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
+ENDIF(WIN32)
+
+INCLUDE_DIRECTORIES(
+	${CMAKE_CURRENT_SOURCE_DIR}
+
+	# Example generic common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main
+
+	# Core
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/event
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin/local
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util
+
+	# Plugin - PC/SC
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/pcsc/src/main
+
+	# Smartcard I/O
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main
+
+	# pcsc (Linux / macOS)
+	/usr/include/PCSC
+)
+
+IF(WIN32)
+	SET(CMAKE_FIND_LIBRARY_PREFIXES "")
+	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
+	SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
+	SET(WINSCARD winscard.lib)
+ENDIF(WIN32)
+
+IF(APPLE)
+	SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
+	SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
+	SET(WINSCARD "-framework PCSC")
+ENDIF(APPLE)
+
+IF(UNIX)
+	SET(WINSCARD pcsclite)
+	SET(SPEC_LIBS rt)
+ENDIF(UNIX)
+
+ADD_EXECUTABLE(demo_observablereadernotification_pcsc
+
+	# Example - Common
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/ObservableReaderNotificationEngine.cpp
+
+	# Example - PC
+	${CMAKE_CURRENT_SOURCE_DIR}/Demo_ObservableReaderNotification_Pcsc.cpp
+)
+
+TARGET_LINK_LIBRARIES(demo_observablereadernotification_pcsc keyplepluginpcsc ${WINSCARD} ${SPEC_LIBS})
