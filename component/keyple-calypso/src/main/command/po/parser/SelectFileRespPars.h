@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -37,10 +39,12 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::common;
 
 /**
- * This class provides status code properties and the getters to access to the structured fields of
- * data from response to a Select File command (available from the parent class).
+ * This class provides status code properties and the getters to access to the
+ * structured fields of data from response to a Select File command (available
+ * from the parent class).
  * <p>
- * The FCI structure is analyzed and all subfields are made available through as many getters.
+ * The FCI structure is analyzed and all subfields are made available through as
+ * many getters.
  */
 class KEYPLECALYPSO_API SelectFileRespPars final
 : public AbstractPoResponseParser {

@@ -22,6 +22,9 @@
 /* Core */
 #include "AbstractApduResponseParser.h"
 
+/* Calypso */
+#include "KeypleCalypsoExport.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -36,7 +39,8 @@ using namespace keyple::core::seproxy::message;
  * Close Secure Session (008E) response parser. See specs: Calypso / page 104 /
  * 9.5.2 - Close Secure Session
  */
-class CloseSessionRespPars final : public AbstractApduResponseParser {
+class KEYPLECALYPSO_API CloseSessionRespPars final
+: public AbstractApduResponseParser {
 public:
     /**
      * Instantiates a new CloseSessionRespPars from the response.

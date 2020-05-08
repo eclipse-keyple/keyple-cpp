@@ -142,7 +142,8 @@ public:
 	/**
 	 *
 	 */
-    friend std::ostream& operator<<(std::ostream & os, const SamRevision& sr);
+    friend KEYPLECALYPSO_API std::ostream& operator<<(std::ostream & os,
+                                                      const SamRevision& sr);
 
 private:
     /**

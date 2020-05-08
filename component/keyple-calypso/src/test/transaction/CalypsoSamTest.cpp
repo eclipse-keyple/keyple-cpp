@@ -52,7 +52,7 @@ void CalypsoSamTest::test_CalypsoSam_1()
     std::shared_ptr<CalypsoSam> calypsoSam =
         std::make_shared<CalypsoSam>(seReponse, TransmissionMode::NO_MODE, "");
 
-    ASSERT_EQ(SamRevision::S1D.valueOf, calypsoSam->getSamRevision().valueOf);
+    ASSERT_EQ(SamRevision::S1D, calypsoSam->getSamRevision());
     ASSERT_EQ(0x80, calypsoSam->getApplicationType());
     ASSERT_EQ(0xD0, calypsoSam->getApplicationSubType());
     ASSERT_EQ(0x01, calypsoSam->getPlatform());
@@ -77,7 +77,7 @@ void CalypsoSamTest::test_CalypsoSam_2()
     std::shared_ptr<CalypsoSam> calypsoSam =
         std::make_shared<CalypsoSam>(seReponse, TransmissionMode::NO_MODE, "");
 
-    ASSERT_EQ(SamRevision::S1D.valueOf, calypsoSam->getSamRevision().valueOf);
+    ASSERT_EQ(SamRevision::S1D, calypsoSam->getSamRevision());
     ASSERT_EQ(0xD1, calypsoSam->getApplicationSubType());
 }
 
@@ -96,7 +96,7 @@ void CalypsoSamTest::test_CalypsoSam_3()
     std::shared_ptr<CalypsoSam> calypsoSam =
         std::make_shared<CalypsoSam>(seReponse, TransmissionMode::NO_MODE, "");
 
-    ASSERT_EQ(SamRevision::S1D.valueOf, calypsoSam->getSamRevision().valueOf);
+    ASSERT_EQ(SamRevision::S1D, calypsoSam->getSamRevision());
     ASSERT_EQ(0xD2, calypsoSam->getApplicationSubType());
 }
 
@@ -115,7 +115,7 @@ void CalypsoSamTest::test_CalypsoSam_4()
     std::shared_ptr<CalypsoSam> calypsoSam =
         std::make_shared<CalypsoSam>(seReponse, TransmissionMode::NO_MODE, "");
 
-    ASSERT_EQ(SamRevision::C1.valueOf, calypsoSam->getSamRevision().valueOf);
+    ASSERT_EQ(SamRevision::C1, calypsoSam->getSamRevision());
     ASSERT_EQ(0xC1, calypsoSam->getApplicationSubType());
 }
 
@@ -134,7 +134,7 @@ void CalypsoSamTest::test_CalypsoSam_5()
     std::shared_ptr<CalypsoSam> calypsoSam =
         std::make_shared<CalypsoSam>(seReponse, TransmissionMode::NO_MODE, "");
 
-    ASSERT_EQ(SamRevision::S1E.valueOf, calypsoSam->getSamRevision().valueOf);
+    ASSERT_EQ(SamRevision::S1E, calypsoSam->getSamRevision());
     ASSERT_EQ(0xE1, calypsoSam->getApplicationSubType());
 }
 

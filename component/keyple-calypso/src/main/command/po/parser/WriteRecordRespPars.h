@@ -36,7 +36,8 @@ using namespace keyple::core::seproxy::message;
  * Write Record response parser. See specs: Calypso 3.2 / page 99 / 9.4.13 -
  * Write Record
  */
-class WriteRecordRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API WriteRecordRespPars final
+: public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new WriteRecordRespPars.

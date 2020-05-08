@@ -13,6 +13,10 @@ EXECUTE_PROCESS(
     WORKING_DIRECTORY ${GOOGLETEST_DIRECTORY}/googletest-download
 )
 
+# Prevent overriding the parent project's compiler/linker
+# settings on Windows
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
 IF(result)
     MESSAGE(FATAL_ERROR "CMake step for googletest failed: ${result}")
 ENDIF()

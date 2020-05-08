@@ -18,6 +18,7 @@
 #include "KeypleReaderException.h"
 #include "StubPluginImpl.h"
 #include "ObservablePlugin.h"
+#include "Thread.h"
 
 namespace keyple {
 namespace plugin {
@@ -53,7 +54,7 @@ void BaseStubTest::setUp()
     ASSERT_EQ(0, stubPlugin->AbstractThreadedObservablePlugin::countObservers());
 
     // add a sleep to play with thread monitor timeout
-    sleep(1);
+    Thread::sleep(1);
 }
 
 void BaseStubTest::tearDown()
@@ -68,7 +69,7 @@ void BaseStubTest::tearDown()
     {
         //logger->info("Stubplugin unplugStubReader {}", reader.getName());
         //stubPlugin->unplugStubReader(reader.getName(), true);
-        sleep(100);
+        Thread::sleep(100);
         logger->debug("Stubplugin readers size %d\n",
                       stubPlugin->getReaders().size());
     }

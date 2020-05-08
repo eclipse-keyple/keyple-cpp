@@ -321,7 +321,7 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
     bool t1GetResponse = true;
     bool t1StripLe     = true;
 
-    logger->debug("doTransmit\n");
+    logger->debug("transmitApdu - c-apdu >> %\n", apduIn);
 
     /*
      * Note that we modify the 'command' array in some cases, so it must
@@ -386,6 +386,9 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
         result.insert(result.end(), response.begin(), response.begin() + rn);
         break;
     }
+
+    logger->debug("transmitApdu - r-apdu << %\n", result);
+
     return result;
 }
 

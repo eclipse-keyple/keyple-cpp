@@ -17,6 +17,7 @@
 #include "KeypleReaderException.h"
 #include "PluginEvent.h"
 #include "StubPluginFactory.h"
+#include "Thread.h"
 
 namespace keyple {
 namespace plugin {
@@ -63,7 +64,7 @@ void StubPluginTest::testA_PlugOneReaderEvent()
 
     stubPlugin->plugStubReader(READER_NAME, false);
     //readerConnected->await(2, SECONDS );
-    sleep( 2 );
+    Thread::sleep(2);
     ASSERT_EQ(0, readerConnected->getCount());
 }
 
@@ -281,7 +282,7 @@ void StubPluginTest::testF_PlugUnplugMultiReadersEvent()
 
     //ASSERT_TRUE(readerDisconnected->await(5, TimeUnit::SECONDS));
 
-    sleep(1000); // Todo fix me, should works without sleep
+    Thread::sleep(1000); // Todo fix me, should works without sleep
     ASSERT_EQ(0, stubPlugin->getReaders().size());
     ASSERT_EQ(0, readerConnected->getCount());
     ASSERT_EQ(0, readerDisconnected->getCount());

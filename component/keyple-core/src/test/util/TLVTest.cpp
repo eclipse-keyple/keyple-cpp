@@ -22,34 +22,6 @@ using namespace keyple::core::util;
 using namespace keyple::common;
 using namespace keyple::calypso::command::po::parser;
 
-std::unordered_map<
-    int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    GetDataFciRespPars::STATUS_TABLE;
-
-std::vector<int> const
-    GetDataFciRespPars::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE = std::vector<int>{
-        0,      0,      0,      0,      0,      0,      215,    256,
-        304,    362,    430,    512,    608,    724,    861,    1024,
-        1217,   1448,   1722,   2048,   2435,   2896,   3444,   4096,
-        4870,   5792,   6888,   8192,   9741,   11585,  13777,  16384,
-        19483,  23170,  27554,  32768,  38967,  46340,  55108,  65536,
-        77935,  92681,  110217, 131072, 155871, 185363, 220435, 262144,
-        311743, 370727, 440871, 524288, 623487, 741455, 881743, 1048576};
-
-const std::shared_ptr<Tag> GetDataFciRespPars::TAG_FCI_TEMPLATE =
-    std::make_shared<Tag>(0x0F, Tag::APPLICATION, Tag::TagType::CONSTRUCTED);
-const std::shared_ptr<Tag> GetDataFciRespPars::TAG_DF_NAME =
-    std::make_shared<Tag>(0x04, Tag::CONTEXT, Tag::TagType::PRIMITIVE);
-const std::shared_ptr<Tag> GetDataFciRespPars::TAG_FCI_PROPRIETARY_TEMPLATE =
-    std::make_shared<Tag>(0x05, Tag::CONTEXT, Tag::TagType::CONSTRUCTED);
-const std::shared_ptr<Tag>
-    GetDataFciRespPars::TAG_FCI_ISSUER_DISCRETIONARY_DATA =
-        std::make_shared<Tag>(0x0C, Tag::CONTEXT, Tag::TagType::CONSTRUCTED);
-const std::shared_ptr<Tag> GetDataFciRespPars::TAG_APPLICATION_SERIAL_NUMBER =
-    std::make_shared<Tag>(0x07, Tag::PRIVATE, Tag::TagType::PRIMITIVE);
-const std::shared_ptr<Tag> GetDataFciRespPars::TAG_DISCRETIONARY_DATA =
-    std::make_shared<Tag>(0x13, Tag::APPLICATION, Tag::TagType::PRIMITIVE);
-
 namespace keyple {
 namespace core {
 namespace util {

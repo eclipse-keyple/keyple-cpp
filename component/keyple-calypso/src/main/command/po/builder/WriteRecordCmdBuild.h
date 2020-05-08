@@ -39,7 +39,7 @@ using namespace keyple::calypso::command::po::parser;
  * The Class WriteRecordCmdBuild. This class provides the dedicated constructor
  * to build the Write Record APDU command.
  */
-class WriteRecordCmdBuild
+class KEYPLECALYPSO_API WriteRecordCmdBuild
 : public AbstractPoCommandBuilder<WriteRecordRespPars>,
   public PoSendableInSession,
   public PoModificationCommand {

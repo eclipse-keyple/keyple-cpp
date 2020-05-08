@@ -19,6 +19,8 @@
 /* Core */
 #include "AbstractSamResponseParser.h"
 
+#include "KeypleCalypsoExport.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -33,7 +35,8 @@ using namespace keyple::core::seproxy::message;
  * Select diversifier response parser. See specs: Calypso / page 54 / 7.4.2 -
  * Session MAC computation
  */
-class SelectDiversifierRespPars : public AbstractSamResponseParser {
+class KEYPLECALYPSO_API SelectDiversifierRespPars
+: public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new SelectDiversifierRespPars.

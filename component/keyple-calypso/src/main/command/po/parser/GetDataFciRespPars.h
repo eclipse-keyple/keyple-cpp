@@ -47,7 +47,8 @@ using namespace keyple::common;
  * <p>
  * Provides getter methods for all relevant information.
  */
-class GetDataFciRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API GetDataFciRespPars final
+: public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new GetDataFciRespPars from the ApduResponse to a

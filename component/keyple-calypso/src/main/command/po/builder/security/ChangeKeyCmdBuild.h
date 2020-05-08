@@ -35,7 +35,8 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::core::seproxy::message;
 
-class ChangeKeyCmdBuild : public AbstractPoCommandBuilder<ChangeKeyRespPars> {
+class KEYPLECALYPSO_API ChangeKeyCmdBuild
+: public AbstractPoCommandBuilder<ChangeKeyRespPars> {
 private:
     /**
      *

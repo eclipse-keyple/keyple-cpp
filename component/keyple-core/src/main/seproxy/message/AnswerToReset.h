@@ -69,13 +69,14 @@ public:
 	/**
 	 *
 	 */
-	friend std::ostream& operator<<(std::ostream& os, const AnswerToReset& atr);
+	friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const AnswerToReset& atr);
 
 	/**
 	 *
 	 */
-	friend std::ostream& operator<<(std::ostream& os,
-		                            const std::shared_ptr<AnswerToReset>& atr);
+	friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<AnswerToReset>& atr);
 
 protected:
     /**

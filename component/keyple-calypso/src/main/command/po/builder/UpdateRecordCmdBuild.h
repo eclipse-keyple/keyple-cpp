@@ -42,7 +42,7 @@ using namespace keyple::calypso::command::po::parser;
  * to build the Update Record APDU command.
  *
  */
-class UpdateRecordCmdBuild final
+class KEYPLECALYPSO_API UpdateRecordCmdBuild final
 : public AbstractPoCommandBuilder<UpdateRecordRespPars>,
   public PoSendableInSession,
   public PoModificationCommand {
