@@ -143,7 +143,7 @@ ADD_EXECUTABLE(TU_keyple_util_test
 	# command
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduCommandBuilderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduResponseParserTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractIso7816CommandBuilder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractIso7816CommandBuilderTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/CommandsTable.cpp
 )
 
