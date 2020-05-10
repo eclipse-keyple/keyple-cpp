@@ -12,12 +12,13 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include <unordered_map>
+
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
 #include "CommandsTable.h"
 
-namespace keyple {
-namespace core {
-namespace command {
+using namespace keyple::core::command;
 
-}
-}
-}
+using namespace testing;

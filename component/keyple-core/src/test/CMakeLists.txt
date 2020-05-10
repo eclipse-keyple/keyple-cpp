@@ -144,7 +144,7 @@ ADD_EXECUTABLE(TU_keyple_util_test
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduCommandBuilderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduResponseParserTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractIso7816CommandBuilderTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/CommandsTable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/CommandsTableTest.cpp
 )
 
 SET(LINK_LIBS gtest gmock keyplecore keyplecalypso ${WINSCARD} )
