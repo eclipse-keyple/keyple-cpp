@@ -100,9 +100,6 @@ bool ReadRecordsRespPars::isCounterFile()
 std::shared_ptr<std::map<int, std::vector<uint8_t>>>
 ReadRecordsRespPars::getRecords()
 {
-    if (!isInitialized()) {
-        throw IllegalStateException("Parser not initialized.");
-    }
     std::shared_ptr<std::map<int, std::vector<uint8_t>>> records =
         std::make_shared<std::map<int, std::vector<uint8_t>>>();
 
@@ -134,10 +131,6 @@ ReadRecordsRespPars::getRecords()
 
 std::shared_ptr<std::map<int, int>> ReadRecordsRespPars::getCounters()
 {
-    if (!isInitialized()) {
-        throw IllegalStateException("Parser not initialized.");
-    }
-
     std::shared_ptr<std::map<int, int>> counters =
         std::make_shared<std::map<int, int>>();
 
@@ -174,75 +167,73 @@ std::shared_ptr<std::map<int, int>> ReadRecordsRespPars::getCounters()
 std::string ReadRecordsRespPars::toString()
 {
     std::string string;
-    if (isInitialized()) {
-        switch (readDataStructure) {
-        case ReadDataStructure::SINGLE_RECORD_DATA: {
-            std::shared_ptr<std::map<int, std::vector<uint8_t>>> recordMap =
-                getRecords();
-            string = StringHelper::formatSimple(
-                "Single record data: {RECORD = %d, DATA = %s}",
-                recordMap->begin()->first,
-                ByteArrayUtil::toHex(recordMap->begin()->second));
-        } break;
-        case ReadDataStructure::MULTIPLE_RECORD_DATA: {
-            std::shared_ptr<std::map<int, std::vector<uint8_t>>> recordMap =
-                getRecords();
-            std::shared_ptr<StringBuilder> sb =
-                std::make_shared<StringBuilder>();
-            sb->append("Multiple record data: ");
-            std::set<int> records;
-            std::transform(
-                recordMap->begin(), recordMap->end(),
-                std::inserter(records, records.begin()),
-                std::bind(
-                    &std::map<int, std::vector<uint8_t>>::value_type::first,
-                    std::placeholders::_1));
-            for (std::set<int>::const_iterator it = records.begin();
-                 it != records.end(); ++it) {
-                int record = (int)*it;
-                sb->append(StringHelper::formatSimple(
-                    "{RECORD = %d, DATA = %s}", record,
-                    ByteArrayUtil::toHex(recordMap->find(record)->second)));
-                if (it != records.end()) {
-                    sb->append(", ");
-                }
+
+    switch (readDataStructure) {
+    case ReadDataStructure::SINGLE_RECORD_DATA: {
+        std::shared_ptr<std::map<int, std::vector<uint8_t>>> recordMap =
+            getRecords();
+        string = StringHelper::formatSimple(
+            "Single record data: {RECORD = %d, DATA = %s}",
+            recordMap->begin()->first,
+            ByteArrayUtil::toHex(recordMap->begin()->second));
+    } break;
+    case ReadDataStructure::MULTIPLE_RECORD_DATA: {
+        std::shared_ptr<std::map<int, std::vector<uint8_t>>> recordMap =
+            getRecords();
+        std::shared_ptr<StringBuilder> sb =
+            std::make_shared<StringBuilder>();
+        sb->append("Multiple record data: ");
+        std::set<int> records;
+        std::transform(
+            recordMap->begin(), recordMap->end(),
+            std::inserter(records, records.begin()),
+            std::bind(
+                &std::map<int, std::vector<uint8_t>>::value_type::first,
+                std::placeholders::_1));
+        for (std::set<int>::const_iterator it = records.begin();
+                it != records.end(); ++it) {
+            int record = (int)*it;
+            sb->append(StringHelper::formatSimple(
+                "{RECORD = %d, DATA = %s}", record,
+                ByteArrayUtil::toHex(recordMap->find(record)->second)));
+            if (it != records.end()) {
+                sb->append(", ");
             }
-            string = sb->toString();
-        } break;
-        case ReadDataStructure::SINGLE_COUNTER: {
-            std::shared_ptr<std::map<int, int>> counterMap = getCounters();
-            string = StringHelper::formatSimple(
-                "Single counter: {COUNTER = %d, VALUE = %d}",
-                counterMap->begin()->first, counterMap->begin()->second);
-        } break;
-        case ReadDataStructure::MULTIPLE_COUNTER: {
-            std::shared_ptr<std::map<int, int>> counterMap = getCounters();
-            std::shared_ptr<StringBuilder> sb =
-                std::make_shared<StringBuilder>();
-            sb->append("Multiple counter: ");
-            std::set<int> counters;
-            std::transform(counterMap->begin(), counterMap->end(),
-                           inserter(counters, counters.begin()),
-                           std::bind(&std::map<int, int>::value_type::first,
-                                     std::placeholders::_1));
-            for (std::set<int>::const_iterator it = counters.begin();
-                 it != counters.end(); ++it) {
-                int counter = (int)*it;
-                sb->append(StringHelper::formatSimple(
-                    "{COUNTER = %d, VALUE = %d}", counter,
-                    counterMap->find(counter)->second));
-                if (it != counters.end()) {
-                    sb->append(", ");
-                }
-            }
-            string = sb->toString();
-        } break;
-        default:
-            throw IllegalStateException("Unexpected data structure");
         }
-    } else {
-        string = "Not initialized.";
+        string = sb->toString();
+    } break;
+    case ReadDataStructure::SINGLE_COUNTER: {
+        std::shared_ptr<std::map<int, int>> counterMap = getCounters();
+        string = StringHelper::formatSimple(
+            "Single counter: {COUNTER = %d, VALUE = %d}",
+            counterMap->begin()->first, counterMap->begin()->second);
+    } break;
+    case ReadDataStructure::MULTIPLE_COUNTER: {
+        std::shared_ptr<std::map<int, int>> counterMap = getCounters();
+        std::shared_ptr<StringBuilder> sb =
+            std::make_shared<StringBuilder>();
+        sb->append("Multiple counter: ");
+        std::set<int> counters;
+        std::transform(counterMap->begin(), counterMap->end(),
+                        inserter(counters, counters.begin()),
+                        std::bind(&std::map<int, int>::value_type::first,
+                                    std::placeholders::_1));
+        for (std::set<int>::const_iterator it = counters.begin();
+                it != counters.end(); ++it) {
+            int counter = (int)*it;
+            sb->append(StringHelper::formatSimple(
+                "{COUNTER = %d, VALUE = %d}", counter,
+                counterMap->find(counter)->second));
+            if (it != counters.end()) {
+                sb->append(", ");
+            }
+        }
+        string = sb->toString();
+    } break;
+    default:
+        throw IllegalStateException("Unexpected data structure");
     }
+
     return string;
 }
 

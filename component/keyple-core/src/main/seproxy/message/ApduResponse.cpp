@@ -26,8 +26,9 @@ namespace message {
 
 using namespace keyple::core::util;
 
-ApduResponse::ApduResponse(std::vector<uint8_t>& buffer,
-                           std::shared_ptr<std::set<int>> successfulStatusCodes)
+ApduResponse::ApduResponse(
+  const std::vector<uint8_t>& buffer,
+  const std::shared_ptr<std::set<int>> successfulStatusCodes)
 : bytes(buffer)
 {
     if (buffer.empty()) {
@@ -124,7 +125,7 @@ std::ostream& operator<<(std::ostream& os, const ApduResponse& r)
 	   << "STATUS = " << status << ", "
 	   << "BYTES (" << r.bytes.size() << ") = " << r.bytes
 	   << "}";
-    
+
 	return os;
 }
 
