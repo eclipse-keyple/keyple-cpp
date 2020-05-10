@@ -23,12 +23,20 @@ using namespace keyple::core::command;
 
 using namespace testing;
 
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
+
 class AbstractApduResponseParserMock : public AbstractApduResponseParser {
 public:
     AbstractApduResponseParserMock(
         const std::shared_ptr<ApduResponse>& response)
     : AbstractApduResponseParser(response)
     {
+        STATUS_TABLE.emplace(
+	    0x9999, std::make_shared<StatusProperties>(true, "sw 9999"));
+        STATUS_TABLE.emplace(
+	    0x6500, std::make_shared<StatusProperties>(false, "sw 6500"));
+        STATUS_TABLE.emplace(
+	    0x6400, std::make_shared<StatusProperties>(false, "sw 6400"));
     }
 
     std::unordered_map<int, std::shared_ptr<StatusProperties>>
@@ -50,8 +58,7 @@ TEST(AbstractApduResponseParserTest, AbstractApduResponseParser)
     AbstractApduResponseParser parser(response);
 }
 
-TEST(AbstractApduResponseParserTest,
-     AbstractApduResponseParser_getApduResponse)
+TEST(AbstractApduResponseParserTest, getApduResponse)
 {
     const std::vector<uint8_t> apdu = {0x11, 0x22, 0x33, 0X44};
     std::shared_ptr<std::set<int>> successfulStatusCodes =
@@ -67,8 +74,7 @@ TEST(AbstractApduResponseParserTest,
     ASSERT_EQ(parser.getApduResponse(), response);
 }
 
-TEST(AbstractApduResponseParserTest,
-     AbstractApduResponseParser_setApduResponse)
+TEST(AbstractApduResponseParserTest, setApduResponse)
 {
     const std::vector<uint8_t> apdu = {0x11, 0x22, 0x33, 0x44};
     std::shared_ptr<std::set<int>> successfulStatusCodes =
@@ -91,8 +97,7 @@ TEST(AbstractApduResponseParserTest,
     ASSERT_NE(parser.getApduResponse(), response);
 }
 
-TEST(AbstractApduResponseParserTest,
-     AbstractApduResponseParser_isSuccessful)
+TEST(AbstractApduResponseParserTest, isSuccessful)
 {
     const std::vector<uint8_t> okApdu = {0x90, 0x00};
     std::shared_ptr<std::set<int>> codes = std::make_shared<std::set<int>>();
@@ -113,8 +118,7 @@ TEST(AbstractApduResponseParserTest,
     ASSERT_FALSE(parser.isSuccessful());
 }
 
-TEST(AbstractApduResponseParserTest,
-     AbstractApduResponseParser_getStatusInformation)
+TEST(AbstractApduResponseParserTest, getStatusInformation)
 {
     const std::vector<uint8_t> okApdu = {0x90, 0x00};
     std::shared_ptr<std::set<int>> codes = std::make_shared<std::set<int>>();
@@ -133,4 +137,28 @@ TEST(AbstractApduResponseParserTest,
     parser.setApduResponse(badResp);
 
     ASSERT_EQ(parser.getStatusInformation(), "");
+}
+
+TEST(AbstractApduResponseParserTest, getStatusTable)
+{
+    const std::vector<uint8_t> apdu = {0x90, 0x00};
+    std::shared_ptr<ApduResponse> resp =
+        std::make_shared<ApduResponse>(apdu, nullptr);
+
+    AbstractApduResponseParserMock parser(resp);
+
+    std::unordered_map<int, std::shared_ptr<StatusProperties>> statusTable =
+        parser.getMockStatusTable();
+
+    ASSERT_EQ(4, statusTable.size());
+
+    ASSERT_NE(statusTable.find(0x9000), statusTable.end());
+    ASSERT_NE(statusTable.find(0x9999), statusTable.end());
+    ASSERT_NE(statusTable.find(0x6500), statusTable.end());
+    ASSERT_NE(statusTable.find(0x6400), statusTable.end());
+
+    ASSERT_TRUE(statusTable[0x9000]->isSuccessful());
+    ASSERT_TRUE(statusTable[0x9999]->isSuccessful());
+    ASSERT_FALSE(statusTable[0x6500]->isSuccessful());
+    ASSERT_FALSE(statusTable[0x6400]->isSuccessful());
 }
