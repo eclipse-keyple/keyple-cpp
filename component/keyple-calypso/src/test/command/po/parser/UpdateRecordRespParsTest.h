@@ -29,7 +29,7 @@ namespace parser {
 class UpdateRecordRespParsTest
 : public std::enable_shared_from_this<UpdateRecordRespParsTest> {
 public:
-    virtual void updateRecordRespPars();
+    void updateRecordRespPars();
 };
 
 }

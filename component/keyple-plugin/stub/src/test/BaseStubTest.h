@@ -42,10 +42,11 @@ namespace stub {
 
 using Logger                = keyple::common::Logger;
 using LoggerFactory         = keyple::common::LoggerFactory;
-//using namespace ::testing;
+
+using namespace ::testing;
 
 class BaseStubTest : public std::enable_shared_from_this<BaseStubTest>
-//, public testing::Test
+, public testing::Test
 {
 public:
     /**
@@ -64,11 +65,11 @@ private:
 public:
     std::shared_ptr<BaseStubTest> name = std::make_shared<BaseStubTest>();
 
-    virtual void setUp();
+    void SetUp() override;
 
-    virtual void tearDown();
+    void TearDown() override;
 
-    void TestBoby();
+    void TestBody() override;
 };
 }
 }

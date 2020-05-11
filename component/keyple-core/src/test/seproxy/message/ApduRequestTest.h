@@ -33,11 +33,11 @@ namespace message {
 
 class ApduRequestTest : public std::enable_shared_from_this<ApduRequestTest> {
 public:
-    virtual void setUp();
+    void setUp();
 
-    virtual void testSimpleAPDURequest();
+    void testSimpleAPDURequest();
 
-    virtual void testAPDURequest();
+    void testAPDURequest();
 
     /*
      * HELPERS

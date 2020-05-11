@@ -33,14 +33,19 @@ using LoggerFactory         = keyple::common::LoggerFactory;
 
 using namespace std::chrono; // nanoseconds, system_clock, seconds
 
-void StubPluginTest::setUp()
+void StubPluginTest::SetUp()
 {
-    BaseStubTest::setUp();
+    BaseStubTest::SetUp();
 }
 
-void StubPluginTest::tearDown()
+void StubPluginTest::TearDown()
 {
-    BaseStubTest::tearDown();
+    BaseStubTest::TearDown();
+}
+
+void StubPluginTest::TestBody()
+{
+    BaseStubTest::TestBody();
 }
 
 void StubPluginTest::testA_PlugOneReaderCount()

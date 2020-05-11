@@ -56,18 +56,6 @@ public:
     std::set<std::string> nativeReadersNames;
 
     /**
-     *
-     */
-    virtual ~PcscPluginImpl()
-    {
-    }
-
-    /**
-     *
-     */
-    PcscPluginImpl(const PcscPluginImpl&) = default;
-
-    /**
      * Gets the single instance of PcscPlugin.
      *
      * @return single instance of PcscPlugin

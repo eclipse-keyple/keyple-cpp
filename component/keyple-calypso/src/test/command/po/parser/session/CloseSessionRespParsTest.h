@@ -31,17 +31,17 @@ namespace security {
 class CloseSessionRespParsTest
 : public std::enable_shared_from_this<CloseSessionRespParsTest> {
 public:
-    virtual void closeSessionRespPars();
+    void closeSessionRespPars();
 
-    virtual void TestToPOHalfSessionSignature();
+    void TestToPOHalfSessionSignature();
 
-    virtual void existingTestConverted();
+    void existingTestConverted();
 
-    virtual void abortingASession();
+    void abortingASession();
 
-    virtual void lc4withoutPostponedData();
+    void lc4withoutPostponedData();
 
-    virtual void lc4WithPostponedData();
+    void lc4WithPostponedData();
 };
 
 }

@@ -35,11 +35,11 @@ namespace security {
 class PoGetChallengeCmdBuildTest
 : public std::enable_shared_from_this<PoGetChallengeCmdBuildTest> {
 public:
-    virtual void POGetChallenge_Rev2_4();
+    void POGetChallenge_Rev2_4();
 
-    virtual void POGetChallenge_Rev3_1();
+    void POGetChallenge_Rev3_1();
 
-    virtual void POGetChallenge_Rev3_2();
+    void POGetChallenge_Rev3_2();
 };
 }
 }

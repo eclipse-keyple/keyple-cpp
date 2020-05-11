@@ -31,11 +31,11 @@ namespace security {
 class DigestInitCmdBuildTest
 : public std::enable_shared_from_this<DigestInitCmdBuildTest> {
 public:
-    virtual void digestInitCmd_inconsistent();
+    void digestInitCmd_inconsistent();
 
-    virtual void digestInitCmd_inconsistent_digestNull();
+    void digestInitCmd_inconsistent_digestNull();
 
-    virtual void digestInitCmd();
+    void digestInitCmd();
 };
 }
 }

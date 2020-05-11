@@ -54,13 +54,6 @@ public:
     TLV(std::vector<uint8_t>& binary);
 
     /**
-     *
-     */
-    virtual ~TLV()
-    {
-    }
-
-    /**
      * Parse the byte array to find the expected TLV.
      * <p>
      * The method returns true if the tag is found.
@@ -71,7 +64,7 @@ public:
      * @param offset the position to start in the byte array
      * @return true or false according to the presence of the provided tag
      */
-    virtual bool parse(std::shared_ptr<Tag> tag, int offset);
+    bool parse(std::shared_ptr<Tag> tag, int offset);
 
     /**
      * Return a byte array copied from the main array corresponding to value
@@ -82,12 +75,12 @@ public:
      *
      * @return a byte array
      */
-    virtual std::vector<uint8_t> getValue();
+    std::vector<uint8_t> getValue();
 
     /**
      * @return the current position in the main array
      */
-    virtual int getPosition();
+    int getPosition();
 
     /**
      *

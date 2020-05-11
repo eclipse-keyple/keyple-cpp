@@ -35,9 +35,9 @@ namespace builder {
 class GetDataCmdBuildTest
 : public std::enable_shared_from_this<GetDataCmdBuildTest> {
 public:
-    virtual void getDataFCICmdBuild();
+    void getDataFCICmdBuild();
 
-    virtual void getDataFCICmdBuild2();
+    void getDataFCICmdBuild2();
 };
 }
 }

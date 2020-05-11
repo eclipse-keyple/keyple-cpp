@@ -31,7 +31,7 @@ namespace security {
 class DigestAuthenticateCmdBuildTest
 : public std::enable_shared_from_this<DigestAuthenticateCmdBuildTest> {
 public:
-    virtual void digestAuthenticate();
+    void digestAuthenticate();
 };
 }
 }

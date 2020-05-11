@@ -66,11 +66,11 @@ private:
     std::shared_ptr<ApduRequest> apduRequest;
 
 public:
-    virtual void updateRecordCmdBuild_rev2_4();
+    void updateRecordCmdBuild_rev2_4();
 
-    virtual void updateRecordCmdBuild_rev3_1();
+    void updateRecordCmdBuild_rev3_1();
 
-    virtual void updateRecordCmdBuild_rev3_2();
+    void updateRecordCmdBuild_rev3_2();
 };
 }
 }

@@ -34,7 +34,7 @@ const std::shared_ptr<Logger> BaseStubTest::logger =
 
 const std::string BaseStubTest::PLUGIN_NAME = "stub1";
 
-void BaseStubTest::setUp()
+void BaseStubTest::SetUp()
 {
     logger->info("------------------------------\n");
     logger->info("Test %s\n", typeid(name).name() );//->getMethodName());
@@ -57,7 +57,7 @@ void BaseStubTest::setUp()
     Thread::sleep(1);
 }
 
-void BaseStubTest::tearDown()
+void BaseStubTest::TearDown()
 {
     logger->info("---------\n");
     logger->info("TearDown \n");
@@ -77,7 +77,7 @@ void BaseStubTest::tearDown()
     stubPlugin->clearObservers();
 }
 
-void BaseStubTest::TestBoby()
+void BaseStubTest::TestBody()
 {
 }
 

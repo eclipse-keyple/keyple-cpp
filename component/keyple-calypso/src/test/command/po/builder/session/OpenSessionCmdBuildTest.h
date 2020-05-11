@@ -84,13 +84,13 @@ private:
     std::shared_ptr<ApduRequest> apduRequest;
 
 public:
-    virtual void openSessionCmdBuild_rev_2_4_exception();
+    void openSessionCmdBuild_rev_2_4_exception();
 
-    virtual void openSessionCmdBuild_rev_2_4();
+    void openSessionCmdBuild_rev_2_4();
 
-    virtual void openSessionCmdBuild_rev_3_1();
+    void openSessionCmdBuild_rev_3_1();
 
-    virtual void openSessionCmdBuild_rev_3_2();
+    void openSessionCmdBuild_rev_3_2();
 };
 
 }
