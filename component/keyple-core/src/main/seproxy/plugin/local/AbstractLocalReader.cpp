@@ -683,9 +683,14 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
 		          apduRequest, elapsedMs);
 
     const std::vector<uint8_t>& buffer = apduRequest->getBytes();
-    std::vector<uint8_t> rapdu  = transmitApdu(buffer);
-    apduResponse                = std::make_shared<ApduResponse>(
-        rapdu, apduRequest->getSuccessfulStatusCodes());
+    std::vector<uint8_t> rapdu;
+    try {
+        rapdu  = transmitApdu(buffer);
+    } catch (const KeypleIOReaderException& e) {
+        throw e;
+    }
+
+    apduResponse = std::make_shared<ApduResponse>(rapdu, apduRequest->getSuccessfulStatusCodes());
 
     if (apduRequest->isCase4() && apduResponse->getDataOut().empty() &&
         apduResponse->isSuccessful()) {
