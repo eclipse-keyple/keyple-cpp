@@ -207,16 +207,7 @@ bool PcscReaderImpl::waitForCardAbsentNative()
             if (terminal.waitForCardAbsent(removalLatency)) {
                 /* Card removed */
                 return true;
-            } else {
-                logger->debug("FIXME. Do we need to handle a thread"
-                              "interruption here?\n");
-                /*                    if (Thread.interrupted()) {
-                    logger->debug("[%s] waitForCardAbsentNative => task " \
-                                    "has been cancelled\n", this->getName());
-*/                        /* Task has been cancelled */
-                //return false;
-                //                    }
-            }
+            } 
 
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
