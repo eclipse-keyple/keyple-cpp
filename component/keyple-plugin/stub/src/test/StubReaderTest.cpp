@@ -863,18 +863,18 @@
 
                     void StubReaderTest::StubSecureElementAnonymousInnerClass4::openPhysicalChannel() 
                     {
-                        throw std::make_shared<KeypleChannelStateException>("Impossible to estasblish connection");
+                        throw KeypleChannelStateException("Impossible to estasblish connection");
                     }
 
                     void StubReaderTest::StubSecureElementAnonymousInnerClass4::closePhysicalChannel() 
                     {
-                        throw std::make_shared<KeypleChannelStateException>("Channel is not open");
+                        throw KeypleChannelStateException("Channel is not open");
                     }
 
                     std::vector<char> StubReaderTest::StubSecureElementAnonymousInnerClass4::processApdu(std::vector<char> &apduIn) 
                     {
                         (void)apduIn;
-                        throw std::make_shared<KeypleIOReaderException>("Error while transmitting apdu");
+                        throw KeypleIOReaderException("Error while transmitting apdu");
                     }
 
                     std::string StubReaderTest::StubSecureElementAnonymousInnerClass4::getSeProcotol() 

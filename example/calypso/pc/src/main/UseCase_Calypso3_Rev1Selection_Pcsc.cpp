@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 
     /* Check if the reader exists */
     if (poReader == nullptr) {
-        throw std::make_shared<IllegalStateException>("Bad PO reader setup");
+        throw IllegalStateException("Bad PO reader setup");
     }
 
     logger->info("=============== UseCase Calypso #1: ATR based explicit "

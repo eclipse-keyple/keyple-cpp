@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 
     /* Check if the readers exists */
     if (poReader == nullptr || samResource == nullptr) {
-        throw std::make_shared<IllegalStateException>(
+        throw IllegalStateException(
             "Bad PO or SAM reader setup");
     }
 

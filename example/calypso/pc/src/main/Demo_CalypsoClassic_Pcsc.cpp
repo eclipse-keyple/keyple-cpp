@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 
     /* Both readers are expected not null */
     if (poReader == samReader || poReader == nullptr || samReader == nullptr) {
-        throw std::make_shared<IllegalStateException>("Bad PO/SAM setup");
+        throw IllegalStateException("Bad PO/SAM setup");
     }
 
     logger->info("PO Reader  NAME = %\n", poReader->getName());

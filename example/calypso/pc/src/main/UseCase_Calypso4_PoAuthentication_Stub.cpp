@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 
     /* Check if the reader exists */
     if (poReader == nullptr || samReader == nullptr) {
-        throw std::make_shared<IllegalStateException>(
+        throw IllegalStateException(
             "Bad PO or SAM reader setup");
     }
 
@@ -105,7 +105,7 @@ int main(int argc, char** argv)
 
     /* Check if the readers exists */
     if (poReader == nullptr || samReader == nullptr) {
-        throw std::make_shared<IllegalStateException>(
+        throw IllegalStateException(
             "Bad PO or SAM reader setup");
     }
 
@@ -220,7 +220,7 @@ int main(int argc, char** argv)
                     PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT, 0, 0);
 
                 if (!poProcessStatus) {
-                    throw std::make_shared<IllegalStateException>(
+                    throw IllegalStateException(
                         "processingOpening failure.");
                 }
 
@@ -261,7 +261,7 @@ int main(int argc, char** argv)
 				logger->info("EventLog file data: %\n", eventLog);
 
 				if (!poProcessStatus) {
-					throw std::make_shared<IllegalStateException>(
+					throw IllegalStateException(
 						"processPoCommandsInSession failure.");
 				}
 
@@ -278,7 +278,7 @@ int main(int argc, char** argv)
 					poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
 
 				if (!poProcessStatus) {
-					throw std::make_shared<IllegalStateException>(
+					throw IllegalStateException(
 						"processClosing failure.");
 				}
             } catch (const std::invalid_argument& e) {
