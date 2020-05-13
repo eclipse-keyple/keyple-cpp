@@ -170,13 +170,13 @@ bool PcscTerminal::waitForCardPresent(long long timeout)
     long long current;
     long long start = System::currentTimeMillis();
 
-    logger->debug("waitForCardPresent - waiting for card insertion for % ms\n",
+    logger->trace("waitForCardPresent - waiting for card insertion for % ms\n",
                   timeout);
 
     do {
         present = isCardPresent(false);
         if (present) {
-            logger->debug("waitForCardPresent - card present\n");
+            logger->trace("waitForCardPresent - card present\n");
             return true;
         }
 
@@ -187,7 +187,7 @@ bool PcscTerminal::waitForCardPresent(long long timeout)
 
         current = System::currentTimeMillis();
         if (current > (start + timeout)) {
-            logger->debug("waitForCardPresent - timeout\n");
+            logger->trace("waitForCardPresent - timeout\n");
             return false;
         }
 
@@ -278,13 +278,13 @@ bool PcscTerminal::waitForCardAbsent(long long timeout)
     long long current;
     long long start = System::currentTimeMillis();
 
-    logger->debug("waitForCardAbsent - waiting for card removal for % ms\n",
+    logger->trace("waitForCardAbsent - waiting for card removal for % ms\n",
                   timeout);
 
     do {
         present = isCardPresent(false);
         if (!present) {
-            logger->debug("waitForCardAbsent - card absent\n");
+            logger->trace("waitForCardAbsent - card absent\n");
             return true;
         }
 
@@ -295,7 +295,7 @@ bool PcscTerminal::waitForCardAbsent(long long timeout)
 
         current = System::currentTimeMillis();
         if (current > (start + timeout)) {
-            logger->debug("waitForCardAbsent - timeout\n");
+            logger->trace("waitForCardAbsent - timeout\n");
             return false;
         }
 
@@ -357,8 +357,14 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
         }
         char r_apdu[261];
         DWORD dwRecv = sizeof(r_apdu);
-        SCardTransmit(this->handle, &this->pioSendPCI, (LPCBYTE)_apduIn.data(),
+        long rv;
+        rv = SCardTransmit(this->handle, &this->pioSendPCI, (LPCBYTE)_apduIn.data(),
                       _apduIn.size(), NULL, (LPBYTE)r_apdu, &dwRecv);
+        if (rv != SCARD_S_SUCCESS) {
+            logger->error("SCardEstablishContext failed with error: %\n",
+                pcsc_stringify_error(rv));
+            throw PcscTerminalException("ScardTransmit failed");
+        }
         std::vector<uint8_t> response(r_apdu, r_apdu + dwRecv);
         int rn = response.size();
         if (getresponse && (rn >= 2)) {
