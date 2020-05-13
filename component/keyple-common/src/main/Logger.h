@@ -46,8 +46,8 @@ public:
         logError,
         logWarn,
         logInfo,
-        logTrace,
-        logDebug
+        logDebug,
+        logTrace
     };
 
     /**
