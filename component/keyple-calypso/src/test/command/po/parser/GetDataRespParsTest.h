@@ -29,11 +29,11 @@ namespace parser {
 class GetDataRespParsTest
 : public std::enable_shared_from_this<GetDataRespParsTest> {
 public:
-    virtual void testFCIparser_FCI_OK();
+    void testFCIparser_FCI_OK();
 
-    virtual void testFCIparser_FCI_Invalidated();
+    void testFCIparser_FCI_Invalidated();
 
-    virtual void testFCIparser_FCI_BadTags();
+    void testFCIparser_FCI_BadTags();
 };
 
 }

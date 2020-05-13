@@ -64,11 +64,30 @@ public:
      *        accessible
      * @param samReaderFilter the regular expression defining how to identify
      *        SAM readers among others.
-     * @throws KeypleReaderException throw if an error occurs while getting the
+     * @param maxBlockingTime the maximum duration for which the
+     *        allocateSamResource method will attempt to allocate a new reader
+     *        by retrying (in milliseconds)
+     * @throws KeypleReaderException thrown if an error occurs while getting the
+     *         readers list.
+     * @since 0.8.1
+     */
+    SamResourceManager(std::shared_ptr<ReaderPlugin> samReaderPlugin,
+                       const std::string& samReaderFilter,
+                       int maxBlockingTime);
+
+    /**
+     * Alternate constructor with default max blocking time value
+     *
+     * @param samReaderPlugin the plugin through which SAM readers are
+     *        accessible
+     * @param samReaderFilter the regular expression defining how to identify
+     *        SAM readers among others.
+     * @throws KeypleReaderException thrown if an error occurs while getting the
      *         readers list.
      */
     SamResourceManager(std::shared_ptr<ReaderPlugin> samReaderPlugin,
                        const std::string& samReaderFilter);
+
     /**
      * Allocate a SAM resource from the specified SAM group.
      * <p>
@@ -87,6 +106,8 @@ public:
      * @param samIdentifier the targeted SAM identifier
      * @return a SAM resource
      * @throws KeypleReaderException if a reader error occurs
+     * @throws CalypsoNoSamResourceAvailableException if the reader allocation
+     *         failed
      */
     std::unique_ptr<SamResource>
     allocateSamResource(const AllocationMode allocationMode,
@@ -106,11 +127,16 @@ public:
         LoggerFactory::getLogger(typeid(SamResourceManager));
 
 private:
-    /**
-     * The maximum time (in tenths of a second) during which the BLOCKING mode
-     * will wait
+    /*
+     * The default maximum time (in milliseconds) during which the BLOCKING mode
+     * will wait.
      */
     static const int MAX_BLOCKING_TIME;
+
+    /**
+     *
+     */
+    const int maxBlockingTime;
 
     /**
      *

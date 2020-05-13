@@ -46,13 +46,15 @@ using namespace keyple::core::seproxy::message;
  * secure session
  *
  */
-class AbstractOpenSessionRespPars : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API AbstractOpenSessionRespPars
+: public AbstractPoResponseParser {
 public:
     /**
      * The Class SecureSession. A secure session is returned by a open secure
      * session command
      */
-    class SecureSession : public std::enable_shared_from_this<SecureSession> {
+    class KEYPLECALYPSO_API SecureSession
+    : public std::enable_shared_from_this<SecureSession> {
     private:
         /**
          * Challenge transaction counter

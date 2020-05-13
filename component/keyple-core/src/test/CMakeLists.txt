@@ -18,7 +18,7 @@ ENDIF(WIN32)
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/keyple
-	${CMAKE_CURRENT_SOURCE_DIR}/keyple-plugin/stub 
+	${CMAKE_CURRENT_SOURCE_DIR}/keyple-plugin/stub
 	${CMAKE_CURRENT_SOURCE_DIR}/keyple-core/src/main/seproxy/plugin
 
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -75,7 +75,6 @@ ADD_EXECUTABLE(TU_keyple_util_test
 	${CMAKE_CURRENT_SOURCE_DIR}/util/ConfigurableTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/util/ByteArrayUtilTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/util/CountDownLatchTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/ObservableTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/util/NameableTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/CoreBaseTest.cpp
 
@@ -142,10 +141,10 @@ ADD_EXECUTABLE(TU_keyple_util_test
 	#${CMAKE_CURRENT_SOURCE_DIR}/selection/SeSelection.cpp
 
 	# command
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduCommandBuilder.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduResponseParser.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractIso7816CommandBuilder.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/CommandsTable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduCommandBuilderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduResponseParserTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractIso7816CommandBuilderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/CommandsTableTest.cpp
 )
 
 SET(LINK_LIBS gtest gmock keyplecore keyplecalypso ${WINSCARD} )

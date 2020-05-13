@@ -218,16 +218,6 @@ StubPluginImpl::fetchNativeReader(const std::string& readerName)
     return reader;
 }
 
-void StubPluginImpl::addObserver(std::shared_ptr<PluginObserver> observer)
-{
-    AbstractThreadedObservablePlugin::addObserver(observer);
-}
-
-void StubPluginImpl::removeObserver(std::shared_ptr<PluginObserver> observer)
-{
-    AbstractThreadedObservablePlugin::removeObserver(observer);
-}
-
 }
 }
 }

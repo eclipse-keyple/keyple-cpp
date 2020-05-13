@@ -29,7 +29,7 @@ namespace parser {
 class DigestUpdateRespParsTest
 : public std::enable_shared_from_this<DigestUpdateRespParsTest> {
 public:
-    virtual void digestUpdateRespPars();
+    void digestUpdateRespPars();
 };
 
 }

@@ -18,18 +18,13 @@
 #include <stdexcept>
 #include <memory>
 
-/* Common */
-#include "Configurable.h"
-#include "Nameable.h"
-#include "Observable.h"
-
 /* Core */
+#include "AbstractSeProxyComponent.h"
 #include "DefaultSelectionsRequest.h"
 #include "KeypleChannelControlException.h"
 #include "KeypleCoreExport.h"
 #include "KeypleIOReaderException.h"
 #include "KeypleReaderException.h"
-#include "ObservableReader.h"
 #include "ProxyReader.h"
 
 namespace keyple {
@@ -52,15 +47,13 @@ using ReaderObserver = ObservableReader::ReaderObserver;
  * <ul>
  * <li>High level logging and benchmarking of SeRequestSet and SeRequest
  * transmission</li>
- * <li>Observability management</li>
  * <li>Name-based comparison of ProxyReader (required for SortedSet&lt;
  * ProxyReader&gt;)</li>
  * <li>Plugin naming management</li>
  * </ul>
  */
 class KEYPLECORE_API AbstractReader
-: public Observable<ReaderEvent>, public ProxyReader,
-  public virtual Nameable, public virtual Configurable {
+: public AbstractSeProxyComponent, public ProxyReader {
 public:
     /**
      * Compare the name of the current SeReader to the name of the SeReader
@@ -124,9 +117,9 @@ public:
      * @return the received response
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::shared_ptr<SeResponse>
-    transmit(std::shared_ptr<SeRequest> seRequest,
-             ChannelControl channelControl) override;
+    std::shared_ptr<SeResponse>transmit(
+        std::shared_ptr<SeRequest> seRequest, ChannelControl channelControl)
+        override;
 
     /**
      * Simplified version of transmit for standard use.
@@ -135,33 +128,8 @@ public:
      * @return the received response
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::shared_ptr<SeResponse>
-    transmit(std::shared_ptr<SeRequest> seRequest) override;
-
-    /**
-     * Add a reader observer.
-     * <p>
-     * The observer will receive all the events produced by this reader (card
-     * insertion, removal, etc.)
-     * <p>
-     * The startObservation() is called when the first observer is added. (to
-     * start a monitoring thread for instance)
-     *
-     * @param observer the observer object
-     */
-    void addObserver(std::shared_ptr<ReaderObserver> observer);
-
-    /**
-     * Remove a reader observer.
-     * <p>
-     * The observer will not receive any of the events produced by this reader.
-     * <p>
-     * The stopObservation() is called when the last observer is removed. (to
-     * stop a monitoring thread for instance)
-     *
-     * @param observer the observer object
-     */
-    void removeObserver(std::shared_ptr<ReaderObserver> observer);
+    std::shared_ptr<SeResponse> transmit(std::shared_ptr<SeRequest> seRequest)
+        override;
 
     /**
      * Gets the name of plugin provided in the constructor.
@@ -173,61 +141,17 @@ public:
      */
     const std::string& getPluginName();
 
-    /**
-     * Gets the reader name
-     *
-     * @return the reader name string
-     */
-    const std::string& getName() const override;
-
-    /**
-     * Allows the application to signal the end of processing and thus proceed
-     * with the removal sequence, followed by a restart of the card search.
-     * <p>
-     * Do nothing if the closing of the physical channel has already been
-     * requested.
-     * <p>
-     * Send a request without APDU just to close the physical channel if it has
-     * not already been closed.
-     *
-     */
-    void notifySeProcessed();
-
-    /**
-     *
-     */
-    void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
-
-    /**
-     * Sets at once a set of parameters for a reader
-     * <p>
-     * See {@link #setParameter(String, String)} for more details
-     *
-     * @param parameters a Map &lt;String, String&gt; parameter set
-     * @throws KeypleBaseException if one of the parameters could not be set up
-     */
-    void setParameters(
-        const std::map<std::string, std::string>& parameters) override;
-
 protected:
     /**
-     *
+     * This flag is used with transmit or transmitSet
+     * <p>
+     * It will be used by the notifySeProcessed method
+     * (AbstractObservableLocalReader) to determine if a request to close the
+     * physical channel has been already made and therefore to switch directly
+     * to the removal sequence for the observed readers.<br>
+     * TODO find a better way to manage this need
      */
-    std::shared_ptr<AbstractReader> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractReader>(
-            Observable<ReaderEvent>::shared_from_this());
-    }
-
-    /**
-     *  Contains the name of the plugin
-     */
-    const std::string pluginName;
-
-    /**
-     * The reader name (must be unique)
-     */
-    const std::string name;
+    bool forceClosing = true;
 
     /**
      * The default DefaultSelectionsRequest to be executed upon SE insertion
@@ -299,13 +223,9 @@ private:
     long long before = 0;
 
     /**
-     * This flag is used with transmit or transmitSet
-     * <p>
-     * It will be used by the notifySeProcessed method to determine if a request
-     * to close the physical channel has been already made and therefore to
-     * switch directly to the removal sequence for the observed readers.
+     *  Contains the name of the plugin
      */
-    bool forceClosing = true;
+    const std::string pluginName;
 };
 
 }

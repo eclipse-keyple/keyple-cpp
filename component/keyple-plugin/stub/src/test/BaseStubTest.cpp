@@ -18,6 +18,7 @@
 #include "KeypleReaderException.h"
 #include "StubPluginImpl.h"
 #include "ObservablePlugin.h"
+#include "Thread.h"
 
 namespace keyple {
 namespace plugin {
@@ -33,7 +34,7 @@ const std::shared_ptr<Logger> BaseStubTest::logger =
 
 const std::string BaseStubTest::PLUGIN_NAME = "stub1";
 
-void BaseStubTest::setUp()
+void BaseStubTest::SetUp()
 {
     logger->info("------------------------------\n");
     logger->info("Test %s\n", typeid(name).name() );//->getMethodName());
@@ -53,10 +54,10 @@ void BaseStubTest::setUp()
     ASSERT_EQ(0, stubPlugin->AbstractThreadedObservablePlugin::countObservers());
 
     // add a sleep to play with thread monitor timeout
-    sleep(1);
+    Thread::sleep(1);
 }
 
-void BaseStubTest::tearDown()
+void BaseStubTest::TearDown()
 {
     logger->info("---------\n");
     logger->info("TearDown \n");
@@ -68,7 +69,7 @@ void BaseStubTest::tearDown()
     {
         //logger->info("Stubplugin unplugStubReader {}", reader.getName());
         //stubPlugin->unplugStubReader(reader.getName(), true);
-        sleep(100);
+        Thread::sleep(100);
         logger->debug("Stubplugin readers size %d\n",
                       stubPlugin->getReaders().size());
     }
@@ -76,7 +77,7 @@ void BaseStubTest::tearDown()
     stubPlugin->clearObservers();
 }
 
-void BaseStubTest::TestBoby()
+void BaseStubTest::TestBody()
 {
 }
 

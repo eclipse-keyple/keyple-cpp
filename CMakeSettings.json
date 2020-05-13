@@ -18,7 +18,8 @@
       ],
       "inheritEnvironments": [],
       "cmakeExecutable": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\",
-      "intelliSenseMode": "windows-msvc-x86"
+      "intelliSenseMode": "windows-msvc-x86",
+      "cmakeToolchain": "${projectDir}/toolchain/clang-windows.cmake"
     }
   ]
 }

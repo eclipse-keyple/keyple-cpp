@@ -28,11 +28,11 @@ namespace parser {
 class ReadRecordsRespParsTest
 : public std::enable_shared_from_this<ReadRecordsRespParsTest> {
 public:
-    virtual void readRecordRespPars_one_record();
-    virtual void readRecordRespPars_records();
-    virtual void sampleMultipleRecordsParsing();
-    virtual void readRecordRespPars_one_record_sfi();
-    virtual void readRecordRespPars_records_sfi();
+    void readRecordRespPars_one_record();
+    void readRecordRespPars_records();
+    void sampleMultipleRecordsParsing();
+    void readRecordRespPars_one_record_sfi();
+    void readRecordRespPars_records_sfi();
 };
 
 }

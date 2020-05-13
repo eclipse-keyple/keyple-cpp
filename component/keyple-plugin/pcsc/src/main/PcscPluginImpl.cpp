@@ -193,16 +193,6 @@ std::vector<PcscTerminal>& PcscPluginImpl::getTerminals()
     return terminals;
 }
 
-void PcscPluginImpl::addObserver(std::shared_ptr<PluginObserver> observer)
-{
-    AbstractThreadedObservablePlugin::addObserver(observer);
-}
-
-void PcscPluginImpl::removeObserver(std::shared_ptr<PluginObserver> observer)
-{
-    AbstractThreadedObservablePlugin::removeObserver(observer);
-}
-
 }
 }
 }

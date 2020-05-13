@@ -81,21 +81,21 @@ public:
     *
     * @param subName the string to append
     */
-    void addSubName(const std::string& subName);
+    virtual void addSubName(const std::string& subName);
 
     /**
     * Gets the name.
     *
     * @return the name of the APDU command from the CalypsoCommands information.
     */
-    std::string getName();
+    virtual std::string getName() const;
 
     /**
     * Gets the request.
     *
     * @return the request
     */
-    std::shared_ptr<ApduRequest> getApduRequest();
+    virtual std::shared_ptr<ApduRequest> getApduRequest() const;
 };
 
 }

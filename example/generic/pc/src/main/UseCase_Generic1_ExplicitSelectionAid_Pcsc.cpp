@@ -15,7 +15,6 @@
 #include "AbstractMatchingSe.h"
 #include "ByteArrayUtil.h"
 #include "GenericSeSelectionRequest.h"
-#include "KeypleBaseException.h"
 #include "MatchingSelection.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"

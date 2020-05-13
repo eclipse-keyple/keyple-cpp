@@ -32,7 +32,7 @@ namespace security {
 using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::core::seproxy::message;
 
-class OpenSession32CmdBuild final
+class KEYPLECALYPSO_API OpenSession32CmdBuild final
 : public AbstractOpenSessionCmdBuild<OpenSession32RespPars> {
 public:
     /**

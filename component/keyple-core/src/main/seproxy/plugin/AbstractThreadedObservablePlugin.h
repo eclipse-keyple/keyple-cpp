@@ -21,7 +21,7 @@
 #include "exceptionhelper.h"
 
 /* Core */
-#include "AbstractPlugin.h"
+#include "AbstractObservablePlugin.h"
 #include "KeypleCoreExport.h"
 #include "ObservablePlugin.h"
 #include "ObservableReader.h"
@@ -55,44 +55,44 @@ using namespace keyple::common;
  * The {@link AbstractThreadedObservablePlugin} class provides the means to
  * observe a plugin (insertion/removal of readers) using a monitoring thread.
  */
-class KEYPLECORE_API AbstractThreadedObservablePlugin : public AbstractPlugin {
+class KEYPLECORE_API AbstractThreadedObservablePlugin
+: public AbstractObservablePlugin,
+  public std::enable_shared_from_this<AbstractThreadedObservablePlugin> {
 public:
     /**
      * Add a plugin observer.
      * <p>
-     * The observer will receive all the events produced by this plugin (reader
-     * insertion, removal, etc.)
-     * <p>
-     * In the case of a {@link AbstractThreadedObservablePlugin}, a thread is
-     * created if it does not already exist (when the first observer is added).
+     * Overrides the method defined in {@link AbstractObservablePlugin}, a
+     * thread is created if it does not already exist (when the first observer
+     * is added).
      *
      * @param observer the observer object
      */
     void addObserver(
-        std::shared_ptr<ObservablePlugin::PluginObserver> observer) override;
+        const std::shared_ptr<ObservablePlugin::PluginObserver> observer) final;
 
     /**
      * Remove a plugin observer.
      * <p>
-     * The observer will do not receive any of the events produced by this
-     * plugin.
-     * <p>
-     * In the case of a {@link AbstractThreadedObservablePlugin}, the monitoring
-     * thread is ended when the last observer is removed.
+     * Overrides the method defined in {@link AbstractObservablePlugin}, the
+     * monitoring thread is ended when the last observer is removed.
      *
      * @param observer the observer object
      */
     void removeObserver(
-        std::shared_ptr<ObservablePlugin::PluginObserver> observer) override;
+        const std::shared_ptr<ObservablePlugin::PluginObserver> observer) final;
 
     /**
-     *
+     * Remove all observers at once
+     * <p>
+     * Overrides the method defined in {@link AbstractObservablePlugin}, the
+     * thread is ended.
      */
-    void clearObservers() override;
+    void clearObservers() final;
 
 protected:
     /**
-     * Instantiates an observable plugin
+     * Instantiates an threaded observable plugin
      *
      * @param name name of the plugin
      */
@@ -140,15 +140,6 @@ protected:
      * @throws Throwable a generic exception
      */
     void finalize() /* override */;
-
-    /**
-     *
-     */
-    std::shared_ptr<AbstractThreadedObservablePlugin> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractThreadedObservablePlugin>(
-            AbstractPlugin::shared_from_this());
-    }
 
 private:
     /**

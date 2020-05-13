@@ -207,10 +207,7 @@ bool StubReaderImpl::waitForCardPresent()
 {
     loopWaitSe = true;
 
-    logger->debug("[%] waiting for card present\n", name);
-
     while (loopWaitSe) {
-        logger->debug("[%] checking for SE presence\n", name);
         if (checkSePresence()) {
             return true;
         }
@@ -218,8 +215,7 @@ bool StubReaderImpl::waitForCardPresent()
         try {
             Thread::sleep(10);
         } catch (InterruptedException& e) {
-            (void)e;
-            logger->debug("[%] Sleep was interrupted\n", name);
+            logger->debug("Sleep was interrupted - %\n", e);
         }
     }
 
@@ -246,8 +242,7 @@ bool StubReaderImpl::waitForCardAbsentNative()
         try {
             Thread::sleep(10);
         } catch (InterruptedException& e) {
-            (void)e;
-            logger->debug("Sleep was interrupted\n");
+            logger->debug("Sleep was interrupted - %\n", e);
         }
     }
     return false;
@@ -297,53 +292,6 @@ std::shared_ptr<ObservableReaderStateService> StubReaderImpl::initStateService()
 
     return std::make_shared<ObservableReaderStateService>(
         this, states, MonitoringState::WAIT_FOR_SE_INSERTION);
-}
-
-void StubReaderImpl::addObserver(std::shared_ptr<ReaderObserver> observer)
-{
-    AbstractObservableLocalReader::addObserver(observer);
-}
-
-void StubReaderImpl::removeObserver(std::shared_ptr<ReaderObserver> observer)
-{
-    AbstractObservableLocalReader::removeObserver(observer);
-}
-
-void StubReaderImpl::startSeDetection(PollingMode pollingMode)
-{
-    AbstractObservableLocalReader::startSeDetection(pollingMode);
-}
-
-void StubReaderImpl::stopSeDetection()
-{
-    AbstractObservableLocalReader::stopSeDetection();
-}
-
-void StubReaderImpl::setDefaultSelectionRequest(
-    std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
-    NotificationMode notificationMode)
-{
-    AbstractObservableLocalReader::setDefaultSelectionRequest(
-        defaultSelectionsRequest, notificationMode);
-}
-
-void StubReaderImpl::setDefaultSelectionRequest(
-    std::shared_ptr<AbstractDefaultSelectionsRequest>
-        defaultSelectionsRequest,
-    NotificationMode notificationMode, PollingMode pollingMode)
-{
-    AbstractObservableLocalReader::setDefaultSelectionRequest(
-        defaultSelectionsRequest, notificationMode, pollingMode);
-}
-
-void StubReaderImpl::clearObservers()
-{
-    AbstractObservableLocalReader::clearObservers();
-}
-
-void StubReaderImpl::notifySeProcessed()
-{
-    AbstractObservableLocalReader::notifySeProcessed();
 }
 
 }

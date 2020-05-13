@@ -39,7 +39,8 @@ using namespace keyple::core::seproxy::message;
  * Increase (0032) response parser. See specs: Calypso / page 85 / 9.4.4
  * Increase
  */
-class IncreaseRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API IncreaseRespPars final
+: public AbstractPoResponseParser {
 public:
     /**
      * Constructor to build a parser of the Increase command response.

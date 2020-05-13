@@ -25,7 +25,7 @@ namespace local {
 
 using namespace keyple::core::seproxy::event;
 
-class SmartInsertionReader : public ObservableReader {
+class SmartInsertionReader : public virtual ObservableReader {
 public:
     /**
      * Waits for a SE. Returns true if a SE is detected before the end of the

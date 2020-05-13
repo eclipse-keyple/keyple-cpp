@@ -34,7 +34,8 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Get Challenge APDU command.
  */
-class SamGetChallengeCmdBuild : public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API SamGetChallengeCmdBuild
+: public AbstractSamCommandBuilder {
 public:
     /**
      * Instantiates a new SamGetChallengeCmdBuild.

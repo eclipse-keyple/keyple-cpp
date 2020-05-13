@@ -41,7 +41,8 @@ namespace keyple { namespace core { namespace seproxy { namespace event { class 
 namespace keyple {
 namespace plugin {
 namespace stub {
-using StubPlugin            = keyple::plugin::stub::StubPlugin;
+
+	using StubPlugin            = keyple::plugin::stub::StubPlugin;
 using PluginEvent           = keyple::core::seproxy::event::PluginEvent;
 using KeypleReaderException = keyple::core::seproxy::exception::KeypleReaderException;
 using Logger                = keyple::common::Logger;
@@ -60,12 +61,17 @@ public:
     /**
      *
      */
-    void setUp() override;
+    void SetUp() override;
 
     /**
      *
      */
-    void tearDown() override;
+    void TearDown() override;
+
+    /*
+     *
+     */
+    void TestBody() override;
 
     /**
      * Plug one reader and count if created

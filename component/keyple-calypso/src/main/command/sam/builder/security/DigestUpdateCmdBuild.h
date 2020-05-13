@@ -36,7 +36,8 @@ using namespace keyple::calypso::command::sam;
  * twice for each command executed during a session. First time for the command
  * sent and second time for the answer received
  */
-class DigestUpdateCmdBuild : public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API DigestUpdateCmdBuild
+: public AbstractSamCommandBuilder {
 public:
     /**
      * Instantiates a new DigestUpdateCmdBuild.

@@ -194,7 +194,7 @@ bool PcscTerminal::waitForCardPresent(long long timeout)
     } while (1);
 }
 
-void PcscTerminal::openAndConnect(std::string protocol)
+void PcscTerminal::openAndConnect(const std::string& protocol)
 {
     LONG rv;
     DWORD connectProtocol;
@@ -204,7 +204,7 @@ void PcscTerminal::openAndConnect(std::string protocol)
     BYTE _atr[33];
     DWORD atrLen = sizeof(_atr);
 
-    logger->debug("openAndConnect\n");
+    logger->debug("openAndConnect - protocol: %\n", protocol);
 
     try {
         establishContext();
@@ -226,15 +226,15 @@ void PcscTerminal::openAndConnect(std::string protocol)
         throw IllegalArgumentException("Unsupported protocol " + protocol);
     }
 
-    logger->debug("openAndConnect - connecting with protocol: %, "
-                  "connectProtocol: % and sharingMode: %\n",
+    logger->debug("openAndConnect - connecting tp % with protocol: %, "
+                  "connectProtocol: % and sharingMode: %\n", name,
                   protocol, connectProtocol, sharingMode);
 
-    rv = SCardConnect(this->context, this->name.c_str(), sharingMode,
-                      connectProtocol, &this->handle, &this->protocol);
+    rv = SCardConnect(context, name.c_str(), sharingMode,
+                      connectProtocol, &handle, &this->protocol);
     if (rv != SCARD_S_SUCCESS) {
         logger->error("openAndConnect - SCardConnect failed (%)\n",
-                      pcsc_stringify_error(rv));
+                      std::string(pcsc_stringify_error(rv)));
         releaseContext();
         throw PcscTerminalException("openAndConnect failed");
     }
@@ -321,7 +321,7 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
     bool t1GetResponse = true;
     bool t1StripLe     = true;
 
-    logger->debug("doTransmit\n");
+    logger->debug("transmitApdu - c-apdu >> %\n", apduIn);
 
     /*
      * Note that we modify the 'command' array in some cases, so it must
@@ -386,6 +386,9 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
         result.insert(result.end(), response.begin(), response.begin() + rn);
         break;
     }
+
+    logger->debug("transmitApdu - r-apdu << %\n", result);
+
     return result;
 }
 

@@ -36,7 +36,7 @@ namespace security {
 class CloseSessionCmdBuildTest
 : public std::enable_shared_from_this<CloseSessionCmdBuildTest> {
 public:
-    virtual void closeSessionCmdBuild();
+    void closeSessionCmdBuild();
 };
 
 }

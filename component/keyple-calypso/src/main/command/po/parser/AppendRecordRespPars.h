@@ -18,6 +18,7 @@
 #include <memory>
 
 #include "AbstractPoResponseParser.h"
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -32,7 +33,8 @@ using namespace keyple::core::seproxy::message;
  * Update records response parser. See specs: Calypso / page 96 / 9.4.1.1 -
  * Update record
  */
-class AppendRecordRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API AppendRecordRespPars final
+: public AbstractPoResponseParser {
 private:
     /**
      *

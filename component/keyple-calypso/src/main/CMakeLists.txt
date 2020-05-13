@@ -39,6 +39,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security
+	${CMAKE_CURRENT_SOURCE_DIR}/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/exception
 

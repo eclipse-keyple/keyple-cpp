@@ -13,8 +13,6 @@
  ******************************************************************************/
 
 /* Core */
-#include "KeypleReaderNotFoundException.h"
-#include "ObservableReader.h"
 #include "ReaderPlugin.h"
 #include "SeCommonProtocols.h"
 #include "SeProxyService.h"
@@ -32,9 +30,6 @@
 #include "StubMifareDesfire.h"
 #include "StubMifareUL.h"
 #include "StubPluginFactory.h"
-
-/* Common */
-#include "Thread.h"
 
 using namespace keyple::example::generic::common;
 using namespace keyple::plugin::stub;

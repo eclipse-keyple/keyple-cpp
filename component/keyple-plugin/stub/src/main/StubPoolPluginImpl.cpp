@@ -17,6 +17,9 @@
 /* Common */
 #include "stringhelper.h"
 
+/* Core */
+#include "KeypleAllocationReaderException.h"
+
 /* Stub plugin */
 #include "StubPoolPluginFactory.h"
 #include "StubReaderImpl.h"
@@ -112,7 +115,10 @@ StubPoolPluginImpl::allocateReader(const std::string& groupReference)
     /* Check if the reader is available */
     if (seReader == nullptr ||
         allocatedReader.find(seReader->getName()) != allocatedReader.end()) {
-        return nullptr;
+        throw KeypleAllocationReaderException(
+                 "Impossible to allocate a reader for groupReference : " +
+                 groupReference + ". Has the reader being plugged to this " +
+                 "referenceGroup?");
     } else {
         allocatedReader.insert(std::pair<const std::string, const std::string>(
             seReader->getName(), groupReference));

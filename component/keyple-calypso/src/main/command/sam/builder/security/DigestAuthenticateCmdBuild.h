@@ -34,7 +34,8 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the Digest Authenticate APDU command.
  */
-class DigestAuthenticateCmdBuild : public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API DigestAuthenticateCmdBuild
+: public AbstractSamCommandBuilder {
 public:
     /**
      * Instantiates a new DigestAuthenticateCmdBuild .

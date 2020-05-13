@@ -226,8 +226,8 @@ AbstractLocalReader::openLogicalChannel(std::shared_ptr<SeSelector> seSelector)
     if (selectionHasMatched && seSelector->getAidSelector() != nullptr) {
         std::shared_ptr<ApduResponse> fciResponse;
 
-        std::shared_ptr<SmartSelectionReader> smartSelectionReader =
-            std::dynamic_pointer_cast<SmartSelectionReader>(shared_from_this());
+        SmartSelectionReader* smartSelectionReader =
+            dynamic_cast<SmartSelectionReader *>(this);
 
         if (smartSelectionReader) {
             fciResponse = smartSelectionReader->openChannelForAid(
@@ -448,24 +448,27 @@ std::list<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequestSet(
                 /* Close logical channel unconditionally */
                 closeLogicalChannel();
 
-                if (this->countObservers() == 0) {
+                ObservableReader* observableReader =
+                    dynamic_cast<ObservableReader *>(this);
+
+                if (observableReader &&
+                    observableReader->countObservers() == 0) {
                     /*
-                        * Not observable/observed: close immediately the
-                        * physical channel if requested.
-                        */
+                     * Not observable/observed: close immediately the
+                     * physical channel if requested.
+                     */
                     closePhysicalChannel();
                 }
 
-                std::shared_ptr<AbstractObservableLocalReader> abstractR =
-                    std::dynamic_pointer_cast<AbstractObservableLocalReader>(
-                        shared_from_this());
+                AbstractObservableLocalReader* abstractReader =
+                    dynamic_cast<AbstractObservableLocalReader *>(this);
 
-                if (abstractR) {
+                if (abstractReader) {
                     /*
-                        * Request the removal sequence when the reader is
-                        * monitored by a thread.
-                        */
-                    abstractR->startRemovalSequence();
+                     * Request the removal sequence when the reader is
+                     * monitored by a thread.
+                     */
+                    abstractReader->startRemovalSequence();
                 }
             }
         }
@@ -490,7 +493,10 @@ AbstractLocalReader::processSeRequest(std::shared_ptr<SeRequest> seRequest,
         /* Close logical channel unconditionally */
         closeLogicalChannel();
 
-        if (this->countObservers() == 0) {
+        ObservableReader* observableReader =
+                    dynamic_cast<ObservableReader *>(this);
+
+        if (observableReader && observableReader->countObservers() == 0) {
             /*
              * Not observable/observed: close immediately the physical channel
              * if requested.
@@ -498,16 +504,15 @@ AbstractLocalReader::processSeRequest(std::shared_ptr<SeRequest> seRequest,
             closePhysicalChannel();
         }
 
-        std::shared_ptr<AbstractObservableLocalReader> abstractR =
-            std::dynamic_pointer_cast<AbstractObservableLocalReader>(
-                shared_from_this());
+        AbstractObservableLocalReader* abstractReader =
+                    dynamic_cast<AbstractObservableLocalReader *>(this);
 
-        if (abstractR) {
+        if (abstractReader) {
             /*
              * Request the removal sequence when the reader is
              * monitored by a thread.
              */
-            abstractR->startRemovalSequence();
+            abstractReader->startRemovalSequence();
         }
     }
 

@@ -36,7 +36,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol
@@ -53,7 +53,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduCommandBuilder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduResponseParser.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractIso7816CommandBuilder.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/command/CommandsTable.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/CommandsTable.cpp
 
 	# selection
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractMatchingSe.cpp
@@ -66,7 +66,6 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	# seproxy - event
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsResponse.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservablePlugin.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservableReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/PluginEvent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ReaderEvent.cpp
@@ -83,30 +82,31 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ProxyReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SelectionStatus.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeRequest.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponse.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponse.cpp
 
-    # seproxy - plugin - local - monitoring
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring/CardPresentMonitoringJob.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring/SmartInsertionMonitoringJob.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring/SmartRemovalMonitoringJob.cpp
+	# seproxy - plugin - local - monitoring
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring/CardPresentMonitoringJob.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring/SmartInsertionMonitoringJob.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring/SmartRemovalMonitoringJob.cpp
 
 	# seproxy - plugin - local - state
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state/WaitForSeInsertion.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state/WaitForSeProcessing.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state/WaitForSeRemoval.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state/WaitForStartDetect.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state/WaitForSeInsertion.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state/WaitForSeProcessing.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state/WaitForSeRemoval.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state/WaitForStartDetect.cpp
 
-    # seproxy - plugin - local
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReader.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableLocalReader.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableState.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/MonitoringPool.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/ObservableReaderStateService.cpp
+	# seproxy - plugin - local
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableLocalReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableState.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/MonitoringPool.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/ObservableReaderStateService.cpp
 
 	# seproxy - plugin
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractPlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractPlugin.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractReader.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractThreadedObservablePlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservablePlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractThreadedObservablePlugin.cpp
 
 	# seproxy - protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/SeCommonProtocols.cpp
@@ -114,6 +114,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/TransmissionMode.cpp
 
 	# seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/AbstractSeProxyComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ChannelControl.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ReaderPlugin.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ReaderPoolPlugin.cpp
@@ -125,7 +126,6 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/util/ByteArrayUtil.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/util/Configurable.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/util/Nameable.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/Observable.cpp
 
 	# util - bertlv
 	${CMAKE_CURRENT_SOURCE_DIR}/util/bertlv/Tag.cpp

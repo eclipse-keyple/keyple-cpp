@@ -29,28 +29,28 @@ namespace transaction {
 class CalypsoSamTest : public std::enable_shared_from_this<CalypsoSamTest> {
     /** basic CalypsoSam test: nominal ATR parsing */
 public:
-    virtual void test_CalypsoSam_1();
+    void test_CalypsoSam_1();
 
     /* S1D D1 */
-    virtual void test_CalypsoSam_2();
+    void test_CalypsoSam_2();
 
     /* S1D D2 */
-    virtual void test_CalypsoSam_3();
+    void test_CalypsoSam_3();
 
     /* C1 */
-    virtual void test_CalypsoSam_4();
+    void test_CalypsoSam_4();
 
     /* E1 */
-    virtual void test_CalypsoSam_5();
+    void test_CalypsoSam_5();
 
     /* Unrecognized E2 */
-    virtual void test_CalypsoSam_6();
+    void test_CalypsoSam_6();
 
     /* Bad Calypso SAM ATR (0000 instead of 9000) */
-    virtual void test_CalypsoSam_7();
+    void test_CalypsoSam_7();
 
     /* Bad Calypso SAM ATR (empty array) */
-    virtual void test_CalypsoSam_8();
+    void test_CalypsoSam_8();
 };
 
 }

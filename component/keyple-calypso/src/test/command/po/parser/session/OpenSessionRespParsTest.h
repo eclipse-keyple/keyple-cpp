@@ -48,21 +48,21 @@ private:
     void check(std::shared_ptr<AbstractOpenSessionRespPars> resp);
 
 public:
-    virtual void testgetResponse_rev2_4();
+    void testgetResponse_rev2_4();
 
-    virtual void testgetResponse_rev2_4_no_data();
+    void testgetResponse_rev2_4_no_data();
 
-    virtual void testgetResponse_rev2_4_non_ratified();
+    void testgetResponse_rev2_4_non_ratified();
 
-    virtual void testgetResponse_rev2_4_no_data_non_ratified();
+    void testgetResponse_rev2_4_no_data_non_ratified();
 
-    virtual void testgetResponse_rev2_4_bad_length_inf();
+    void testgetResponse_rev2_4_bad_length_inf();
 
-    virtual void testgetResponse_rev2_4_bad_length_sup();
+    void testgetResponse_rev2_4_bad_length_sup();
 
-    virtual void testgetResponse_rev3_1();
+    void testgetResponse_rev3_1();
 
-    virtual void testgetResponse_rev3_2();
+    void testgetResponse_rev3_2();
 };
 
 }

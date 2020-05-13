@@ -34,7 +34,8 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Digest Init APDU command.
  */
-class DigestInitCmdBuild : public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API DigestInitCmdBuild
+: public AbstractSamCommandBuilder {
 public:
     /**
      * Instantiates a new DigestInitCmdBuild.

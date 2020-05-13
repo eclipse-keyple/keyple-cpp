@@ -27,7 +27,7 @@ namespace local {
  * Interface implemented by the readers able to handle natively the SE removal
  * process.
  */
-class SmartRemovalReader : public ObservableReader {
+class SmartRemovalReader : public virtual ObservableReader {
 public:
     /**
      * Wait until the SE disappears.

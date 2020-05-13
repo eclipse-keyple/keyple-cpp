@@ -29,29 +29,29 @@ namespace message {
 
 class SeResponseTest : public std::enable_shared_from_this<SeResponseTest> {
 public:
-    virtual void
+    void
     constructorSuccessfullResponseMatch();
 
-    virtual void
+    void
     constructorSuccessfullResponseNoMatch();
 
-    virtual void constructorATRNull();
+    void constructorATRNull();
 
-    virtual void constructorFCINull();
+    void constructorFCINull();
 
-    virtual void constructorFCIAndATRNull();
+    void constructorFCIAndATRNull();
 
-    virtual void testEquals();
+    void testEquals();
 
-    virtual void testThisEquals();
+    void testThisEquals();
 
-    virtual void testNotEquals();
+    void testNotEquals();
 
-    virtual void testNotEqualsNull();
+    void testNotEqualsNull();
 
-    virtual void hashcode();
+    void hashcode();
 
-    virtual void hashcodeNull();
+    void hashcodeNull();
 
     /*
      * HELPERS

@@ -36,7 +36,8 @@ using namespace keyple::core::seproxy::message;
  * Update Record response parser. See specs: Calypso / page 96 / 9.4.11 - Update
  * Record
  */
-class UpdateRecordRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API UpdateRecordRespPars final
+: public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new UpdateRecordRespPars.

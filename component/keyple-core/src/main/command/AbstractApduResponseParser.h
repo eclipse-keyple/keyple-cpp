@@ -90,12 +90,7 @@ public:
      *
      * @param response response to parse
      */
-    AbstractApduResponseParser(std::shared_ptr<ApduResponse> response);
-
-    /**
-     * Default constructor
-     */
-    AbstractApduResponseParser();
+    AbstractApduResponseParser(const std::shared_ptr<ApduResponse>& response);
 
     /**
      *
@@ -109,12 +104,7 @@ public:
      *
      * @param response the apdu response
      */
-    void setApduResponse(std::shared_ptr<ApduResponse> response);
-
-    /**
-     *
-     */
-    bool isInitialized();
+    void setApduResponse(const std::shared_ptr<ApduResponse>& response);
 
     /**
      * Gets the apdu response.
@@ -126,17 +116,18 @@ public:
     /**
      * Checks if is successful.
      *
-     * @return if the status is successful from the statusTable according to the current status
-     *         code.
+     * @return if the status is successful from the statusTable according to the
+     *         current status code.
      */
     virtual bool isSuccessful() const;
 
     /**
      * Gets the status information.
      *
-     * @return the ASCII message from the statusTable for the current status code.
+     * @return the ASCII message from the statusTable for the current status
+     *         code.
      */
-    std::string getStatusInformation();
+    std::string getStatusInformation() const;
 
 protected:
     /**
@@ -156,7 +147,7 @@ protected:
      * @return Status table
      */
     virtual std::unordered_map<int, std::shared_ptr<StatusProperties>>
-    getStatusTable() const;
+        getStatusTable() const;
 
 private:
     /**
@@ -172,15 +163,6 @@ private:
      *
      */
     static AbstractApduResponseParser::StaticConstructor staticConstructor;
-
-    /**
-     * Indicates whether the ApduResponse has been provided or not
-     */
-    bool initialized = false;
-
-    // Note: The conversion of all commands was done with:
-    // Input regex: new byte\[\] \{\(byte\) 0x([0-9A-Za-z]{2})\, \(byte\) 0x([0-9A-Za-z]{2})\}
-    // Output regex: 0x$1$2
 
     /**
      *

@@ -13,14 +13,9 @@
  ******************************************************************************/
 
 #include "AbstractMatchingSe.h"
-#include "ApduResponse.h"
 #include "ByteArrayUtil.h"
-#include "ChannelControl.h"
 #include "GenericSeSelectionRequest.h"
 #include "LoggerFactory.h"
-#include "KeypleBaseException.h"
-#include "KeypleReaderException.h"
-#include "Matcher.h"
 #include "MatchingSelection.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"

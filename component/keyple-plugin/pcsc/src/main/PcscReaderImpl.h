@@ -43,7 +43,7 @@ using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::protocol;
 
 class KEYPLEPLUGINPCSC_API PcscReaderImpl
-: public AbstractObservableLocalReader, public PcscReader,
+: public virtual AbstractObservableLocalReader, public virtual PcscReader,
   public SmartInsertionReader, public SmartRemovalReader {
 public:
     /**
@@ -59,7 +59,7 @@ public:
     /**
      *
      */
-    PcscReaderImpl(const PcscReaderImpl& o);
+    //PcscReaderImpl(const PcscReaderImpl& o);
 
     /**
      *
@@ -132,45 +132,7 @@ public:
     /**
      *
      */
-    void notifyObservers(std::shared_ptr<ReaderEvent> event) override;
-
-    /**
-     *
-     */
     std::shared_ptr<ObservableReaderStateService> initStateService() override;
-
-    /**
-     * Remove all observers at once
-     *
-     * /!\ Required to MSVC to authorize PcscReaderImpl instance.
-     */
-    void clearObservers() override;
-
-    /**
-     *
-     */
-    void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
-        NotificationMode notificationMode) override;
-
-    /**
-     *
-     */
-    void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
-        NotificationMode notificationMode, PollingMode pollingMode) override;
-
-    /**
-     *
-     */
-    void addObserver(std::shared_ptr<ReaderObserver> observer) override;
-
-    /**
-     *
-     */
-    void notifySeProcessed() override;
 
 protected:
     /**
@@ -256,30 +218,6 @@ protected:
      * @throws KeypleChannelStateException if a reader error occurs
      */
     void openPhysicalChannel() override;
-
-    /**
-     *
-     */
-    std::shared_ptr<PcscReaderImpl> shared_from_this()
-    {
-        return std::static_pointer_cast<PcscReaderImpl>(
-            AbstractObservableLocalReader::shared_from_this());
-    }
-
-    /**
-     *
-     */
-    void removeObserver(std::shared_ptr<ReaderObserver> observer) override;
-
-    /**
-     *
-     */
-    void startSeDetection(PollingMode pollingMode) override;
-
-    /**
-     *
-     */
-    void stopSeDetection() override;
 
 private:
     /**

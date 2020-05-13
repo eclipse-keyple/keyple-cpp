@@ -36,8 +36,8 @@ namespace core {
 namespace seproxy {
 namespace message {
 
-class SelectionStatus : public std::enable_shared_from_this<SelectionStatus>,
-                        public Object {
+class KEYPLECORE_API SelectionStatus
+: public std::enable_shared_from_this<SelectionStatus>, public Object {
 public:
     /**
      *
