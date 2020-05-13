@@ -53,13 +53,6 @@ KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(
 {
 }
 
-KeypleCalypsoSecureSessionException::KeypleCalypsoSecureSessionException(
-    KeypleCalypsoSecureSessionException& o)
-: KeypleCalypsoSecureSessionException(o.getMessage(), o.type, o.getRequests(),
-                                      o.getResponses())
-{
-}
-
 KeypleCalypsoSecureSessionException::Type
 KeypleCalypsoSecureSessionException::getType()
 {
