@@ -109,7 +109,7 @@ void PcscTerminal::establishContext()
     if (ret != SCARD_S_SUCCESS) {
         this->contextEstablished = false;
         logger->error("SCardEstablishContext failed with error: %\n",
-                      pcsc_stringify_error(ret));
+                      std::string(pcsc_stringify_error(ret)));
         throw PcscTerminalException("SCardEstablishContext failed");
     }
 
@@ -150,7 +150,7 @@ bool PcscTerminal::isCardPresent(bool release)
         if (rv != static_cast<LONG>(SCARD_E_NO_SMARTCARD) &&
             rv != static_cast<LONG>(SCARD_W_REMOVED_CARD))
             logger->debug("isCardPresent - error connecting to card (%)\n",
-                          pcsc_stringify_error(rv));
+                          std::string(pcsc_stringify_error(rv)));
 
         if (release)
             releaseContext();
@@ -252,7 +252,7 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
                      &this->protocol, _atr, &atrLen);
     if (rv != SCARD_S_SUCCESS) {
         logger->error("openAndConnect - SCardStatus failed (s)\n",
-                      pcsc_stringify_error(rv));
+                      std::string(pcsc_stringify_error(rv)));
         releaseContext();
         throw PcscTerminalException("openAndConnect failed");
     } else {
@@ -362,7 +362,7 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
                       _apduIn.size(), NULL, (LPBYTE)r_apdu, &dwRecv);
         if (rv != SCARD_S_SUCCESS) {
             logger->error("SCardEstablishContext failed with error: %\n",
-                pcsc_stringify_error(rv));
+                          std::string(pcsc_stringify_error(rv)));
             throw PcscTerminalException("ScardTransmit failed");
         }
         std::vector<uint8_t> response(r_apdu, r_apdu + dwRecv);
