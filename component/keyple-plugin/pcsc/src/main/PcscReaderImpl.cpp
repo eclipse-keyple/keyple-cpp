@@ -205,8 +205,11 @@ bool PcscReaderImpl::waitForCardAbsentNative()
         while (loopWaitSeRemoval) {
             logger->trace("[%] waitForCardAbsentNative => looping\n",getName());
             if (terminal.waitForCardAbsent(removalLatency)) {
-                /* Card removed */
-                return true;
+                /* notify removal only if expected */
+                if(loopWaitSeRemoval) {
+                    /* Card removed */
+                    return true;
+                }
             } 
 
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
