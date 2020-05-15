@@ -70,9 +70,13 @@ const std::vector<std::string>& PcscTerminal::listTerminals()
         throw PcscTerminalException("SCardListReaders failed");
     }
 
+    if (!len)
+        /* No readers to add to list */
+        return list;
+
     readers = (char*)calloc(len, sizeof(char));
 
-    if (!len || !readers)
+    if (!readers)
         /* No readers to add to list */
         return list;
 
