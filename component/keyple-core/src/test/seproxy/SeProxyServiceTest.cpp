@@ -110,7 +110,7 @@ SeProxyServiceTest::getPluginList()
 
     return plugins;
 }
-}
+
 }
 }
 }

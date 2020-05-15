@@ -82,5 +82,4 @@ std::string StubSamHoplink::getSeProcotol()
 }
 }
 }
-}
-}
+
