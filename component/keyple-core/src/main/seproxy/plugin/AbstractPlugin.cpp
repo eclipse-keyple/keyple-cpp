@@ -38,18 +38,6 @@ using namespace keyple::core::seproxy::message;
 AbstractPlugin::AbstractPlugin(const std::string& name)
 : AbstractSeProxyComponent(name)
 {
-    try {
-        readers = initNativeReaders();
-    } catch (KeypleReaderException& e) {
-        (void)e;
-        throw KeypleRuntimeException("Could not instanciate readers in plugin"
-                                     " constructor");
-    }
-}
-
-std::set<std::shared_ptr<SeReader>> AbstractPlugin::initNativeReaders()
-{
-    return std::set<std::shared_ptr<SeReader>>();
 }
 
 std::set<std::shared_ptr<SeReader>>& AbstractPlugin::getReaders()
