@@ -71,7 +71,7 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
              */
             logger->trace("[%] onEvent => Inserted SE hasn't matched\n",
                           reader->getName());
-            switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
+            switchState(MonitoringState::WAIT_FOR_SE_REMOVAL);
         }
         break;
     case InternalEvent::STOP_DETECT:
