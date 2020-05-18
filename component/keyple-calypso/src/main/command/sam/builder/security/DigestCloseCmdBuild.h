@@ -36,7 +36,7 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Digest Close APDU command.
  */
-class DigestCloseCmdBuild : public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API DigestCloseCmdBuild : public AbstractSamCommandBuilder {
 public:
     /**
      * Instantiates a new DigestCloseCmdBuild .

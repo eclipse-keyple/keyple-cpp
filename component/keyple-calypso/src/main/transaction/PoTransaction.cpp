@@ -159,7 +159,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
                           e.what());
             throw e;
 		}
-        
+
         /* increment command number */
         numberOfSamCmd++;
 
@@ -198,7 +198,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req =
             samSeRequest->getApduRequests();
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "Null response received",
             KeypleCalypsoSecureSessionException::Type::SAM, req, emptyVector);
     }
@@ -224,7 +224,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
         logger->debug("processAtomicOpening => identification: "
                       "TERMINALCHALLENGE = %\n", sessionTerminalChallenge);
     } else {
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "Invalid message received",
             KeypleCalypsoSecureSessionException::Type::SAM, samApduRequestList,
             samApduResponseList);
@@ -279,7 +279,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req =
             poSeRequest->getApduRequests();
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "Null response received",
             KeypleCalypsoSecureSessionException::Type::PO, req, emptyVector);
     }
@@ -288,7 +288,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req =
             poSeRequest->getApduRequests();
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "The logical channel was not open",
             KeypleCalypsoSecureSessionException::Type::PO, req, emptyVector);
     }
@@ -299,7 +299,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
 
     /* Do some basic checks */
     if (poApduRequestList.size() != poApduResponseList.size()) {
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "Inconsistent requests and responses",
             KeypleCalypsoSecureSessionException::Type::PO, poApduRequestList,
             poApduResponseList);
@@ -307,7 +307,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicOpening(
 
     for (auto apduR : poApduResponseList) {
         if (!apduR->isSuccessful()) {
-            throw std::make_shared<KeypleCalypsoSecureSessionException>(
+            throw KeypleCalypsoSecureSessionException(
                 "Invalid response",
                 KeypleCalypsoSecureSessionException::Type::PO,
                 poApduRequestList, poApduResponseList);
@@ -449,7 +449,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicPoCommands(
         std::vector<std::shared_ptr<ApduRequest>> req =
             poSeRequest->getApduRequests();
 
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "Null response received",
             KeypleCalypsoSecureSessionException::Type::PO, req, emptyVector);
     }
@@ -459,7 +459,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicPoCommands(
         std::vector<std::shared_ptr<ApduRequest>> req =
             poSeRequest->getApduRequests();
 
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "The logical channel was not open",
             KeypleCalypsoSecureSessionException::Type::PO, req, emptyVector);
     }
@@ -470,7 +470,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicPoCommands(
 
     /* Do some basic checks */
     if (poApduRequestList.size() != poApduResponseList.size()) {
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "Inconsistent requests and responses",
             KeypleCalypsoSecureSessionException::Type::PO, poApduRequestList,
             poApduResponseList);
@@ -478,7 +478,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicPoCommands(
 
     for (auto apduR : poApduResponseList) {
         if (!apduR->isSuccessful()) {
-            throw std::make_shared<KeypleCalypsoSecureSessionException>(
+            throw KeypleCalypsoSecureSessionException(
                 "Invalid response",
                 KeypleCalypsoSecureSessionException::Type::PO,
                 poApduRequestList, poApduResponseList);
@@ -542,7 +542,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
                                                     poAnticipatedResponses[i]);
             }
         } else {
-            throw std::make_shared<KeypleCalypsoSecureSessionException>(
+            throw KeypleCalypsoSecureSessionException(
                 "Inconsistent requests and anticipated responses",
                 KeypleCalypsoSecureSessionException::Type::PO,
                 poApduRequestList, poAnticipatedResponses);
@@ -567,7 +567,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         std::vector<std::shared_ptr<ApduRequest>> req =
             samSeRequest->getApduRequests();
 
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "Null response received\n",
             KeypleCalypsoSecureSessionException::Type::SAM, req, emptyVector);
     }
@@ -576,7 +576,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         std::vector<std::shared_ptr<ApduResponse>> emptyVector;
         std::vector<std::shared_ptr<ApduRequest>> req =
             samSeRequest->getApduRequests();
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "The logical channel was not open\n",
             KeypleCalypsoSecureSessionException::Type::PO, req, emptyVector);
     }
@@ -695,7 +695,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         std::vector<std::shared_ptr<ApduRequest>> req =
             poSeRequest->getApduRequests();
 
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "Null response received\n",
             KeypleCalypsoSecureSessionException::Type::PO, req, emptyVector);
     }
@@ -705,7 +705,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         std::vector<std::shared_ptr<ApduRequest>> req =
             poSeRequest->getApduRequests();
 
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "The logical channel was not open\n",
             KeypleCalypsoSecureSessionException::Type::PO, req, emptyVector);
     }
@@ -724,7 +724,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
             poApduResponseList[closeCommandIndex]);
 
     if (!poCloseSessionPars->isSuccessful()) {
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "Didn't get a signature",
             KeypleCalypsoSecureSessionException::Type::PO, poApduRequestList,
             poApduResponseList);
@@ -754,7 +754,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         std::vector<std::shared_ptr<ApduRequest>> req =
             samSeRequest->getApduRequests();
 
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "Null response received",
             KeypleCalypsoSecureSessionException::Type::SAM, req, emptyVector);
     }
@@ -764,7 +764,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         std::vector<std::shared_ptr<ApduRequest>> req =
             samSeRequest->getApduRequests();
 
-        throw std::make_shared<KeypleCalypsoSecureSessionException>(
+        throw KeypleCalypsoSecureSessionException(
             "The logical channel was not open\n",
             KeypleCalypsoSecureSessionException::Type::SAM, req, emptyVector);
     }
@@ -833,7 +833,7 @@ bool PoTransaction::isSuccessful()
 bool PoTransaction::wasRatified()
 {
     if (sessionState == SessionState::SESSION_UNINITIALIZED) {
-        throw std::make_shared<IllegalStateException>("No active session\n");
+        throw IllegalStateException("No active session\n");
     }
 
     return wasRatified_Renamed;
@@ -842,7 +842,7 @@ bool PoTransaction::wasRatified()
 const std::vector<uint8_t>& PoTransaction::getOpenRecordDataRead() const
 {
     if (sessionState == SessionState::SESSION_UNINITIALIZED) {
-        throw std::make_shared<IllegalStateException>("No active session\n");
+        throw IllegalStateException("No active session\n");
     }
 
     return openRecordDataRead;
@@ -1215,7 +1215,7 @@ PoTransaction::AnticipatedResponseBuilder::getResponses(
                         sfi, currentCounterValue, addSubtractValue,
                         newCounterValue);
                 } else {
-                    throw std::make_shared<KeypleCalypsoSecureSessionException>(
+                    throw KeypleCalypsoSecureSessionException(
                         StringHelper::formatSimple(
                             "Anticipated response. COMMAND = %s. Unable "
                             "to determine anticipated counter value. SFI"
@@ -1369,7 +1369,7 @@ bool PoTransaction::processPoCommands(ChannelControl channelControl)
 
     /* This method should be called only if no session was previously open */
     if (sessionState == SessionState::SESSION_OPEN) {
-        throw std::make_shared<IllegalStateException>("A session is open");
+        throw IllegalStateException("A session is open");
     }
 
     bool poProcessSuccess = true;
@@ -1399,7 +1399,7 @@ bool PoTransaction::processPoCommandsInSession()
 
     /** This method should be called only if a session was previously open */
     if (sessionState != SessionState::SESSION_OPEN) {
-        throw std::make_shared<IllegalStateException>("No open session");
+        throw IllegalStateException("No open session");
     }
 
     /*
@@ -1734,7 +1734,7 @@ bool PoTransaction::createResponseParsers(
 
         std::shared_ptr<
             PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>
-            poBuilderParser = *commandIterator;
+            poBuilderParser = *commandIterator++;
         std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
             commandBuilder = poBuilderParser->getCommandBuilder();
         std::shared_ptr<AbstractPoResponseParser> responseParser =

@@ -78,6 +78,7 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
     }
 }
 
+/*
 PcscReaderImpl::PcscReaderImpl(const PcscReaderImpl& o)
 : Nameable(), Configurable(),
   AbstractObservableLocalReader(o.pluginName, o.terminal.getName()),
@@ -88,6 +89,7 @@ PcscReaderImpl::PcscReaderImpl(const PcscReaderImpl& o)
 {
     this->stateService = o.stateService;
 }
+*/
 
 std::shared_ptr<ObservableReaderStateService> PcscReaderImpl::initStateService()
 {
@@ -203,18 +205,12 @@ bool PcscReaderImpl::waitForCardAbsentNative()
         while (loopWaitSeRemoval) {
             logger->trace("[%] waitForCardAbsentNative => looping\n",getName());
             if (terminal.waitForCardAbsent(removalLatency)) {
-                /* Card removed */
-                return true;
-            } else {
-                logger->debug("FIXME. Do we need to handle a thread"
-                              "interruption here?\n");
-                /*                    if (Thread.interrupted()) {
-                    logger->debug("[%s] waitForCardAbsentNative => task " \
-                                    "has been cancelled\n", this->getName());
-*/                        /* Task has been cancelled */
-                //return false;
-                //                    }
-            }
+                /* notify removal only if expected */
+                if(loopWaitSeRemoval) {
+                    /* Card removed */
+                    return true;
+                }
+            } 
 
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
@@ -450,57 +446,6 @@ TransmissionMode PcscReaderImpl::getTransmissionMode()
             return TransmissionMode::CONTACTS;
         }
     }
-}
-
-void PcscReaderImpl::notifyObservers(std::shared_ptr<ReaderEvent> event)
-{
-    AbstractObservableLocalReader::notifyObservers(event);
-}
-
-void PcscReaderImpl::addObserver(std::shared_ptr<ReaderObserver> observer)
-{
-    AbstractObservableLocalReader::addObserver(observer);
-}
-
-void PcscReaderImpl::removeObserver(std::shared_ptr<ReaderObserver> observer)
-{
-    AbstractObservableLocalReader::removeObserver(observer);
-}
-
-void PcscReaderImpl::startSeDetection(PollingMode pollingMode)
-{
-    AbstractObservableLocalReader::startSeDetection(pollingMode);
-}
-
-void PcscReaderImpl::stopSeDetection()
-{
-    AbstractObservableLocalReader::stopSeDetection();
-}
-
-void PcscReaderImpl::setDefaultSelectionRequest(
-    std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
-    NotificationMode notificationMode)
-{
-    AbstractObservableLocalReader::setDefaultSelectionRequest(
-        defaultSelectionsRequest, notificationMode);
-}
-
-void PcscReaderImpl::setDefaultSelectionRequest(
-    std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
-    NotificationMode notificationMode, PollingMode pollingMode)
-{
-    AbstractObservableLocalReader::setDefaultSelectionRequest(
-        defaultSelectionsRequest, notificationMode, pollingMode);
-}
-
-void PcscReaderImpl::clearObservers()
-{
-    AbstractObservableLocalReader::clearObservers();
-}
-
-void PcscReaderImpl::notifySeProcessed()
-{
-    AbstractObservableLocalReader::notifySeProcessed();
 }
 
 }

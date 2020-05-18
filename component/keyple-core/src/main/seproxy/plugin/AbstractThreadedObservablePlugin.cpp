@@ -34,7 +34,7 @@ std::shared_ptr<std::set<std::string>> nativeReadersNames =
 
 AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(
     const std::string& name)
-: AbstractPlugin(name)
+: AbstractObservablePlugin(name)
 {
     logger->debug("constructor (name: %)\n", name);
 }
@@ -48,11 +48,11 @@ void AbstractThreadedObservablePlugin::finalize()
 }
 
 void AbstractThreadedObservablePlugin::addObserver(
-    std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+    const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
 {
-    AbstractPlugin::addObserver(observer);
+    AbstractObservablePlugin::addObserver(observer);
 
-    if (AbstractPlugin::countObservers() == 1) {
+    if (countObservers() == 1) {
         logger->debug("Start monitoring the plugin %\n", getName());
         thread = std::make_shared<EventThread>(shared_from_this(), getName());
         thread->start();
@@ -60,11 +60,11 @@ void AbstractThreadedObservablePlugin::addObserver(
 }
 
 void AbstractThreadedObservablePlugin::removeObserver(
-    std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+    const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
 {
-    AbstractPlugin::removeObserver(observer);
+    AbstractObservablePlugin::removeObserver(observer);
 
-    if (AbstractPlugin::countObservers() == 0) {
+    if (countObservers() == 0) {
         logger->debug("Stop the plugin monitoring\n");
         if (thread != nullptr) {
             thread->end();
@@ -74,7 +74,7 @@ void AbstractThreadedObservablePlugin::removeObserver(
 
 void AbstractThreadedObservablePlugin::clearObservers()
 {
-    AbstractPlugin::clearObservers();
+    AbstractObservablePlugin::clearObservers();
 
     if (thread != nullptr) {
         logger->debug("Stop the plugin monitoring\n");

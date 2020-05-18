@@ -20,8 +20,9 @@ namespace stub {
 
 using namespace keyple::core::seproxy;
 
+
 StubPoolPluginFactory::StubPoolPluginFactory(const std::string& pluginName)
-: pluginName(pluginName)
+: pluginName(pluginName), uniqueInstance(pluginName)
 {
 }
 
@@ -32,8 +33,6 @@ const std::string& StubPoolPluginFactory::getPluginName()
 
 ReaderPlugin& StubPoolPluginFactory::getPluginInstance()
 {
-    static StubPoolPluginImpl uniqueInstance = StubPoolPluginImpl(pluginName);
-
     return uniqueInstance;
 }
 

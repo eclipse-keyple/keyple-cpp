@@ -13,14 +13,9 @@
  ******************************************************************************/
 
 #include "AbstractMatchingSe.h"
-#include "ApduResponse.h"
 #include "ByteArrayUtil.h"
-#include "ChannelControl.h"
 #include "GenericSeSelectionRequest.h"
 #include "LoggerFactory.h"
-#include "KeypleBaseException.h"
-#include "KeypleReaderException.h"
-#include "Matcher.h"
 #include "MatchingSelection.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
@@ -88,7 +83,7 @@ int main(int argc, char** argv)
 
     /* Check if the reader exists */
     if (seReader == nullptr) {
-        throw std::make_shared<IllegalStateException>("Bad SE reader setup");
+        throw IllegalStateException("Bad SE reader setup");
     }
 
     logger->info("=============== UseCase Generic #4: AID based sequential "

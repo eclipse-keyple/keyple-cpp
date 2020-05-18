@@ -20,6 +20,9 @@
 /* Core */
 #include "AbstractApduResponseParser.h"
 
+/* Calypso */
+#include "KeypleCalypsoExport.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -34,7 +37,8 @@ using namespace keyple::core::seproxy::message;
  * PO Get challenge response parser. See specs: Calypso / page 108 / 9.54 - Get
  * challenge
  */
-class PoGetChallengeRespPars final : public AbstractApduResponseParser {
+class KEYPLECALYPSO_API PoGetChallengeRespPars final
+: public AbstractApduResponseParser {
 public:
     /**
      * Instantiates a new PoGetChallengeRespPars.

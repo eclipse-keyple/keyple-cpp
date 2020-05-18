@@ -37,11 +37,11 @@ using namespace keyple::core::seproxy::message;
 
 // TODO: Auto-generated Javadoc
 /**
-* The Class AppendRecordCmdBuild. This class provides the dedicated constructor
-* to build the Update Record APDU command.
-*
-*/
-class AppendRecordCmdBuild final
+ * The Class AppendRecordCmdBuild. This class provides the dedicated constructor
+ * to build the Update Record APDU command.
+ *
+ */
+class KEYPLECALYPSO_API AppendRecordCmdBuild final
 : public AbstractPoCommandBuilder<AppendRecordRespPars>,
   public PoSendableInSession,
   public PoModificationCommand {

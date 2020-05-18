@@ -26,7 +26,7 @@ using namespace keyple::core::seproxy::event;
  * The PcscPlugin interface provides the public elements used to manage the
  * PC/SC plugin.
  */
-class PcscPlugin : public ObservablePlugin {
+class PcscPlugin : public virtual ObservablePlugin {
 public:
     /**
      *

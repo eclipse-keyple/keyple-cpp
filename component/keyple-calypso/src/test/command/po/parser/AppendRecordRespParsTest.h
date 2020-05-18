@@ -30,7 +30,7 @@ namespace security {
 class AppendRecordRespParsTest
 : public std::enable_shared_from_this<AppendRecordRespParsTest> {
 public:
-    virtual void appendRecordRespPars();
+    void appendRecordRespPars();
 };
 }
 }

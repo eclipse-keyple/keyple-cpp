@@ -18,17 +18,11 @@
 #include <set>
 #include <string>
 
-/* Common*/
-#include "Configurable.h"
-#include "LoggerFactory.h"
-#include "Nameable.h"
-
 /* Core*/
 #include "AbstractReader.h"
+#include "AbstractSeProxyComponent.h"
 #include "KeypleCoreExport.h"
 #include "ReaderPlugin.h"
-#include "ObservablePlugin.h"
-#include "PluginEvent.h"
 #include "ProxyReader.h"
 
 /* Forward declaration */
@@ -57,8 +51,7 @@ using namespace keyple::common;
  * Observable plugin. These plugin can report when a reader is added or removed.
  */
 class KEYPLECORE_API AbstractPlugin
-: public Observable<PluginEvent>, public virtual ReaderPlugin,
-  public std::enable_shared_from_this<AbstractPlugin> {
+: public AbstractSeProxyComponent, public virtual ReaderPlugin {
 public:
     /**
      *
@@ -81,7 +74,7 @@ public:
      *       due to set::set or std::shared_ptr preventing the base-derived
      *       mechanism to work.
      */
-    std::set<std::shared_ptr<SeReader>>& getReaders() override;
+    virtual std::set<std::shared_ptr<SeReader>>& getReaders() override;
 
     /**
      * Returns the current list of reader names.
@@ -90,29 +83,7 @@ public:
      *
      * @return a list of String
      */
-    const std::set<std::string> getReaderNames() override;
-
-    /**
-     * Add a plugin observer.
-     * <p>
-     * The observer will receive all the events produced by this plugin (reader
-     * insertion, removal, etc.)
-     *
-     * @param observer the observer object
-     */
-    virtual void
-    addObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
-
-    /**
-     * Remove a plugin observer.
-     * <p>
-     * The observer will do not receive any of the events produced by this
-     * plugin.
-     *
-     * @param observer the observer object
-     */
-    virtual void
-    removeObserver(std::shared_ptr<ObservablePlugin::PluginObserver> observer);
+    virtual const std::set<std::string> getReaderNames() override;
 
     /**
      * Compare the name of the current ReaderPlugin to the name of the
@@ -138,44 +109,7 @@ public:
      */
     std::shared_ptr<SeReader> getReader(const std::string& name) override;
 
-    /**
-     * This method shall be called only from a SE Proxy plugin implementing
-     * AbstractPlugin. Push a PluginEvent of the selected AbstractPlugin to its
-     * registered Observer.
-     *
-     * @param event the event
-     */
-    void notifyObservers(std::shared_ptr<PluginEvent> event) override;
-
-    /**
-     * Set a list of parameters on a plugin.
-     * <p>
-     * See {@link #setParameter(String, String)} for more details
-     *
-     * @param parameters the new parameters
-     * @throws KeypleBaseException This method can fail when disabling the
-     *         exclusive mode as it's executed instantly
-     */
-    void setParameters(
-        const std::map<std::string, std::string>& parameters) override;
-
-    /**
-     * Gets the plugin name
-     *
-     * @return the plugin name string
-     */
-    const std::string& getName() const override;
-
 protected:
-    /**
-     *
-     */
-    std::shared_ptr<AbstractPlugin> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractPlugin>(
-            Observable<PluginEvent>::shared_from_this());
-    }
-
     /**
      * The list of readers
      */
@@ -202,19 +136,9 @@ protected:
      *
      * Alex: using SeReader instead of AbstractObservableReader
      */
-    virtual std::set<std::shared_ptr<SeReader>> initNativeReaders();
+    virtual std::set<std::shared_ptr<SeReader>> initNativeReaders() = 0;
 
 private:
-    /**
-     *
-     */
-    const std::shared_ptr<Logger> logger =
-        LoggerFactory::getLogger(typeid(AbstractPlugin));
-
-    /**
-     * The plugin name (must be unique)
-     */
-    const std::string name;
 };
 
 }

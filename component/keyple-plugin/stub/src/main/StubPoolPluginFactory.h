@@ -50,7 +50,7 @@ public:
     const std::string& getPluginName() override;
 
     /**
-     *
+     * protected in Java ?
      */
     ReaderPlugin& getPluginInstance() override;
 
@@ -59,6 +59,11 @@ private:
      *
      */
     const std::string pluginName;
+
+    /**
+     *
+     */
+    StubPoolPluginImpl uniqueInstance;
 };
 
 }

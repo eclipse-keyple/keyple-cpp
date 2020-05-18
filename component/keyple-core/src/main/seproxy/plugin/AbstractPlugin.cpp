@@ -35,28 +35,13 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-AbstractPlugin::AbstractPlugin(const std::string& name) : name(name)
+AbstractPlugin::AbstractPlugin(const std::string& name)
+: AbstractSeProxyComponent(name)
 {
-    try {
-        readers = initNativeReaders();
-    } catch (KeypleReaderException& e) {
-        (void)e;
-        throw KeypleRuntimeException("Could not instanciate readers in plugin"
-                                     " constructor");
-    }
-}
-
-std::set<std::shared_ptr<SeReader>> AbstractPlugin::initNativeReaders()
-{
-    return std::set<std::shared_ptr<SeReader>>();
 }
 
 std::set<std::shared_ptr<SeReader>>& AbstractPlugin::getReaders()
 {
-    if (!readers.size()) {
-        throw KeypleReaderException("List of readers has not been initialized");
-    }
-
     return readers;
 }
 
@@ -70,28 +55,9 @@ const std::set<std::string> AbstractPlugin::getReaderNames()
     return readerNames;
 }
 
-void AbstractPlugin::addObserver(
-    std::shared_ptr<ObservablePlugin::PluginObserver> observer)
-{
-    logger->trace("[] addObserver => Adding observer to %\n", name);
-
-    Observable<PluginEvent>::addObserver(observer);
-}
-
-void AbstractPlugin::removeObserver(
-    std::shared_ptr<ObservablePlugin::PluginObserver> observer)
-{
-    logger->trace("[%] removeObserver => Deleting a plugin observer\n", name);
-
-    Observable<PluginEvent>::removeObserver(observer);
-}
-
 int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
 {
-    logger->debug("compareTo - comparing % to %\n", name,
-                  plugin->getName());
-
-    return name.compare(plugin->getName());
+    return getName().compare(plugin->getName());
 }
 
 /*
@@ -99,9 +65,6 @@ int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
  */
 std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string& name)
 {
-    logger->debug("getReader - looking for reader: % in list of % readers\n",
-                  name, readers.size());
-
     for (auto reader : readers) {
         if (reader->getName() == name) {
             return std::shared_ptr<SeReader>(
@@ -110,30 +73,6 @@ std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string& name)
     }
 
     throw KeypleReaderNotFoundException(name);
-}
-
-const std::string& AbstractPlugin::getName() const
-{
-    return name;
-}
-
-void AbstractPlugin::notifyObservers(std::shared_ptr<PluginEvent> event)
-{
-    logger->trace("[%] AbstractPlugin => Notifying a plugin event to % "
-                  "observers. EVENTNAME = %\n",
-                  name, countObservers(), event->getEventType().getName());
-
-    setChanged();
-
-    Observable<PluginEvent>::notifyObservers(event);
-}
-
-void AbstractPlugin::setParameters(
-    const std::map<std::string, std::string>& parameters)
-{
-    for (auto const& en : parameters) {
-        setParameter(en.first, en.second);
-    }
 }
 
 }

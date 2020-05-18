@@ -20,8 +20,9 @@ namespace command {
 
 using namespace keyple::core::seproxy::message;
 
-std::unordered_map<
-    int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
+
+std::unordered_map<int, std::shared_ptr<StatusProperties>>
     AbstractApduResponseParser::STATUS_TABLE;
 
 AbstractApduResponseParser::StaticConstructor::StaticConstructor()
@@ -34,44 +35,27 @@ AbstractApduResponseParser::StaticConstructor::StaticConstructor()
 AbstractApduResponseParser::StaticConstructor
     AbstractApduResponseParser::staticConstructor;
 
-std::unordered_map<
-    int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-AbstractApduResponseParser::getStatusTable() const
+std::unordered_map<int, std::shared_ptr<StatusProperties>>
+    AbstractApduResponseParser::getStatusTable() const
 {
     return STATUS_TABLE;
 }
 
 AbstractApduResponseParser::AbstractApduResponseParser(
-    std::shared_ptr<ApduResponse> response)
+    const std::shared_ptr<ApduResponse>& response)
 {
     this->response = response;
-    initialized    = true;
-}
-
-AbstractApduResponseParser::AbstractApduResponseParser()
-{
-    initialized = false;
 }
 
 void AbstractApduResponseParser::setApduResponse(
-    std::shared_ptr<ApduResponse> response)
+    const std::shared_ptr<ApduResponse>& response)
 {
     this->response = response;
-    initialized    = true;
-}
-
-bool AbstractApduResponseParser::isInitialized()
-{
-    return initialized;
 }
 
 const std::shared_ptr<ApduResponse>
-AbstractApduResponseParser::getApduResponse() const
+    AbstractApduResponseParser::getApduResponse() const
 {
-    if (!initialized) {
-        throw IllegalStateException("The parser has not been initialized.");
-    }
-
     return response;
 }
 
@@ -80,25 +64,23 @@ int AbstractApduResponseParser::getStatusCode() const
     return response->getStatusCode();
 }
 
-std::shared_ptr<AbstractApduResponseParser::StatusProperties>
-AbstractApduResponseParser::getPropertiesForStatusCode() const
+std::shared_ptr<StatusProperties>
+    AbstractApduResponseParser::getPropertiesForStatusCode() const
 {
     return getStatusTable()[getStatusCode()];
 }
 
 bool AbstractApduResponseParser::isSuccessful() const
 {
-    if (!initialized) {
-        throw IllegalStateException("The parser has not been initialized.");
-    }
-
     std::shared_ptr<StatusProperties> props = getPropertiesForStatusCode();
+
     return props != nullptr && props->isSuccessful();
 }
 
-std::string AbstractApduResponseParser::getStatusInformation()
+std::string AbstractApduResponseParser::getStatusInformation() const
 {
     std::shared_ptr<StatusProperties> props = getPropertiesForStatusCode();
+
     return props != nullptr ? props->getInformation() : "";
 }
 

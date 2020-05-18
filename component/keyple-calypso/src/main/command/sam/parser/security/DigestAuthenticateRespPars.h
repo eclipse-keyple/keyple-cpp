@@ -21,6 +21,7 @@
 
 /* Calypso */
 #include "AbstractSamResponseParser.h"
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -36,7 +37,8 @@ using namespace keyple::core::seproxy::message;
  * Digest authentication response parser. See specs: Calypso / page 54 / 7.4.2
  * - Session MAC computation
  */
-class DigestAuthenticateRespPars : public AbstractSamResponseParser {
+class KEYPLECALYPSO_API DigestAuthenticateRespPars
+: public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new DigestAuthenticateRespPars.

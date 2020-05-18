@@ -31,7 +31,7 @@ namespace security {
 class DigestCloseCmdBuildTest
 : public std::enable_shared_from_this<DigestCloseCmdBuildTest> {
 public:
-    virtual void digestCloseCmdBuild();
+    void digestCloseCmdBuild();
 };
 }
 }

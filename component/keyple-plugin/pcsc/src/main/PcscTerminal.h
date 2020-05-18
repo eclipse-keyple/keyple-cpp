@@ -64,7 +64,7 @@ public:
     /**
      *
      */
-    void openAndConnect(std::string protocol);
+    void openAndConnect(const std::string& protocol);
 
     /**
      *

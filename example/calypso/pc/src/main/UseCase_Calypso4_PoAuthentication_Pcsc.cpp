@@ -14,29 +14,18 @@
 
 #include "CalypsoClassicInfo.h"
 #include "CalypsoUtilities.h"
-#include "KeypleBaseException.h"
-#include "ReaderUtilities.h"
-#include "KeypleReaderNotFoundException.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
-#include "PcscReader.h"
-#include "PcscReadersSettings.h"
-#include "PcscReadersSettings.h"
 #include "PcscProtocolSetting.h"
 #include "PcscReadersSettings.h"
 #include "PoSelectionRequest.h"
-#include "PoTransaction.h"
-#include "ReaderEvent.h"
 #include "SamResource.h"
 #include "SeProxyService.h"
-#include "SeReader.h"
 #include "SeSelection.h"
 
 /* Common */
-#include "ByteArrayUtil.h"
 #include "stringhelper.h"
 
 using namespace keyple::common;
@@ -47,7 +36,6 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::example::calypso::common::postructure;
 using namespace keyple::example::calypso::common::transaction;
 using namespace keyple::example::calypso::pc;
-using namespace keyple::example::generic::pc;
 using namespace keyple::plugin::pcsc;
 
 class UseCase_Calypso4_PoAuthentication_Pcsc {
@@ -81,7 +69,7 @@ int main(int argc, char** argv)
 
     /* Check if the readers exists */
     if (poReader == nullptr || samResource == nullptr) {
-        throw std::make_shared<IllegalStateException>(
+        throw IllegalStateException(
             "Bad PO or SAM reader setup");
     }
 

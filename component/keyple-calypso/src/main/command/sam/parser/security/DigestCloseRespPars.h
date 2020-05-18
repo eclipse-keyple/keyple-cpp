@@ -20,6 +20,8 @@
 /* Core */
 #include "AbstractSamResponseParser.h"
 
+#include "KeypleCalypsoExport.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -34,7 +36,8 @@ using namespace keyple::core::seproxy::message;
  * Digest close response parser. See specs: Calypso / page 54 / 7.4.2 - Session
  * MAC computation
  */
-class DigestCloseRespPars : public AbstractSamResponseParser {
+class KEYPLECALYPSO_API DigestCloseRespPars
+: public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new DigestCloseRespPars.

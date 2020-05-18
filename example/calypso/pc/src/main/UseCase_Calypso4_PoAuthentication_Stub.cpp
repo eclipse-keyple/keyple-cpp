@@ -16,14 +16,9 @@
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
 #include "CalypsoUtilities.h"
-#include "KeypleReaderNotFoundException.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader.h"
 #include "PoSelectionRequest.h"
-#include "PoSelector.h"
-#include "ReaderEvent.h"
-#include "ReaderPlugin.h"
 #include "ReadRecordsRespPars.h"
 #include "SeCommonProtocols.h"
 #include "SeProxyService.h"
@@ -77,7 +72,7 @@ int main(int argc, char** argv)
 
     /* Check if the reader exists */
     if (poReader == nullptr || samReader == nullptr) {
-        throw std::make_shared<IllegalStateException>(
+        throw IllegalStateException(
             "Bad PO or SAM reader setup");
     }
 
@@ -110,7 +105,7 @@ int main(int argc, char** argv)
 
     /* Check if the readers exists */
     if (poReader == nullptr || samReader == nullptr) {
-        throw std::make_shared<IllegalStateException>(
+        throw IllegalStateException(
             "Bad PO or SAM reader setup");
     }
 
@@ -225,10 +220,10 @@ int main(int argc, char** argv)
                     PoTransaction::SessionAccessLevel::SESSION_LVL_DEBIT, 0, 0);
 
                 if (!poProcessStatus) {
-                    throw std::make_shared<IllegalStateException>(
+                    throw IllegalStateException(
                         "processingOpening failure.");
                 }
-            
+
 				if (!poTransaction->wasRatified()) {
 					logger->info("========= Previous Secure Session was not "
 								 "ratified. =====================\n");
@@ -266,7 +261,7 @@ int main(int argc, char** argv)
 				logger->info("EventLog file data: %\n", eventLog);
 
 				if (!poProcessStatus) {
-					throw std::make_shared<IllegalStateException>(
+					throw IllegalStateException(
 						"processPoCommandsInSession failure.");
 				}
 
@@ -283,7 +278,7 @@ int main(int argc, char** argv)
 					poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
 
 				if (!poProcessStatus) {
-					throw std::make_shared<IllegalStateException>(
+					throw IllegalStateException(
 						"processClosing failure.");
 				}
             } catch (const std::invalid_argument& e) {

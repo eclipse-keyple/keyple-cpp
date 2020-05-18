@@ -30,7 +30,7 @@ namespace security {
 using namespace keyple::calypso::command::po;
 using namespace keyple::core::seproxy::message;
 
-class ChangeKeyRespPars : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API ChangeKeyRespPars : public AbstractPoResponseParser {
 private:
     /**
      *

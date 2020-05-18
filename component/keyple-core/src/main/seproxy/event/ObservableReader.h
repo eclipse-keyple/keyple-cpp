@@ -21,7 +21,6 @@
 /* Core */
 #include "AbstractDefaultSelectionsRequest.h"
 #include "KeypleCoreExport.h"
-#include "Observable.h"
 #include "ReaderEvent.h"
 #include "SeReader.h"
 
@@ -47,7 +46,7 @@ public:
     /**
      * Interface to be implemented by reader observers.
      */
-    class ReaderObserver : public Observer<ReaderEvent> {
+    class ReaderObserver {
     public:
         /**
          *
@@ -59,7 +58,7 @@ public:
         /**
          *
          */
-        virtual void update(std::shared_ptr<ReaderEvent> event) = 0;
+        virtual void update(const std::shared_ptr<ReaderEvent> event) = 0;
     };
 
     /**
@@ -90,12 +89,15 @@ public:
         /*
          * Alex: removed 'const'
          *
-         * Rationale: error: object of type 'org::eclipse::keyple::seproxy::event::ObservableReader::NotificationMode'
-         * cannot be assigned because its copy assignment operator is implicitly deleted
+         * Rationale: error: object of type 'org::eclipse::keyple::seproxy
+         * ::event::ObservableReader::NotificationMode' cannot be assigned
+         * because its copy assignment operator is implicitly deleted
          *   this->notificationMode = notificationMode;
          *                          ^
-         * note: copy assignment operator of 'NotificationMode' is implicitly deleted because field 'innerEnumValue'
-         * is of const-qualified type 'const org::eclipse::keyple::seproxy::event::ObservableReader::NotificationMode::InnerEnum'
+         * note: copy assignment operator of 'NotificationMode' is implicitly
+         * deleted because field 'innerEnumValue' is of const-qualified type
+         * 'const org::eclipse::keyple::seproxy::event::ObservableReader
+         * ::NotificationMode::InnerEnum'
          */
         InnerEnum innerEnumValue;
 
@@ -180,12 +182,13 @@ public:
         /*
          * Alex: removed 'const'
          *
-         * Rationale: error: object of type 'org::eclipse::keyple::seproxy::event::ObservableReader::NotificationMode'
-         * cannot be assigned because its copy assignment operator is implicitly deleted
+         * Rationale: error: object of type 'org::eclipse::keyple::seproxy
+         * ::event::ObservableReader::NotificationMode' cannot be assigned
+         * because its copy assignment operator is implicitly deleted
          *   this->notificationMode = notificationMode;
          *                          ^
-         * note: copy assignment operator of 'NotificationMode' is implicitly deleted becaus field 'nameValue' has no
-         * copy assignment operator
+         * note: copy assignment operator of 'NotificationMode' is implicitly
+         * deleted becaus field 'nameValue' has no copy assignment operator
          *   const std::string nameValue;
          *                     ^
          */
@@ -221,10 +224,10 @@ public:
              */
             StaticConstructor()
             {
-                //                                    for (NotificationMode env : NotificationMode.values())
-                //                                    {
-                //                                        lookup.put(env.getName(), env);
-                //                                    }
+                // for (NotificationMode env : NotificationMode.values())
+                // {
+                //     lookup.put(env.getName(), env);
+                // }
             }
         };
 
@@ -263,16 +266,19 @@ public:
      *
      * @param observer the observer object
      */
-    virtual void addObserver(std::shared_ptr<ReaderObserver> observer) = 0;
+    virtual void addObserver(const std::shared_ptr<ReaderObserver> observer)
+         = 0;
 
     /**
      * Remove a reader observer.
      * <p>
-     * The observer will not receive any of the events produced by this reader.
+     * The observer will nolonger receive any of the events produced by this
+     * reader.
      *
      * @param observer the observer object
      */
-    virtual void removeObserver(std::shared_ptr<ReaderObserver> observer) = 0;
+    virtual void removeObserver(const std::shared_ptr<ReaderObserver> observer)
+        = 0;
 
     /**
      * Push a ReaderEvent of the {@link ObservableReader} to its registered
@@ -280,10 +286,7 @@ public:
      *
      * @param event the event (see {@link ReaderEvent})
      */
-    virtual void notifyObservers(std::shared_ptr<ReaderEvent> event)
-    {
-        (void)event;
-    }
+    virtual void notifyObservers(const std::shared_ptr<ReaderEvent> event) = 0;
 
     /**
      * Remove all observers at once
@@ -293,7 +296,7 @@ public:
     /**
      * @return the number of observers
      */
-    int countObservers();
+    virtual int countObservers() = 0;
 
     /**
      * Starts the SE detection. Once activated, the application can be notified

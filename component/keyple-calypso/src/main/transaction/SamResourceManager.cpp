@@ -20,6 +20,7 @@
 
 /* Core */
 #include "ByteArrayUtil.h"
+#include "KeypleAllocationReaderException.h"
 #include "KeypleIOReaderException.h"
 #include "KeyplePluginNotFoundException.h"
 #include "MatchingSelection.h"
@@ -30,6 +31,7 @@
 #include "SeSelection.h"
 
 /* Calypso */
+#include "CalypsoNoSamResourceAvailableException.h"
 #include "SamResourceManager.h"
 #include "SamSelectionRequest.h"
 #include "SamSelector.h"
@@ -54,8 +56,8 @@ const int SamResourceManager::MAX_BLOCKING_TIME = 1000; // 10 sec
 
 SamResourceManager::SamResourceManager(
     std::shared_ptr<ReaderPlugin> samReaderPlugin,
-    const std::string& samReaderFilter)
-: samReaderPlugin(samReaderPlugin)
+    const std::string& samReaderFilter, int maxBlockingTime)
+: maxBlockingTime(maxBlockingTime), samReaderPlugin(samReaderPlugin)
 {
     if (std::dynamic_pointer_cast<ReaderPoolPlugin>(samReaderPlugin)) {
         logger->info("Create SAM resource manager from reader pool plugin: "
@@ -112,6 +114,13 @@ SamResourceManager::SamResourceManager(
     }
 }
 
+SamResourceManager::SamResourceManager(
+  std::shared_ptr<ReaderPlugin> samReaderPlugin,
+  const std::string& samReaderFilter)
+: SamResourceManager(samReaderPlugin, samReaderFilter, MAX_BLOCKING_TIME)
+{
+}
+
 std::unique_ptr<SamResource>
 SamResourceManager::createSamResource(std::shared_ptr<SeReader> samReader)
 {
@@ -149,7 +158,7 @@ SamResourceManager::allocateSamResource(const AllocationMode allocationMode,
                                         const SamIdentifier& samIdentifier)
 {
     unsigned long long maxBlockingDate =
-        System::currentTimeMillis() + MAX_BLOCKING_TIME;
+        System::currentTimeMillis() + maxBlockingTime;
     bool noSamResourceLogged = false;
 
     logger->debug("Allocating SAM reader channel...\n");
@@ -157,9 +166,17 @@ SamResourceManager::allocateSamResource(const AllocationMode allocationMode,
     while (true) {
         if (dynamicAllocationPlugin) {
             // virtually infinite number of readers
-            std::shared_ptr<SeReader> samReader =
-                (std::dynamic_pointer_cast<ReaderPoolPlugin>(samReaderPlugin))
-                    ->allocateReader(samIdentifier.getGroupReference());
+            std::shared_ptr<SeReader> samReader = nullptr;
+            try {
+                    samReader =
+                        (std::dynamic_pointer_cast<ReaderPoolPlugin>(
+                            samReaderPlugin))
+                            ->allocateReader(samIdentifier.getGroupReference());
+                } catch (const KeypleAllocationReaderException& e) {
+                    throw CalypsoNoSamResourceAvailableException(
+                              e.getMessage(), e);
+                }
+
             if (samReader != nullptr) {
                 std::unique_ptr<SamResource> samResource =
                     createSamResource(samReader);
@@ -207,15 +224,14 @@ SamResourceManager::allocateSamResource(const AllocationMode allocationMode,
             }
 
             if (System::currentTimeMillis() >= maxBlockingDate) {
-                logger->error("The allocation process failed. Timeout %d sec "
-                              "exceeded\n",
-                              (MAX_BLOCKING_TIME / 100.0));
-                return nullptr;
+                throw CalypsoNoSamResourceAvailableException(
+                          "The allocation process has timed out.");
             }
         }
     }
 
-    return nullptr;
+    throw CalypsoNoSamResourceAvailableException(
+              "The allocation process has failed.");
 }
 
 void SamResourceManager::freeSamResource(

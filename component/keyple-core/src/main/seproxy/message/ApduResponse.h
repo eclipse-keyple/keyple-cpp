@@ -43,11 +43,6 @@ class KEYPLECORE_API ApduResponse
 : public std::enable_shared_from_this<ApduResponse>, public Object {
 public:
     /**
-     *
-     */
-    static constexpr long long serialVersionUID = 6418469841122636812LL;
-
-    /**
      * Create a new ApduResponse from the provided byte array
      *
      * The internal successful status is determined by the current status code
@@ -60,7 +55,7 @@ public:
      * @param successfulStatusCodes optional list of successful status codes
      *        other than 0x9000
      */
-    ApduResponse(std::vector<uint8_t>& buffer,
+    ApduResponse(const std::vector<uint8_t>& buffer,
                  std::shared_ptr<std::set<int>> successfulStatusCodes);
 
     /**

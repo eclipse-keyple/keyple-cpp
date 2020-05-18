@@ -45,7 +45,7 @@ public:
     /**
      *
      */
-    StubPluginImpl stubPlugin;
+    StubPluginImpl& stubPlugin;
 
     /**
      * groupReference, seReader = limitation each
@@ -128,7 +128,7 @@ public:
     std::shared_ptr<SeReader> getReader(const std::string& name) override;
 
     /**
-     * 
+     *
      */
     int compareTo(std::shared_ptr<ReaderPlugin> plugin);
 

@@ -69,11 +69,11 @@ private:
     std::shared_ptr<ApduRequest> apduRequest;
 
 public:
-    virtual void readRecords_rev2_4();
+    void readRecords_rev2_4();
 
-    virtual void readRecords_rev3_1();
+    void readRecords_rev3_1();
 
-    virtual void readRecords_rev3_2();
+    void readRecords_rev3_2();
 };
 
 }

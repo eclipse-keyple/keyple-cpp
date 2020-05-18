@@ -40,6 +40,7 @@ namespace parser {
 
 using namespace keyple::core::command;
 using namespace keyple::calypso::command::po;
+
 /**
  * Read Records (00B2) response parser. See specs: Calypso / page 89 / 9.4.7
  * Read Records The {@link ReadRecordsRespPars} class holds the data resulting

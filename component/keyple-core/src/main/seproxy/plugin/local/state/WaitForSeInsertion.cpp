@@ -69,9 +69,9 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
              * stay in the same state, however switch to WAIT_FOR_SE_INSERTION
              * to relaunch the monitoring job
              */
-            logger->trace("[%s] onEvent => Inserted SE hasn't matched\n",
-                          reader->getName().c_str());
-            switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
+            logger->trace("[%] onEvent => Inserted SE hasn't matched\n",
+                          reader->getName());
+            switchState(MonitoringState::WAIT_FOR_SE_REMOVAL);
         }
         break;
     case InternalEvent::STOP_DETECT:
@@ -93,8 +93,8 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
         }
         break;
     default:
-        logger->warn("[%s] Ignore =>  Event %d received in currentState %d\n",
-                     reader->getName().c_str(), event, state);
+        logger->warn("[%] Ignore =>  Event % received in currentState %\n",
+                     reader->getName(), event, state);
         break;
     }
 }

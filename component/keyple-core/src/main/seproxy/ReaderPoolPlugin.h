@@ -14,9 +14,11 @@
 
 #pragma once
 
-#include "ReaderPlugin.h"
 #include <string>
 #include <memory>
+
+/* Core */
+#include "ReaderPlugin.h"
 
 /* Forward class declarations */
 namespace keyple {
@@ -63,9 +65,10 @@ public:
      * @param groupReference the reference of the group to which the reader
      *        belongs (may be null depending on the implementation made)
      * @return a SeReader object
+     * @throws KeypleAllocationReaderException if the allocation failed
      */
     virtual std::shared_ptr<SeReader>
-    allocateReader(const std::string& groupReference) = 0;
+        allocateReader(const std::string& groupReference) = 0;
 
     /**
      * Releases a SeReader previously allocated with allocateReader.

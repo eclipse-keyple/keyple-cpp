@@ -39,7 +39,7 @@ using namespace keyple::core::seproxy::message;
  * This class provides the dedicated constructor to build the Close Secure
  * Session APDU command.
  */
-class CloseSessionCmdBuild final
+class KEYPLECALYPSO_API CloseSessionCmdBuild final
 : public AbstractPoCommandBuilder<CloseSessionRespPars> {
 public:
     /**

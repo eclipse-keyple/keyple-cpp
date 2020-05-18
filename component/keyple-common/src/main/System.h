@@ -32,8 +32,10 @@ public:
 #if defined(WIN32)
         SYSTEMTIME time;
         GetSystemTime(&time);
-        return static_cast<long long>(((time.wSecond * 1000) +
-                                      time.wMilliseconds) * pow(10, 6));
+        return static_cast<long long>((time.wHour * 3600 * 1000 +
+                                       time.wMinute * 60 * 1000 +
+                                       time.wSecond * 1000 +
+                                       time.wMilliseconds) * pow(10, 6));
 #else
         timespec ts;
         // clock_gettime(CLOCK_MONOTONIC, &ts); // Works on FreeBSD

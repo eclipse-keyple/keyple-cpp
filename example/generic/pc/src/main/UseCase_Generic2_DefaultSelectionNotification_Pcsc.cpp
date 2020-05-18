@@ -15,20 +15,14 @@
 #include "AbstractMatchingSe.h"
 #include "ByteArrayUtil.h"
 #include "GenericSeSelectionRequest.h"
-#include "KeypleBaseException.h"
 #include "MatchingSelection.h"
-#include "ObservableReader.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
-#include "PcscReaderImpl.h"
 #include "ReaderUtilities.h"
 #include "SeCommonProtocols.h"
-#include "SelectionStatus.h"
-#include "SeProtocol.h"
 #include "SeProxyService.h"
-#include "SeReader.h"
 #include "SeSelection.h"
-#include "SeSelector.h"
+#include "StubReader.h"
 
 using namespace keyple::common;
 using namespace keyple::core::selection;
@@ -157,7 +151,7 @@ public:
          * Provide the SeReader with the selection operation to be processed
          * when a SE is inserted.
          */
-        (std::dynamic_pointer_cast<PcscReaderImpl>(seReader))
+        (std::dynamic_pointer_cast<ObservableReader>(seReader))
             ->setDefaultSelectionRequest(
                 seSelection->getSelectionOperation(),
                 ObservableReader::NotificationMode::MATCHED_ONLY,
@@ -173,7 +167,7 @@ public:
     void doSomething()
     {
         /* Set the current class as Observer of the first reader */
-        (std::dynamic_pointer_cast<PcscReaderImpl>(seReader))
+        (std::dynamic_pointer_cast<ObservableReader>(seReader))
             ->addObserver(shared_from_this());
 
         logger->info("======================================================="
@@ -234,7 +228,7 @@ public:
              * been requested, this method will do nothing.
              */
             try {
-                std::dynamic_pointer_cast<PcscReaderImpl>(
+                std::dynamic_pointer_cast<ObservableReader>(
                     SeProxyService::getInstance()
                         .getPlugin(event->getPluginName())
                         ->getReader(event->getReaderName()))

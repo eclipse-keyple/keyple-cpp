@@ -51,7 +51,8 @@ using namespace keyple::common;
 std::shared_ptr<Logger> CalypsoClassicTransactionEngine::logger =
     LoggerFactory::getLogger(typeid(CalypsoClassicTransactionEngine));
 const std::shared_ptr<SecuritySettings>
-    CalypsoClassicTransactionEngine::securitySettings;
+    CalypsoClassicTransactionEngine::securitySettings =
+        std::make_shared<SecuritySettings>();
 
 CalypsoClassicTransactionEngine::CalypsoClassicTransactionEngine()
 : AbstractReaderObserverEngine()
@@ -176,7 +177,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
         /* proceed with the sending of commands, don't close the channel */
         poProcessStatus = poTransaction->processPoCommandsInSession();
 
-        logger->info("Parsing Read Contract file: %",
+        logger->info("Parsing Read Contract file: %\n",
                      poTransaction->getResponseParser(readContractsParserIndex)
                          ->getStatusInformation());
 

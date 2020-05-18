@@ -29,26 +29,26 @@ namespace message {
 
 class ApduResponseTest : public std::enable_shared_from_this<ApduResponseTest> {
 public:
-    virtual void setUp();
+    void setUp();
 
-    virtual void constructorSuccessFullResponse();
+    void constructorSuccessFullResponse();
 
-    virtual void constructorSuccessFullResponseWithCustomCode();
+    void constructorSuccessFullResponseWithCustomCode();
 
-    virtual void constructorFailResponse();
+    void constructorFailResponse();
 
-    virtual void constructorFailResponseWithCustomCode();
+    void constructorFailResponseWithCustomCode();
 
-    virtual void isEqualsTest();
+    void isEqualsTest();
 
-    virtual void isThisEquals();
+    void isThisEquals();
 
-    virtual void isNotEquals();
+    void isNotEquals();
 
-    virtual void isNotEqualsNull();
+    void isNotEqualsNull();
 
-    virtual void hashcodeTest();
-    virtual void hashcodeNull();
+    void hashcodeTest();
+    void hashcodeNull();
 
     /*
      * HELPERS

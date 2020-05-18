@@ -61,7 +61,7 @@ AbstractSeSelectionRequest::getCommandParser(
 
     /* not yet implemented in keyple-core */
     // TODO add a generic command parser
-    throw std::make_shared<IllegalStateException>(
+    throw IllegalStateException(
         "No parsers available for this request.");
 }
 

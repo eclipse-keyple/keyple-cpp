@@ -94,7 +94,7 @@ ReaderPlugin* SeProxyService::getPlugin(const std::string& name)
             return plugin;
         }
     }
-    throw std::make_shared<KeyplePluginNotFoundException>(name);
+    throw KeyplePluginNotFoundException(name);
 }
 
 std::string SeProxyService::getVersion()

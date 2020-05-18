@@ -41,7 +41,7 @@ using namespace keyple::core::seproxy::message;
  * commands.
  *
  */
-class SelectFileCmdBuild final
+class KEYPLECALYPSO_API SelectFileCmdBuild final
 : public AbstractPoCommandBuilder<SelectFileRespPars>,
   public PoSendableInSession {
 public:

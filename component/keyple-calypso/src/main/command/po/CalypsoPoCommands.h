@@ -19,8 +19,9 @@
 #include "exceptionhelper.h"
 #include <memory>
 
-/* Core */
+/* Calypso */
 #include "CommandsTable.h"
+#include "KeypleCalypsoExport.h"
 #include "PoRevision.h"
 
 namespace keyple {
@@ -31,7 +32,7 @@ namespace po {
 using namespace keyple::core::command;
 using namespace keyple::calypso::command::po;
 
-class CalypsoPoCommands final : public CommandsTable {
+class KEYPLECALYPSO_API CalypsoPoCommands final : public CommandsTable {
 public:
     /** The po get data. */
     static CalypsoPoCommands GET_DATA_FCI;

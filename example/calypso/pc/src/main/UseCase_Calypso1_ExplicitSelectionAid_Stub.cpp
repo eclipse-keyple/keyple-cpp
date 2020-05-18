@@ -15,12 +15,9 @@
 #include "ByteArrayUtil.h"
 #include "CalypsoClassicInfo.h"
 #include "CalypsoClassicTransactionEngine.h"
-#include "KeypleReaderNotFoundException.h"
 #include "LoggerFactory.h"
 #include "MatchingSelection.h"
-#include "ObservableReader.h"
 #include "PoSelectionRequest.h"
-#include "PoSelector.h"
 #include "ReaderPlugin.h"
 #include "ReadRecordsRespPars.h"
 #include "SeCommonProtocols.h"
@@ -73,7 +70,7 @@ int main(int argc, char** argv)
 
     /* Check if the reader exists */
     if (poReader == nullptr) {
-        throw std::make_shared<IllegalStateException>("Bad PO reader setup");
+        throw IllegalStateException("Bad PO reader setup");
     }
 
     poReader->addSeProtocolSetting(

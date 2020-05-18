@@ -30,7 +30,7 @@ namespace security {
 class DigestCloseRespParsTest
 : public std::enable_shared_from_this<DigestCloseRespParsTest> {
 public:
-    virtual void digestCloseRespPars();
+    void digestCloseRespPars();
 };
 }
 }

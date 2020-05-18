@@ -33,7 +33,8 @@ namespace security {
 
 using namespace keyple::core::seproxy::message;
 
-class OpenSession24RespPars final : public AbstractOpenSessionRespPars {
+class KEYPLECALYPSO_API OpenSession24RespPars final
+: public AbstractOpenSessionRespPars {
 public:
     /**
      *

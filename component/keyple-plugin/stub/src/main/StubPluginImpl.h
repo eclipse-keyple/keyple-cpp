@@ -42,8 +42,8 @@ using namespace keyple::core::seproxy::plugin;
  * singleton, use StubPlugin#getInstance to access it
  *
  */
-class StubPluginImpl : public AbstractThreadedObservablePlugin,
-                       public StubPlugin {
+class StubPluginImpl
+: public AbstractThreadedObservablePlugin, public StubPlugin {
 public:
     /**
      * Constructor
@@ -111,16 +111,6 @@ public:
      * @return connected readers' name list
      */
     const std::set<std::string>& fetchNativeReadersNames() override;
-
-    /**
-     *
-     */
-    void addObserver(std::shared_ptr<PluginObserver> observer) override;
-
-    /**
-     *
-     */
-    void removeObserver(std::shared_ptr<PluginObserver> observer) override;
 
 protected:
     /**

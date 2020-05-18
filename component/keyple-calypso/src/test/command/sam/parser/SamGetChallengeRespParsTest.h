@@ -30,7 +30,7 @@ namespace security {
 class SamGetChallengeRespParsTest
 : public std::enable_shared_from_this<SamGetChallengeRespParsTest> {
 public:
-    virtual void getChallengeRespPars();
+    void getChallengeRespPars();
 };
 }
 }

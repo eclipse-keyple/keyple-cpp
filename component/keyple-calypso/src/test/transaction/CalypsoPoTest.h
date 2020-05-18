@@ -47,7 +47,7 @@ public:
     //    getPoApplicationByte(char applicationByte);
     PoRevision getPoApplicationByte(uint8_t applicationByte);
 
-    virtual void computePoRevision();
+    void computePoRevision();
 };
 }
 }

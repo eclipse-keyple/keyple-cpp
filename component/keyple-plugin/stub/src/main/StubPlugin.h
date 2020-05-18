@@ -47,7 +47,7 @@ using namespace keyple::core::seproxy::protocol;
  * Stubplugin allows to simulate a {@link keyple::core::seproxy::ReaderPlugin}
  * and a {@link StubSecureElement}
  */
-class KEYPLEPLUGINSTUB_API StubPlugin : public ObservablePlugin {
+class KEYPLEPLUGINSTUB_API StubPlugin : public virtual ObservablePlugin {
 public:
     /**
      * Plug a Stub Reader

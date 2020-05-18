@@ -27,9 +27,9 @@ namespace util {
 class ResponseUtilsTest
 : public std::enable_shared_from_this<ResponseUtilsTest> {
 public:
-    virtual void TestToSecureSession();
+    void TestToSecureSession();
 
-    virtual void TestToSecureSessionRev2();
+    void TestToSecureSessionRev2();
 };
 
 }

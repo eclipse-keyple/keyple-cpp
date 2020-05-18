@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <mutex>
+
 #include "AbstractDefaultSelectionsRequest.h"
 #include "AbstractLocalReader.h"
 #include "KeypleChannelControlException.h"
@@ -122,7 +124,7 @@ enum class InternalEvent {
  * </ol>
  */
 class KEYPLECORE_API AbstractObservableLocalReader
-: public AbstractLocalReader {
+: public AbstractLocalReader, public virtual ObservableReader {
 public:
     /**
      * Reader constructor
@@ -146,7 +148,7 @@ public:
      *
      * @return true if the SE is present
      */
-    bool isSePresent() override;
+    bool isSePresent() final;
 
     /**
      * Starts the SE detection. Once activated, the application can be notified
@@ -163,7 +165,8 @@ public:
      *        SINGLESHOT, the SE detection is stopped until a new call to
      *        startSeDetection is made.
      */
-    void startSeDetection(const ObservableReader::PollingMode pollingMode);
+    void startSeDetection(const ObservableReader::PollingMode pollingMode)
+        final;
 
     /**
      * Stops the SE detection.
@@ -171,7 +174,7 @@ public:
      * This method must be overloaded by readers depending on the particularity
      * of their management of the start of SE detection.
      */
-    void stopSeDetection();
+    void stopSeDetection() final;
 
     /**
      * If defined, the prepared DefaultSelectionRequest will be processed as
@@ -195,7 +198,7 @@ public:
     void setDefaultSelectionRequest(
         std::shared_ptr<AbstractDefaultSelectionsRequest>
             defaultSelectionsRequest,
-        const ObservableReader::NotificationMode notificationMode);
+        const ObservableReader::NotificationMode notificationMode) final;
 
     /**
      * A combination of defining the default selection request and starting the
@@ -214,7 +217,7 @@ public:
         std::shared_ptr<AbstractDefaultSelectionsRequest>
             defaultSelectionsRequest,
         const ObservableReader::NotificationMode notificationMode,
-        const ObservableReader::PollingMode pollingMode);
+        const ObservableReader::PollingMode pollingMode) final;
 
     /**
      * This method is invoked when a SE is inserted in the case of an observable
@@ -311,6 +314,59 @@ public:
      */
     void switchState(const MonitoringState stateId);
 
+    /**
+     * Add a {@link ObservableReader.ReaderObserver}.
+     * <p>
+     * The observer will receive all the events produced by this reader (se
+     * insertion, removal, etc.)
+     *
+     * @param observer the observer object
+     */
+    void addObserver(
+        const std::shared_ptr<ObservableReader::ReaderObserver> observer) final;
+
+    /**
+     * Remove a {@link ObservableReader.ReaderObserver}.
+     * <p>
+     * The observer will do not receive any of the events produced by this
+     * reader.
+     *
+     * @param observer the observer object
+     */
+    void removeObserver(
+        const std::shared_ptr<ObservableReader::ReaderObserver> observer) final;
+
+    /**
+     * Notify all registered observers with the provided {@link ReaderEvent}
+     *
+     * @param event the reader event
+     */
+    void notifyObservers(const std::shared_ptr<ReaderEvent> event) final;
+
+    /**
+     * @return the number of observers
+     */
+    int countObservers() final;
+
+    /**
+     * Remove all observers at once
+     */
+    void clearObservers() final;
+
+     /**
+     * Allows the application to signal the end of processing and thus proceed
+     * with the removal sequence, followed by a restart of the card search.
+     * <p>
+     * Do nothing if the closing of the physical channel has already been
+     * requested.
+     * <p>
+     * Send a request without APDU just to close the physical channel if it has
+     * not already been
+     * closed.
+     *
+     */
+    void notifySeProcessed() final;
+
 protected:
     /**
      * Service that handles Internal Events and their impact on the current
@@ -330,8 +386,8 @@ protected:
      * @return initialized state stateService with possible states and the init
      * state
      */
-    virtual std::shared_ptr<ObservableReaderStateService>
-    initStateService() = 0;
+    virtual
+        std::shared_ptr<ObservableReaderStateService> initStateService() = 0;
 
 private:
     /**
@@ -356,6 +412,18 @@ private:
      */
     ObservableReader::PollingMode currentPollingMode =
         ObservableReader::PollingMode::SINGLESHOT;
+
+
+    /**
+     * The observers of this object
+     */
+    std::list<std::shared_ptr<ObservableReader::ReaderObserver>> observers;
+
+    /*
+     * This object will be used to synchronize the access to the observers list
+     * in order to be thread safe
+     */
+    std::mutex mtx;
 };
 
 

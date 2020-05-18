@@ -62,29 +62,17 @@ public:
     /**
      *
      */
-    KeypleCalypsoSecureSessionException(KeypleCalypsoSecureSessionException& o);
+    Type getType();
 
     /**
      *
      */
-    virtual ~KeypleCalypsoSecureSessionException()
-    {
-    }
+    std::vector<std::shared_ptr<ApduRequest>>& getRequests();
 
     /**
      *
      */
-    virtual Type getType();
-
-    /**
-     *
-     */
-    virtual std::vector<std::shared_ptr<ApduRequest>>& getRequests();
-
-    /**
-     *
-     */
-    virtual std::vector<std::shared_ptr<ApduResponse>>& getResponses();
+    std::vector<std::shared_ptr<ApduResponse>>& getResponses();
 
 private:
     /**

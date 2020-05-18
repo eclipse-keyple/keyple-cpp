@@ -14,6 +14,10 @@
 
 #include <ostream>
 
+
+/* Calypso */
+#include "KeypleCalypsoExport.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -52,7 +56,8 @@ enum class PoRevision {
     REV3_2
 };
 
-std::ostream& operator<<(std::ostream& os, const PoRevision& pr);
+KEYPLECALYPSO_API std::ostream& operator<<(std::ostream& os,
+                                           const PoRevision& pr);
 
 }
 }

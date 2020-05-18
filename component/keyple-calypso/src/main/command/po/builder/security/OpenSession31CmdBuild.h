@@ -33,7 +33,7 @@ using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::core::seproxy::message;
 
-class OpenSession31CmdBuild final
+class KEYPLECALYPSO_API OpenSession31CmdBuild final
 : public AbstractOpenSessionCmdBuild<OpenSession31RespPars> {
 public:
     /**
