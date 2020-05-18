@@ -5,7 +5,7 @@
 #include <memory>
 
 //JAVA TO C++ CONVERTER NOTE: Forward class declarations:
-namespace keyple { namespace core { namespace seproxy { namespace @event { class ReaderEvent; } } } }
+namespace keyple { namespace core { namespace seproxy { namespace event { class ReaderEvent; } } } }
 namespace keyple { namespace core { namespace seproxy { namespace exception { class KeypleReaderException; } } } }
 
 /********************************************************************************

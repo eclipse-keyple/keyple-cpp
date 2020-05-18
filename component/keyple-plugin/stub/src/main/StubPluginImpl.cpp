@@ -32,6 +32,8 @@ StubPluginImpl::StubPluginImpl(const std::string& pluginName)
      * threading period to 10 ms to speed up responsiveness.
      */
     threadWaitTimeout = 10;
+
+    this->readers = initNativeReaders();
 }
 
 const std::map<const std::string, const std::string>

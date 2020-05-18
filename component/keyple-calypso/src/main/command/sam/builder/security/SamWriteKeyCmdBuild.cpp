@@ -40,7 +40,7 @@ SamWriteKeyCmdBuild::SamWriteKeyCmdBuild(SamRevision& revision,
     if (keyData.empty())
         throw IllegalArgumentException("Key data null!");
 
-    if (keyData.size() < 48 && keyData.size() > 80)
+    if (keyData.size() < 48 || keyData.size() > 80)
         throw IllegalArgumentException("Key data should be between 40 and 80 "
                                        "bytes long!");
 

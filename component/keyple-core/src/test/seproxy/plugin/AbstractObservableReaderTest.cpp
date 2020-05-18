@@ -238,8 +238,9 @@ AbstractObservableReaderTest::AnswerAnonymousInnerClass2::answer(
     outerInstance->stopObservationCall->countDown();
     return nullptr;
 }
+
 }
 }
 }
 }
-}
+

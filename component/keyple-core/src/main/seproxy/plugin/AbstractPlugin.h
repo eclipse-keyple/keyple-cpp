@@ -136,7 +136,7 @@ protected:
      *
      * Alex: using SeReader instead of AbstractObservableReader
      */
-    virtual std::set<std::shared_ptr<SeReader>> initNativeReaders();
+    virtual std::set<std::shared_ptr<SeReader>> initNativeReaders() = 0;
 
 private:
 };

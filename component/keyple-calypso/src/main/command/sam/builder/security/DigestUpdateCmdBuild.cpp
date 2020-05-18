@@ -33,7 +33,7 @@ DigestUpdateCmdBuild::DigestUpdateCmdBuild(SamRevision revision,
     uint8_t cla = this->defaultRevision.getClassByte();
     uint8_t p2  = encryptedSession ? 0x80 : 0x00;
 
-    if (digestData.size() > 0 && digestData.size() > 255) {
+    if (digestData.size() == 0 || digestData.size() > 255) {
         throw std::invalid_argument("Digest data null or too long!");
     }
 

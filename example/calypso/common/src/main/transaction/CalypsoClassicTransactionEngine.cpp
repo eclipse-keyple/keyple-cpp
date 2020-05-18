@@ -177,7 +177,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
         /* proceed with the sending of commands, don't close the channel */
         poProcessStatus = poTransaction->processPoCommandsInSession();
 
-        logger->info("Parsing Read Contract file: %",
+        logger->info("Parsing Read Contract file: %\n",
                      poTransaction->getResponseParser(readContractsParserIndex)
                          ->getStatusInformation());
 
