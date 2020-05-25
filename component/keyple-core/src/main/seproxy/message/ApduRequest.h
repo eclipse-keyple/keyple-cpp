@@ -131,11 +131,6 @@ public:
     /**
      *
      */
-    std::string toString() const;
-
-    /**
-     *
-     */
     friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
 		                                           const ApduRequest& se);
 
@@ -150,7 +145,7 @@ public:
      */
     friend KEYPLECORE_API std::ostream& operator<<(
 		std::ostream& os, const std::vector<std::shared_ptr<ApduRequest>>& se);
-	
+
 
 private:
     /**
