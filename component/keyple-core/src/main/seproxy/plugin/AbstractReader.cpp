@@ -48,7 +48,7 @@ AbstractReader::AbstractReader(const std::string& pluginName,
     this->before = System::nanoTime();
 }
 
-const std::string& AbstractReader::getPluginName()
+const std::string& AbstractReader::getPluginName() const
 {
     return pluginName;
 }
@@ -58,10 +58,10 @@ int AbstractReader::compareTo(std::shared_ptr<SeReader> seReader)
     return this->getName().compare(seReader->getName());
 }
 
-std::list<std::shared_ptr<SeResponse>>
-AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
-                            MultiSeRequestProcessing multiSeRequestProcessing,
-                            ChannelControl channelControl)
+std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
+    std::vector<std::shared_ptr<SeRequest>>& requestSet,
+    MultiSeRequestProcessing multiSeRequestProcessing,
+    ChannelControl channelControl)
 {
     /*
      * Alex:
@@ -119,8 +119,8 @@ AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
     return responseSet;
 }
 
-std::list<std::shared_ptr<SeResponse>>
-AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet)
+std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
+    std::vector<std::shared_ptr<SeRequest>>& requestSet)
 {
     return transmitSet(requestSet, MultiSeRequestProcessing::FIRST_MATCH,
                        ChannelControl::KEEP_OPEN);

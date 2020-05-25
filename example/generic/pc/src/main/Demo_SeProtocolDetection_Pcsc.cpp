@@ -79,15 +79,17 @@ int main(int argc, char** argv)
      * Method 1
      * add several settings at once with settings an unordered_set
      */
-    std::set<SeCommonProtocols> commonProtocols{
+    std::set<std::shared_ptr<SeCommonProtocols>> commonProtocols{
         SeCommonProtocols::PROTOCOL_MIFARE_CLASSIC,
         SeCommonProtocols::PROTOCOL_MIFARE_UL};
-    std::map<SeProtocol, std::string> map;
-    std::map<SeCommonProtocols, std::string> specificSettings =
+    std::map<std::shared_ptr<SeProtocol>, std::string> map;
+    std::map<std::shared_ptr<SeCommonProtocols>, std::string> specificSettings =
         PcscProtocolSetting::getSpecificSettings(commonProtocols);
 
     for (auto pair : specificSettings)
-        map.insert(std::pair<SeProtocol, std::string>(pair.first, pair.second));
+        map.insert(
+            std::pair<std::shared_ptr<SeProtocol>, std::string>(
+                pair.first, pair.second));
 
     poReader->setSeProtocolSetting(map);
 

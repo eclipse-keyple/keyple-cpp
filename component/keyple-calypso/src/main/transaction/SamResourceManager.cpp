@@ -127,8 +127,7 @@ SamResourceManager::createSamResource(std::shared_ptr<SeReader> samReader)
     logger->trace("Create SAM resource from reader NAME = %s\n",
                   samReader->getName().c_str());
 
-    samReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO7816_3,
-                                    ".*");
+    samReader->addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO7816_3,".*");
 
     SamIdentifier samIdentifier(SamRevision::AUTO, "", "");
     std::shared_ptr<SamSelector> samSelector =

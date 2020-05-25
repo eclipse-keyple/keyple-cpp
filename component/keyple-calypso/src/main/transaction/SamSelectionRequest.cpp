@@ -39,7 +39,7 @@ SamSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
 {
     return std::dynamic_pointer_cast<AbstractMatchingSe>(
         std::make_shared<CalypsoSam>(
-            seResponse, seSelector->getSeProtocol().getTransmissionMode(),
+            seResponse, seSelector->getSeProtocol()->getTransmissionMode(),
             seSelector->getExtraInfo()));
 }
 

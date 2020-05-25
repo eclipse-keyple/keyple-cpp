@@ -109,12 +109,12 @@ public:
             /**
              *
              */
-            bool operator==(const FileOccurrence& other);
+            bool operator==(const FileOccurrence& other) const;
 
             /**
              *
              */
-            bool operator!=(const FileOccurrence& other);
+            bool operator!=(const FileOccurrence& other) const;
 
             /**
              *
@@ -216,12 +216,12 @@ public:
             /**
              *
              */
-            bool operator==(const FileControlInformation& other);
+            bool operator==(const FileControlInformation& other) const;
 
             /**
              *
              */
-            bool operator!=(const FileControlInformation& other);
+            bool operator!=(const FileControlInformation& other) const;
 
             /**
              *
@@ -546,7 +546,8 @@ public:
      * @param aidSelector the AID selection data
      * @param extraInfo information string (to be printed in logs)
      */
-    SeSelector(SeProtocol& seProtocol, std::shared_ptr<AtrFilter> atrFilter,
+    SeSelector(const std::shared_ptr<SeProtocol> seProtocol,
+               std::shared_ptr<AtrFilter> atrFilter,
                std::shared_ptr<AidSelector> aidSelector,
                const std::string& extraInfo);
 
@@ -562,7 +563,7 @@ public:
      *
      * @return the {@link SeProtocol} provided at construction time
      */
-    virtual const SeProtocol& getSeProtocol() const;
+    virtual const std::shared_ptr<SeProtocol> getSeProtocol() const;
 
     /**
      * Getter
@@ -605,9 +606,9 @@ private:
         LoggerFactory::getLogger(typeid(SeSelector));
 
     /**
-     *
+     * Keep it as a pointer to allow derived classes overloaded functions
      */
-    const SeProtocol seProtocol;
+    const std::shared_ptr<SeProtocol> seProtocol;
 
     /**
      *

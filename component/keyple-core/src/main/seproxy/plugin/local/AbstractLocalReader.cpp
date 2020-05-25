@@ -319,17 +319,17 @@ void AbstractLocalReader::closeLogicalChannel()
     currentSelectionStatus.reset();
 }
 
-void AbstractLocalReader::addSeProtocolSetting(SeProtocol& seProtocol,
-                                               const std::string& protocolRule)
+void AbstractLocalReader::addSeProtocolSetting(
+    std::shared_ptr<SeProtocol> seProtocol, const std::string& protocolRule)
 {
     logger->debug("setSeProcotolSetting - adding 1 protocol to map: % : %\n",
-                  seProtocol.getName(), protocolRule);
+                  seProtocol->getName(), protocolRule);
 
     this->protocolsMap.emplace(seProtocol, protocolRule);
 }
 
 void AbstractLocalReader::setSeProtocolSetting(
-    const std::map<SeProtocol, std::string>& protocolSetting)
+    const std::map<std::shared_ptr<SeProtocol>, std::string>& protocolSetting)
 {
     logger->debug("setSeProcotolSetting - adding % protocols to map\n",
                   protocolSetting.size());
@@ -338,7 +338,7 @@ void AbstractLocalReader::setSeProtocolSetting(
 }
 
 std::list<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequestSet(
-    std::set<std::shared_ptr<SeRequest>>& requestSet,
+    std::vector<std::shared_ptr<SeRequest>>& requestSet,
     MultiSeRequestProcessing multiSeRequestProcessing,
     ChannelControl channelControl)
 {

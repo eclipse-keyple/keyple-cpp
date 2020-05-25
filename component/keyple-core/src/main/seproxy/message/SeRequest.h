@@ -24,7 +24,6 @@
 #include "ChannelControl.h"
 #include "ApduRequest.h"
 #include "KeypleCoreExport.h"
-#include "SeProtocol.h"
 
 /* Forward declaration */
 namespace keyple {
@@ -41,7 +40,6 @@ namespace seproxy {
 namespace message {
 
 using namespace keyple::core::seproxy;
-using namespace keyple::core::seproxy::protocol;
 
 /**
  * List of APDU requests that will result in a {@link SeResponse}
@@ -113,9 +111,14 @@ public:
 	/**
 	 *
 	 */
-    friend KEYPLECORE_API std::ostream&
-    operator<<(
+    friend KEYPLECORE_API std::ostream& operator<<(
 		std::ostream& os, const std::set<std::shared_ptr<SeRequest>>& s);
+
+    /**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream& operator<<(
+		std::ostream& os,const std::vector<std::shared_ptr<SeRequest>>& s);
 
 private:
     /**

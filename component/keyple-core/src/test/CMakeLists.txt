@@ -51,6 +51,7 @@ INCLUDE_DIRECTORIES(
 	# Core
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/util
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/selection
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/event
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/message
@@ -65,7 +66,7 @@ INCLUDE_DIRECTORIES(
 	${GOOGLETEST_DIRECTORY}/googletest-src/googletest/include
 )
 
-ADD_EXECUTABLE(TU_keyple_util_test
+ADD_EXECUTABLE(keyple_core_ut
 	# TU keyple util - bertlv
 	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/util/TLVTest.cpp
@@ -138,7 +139,7 @@ ADD_EXECUTABLE(TU_keyple_util_test
 	#${CMAKE_CURRENT_SOURCE_DIR}/selection/MatchingSelection.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/selection/SelectionsResult.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/selection/SeResource.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/selection/SeSelection.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/selection/SeSelectionTest.cpp
 
 	# command
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduCommandBuilderTest.cpp
@@ -149,4 +150,4 @@ ADD_EXECUTABLE(TU_keyple_util_test
 
 SET(LINK_LIBS gtest gmock keyplecore keyplecalypso ${WINSCARD} )
 
-TARGET_LINK_LIBRARIES(TU_keyple_util_test ${LINK_LIBS})
+TARGET_LINK_LIBRARIES(keyple_core_ut ${LINK_LIBS})

@@ -37,7 +37,7 @@ GenericSeSelectionRequest::GenericSeSelectionRequest(
     std::shared_ptr<SeSelector> seSelector)
 : AbstractSeSelectionRequest(seSelector)
 {
-    transmissionMode = seSelector->getSeProtocol().getTransmissionMode();
+    transmissionMode = seSelector->getSeProtocol()->getTransmissionMode();
 }
 
 std::shared_ptr<AbstractMatchingSe>

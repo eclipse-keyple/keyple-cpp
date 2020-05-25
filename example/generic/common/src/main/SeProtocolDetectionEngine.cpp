@@ -59,8 +59,8 @@ SeProtocolDetectionEngine::prepareSeSelection()
     seSelection = std::make_shared<SeSelection>();
 
     // process SDK defined protocols
-    for (SeCommonProtocols protocol : SeCommonProtocols::values()) {
-        switch (protocol.innerEnumValue) {
+    for (std::shared_ptr<SeCommonProtocols> protocol : SeCommonProtocols::values()) {
+        switch (protocol->innerEnumValue) {
         case SeCommonProtocols::InnerEnum::PROTOCOL_ISO14443_4: {
             /* Add a Hoplink selector */
             std::string HoplinkAID = "A000000291A000000191";
@@ -71,7 +71,8 @@ SeProtocolDetectionEngine::prepareSeSelection()
             std::shared_ptr<PoSelectionRequest> poSelectionRequest =
                 std::make_shared<PoSelectionRequest>(
                     std::make_shared<PoSelector>(
-                        SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
+                        SeCommonProtocols::PROTOCOL_ISO14443_4,
+                        nullptr,
                         std::make_shared<PoSelector::PoAidSelector>(
                             std::make_shared<SeSelector::AidSelector::IsoAid>(
                                 aid),

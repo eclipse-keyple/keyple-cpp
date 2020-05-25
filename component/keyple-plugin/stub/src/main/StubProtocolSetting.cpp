@@ -22,7 +22,7 @@ namespace stub {
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::seproxy::protocol;
 
-std::map<SeCommonProtocols, std::string>
+std::map<std::shared_ptr<SeCommonProtocols>, std::string>
     StubProtocolSetting::STUB_PROTOCOL_SETTING;
 
 StubProtocolSetting::StaticConstructor::StaticConstructor()
@@ -45,11 +45,11 @@ StubProtocolSetting::StaticConstructor::StaticConstructor()
 
 StubProtocolSetting::StaticConstructor StubProtocolSetting::staticConstructor;
 
-std::map<SeCommonProtocols, std::string>
-StubProtocolSetting::getSpecificSettings(
-    std::set<SeCommonProtocols> specificProtocols)
+const std::map<std::shared_ptr<SeCommonProtocols>, std::string>
+   StubProtocolSetting::getSpecificSettings(
+       std::set<std::shared_ptr<SeCommonProtocols>> specificProtocols)
 {
-    std::map<SeCommonProtocols, std::string> map;
+    std::map<std::shared_ptr<SeCommonProtocols>, std::string> map;
 
     for (auto seCommonProtocols : specificProtocols) {
         map.emplace(std::make_pair(seCommonProtocols,
@@ -59,7 +59,8 @@ StubProtocolSetting::getSpecificSettings(
     return map;
 }
 
-std::map<SeCommonProtocols, std::string> StubProtocolSetting::getAllSettings()
+const std::map<std::shared_ptr<SeCommonProtocols>, std::string>&
+    StubProtocolSetting::getAllSettings()
 {
     return STUB_PROTOCOL_SETTING;
 }

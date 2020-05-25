@@ -38,9 +38,8 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-SeSelection::SeSelection(
-    const MultiSeRequestProcessing multiSeRequestProcessing,
-    const ChannelControl channelControl)
+SeSelection::SeSelection(MultiSeRequestProcessing multiSeRequestProcessing,
+                         ChannelControl channelControl)
 : selectionIndex(0), multiSeRequestProcessing(multiSeRequestProcessing),
   channelControl(channelControl)
 {
@@ -59,7 +58,8 @@ int SeSelection::prepareSelection(
                   seSelectionRequest->getSeSelector()->getExtraInfo());
 
     /* build the SeRequest set transmitted to the SE */
-    selectionRequestSet.insert(seSelectionRequest->getSelectionRequest());
+    selectionRequestSet.push_back(
+        seSelectionRequest->getSelectionRequest());
 
     /* keep the selection request */
     seSelectionRequestList.push_back(seSelectionRequest);

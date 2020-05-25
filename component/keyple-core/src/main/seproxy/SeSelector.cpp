@@ -75,12 +75,12 @@ char FileOccurrence::getIsoBitMask()
     return this->isoBitMask;
 }
 
-bool FileOccurrence::operator==(const FileOccurrence& other)
+bool FileOccurrence::operator==(const FileOccurrence& other) const
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool FileOccurrence::operator!=(const FileOccurrence& other)
+bool FileOccurrence::operator!=(const FileOccurrence& other) const
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -148,11 +148,13 @@ char FileControlInformation::getIsoBitMask()
 }
 
 bool FileControlInformation::operator==(const FileControlInformation& other)
+    const
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
 bool FileControlInformation::operator!=(const FileControlInformation& other)
+    const
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -297,7 +299,7 @@ bool SeSelector::AtrFilter::atrMatches(const std::vector<uint8_t>& atr)
     return m;
 }
 
-SeSelector::SeSelector(SeProtocol& seProtocol,
+SeSelector::SeSelector(std::shared_ptr<SeProtocol> seProtocol,
                        std::shared_ptr<AtrFilter> atrFilter,
                        std::shared_ptr<AidSelector> aidSelector,
                        const std::string& extraInfo)
@@ -306,7 +308,7 @@ SeSelector::SeSelector(SeProtocol& seProtocol,
 {
 }
 
-const SeProtocol& SeSelector::getSeProtocol() const
+const std::shared_ptr<SeProtocol> SeSelector::getSeProtocol() const
 {
     return seProtocol;
 }
@@ -369,7 +371,7 @@ std::ostream& operator<<(std::ostream& os, const SeSelector& ss)
         os << *(ss.atrFilter.get());
     else
 		os << "null";
-	
+
     os << "}";
 
     return os;

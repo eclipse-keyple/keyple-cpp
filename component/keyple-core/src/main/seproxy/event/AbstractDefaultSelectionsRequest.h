@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include <set>
 #include <memory>
 
 /* Core */
@@ -58,8 +57,8 @@ protected:
     /**
      * @return the selection request set
      */
-    virtual std::set<std::shared_ptr<SeRequest>>&
-    getSelectionSeRequestSet() = 0;
+    virtual std::vector<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet()
+       const = 0;
 
     /**
      * @return the multi SE request mode
