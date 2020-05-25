@@ -75,31 +75,6 @@ const std::vector<uint8_t>& ApduRequest::getBytes()
     return this->bytes;
 }
 
-std::string ApduRequest::toString() const
-{
-    std::string string = StringHelper::formatSimple(
-        "ApduRequest: NAME = %s, RAWDATA = %s", this->getName(),
-        ByteArrayUtil::toHex(bytes));
-
-    if (isCase4()) {
-        string.append(", case4");
-    }
-
-    if (successfulStatusCodes != nullptr) {
-        string.append(", additional successful status codes = ");
-        std::set<int>::const_iterator iterator = successfulStatusCodes->begin();
-        while (iterator != successfulStatusCodes->end()) {
-            string.append(StringHelper::formatSimple("%04X", *iterator));
-            if (iterator != successfulStatusCodes->end()) {
-                string.append(", ");
-            }
-            iterator++;
-        }
-    }
-
-    return string;
-}
-
 bool equals(std::shared_ptr<void> o)
 {
 

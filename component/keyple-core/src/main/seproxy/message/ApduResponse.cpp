@@ -73,15 +73,11 @@ int ApduResponse::getStatusCode() const
 
 const std::vector<uint8_t>& ApduResponse::getBytes() const
 {
-    logger->debug("getBytes - 'bytes' size is %\n", this->bytes.size());
-
     return this->bytes;
 }
 
 std::vector<uint8_t> ApduResponse::getDataOut() const
 {
-    logger->debug("getDataOut - byte size is %\n", this->bytes.size());
-
     if (this->bytes.size() < 2)
         return std::vector<uint8_t>();
 

@@ -37,8 +37,6 @@ void ApduRequestTest::testSimpleAPDURequest()
     ASSERT_TRUE(request->isCase4());
     ASSERT_EQ(getACommand(), request->getBytes());
     ASSERT_EQ(nullptr, request->getSuccessfulStatusCodes());
-    ASSERT_EQ("ApduRequest: NAME = , RAWDATA = FEDCBA989005, case4",
-                 request->toString());
 }
 
 void ApduRequestTest::testAPDURequest()
@@ -56,11 +54,6 @@ void ApduRequestTest::testAPDURequest()
     {
         EXPECT_EQ( *it, *it_);
     }
-
-    ASSERT_EQ( "ApduRequest: NAME = " + getAName() +
-                     ", RAWDATA = FEDCBA989005, case4, additional successful "
-                     "status codes = 9000",
-                 request->toString());
 }
 
 std::shared_ptr<ApduRequest> ApduRequestTest::getApduSample()
