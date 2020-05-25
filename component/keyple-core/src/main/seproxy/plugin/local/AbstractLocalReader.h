@@ -105,7 +105,7 @@ public:
      *        internal list
      * @param protocolRule a string use to define how to identify the protocol
      */
-    void addSeProtocolSetting(SeProtocol& seProtocol,
+    void addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol,
                               const std::string& protocolRule) override;
 
     /**
@@ -117,7 +117,8 @@ public:
       *       (astract class, therefore cannot be used in a set/map)
       */
     virtual void setSeProtocolSetting(
-        const std::map<SeProtocol, std::string>& protocolSetting) override;
+        const std::map<std::shared_ptr<SeProtocol>, std::string>&
+            protocolSetting) override;
 
 protected:
     /**
@@ -260,7 +261,7 @@ protected:
      * protocolFlagMatches (e.g. ATR regex for Pcsc plugins, technology name for
      * Nfc plugins, etc).
      */
-    std::map<SeProtocol, std::string> protocolsMap;
+    std::map<std::shared_ptr<SeProtocol>, std::string> protocolsMap;
 
     /**
      * Test if the current protocol matches the provided protocol flag.
@@ -277,7 +278,8 @@ protected:
      * @return true if the current protocol matches the provided protocol flag
      * @throws KeypleReaderException in case of a reader exception
      */
-    virtual bool protocolFlagMatches(const SeProtocol& protocolFlag) = 0;
+    virtual bool protocolFlagMatches(
+        const std::shared_ptr<SeProtocol> protocolFlag) = 0;
 
     /**
      * Do the transmission of all needed requestSet requests contained in the
@@ -291,10 +293,10 @@ protected:
      * @return SeResponseSet the response set
      * @throws KeypleIOReaderException if a reader error occurs
       */
-    std::list<std::shared_ptr<SeResponse>>
-    processSeRequestSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
-                        MultiSeRequestProcessing multiSeRequestProcessing,
-                        ChannelControl channelControl) final override;
+    std::list<std::shared_ptr<SeResponse>> processSeRequestSet(
+        std::vector<std::shared_ptr<SeRequest>>& requestSet,
+        MultiSeRequestProcessing multiSeRequestProcessing,
+        ChannelControl channelControl) final override;
 
     /**
      * Executes a request made of one or more Apdus and receives their answers.

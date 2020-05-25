@@ -23,7 +23,7 @@ namespace transaction {
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
 
-PoSelector::PoSelector(SeProtocol& seProtocol,
+PoSelector::PoSelector(std::shared_ptr<SeProtocol> seProtocol,
                        std::shared_ptr<PoAtrFilter> poAtrFilter,
                        std::shared_ptr<PoAidSelector> poAidSelector,
                        const std::string& extraInfo)

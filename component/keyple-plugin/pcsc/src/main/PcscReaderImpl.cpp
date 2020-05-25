@@ -210,7 +210,7 @@ bool PcscReaderImpl::waitForCardAbsentNative()
                     /* Card removed */
                     return true;
                 }
-            } 
+            }
 
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
@@ -251,22 +251,18 @@ std::vector<uint8_t> PcscReaderImpl::transmitApdu(
     return response;
 }
 
-bool PcscReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
+bool PcscReaderImpl::protocolFlagMatches(
+    const std::shared_ptr<SeProtocol> protocolFlag)
 {
     bool result;
 
     /* Test protocolFlag to check if ATR based protocol filtering is required */
-    //if (protocolFlag != nullptr) {
-    if (!isPhysicalChannelOpen()) {
-        logger->debug("protocolFlagMatches - physical channel not open, "
-                      "opening it\n");
-        openPhysicalChannel();
-    }
-
-    std::map<SeProtocol, std::string>::iterator it = protocolsMap.begin();
-    while (it != protocolsMap.end()) {
-        SeProtocol p = it->first;
-        it++;
+    if (protocolFlag) {
+        if (!isPhysicalChannelOpen()) {
+            logger->debug("protocolFlagMatches - physical channel not open, "
+                        "opening it\n");
+            openPhysicalChannel();
+        }
     }
 
     /*

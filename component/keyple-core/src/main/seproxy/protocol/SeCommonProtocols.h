@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -31,29 +32,29 @@ using namespace keyple::core::seproxy::protocol;
 class KEYPLECORE_API SeCommonProtocols final : public SeProtocol {
 public:
     /* ---- contactless standard / NFC compliant ------------- */
-    static SeCommonProtocols PROTOCOL_ISO14443_4;
-    static SeCommonProtocols PROTOCOL_ISO15693;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_ISO14443_4;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_ISO15693;
 
     /* ---- contactless proprietary NFC compliant ------------ */
-    static SeCommonProtocols PROTOCOL_ISO14443_3A;
-    static SeCommonProtocols PROTOCOL_ISO14443_3B;
-    static SeCommonProtocols PROTOCOL_JIS_6319_4;
-    static SeCommonProtocols PROTOCOL_NDEF;
-    static SeCommonProtocols PROTOCOL_NDEF_FORMATABLE;
-    static SeCommonProtocols PROTOCOL_NFC_BARCODE;
-    static SeCommonProtocols PROTOCOL_MIFARE_UL;
-    static SeCommonProtocols PROTOCOL_MIFARE_CLASSIC;
-    static SeCommonProtocols PROTOCOL_MIFARE_DESFIRE;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_ISO14443_3A;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_ISO14443_3B;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_JIS_6319_4;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_NDEF;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_NDEF_FORMATABLE;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_NFC_BARCODE;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_MIFARE_UL;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_MIFARE_CLASSIC;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_MIFARE_DESFIRE;
 
     /* ---- contactless proprietary not NFC compliant -------- */
-    static SeCommonProtocols PROTOCOL_B_PRIME;
-    static SeCommonProtocols PROTOCOL_MEMORY_ST25;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_B_PRIME;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_MEMORY_ST25;
 
     /* ---- contacts ISO standard ---------------------------- */
-    static SeCommonProtocols PROTOCOL_ISO7816_3;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_ISO7816_3;
 
     /* ---- contacts proprietary ---------------- */
-    static SeCommonProtocols PROTOCOL_HSP;
+    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_HSP;
 
     /**
      *
@@ -96,16 +97,6 @@ public:
     /**
      *
      */
-    virtual ~SeCommonProtocols();
-
-    /**
-     *
-     */
-    //SeCommonProtocols& operator=(const SeCommonProtocols& s);
-
-    /**
-     *
-     */
     std::string getName() const override;
 
     /**
@@ -116,7 +107,7 @@ public:
     /**
      *
      */
-    static std::vector<SeCommonProtocols> values();
+    static const std::vector<std::shared_ptr<SeCommonProtocols>>& values();
 
     /**
      *
@@ -131,13 +122,14 @@ public:
     /**
      *
      */
-    static SeCommonProtocols valueOf(const std::string& name);
+    static const std::shared_ptr<SeCommonProtocols>
+        valueOf(const std::string& name);
 
 private:
     /**
      *
      */
-    static std::vector<SeCommonProtocols> valueList;
+    static std::vector<std::shared_ptr<SeCommonProtocols>> valueList;
 
     /**
      *

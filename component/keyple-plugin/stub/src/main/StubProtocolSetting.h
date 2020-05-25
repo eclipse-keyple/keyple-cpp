@@ -55,7 +55,8 @@ public:
     /**
      *
      */
-    static std::map<SeCommonProtocols, std::string> STUB_PROTOCOL_SETTING;
+    static std::map<std::shared_ptr<SeCommonProtocols>, std::string>
+        STUB_PROTOCOL_SETTING;
 
     /**
      * Return a subset of the settings map
@@ -63,15 +64,17 @@ public:
      * @param specificProtocols subset of protocols
      * @return a settings map
      */
-    static std::map<SeCommonProtocols, std::string>
-    getSpecificSettings(std::set<SeCommonProtocols> specificProtocols);
+    static const std::map<std::shared_ptr<SeCommonProtocols>, std::string>
+        getSpecificSettings(
+            std::set<std::shared_ptr<SeCommonProtocols>> specificProtocols);
 
     /**
      * Return the whole settings map
      *
      * @return a settings map
      */
-    static std::map<SeCommonProtocols, std::string> getAllSettings();
+    static const std::map<std::shared_ptr<SeCommonProtocols>, std::string>&
+        getAllSettings();
 
 private:
     /**

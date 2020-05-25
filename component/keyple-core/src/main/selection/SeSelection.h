@@ -58,8 +58,8 @@ public:
      * @param channelControl indicates if the channel has to be closed at the
      *        end of the processing
      */
-    SeSelection(const MultiSeRequestProcessing multiSeRequestProcessing,
-                const ChannelControl channelControl);
+    SeSelection(MultiSeRequestProcessing multiSeRequestProcessing,
+                ChannelControl channelControl);
 
     /**
      * Alternate constructor for standard usages.
@@ -147,7 +147,7 @@ private:
     /**
      *
      */
-    std::set<std::shared_ptr<SeRequest>> selectionRequestSet;
+    std::vector<std::shared_ptr<SeRequest>> selectionRequestSet;
 
     /**
      *

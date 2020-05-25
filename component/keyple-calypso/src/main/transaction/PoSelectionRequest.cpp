@@ -115,8 +115,8 @@ int PoSelectionRequest::prepareReadRecordsCmd(
 {
     logger->debug("prepareReadRecordsCmd\n");
 
-    if (seSelector->getSeProtocol().ordinalValue ==
-        SeCommonProtocols::PROTOCOL_ISO7816_3.ordinal()) {
+    if (seSelector->getSeProtocol()->ordinalValue ==
+        SeCommonProtocols::PROTOCOL_ISO7816_3->ordinal()) {
         throw std::invalid_argument("In contacts mode, the expected length "
                                     "must be specified.");
     }
@@ -233,7 +233,7 @@ PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
      * members won't be initialized
      */
     return std::make_shared<CalypsoPo>(
-               seResponse, seSelector->getSeProtocol().getTransmissionMode(),
+               seResponse, seSelector->getSeProtocol()->getTransmissionMode(),
                seSelector->getExtraInfo());
 }
 

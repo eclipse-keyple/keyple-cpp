@@ -57,7 +57,7 @@ public:
 
     /**
      * Protocol name
-     * 
+     *
      * @return String
      */
     virtual std::string getName() const
@@ -67,13 +67,10 @@ public:
 
     /**
      * Transmission mode: CONTACTS or CONTACTLESS
-     * 
+     *
      * @return a TransmissionMode enum value
      */
-    virtual TransmissionMode getTransmissionMode() const
-    {
-        return TransmissionMode::NO_MODE;
-    }
+    virtual TransmissionMode getTransmissionMode() const = 0;
 
     /**
      *
@@ -106,7 +103,7 @@ public:
 		                                           const SeProtocol& se);
 
     /**
-     * 
+     *
      */
     std::string toString() const
     {

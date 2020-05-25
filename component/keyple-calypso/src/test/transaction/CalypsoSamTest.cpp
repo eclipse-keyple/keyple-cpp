@@ -50,7 +50,7 @@ void CalypsoSamTest::test_CalypsoSam_1()
     std::shared_ptr<SeResponse> seReponse =
         std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
     std::shared_ptr<CalypsoSam> calypsoSam =
-        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::NO_MODE, "");
+        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::CONTACTS, "");
 
     ASSERT_EQ(SamRevision::S1D, calypsoSam->getSamRevision());
     ASSERT_EQ(0x80, calypsoSam->getApplicationType());
@@ -75,7 +75,7 @@ void CalypsoSamTest::test_CalypsoSam_2()
     std::shared_ptr<SeResponse> seReponse =
         std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
     std::shared_ptr<CalypsoSam> calypsoSam =
-        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::NO_MODE, "");
+        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::CONTACTS, "");
 
     ASSERT_EQ(SamRevision::S1D, calypsoSam->getSamRevision());
     ASSERT_EQ(0xD1, calypsoSam->getApplicationSubType());
@@ -94,7 +94,7 @@ void CalypsoSamTest::test_CalypsoSam_3()
     std::shared_ptr<SeResponse> seReponse =
         std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
     std::shared_ptr<CalypsoSam> calypsoSam =
-        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::NO_MODE, "");
+        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::CONTACTS, "");
 
     ASSERT_EQ(SamRevision::S1D, calypsoSam->getSamRevision());
     ASSERT_EQ(0xD2, calypsoSam->getApplicationSubType());
@@ -113,7 +113,7 @@ void CalypsoSamTest::test_CalypsoSam_4()
     std::shared_ptr<SeResponse> seReponse =
         std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
     std::shared_ptr<CalypsoSam> calypsoSam =
-        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::NO_MODE, "");
+        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::CONTACTS, "");
 
     ASSERT_EQ(SamRevision::C1, calypsoSam->getSamRevision());
     ASSERT_EQ(0xC1, calypsoSam->getApplicationSubType());
@@ -132,7 +132,7 @@ void CalypsoSamTest::test_CalypsoSam_5()
     std::shared_ptr<SeResponse> seReponse =
         std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
     std::shared_ptr<CalypsoSam> calypsoSam =
-        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::NO_MODE, "");
+        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::CONTACTS, "");
 
     ASSERT_EQ(SamRevision::S1E, calypsoSam->getSamRevision());
     ASSERT_EQ(0xE1, calypsoSam->getApplicationSubType());
@@ -152,7 +152,7 @@ void CalypsoSamTest::test_CalypsoSam_6()
         std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
     try {
         std::shared_ptr<CalypsoSam> calypsoSam = std::make_shared<CalypsoSam>(
-            seReponse, TransmissionMode::NO_MODE, "");
+            seReponse, TransmissionMode::CONTACTS, "");
     } catch (...) {
     }
 }
@@ -173,7 +173,7 @@ void CalypsoSamTest::test_CalypsoSam_7()
     try {
         /* code */
         std::shared_ptr<CalypsoSam> calypsoSam = std::make_shared<CalypsoSam>(
-            seReponse, TransmissionMode::NO_MODE, "");
+            seReponse, TransmissionMode::CONTACTS, "");
     } catch (...) {
     }
 }
@@ -191,7 +191,7 @@ void CalypsoSamTest::test_CalypsoSam_8()
         std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
     try {
         std::shared_ptr<CalypsoSam> calypsoSam = std::make_shared<CalypsoSam>(
-            seReponse, TransmissionMode::NO_MODE, "");
+            seReponse, TransmissionMode::CONTACTS, "");
     } catch (...) {
     }
 }

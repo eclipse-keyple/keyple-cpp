@@ -187,7 +187,8 @@ protected:
      * @return true if the current SE matches the protocol flag
      * @throws KeypleReaderException if the protocol mask is not found
      */
-    bool protocolFlagMatches(const SeProtocol& protocolFlag) override;
+    bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
+        override;
 
     /**
      *

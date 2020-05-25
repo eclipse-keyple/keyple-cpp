@@ -177,7 +177,8 @@ protected:
     /**
      *
      */
-    bool protocolFlagMatches(const SeProtocol& protocolFlag) override;
+    bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
+        override;
 
     /**
      *

@@ -83,6 +83,20 @@ std::ostream& operator<<(std::ostream& os,
 	return os;
 }
 
+std::ostream& operator<<(
+    std::ostream& os, const std::vector<std::shared_ptr<SeRequest>>& s)
+{
+	os << "SEREQUESTS: {";
+	for (const auto& sr : s) {
+		if (sr != *s.begin())
+            os << ", ";
+        os << sr;
+    }
+	os << "}";
+
+	return os;
+}
+
 }
 }
 }

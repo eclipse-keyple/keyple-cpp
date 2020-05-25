@@ -49,7 +49,7 @@ public:
      *
      */
     DefaultSelectionsRequest(
-        std::set<std::shared_ptr<SeRequest>>& selectionSeRequestSet,
+        std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet,
         MultiSeRequestProcessing multiSeRequestProcessing,
         ChannelControl channelControl);
 
@@ -57,7 +57,7 @@ public:
      *
      */
     DefaultSelectionsRequest(
-        std::set<std::shared_ptr<SeRequest>>& selectionSeRequestSet);
+        std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet);
 
     /**
      *
@@ -72,13 +72,14 @@ public:
     /**
      *
      */
-    std::set<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet() override;
+    std::vector<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet()
+        const override;
 
 private:
     /**
      *
      */
-    std::set<std::shared_ptr<SeRequest>>& selectionSeRequestSet;
+    std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet;
 
     /**
      *

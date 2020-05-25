@@ -23,8 +23,6 @@ std::ostream& operator<<(std::ostream& os, const TransmissionMode& tm)
         os << "CONTACTLESS";
     else if (tm == TransmissionMode::CONTACTS)
         os << "CONTACTS";
-    else if (tm == TransmissionMode::NO_MODE)
-		os << "NO_MODE";
 
 	return os;
 }
