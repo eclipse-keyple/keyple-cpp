@@ -90,8 +90,10 @@ const uint8_t PoTransaction::CHALLENGE_LENGTH_REV32      = 0x08;
 const uint8_t PoTransaction::SIGNATURE_LENGTH_REV_INF_32 = 0x04;
 const uint8_t PoTransaction::SIGNATURE_LENGTH_REV32      = 0x08;
 
-std::vector<uint8_t> PoTransaction::ratificationCmdApduLegacy;
-std::vector<uint8_t> PoTransaction::ratificationCmdApdu;
+std::vector<uint8_t> PoTransaction::ratificationCmdApduLegacy =
+    {0x94, 0xB2, 0x00, 0x00, 0x00};
+std::vector<uint8_t> PoTransaction::ratificationCmdApdu =
+    {0x00, 0xB2, 0x00, 0x00, 0x00};
 
 PoTransaction::PoTransaction(std::shared_ptr<PoResource> poResource,
                              std::shared_ptr<SamResource> samResource,
