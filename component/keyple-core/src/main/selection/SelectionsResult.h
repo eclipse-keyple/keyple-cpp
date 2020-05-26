@@ -54,18 +54,19 @@ public:
      *
      * @param matchingSelection the item to add
      */
-    void
-    addMatchingSelection(std::shared_ptr<MatchingSelection> matchingSelection);
+    void addMatchingSelection(
+        std::shared_ptr<MatchingSelection> matchingSelection);
 
     /**
      * @return the currently active (matching) selection
      */
-    std::shared_ptr<MatchingSelection> getActiveSelection();
+    const std::shared_ptr<MatchingSelection> getActiveSelection() const;
 
     /**
      * @return the {@link MatchingSelection} list
      */
-    std::vector<std::shared_ptr<MatchingSelection>> getMatchingSelections();
+    const std::vector<std::shared_ptr<MatchingSelection>>&
+        getMatchingSelections() const;
 
     /**
      * Gets the {@link MatchingSelection} for the specified index.
@@ -75,12 +76,13 @@ public:
      * @param selectionIndex the selection index
      * @return the {@link MatchingSelection} or null
      */
-    std::shared_ptr<MatchingSelection> getMatchingSelection(int selectionIndex);
+    const std::shared_ptr<MatchingSelection>
+        getMatchingSelection(int selectionIndex) const;
 
     /**
      * @return true if an active selection is present
      */
-    bool hasActiveSelection();
+    bool hasActiveSelection() const;
 
 private:
     /**

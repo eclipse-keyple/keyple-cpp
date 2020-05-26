@@ -113,8 +113,6 @@ std::shared_ptr<SelectionsResult> SeSelection::processDefaultSelection(
 {
     /* Null pointer exception protection */
     if (defaultSelectionsResponse == nullptr) {
-        logger->error("defaultSelectionsResponse shouldn't be null in "
-                      "processSelection\n");
         return nullptr;
     }
 

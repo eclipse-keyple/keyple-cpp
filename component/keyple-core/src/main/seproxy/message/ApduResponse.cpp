@@ -32,7 +32,6 @@ ApduResponse::ApduResponse(
 : bytes(buffer)
 {
     if (buffer.empty()) {
-        logger->debug("empty response\n");
         this->successful = false;
     } else {
         if (buffer.size() < 2) {
