@@ -64,27 +64,7 @@ using namespace keyple::core::seproxy::message;
  */
 class KEYPLECORE_API MatchingSelection final
 : public std::enable_shared_from_this<MatchingSelection> {
-private:
-    /**
-     *
-     */
-    const std::shared_ptr<AbstractMatchingSe> matchingSe;
-
-    /**
-     *
-     */
-    const std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest;
-
-    /**
-     *
-     */
-    const std::shared_ptr<SeResponse> selectionSeResponse;
-
-    /**
-     *
-     */
-    const int selectionIndex;
-
+public:
     /**
      * Constructor
      *
@@ -93,7 +73,6 @@ private:
      * @param matchingSe the matching SE
      * @param selectionSeResponse the selection SeResponse
      */
-public:
     MatchingSelection(
         int selectionIndex,
         std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
@@ -130,6 +109,29 @@ public:
 	 */
     friend KEYPLECORE_API std::ostream& operator<<(
         std::ostream& os, const MatchingSelection& ms);
+
+private:
+    /**
+     *
+     */
+    const std::shared_ptr<AbstractMatchingSe> matchingSe;
+
+    /**
+     *
+     */
+    const std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest;
+
+    /**
+     *
+     */
+    const std::shared_ptr<SeResponse> selectionSeResponse;
+
+    /**
+     *
+     */
+    const int selectionIndex;
+
+
 };
 
 }
