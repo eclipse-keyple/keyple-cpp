@@ -100,15 +100,7 @@ public:
      *
      */
     friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
-		                                           const SeProtocol& se);
-
-    /**
-     *
-     */
-    std::string toString() const
-    {
-        return this->getName();
-    }
+                                                   const SeProtocol& se);
 
 private:
     /**
