@@ -136,7 +136,7 @@ ADD_EXECUTABLE(keyple_core_ut
 	# selection
 	#${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractMatchingSe.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractSeSelectionRequest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/selection/MatchingSelection.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/selection/MatchingSelectionTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/SelectionsResultTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/SeResourceTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/SeSelectionTest.cpp

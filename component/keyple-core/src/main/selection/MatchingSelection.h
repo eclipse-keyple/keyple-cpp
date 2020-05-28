@@ -82,7 +82,7 @@ public:
     /**
      * @return the AbstractMatchingSe
      */
-    std::shared_ptr<AbstractMatchingSe> getMatchingSe();
+    const std::shared_ptr<AbstractMatchingSe> getMatchingSe() const;
 
     /**
      * Get the parser for the targeted response.
@@ -91,18 +91,18 @@ public:
      * @return a parser object
      */
     std::shared_ptr<AbstractApduResponseParser>
-    getResponseParser(int commandIndex);
+        getResponseParser(int commandIndex) const;
 
     /**
      * @return the info string provided with the Selector
      */
-    const std::string& getExtraInfo() const;
+    const std::string getExtraInfo() const;
 
     /**
      * @return the index of the selection (order in the prepareSelection
      *         command). 0 is the first selection.
      */
-    int getSelectionIndex();
+    int getSelectionIndex() const;
 
 	/**
 	 *
