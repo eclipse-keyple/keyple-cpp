@@ -134,7 +134,7 @@ ADD_EXECUTABLE(keyple_core_ut
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/TransmissionMode.cpp
 
 	# selection
-	#${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractMatchingSe.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractMatchingSeTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractSeSelectionRequestTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/MatchingSelectionTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/SelectionsResultTest.cpp
