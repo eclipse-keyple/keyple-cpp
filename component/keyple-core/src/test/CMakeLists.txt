@@ -130,8 +130,8 @@ ADD_EXECUTABLE(keyple_core_ut
 
 	# seproxy - protocol
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/SeCommonProtocols.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/SeProtocol.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/TransmissionMode.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/SeProtocolTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/TransmissionModeTest.cpp
 
 	# selection
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractMatchingSeTest.cpp
