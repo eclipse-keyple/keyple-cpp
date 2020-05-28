@@ -74,7 +74,7 @@ protected:
     }
 };
 
-static const std::vector<uint8_t> aid = {0xa0, 0x00, 0x00, 0x00, 0x25};
+static const std::vector<uint8_t> apdu = {0x11, 0x22, 0x33, 0x44, 0x55};
 
 static std::shared_ptr<SeSelector> seSelector =
     std::make_shared<SeSelector>(
@@ -82,7 +82,7 @@ static std::shared_ptr<SeSelector> seSelector =
         nullptr,
         std::make_shared<SeSelector::AidSelector>(
             std::make_shared<SeSelector::AidSelector::IsoAid>(
-                aid),
+                apdu),
             nullptr,
             SeSelector::AidSelector::FileOccurrence::NEXT,
             SeSelector::AidSelector::FileControlInformation::FCI),
@@ -90,39 +90,32 @@ static std::shared_ptr<SeSelector> seSelector =
 
 TEST(AbstractSeSelectionRequestTest, AbstractSeSelectionRequest_NullPtr)
 {
-	SeSelectionRequestMock request(nullptr);
+    SeSelectionRequestMock request(nullptr);
 }
 
 TEST(AbstractSeSelectionRequestTest, AbstractSeSelectionRequest)
 {
-	SeSelectionRequestMock request2(seSelector);
-}
-
-TEST(AbstractSeSelectionRequestTest, getSelectionRequest_NullPtr)
-{
-	SeSelectionRequestMock request(nullptr);
-
-	ASSERT_EQ(request.getSelectionRequest(), nullptr);
+    SeSelectionRequestMock request(seSelector);
 }
 
 TEST(AbstractSeSelectionRequestTest, getSelectionRequest)
 {
-	SeSelectionRequestMock request(seSelector);
+    SeSelectionRequestMock request(seSelector);
 
-	ASSERT_NE(request.getSelectionRequest(), nullptr);
-	ASSERT_EQ(request.getSelectionRequest()->getSeSelector(), seSelector);
+    ASSERT_NE(request.getSelectionRequest(), nullptr);
+    ASSERT_EQ(request.getSelectionRequest()->getSeSelector(), seSelector);
 }
 
 TEST(AbstractSeSelectionRequestTest, getSeSelector_Nullptr)
 {
-	SeSelectionRequestMock request(nullptr);
+    SeSelectionRequestMock request(nullptr);
 
-	ASSERT_EQ(request.getSeSelector(), nullptr);
+    ASSERT_EQ(request.getSeSelector(), nullptr);
 }
 
 TEST(AbstractSeSelectionRequestTest, getSeSelector)
 {
-	SeSelectionRequestMock request(seSelector);
+    SeSelectionRequestMock request(seSelector);
 
-	ASSERT_EQ(request.getSeSelector(), seSelector);
+    ASSERT_EQ(request.getSeSelector(), seSelector);
 }
