@@ -37,38 +37,45 @@ MatchingSelection::MatchingSelection(
 {
 }
 
-std::shared_ptr<AbstractMatchingSe> MatchingSelection::getMatchingSe()
+const std::shared_ptr<AbstractMatchingSe> MatchingSelection::getMatchingSe()
+    const
 {
     return matchingSe;
 }
 
 std::shared_ptr<AbstractApduResponseParser>
-MatchingSelection::getResponseParser(int commandIndex)
+    MatchingSelection::getResponseParser(int commandIndex) const
 {
+    if (!seSelectionRequest)
+        return nullptr;
+
     return seSelectionRequest->getCommandParser(selectionSeResponse,
                                                 commandIndex);
 }
 
-const std::string& MatchingSelection::getExtraInfo() const
+const std::string MatchingSelection::getExtraInfo() const
 {
+    if (!seSelectionRequest || !seSelectionRequest->getSeSelector())
+        return "";
+
     return seSelectionRequest->getSeSelector()->getExtraInfo();
 }
 
-int MatchingSelection::getSelectionIndex()
+int MatchingSelection::getSelectionIndex() const
 {
     return selectionIndex;
 }
 
 std::ostream& operator<<(std::ostream& os, const MatchingSelection& ms)
 {
-	os << "MATCHINGSELECTION: {"
-	   << "MATCHINGSE = " << ms.matchingSe << ", "
-	   << "SELECTIONREQUEST = " << ms.seSelectionRequest << ", "
-	   << "SELECTIONRESPONSE = " << ms.selectionSeResponse << ", "
-	   << "SELECTIONINDEX = " << ms.selectionIndex
-	   << "}";
+    os << "MATCHINGSELECTION: {"
+       << "MATCHINGSE = " << ms.matchingSe << ", "
+       << "SELECTIONREQUEST = " << ms.seSelectionRequest << ", "
+       << "SELECTIONRESPONSE = " << ms.selectionSeResponse << ", "
+       << "SELECTIONINDEX = " << ms.selectionIndex
+       << "}";
 
-	return os;
+    return os;
 }
 
 }
