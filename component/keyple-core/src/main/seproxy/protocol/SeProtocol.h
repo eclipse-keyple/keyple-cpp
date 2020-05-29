@@ -14,6 +14,7 @@
 
 #include <string>
 #include <iostream>
+#include <memory>
 
 #include "TransmissionMode.h"
 
@@ -30,40 +31,11 @@ using namespace keyple::core::seproxy::protocol;
 class KEYPLECORE_API SeProtocol {
 public:
     /**
-     *
-     */
-    const int ordinalValue;
-
-    /**
-     *
-     */
-    SeProtocol() : ordinalValue(nextOrdinal++)
-    {
-    }
-
-    /**
-     *
-     */
-    SeProtocol(const SeProtocol& other) : ordinalValue(other.ordinalValue)
-    {
-    }
-
-    /**
-     *
-     */
-    virtual ~SeProtocol()
-    {
-    }
-
-    /**
      * Protocol name
      *
      * @return String
      */
-    virtual std::string getName() const
-    {
-        return "";
-    }
+    virtual const std::string& getName() const = 0;
 
     /**
      * Transmission mode: CONTACTS or CONTACTLESS
@@ -75,55 +47,13 @@ public:
     /**
      *
      */
-    virtual bool operator==(const SeProtocol& other) const
-    {
-        return this->ordinalValue == other.ordinalValue;
-    }
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<SeProtocol> se);
 
-    /**
-     *
-     */
-    virtual bool operator!=(const SeProtocol& other) const
-    {
-        return !(*this == other);
-    }
-
-    /**
-     *
-     */
-    virtual bool operator<(const SeProtocol& other) const
-    {
-        return this->ordinalValue < other.ordinalValue;
-    }
-
-    /**
-     *
-     */
-    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
-                                                   const SeProtocol& se);
-
-private:
-    /**
-     *
-     */
-    static int nextOrdinal;
 };
 
 }
 }
 }
 }
-namespace std {
 
-using namespace keyple::core::seproxy::protocol;
-
-template <> struct hash<SeProtocol> {
-    size_t operator()(const SeProtocol& obj) const
-    {
-        (void)obj;
-
-        return hash<int>()(obj.ordinalValue);
-    }
-};
-
-}

@@ -48,7 +48,7 @@ CustomProtocols::CustomProtocols(const std::string& nameValue,
     (void)innerEnum;
 }
 
-std::string CustomProtocols::getName() const
+const std::string& CustomProtocols::getName() const
 {
     return name;
 }

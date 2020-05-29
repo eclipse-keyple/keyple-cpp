@@ -15,51 +15,41 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "SeProtocol.h"
+#include "SeCommonProtocols.h"
 
 #include "TransmissionMode.h"
 
-using namespace keyple::core::seproxy::protocol;
-
 using namespace testing;
 
-class SeProtocolMock : public SeProtocol {
-public:
-    SeProtocolMock(const std::string name)
-    : SeProtocol(), mode(TransmissionMode::CONTACTLESS), name(name)
-    {
-    }
+using namespace keyple::core::seproxy::protocol;
 
-    TransmissionMode getTransmissionMode() const
-    {
-        return mode;
-    }
-
-    const std::string& getName() const
-    {
-        return name;
-    }
-
-private:
-    const TransmissionMode mode;
-    const std::string name;
-};
-
-TEST(SeProtocolTest, SeProtocol)
+TEST(SeCommonProtocols, SeCommonProtocols)
 {
-    SeProtocolMock protocol("protocol");
+    SeCommonProtocols protocol1("name", TransmissionMode::CONTACTLESS);
+
+    SeCommonProtocols protocol2(protocol1);
+
+    ASSERT_EQ(protocol1.values.size(), 15);
+    ASSERT_EQ(protocol2.values.size(), 15);
 }
 
-TEST(SeProtocolTest, getName)
+TEST(SeCommonProtocols, getName)
 {
-    SeProtocolMock protocol("protocol");
+    SeCommonProtocols protocol1("name", TransmissionMode::CONTACTLESS);
 
-    ASSERT_EQ(protocol.getName(), "protocol");
+    SeCommonProtocols protocol2(protocol1);
+
+    ASSERT_EQ(protocol1.getName(), "name");
+    ASSERT_EQ(protocol2.getName(), "name");
 }
 
-TEST(SeProtocolTest, getTransmissionMode)
+TEST(SeCommonProtocols, getTransmissionMode)
 {
-    SeProtocolMock protocol("protocol");
+    SeCommonProtocols protocol1("name", TransmissionMode::CONTACTLESS);
+    SeCommonProtocols protocol2(protocol1);
+    SeCommonProtocols protocol3("name", TransmissionMode::CONTACTS);
 
-    ASSERT_EQ(protocol.getTransmissionMode(), TransmissionMode::CONTACTLESS);
+    ASSERT_EQ(protocol1.getTransmissionMode(), TransmissionMode::CONTACTLESS);
+    ASSERT_EQ(protocol2.getTransmissionMode(), TransmissionMode::CONTACTLESS);
+    ASSERT_EQ(protocol3.getTransmissionMode(), TransmissionMode::CONTACTS);
 }
