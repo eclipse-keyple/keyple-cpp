@@ -56,6 +56,29 @@ public:
     /* ---- contacts proprietary ---------------- */
     static const std::shared_ptr<SeCommonProtocols> PROTOCOL_HSP;
 
+
+    /**
+     * Constructor
+     */
+    SeCommonProtocols(const std::string& name,
+                      TransmissionMode transmissionMode);
+
+    /**
+     *
+     */
+    const std::string& getName() const override;
+
+    /**
+     *
+     */
+    TransmissionMode getTransmissionMode() const override;
+
+    /**
+     *
+     */
+    static const std::vector<std::shared_ptr<SeCommonProtocols>> values;
+
+private:
     /**
      *
      */
@@ -80,81 +103,6 @@ public:
     /**
      *
      */
-    const InnerEnum innerEnumValue;
-
-    /**
-     * Constructor
-     */
-    SeCommonProtocols(const std::string& nameValue, InnerEnum innerEnum,
-                      const std::string& name,
-                      TransmissionMode transmissionMode);
-
-    /**
-     *
-     */
-    SeCommonProtocols(const SeCommonProtocols& s);
-
-    /**
-     *
-     */
-    std::string getName() const override;
-
-    /**
-     *
-     */
-    TransmissionMode getTransmissionMode() const override;
-
-    /**
-     *
-     */
-    static const std::vector<std::shared_ptr<SeCommonProtocols>>& values();
-
-    /**
-     *
-     */
-    int ordinal();
-
-    /**
-     *
-     */
-    std::string toString();
-
-    /**
-     *
-     */
-    static const std::shared_ptr<SeCommonProtocols>
-        valueOf(const std::string& name);
-
-private:
-    /**
-     *
-     */
-    static std::vector<std::shared_ptr<SeCommonProtocols>> valueList;
-
-    /**
-     *
-     */
-    class StaticConstructor {
-    public:
-        /**
-         *
-         */
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static StaticConstructor staticConstructor;
-
-    /**
-     *
-     */
-    const std::string nameValue;
-
-    /**
-     *
-     */
     const std::string name;
 
     /**
@@ -166,17 +114,4 @@ private:
 }
 }
 }
-}
-
-namespace std {
-
-using namespace keyple::core::seproxy::protocol;
-
-template <> struct hash<SeCommonProtocols> {
-    size_t operator()(const SeCommonProtocols& obj) const
-    {
-        return hash<int>()(obj.ordinalValue);
-    }
-};
-
 }

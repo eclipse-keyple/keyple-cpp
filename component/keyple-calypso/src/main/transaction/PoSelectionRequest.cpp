@@ -115,8 +115,7 @@ int PoSelectionRequest::prepareReadRecordsCmd(
 {
     logger->debug("prepareReadRecordsCmd\n");
 
-    if (seSelector->getSeProtocol()->ordinalValue ==
-        SeCommonProtocols::PROTOCOL_ISO7816_3->ordinal()) {
+    if (seSelector->getSeProtocol() == SeCommonProtocols::PROTOCOL_ISO7816_3) {
         throw std::invalid_argument("In contacts mode, the expected length "
                                     "must be specified.");
     }

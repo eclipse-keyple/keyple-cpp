@@ -58,10 +58,9 @@ SeProtocolDetectionEngine::prepareSeSelection()
 
     seSelection = std::make_shared<SeSelection>();
 
-    // process SDK defined protocols
-    for (std::shared_ptr<SeCommonProtocols> protocol : SeCommonProtocols::values()) {
-        switch (protocol->innerEnumValue) {
-        case SeCommonProtocols::InnerEnum::PROTOCOL_ISO14443_4: {
+    /* Process SDK defined protocols */
+    for (std::shared_ptr<SeCommonProtocols> protocol : SeCommonProtocols::values) {
+        if (protocol == SeCommonProtocols::PROTOCOL_ISO14443_4) {
             /* Add a Hoplink selector */
             std::string HoplinkAID = "A000000291A000000191";
             //char SFI_T2Usage = static_cast<char>(0x1A);
@@ -86,17 +85,18 @@ SeProtocolDetectionEngine::prepareSeSelection()
                 SFI_T2Environment, ReadDataStructure::SINGLE_RECORD_DATA,
                 static_cast<char>(0x01), "Hoplink T2 Environment");
             seSelection->prepareSelection(poSelectionRequest);
-            break;
-        }
-        case SeCommonProtocols::InnerEnum::PROTOCOL_ISO14443_3A:
-        case SeCommonProtocols::InnerEnum::PROTOCOL_ISO14443_3B:
-            // not handled in this demo code
-            break;
-        case SeCommonProtocols::InnerEnum::PROTOCOL_MIFARE_DESFIRE:
-        case SeCommonProtocols::InnerEnum::PROTOCOL_B_PRIME:
-            // intentionally ignored for demo purpose
-            break;
-        default:
+
+        } else if(protocol == SeCommonProtocols::PROTOCOL_ISO14443_3A ||
+                  protocol == SeCommonProtocols::PROTOCOL_ISO14443_3B) {
+            /*
+             * Not handled in this demo code
+             */
+        } else if (protocol == SeCommonProtocols::PROTOCOL_MIFARE_DESFIRE ||
+                   protocol == SeCommonProtocols::PROTOCOL_B_PRIME) {
+            /*
+             * Intentionally ignored for demo purpose
+             */
+        } else {
             /* Add a generic selector */
             seSelection->prepareSelection(
                 std::make_shared<GenericSeSelectionRequest>(
@@ -104,7 +104,6 @@ SeProtocolDetectionEngine::prepareSeSelection()
                         SeCommonProtocols::PROTOCOL_ISO14443_4,
                         std::make_shared<SeSelector::AtrFilter>(".*"), nullptr,
                         "Default selector")));
-            break;
         }
     }
 
