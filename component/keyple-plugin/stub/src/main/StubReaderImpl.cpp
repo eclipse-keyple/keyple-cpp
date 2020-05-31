@@ -164,7 +164,7 @@ void StubReaderImpl::setParameter(const std::string& name,
 }
 
 const std::map<const std::string, const std::string>
-StubReaderImpl::getParameters()
+    StubReaderImpl::getParameters() const
 {
     return parameters;
 }

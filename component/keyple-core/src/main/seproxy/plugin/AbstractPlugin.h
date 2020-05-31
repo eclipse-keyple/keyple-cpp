@@ -83,7 +83,7 @@ public:
      *
      * @return a list of String
      */
-    virtual const std::set<std::string> getReaderNames() override;
+    virtual const std::set<std::string> getReaderNames() const override;
 
     /**
      * Compare the name of the current ReaderPlugin to the name of the
@@ -107,7 +107,8 @@ public:
      *       be looked into, maybe returning a reference would
      *       could be best here?
      */
-    std::shared_ptr<SeReader> getReader(const std::string& name) override;
+    const std::shared_ptr<SeReader> getReader(const std::string& name) const
+        override;
 
 protected:
     /**
@@ -137,8 +138,6 @@ protected:
      * Alex: using SeReader instead of AbstractObservableReader
      */
     virtual std::set<std::shared_ptr<SeReader>> initNativeReaders() = 0;
-
-private:
 };
 
 }

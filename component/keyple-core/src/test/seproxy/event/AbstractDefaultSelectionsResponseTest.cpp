@@ -12,29 +12,29 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "DefaultSelectionsResponse.h"
-#include "ObservableReader.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
+#include "AbstractDefaultSelectionsResponse.h"
+
+using namespace testing;
 
 using namespace keyple::core::seproxy::event;
 
-DefaultSelectionsResponse::DefaultSelectionsResponse(
-    std::list<std::shared_ptr<SeResponse>>& selectionSeResponseSet)
-: selectionSeResponseSet(selectionSeResponseSet)
-{
-}
+class AbstractDefaultSelectionsResponseMock :
+public AbstractDefaultSelectionsResponse {
+protected:
+    const std::list<std::shared_ptr<SeResponse>>&
+        getSelectionSeResponseSet() const override
+    {
+        return responses;
+    }
 
-const std::list<std::shared_ptr<SeResponse>>&
-    DefaultSelectionsResponse::getSelectionSeResponseSet() const
-{
-    return selectionSeResponseSet;
-}
+private:
+    std::list<std::shared_ptr<SeResponse>> responses;
+};
 
-}
-}
-}
+TEST(AbstractDefaultSelectionsResponseTest, AbstractDefaultSelectionsResponse)
+{
+    AbstractDefaultSelectionsResponseMock response;
 }

@@ -53,7 +53,8 @@ public:
     /**
      *
      */
-    std::list<std::shared_ptr<SeResponse>>& getSelectionSeResponseSet();
+    const std::list<std::shared_ptr<SeResponse>>& getSelectionSeResponseSet()
+        const;
 
 private:
     /**

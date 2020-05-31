@@ -93,14 +93,14 @@ public:
     /**
      *
      */
-    void setParameter(const std::string& name,
-                      const std::string& value) override;
+    void setParameter(const std::string& name, const std::string& value)
+        override;
 
     /**
      *
      */
-    const std::map<const std::string, const std::string>
-    getParameters() override;
+    const std::map<const std::string, const std::string> getParameters() const
+        override;
 
     /**
      * @return the current transmission mode

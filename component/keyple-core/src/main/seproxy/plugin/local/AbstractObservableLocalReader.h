@@ -346,7 +346,7 @@ public:
     /**
      * @return the number of observers
      */
-    int countObservers() final;
+    int countObservers() const final;
 
     /**
      * Remove all observers at once
