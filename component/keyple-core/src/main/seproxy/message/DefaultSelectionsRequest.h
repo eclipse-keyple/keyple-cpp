@@ -62,17 +62,18 @@ public:
     /**
      *
      */
-    MultiSeRequestProcessing& getMultiSeRequestProcessing() override;
+    const MultiSeRequestProcessing& getMultiSeRequestProcessing() const
+        override;
 
     /**
      *
      */
-    ChannelControl& getChannelControl() override;
+    const ChannelControl& getChannelControl() const override;
 
     /**
      *
      */
-    std::vector<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet()
+    const std::vector<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet()
         const override;
 
 private:

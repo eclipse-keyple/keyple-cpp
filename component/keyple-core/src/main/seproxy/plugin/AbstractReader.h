@@ -90,9 +90,9 @@ public:
      * @throws KeypleReaderException if a reader error occurs
      */
     std::list<std::shared_ptr<SeResponse>> transmitSet(
-        std::vector<std::shared_ptr<SeRequest>>& requestSet,
-        MultiSeRequestProcessing multiSeRequestProcessing,
-        ChannelControl channelControl) override;
+        const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+        const MultiSeRequestProcessing& multiSeRequestProcessing,
+        const ChannelControl& channelControl) override;
 
     /**
      * Simplified version of transmitSet for standard use.
@@ -102,7 +102,7 @@ public:
      * @throws KeypleReaderException if a reader error occurs
      */
     std::list<std::shared_ptr<SeResponse>> transmitSet(
-        std::vector<std::shared_ptr<SeRequest>>& requestSet) override;
+        const std::vector<std::shared_ptr<SeRequest>>& requestSet) override;
 
     /**
      * Execute the transmission of a {@link SeRequest} and returns a
@@ -190,9 +190,9 @@ protected:
      * @throws KeypleReaderException if reader error occurs
      */
     virtual std::list<std::shared_ptr<SeResponse>> processSeRequestSet(
-        std::vector<std::shared_ptr<SeRequest>>& requestSet,
-        MultiSeRequestProcessing multiSeRequestProcessing,
-        ChannelControl channelControl) = 0;
+        const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+        const MultiSeRequestProcessing& multiSeRequestProcessing,
+        const ChannelControl& channelControl) = 0;
 
     /**
      * Abstract method implemented by the AbstractLocalReader and VirtualReader
@@ -207,7 +207,8 @@ protected:
      * @throws KeypleReaderException if reader error occurs
      */
     virtual std::shared_ptr<SeResponse> processSeRequest(
-        std::shared_ptr<SeRequest> seRequest,ChannelControl channelControl) = 0;
+        const std::shared_ptr<SeRequest> seRequest,
+        const ChannelControl& channelControl) = 0;
 
 private:
     /**

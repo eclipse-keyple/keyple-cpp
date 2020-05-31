@@ -59,9 +59,9 @@ int AbstractReader::compareTo(std::shared_ptr<SeReader> seReader)
 }
 
 std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
-    std::vector<std::shared_ptr<SeRequest>>& requestSet,
-    MultiSeRequestProcessing multiSeRequestProcessing,
-    ChannelControl channelControl)
+    const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+    const MultiSeRequestProcessing& multiSeRequestProcessing,
+    const ChannelControl& channelControl)
 {
     /*
      * Alex:
@@ -120,7 +120,7 @@ std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
 }
 
 std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
-    std::vector<std::shared_ptr<SeRequest>>& requestSet)
+    const std::vector<std::shared_ptr<SeRequest>>& requestSet)
 {
     return transmitSet(requestSet, MultiSeRequestProcessing::FIRST_MATCH,
                        ChannelControl::KEEP_OPEN);
