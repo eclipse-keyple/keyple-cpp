@@ -40,18 +40,18 @@ DefaultSelectionsRequest::DefaultSelectionsRequest(
 {
 }
 
-MultiSeRequestProcessing&
-DefaultSelectionsRequest::getMultiSeRequestProcessing()
+const MultiSeRequestProcessing&
+    DefaultSelectionsRequest::getMultiSeRequestProcessing() const
 {
     return multiSeRequestProcessing;
 }
 
-ChannelControl& DefaultSelectionsRequest::getChannelControl()
+const ChannelControl& DefaultSelectionsRequest::getChannelControl() const
 {
     return channelControl;
 }
 
-std::vector<std::shared_ptr<SeRequest>>&
+const std::vector<std::shared_ptr<SeRequest>>&
     DefaultSelectionsRequest::getSelectionSeRequestSet() const
 {
     return selectionSeRequestSet;

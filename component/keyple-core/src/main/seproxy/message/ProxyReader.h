@@ -126,9 +126,9 @@ public:
      *         IO)
      */
     virtual std::list<std::shared_ptr<SeResponse>> transmitSet(
-        std::vector<std::shared_ptr<SeRequest>>& seApplicationRequest,
-        MultiSeRequestProcessing multiSeRequestProcessing,
-        ChannelControl channelControl) = 0;
+        const std::vector<std::shared_ptr<SeRequest>>& seApplicationRequest,
+        const MultiSeRequestProcessing& multiSeRequestProcessing,
+        const ChannelControl& channelControl) = 0;
 
     /**
      * Transmits a Set of {@link SeRequest} (list of {@link SeRequest}) to a SE
@@ -143,8 +143,7 @@ public:
      *         IO)
      */
     virtual std::list<std::shared_ptr<SeResponse>> transmitSet(
-        std::vector<std::shared_ptr<SeRequest>>& seApplicationRequest)
-        = 0;
+        const std::vector<std::shared_ptr<SeRequest>>& seApplicationRequest)= 0;
 
     /**
      * Transmits a single {@link SeRequest} (list of {@link ApduRequest}) and

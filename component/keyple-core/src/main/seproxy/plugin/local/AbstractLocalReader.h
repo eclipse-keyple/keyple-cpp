@@ -294,9 +294,9 @@ protected:
      * @throws KeypleIOReaderException if a reader error occurs
       */
     std::list<std::shared_ptr<SeResponse>> processSeRequestSet(
-        std::vector<std::shared_ptr<SeRequest>>& requestSet,
-        MultiSeRequestProcessing multiSeRequestProcessing,
-        ChannelControl channelControl) final override;
+        const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+        const MultiSeRequestProcessing& multiSeRequestProcessing,
+        const ChannelControl& channelControl) final override;
 
     /**
      * Executes a request made of one or more Apdus and receives their answers.
@@ -309,8 +309,8 @@ protected:
      * @throws KeypleReaderException if a transmission fails
      */
     std::shared_ptr<SeResponse>
-    processSeRequest(std::shared_ptr<SeRequest> seRequest,
-                     ChannelControl channelControl) final override;
+    processSeRequest(const std::shared_ptr<SeRequest> seRequest,
+                     const ChannelControl& channelControl) final override;
 
     /**
      * Transmits an ApduRequest and receives the ApduResponse

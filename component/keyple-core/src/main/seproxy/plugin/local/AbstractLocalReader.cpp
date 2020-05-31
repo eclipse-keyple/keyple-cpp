@@ -338,9 +338,9 @@ void AbstractLocalReader::setSeProtocolSetting(
 }
 
 std::list<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequestSet(
-    std::vector<std::shared_ptr<SeRequest>>& requestSet,
-    MultiSeRequestProcessing multiSeRequestProcessing,
-    ChannelControl channelControl)
+    const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+    const MultiSeRequestProcessing& multiSeRequestProcessing,
+    const ChannelControl& channelControl)
 {
     std::vector<bool> requestMatchesProtocol(requestSet.size());
     int requestIndex = 0, lastRequestIndex;
@@ -477,8 +477,9 @@ std::list<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequestSet(
 }
 
 std::shared_ptr<SeResponse>
-AbstractLocalReader::processSeRequest(std::shared_ptr<SeRequest> seRequest,
-                                      ChannelControl channelControl)
+AbstractLocalReader::processSeRequest(
+    const std::shared_ptr<SeRequest> seRequest,
+    const ChannelControl& channelControl)
 {
     std::shared_ptr<SeResponse> seResponse = nullptr;
 

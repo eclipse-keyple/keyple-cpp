@@ -57,18 +57,19 @@ protected:
     /**
      * @return the selection request set
      */
-    virtual std::vector<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet()
-       const = 0;
+    virtual const std::vector<std::shared_ptr<SeRequest>>&
+        getSelectionSeRequestSet() const = 0;
 
     /**
      * @return the multi SE request mode
      */
-    virtual MultiSeRequestProcessing& getMultiSeRequestProcessing() = 0;
+    virtual const MultiSeRequestProcessing& getMultiSeRequestProcessing() const
+        = 0;
 
     /**
      * @return the channel control
      */
-    virtual ChannelControl& getChannelControl() = 0;
+    virtual const ChannelControl& getChannelControl() const = 0;
 };
 
 }
