@@ -84,8 +84,8 @@ ADD_EXECUTABLE(keyple_core_ut
 
 	# seproxy - event
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsRequestTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsResponseTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservablePluginTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsResponseTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservablePluginTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservableReaderTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/PluginEventTest.cpp
 #	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ReaderEventTest.cpp

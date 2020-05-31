@@ -287,7 +287,7 @@ void AbstractObservableLocalReader::notifyObservers(
         observer->update(event);
 }
 
-int AbstractObservableLocalReader::countObservers()
+int AbstractObservableLocalReader::countObservers() const
 {
     return observers.size();
 }

@@ -46,7 +46,7 @@ PcscPluginImpl& PcscPluginImpl::getInstance()
 }
 
 const std::map<const std::string, const std::string>
-PcscPluginImpl::getParameters()
+    PcscPluginImpl::getParameters() const
 {
     return std::map<const std::string, const std::string>();
 }
@@ -152,7 +152,7 @@ PcscPluginImpl::fetchNativeReader(const std::string& name)
      * associated with new reader(s)
      */
     std::shared_ptr<AbstractReader> reader = nullptr;
-    std::vector<PcscTerminal>& terminals   = getTerminals();
+    std::vector<PcscTerminal>& terminals = getTerminals();
     std::vector<std::string> terminalList;
 
     try {

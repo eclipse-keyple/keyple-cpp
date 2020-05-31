@@ -50,6 +50,6 @@ private:
 
 TEST(AbstractDefaultSelectionsRequestTest, AbstractDefaultSelectionsRequest)
 {
-	AbstractDefaultSelectionsRequestMock mock;
+    AbstractDefaultSelectionsRequestMock mock;
 }
 

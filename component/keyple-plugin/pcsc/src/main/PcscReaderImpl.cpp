@@ -370,7 +370,7 @@ void PcscReaderImpl::setParameter(const std::string& name,
 }
 
 const std::map<const std::string, const std::string>
-PcscReaderImpl::getParameters()
+    PcscReaderImpl::getParameters() const
 {
     std::map<const std::string, const std::string> parameters;
 
