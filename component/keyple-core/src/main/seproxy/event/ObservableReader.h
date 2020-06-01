@@ -328,10 +328,10 @@ public:
      *        notified even if the selection has failed (ALWAYS) or whether the
      *        SE insertion should be ignored in this case (MATCHED_ONLY).
      */
-    virtual void
-    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
-                                   defaultSelectionsRequest,
-                               NotificationMode notificationMode) = 0;
+    virtual void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode) = 0;
 
     /**
      * A combination of defining the default selection request and starting the
@@ -346,11 +346,11 @@ public:
      *        SE detection is stopped until a new call to startSeDetection is
      *        made.
      */
-    virtual void
-    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
-                                   defaultSelectionsRequest,
-                               NotificationMode notificationMode,
-                               PollingMode pollingMode) = 0;
+    virtual void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        NotificationMode notificationMode,
+        PollingMode pollingMode) = 0;
 
     /**
      * Signal sent by the application to the reader to indicate the end of the

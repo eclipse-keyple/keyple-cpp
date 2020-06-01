@@ -52,7 +52,8 @@ const std::string PcscReaderImpl::PROTOCOL_ANY  = "T=0";
 PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
                                PcscTerminal& terminal)
 : AbstractObservableLocalReader(pluginName, terminal.getName()),
-  loopWaitSeRemoval(true), terminal(terminal)
+  loopWaitSeRemoval(true), terminal(terminal),
+  transmissionMode(TransmissionMode::NONE)
 {
     this->executorService = std::make_shared<MonitoringPool>();
     this->stateService    = initStateService();
@@ -430,18 +431,18 @@ void PcscReaderImpl::openPhysicalChannel()
     this->channelOpen = true;
 }
 
-TransmissionMode PcscReaderImpl::getTransmissionMode()
+const TransmissionMode& PcscReaderImpl::getTransmissionMode()
 {
-    if (transmissionMode != static_cast<TransmissionMode>(0)) {
-        return transmissionMode;
-    } else {
+    if (transmissionMode == TransmissionMode::NONE) {
         if (!parameterCardProtocol.compare(PROTOCOL_T1) ||
             !parameterCardProtocol.compare(PROTOCOL_T_CL)) {
-            return TransmissionMode::CONTACTLESS;
+            transmissionMode = TransmissionMode::CONTACTLESS;
         } else {
-            return TransmissionMode::CONTACTS;
+            transmissionMode = TransmissionMode::CONTACTS;
         }
     }
+
+    return transmissionMode;
 }
 
 }
