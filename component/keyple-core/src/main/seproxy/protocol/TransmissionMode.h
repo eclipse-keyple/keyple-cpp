@@ -22,7 +22,7 @@ namespace protocol {
 /**
  *
  */
-enum class TransmissionMode { CONTACTS = 0, CONTACTLESS };
+enum class TransmissionMode { NONE = 0, CONTACTS, CONTACTLESS };
 
 /**
  *

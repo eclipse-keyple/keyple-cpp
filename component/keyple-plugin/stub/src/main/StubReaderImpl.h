@@ -105,7 +105,7 @@ public:
     /**
      * @return the current transmission mode
      */
-    TransmissionMode getTransmissionMode() override;
+    const TransmissionMode& getTransmissionMode() override;
 
     /**
      * STATE CONTROLLERS FOR INSERTING AND REMOVING SECURE ELEMENT

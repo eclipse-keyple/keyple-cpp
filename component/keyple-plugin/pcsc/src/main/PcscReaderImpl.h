@@ -127,7 +127,7 @@ public:
      *
      * @return the current transmission mode
      */
-    TransmissionMode getTransmissionMode() override;
+    const TransmissionMode& getTransmissionMode() override;
 
     /**
      *
@@ -300,7 +300,7 @@ private:
     /**
      *
      */
-    TransmissionMode transmissionMode = static_cast<TransmissionMode>(0);
+    TransmissionMode transmissionMode;
 
     /**
      *
