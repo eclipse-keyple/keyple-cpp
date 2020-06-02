@@ -92,7 +92,7 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(
              * Create a AbstractMatchingSe with the class deduced from the
              * selection request during the selection preparation
              */
-            std::shared_ptr<AbstractMatchingSe> matchingSe =
+            const std::shared_ptr<AbstractMatchingSe> matchingSe =
                 seSelectionRequestList[index]->parse(seResponse);
 
             selectionsResult->addMatchingSelection(
@@ -155,6 +155,39 @@ SeSelection::getSelectionOperation()
 {
     return std::make_shared<DefaultSelectionsRequest>(
         selectionRequestSet, multiSeRequestProcessing, channelControl);
+}
+
+std::ostream& operator<<(std::ostream& os, const SeSelection& ss)
+{
+    (void)ss;
+
+    os << "SESELECTION: {"
+       << "TODO"
+       << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::shared_ptr<SeSelection>& ss)
+{
+    if (!ss)
+        os << "SESELECTION = null";
+    else
+        os << *ss.get();
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::unique_ptr<SeSelection>& ss)
+{
+    if (!ss)
+        os << "SESELECTION = null";
+    else
+        os << *ss.get();
+
+    return os;
 }
 
 }

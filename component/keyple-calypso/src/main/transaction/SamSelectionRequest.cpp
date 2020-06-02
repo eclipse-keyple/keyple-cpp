@@ -34,8 +34,8 @@ SamSelectionRequest::SamSelectionRequest(
 {
 }
 
-std::shared_ptr<AbstractMatchingSe>
-SamSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
+const std::shared_ptr<AbstractMatchingSe> SamSelectionRequest::parse(
+    std::shared_ptr<SeResponse> seResponse)
 {
     return std::dynamic_pointer_cast<AbstractMatchingSe>(
         std::make_shared<CalypsoSam>(

@@ -30,7 +30,7 @@ public:
     {
     }
 
-    TransmissionMode getTransmissionMode() const
+    const TransmissionMode& getTransmissionMode() const
     {
         return mode;
     }

@@ -129,6 +129,24 @@ public:
      */
     std::shared_ptr<AbstractDefaultSelectionsRequest> getSelectionOperation();
 
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const SeSelection& ss);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::unique_ptr<SeSelection>& ss);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<SeSelection>& ss);
+
 private:
     /**
      *

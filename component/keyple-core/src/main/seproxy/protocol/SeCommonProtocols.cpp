@@ -22,70 +22,72 @@ namespace protocol {
 
 using namespace keyple::core::seproxy::protocol;
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_ISO14443_4
-    = std::make_shared<SeCommonProtocols>("ISO 14443-4",
+using SeCommonProtocol = SeCommonProtocols::SeCommonProtocol;
+
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_ISO14443_4
+    = std::make_shared<SeCommonProtocol>("ISO 14443-4",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols>  SeCommonProtocols::PROTOCOL_ISO15693
-    = std::make_shared<SeCommonProtocols>("ISO 15693 Type V",
+const std::shared_ptr<SeCommonProtocol>  SeCommonProtocols::PROTOCOL_ISO15693
+    = std::make_shared<SeCommonProtocol>("ISO 15693 Type V",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_ISO14443_3A
-    = std::make_shared<SeCommonProtocols>("ISO 14443-3 Type A",
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_ISO14443_3A
+    = std::make_shared<SeCommonProtocol>("ISO 14443-3 Type A",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_ISO14443_3B
-    = std::make_shared<SeCommonProtocols>("ISO 14443-3 Type B",
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_ISO14443_3B
+    = std::make_shared<SeCommonProtocol>("ISO 14443-3 Type B",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_JIS_6319_4
-    = std::make_shared<SeCommonProtocols>("JIS 6319-4 Felica",
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_JIS_6319_4
+    = std::make_shared<SeCommonProtocol>("JIS 6319-4 Felica",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_NDEF
-    = std::make_shared<SeCommonProtocols>("NFC NDEF TAG",
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_NDEF
+    = std::make_shared<SeCommonProtocol>("NFC NDEF TAG",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols>
+const std::shared_ptr<SeCommonProtocol>
     SeCommonProtocols::PROTOCOL_NDEF_FORMATABLE
-    = std::make_shared<SeCommonProtocols>("NFC NDEF FORMATABLE",
+    = std::make_shared<SeCommonProtocol>("NFC NDEF FORMATABLE",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_NFC_BARCODE
-    = std::make_shared<SeCommonProtocols>("NFC BARCODE",
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_NFC_BARCODE
+    = std::make_shared<SeCommonProtocol>("NFC BARCODE",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_MIFARE_UL
-    = std::make_shared<SeCommonProtocols>("Mifare Ultra Light",
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_MIFARE_UL
+    = std::make_shared<SeCommonProtocol>("Mifare Ultra Light",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols>
+const std::shared_ptr<SeCommonProtocol>
     SeCommonProtocols::PROTOCOL_MIFARE_CLASSIC
-    = std::make_shared<SeCommonProtocols>("Mifare Classic",
+    = std::make_shared<SeCommonProtocol>("Mifare Classic",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols>
+const std::shared_ptr<SeCommonProtocol>
     SeCommonProtocols::PROTOCOL_MIFARE_DESFIRE
-    = std::make_shared<SeCommonProtocols>("Mifare Desfire",
+    = std::make_shared<SeCommonProtocol>("Mifare Desfire",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_B_PRIME
-    = std::make_shared<SeCommonProtocols>("Old Calypso B Prime",
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_B_PRIME
+    = std::make_shared<SeCommonProtocol>("Old Calypso B Prime",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_MEMORY_ST25
-    = std::make_shared<SeCommonProtocols>("Memory ST25",
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_MEMORY_ST25
+    = std::make_shared<SeCommonProtocol>("Memory ST25",
                                           TransmissionMode::CONTACTLESS);
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_ISO7816_3
-    = std::make_shared<SeCommonProtocols>("ISO 7816-3",
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_ISO7816_3
+    = std::make_shared<SeCommonProtocol>("ISO 7816-3",
                                           TransmissionMode::CONTACTS);
 
-const std::shared_ptr<SeCommonProtocols> SeCommonProtocols::PROTOCOL_HSP
-    = std::make_shared<SeCommonProtocols>("Old Calypso SAM HSP",
+const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_HSP
+    = std::make_shared<SeCommonProtocol>("Old Calypso SAM HSP",
                                           TransmissionMode::CONTACTS);
 
-const std::vector<std::shared_ptr<SeCommonProtocols>>
+const std::vector<std::shared_ptr<SeCommonProtocol>>
     SeCommonProtocols::values = {
     SeCommonProtocols::PROTOCOL_ISO14443_4,
     SeCommonProtocols::PROTOCOL_ISO15693,
@@ -104,18 +106,18 @@ const std::vector<std::shared_ptr<SeCommonProtocols>>
     SeCommonProtocols::PROTOCOL_HSP
 };
 
-SeCommonProtocols::SeCommonProtocols(
-  const std::string& name, TransmissionMode transmissionMode)
+SeCommonProtocol::SeCommonProtocol(
+  const std::string& name, const TransmissionMode& transmissionMode)
 : name(name), transmissionMode(transmissionMode)
 {
 }
 
-const std::string& SeCommonProtocols::getName() const
+const std::string& SeCommonProtocol::getName() const
 {
     return name;
 }
 
-TransmissionMode SeCommonProtocols::getTransmissionMode() const
+const TransmissionMode& SeCommonProtocol::getTransmissionMode() const
 {
     return transmissionMode;
 }

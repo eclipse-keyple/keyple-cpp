@@ -19,10 +19,12 @@ namespace core {
 namespace seproxy {
 namespace protocol {
 
-std::ostream& operator<<(std::ostream& os, const std::shared_ptr<SeProtocol> se)
+std::ostream& operator<<(std::ostream& os,
+                         const std::shared_ptr<SeProtocol>& se)
 {
     os << "SEPROTOCOL {"
-       << "NAME = " << se->getName()
+       << "NAME = " << se->getName() << ", "
+       << "TRANSMISSIONMODE: " << se->getTransmissionMode()
        << "}";
 
     return os;

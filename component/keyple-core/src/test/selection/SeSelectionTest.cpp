@@ -33,8 +33,8 @@ using namespace testing;
 
 class MatchingSeMock : public AbstractMatchingSe {
 public:
-    MatchingSeMock(std::shared_ptr<SeResponse> selectionResponse,
-                   TransmissionMode transmissionMode,
+    MatchingSeMock(const std::shared_ptr<SeResponse> selectionResponse,
+                   const TransmissionMode& transmissionMode,
                    const std::string& extraInfo)
     : AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo)
     {
@@ -68,8 +68,8 @@ public:
     }
 
 protected:
-    std::shared_ptr<AbstractMatchingSe> parse(
-        std::shared_ptr<SeResponse> seResponse) override
+    const std::shared_ptr<AbstractMatchingSe> parse(
+        const std::shared_ptr<SeResponse> seResponse) override
     {
         return std::make_shared<MatchingSeMock>(
                    seResponse,
@@ -121,7 +121,6 @@ std::unique_ptr<SeSelection> createSeSelection()
                 SeSelector::AidSelector::FileOccurrence::NEXT,
                SeSelector::AidSelector::FileControlInformation::FCP),
             "Se Selector #2");
-
     apduRequestList.clear();
 
     selection->prepareSelection(

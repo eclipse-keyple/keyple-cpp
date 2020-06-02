@@ -42,6 +42,8 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
 
+using SeCommonProtocol = SeCommonProtocols::SeCommonProtocol;
+
 SeProtocolDetectionEngine::SeProtocolDetectionEngine()
 : AbstractReaderObserverEngine()
 {
@@ -59,7 +61,7 @@ SeProtocolDetectionEngine::prepareSeSelection()
     seSelection = std::make_shared<SeSelection>();
 
     /* Process SDK defined protocols */
-    for (std::shared_ptr<SeCommonProtocols> protocol : SeCommonProtocols::values) {
+    for (std::shared_ptr<SeCommonProtocol> protocol : SeCommonProtocols::values) {
         if (protocol == SeCommonProtocols::PROTOCOL_ISO14443_4) {
             /* Add a Hoplink selector */
             std::string HoplinkAID = "A000000291A000000191";

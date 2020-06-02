@@ -30,7 +30,7 @@ using namespace keyple::core::seproxy::message;
 MatchingSelection::MatchingSelection(
     int selectionIndex,
     std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
-    std::shared_ptr<AbstractMatchingSe> matchingSe,
+    const std::shared_ptr<AbstractMatchingSe> matchingSe,
     std::shared_ptr<SeResponse> selectionSeResponse)
 : matchingSe(matchingSe), seSelectionRequest(seSelectionRequest),
   selectionSeResponse(selectionSeResponse), selectionIndex(selectionIndex)
@@ -69,11 +69,36 @@ int MatchingSelection::getSelectionIndex() const
 std::ostream& operator<<(std::ostream& os, const MatchingSelection& ms)
 {
     os << "MATCHINGSELECTION: {"
-       << "MATCHINGSE = " << ms.matchingSe << ", "
-       << "SELECTIONREQUEST = " << ms.seSelectionRequest << ", "
-       << "SELECTIONRESPONSE = " << ms.selectionSeResponse << ", "
+       << ms.matchingSe << ", "
+       << ms.seSelectionRequest << ", "
+       << ms.selectionSeResponse << ", "
        << "SELECTIONINDEX = " << ms.selectionIndex
        << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::shared_ptr<MatchingSelection>& ms)
+{
+    if (ms)
+        os << *ms.get();
+    else
+        os << "MATCHINGSELECTION = null";
+
+    return os;
+}
+
+std::ostream& operator<<(
+    std::ostream& os, const std::vector<std::shared_ptr<MatchingSelection>>& ms)
+{
+    os << "MATCHINGSELECTIONS: {";
+    for (const auto& m : ms) {
+        if (m != *ms.begin())
+            os << ", ";
+        os << m;
+    }
+    os << "}";
 
     return os;
 }

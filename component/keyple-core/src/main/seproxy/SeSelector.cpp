@@ -299,7 +299,7 @@ bool SeSelector::AtrFilter::atrMatches(const std::vector<uint8_t>& atr)
     return m;
 }
 
-SeSelector::SeSelector(std::shared_ptr<SeProtocol> seProtocol,
+SeSelector::SeSelector(const std::shared_ptr<SeProtocol> seProtocol,
                        std::shared_ptr<AtrFilter> atrFilter,
                        std::shared_ptr<AidSelector> aidSelector,
                        const std::string& extraInfo)
@@ -358,19 +358,27 @@ std::ostream& operator<<(std::ostream& os, const SeSelector::AidSelector& a)
 
 std::ostream& operator<<(std::ostream& os, const SeSelector& ss)
 {
-    os << "SESELECTOR: {AID_SELECTOR = ";
+    os << "SESELECTOR: {";
 
+    os  << "AIDSELECTOR: ";
     if (ss.aidSelector)
-        os << *(ss.aidSelector.get());
+        os << *(ss.aidSelector.get()) << ", ";
+    else
+        os << "null, ";
+
+    os << "ATRFILTER: ";
+    if (ss.atrFilter)
+        os << *(ss.atrFilter.get()) << ", ";
+    else
+        os << "null, ";
+
+    os << "EXTRAINFO = " << ss.extraInfo << ", ";
+
+    os << "SEPROTOCOL: ";
+    if (ss.seProtocol)
+        os << ss.seProtocol;
     else
         os << "null";
-
-    os << ", ATR_FILTER = ";
-
-    if (ss.atrFilter)
-        os << *(ss.atrFilter.get());
-    else
-		os << "null";
 
     os << "}";
 
@@ -383,7 +391,7 @@ std::ostream& operator<<(std::ostream& os,
 	if (ss)
 		os << *(ss.get());
     else
-		os << "SESELECTOR: null";
+		os << "SESELECTOR = null";
 
     return os;
 }

@@ -63,7 +63,7 @@ public:
     /**
      *
      */
-    TransmissionMode getTransmissionMode() const override;
+    const TransmissionMode& getTransmissionMode() const override;
 
     /**
      *

@@ -18,6 +18,7 @@
 #include <memory>
 
 #include "AbstractDefaultSelectionsResponse.h"
+#include "KeypleCoreExport.h"
 
 /* Forward class declarations */
 namespace keyple {
@@ -41,7 +42,7 @@ using namespace keyple::core::seproxy::event;
  * Class containing the List of {@link SeResponse} used from a default selection
  * made at the {@link ObservableReader} level.
  */
-class DefaultSelectionsResponse final
+class KEYPLECORE_API DefaultSelectionsResponse final
 : public AbstractDefaultSelectionsResponse {
 public:
     /**

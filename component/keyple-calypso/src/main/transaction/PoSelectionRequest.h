@@ -196,8 +196,8 @@ protected:
      */
     //std::shared_ptr<CalypsoPo> parse(std::shared_ptr<SeResponse> seResponse)
     // override;
-    std::shared_ptr<AbstractMatchingSe>
-    parse(std::shared_ptr<SeResponse> seResponse) override;
+    const std::shared_ptr<AbstractMatchingSe> parse(
+        std::shared_ptr<SeResponse> seResponse) override;
 
     /**
      *

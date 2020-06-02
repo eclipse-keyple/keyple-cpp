@@ -64,7 +64,7 @@ public:
     }
 
 protected:
-    std::shared_ptr<AbstractMatchingSe> parse(
+    const std::shared_ptr<AbstractMatchingSe> parse(
         std::shared_ptr<SeResponse> seResponse) override
     {
         return std::make_shared<MatchingSeMock>(
