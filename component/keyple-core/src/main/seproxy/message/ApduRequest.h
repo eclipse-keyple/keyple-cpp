@@ -119,14 +119,14 @@ public:
      *
      * @return Name of the APDU request
      */
-    std::string getName() const;
+    const std::string& getName() const;
 
     /**
      * Get the buffer of this APDU
      *
      * @return Name of the APDU request
      */
-    const std::vector<uint8_t>& getBytes();
+    const std::vector<uint8_t>& getBytes() const;
 
     /**
      *

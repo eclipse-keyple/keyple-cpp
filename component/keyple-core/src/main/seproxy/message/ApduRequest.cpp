@@ -65,12 +65,12 @@ std::shared_ptr<std::set<int>> ApduRequest::getSuccessfulStatusCodes()
     return successfulStatusCodes;
 }
 
-std::string ApduRequest::getName() const
+const std::string& ApduRequest::getName() const
 {
     return name;
 }
 
-const std::vector<uint8_t>& ApduRequest::getBytes()
+const std::vector<uint8_t>& ApduRequest::getBytes() const
 {
     return this->bytes;
 }
