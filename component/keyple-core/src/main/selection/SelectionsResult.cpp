@@ -80,6 +80,27 @@ bool SelectionsResult::hasActiveSelection() const
     return hasActiveSelection_Renamed;
 }
 
+std::ostream& operator<<(std::ostream& os, const SelectionsResult& sr)
+{
+    os << "SELECTIONSRESULT: {"
+       << "HASACTIVESELECTION = " << sr.hasActiveSelection() << ", "
+       << sr.getMatchingSelections()
+       << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::shared_ptr<SelectionsResult>& sr)
+{
+    if (sr)
+        os << *sr.get();
+    else
+        os << "SELECTIONSRESULT = null";
+
+    return os;
+}
+
 }
 }
 }

@@ -37,7 +37,7 @@ using namespace keyple::core::selection;
 using namespace keyple::core::util;
 
 CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
-                     TransmissionMode transmissionMode,
+                     const TransmissionMode& transmissionMode,
                      const std::string& extraInfo)
 : AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo),
   poAtr(selectionResponse->getSelectionStatus()->getAtr()->getBytes())

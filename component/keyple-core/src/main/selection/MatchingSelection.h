@@ -16,6 +16,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 /* Common */
 #include "KeypleCoreExport.h"
@@ -76,7 +77,7 @@ public:
     MatchingSelection(
         int selectionIndex,
         std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
-        std::shared_ptr<AbstractMatchingSe> matchingSe,
+        const std::shared_ptr<AbstractMatchingSe> matchingSe,
         std::shared_ptr<SeResponse> selectionSeResponse);
 
     /**
@@ -104,11 +105,24 @@ public:
      */
     int getSelectionIndex() const;
 
-	/**
-	 *
-	 */
+    /**
+     *
+     */
     friend KEYPLECORE_API std::ostream& operator<<(
         std::ostream& os, const MatchingSelection& ms);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<MatchingSelection>& ms);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os,
+        const std::vector<std::shared_ptr<MatchingSelection>>& ms);
 
 private:
     /**
@@ -130,8 +144,6 @@ private:
      *
      */
     const int selectionIndex;
-
-
 };
 
 }

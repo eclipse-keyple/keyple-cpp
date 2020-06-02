@@ -31,7 +31,7 @@ using namespace testing;
 class MatchingSeMock : public AbstractMatchingSe {
 public:
     MatchingSeMock(std::shared_ptr<SeResponse> selectionResponse,
-                   TransmissionMode transmissionMode,
+                   const TransmissionMode& transmissionMode,
                    const std::string& extraInfo)
     : AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo)
     {
@@ -62,7 +62,7 @@ public:
     }
 
 protected:
-    std::shared_ptr<AbstractMatchingSe> parse(
+    const std::shared_ptr<AbstractMatchingSe> parse(
         std::shared_ptr<SeResponse> seResponse) override
     {
         return std::make_shared<MatchingSeMock>(

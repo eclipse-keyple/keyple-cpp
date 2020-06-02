@@ -127,7 +127,7 @@ public:
      *
      * @return the current transmission mode
      */
-    const TransmissionMode& getTransmissionMode() override;
+    const TransmissionMode& getTransmissionMode() const override;
 
     /**
      *

@@ -42,6 +42,8 @@ namespace pcsc {
 
 using namespace keyple::core::seproxy::protocol;
 
+using SeCommonProtocol = SeCommonProtocols::SeCommonProtocol;
+
 /**
  * This class contains all the parameters to identify the communication
  * protocols supported by PC/SC readers.
@@ -60,7 +62,7 @@ public:
     /**
      *
      */
-    static std::map<std::shared_ptr<SeCommonProtocols>, std::string>
+    static std::map<std::shared_ptr<SeCommonProtocol>, std::string>
         PCSC_PROTOCOL_SETTING;
 
     /**
@@ -69,17 +71,17 @@ public:
      * @param specificProtocols subset of protocols
      * @return a settings map
      */
-    static const std::map<std::shared_ptr<SeCommonProtocols>, std::string>
-        getSpecificSettings(
-            std::set<std::shared_ptr<SeCommonProtocols>>& specificProtocols);
+    static const std::map<std::shared_ptr<SeCommonProtocol>,
+                          std::string> getSpecificSettings(
+        std::set<std::shared_ptr<SeCommonProtocol>>& specificProtocols);
 
     /**
      * Return the whole settings map
      *
      * @return a settings map
      */
-    static const std::map<std::shared_ptr<SeCommonProtocols>, std::string>&
-        getAllSettings();
+    static const std::map<std::shared_ptr<SeCommonProtocol>,
+                          std::string>& getAllSettings();
 
 private:
     /**

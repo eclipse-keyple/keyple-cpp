@@ -153,14 +153,14 @@ AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::
 }
 
 void AbstractObservableReaderTest::AbstractLocalReaderAnonymousInnerClass::
-    openPhysicalChannel() throw(KeypleChannelStateException)
+    openPhysicalChannel()
 {
 }
 
-TransmissionMode AbstractObservableReaderTest::
-    AbstractLocalReaderAnonymousInnerClass::getTransmissionMode()
+const TransmissionMode& AbstractObservableReaderTest::
+    AbstractLocalReaderAnonymousInnerClass::getTransmissionMode() const
 {
-    return nullptr;
+    return transmissionMode;
 }
 
 std::unordered_map<std::string, std::string> AbstractObservableReaderTest::

@@ -90,7 +90,7 @@ CustomProtocols CustomProtocols::valueOf(const std::string& name)
     return valueList.front();
 }
 
-TransmissionMode CustomProtocols::getTransmissionMode() const
+const TransmissionMode& CustomProtocols::getTransmissionMode() const
 {
     return transmissionMode;
 }

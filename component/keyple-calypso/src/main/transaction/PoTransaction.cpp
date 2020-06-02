@@ -510,7 +510,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>>&
         poModificationCommands,
     std::vector<std::shared_ptr<ApduResponse>>& poAnticipatedResponses,
-    TransmissionMode transmissionMode, ChannelControl channelControl)
+    const TransmissionMode& transmissionMode, ChannelControl channelControl)
 {
     if (sessionState != SessionState::SESSION_OPEN) {
         throw IllegalStateException(StringHelper::formatSimple(
@@ -810,7 +810,8 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
 std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
     std::vector<std::shared_ptr<PoBuilderParser<
         AbstractPoCommandBuilder<AbstractPoResponseParser>>>>& poBuilderParsers,
-    TransmissionMode transmissionMode, ChannelControl channelControl)
+    const TransmissionMode& transmissionMode,
+    ChannelControl channelControl)
 {
     std::vector<std::shared_ptr<ApduResponse>> poAnticipatedResponses =
         AnticipatedResponseBuilder::getResponses(poBuilderParsers);

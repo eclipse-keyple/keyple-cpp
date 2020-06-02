@@ -68,8 +68,8 @@ protected:
      * @param seResponse the SE response received
      * @return a {@link CalypsoSam}
      */
-    std::shared_ptr<AbstractMatchingSe>
-    parse(std::shared_ptr<SeResponse> seResponse) override;
+    const std::shared_ptr<AbstractMatchingSe> parse(
+        std::shared_ptr<SeResponse> seResponse) override;
 
     /**
      *

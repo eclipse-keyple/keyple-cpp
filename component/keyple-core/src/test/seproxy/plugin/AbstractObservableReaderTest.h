@@ -107,6 +107,7 @@ class AbstractObservableReaderTest : public CoreBaseTest {
 
 private:
     static const std::shared_ptr<Logger> logger;
+    const TransmissionMode& transmissionMode = TransmissionMode::CONTACTLESS;
 
 public:
     const std::string PLUGIN_NAME = "abstractObservablePluginTest";
@@ -157,34 +158,31 @@ private:
 
         void stopObservation() override;
 
-        void closePhysicalChannel() throw(KeypleChannelStateException) override;
+        void closePhysicalChannel() override;
 
         bool isPhysicalChannelOpen() override;
 
-        std::vector<char> transmitApdu(std::vector<char>& apduIn) throw(
-            KeypleIOReaderException) override;
+        std::vector<char> transmitApdu(std::vector<char>& apduIn) override;
 
         bool
-        protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) throw(
-            KeypleReaderException) override;
+        protocolFlagMatches(std::shared_ptr<SeProtocol> protocolFlag) override;
 
-        bool checkSePresence() throw(NoStackTraceThrowable) override;
+        bool checkSePresence() override;
 
         std::vector<char> getATR() override;
 
         std::shared_ptr<SelectionStatus>
         openLogicalChannel(std::shared_ptr<SeSelector> selector) override;
 
-        void openPhysicalChannel() throw(KeypleChannelStateException) override;
+        void openPhysicalChannel() override;
 
     public:
-        TransmissionMode getTransmissionMode() override;
+        const TransmissionMode& getTransmissionMode() const override;
 
         std::unordered_map<std::string, std::string> getParameters() override;
 
         void
-        setParameter(const std::string& key, const std::string& value) throw(
-            std::invalid_argument, KeypleBaseException) override;
+        setParameter(const std::string& key, const std::string& value) override;
 
     protected:
         std::shared_ptr<AbstractLocalReaderAnonymousInnerClass>
@@ -226,8 +224,7 @@ private:
             std::shared_ptr<AbstractObservableReaderTest> outerInstance);
 
         std::shared_ptr<void>
-        answer(std::shared_ptr<InvocationOnMock> invocation) throw(
-            std::runtime_error) override;
+        answer(std::shared_ptr<InvocationOnMock> invocation) override;
 
     protected:
         std::shared_ptr<AnswerAnonymousInnerClass> shared_from_this()
@@ -247,8 +244,7 @@ private:
             std::shared_ptr<AbstractObservableReaderTest> outerInstance);
 
         std::shared_ptr<void>
-        answer(std::shared_ptr<InvocationOnMock> invocation) throw(
-            std::runtime_error) override;
+        answer(std::shared_ptr<InvocationOnMock> invocation) override;
 
     protected:
         std::shared_ptr<AnswerAnonymousInnerClass2> shared_from_this()

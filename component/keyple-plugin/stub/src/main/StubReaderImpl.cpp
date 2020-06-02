@@ -169,7 +169,7 @@ const std::map<const std::string, const std::string>
     return parameters;
 }
 
-const TransmissionMode& StubReaderImpl::getTransmissionMode()
+const TransmissionMode& StubReaderImpl::getTransmissionMode() const
 {
     return transmissionMode;
 }

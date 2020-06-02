@@ -29,86 +29,91 @@ namespace protocol {
 
 using namespace keyple::core::seproxy::protocol;
 
-class KEYPLECORE_API SeCommonProtocols final : public SeProtocol {
+class KEYPLECORE_API SeCommonProtocols {
 public:
-    /* ---- contactless standard / NFC compliant ------------- */
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_ISO14443_4;
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_ISO15693;
-
-    /* ---- contactless proprietary NFC compliant ------------ */
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_ISO14443_3A;
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_ISO14443_3B;
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_JIS_6319_4;
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_NDEF;
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_NDEF_FORMATABLE;
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_NFC_BARCODE;
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_MIFARE_UL;
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_MIFARE_CLASSIC;
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_MIFARE_DESFIRE;
-
-    /* ---- contactless proprietary not NFC compliant -------- */
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_B_PRIME;
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_MEMORY_ST25;
-
-    /* ---- contacts ISO standard ---------------------------- */
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_ISO7816_3;
-
-    /* ---- contacts proprietary ---------------- */
-    static const std::shared_ptr<SeCommonProtocols> PROTOCOL_HSP;
-
-
-    /**
-     * Constructor
-     */
-    SeCommonProtocols(const std::string& name,
-                      TransmissionMode transmissionMode);
-
     /**
      *
      */
-    const std::string& getName() const override;
+    class KEYPLECORE_API SeCommonProtocol final : public SeProtocol {
+    public:
+        /**
+         * Constructor
+         */
+        SeCommonProtocol(const std::string& name,
+                         const TransmissionMode& transmissionMode);
 
-    /**
-     *
-     */
-    TransmissionMode getTransmissionMode() const override;
+        /**
+         *
+         */
+        const std::string& getName() const override;
 
-    /**
-     *
-     */
-    static const std::vector<std::shared_ptr<SeCommonProtocols>> values;
+        /**
+         *
+         */
+        const TransmissionMode& getTransmissionMode() const override;
 
-private:
-    /**
-     *
-     */
-    enum class InnerEnum {
-        PROTOCOL_ISO14443_4,
-        PROTOCOL_ISO15693,
-        PROTOCOL_ISO14443_3A,
-        PROTOCOL_ISO14443_3B,
-        PROTOCOL_JIS_6319_4,
-        PROTOCOL_NDEF,
-        PROTOCOL_NDEF_FORMATABLE,
-        PROTOCOL_NFC_BARCODE,
-        PROTOCOL_MIFARE_UL,
-        PROTOCOL_MIFARE_CLASSIC,
-        PROTOCOL_MIFARE_DESFIRE,
-        PROTOCOL_B_PRIME,
-        PROTOCOL_MEMORY_ST25,
-        PROTOCOL_ISO7816_3,
-        PROTOCOL_HSP
+    private:
+        /**
+         *
+         */
+        enum class InnerEnum {
+            PROTOCOL_ISO14443_4,
+            PROTOCOL_ISO15693,
+            PROTOCOL_ISO14443_3A,
+            PROTOCOL_ISO14443_3B,
+            PROTOCOL_JIS_6319_4,
+            PROTOCOL_NDEF,
+            PROTOCOL_NDEF_FORMATABLE,
+            PROTOCOL_NFC_BARCODE,
+            PROTOCOL_MIFARE_UL,
+            PROTOCOL_MIFARE_CLASSIC,
+            PROTOCOL_MIFARE_DESFIRE,
+            PROTOCOL_B_PRIME,
+            PROTOCOL_MEMORY_ST25,
+            PROTOCOL_ISO7816_3,
+            PROTOCOL_HSP
+        };
+
+        /**
+         *
+         */
+        const std::string name;
+
+        /**
+         *
+         */
+        const TransmissionMode transmissionMode;
     };
 
-    /**
-     *
-     */
-    const std::string name;
+        /* ---- contactless standard / NFC compliant ------------- */
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_ISO14443_4;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_ISO15693;
+
+    /* ---- contactless proprietary NFC compliant ------------ */
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_ISO14443_3A;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_ISO14443_3B;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_JIS_6319_4;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_NDEF;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_NDEF_FORMATABLE;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_NFC_BARCODE;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_MIFARE_UL;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_MIFARE_CLASSIC;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_MIFARE_DESFIRE;
+
+    /* ---- contactless proprietary not NFC compliant -------- */
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_B_PRIME;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_MEMORY_ST25;
+
+    /* ---- contacts ISO standard ---------------------------- */
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_ISO7816_3;
+
+    /* ---- contacts proprietary ---------------- */
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_HSP;
 
     /**
      *
      */
-    const TransmissionMode transmissionMode;
+    static const std::vector<std::shared_ptr<SeCommonProtocol>> values;
 };
 
 }

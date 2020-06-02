@@ -25,8 +25,8 @@ using namespace keyple::core::seproxy::event;
 
 class ObservableReaderMock : public ObservableReader {
 public:
-    ObservableReaderMock()
-    : ObservableReader(), transmissionMode(TransmissionMode::CONTACTLESS)
+    ObservableReaderMock(const TransmissionMode& transmissionMode)
+    : ObservableReader(), transmissionMode(transmissionMode)
     {
     }
 
@@ -121,7 +121,7 @@ public:
     {
     }
 
-    const TransmissionMode& getTransmissionMode() override
+    const TransmissionMode& getTransmissionMode() const override
     {
         return transmissionMode;
     }
@@ -147,7 +147,7 @@ private:
 
 TEST(ObservableReaderTest, ObservableReader)
 {
-    ObservableReaderMock reader;
+    ObservableReaderMock reader(TransmissionMode::CONTACTLESS);
 }
 
 

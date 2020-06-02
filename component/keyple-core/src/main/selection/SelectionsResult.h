@@ -84,6 +84,18 @@ public:
      */
     bool hasActiveSelection() const;
 
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const SelectionsResult& sr);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<SelectionsResult>& sr);
+
 private:
     /**
      *

@@ -224,8 +224,8 @@ PoSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse,
 }
 
 //std::shared_ptr<CalypsoPo> PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse) {
-std::shared_ptr<AbstractMatchingSe>
-PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
+const std::shared_ptr<AbstractMatchingSe> PoSelectionRequest::parse(
+    std::shared_ptr<SeResponse> seResponse)
 {
     /*
      * Return an AbstractMatchingSe but *instanciate* a CalypsoPo otherwise some

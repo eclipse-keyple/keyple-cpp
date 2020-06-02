@@ -79,19 +79,6 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
     }
 }
 
-/*
-PcscReaderImpl::PcscReaderImpl(const PcscReaderImpl& o)
-: Nameable(), Configurable(),
-  AbstractObservableLocalReader(o.pluginName, o.terminal.getName()),
-  loopWaitSeRemoval(true), executorService(o.executorService), terminal(o.terminal),
-  parameterCardProtocol(o.parameterCardProtocol),
-  cardExclusiveMode(o.cardExclusiveMode), cardReset(o.cardReset),
-  transmissionMode(o.transmissionMode)
-{
-    this->stateService = o.stateService;
-}
-*/
-
 std::shared_ptr<ObservableReaderStateService> PcscReaderImpl::initStateService()
 {
     std::map<MonitoringState, std::shared_ptr<AbstractObservableState>> states;
@@ -312,7 +299,7 @@ void PcscReaderImpl::setParameter(const std::string& name,
      */
     if (name == "transmission_mode") {
         if (value == "")
-            transmissionMode = static_cast<TransmissionMode>(0);
+            transmissionMode = TransmissionMode::NONE;
         else if (value == "contacts")
             transmissionMode = TransmissionMode::CONTACTS;
         else if (value == "contactless")
@@ -332,6 +319,18 @@ void PcscReaderImpl::setParameter(const std::string& name,
             parameterCardProtocol = "T=CL";
         else
             throw std::invalid_argument("Bad protocol " + name + " : " + value);
+
+        /*
+         * /!\ Java diff
+         *
+         * Actualize 'transmissionMode' according to 'parameterCardProtocol'.
+         */
+        if (parameterCardProtocol == PROTOCOL_T1 ||
+            parameterCardProtocol == PROTOCOL_T_CL) {
+            transmissionMode = TransmissionMode::CONTACTLESS;
+        } else {
+            transmissionMode = TransmissionMode::CONTACTS;
+        }
 
     } else if (name == "mode") {
         if (value == "" || value == "shared") {
@@ -431,16 +430,22 @@ void PcscReaderImpl::openPhysicalChannel()
     this->channelOpen = true;
 }
 
-const TransmissionMode& PcscReaderImpl::getTransmissionMode()
+const TransmissionMode& PcscReaderImpl::getTransmissionMode() const
 {
-    if (transmissionMode == TransmissionMode::NONE) {
-        if (!parameterCardProtocol.compare(PROTOCOL_T1) ||
-            !parameterCardProtocol.compare(PROTOCOL_T_CL)) {
-            transmissionMode = TransmissionMode::CONTACTLESS;
-        } else {
-            transmissionMode = TransmissionMode::CONTACTS;
-        }
-    }
+    /*
+     * /!\ Java diff
+     *
+     * getTransmissionMode() is Java can either return the actual value of
+     * 'transmissionMode' or a value deducted from 'parameterCardProtocol' if
+     * not set.
+     *
+     * This is a bit deceiving and 'transmissionMode' could never be set
+     * correctly. Instead, I made sure 'transmissionMode' is set correctly
+     * whenever 'parameterCardProtocol' changes (e.g. in setParameter())
+     *
+     * This allows getTranmissionMode() to be 'const', which seems right for a
+     * 'getter'.
+     */
 
     return transmissionMode;
 }

@@ -53,7 +53,8 @@ public:
      * @param extraInfo textual information
      */
     CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
-               TransmissionMode transmissionMode, const std::string& extraInfo);
+              const TransmissionMode& transmissionMode,
+              const std::string& extraInfo);
 
     /**
      *

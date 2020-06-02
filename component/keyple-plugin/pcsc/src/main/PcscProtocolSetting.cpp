@@ -20,7 +20,7 @@ namespace pcsc {
 
 using namespace keyple::core::seproxy::protocol;
 
-std::map<std::shared_ptr<SeCommonProtocols>, std::string>
+std::map<std::shared_ptr<SeCommonProtocol>, std::string>
     PcscProtocolSetting::PCSC_PROTOCOL_SETTING;
 
 PcscProtocolSetting::StaticConstructor::StaticConstructor()
@@ -43,11 +43,11 @@ PcscProtocolSetting::StaticConstructor::StaticConstructor()
 
 PcscProtocolSetting::StaticConstructor PcscProtocolSetting::staticConstructor;
 
-const std::map<std::shared_ptr<SeCommonProtocols>, std::string>
+const std::map<std::shared_ptr<SeCommonProtocol>, std::string>
     PcscProtocolSetting::getSpecificSettings(
-        std::set<std::shared_ptr<SeCommonProtocols>>& specificProtocols)
+        std::set<std::shared_ptr<SeCommonProtocol>>& specificProtocols)
 {
-    std::map<std::shared_ptr<SeCommonProtocols>, std::string> map;
+    std::map<std::shared_ptr<SeCommonProtocol>, std::string> map;
 
     for (auto seCommonProtocols : specificProtocols) {
         map.emplace(std::make_pair(seCommonProtocols,
@@ -57,7 +57,7 @@ const std::map<std::shared_ptr<SeCommonProtocols>, std::string>
     return map;
 }
 
-const std::map<std::shared_ptr<SeCommonProtocols>, std::string>&
+const std::map<std::shared_ptr<SeCommonProtocol>, std::string>&
     PcscProtocolSetting::getAllSettings()
 {
     return PCSC_PROTOCOL_SETTING;

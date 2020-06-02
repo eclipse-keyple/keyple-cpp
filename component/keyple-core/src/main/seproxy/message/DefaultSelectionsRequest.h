@@ -18,6 +18,7 @@
 
 #include "AbstractDefaultSelectionsRequest.h"
 #include "ChannelControl.h"
+#include "KeypleCoreExport.h"
 #include "MultiSeRequestProcessing.h"
 #include "ObservableReader.h"
 
@@ -43,7 +44,7 @@ using namespace keyple::core::seproxy::event;
  * Class containing the Set of {@link SeRequest} used to make a default
  * selection at the {@link ObservableReader} level.
  */
-class DefaultSelectionsRequest final : public AbstractDefaultSelectionsRequest {
+class KEYPLECORE_API DefaultSelectionsRequest final : public AbstractDefaultSelectionsRequest {
 public:
     /**
      *

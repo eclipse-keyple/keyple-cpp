@@ -23,33 +23,32 @@ using namespace testing;
 
 using namespace keyple::core::seproxy::protocol;
 
-TEST(SeCommonProtocols, SeCommonProtocols)
+using SeCommonProtocol = SeCommonProtocols::SeCommonProtocol;
+
+TEST(SeCommonProtocols, SeCommonProtocol)
 {
-    SeCommonProtocols protocol1("name", TransmissionMode::CONTACTLESS);
-
-    SeCommonProtocols protocol2(protocol1);
-
-    ASSERT_EQ(protocol1.values.size(), 15);
-    ASSERT_EQ(protocol2.values.size(), 15);
+    SeCommonProtocol protocol1("name", TransmissionMode::CONTACTLESS);
 }
 
 TEST(SeCommonProtocols, getName)
 {
-    SeCommonProtocols protocol1("name", TransmissionMode::CONTACTLESS);
-
-    SeCommonProtocols protocol2(protocol1);
+    SeCommonProtocol protocol1("name", TransmissionMode::CONTACTLESS);
 
     ASSERT_EQ(protocol1.getName(), "name");
-    ASSERT_EQ(protocol2.getName(), "name");
 }
 
 TEST(SeCommonProtocols, getTransmissionMode)
 {
-    SeCommonProtocols protocol1("name", TransmissionMode::CONTACTLESS);
-    SeCommonProtocols protocol2(protocol1);
-    SeCommonProtocols protocol3("name", TransmissionMode::CONTACTS);
+    SeCommonProtocol protocol1("name", TransmissionMode::CONTACTLESS);
+    SeCommonProtocol protocol3("name", TransmissionMode::CONTACTS);
 
     ASSERT_EQ(protocol1.getTransmissionMode(), TransmissionMode::CONTACTLESS);
-    ASSERT_EQ(protocol2.getTransmissionMode(), TransmissionMode::CONTACTLESS);
     ASSERT_EQ(protocol3.getTransmissionMode(), TransmissionMode::CONTACTS);
+}
+
+TEST(SeCommonProtocols, SeCommonProtocols)
+{
+    SeCommonProtocols protocols;
+
+    ASSERT_EQ(protocols.values.size(), 15);
 }

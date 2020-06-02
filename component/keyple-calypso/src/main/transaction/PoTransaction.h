@@ -797,7 +797,8 @@ private:
         std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
             AbstractPoResponseParser>>>>& poModificationCommands,
         std::vector<std::shared_ptr<ApduResponse>>& poAnticipatedResponses,
-        TransmissionMode transmissionMode, ChannelControl channelControl);
+        const TransmissionMode& transmissionMode,
+        ChannelControl channelControl);
 
     /**
      * Advanced variant of processAtomicClosing in which the list of expected responses is
@@ -821,7 +822,8 @@ private:
     std::shared_ptr<SeResponse> processAtomicClosing(
         std::vector<std::shared_ptr<PoBuilderParser<AbstractPoCommandBuilder<
             AbstractPoResponseParser>>>>& poBuilderParsers,
-        TransmissionMode transmissionMode, ChannelControl channelControl);
+        const TransmissionMode& transmissionMode,
+        ChannelControl channelControl);
 
     /**
      * Get the Secure Session Status.

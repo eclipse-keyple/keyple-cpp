@@ -24,7 +24,7 @@ using namespace keyple::example::generic::common;
 
 GenericSeSelectionRequest::GenericMatchingSe::GenericMatchingSe(
     std::shared_ptr<SeResponse> selectionResponse,
-    TransmissionMode transmissionMode, std::string& extraInfo)
+    const TransmissionMode& transmissionMode, std::string& extraInfo)
 : AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo)
 {
 }
@@ -35,13 +35,13 @@ GenericSeSelectionRequest::GenericMatchingSe::~GenericMatchingSe()
 
 GenericSeSelectionRequest::GenericSeSelectionRequest(
     std::shared_ptr<SeSelector> seSelector)
-: AbstractSeSelectionRequest(seSelector)
+: AbstractSeSelectionRequest(seSelector),
+  transmissionMode(seSelector->getSeProtocol()->getTransmissionMode())
 {
-    transmissionMode = seSelector->getSeProtocol()->getTransmissionMode();
 }
 
-std::shared_ptr<AbstractMatchingSe>
-GenericSeSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
+const std::shared_ptr<AbstractMatchingSe> GenericSeSelectionRequest::parse(
+    std::shared_ptr<SeResponse> seResponse)
 {
     return std::make_shared<AbstractMatchingSe>(seResponse, transmissionMode,
                                                 "Generic Matching SE");

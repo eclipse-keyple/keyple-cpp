@@ -107,7 +107,7 @@ public:
     /**
      * @return the transmission mode in use with this SE reader
      */
-    virtual const TransmissionMode& getTransmissionMode() = 0;
+    virtual const TransmissionMode& getTransmissionMode() const = 0;
 
     /**
      *
