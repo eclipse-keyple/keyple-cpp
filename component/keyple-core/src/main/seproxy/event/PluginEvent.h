@@ -79,19 +79,7 @@ public:
         /**
          *
          */
-        EventType(const EventType& o);
-
-        /**
-         *
-         */
-        virtual ~EventType()
-        {
-        }
-
-        /**
-         *
-         */
-        virtual std::string getName();
+        virtual const std::string& getName() const;
 
         /**
          *
@@ -188,22 +176,22 @@ public:
     /**
      *
      */
-    std::string getPluginName();
+    const std::string& getPluginName() const;
 
     /**
      *
      */
-    std::set<std::string>& getReaderNames();
+    const std::set<std::string>& getReaderNames() const;
 
     /**
      *
      */
-    EventType getEventType();
+    const EventType& getEventType() const;
 
     /**
 	 *
 	 */
-    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, 
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
 		                                           const PluginEvent& re);
 
 private:

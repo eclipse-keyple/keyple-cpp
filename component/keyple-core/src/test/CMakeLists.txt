@@ -87,7 +87,7 @@ ADD_EXECUTABLE(keyple_core_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsResponseTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservablePluginTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservableReaderTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/PluginEventTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/PluginEventTest.cpp
 #	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ReaderEventTest.cpp
 
 	# TU keyple util - bertlv
