@@ -83,35 +83,6 @@ std::vector<uint8_t> ApduResponse::getDataOut() const
     return Arrays::copyOfRange(this->bytes, 0, this->bytes.size() - 2);
 }
 
-bool ApduResponse::equals(std::shared_ptr<void> o)
-{
-    if (o == shared_from_this()) {
-        return true;
-    }
-
-    if (!(std::static_pointer_cast<ApduResponse>(o) != nullptr)) {
-        return false;
-    }
-
-    std::shared_ptr<ApduResponse> resp =
-        std::static_pointer_cast<ApduResponse>(o);
-
-    return Arrays::equals(resp->getBytes(), this->bytes) &&
-           resp->isSuccessful() == this->successful;
-}
-
-int ApduResponse::hashCode()
-{
-    int hash = 17;
-    hash     = 19 * hash + (this->successful ? 0 : 1);
-    hash     = 31 * hash + (bytes.empty() ? 0 : Arrays::hashCode(bytes));
-    return hash;
-}
-
-void ApduResponse::finalize()
-{
-}
-
 std::ostream& operator<<(std::ostream& os, const ApduResponse& r)
 {
     const std::string status = r.successful ? "SUCCESS" : "FAILURE";

@@ -16,7 +16,6 @@
 
 #include "SelectionStatus.h"
 #include "SeResponse.h"
-#include "ApduResponseTest.h"
 
 #include <stdexcept>
 #include <memory>
