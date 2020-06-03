@@ -90,6 +90,17 @@ ADD_EXECUTABLE(keyple_core_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/PluginEventTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ReaderEventTest.cpp
 
+	# seproxy - message
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/AnswerToReset.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ApduRequestTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ApduResponseTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsRequest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsResponse.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ProxyReader.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SelectionStatus.cpp
+#	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeRequestTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponseTest.cpp
+
 	# TU keyple util - bertlv
 	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/util/TLVTest.cpp
@@ -107,17 +118,6 @@ ADD_EXECUTABLE(keyple_core_ut
 #	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeProxyServiceTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeReader.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeSelector.cpp
-
-	# seproxy - message
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/AnswerToReset.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ApduRequestTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ApduResponseTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsRequest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsResponse.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ProxyReader.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SelectionStatus.cpp
-#	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeRequestTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponseTest.cpp
 
 	# seproxy - plugin
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractLocalReader.cpp

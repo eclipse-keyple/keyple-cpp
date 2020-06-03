@@ -12,53 +12,43 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "Arrays.h"
+#include <algorithm>
+
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
 #include "AnswerToReset.h"
 
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
+using namespace testing;
 
-AnswerToReset::AnswerToReset(const std::vector<uint8_t>& atrBytes)
-: atrBytes(atrBytes)
+using namespace keyple::core::seproxy::message;
+
+TEST(AnswerToResetTest, AnswerToReset)
 {
+    const std::vector<uint8_t> atrBytes = {0x11, 0x22, 0x33, 0x44, 0x55};
+
+    AnswerToReset atr(atrBytes);
 }
 
-const std::vector<uint8_t>& AnswerToReset::getBytes() const
+TEST(AnswerToResetTest, getBytes)
 {
-    return atrBytes;
+    const std::vector<uint8_t> atrBytes = {0x11, 0x22, 0x33, 0x44, 0x55};
+
+    AnswerToReset atr(atrBytes);
+
+    ASSERT_EQ(atr.getBytes(), atrBytes);
 }
 
-bool AnswerToReset::operator==(const AnswerToReset& o) const
+TEST(AnswerToRestTest, operators)
 {
-    return Arrays::equals(o.getBytes(), this->atrBytes);
-}
+    const std::vector<uint8_t> atrBytes1 = {0x11, 0x22, 0x33, 0x44, 0x55};
+    const std::vector<uint8_t> atrBytes2 = {0x11, 0x22, 0x33, 0x44, 0x55};
+    const std::vector<uint8_t> atrBytes3 = {0x12, 0x22, 0x33, 0x44, 0x55};
 
-bool AnswerToReset::operator!=(const AnswerToReset& o) const
-{
-    return !(*this == o);
-}
+    AnswerToReset atr1(atrBytes1);
+    AnswerToReset atr2(atrBytes2);
+    AnswerToReset atr3(atrBytes3);
 
-std::ostream& operator<<(std::ostream& os, const AnswerToReset& atr)
-{
-    os << "ATR = " << atr.atrBytes;
-
-	return os;
-}
-
-std::ostream& operator<<(std::ostream& os,
-                         const std::shared_ptr<AnswerToReset>& atr)
-{
-    if (atr)
-        os << *(atr.get());
-    else
-		os << "ATR = null";
-
-	return os;
-}
-
-}
-}
-}
+    ASSERT_EQ(atr1, atr2);
+    ASSERT_NE(atr1, atr3);
 }

@@ -51,3 +51,4 @@ TEST(ReaderEventTest, getEventType)
 
     ASSERT_EQ(event.getEventType(), EventType::SE_INSERTED);
 }
+

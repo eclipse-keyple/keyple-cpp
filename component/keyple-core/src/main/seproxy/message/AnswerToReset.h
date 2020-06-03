@@ -37,7 +37,7 @@ using namespace keyple::common;
  * (May be enhanced to provide analysis methods)
  */
 class KEYPLECORE_API AnswerToReset
-: public std::enable_shared_from_this<AnswerToReset>, public Object {
+: public std::enable_shared_from_this<AnswerToReset> {
 public:
     /**
      *
@@ -47,48 +47,35 @@ public:
     /**
      *
      */
-    virtual ~AnswerToReset()
-    {
-    }
+    const std::vector<uint8_t>& getBytes() const;
 
     /**
      *
      */
-    const std::vector<uint8_t>& getBytes();
+    bool operator==(const AnswerToReset& o) const;
 
     /**
      *
      */
-    bool equals(std::shared_ptr<void> o) override;
+    bool operator!=(const AnswerToReset& o) const;
 
     /**
      *
      */
-    int hashCode() override;
-
-	/**
-	 *
-	 */
-	friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
                                                    const AnswerToReset& atr);
 
-	/**
-	 *
-	 */
-	friend KEYPLECORE_API std::ostream& operator<<(
-        std::ostream& os, const std::shared_ptr<AnswerToReset>& atr);
-
-protected:
     /**
      *
      */
-    void finalize() override;
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<AnswerToReset>& atr);
 
 private:
     /**
      *
      */
-    std::vector<uint8_t> atrBytes;
+    const std::vector<uint8_t> atrBytes;
 };
 
 }
