@@ -83,6 +83,17 @@ std::vector<uint8_t> ApduResponse::getDataOut() const
     return Arrays::copyOfRange(this->bytes, 0, this->bytes.size() - 2);
 }
 
+bool ApduResponse::operator==(const ApduResponse& o) const
+{
+    return this->bytes == o.bytes &&
+           this->successful == o.successful;
+}
+
+bool ApduResponse::operator!=(const ApduResponse& o) const
+{
+    return !(*this == o);
+}
+
 std::ostream& operator<<(std::ostream& os, const ApduResponse& r)
 {
     const std::string status = r.successful ? "SUCCESS" : "FAILURE";

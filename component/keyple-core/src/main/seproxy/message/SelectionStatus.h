@@ -37,7 +37,7 @@ namespace seproxy {
 namespace message {
 
 class KEYPLECORE_API SelectionStatus
-: public std::enable_shared_from_this<SelectionStatus>, public Object {
+: public std::enable_shared_from_this<SelectionStatus> {
 public:
     /**
      *
@@ -70,29 +70,23 @@ public:
     /**
      *
      */
-    bool equals(std::shared_ptr<void> o) override;
+    bool operator==(const SelectionStatus& o) const;
 
     /**
      *
      */
-    int hashCode() override;
+    bool operator!=(const SelectionStatus& o) const;
 
-	/**
-	 *
-	 */
+    /**
+     *
+     */
     friend std::ostream& operator<<(std::ostream& os, const SelectionStatus& s);
 
     /**
-	 *
-	 */
-    friend std::ostream& operator<<(std::ostream& os,
-		                            const std::shared_ptr<SelectionStatus>& s);
-
-protected:
-    /**
      *
      */
-    void finalize() override;
+    friend std::ostream& operator<<(std::ostream& os,
+                                    const std::shared_ptr<SelectionStatus>& s);
 
 private:
     /**

@@ -85,6 +85,16 @@ public:
     /**
      *
      */
+    bool operator==(const ApduResponse& o) const;
+
+    /**
+     *
+     */
+    bool operator!=(const ApduResponse& o) const;
+
+    /**
+     *
+     */
     friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
                                                    const ApduResponse& r);
 
