@@ -26,25 +26,26 @@ namespace message {
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
 
-SeRequest::SeRequest(std::shared_ptr<SeSelector> seSelector,
-                     std::vector<std::shared_ptr<ApduRequest>>& apduRequests)
-: seSelector(seSelector)
+SeRequest::SeRequest(
+  const std::shared_ptr<SeSelector> seSelector,
+  const std::vector<std::shared_ptr<ApduRequest>>& apduRequests)
+: seSelector(seSelector), apduRequests(apduRequests)
 {
-    this->apduRequests = apduRequests;
 }
 
-SeRequest::SeRequest(std::vector<std::shared_ptr<ApduRequest>>& apduRequests)
-: seSelector(nullptr)
+SeRequest::SeRequest(
+  const std::vector<std::shared_ptr<ApduRequest>>& apduRequests)
+: seSelector(nullptr), apduRequests(apduRequests)
 {
-    this->apduRequests = apduRequests;
 }
 
-std::shared_ptr<SeSelector> SeRequest::getSeSelector() const
+const std::shared_ptr<SeSelector> SeRequest::getSeSelector() const
 {
     return seSelector;
 }
 
-std::vector<std::shared_ptr<ApduRequest>> SeRequest::getApduRequests() const
+const std::vector<std::shared_ptr<ApduRequest>>& SeRequest::getApduRequests()
+    const
 {
     return apduRequests;
 }
