@@ -48,8 +48,12 @@ bool SelectionStatus::hasMatched() const
 
 bool SelectionStatus::operator==(const SelectionStatus& o) const
 {
-    return *(this->atr.get()) == *(o.atr.get()) &&
-           *(this->fci.get()) == *(o.fci.get()) &&
+    return /* Both pointers are null or equal */
+           ((!this->atr && !o.atr) ||
+            *(this->atr.get()) == *(o.atr.get())) &&
+           /* Both pointers are null or equal */
+           ((!this->fci && !o.fci) ||
+            *(this->fci.get()) == *(o.fci.get())) &&
            this->isMatching == o.isMatching;
 }
 
