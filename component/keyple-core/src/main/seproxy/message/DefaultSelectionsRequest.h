@@ -44,7 +44,8 @@ using namespace keyple::core::seproxy::event;
  * Class containing the Set of {@link SeRequest} used to make a default
  * selection at the {@link ObservableReader} level.
  */
-class KEYPLECORE_API DefaultSelectionsRequest final : public AbstractDefaultSelectionsRequest {
+class KEYPLECORE_API DefaultSelectionsRequest final
+: public AbstractDefaultSelectionsRequest {
 public:
     /**
      *
