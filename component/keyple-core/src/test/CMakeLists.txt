@@ -99,7 +99,7 @@ ADD_EXECUTABLE(keyple_core_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ProxyReaderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SelectionStatusTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeRequestTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponseTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponseTest.cpp
 
 	# TU keyple util - bertlv
 	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
