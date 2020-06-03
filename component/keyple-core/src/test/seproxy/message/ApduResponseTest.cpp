@@ -12,230 +12,76 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "ApduResponseTest.h"
-
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-using namespace keyple::core::seproxy::message;
+#include "ApduResponse.h"
 
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
+#include "ByteArrayUtil.h"
 
-using ByteArrayUtils = keyple::core::util::ByteArrayUtil;
 using namespace testing;
 
-void ApduResponseTest::setUp()
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::util;
+
+static std::shared_ptr<std::set<int>> getA9005CustomCode()
 {
-}
-
-void ApduResponseTest::constructorSuccessFullResponse()
-{
-    std::vector<unsigned char> uApdu = ByteArrayUtils::fromHex("FEDCBA98 9000");
-    std::shared_ptr<ApduResponse> response = std::make_shared<ApduResponse>(
-        uApdu, nullptr);
-    ASSERT_NE(response, nullptr);
-    ASSERT_EQ(0x9000, response->getStatusCode());
-    ASSERT_EQ("FEDCBA989000", ByteArrayUtils::toHex(response->getBytes()));
-
-    ASSERT_EQ(ByteArrayUtils::fromHex("FEDCBA98"),
-                      response->getDataOut());
-
-    ASSERT_TRUE(response->isSuccessful());
-}
-
-void ApduResponseTest::constructorSuccessFullResponseWithCustomCode()
-{
-    std::vector<unsigned char> uApdu = ByteArrayUtils::fromHex("FEDCBA98 9005");
-    std::shared_ptr<ApduResponse> response = std::make_shared<ApduResponse>(
-        uApdu, getA9005CustomCode());
-    ASSERT_NE(response, nullptr);
-    ASSERT_EQ(0x9005, response->getStatusCode());
-    ASSERT_EQ("FEDCBA989005", ByteArrayUtils::toHex(response->getBytes()));
-
-    ASSERT_EQ(ByteArrayUtils::fromHex("FEDCBA98"),
-                      response->getDataOut());
-
-    ASSERT_TRUE(response->isSuccessful());
-}
-
-void ApduResponseTest::constructorFailResponse()
-{
-    std::vector<unsigned char> uApdu = ByteArrayUtils::fromHex("FEDCBA98 9004");
-    std::shared_ptr<ApduResponse> response = std::make_shared<ApduResponse>(
-        uApdu, nullptr);
-    ASSERT_NE(response, nullptr);
-    ASSERT_EQ("FEDCBA989004", ByteArrayUtils::toHex(response->getBytes()));
-
-    ASSERT_EQ(ByteArrayUtils::fromHex("FEDCBA98"),
-                      response->getDataOut());
-
-    ASSERT_EQ(0x9004, response->getStatusCode());
-    ASSERT_FALSE(response->isSuccessful());
-}
-
-void ApduResponseTest::constructorFailResponseWithCustomCode()
-{
-    std::vector<unsigned char> uApdu = ByteArrayUtils::fromHex("FEDCBA98 9004");
-    std::shared_ptr<ApduResponse> response = std::make_shared<ApduResponse>(
-        uApdu, getA9005CustomCode());
-    ASSERT_NE(response, nullptr);
-    ASSERT_EQ("FEDCBA989004", ByteArrayUtils::toHex(response->getBytes()));
-
-    ASSERT_EQ(ByteArrayUtils::fromHex("FEDCBA98"),
-                      response->getDataOut());
-
-    ASSERT_EQ(0x9004, response->getStatusCode());
-    ASSERT_FALSE(response->isSuccessful());
-}
-
-void ApduResponseTest::isEqualsTest()
-{
-    ASSERT_TRUE(getAFCI()->equals(getAFCI()));
-}
-
-void ApduResponseTest::isThisEquals()
-{
-    std::shared_ptr<ApduResponse> resp = getAFCI();
-    ASSERT_TRUE(resp->equals(resp));
-}
-
-void ApduResponseTest::isNotEquals()
-{
-    std::shared_ptr<ApduResponse> resp = getAFCI();
-    std::shared_ptr<void> obj;
-    ASSERT_FALSE(resp->equals(obj));
-}
-
-void ApduResponseTest::isNotEqualsNull()
-{
-    std::shared_ptr<ApduResponse> resp = getAFCI();
-    std::vector<unsigned char> uApdu;
-    std::shared_ptr<ApduResponse> respNull =
-        std::make_shared<ApduResponse>(uApdu, nullptr);
-    ASSERT_FALSE(resp->equals(respNull));
-}
-
-void ApduResponseTest::hashcodeTest()
-{
-    std::shared_ptr<ApduResponse> resp  = getAFCI();
-    std::shared_ptr<ApduResponse> resp2 = getAFCI();
-    ASSERT_TRUE(resp->hashCode() == resp2->hashCode());
-}
-
-void ApduResponseTest::hashcodeNull()
-{
-    std::vector<unsigned char> uApdu;
-    std::shared_ptr<ApduResponse> resp =
-        std::make_shared<ApduResponse>(uApdu, nullptr);
-    ASSERT_NE(resp->hashCode(), 0);
-}
-
-std::shared_ptr<std::set<int>> ApduResponseTest::getA9005CustomCode()
-{
-    std::shared_ptr<std::set<int>> successfulStatusCodes = std::make_shared< std::set<int> >();
+    std::shared_ptr<std::set<int>> successfulStatusCodes =
+        std::make_shared< std::set<int> >();
     successfulStatusCodes->insert(0x9005);
+
     return successfulStatusCodes;
 }
 
-std::shared_ptr<AnswerToReset> ApduResponseTest::getAAtr()
+TEST(ApduResponseTest, constructorSuccessFullResponse)
 {
-    std::vector<unsigned char> uApdu = ByteArrayUtils::fromHex("3B8F8001804F0CA000000306030001000000006A");
-    return std::make_shared<AnswerToReset>( uApdu );
+    const std::vector<uint8_t> uApdu = {0xFE, 0xDC, 0xBA, 0x98, 0x90, 0x00};
+    const std::vector<uint8_t> dataOut = {0xFE, 0xDC, 0xBA, 0x98};
+
+    ApduResponse response(uApdu, nullptr);
+
+    ASSERT_EQ(response.getStatusCode(), 0x9000);
+    ASSERT_EQ(response.getBytes(), uApdu);
+    ASSERT_EQ(response.getDataOut(), dataOut);
+    ASSERT_TRUE(response.isSuccessful());
 }
 
-std::shared_ptr<ApduResponse> ApduResponseTest::getAFCI()
+TEST(ApduResponseTest, constructorSuccessFullResponseWithCustomCode)
 {
-    std::vector<unsigned char> uApdu = ByteArrayUtils::fromHex("9000");
-    return std::make_shared<ApduResponse>(uApdu, nullptr);
+    const std::vector<uint8_t> uApdu = {0xFE, 0xDC, 0xBA, 0x98, 0x90, 0x05};
+    const std::vector<uint8_t> dataOut = {0xFE, 0xDC, 0xBA, 0x98};
+
+    ApduResponse response(uApdu, getA9005CustomCode());
+
+    ASSERT_EQ(response.getStatusCode(), 0x9005);
+    ASSERT_EQ(response.getBytes(), uApdu);
+    ASSERT_EQ(response.getDataOut(), dataOut);
+    ASSERT_TRUE(response.isSuccessful());
 }
 
-std::shared_ptr<ApduResponse> ApduResponseTest::getSuccessfullResponse()
+TEST(ApduResponseTest, constructorFailResponse)
 {
-    std::vector<unsigned char> uApdu = ByteArrayUtils::fromHex("FEDCBA98 9000");
-    return std::make_shared<ApduResponse>( uApdu, nullptr);
+    const std::vector<uint8_t> uApdu = {0xFE, 0xDC, 0xBA, 0x98, 0x90, 0x04};
+    const std::vector<uint8_t> dataOut = {0xFE, 0xDC, 0xBA, 0x98};
+
+    ApduResponse response(uApdu, nullptr);
+
+    ASSERT_EQ(response.getBytes(), uApdu);
+    ASSERT_EQ(response.getDataOut(), dataOut);
+    ASSERT_EQ(response.getStatusCode(), 0x9004);
+    ASSERT_FALSE(response.isSuccessful());
 }
 
-std::vector<std::shared_ptr<ApduResponse>> ApduResponseTest::getAListOfAPDUs()
+TEST(ApduResponseTest, constructorFailResponseWithCustomCode)
 {
-    std::vector<std::shared_ptr<ApduResponse>> apdus;
-    apdus.push_back(getSuccessfullResponse());
-    return apdus;
-}
-}
-}
-}
-}
+    const std::vector<uint8_t> uApdu = {0xFE, 0xDC, 0xBA, 0x98, 0x90, 0x04};
+    const std::vector<uint8_t> dataOut = {0xFE, 0xDC, 0xBA, 0x98};
 
-TEST(ApduResponseTest, testA)
-{
-    std::shared_ptr<ApduResponseTest> LocalTest =
-        std::make_shared<ApduResponseTest>();
-    LocalTest->constructorSuccessFullResponse();
-}
+    ApduResponse response(uApdu, getA9005CustomCode());
 
-TEST(ApduResponseTest, testB)
-{
-    std::shared_ptr<ApduResponseTest> LocalTest =
-        std::make_shared<ApduResponseTest>();
-    LocalTest->constructorSuccessFullResponseWithCustomCode();
-}
-
-TEST(ApduResponseTest, testC)
-{
-    std::shared_ptr<ApduResponseTest> LocalTest =
-        std::make_shared<ApduResponseTest>();
-    LocalTest->constructorFailResponse();
-}
-
-TEST(ApduResponseTest, testD)
-{
-    std::shared_ptr<ApduResponseTest> LocalTest =
-        std::make_shared<ApduResponseTest>();
-    LocalTest->constructorFailResponseWithCustomCode();
-}
-
-TEST(ApduResponseTest, testE)
-{
-    std::shared_ptr<ApduResponseTest> LocalTest =
-        std::make_shared<ApduResponseTest>();
-    LocalTest->isEqualsTest();
-}
-
-TEST(ApduResponseTest, testF)
-{
-    std::shared_ptr<ApduResponseTest> LocalTest =
-        std::make_shared<ApduResponseTest>();
-    LocalTest->isThisEquals();
-}
-
-TEST(ApduResponseTest, testG)
-{
-    std::shared_ptr<ApduResponseTest> LocalTest =
-        std::make_shared<ApduResponseTest>();
-    LocalTest->isNotEquals();
-}
-
-TEST(ApduResponseTest, testH)
-{
-    std::shared_ptr<ApduResponseTest> LocalTest =
-        std::make_shared<ApduResponseTest>();
-    LocalTest->isNotEqualsNull();
-}
-
-TEST(ApduResponseTest, testI)
-{
-    std::shared_ptr<ApduResponseTest> LocalTest =
-        std::make_shared<ApduResponseTest>();
-    LocalTest->hashcodeTest();
-}
-
-TEST(ApduResponseTest, testJ)
-{
-    std::shared_ptr<ApduResponseTest> LocalTest =
-        std::make_shared<ApduResponseTest>();
-    LocalTest->hashcodeNull();
+    ASSERT_EQ(response.getBytes(), uApdu);
+    ASSERT_EQ(response.getDataOut(), dataOut);
+    ASSERT_EQ(response.getStatusCode(), 0x9004);
+    ASSERT_FALSE(response.isSuccessful());
 }
 
