@@ -61,11 +61,11 @@ bool SelectionStatus::equals(std::shared_ptr<void> o)
 
     return selectionStatus->getAtr() == nullptr
                ? this->atr == nullptr
-               : selectionStatus->getAtr()->equals(this->atr) &&
-                         selectionStatus->getFci() == nullptr
+               : *(selectionStatus->getAtr().get()) == *(this->atr.get()) &&
+                 selectionStatus->getFci() == nullptr
                      ? this->fci == nullptr
-                     : selectionStatus->getFci()->equals(this->fci) &&
-                           selectionStatus->hasMatched() == isMatching;
+                     : selectionStatus->getFci() == this->fci &&
+                       selectionStatus->hasMatched() == isMatching;
 }
 
 int SelectionStatus::hashCode()

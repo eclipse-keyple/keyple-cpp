@@ -116,9 +116,7 @@ bool SeResponse::equals(std::shared_ptr<void> o)
 int SeResponse::hashCode()
 {
     int hash = 17;
-    hash     = 31 * hash + (selectionStatus->getAtr() == nullptr
-                            ? 0
-                            : selectionStatus->getAtr()->hashCode());
+    hash     = 31 * hash;
     hash     = 7 * hash +
            (apduResponses.empty() ? 0 : 1); //this->apduResponses.hashCode());
     hash = 29 * hash + (this->channelPreviouslyOpen ? 1 : 0);
