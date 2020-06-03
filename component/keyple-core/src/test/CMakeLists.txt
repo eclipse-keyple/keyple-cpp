@@ -96,7 +96,7 @@ ADD_EXECUTABLE(keyple_core_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ApduResponseTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsRequestTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsResponseTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ProxyReader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ProxyReader.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SelectionStatus.cpp
 #	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeRequestTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponseTest.cpp
