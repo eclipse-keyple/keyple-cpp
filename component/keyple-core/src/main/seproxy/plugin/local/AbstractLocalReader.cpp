@@ -322,7 +322,7 @@ void AbstractLocalReader::closeLogicalChannel()
 void AbstractLocalReader::addSeProtocolSetting(
     std::shared_ptr<SeProtocol> seProtocol, const std::string& protocolRule)
 {
-    logger->debug("setSeProcotolSetting - adding 1 protocol to map: % : %\n",
+    logger->trace("setSeProcotolSetting - adding 1 protocol to map: % : %\n",
                   seProtocol->getName(), protocolRule);
 
     this->protocolsMap.emplace(seProtocol, protocolRule);
@@ -331,7 +331,7 @@ void AbstractLocalReader::addSeProtocolSetting(
 void AbstractLocalReader::setSeProtocolSetting(
     const std::map<std::shared_ptr<SeProtocol>, std::string>& protocolSetting)
 {
-    logger->debug("setSeProcotolSetting - adding % protocols to map\n",
+    logger->trace("setSeProcotolSetting - adding % protocols to map\n",
                   protocolSetting.size());
 
     this->protocolsMap.insert(protocolSetting.begin(), protocolSetting.end());
@@ -346,7 +346,7 @@ std::list<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequestSet(
     int requestIndex = 0, lastRequestIndex;
 
     /* Determine which requests are matching the current ATR */
-    logger->debug("processSeRequestSet - determining which requests are "
+    logger->trace("processSeRequestSet - determining which requests are "
                   "matching the ATR\n");
 
     for (auto request : requestSet) {
