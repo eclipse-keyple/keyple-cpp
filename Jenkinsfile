@@ -12,8 +12,10 @@ pipeline {
         stage('Keyple Cpp: Build') {
             steps{
                 container('java-builder') {
-                    sh 'cmake .'
-                    sh 'make'
+                    dir('build') {
+                        sh 'cmake -DCMAKE_TOOLCHAIN_FILE=../toolchain/gcc-linux.cmake ..'
+                        sh 'make'
+                    }
                 }
             }
         }
