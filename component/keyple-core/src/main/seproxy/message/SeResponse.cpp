@@ -98,9 +98,9 @@ bool SeResponse::operator==(const SeResponse& o) const
     return this->channelPreviouslyOpen == o.channelPreviouslyOpen &&
            this->logicalChannelIsOpen == o.logicalChannelIsOpen &&
            this->apduResponses == o.apduResponses &&
-           /* Both pointer are null or equal */
+           /* Both pointers are null or equal */
            ((!this->selectionStatus && !o.selectionStatus) ||
-           *(this->selectionStatus.get()) == *(o.selectionStatus.get()));
+            *(this->selectionStatus.get()) == *(o.selectionStatus.get()));
 }
 
 bool SeResponse::operator!=(const SeResponse& o) const
