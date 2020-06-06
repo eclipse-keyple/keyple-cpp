@@ -144,7 +144,7 @@ AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest,
         static_cast<double>((timeStamp - this->before) / 100000) / 10;
     this->before = timeStamp;
 
-    logger->debug("[%] transmit => SEREQUEST = %, elapsed % ms\n",
+    logger->trace("[%] transmit => SEREQUEST = %, elapsed % ms\n",
                   this->getName(), seRequest, elapsedMs);
 
     try {
@@ -183,7 +183,7 @@ AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest,
     elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
     this->before = timeStamp;
 
-    logger->debug("[%] transmit => SERESPONSE = %, elapsed % ms\n",
+    logger->trace("[%] transmit => SERESPONSE = %, elapsed % ms\n",
                   this->getName(), seResponse, elapsedMs);
 
     return seResponse;
