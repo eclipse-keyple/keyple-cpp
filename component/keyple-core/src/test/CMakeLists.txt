@@ -58,6 +58,8 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/local
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/local/monitoring
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/local/state
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/protocol
 
 	# google test and mock
@@ -118,6 +120,8 @@ ADD_EXECUTABLE(keyple_core_ut
 
 	# seproxy - plugin - local
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableLocalReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableStateTest.cpp
 
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractLoggedObservable.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservablePlugin.cpp
