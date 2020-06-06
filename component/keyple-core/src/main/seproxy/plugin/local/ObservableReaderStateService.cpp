@@ -50,20 +50,21 @@ void ObservableReaderStateService::switchState(const MonitoringState stateId)
     /* Switch currentState */
     currentState = this->states.find(stateId)->second;
 
-    logger->debug("[%] New currentState %\n", reader->getName(),
+    logger->trace("[%] New currentState %\n", reader->getName(),
                   currentState->getMonitoringState());
 
     /* onActivate the new current state */
     currentState->onActivate();
 }
 
-std::shared_ptr<AbstractObservableState>
-ObservableReaderStateService::getCurrentState()
+const std::shared_ptr<AbstractObservableState>
+    ObservableReaderStateService::getCurrentState() const
 {
     return currentState;
 }
 
-MonitoringState ObservableReaderStateService::getCurrentMonitoringState()
+const MonitoringState&
+    ObservableReaderStateService::getCurrentMonitoringState() const
 {
     return this->currentState->getMonitoringState();
 }

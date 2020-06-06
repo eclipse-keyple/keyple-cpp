@@ -53,14 +53,17 @@ void AbstractObservableLocalReader::startSeDetection(
                   pollingMode);
 
     this->currentPollingMode = pollingMode;
-    this->stateService->onEvent(InternalEvent::START_DETECT);
+
+    if (this->stateService)
+        this->stateService->onEvent(InternalEvent::START_DETECT);
 }
 
 void AbstractObservableLocalReader::stopSeDetection()
 {
     logger->trace("[%] stop Se Detection\n", getName());
 
-    this->stateService->onEvent(InternalEvent::STOP_DETECT);
+    if (this->stateService)
+        this->stateService->onEvent(InternalEvent::STOP_DETECT);
 }
 
 void AbstractObservableLocalReader::setDefaultSelectionRequest(
@@ -88,7 +91,8 @@ void AbstractObservableLocalReader::startRemovalSequence()
 {
     logger->trace("[%] start removal sequence of the reader\n", getName());
 
-    this->stateService->onEvent(InternalEvent::SE_PROCESSED);
+    if (this->stateService)
+        this->stateService->onEvent(InternalEvent::SE_PROCESSED);
 }
 
 std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
@@ -225,24 +229,28 @@ void AbstractObservableLocalReader::processSeRemoved()
         nullptr));
 }
 
-ObservableReader::PollingMode AbstractObservableLocalReader::getPollingMode()
+const ObservableReader::PollingMode&
+    AbstractObservableLocalReader::getPollingMode() const
 {
     return currentPollingMode;
 }
 
 void AbstractObservableLocalReader::switchState(const MonitoringState stateId)
 {
-    this->stateService->switchState(stateId);
+    if (this->stateService)
+        this->stateService->switchState(stateId);
 }
 
-MonitoringState AbstractObservableLocalReader::getCurrentMonitoringState()
+const MonitoringState&
+    AbstractObservableLocalReader::getCurrentMonitoringState() const
 {
     return this->stateService->getCurrentMonitoringState();
 }
 
 void AbstractObservableLocalReader::onEvent(const InternalEvent event)
 {
-    this->stateService->onEvent(event);
+    if (this->stateService)
+        this->stateService->onEvent(event);
 }
 
 void AbstractObservableLocalReader::addObserver(

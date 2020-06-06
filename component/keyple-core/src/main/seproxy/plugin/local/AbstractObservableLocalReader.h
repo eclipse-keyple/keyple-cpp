@@ -279,14 +279,14 @@ public:
      *
      * @return the current polling mode
      */
-    ObservableReader::PollingMode getPollingMode();
+    const ObservableReader::PollingMode& getPollingMode() const;
 
     /**
      * Get the current monitoring state
      *
      * @return current getMonitoringState
      */
-    MonitoringState getCurrentMonitoringState();
+    const MonitoringState& getCurrentMonitoringState() const;
 
     /**
      * thread safe method to communicate an internal event to this reader Use
