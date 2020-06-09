@@ -122,6 +122,7 @@ ADD_EXECUTABLE(keyple_core_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReaderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableLocalReaderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableStateTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/ObservableReaderStateServiceTest.cpp
 
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractLoggedObservable.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservablePlugin.cpp
