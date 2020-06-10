@@ -68,9 +68,9 @@ IF(APPLE)
 	SET(WINSCARD "-framework PCSC")
 ENDIF(APPLE)
 
-IF(UNIX)
+IF(UNIX AND NOT APPLE)
 	SET(WINSCARD pcsclite)
 	SET(SPEC_LIBS rt)
-ENDIF(UNIX)
+ENDIF(UNIX AND NOT APPLE)
 
 TARGET_LINK_LIBRARIES(usecase_generic4_sequentialmultiselection_pcsc keyplepluginpcsc keyplecalypso keyplecore ${WINSCARD})
