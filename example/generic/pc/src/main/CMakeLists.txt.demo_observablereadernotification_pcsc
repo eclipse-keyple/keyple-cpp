@@ -58,10 +58,10 @@ IF(APPLE)
 	SET(WINSCARD "-framework PCSC")
 ENDIF(APPLE)
 
-IF(UNIX)
+IF(UNIX AND NOT APPLE)
 	SET(WINSCARD pcsclite)
 	SET(SPEC_LIBS rt)
-ENDIF(UNIX)
+ENDIF(UNIX AND NOT APPLE)
 
 ADD_EXECUTABLE(demo_observablereadernotification_pcsc
 
