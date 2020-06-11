@@ -20,8 +20,6 @@ namespace example {
 namespace generic {
 namespace common {
 
-using namespace keyple::example::generic::common;
-
 GenericSeSelectionRequest::GenericMatchingSe::GenericMatchingSe(
     std::shared_ptr<SeResponse> selectionResponse,
     const TransmissionMode& transmissionMode, std::string& extraInfo)

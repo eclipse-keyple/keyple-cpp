@@ -27,8 +27,6 @@ namespace core {
 namespace seproxy {
 namespace protocol {
 
-using namespace keyple::core::seproxy::protocol;
-
 class KEYPLECORE_API SeCommonProtocols {
 public:
     /**

@@ -25,7 +25,6 @@ namespace command {
 namespace sam {
 
 using namespace keyple::calypso::command;
-using namespace keyple::calypso::command::sam;
 
 class SamSendableInSession
 : public SendableInSession<AbstractSamCommandBuilder> {

@@ -30,7 +30,6 @@ namespace command {
 namespace po {
 
 using namespace keyple::core::command;
-using namespace keyple::calypso::command::po;
 
 class KEYPLECALYPSO_API CalypsoPoCommands final : public CommandsTable {
 public:
