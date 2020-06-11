@@ -33,7 +33,7 @@ const int SamReadEventCounterCmdBuild::MAX_COUNTER_REC_NUMB = 3;
 
 SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
     SamRevision& revision, SamEventCounterOperationType operationType,
-    int index)
+    uint8_t index)
 : AbstractSamCommandBuilder(command, nullptr)
 {
     this->defaultRevision = revision;

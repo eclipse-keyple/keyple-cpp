@@ -33,9 +33,11 @@ void UpdateRecordCmdBuildTest::updateRecordCmdBuild_rev2_4()
     std::vector<uint8_t> request2_4 = {
         0x94, 0xDC, 0x01,0x44, 0x05, 0x00, 0x01, 0x02, 0x03, 0x04};
 
-    apduCommandBuilder  = std::make_shared<UpdateRecordCmdBuild>(
-        keyple::calypso::command::PoClass::LEGACY, 0x08, record_number,
-        newRecordData, "TestRev2_4");
+    apduCommandBuilder =
+        std::make_shared<UpdateRecordCmdBuild>(
+            keyple::calypso::command::PoClass::LEGACY,
+            static_cast<uint8_t>(0x08), record_number, newRecordData,
+            "TestRev2_4");
 
     apduRequest = apduCommandBuilder->getApduRequest();
 
@@ -48,9 +50,11 @@ void UpdateRecordCmdBuildTest::updateRecordCmdBuild_rev3_1()
     std::vector<uint8_t> request3_1 = {
         0x00, 0xDC, 0x01,0x44, 0x05, 0x00, 0x01, 0x02, 0x03, 0x04};
 
-    apduCommandBuilder = std::make_shared<UpdateRecordCmdBuild>(
-        keyple::calypso::command::PoClass::ISO, 0x08, record_number,
-        newRecordData, "TestRev3_1");
+    apduCommandBuilder =
+        std::make_shared<UpdateRecordCmdBuild>(
+            keyple::calypso::command::PoClass::ISO,
+            static_cast<uint8_t>(0x08), record_number, newRecordData,
+            "TestRev3_1");
 
     apduRequest = apduCommandBuilder->getApduRequest();
 
@@ -63,9 +67,11 @@ void UpdateRecordCmdBuildTest::updateRecordCmdBuild_rev3_2()
     std::vector<uint8_t> request3_2 = {
         0x00, 0xDC, 0x01,0x44, 0x05, 0x00, 0x01, 0x02, 0x03, 0x04};
 
-    apduCommandBuilder = std::make_shared<UpdateRecordCmdBuild>(
-        keyple::calypso::command::PoClass::ISO, 0x08, record_number,
-        newRecordData, "TestRev3_2");
+    apduCommandBuilder =
+        std::make_shared<UpdateRecordCmdBuild>(
+            keyple::calypso::command::PoClass::ISO,
+            static_cast<uint8_t>(0x08), record_number, newRecordData,
+            "TestRev3_2");
 
     apduRequest = apduCommandBuilder->getApduRequest();
 

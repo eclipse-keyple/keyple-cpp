@@ -10,8 +10,9 @@ using namespace testing;
 int KeyReferenceTest::sample()
 {
     std::shared_ptr<KeyReference> pLocal =
-        std::make_shared<KeyReference>(32, 0);
-    return (int)pLocal->getKvc();
+        std::make_shared<KeyReference>(static_cast<char>(32),
+                                       static_cast<char>(0));
+    return static_cast<int>(pLocal->getKvc());
 }
 }
 }

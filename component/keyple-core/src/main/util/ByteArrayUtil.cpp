@@ -52,7 +52,7 @@ std::vector<uint8_t> ByteArrayUtil::fromHex(const std::string& hex)
 {
     std::string _hex = HEX_IGNORED_CHARS->matcher(hex)->replaceAll("");
     for (auto& c : _hex)
-        c = toupper((unsigned char)c);
+        c = static_cast<char>(toupper((unsigned char)c));
 
     if (_hex.length() % 2 != 0) {
         throw std::invalid_argument("Odd numbered hex array");

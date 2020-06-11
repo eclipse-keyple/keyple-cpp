@@ -75,7 +75,7 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
 }
 
 SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
-    SamRevision& revision, SourceRef& sourceKeyRef, int recordNumber)
+    SamRevision& revision, SourceRef& sourceKeyRef, uint8_t recordNumber)
 : AbstractSamCommandBuilder(CalypsoSamCommands::READ_KEY_PARAMETERS, nullptr)
 {
 

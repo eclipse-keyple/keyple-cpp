@@ -171,7 +171,7 @@ TEST(SeSelectionTest, SeSelection2_prepareSelection)
         (std::static_pointer_cast<DefaultSelectionsRequest>(selectionOperation))
             ->getSelectionSeRequestSet();
 
-    ASSERT_EQ(2, selectionSeRequestSet.size());
+    ASSERT_EQ(2, static_cast<int>(selectionSeRequestSet.size()));
 
     /* Get the two se requests */
     std::shared_ptr<SeRequest> seRequest1 = *(selectionSeRequestSet.begin());
@@ -206,8 +206,8 @@ TEST(SeSelectionTest, SeSelection2_prepareSelection)
              ->getSuccessfulSelectionStatusCodes());
 
     ASSERT_EQ(1,
-              seRequest2->getSeSelector()->getAidSelector()
-              ->getSuccessfulSelectionStatusCodes()->size());
+              static_cast<int>(seRequest2->getSeSelector()->getAidSelector()
+              ->getSuccessfulSelectionStatusCodes()->size()));
     ASSERT_EQ(0x6283,
               *(*seRequest2->getSeSelector()->getAidSelector()
                  ->getSuccessfulSelectionStatusCodes().get()).begin());
@@ -215,8 +215,8 @@ TEST(SeSelectionTest, SeSelection2_prepareSelection)
     ASSERT_EQ(nullptr,seRequest1->getSeSelector()->getAtrFilter());
     ASSERT_EQ(".*", seRequest2->getSeSelector()->getAtrFilter()->getAtrRegex());
 
-    ASSERT_EQ(2, seRequest1->getApduRequests().size());
-    ASSERT_EQ(0, seRequest2->getApduRequests().size());
+    ASSERT_EQ(2, static_cast<int>(seRequest1->getApduRequests().size()));
+    ASSERT_EQ(0, static_cast<int>(seRequest2->getApduRequests().size()));
 
     std::vector<std::shared_ptr<ApduRequest>> apduRequests =
         seRequest1->getApduRequests();
@@ -252,7 +252,8 @@ TEST(SeSelectionTest, SeSelection2_processDefaultSelection_Empty)
             seSelection->processDefaultSelection(defaultSelectionsResponse);
 
     ASSERT_FALSE(selectionsResult->hasActiveSelection());
-    ASSERT_EQ(selectionsResult->getMatchingSelections().size(), 0);
+    ASSERT_EQ(
+        static_cast<int>(selectionsResult->getMatchingSelections().size()), 0);
 }
 
 TEST(SeSelectionTest, SeSelection2_processDefaultSelection_NotMatching)
