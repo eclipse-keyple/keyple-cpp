@@ -150,7 +150,7 @@ TEST(AbstractApduResponseParserTest, getStatusTable)
     std::unordered_map<int, std::shared_ptr<StatusProperties>> statusTable =
         parser.getMockStatusTable();
 
-    ASSERT_EQ(4, statusTable.size());
+    ASSERT_EQ(4, static_cast<uint8_t>(statusTable.size()));
 
     ASSERT_NE(statusTable.find(0x9000), statusTable.end());
     ASSERT_NE(statusTable.find(0x9999), statusTable.end());

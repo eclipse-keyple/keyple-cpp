@@ -1199,9 +1199,9 @@ PoTransaction::AnticipatedResponseBuilder::getResponses(
                             currentCounterValue + addSubtractValue;
                     }
 
-                    response[0] = (newCounterValue & 0x00FF0000) >> 16;
-                    response[1] = (newCounterValue & 0x0000FF00) >> 8;
-                    response[2] = (newCounterValue & 0x000000FF) >> 0;
+                    response[0] = static_cast<uint8_t>((newCounterValue & 0x00FF0000) >> 16);
+                    response[1] = static_cast<uint8_t>((newCounterValue & 0x0000FF00) >> 8);
+                    response[2] = static_cast<uint8_t>((newCounterValue & 0x000000FF) >> 0);
                     response[3] = 0x90;
                     response[4] = 0x00;
 

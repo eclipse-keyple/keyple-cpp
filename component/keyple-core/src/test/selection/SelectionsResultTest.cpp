@@ -150,7 +150,7 @@ TEST(SelectionsResultTest, addMatchingSelection_NullPtr)
     std::vector<std::shared_ptr<MatchingSelection>> matchingSelections =
         selectionResult.getMatchingSelections();
 
-    ASSERT_EQ(matchingSelections.size(), 0);
+    ASSERT_EQ(static_cast<int>(matchingSelections.size()), 0);
 }
 
 TEST(SelectionsResultTest, addMatchingSelection_Inactive)
@@ -167,7 +167,7 @@ TEST(SelectionsResultTest, addMatchingSelection_Inactive)
     std::vector<std::shared_ptr<MatchingSelection>> matchingSelections =
         selectionResult.getMatchingSelections();
 
-    ASSERT_EQ(matchingSelections.size(), 1);
+    ASSERT_EQ(static_cast<int>(matchingSelections.size()), 1);
 }
 
 TEST(SelectionsResultTest, addMatchingSelection_Active)
@@ -183,7 +183,7 @@ TEST(SelectionsResultTest, addMatchingSelection_Active)
     std::vector<std::shared_ptr<MatchingSelection>> matchingSelections =
         selectionResult.getMatchingSelections();
 
-    ASSERT_EQ(matchingSelections.size(), 1);
+    ASSERT_EQ(static_cast<int>(matchingSelections.size()), 1);
 }
 
 TEST(SelectionsResultTest, getActiveSelection_Empty)
@@ -209,7 +209,7 @@ TEST(SelectionsResultTest, getMatchingSelections_Empty)
     std::vector<std::shared_ptr<MatchingSelection>> matchingSelections =
         selectionResult.getMatchingSelections();
 
-    ASSERT_EQ(matchingSelections.size(), 0);
+    ASSERT_EQ(static_cast<int>(matchingSelections.size()), 0);
 }
 
 TEST(SelectionsResultTest, getMatchingSelections_Two)
@@ -222,7 +222,7 @@ TEST(SelectionsResultTest, getMatchingSelections_Two)
     std::vector<std::shared_ptr<MatchingSelection>> matchingSelections =
         selectionResult.getMatchingSelections();
 
-    ASSERT_EQ(matchingSelections.size(), 2);
+    ASSERT_EQ(static_cast<int>(matchingSelections.size()), 2);
 }
 
 TEST(SelectionsResultTest, getMatchingSelection_NoMatching)

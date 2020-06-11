@@ -94,7 +94,7 @@ public:
      */
     int prepareReadRecordsCmd(uint8_t sfi,
                               ReadDataStructure readDataStructureEnum,
-                              uint8_t firstRecordNumber, int expectedLength,
+                              uint8_t firstRecordNumber, uint8_t expectedLength,
                               const std::string& extraInfo);
 
     /**
@@ -169,9 +169,8 @@ public:
      * @return the command index indicating the order of the command in the
      *         command list
      */
-    int
-    preparePoCustomModificationCmd(const std::string& name,
-                                   std::shared_ptr<ApduRequest> apduRequest);
+    int preparePoCustomModificationCmd(
+        const std::string& name, std::shared_ptr<ApduRequest> apduRequest);
 
     /**
      * Return the parser corresponding to the command whose index is provided.
@@ -181,9 +180,8 @@ public:
      * @param commandIndex the command index
      * @return a parser of the type matching the command
      */
-    std::shared_ptr<AbstractApduResponseParser>
-    getCommandParser(std::shared_ptr<SeResponse> seResponse,
-                     int commandIndex) override;
+    std::shared_ptr<AbstractApduResponseParser> getCommandParser(
+        std::shared_ptr<SeResponse> seResponse, int commandIndex) override;
 
 protected:
     /**
@@ -217,7 +215,7 @@ private:
     /**
      *
      */
-    int mCommandIndex = 0;
+    uint8_t mCommandIndex = 0;
 
     /**
      *
@@ -258,11 +256,10 @@ private:
      * @return the command index indicating the order of the command in the
      *         command list
      */
-    int prepareReadRecordsCmdInternal(uint8_t sfi,
-                                      ReadDataStructure readDataStructureEnum,
-                                      uint8_t firstRecordNumber,
-                                      int expectedLength,
-                                      const std::string& extraInfo);
+    int prepareReadRecordsCmdInternal(
+        uint8_t sfi, ReadDataStructure readDataStructureEnum,
+        uint8_t firstRecordNumber,uint8_t expectedLength,
+        const std::string& extraInfo);
 };
 
 }

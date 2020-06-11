@@ -39,7 +39,8 @@ void DigestCloseCmdBuildTest::digestCloseCmdBuild()
     std::vector<uint8_t> request = {0x94, 0x8E, 0x00, 0x00, 0x04};
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder =
-        std::make_shared<DigestCloseCmdBuild>(SamRevision::S1D, 0x04); // 94
+        std::make_shared<DigestCloseCmdBuild>(
+            SamRevision::S1D, static_cast<uint8_t>(0x04)); // 94
     std::shared_ptr<ApduRequest> apduReq = apduCommandBuilder->getApduRequest();
 
     ASSERT_EQ(request, apduReq->getBytes());
@@ -47,7 +48,7 @@ void DigestCloseCmdBuildTest::digestCloseCmdBuild()
     std::vector<uint8_t> request1 = { 0x80, 0x8E, 0x00, 0x00, 0x04};
 
     apduCommandBuilder = std::make_shared<DigestCloseCmdBuild>(
-        SamRevision::C1, 0x04); // 94
+        SamRevision::C1, static_cast < uint8_t>(0x04)); // 94
 
     apduReq = apduCommandBuilder->getApduRequest();
 

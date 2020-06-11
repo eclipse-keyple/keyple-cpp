@@ -28,11 +28,11 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
-ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi,
+ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, uint8_t sfi,
                                          ReadDataStructure readDataStructure,
-                                         char firstRecordNumber,
+                                         uint8_t firstRecordNumber,
                                          bool readJustOneRecord,
-                                         char expectedLength,
+                                         uint8_t expectedLength,
                                          const std::string& extraInfo)
 : AbstractPoCommandBuilder<ReadRecordsRespPars>(CalypsoPoCommands::READ_RECORDS,
                                                 nullptr),
@@ -55,9 +55,9 @@ ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi,
     }
 }
 
-ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, char sfi,
+ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, uint8_t sfi,
                                          ReadDataStructure readDataStructure,
-                                         char firstRecordNumber,
+                                         uint8_t firstRecordNumber,
                                          bool readJustOneRecord,
                                          const std::string& extraInfo)
 : ReadRecordsCmdBuild(poClass, sfi, readDataStructure, firstRecordNumber,

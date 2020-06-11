@@ -742,9 +742,9 @@ AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
     if (getResponseHackResponse->isSuccessful()) {
         /* Replace the two last status word bytes by the original status word */
         getResponseHackResponseBytes[getResponseHackResponseBytes.size() - 2] =
-            originalStatusCode >> 8;
+            static_cast<uint8_t>((originalStatusCode & 0xff00) >> 8);
         getResponseHackResponseBytes[getResponseHackResponseBytes.size() - 1] =
-            originalStatusCode & 0xFF;
+            static_cast<uint8_t>(originalStatusCode & 0x00ff);
     }
 
     return getResponseHackResponse;
