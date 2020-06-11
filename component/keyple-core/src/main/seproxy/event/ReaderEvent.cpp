@@ -22,7 +22,6 @@ namespace seproxy {
 namespace event {
 
 using namespace keyple::core::seproxy::message;
-using namespace keyple::core::seproxy::event;
 
 using EventType = ReaderEvent::EventType;
 

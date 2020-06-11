@@ -55,7 +55,6 @@ using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::builder;
 using namespace keyple::calypso::command::po::parser;
-using namespace keyple::calypso::transaction;
 
 /**
  * Specialized selection request to manage the specific characteristics of

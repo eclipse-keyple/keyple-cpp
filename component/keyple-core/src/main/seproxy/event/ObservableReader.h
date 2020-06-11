@@ -30,7 +30,6 @@ namespace seproxy {
 namespace event {
 
 using namespace keyple::core::seproxy;
-using namespace keyple::core::seproxy::event;
 
 /**
  * The ObservableReader interface provides the API for observable readers.

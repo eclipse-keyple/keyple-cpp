@@ -35,7 +35,6 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 
-using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::common;

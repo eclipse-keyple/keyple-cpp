@@ -27,7 +27,6 @@ namespace security {
 
 using namespace keyple::calypso::command::po;
 using namespace keyple::core::seproxy::message;
-using namespace keyple::calypso::command::po::parser::security;
 
 OpenSession32RespPars::OpenSession32RespPars(
     std::shared_ptr<ApduResponse> response)
