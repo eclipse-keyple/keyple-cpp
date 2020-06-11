@@ -59,8 +59,8 @@ public:
     }
 
     std::shared_ptr<ApduRequest> setApduRequest(
-        const uint8_t cla, const CommandsTable& command, const uint8_t p1,
-        const uint8_t p2, const std::vector<uint8_t>& dataIn, const uint8_t le)
+        uint8_t cla, const CommandsTable& command, uint8_t p1,
+        uint8_t p2, const std::vector<uint8_t>& dataIn, uint8_t le)
     {
         return AbstractIso7816CommandBuilder::setApduRequest(cla, command, p1,
 	                                                     p2, dataIn, le);

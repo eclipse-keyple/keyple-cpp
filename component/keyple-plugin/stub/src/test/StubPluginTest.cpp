@@ -308,7 +308,7 @@ StubPluginTest::PluginObserverAnonymousInnerClass4
 }
 
 void StubPluginTest::PluginObserverAnonymousInnerClass4::update(
-    std::shared_ptr<PluginEvent> event_Renamed)
+    const std::shared_ptr<PluginEvent> event_Renamed)
 {
     outerInstance->logger->info("event %s %s\n", event_Renamed->getEventType(),
                                 event_Renamed->getReaderNames().size());

@@ -73,14 +73,7 @@ ObservableReaderNotificationEngine::SpecificReaderObserver
 }
 
 void ObservableReaderNotificationEngine::SpecificReaderObserver::update(
-    ReaderEvent event)
-{
-    (void)event;
-    /* Should not be used, compilation fix */
-}
-
-void ObservableReaderNotificationEngine::SpecificReaderObserver::update(
-    std::shared_ptr<ReaderEvent> event)
+    const std::shared_ptr<ReaderEvent> event)
 {
     switch (event->getEventType().innerEnumValue) {
     case ReaderEvent::EventType::InnerEnum::SE_MATCHED:

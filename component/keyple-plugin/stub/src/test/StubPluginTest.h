@@ -116,7 +116,7 @@ public:
         /**
          *
          */
-        void update(std::shared_ptr<PluginEvent> event);
+        void update(const std::shared_ptr<PluginEvent> event);
     };
 
     /**
@@ -173,7 +173,7 @@ public:
 
         int event_i = 0;
 
-        void update(std::shared_ptr<PluginEvent> event_Renamed);
+        void update(const std::shared_ptr<PluginEvent> event_Renamed);
     };
 
 public:
@@ -213,7 +213,7 @@ public:
             const std::set<std::string>& READERS,
             std::shared_ptr<CountDownLatch> readerConnected);
 
-        virtual void update(std::shared_ptr<PluginEvent> event_Renamed);
+        virtual void update(const std::shared_ptr<PluginEvent> event_Renamed);
 
     };
 
@@ -250,7 +250,7 @@ public:
 
         int event_i = 0;
 
-        void update(std::shared_ptr<PluginEvent> event_Renamed);
+        void update(const std::shared_ptr<PluginEvent> event_Renamed);
     };
 
     protected:
