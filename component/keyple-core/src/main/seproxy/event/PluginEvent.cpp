@@ -21,8 +21,6 @@ namespace core {
 namespace seproxy {
 namespace event {
 
-using namespace keyple::core::seproxy::event;
-
 using EventType = PluginEvent::EventType;
 
 const EventType EventType::READER_CONNECTED("READER_CONNECTED",

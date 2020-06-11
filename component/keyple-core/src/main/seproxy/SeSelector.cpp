@@ -27,7 +27,6 @@ namespace seproxy {
 
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
-using namespace keyple::core::seproxy;
 
 using FileOccurrence         = SeSelector::AidSelector::FileOccurrence;
 using FileControlInformation = SeSelector::AidSelector::FileControlInformation;

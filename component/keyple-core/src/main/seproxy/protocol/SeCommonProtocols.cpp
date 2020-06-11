@@ -20,8 +20,6 @@ namespace core {
 namespace seproxy {
 namespace protocol {
 
-using namespace keyple::core::seproxy::protocol;
-
 using SeCommonProtocol = SeCommonProtocols::SeCommonProtocol;
 
 const std::shared_ptr<SeCommonProtocol> SeCommonProtocols::PROTOCOL_ISO14443_4

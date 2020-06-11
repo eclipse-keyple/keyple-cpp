@@ -29,7 +29,6 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
-using namespace keyple::calypso::command::po::builder;
 
 SelectFileCmdBuild::SelectFileCmdBuild(PoClass poClass,
                                        SelectControl selectControl)

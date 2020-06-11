@@ -22,8 +22,6 @@ namespace keyple {
 namespace core {
 namespace selection {
 
-using namespace keyple::core::selection;
-
 SelectionsResult::SelectionsResult()
 {
 }
