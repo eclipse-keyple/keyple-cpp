@@ -306,7 +306,7 @@ public:
      *        SINGLESHOT, the SE detection is stopped until a new call to
      *        startSeDetection is made.
      */
-    virtual void startSeDetection(PollingMode pollingMode) = 0;
+    virtual void startSeDetection(const PollingMode pollingMode) = 0;
 
     /**
      * Stops the SE detection.
@@ -330,7 +330,7 @@ public:
     virtual void setDefaultSelectionRequest(
         std::shared_ptr<AbstractDefaultSelectionsRequest>
             defaultSelectionsRequest,
-        NotificationMode notificationMode) = 0;
+        const NotificationMode notificationMode) = 0;
 
     /**
      * A combination of defining the default selection request and starting the
@@ -348,8 +348,8 @@ public:
     virtual void setDefaultSelectionRequest(
         std::shared_ptr<AbstractDefaultSelectionsRequest>
             defaultSelectionsRequest,
-        NotificationMode notificationMode,
-        PollingMode pollingMode) = 0;
+        const NotificationMode notificationMode,
+        const PollingMode pollingMode) = 0;
 
     /**
      * Signal sent by the application to the reader to indicate the end of the

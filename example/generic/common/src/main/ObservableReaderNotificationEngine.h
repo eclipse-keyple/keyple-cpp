@@ -63,7 +63,7 @@ public:
          * Constructor
          */
         SpecificReaderObserver(
-            ObservableReaderNotificationEngine* outerInstance); //super();
+            ObservableReaderNotificationEngine* outerInstance);
 
         /**
          *
@@ -75,12 +75,12 @@ public:
         /**
          *
          */
-        void update(std::shared_ptr<ReaderEvent> event); // override;
+        void update(const std::shared_ptr<ReaderEvent> event) override;
 
         /**
          *
          */
-        void update(ReaderEvent event); // override;
+        //void update(ReaderEvent event); // override;
 
     private:
         /**

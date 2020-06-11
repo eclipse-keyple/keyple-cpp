@@ -180,7 +180,7 @@ public:
     {
     }
 
-    void update(std::shared_ptr<ReaderEvent> event)
+    void update(const std::shared_ptr<ReaderEvent> event)
     {
         logger->debug("here\n");
         ReaderEvent::EventType type = event->getEventType();

@@ -55,7 +55,7 @@ public:
     /**
      *
      */
-    virtual void update(std::shared_ptr<ReaderEvent> event);
+    virtual void update(const std::shared_ptr<ReaderEvent> event);
 
 protected:
     /**
