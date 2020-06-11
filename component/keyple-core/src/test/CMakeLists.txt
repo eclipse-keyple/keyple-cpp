@@ -103,10 +103,9 @@ ADD_EXECUTABLE(keyple_core_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeRequestTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponseTest.cpp
 
-	# TU keyple util - bertlv
-	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/TLVTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/TagTest.cpp
+	# util - bertlv
+	${CMAKE_CURRENT_SOURCE_DIR}/util/bertlv/TLVTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/util/bertlv/TagTest.cpp
 
 	# TU keyple util
 	${CMAKE_CURRENT_SOURCE_DIR}/util/ConfigurableTest.cpp
@@ -133,7 +132,6 @@ ADD_EXECUTABLE(keyple_core_ut
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractThreadedLocalReader.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractThreadedObservablePlugin.cpp
 
-
 	# seproxy
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ChannelControl.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ReaderPlugin.cpp
@@ -147,6 +145,8 @@ ADD_EXECUTABLE(keyple_core_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/TransmissionModeTest.cpp
 
 	#${CMAKE_CURRENT_SOURCE_DIR}/CoreBaseTest.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
 )
 
 SET(LINK_LIBS gtest gmock keyplecore keyplecalypso ${WINSCARD} )

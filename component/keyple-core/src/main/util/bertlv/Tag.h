@@ -43,12 +43,14 @@ public:
     enum class TagType { PRIMITIVE, CONSTRUCTED };
 
     /**
-     * The tag class
+     *
      */
-    static const char UNIVERSAL;
-    static const char APPLICATION;
-    static const char CONTEXT;
-    static const char PRIVATE;
+    enum class TagClass : uint8_t {
+        UNIVERSAL = 0,
+        APPLICATION,
+        CONTEXT,
+        PRIVATE
+    };
 
 public:
     /**
@@ -59,7 +61,7 @@ public:
      * @param tagClass the tag class.
      * @param tagType constructed or primitive
      */
-    Tag(int tagNumber, uint8_t tagClass, TagType tagType);
+    Tag(int tagNumber, Tag::TagClass tagClass, TagType tagType);
 
     /**
      * Create a tag from a binary stream.
@@ -69,37 +71,55 @@ public:
      * @param offset the start offset in the byte array
      * @throws IndexOutOfBoundsException if the offset is too large
      */
-    Tag(std::vector<uint8_t>& binary, int offset);
+    Tag(const std::vector<uint8_t>& binary, int offset);
 
     /**
      *
      */
-    int getTagNumber();
+    int getTagNumber() const;
 
     /**
      *
      */
-    char getTagClass();
+    TagClass getTagClass() const;
 
     /**
      *
      */
-    TagType getTagType();
+    TagType getTagType() const;
 
     /**
      *
      */
-    int getSize();
-	
-    /**
-     *
-     */
-    bool equals(std::shared_ptr<Tag> tag);
+    int getSize() const;
 
     /**
      *
      */
-    std::string toString();
+    bool operator==(const Tag& o) const;
+
+    /**
+     *
+     */
+    bool operator!=(const Tag& o) const;
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const Tag::TagClass& tc);
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const Tag::TagType& tt);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const Tag& t);
+
 
 private:
     /**
@@ -110,7 +130,7 @@ private:
     /**
      *
      */
-    uint8_t tagClass;
+    TagClass tagClass;
 
     /**
      *
