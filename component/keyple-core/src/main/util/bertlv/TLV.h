@@ -92,7 +92,7 @@ private:
     /**
      *
      */
-    std::shared_ptr<Tag> tag;
+    std::shared_ptr<Tag> mTag;
 
     /**
      *

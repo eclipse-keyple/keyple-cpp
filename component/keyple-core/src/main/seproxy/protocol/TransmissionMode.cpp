@@ -21,6 +21,8 @@ namespace protocol {
 
 std::ostream& operator<<(std::ostream& os, const TransmissionMode& tm)
 {
+    os << "TRANMISSIONMODE = ";
+
     if (tm == TransmissionMode::CONTACTLESS)
         os << "CONTACTLESS";
     else if (tm == TransmissionMode::CONTACTS)
@@ -29,7 +31,6 @@ std::ostream& operator<<(std::ostream& os, const TransmissionMode& tm)
         os << "NONE";
     else
         os << "UNEXPECTED VALUE";
-
 
     return os;
 }

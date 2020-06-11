@@ -125,14 +125,9 @@ private:
     static PcscPluginImpl uniqueInstance;
 
     /**
-     * /!\ clang compiler warning - not used
-     */
-    //bool logging = false;
-
-    /**
      *
      */
-    std::vector<PcscTerminal> terminals;
+    std::vector<PcscTerminal> mTerminals;
 
     /**
      *

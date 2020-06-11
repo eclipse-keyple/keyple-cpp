@@ -58,10 +58,10 @@ SelectFileRespPars::StaticConstructor SelectFileRespPars::staticConstructor;
 
 void SelectFileRespPars::parseResponse()
 {
-    std::vector<uint8_t> inFileParameters = response->getDataOut();
+    std::vector<uint8_t> inFileParameters = mResponse->getDataOut();
     int iter                              = 0;
 
-    if (!response->isSuccessful()) {
+    if (!mResponse->isSuccessful()) {
         // the command was not successful, we stop here
         return;
     }
@@ -242,7 +242,7 @@ std::vector<uint8_t> SelectFileRespPars::getKifInfo()
 
 std::vector<uint8_t> SelectFileRespPars::getSelectionData()
 {
-    return response->getDataOut();
+    return mResponse->getDataOut();
 }
 
 }

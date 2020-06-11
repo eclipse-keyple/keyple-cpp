@@ -112,12 +112,12 @@ private:
     /**
      * The free/busy status of the resource
      */
-    SamResourceStatus samResourceStatus;
+    SamResourceStatus mSamResourceStatus;
 
     /**
      * The sam identifier
      */
-    SamIdentifier* samIdentifier;
+    SamIdentifier* mSamIdentifier;
 };
 
 }

@@ -70,10 +70,10 @@ void AbstractObservableLocalReader::setDefaultSelectionRequest(
     std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
     const ObservableReader::NotificationMode notificationMode)
 {
-    this->defaultSelectionsRequest =
+    mDefaultSelectionsRequest =
         std::dynamic_pointer_cast<DefaultSelectionsRequest>(
             defaultSelectionsRequest);
-    this->notificationMode = notificationMode;
+    mNotificationMode = notificationMode;
 }
 
 void AbstractObservableLocalReader::setDefaultSelectionRequest(
@@ -99,7 +99,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
 {
     logger->trace("[%] process the inserted se\n", getName());
 
-    if (defaultSelectionsRequest == nullptr) {
+    if (mDefaultSelectionsRequest == nullptr) {
         logger->trace("[%] no default selection request defined, notify " \
                       "SE_INSERTED\n", getName());
 
@@ -116,9 +116,9 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
 
         try {
             std::list<std::shared_ptr<SeResponse>> seResponseList = transmitSet(
-                defaultSelectionsRequest->getSelectionSeRequestSet(),
-                defaultSelectionsRequest->getMultiSeRequestProcessing(),
-                defaultSelectionsRequest->getChannelControl());
+                mDefaultSelectionsRequest->getSelectionSeRequestSet(),
+                mDefaultSelectionsRequest->getMultiSeRequestProcessing(),
+                mDefaultSelectionsRequest->getChannelControl());
 
             for (auto seResponse : seResponseList) {
                 if (seResponse != nullptr &&
@@ -130,7 +130,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
                 }
             }
 
-            if (notificationMode ==
+            if (mNotificationMode ==
                 ObservableReader::NotificationMode::MATCHED_ONLY) {
                 /*
                  * Notify only if a SE matched the selection, just ignore if not

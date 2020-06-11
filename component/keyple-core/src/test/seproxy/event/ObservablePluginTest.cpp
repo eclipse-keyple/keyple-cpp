@@ -53,13 +53,13 @@ public:
 
     const std::string& getName() const override
     {
-        return name;
+        return mName;
     }
 
     const std::map<const std::string, const std::string> getParameters() const
         override
     {
-        return parameters;
+        return mParameters;
     }
 
     void setParameter(const std::string& key, const std::string& value) override
@@ -95,9 +95,9 @@ public:
 private:
     std::vector<std::shared_ptr<PluginObserver>> observers;
 
-    std::string name;
+    std::string mName;
 
-    std::map<const std::string, const std::string> parameters;
+    std::map<const std::string, const std::string> mParameters;
 
     std::set<std::string> readerNames;
 

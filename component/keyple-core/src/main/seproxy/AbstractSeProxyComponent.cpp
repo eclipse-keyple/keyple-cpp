@@ -19,13 +19,13 @@ namespace core {
 namespace seproxy {
 
 AbstractSeProxyComponent::AbstractSeProxyComponent(const std::string& name)
-: name(name)
+: mName(name)
 {
 }
 
 const std::string& AbstractSeProxyComponent::getName() const
 {
-    return name;
+    return mName;
 }
 
 void AbstractSeProxyComponent::setParameters(
