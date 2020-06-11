@@ -22,9 +22,9 @@ namespace protocol {
 std::ostream& operator<<(std::ostream& os,
                          const std::shared_ptr<SeProtocol>& se)
 {
-    os << "SEPROTOCOL {"
+    os << "SEPROTOCOL: {"
        << "NAME = " << se->getName() << ", "
-       << "TRANSMISSIONMODE: " << se->getTransmissionMode()
+       << se->getTransmissionMode()
        << "}";
 
     return os;

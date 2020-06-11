@@ -33,14 +33,13 @@ OpenSession31RespPars::OpenSession31RespPars(
 : AbstractOpenSessionRespPars(response, PoRevision::REV3_1)
 {
     std::vector<uint8_t> data = response->getDataOut();
-    this->secureSession       = toSecureSession(data);
+    secureSession       = toSecureSession(data);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
 OpenSession31RespPars::toSecureSession(
     const std::vector<uint8_t>& apduResponseData)
 {
-    std::shared_ptr<SecureSession> secureSession;
     bool previousSessionRatified       = (apduResponseData[4] == 0x00);
     bool manageSecureSessionAuthorized = false;
 

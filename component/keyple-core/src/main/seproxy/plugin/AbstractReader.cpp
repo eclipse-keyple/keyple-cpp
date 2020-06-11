@@ -37,7 +37,7 @@ using namespace keyple::core::seproxy::message;
 AbstractReader::AbstractReader(const std::string& pluginName,
                                const std::string& name)
 : AbstractSeProxyComponent(name),
-  notificationMode(ObservableReader::NotificationMode::ALWAYS),
+  mNotificationMode(ObservableReader::NotificationMode::ALWAYS),
   pluginName(pluginName)
 {
     /*

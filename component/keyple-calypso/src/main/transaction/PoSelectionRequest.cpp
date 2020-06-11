@@ -46,7 +46,7 @@ using namespace keyple::core::util;
 PoSelectionRequest::PoSelectionRequest(std::shared_ptr<PoSelector> poSelector)
 : AbstractSeSelectionRequest(poSelector), poClass(PoClass::LEGACY)
 {
-    commandIndex = 0;
+    mCommandIndex = 0;
 
     /* No AID selector for a legacy Calypso PO */
     if (seSelector->getAidSelector() == nullptr) {
@@ -86,14 +86,14 @@ int PoSelectionRequest::prepareReadRecordsCmdInternal(
 		          readJustOneRecord, expectedLength);
 
     /* keep read record parameters in the dedicated Maps */
-    readRecordFirstRecordNumberMap.emplace(commandIndex, firstRecordNumber);
-    readRecordDataStructureMap.emplace(commandIndex, readDataStructureEnum);
+    readRecordFirstRecordNumberMap.emplace(mCommandIndex, firstRecordNumber);
+    readRecordDataStructureMap.emplace(mCommandIndex, readDataStructureEnum);
 
     /* set the parser for the response of this command */
     parsingClassList.push_back(typeid(ReadRecordsRespPars).name());
 
     /* return and post increment the command index */
-    return commandIndex++;
+    return mCommandIndex++;
 }
 
 int PoSelectionRequest::prepareReadRecordsCmd(
@@ -140,7 +140,7 @@ int PoSelectionRequest::prepareSelectFileCmd(const std::vector<uint8_t>& path,
     parsingClassList.push_back(typeid(SelectFileRespPars).name());
 
     /* return and post increment the command index */
-    return commandIndex++;
+    return mCommandIndex++;
 }
 
 int PoSelectionRequest::prepareSelectFileCmd(
@@ -159,7 +159,7 @@ int PoSelectionRequest::prepareSelectFileCmd(
     parsingClassList.push_back(typeid(SelectFileRespPars).name());
 
     /* return and post increment the command index */
-    return commandIndex++;
+    return mCommandIndex++;
 }
 
 int PoSelectionRequest::preparePoCustomReadCmd(const std::string& name,
@@ -175,7 +175,7 @@ int PoSelectionRequest::preparePoCustomReadCmd(const std::string& name,
     logger->trace("CustomReadCommand: APDUREQUEST = %\n", apduRequest);
 
     /* return and post increment the command index */
-    return commandIndex++;
+    return mCommandIndex++;
 }
 
 int PoSelectionRequest::preparePoCustomModificationCmd(
@@ -188,7 +188,7 @@ int PoSelectionRequest::preparePoCustomModificationCmd(
     logger->trace("CustomModificationCommand: APDUREQUEST = %\n", apduRequest);
 
     /* return and post increment the command index */
-    return commandIndex++;
+    return mCommandIndex++;
 }
 
 std::shared_ptr<AbstractApduResponseParser>

@@ -30,7 +30,7 @@ DigestCloseRespPars::DigestCloseRespPars(std::shared_ptr<ApduResponse> response)
 
 std::vector<uint8_t> DigestCloseRespPars::getSignature() const
 {
-    return isSuccessful() ? response->getDataOut() : std::vector<uint8_t>();
+    return isSuccessful() ? mResponse->getDataOut() : std::vector<uint8_t>();
 }
 
 }

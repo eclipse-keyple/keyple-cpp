@@ -133,7 +133,7 @@ protected:
     /**
      * The byte array APDU response
      */
-    std::shared_ptr<ApduResponse> response;
+    std::shared_ptr<ApduResponse> mResponse;
 
     /**
      *

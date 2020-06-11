@@ -217,7 +217,7 @@ private:
     /**
      *
      */
-    int commandIndex = 0;
+    int mCommandIndex = 0;
 
     /**
      *

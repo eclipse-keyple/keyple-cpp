@@ -30,12 +30,6 @@ public:
     std::regex pattern;
 
     /**
-     *
-     */
-    int flags;
-
-public:
-    /**
      * Constructor
      */
     Pattern(std::string pattern, int flags);
@@ -59,6 +53,13 @@ public:
      * occurences of the Pattern in the input, or replace parts of the input.
      */
     Matcher* matcher(std::string input);
+
+private:
+
+    /**
+     *
+     */
+    const int mFlags;
 };
 
 }

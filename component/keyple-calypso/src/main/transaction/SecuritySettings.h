@@ -145,7 +145,7 @@ private:
     /**
      * List of authorized KVCs
      */
-    std::vector<Byte> authorizedKvcList;
+    std::vector<Byte> mAuthorizedKvcList;
 
     /**
      * Enummap containing the key information

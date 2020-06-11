@@ -270,25 +270,25 @@ std::shared_ptr<std::set<int>> AidSelector::getSuccessfulSelectionStatusCodes()
 
 SeSelector::AtrFilter::AtrFilter(const std::string& atrRegex)
 {
-    this->atrRegex = atrRegex;
+    mAtrRegex = atrRegex;
 }
 
 void SeSelector::AtrFilter::setAtrRegex(const std::string& atrRegex)
 {
-    this->atrRegex = atrRegex;
+    mAtrRegex = atrRegex;
 }
 
 std::string SeSelector::AtrFilter::getAtrRegex()
 {
-    return atrRegex;
+    return mAtrRegex;
 }
 
 bool SeSelector::AtrFilter::atrMatches(const std::vector<uint8_t>& atr)
 {
     bool m;
 
-    if (atrRegex.length() != 0) {
-        Pattern* p            = Pattern::compile(atrRegex);
+    if (mAtrRegex.length() != 0) {
+        Pattern* p            = Pattern::compile(mAtrRegex);
         std::string atrString = ByteArrayUtil::toHex(atr);
         m                     = p->matcher(atrString)->matches();
     } else {
@@ -337,7 +337,9 @@ std::ostream& operator<<(std::ostream& os,
 
 std::ostream& operator<<(std::ostream& os, const SeSelector::AtrFilter& af)
 {
-    os << "ATRFILTER: {REGEX: " << af.atrRegex << "}";
+    os << "ATRFILTER: {"
+       << "REGEX = " << af.mAtrRegex
+       << "}";
 
     return os;
 }
@@ -346,11 +348,12 @@ std::ostream& operator<<(std::ostream& os, const SeSelector::AidSelector& a)
 {
     const std::shared_ptr<SeSelector::AidSelector::IsoAid>& aid = a.aidToSelect;
 
-    os << "AID: ";
+    os << "AIDSELECTOR: {";
 	if (aid)
 		os << *(aid.get());
     else
-		os << "null";
+		os << "AID = null";
+    os << "}";
 
     return os;
 }
@@ -359,25 +362,23 @@ std::ostream& operator<<(std::ostream& os, const SeSelector& ss)
 {
     os << "SESELECTOR: {";
 
-    os  << "AIDSELECTOR: ";
+    
     if (ss.aidSelector)
         os << *(ss.aidSelector.get()) << ", ";
     else
-        os << "null, ";
+        os << "AIDSELECTOR = null, ";
 
-    os << "ATRFILTER: ";
     if (ss.atrFilter)
         os << *(ss.atrFilter.get()) << ", ";
     else
-        os << "null, ";
+        os << "ATRFILTER = null, ";
 
     os << "EXTRAINFO = " << ss.extraInfo << ", ";
 
-    os << "SEPROTOCOL: ";
     if (ss.seProtocol)
         os << ss.seProtocol;
     else
-        os << "null";
+        os << "SEPROTOCOL = null";
 
     os << "}";
 

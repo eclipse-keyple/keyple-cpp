@@ -30,7 +30,7 @@ public:
 	 * Automatically generated names are of the form "Thread-"+n, where n is an
 	 * integer.
 	 */
-    Thread() : name("Thread-x"), t(nullptr)
+    Thread() : name("Thread-x"), mThread(nullptr)
     {
         interrupted = false;
         detached    = true;
@@ -45,7 +45,7 @@ public:
 	 *
 	 * @param name the name of the new thread
 	 */
-    Thread(const std::string& name) : alive(false), name(name), t(nullptr)
+    Thread(const std::string& name) : alive(false), name(name), mThread(nullptr)
     {
         interrupted = false;
         detached    = true;
@@ -57,7 +57,7 @@ public:
     virtual ~Thread()
     {
         if (alive == 1 && detached == 0) {
-            t->detach();
+            mThread->detach();
         }
     }
 
@@ -79,8 +79,8 @@ public:
 
         interrupted = false;
 
-        t      = new std::thread(runThread, this);
-        result = t ? 0 : -1;
+        mThread = new std::thread(runThread, this);
+        result = mThread ? 0 : -1;
 
         if (result == 0)
             alive = 1;
@@ -111,7 +111,7 @@ public:
         int result = -1;
 
         if (alive == 1) {
-            t->join();
+            mThread->join();
             detached = 1;
         }
 
@@ -129,7 +129,7 @@ public:
         int result = -1;
 
         if (alive == 1 && detached == 0) {
-            t->detach();
+            mThread->detach();
             detached = 1;
         }
 
@@ -142,7 +142,7 @@ public:
 	 */
     std::thread::id selfId()
     {
-        return t->get_id();
+        return mThread->get_id();
     }
 
     /**
@@ -150,7 +150,7 @@ public:
      */
     std::thread* self()
     {
-        return t;
+        return mThread;
     }
 
     /**
@@ -241,7 +241,7 @@ public:
      */
     void setThread(std::thread* t)
     {
-        this->t = t;
+        mThread = t;
     }
 
     /**
@@ -263,7 +263,7 @@ private:
     /**
      *
      */
-    std::thread* t;
+    std::thread* mThread;
 
     /**
      *

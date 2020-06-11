@@ -43,7 +43,7 @@ bool Matcher::match(int from, int anchor)
 
 bool Matcher::matches()
 {
-    return match(from, ENDANCHOR);
+    return match(mFrom, ENDANCHOR);
 }
 
 std::string Matcher::replaceAll(std::string replacement)
@@ -62,11 +62,11 @@ bool Matcher::find()
         nextSearchIndex++;
 
     /* If next search starts before region, start it at region */
-    if (nextSearchIndex < from)
-        nextSearchIndex = from;
+    if (nextSearchIndex < mFrom)
+        nextSearchIndex = mFrom;
 
     /* If next search starts beyond region then it fails */
-    if (nextSearchIndex > to) {
+    if (nextSearchIndex > mTo) {
         //for (int i = 0; i < (int)groups.size(); i++)
         //    groups[i] = -1;
         return false;
@@ -128,8 +128,8 @@ Matcher* Matcher::reset()
         locals[i] = -1;
 
     lastAppendPosition = 0;
-    from               = 0;
-    to                 = getTextLength();
+    mFrom = 0;
+    mTo = getTextLength();
 
     return this;
 }

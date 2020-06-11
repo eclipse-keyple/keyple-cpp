@@ -36,7 +36,7 @@ SamReadEventCounterRespPars::SamReadEventCounterRespPars(
 
 std::vector<uint8_t> SamReadEventCounterRespPars::getCounterData() const
 {
-    return isSuccessful() ? response->getDataOut() : std::vector<uint8_t>();
+    return isSuccessful() ? mResponse->getDataOut() : std::vector<uint8_t>();
 }
 
 }

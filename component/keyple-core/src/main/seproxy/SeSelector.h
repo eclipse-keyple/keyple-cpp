@@ -510,7 +510,7 @@ public:
          * Regular expression dedicated to handle SE logical channel opening
          * based on ATR pattern
          */
-        std::string atrRegex;
+        std::string mAtrRegex;
     };
 
     /**
