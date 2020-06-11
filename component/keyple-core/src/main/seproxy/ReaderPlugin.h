@@ -48,21 +48,6 @@ public:
     /**
      *
      */
-    ReaderPlugin()
-    {
-    }
-
-    /**
-     *
-     */
-    ReaderPlugin(const ReaderPlugin& o) : Nameable(), Configurable()
-    {
-        (void)o;
-    }
-
-    /**
-     *
-     */
     virtual ~ReaderPlugin()
     {
     }
