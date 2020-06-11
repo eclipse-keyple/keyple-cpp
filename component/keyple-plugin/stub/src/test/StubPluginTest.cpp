@@ -54,7 +54,7 @@ void StubPluginTest::testA_PlugOneReaderCount()
 
     // connect reader
     stubPlugin->plugStubReader(READER_NAME, true);
-    ASSERT_EQ(1, stubPlugin->getReaders().size());
+    ASSERT_EQ(1, static_cast<int>(stubPlugin->getReaders().size()));
 }
 
 void StubPluginTest::testA_PlugOneReaderEvent()
@@ -70,7 +70,7 @@ void StubPluginTest::testA_PlugOneReaderEvent()
     stubPlugin->plugStubReader(READER_NAME, false);
     //readerConnected->await(2, SECONDS );
     Thread::sleep(2);
-    ASSERT_EQ(0, readerConnected->getCount());
+    ASSERT_EQ(0, static_cast<int>(readerConnected->getCount()));
 }
 
 StubPluginTest::PluginObserverAnonymousInnerClass
@@ -88,7 +88,7 @@ void StubPluginTest::PluginObserverAnonymousInnerClass::update(
     std::shared_ptr<PluginEvent> event_Renamed)
 {
     //ASSERT_EQ(PluginEvent::EventType::READER_CONNECTED, event_Renamed->getEventType());
-    ASSERT_EQ(1, event_Renamed->getReaderNames().size());
+    ASSERT_EQ(1, static_cast<int>(event_Renamed->getReaderNames().size()));
     std::string Var1 = READER_NAME;
     std::string Var2 = (*event_Renamed->getReaderNames().begin());// first());
     ASSERT_EQ(Var1, Var2 );
@@ -100,9 +100,9 @@ void StubPluginTest::testA_UnplugOneReaderCount()
     const std::string READER_NAME = "testA_UnplugOneReaderCount";
     // connect reader
     stubPlugin->plugStubReader(READER_NAME, true);
-    ASSERT_EQ(1, stubPlugin->getReaders().size());
+    ASSERT_EQ(1, static_cast<int>(stubPlugin->getReaders().size()));
     stubPlugin->unplugStubReader(READER_NAME, true);
-    ASSERT_EQ(0, stubPlugin->getReaders().size());
+    ASSERT_EQ(0, static_cast<int>(stubPlugin->getReaders().size()));
 }
 
 void StubPluginTest::testB_UnplugOneReaderEvent()
@@ -131,7 +131,7 @@ void StubPluginTest::testB_UnplugOneReaderEvent()
 
     // wait for event to be raised
     //readerDisconnected->await(2, TimeUnit::SECONDS);
-    ASSERT_EQ(0, readerDisconnected->getCount());
+    ASSERT_EQ(0, static_cast<int>(readerDisconnected->getCount()));
 }
 
 StubPluginTest::PluginObserverAnonymousInnerClass2
@@ -164,7 +164,7 @@ void StubPluginTest::PluginObserverAnonymousInnerClass2::update(
     {
         //ASSERT_EQ(PluginEvent::EventType::READER_DISCONNECTED,
         //          event_Renamed->getEventType());
-        ASSERT_EQ(1, event_Renamed->getReaderNames().size());
+        ASSERT_EQ(1, static_cast<int>(event_Renamed->getReaderNames().size()));
         ASSERT_EQ(READER_NAME, *event_Renamed->getReaderNames().begin());
         readerDisconnected->countDown();
     }
@@ -180,7 +180,7 @@ void StubPluginTest::testC_PlugSameReaderTwice()
     logger->debug("Stubplugin readers size %s\n",
                   stubPlugin->getReaders().size());
 
-    ASSERT_EQ(1, stubPlugin->getReaders().size());
+    ASSERT_EQ(1, static_cast<int>(stubPlugin->getReaders().size()));
 }
 
 void StubPluginTest::testD_GetName()
@@ -198,7 +198,7 @@ void StubPluginTest::testE_PlugMultiReadersCount()
     logger->info("Stub Readers connected %s\n",
                  "stubPlugin.getReaderNames()<fixme>");
     ASSERT_EQ(READERS_LIST, stubPlugin->getReaderNames());
-    ASSERT_EQ(3, stubPlugin->getReaders().size());
+    ASSERT_EQ(3, static_cast<int>(stubPlugin->getReaders().size()));
 }
 
 void StubPluginTest::testE_PlugMultiReadersEvent()
@@ -220,7 +220,7 @@ void StubPluginTest::testE_PlugMultiReadersEvent()
 
     // wait for event to be raised
     //readerConnected->await(2, TimeUnit::SECONDS);
-    ASSERT_EQ(0, readerConnected->getCount());
+    ASSERT_EQ(0, static_cast<int>(readerConnected->getCount()));
 }
 
 StubPluginTest::PluginObserverAnonymousInnerClass3
@@ -242,7 +242,7 @@ void StubPluginTest::PluginObserverAnonymousInnerClass3::update(
 
     //ASSERT_EQ(PluginEvent::EventType::READER_CONNECTED,
     //          event_Renamed->getEventType());
-    ASSERT_EQ(3, event_Renamed->getReaderNames().size());
+    ASSERT_EQ(3, static_cast<int>(event_Renamed->getReaderNames().size()));
     ASSERT_EQ(READERS, event_Renamed->getReaderNames());
     readerConnected->countDown();
 }
@@ -254,9 +254,9 @@ void StubPluginTest::testF_PlugUnplugMultiReadersCount()
 
     // connect readers at once
     stubPlugin->plugStubReaders(READERS_LIST, true);
-    ASSERT_EQ(3, stubPlugin->getReaders().size());
+    ASSERT_EQ(3, static_cast<int>(stubPlugin->getReaders().size()));
     stubPlugin->unplugStubReaders(READERS_LIST, true);
-    ASSERT_EQ(0, stubPlugin->getReaders().size());
+    ASSERT_EQ(0, static_cast<int>(stubPlugin->getReaders().size()));
 }
 
 void StubPluginTest::testF_PlugUnplugMultiReadersEvent()
@@ -288,9 +288,9 @@ void StubPluginTest::testF_PlugUnplugMultiReadersEvent()
     //ASSERT_TRUE(readerDisconnected->await(5, TimeUnit::SECONDS));
 
     Thread::sleep(1000); // Todo fix me, should works without sleep
-    ASSERT_EQ(0, stubPlugin->getReaders().size());
-    ASSERT_EQ(0, readerConnected->getCount());
-    ASSERT_EQ(0, readerDisconnected->getCount());
+    ASSERT_EQ(0, static_cast<int>(stubPlugin->getReaders().size()));
+    ASSERT_EQ(0, static_cast<int>(readerConnected->getCount()));
+    ASSERT_EQ(0, static_cast<int>(readerDisconnected->getCount()));
 }
 
 StubPluginTest::PluginObserverAnonymousInnerClass4
@@ -324,7 +324,7 @@ void StubPluginTest::PluginObserverAnonymousInnerClass4::update(
     {
         //ASSERT_EQ(PluginEvent::EventType::READER_DISCONNECTED,
         //          event_Renamed->getEventType());
-        ASSERT_EQ(3, event_Renamed->getReaderNames().size());
+        ASSERT_EQ(3, static_cast<int>(event_Renamed->getReaderNames().size()));
         ASSERT_EQ(READERS, event_Renamed->getReaderNames());
         readerDisconnected->countDown();
     }

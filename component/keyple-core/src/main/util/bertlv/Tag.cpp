@@ -46,7 +46,7 @@ Tag::Tag(int tagNumber, TagClass tagClass, TagType tagType)
 
 Tag::Tag(const std::vector<uint8_t>& binary, int offset)
 {
-    if (offset >= binary.size())
+    if (offset >= static_cast<int>(binary.size()))
         throw std::invalid_argument("offset out of bound");
 
     /* the 2 first bits (b7b6) of the first byte defines the class */

@@ -60,7 +60,8 @@ PoSelectionRequest::PoSelectionRequest(std::shared_ptr<PoSelector> poSelector)
 
 int PoSelectionRequest::prepareReadRecordsCmdInternal(
     uint8_t sfi, ReadDataStructure readDataStructureEnum,
-    uint8_t firstRecordNumber, int expectedLength, const std::string& extraInfo)
+    uint8_t firstRecordNumber, uint8_t expectedLength,
+    const std::string& extraInfo)
 {
     /*
      * the readJustOneRecord flag is set to false only in case of multiple read
@@ -98,7 +99,8 @@ int PoSelectionRequest::prepareReadRecordsCmdInternal(
 
 int PoSelectionRequest::prepareReadRecordsCmd(
     uint8_t sfi, ReadDataStructure readDataStructureEnum,
-    uint8_t firstRecordNumber, int expectedLength, const std::string& extraInfo)
+    uint8_t firstRecordNumber, uint8_t expectedLength,
+    const std::string& extraInfo)
 {
     if (expectedLength < 1 || expectedLength > 250) {
         throw std::invalid_argument("Bad length.");

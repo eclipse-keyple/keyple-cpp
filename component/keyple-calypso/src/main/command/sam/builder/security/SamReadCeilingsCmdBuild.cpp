@@ -36,7 +36,7 @@ const int SamReadCeilingsCmdBuild::MAX_CEILING_NUMB     = 26;
 const int SamReadCeilingsCmdBuild::MAX_CEILING_REC_NUMB = 3;
 
 SamReadCeilingsCmdBuild::SamReadCeilingsCmdBuild(
-    SamRevision& revision, CeilingsOperationType operationType, int index)
+    SamRevision& revision, CeilingsOperationType operationType, uint8_t index)
 : AbstractSamCommandBuilder(CalypsoSamCommands::READ_CEILINGS, nullptr)
 {
     this->defaultRevision = revision;

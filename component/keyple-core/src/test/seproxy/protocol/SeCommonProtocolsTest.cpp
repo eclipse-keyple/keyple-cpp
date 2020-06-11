@@ -50,5 +50,5 @@ TEST(SeCommonProtocols, SeCommonProtocols)
 {
     SeCommonProtocols protocols;
 
-    ASSERT_EQ(protocols.values.size(), 15);
+    ASSERT_EQ(static_cast<int>(protocols.values.size()), 15);
 }

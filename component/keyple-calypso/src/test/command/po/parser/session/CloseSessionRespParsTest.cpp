@@ -98,6 +98,7 @@ void CloseSessionRespParsTest::TestToPOHalfSessionSignature()
                                                    nullptr));
             ASSERT_NO_FATAL_FAILURE();
         } catch (const std::invalid_argument& ex) {
+            (void)ex;
             /* expected case */
         }
     }

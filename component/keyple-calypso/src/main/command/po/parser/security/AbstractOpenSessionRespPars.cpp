@@ -189,7 +189,7 @@ AbstractOpenSessionRespPars::SecureSession::SecureSession(
   challengeRandomNumber(challengeRandomNumber),
   previousSessionRatified(previousSessionRatified),
   manageSecureSessionAuthorized(manageSecureSessionAuthorized),
-  kif(static_cast<char>(0xFF)), kvc(kvc), originalData(originalData),
+  kif(0xff), kvc(kvc), originalData(originalData),
   secureSessionData(secureSessionData)
 {
 }
@@ -203,7 +203,7 @@ AbstractOpenSessionRespPars::SecureSession::SecureSession(
   challengeRandomNumber(challengeRandomNumber),
   previousSessionRatified(previousSessionRatified),
   manageSecureSessionAuthorized(manageSecureSessionAuthorized),
-  kif(static_cast<char>(0xFF)), kvc(kvc), secureSessionData(secureSessionData)
+  kif(0xff), kvc(kvc), secureSessionData(secureSessionData)
 {
 }
 

@@ -47,7 +47,7 @@ void BaseStubTest::SetUp()
 
     logger->info("Stubplugin readers size %d\n",
                  stubPlugin->getReaders().size());
-    ASSERT_EQ(0, stubPlugin->getReaders().size());
+    ASSERT_EQ(0, static_cast<int>(stubPlugin->getReaders().size()));
 
     logger->info("Stubplugin observers size %d\n",
                  stubPlugin->AbstractThreadedObservablePlugin::countObservers());

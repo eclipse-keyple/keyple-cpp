@@ -55,7 +55,7 @@ TEST(PluginEventTest, getReaderNames)
 
     const std::set<std::string>& readerNames1 = event1.getReaderNames();
 
-    ASSERT_EQ(readerNames1.size(), 1);
+    ASSERT_EQ(static_cast<int>(readerNames1.size()), 1);
     ASSERT_EQ(*readerNames1.begin(), "reader1");
 
     std::shared_ptr<std::set<std::string>> readerNames =
@@ -65,7 +65,7 @@ TEST(PluginEventTest, getReaderNames)
 
     const std::set<std::string>& readerNames2 = event2.getReaderNames();
 
-    ASSERT_EQ(readerNames2.size(), 0);
+    ASSERT_EQ(static_cast<int>(readerNames2.size()), 0);
 
     readerNames->insert("reader3");
     readerNames->insert("reader4");
@@ -74,7 +74,7 @@ TEST(PluginEventTest, getReaderNames)
 
     const std::set<std::string>& readerNames3 = event3.getReaderNames();
 
-    ASSERT_EQ(readerNames3.size(), 2);
+    ASSERT_EQ(static_cast<int>(readerNames3.size()), 2);
     ASSERT_EQ(*readerNames3.begin(), "reader3");
     ASSERT_EQ(*readerNames3.rbegin(), "reader4");
 }
