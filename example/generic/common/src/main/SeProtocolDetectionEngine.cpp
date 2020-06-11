@@ -51,7 +51,7 @@ SeProtocolDetectionEngine::SeProtocolDetectionEngine()
 
 void SeProtocolDetectionEngine::setReader(std::shared_ptr<SeReader> poReader)
 {
-    this->poReader = poReader;
+    mPoReader = poReader;
 }
 
 std::shared_ptr<AbstractDefaultSelectionsRequest>

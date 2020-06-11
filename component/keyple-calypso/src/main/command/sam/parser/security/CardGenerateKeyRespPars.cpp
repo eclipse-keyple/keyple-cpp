@@ -77,7 +77,7 @@ CardGenerateKeyRespPars::CardGenerateKeyRespPars(
 
 std::vector<uint8_t> CardGenerateKeyRespPars::getCipheredData() const
 {
-    return isSuccessful() ? response->getDataOut() : std::vector<uint8_t>();
+    return isSuccessful() ? mResponse->getDataOut() : std::vector<uint8_t>();
 }
 
 }

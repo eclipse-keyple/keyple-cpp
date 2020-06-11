@@ -177,20 +177,20 @@ PcscPluginImpl::fetchNativeReader(const std::string& name)
 
 std::vector<PcscTerminal>& PcscPluginImpl::getTerminals()
 {
-    terminals.clear();
+    mTerminals.clear();
 
     try {
         const std::vector<std::string>& list = PcscTerminal::listTerminals();
 
         for (auto name : list)
-            terminals.push_back(PcscTerminal(name));
+            mTerminals.push_back(PcscTerminal(name));
 
     } catch (PcscTerminalException& e) {
         (void)e;
         logger->error("getTerminalsv - error listing terminals\n");
     }
 
-    return terminals;
+    return mTerminals;
 }
 
 }

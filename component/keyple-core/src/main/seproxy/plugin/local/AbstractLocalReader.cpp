@@ -14,9 +14,10 @@
 
 #include <typeinfo>
 
+#include "AbstractLocalReader.h"
+
 #include "AbstractDefaultSelectionsRequest.h"
 #include "AbstractObservableLocalReader.h"
-#include "AbstractLocalReader.h"
 #include "ApduRequest.h"
 #include "ApduResponse.h"
 #include "Arrays.h"
@@ -191,7 +192,7 @@ void AbstractLocalReader::cardRemoved()
 
 void AbstractLocalReader::setForceGetDataFlag(bool forceGetDataFlag)
 {
-    this->forceGetDataFlag = forceGetDataFlag;
+    mForceGetDataFlag = forceGetDataFlag;
 }
 
 std::shared_ptr<SelectionStatus>
@@ -712,9 +713,6 @@ std::shared_ptr<ApduResponse>
 AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
 {
     logger->debug("case4HackGetResponse\n");
-
-    std::vector<uint8_t> getResponseHackRequestBytes =
-        ByteArrayUtil::fromHex("00C0000000");
 
     /*
      * Build a get response command the actual length expected by the SE in the

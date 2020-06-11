@@ -31,8 +31,8 @@ using namespace keyple::core::util;
 
 TLV::TLV(const std::vector<uint8_t>& binary) : binary(binary)
 {
-    tag = std::make_shared<Tag>(0, static_cast<Tag::TagClass>(0),
-                                Tag::TagType::PRIMITIVE);
+    mTag = std::make_shared<Tag>(0, static_cast<Tag::TagClass>(0),
+                                 Tag::TagType::PRIMITIVE);
     length = 0;
 }
 
@@ -43,16 +43,16 @@ bool TLV::parse(const std::shared_ptr<Tag> tag, int offset)
     }
 
     try {
-        this->tag = std::make_shared<Tag>(binary, offset);
+        mTag = std::make_shared<Tag>(binary, offset);
     } catch (const std::out_of_range& e) {
         (void)e;
         throw std::invalid_argument("TLV parsing: index is too large.");
     }
 
     length = 0;
-    if (*tag.get() == *(this->tag.get())) {
-        offset += this->tag->getSize();
-        position += this->tag->getSize();
+    if (*tag.get() == *(mTag.get())) {
+        offset += mTag->getSize();
+        position += mTag->getSize();
         if ((binary[offset] & 0x80) == 0x00) {
             /* short form: single octet length */
             length += static_cast<int>(binary[offset]);
@@ -98,7 +98,7 @@ int TLV::getPosition() const
 std::ostream& operator<<(std::ostream& os, const TLV& tlv)
 {
     os << "TLV: {"
-       << tlv.tag << ", "
+       << tlv.mTag << ", "
        << "LENGTH = " << tlv.length << ", "
        << "VALUE = " << tlv.binary
        << "}";

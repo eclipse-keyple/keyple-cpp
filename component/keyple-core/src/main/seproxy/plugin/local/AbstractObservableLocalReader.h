@@ -399,12 +399,12 @@ private:
     /**
      * The default DefaultSelectionsRequest to be executed upon SE insertion
      */
-    std::shared_ptr<DefaultSelectionsRequest> defaultSelectionsRequest;
+    std::shared_ptr<DefaultSelectionsRequest> mDefaultSelectionsRequest;
 
     /**
      * Indicate if all SE detected should be notified or only matching SE
      */
-    ObservableReader::NotificationMode notificationMode =
+    ObservableReader::NotificationMode mNotificationMode =
         ObservableReader::NotificationMode::ALWAYS;
 
     /**

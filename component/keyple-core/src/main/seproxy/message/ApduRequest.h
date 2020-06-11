@@ -170,7 +170,7 @@ private:
     /**
      * Name of the request being sent
      */
-    std::string name;
+    std::string mName;
 };
 
 }

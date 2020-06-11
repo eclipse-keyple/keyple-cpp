@@ -18,7 +18,7 @@ namespace keyple {
 namespace common {
 
 Pattern::Pattern(std::string pattern, int flags)
-: pattern(pattern), flags(flags)
+: pattern(pattern), mFlags(flags)
 {
 }
 

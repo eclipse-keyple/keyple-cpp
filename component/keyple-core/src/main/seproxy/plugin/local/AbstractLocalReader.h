@@ -350,7 +350,8 @@ private:
     /**
      * Predefined "get response" byte array
      */
-    std::vector<uint8_t> getResponseHackRequestBytes;
+    const std::vector<uint8_t> getResponseHackRequestBytes =
+        {0x00, 0xC0, 0x00, 0x00, 0x00};
 
     /**
      * Logical channel status flag
@@ -360,7 +361,7 @@ private:
     /**
      *
      */
-    bool forceGetDataFlag = false;
+    bool mForceGetDataFlag = false;
 
     /**
      * Current AID if any
@@ -392,8 +393,8 @@ private:
      * @return the response to the select application command
      * @throws KeypleIOReaderException if a reader error occurs
      */
-    std::shared_ptr<ApduResponse>
-    processExplicitAidSelection(SeSelector::AidSelector& aidSelector);
+    std::shared_ptr<ApduResponse> processExplicitAidSelection(
+        SeSelector::AidSelector& aidSelector);
 
     /**
      * This method is dedicated to the case where no FCI data is available in
@@ -404,8 +405,8 @@ private:
      *        main AidSelector
      * @return a ApduResponse containing the FCI
      */
-    std::shared_ptr<ApduResponse>
-    recoverSelectionFciData(SeSelector::AidSelector& aidSelector);
+    std::shared_ptr<ApduResponse> recoverSelectionFciData(
+        SeSelector::AidSelector& aidSelector);
 
     /**
      * Implements the logical processSeRequest.
@@ -421,8 +422,8 @@ private:
      * @throws IllegalStateException
      * @throws KeypleReaderException
      */
-    std::shared_ptr<SeResponse>
-    processSeRequestLogical(std::shared_ptr<SeRequest> seRequest);
+    std::shared_ptr<SeResponse> processSeRequestLogical(
+        std::shared_ptr<SeRequest> seRequest);
 
     /**
      * Execute a get response command in order to get outgoing data from

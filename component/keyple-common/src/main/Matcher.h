@@ -42,8 +42,8 @@ private:
      * will match at these "hard" boundaries. Changing the region
      * changes these values.
      */
-    int from;
-    int to;
+    int mFrom;
+    int mTo;
 
     /**
      * Matcher state used by the last node. NOANCHOR is used when a
@@ -184,47 +184,55 @@ public:
     std::string replaceAll(std::string replacement);
 
     /**
-     * Attempts to find the next subsequence of the input sequence that matches the pattern.
+     * Attempts to find the next subsequence of the input sequence that matches
+     * the pattern.
      * 
-     * This method starts at the beginning of this matcher's region, o, if a previous invocation of
-     * the method was successful and the matcher has not since been reset, at the first character
-     * not matched by the previous match.
+     * This method starts at the beginning of this matcher's region, o, if a
+     * previous invocation of the method was successful and the matcher has not
+     * since been reset, at the first character not matched by the previous
+     * match.
      * 
-     * If the match succeeds then more information can be obtained viw the start, end, group methods.
+     * If the match succeeds then more information can be obtained viw the
+     * start, end, group methods.
      * 
-     * @return true if, and only if, a subsequence of the input sequences matches this matcher's patern.
+     * @return true if, and only if, a subsequence of the input sequences
+     * matches this matcher's patern.
      */
     bool find();
 
     /**
-     * Resets this matcher and then attempts to find the next subsequence of the input sequence that
-     * matches the pattern, starting at the specified index.
+     * Resets this matcher and then attempts to find the next subsequence of the
+     * input sequence that matches the pattern, starting at the specified index.
      * 
-     * If the match succeeds then more information can be obtained viw the start, end, group methods,
-     * and subsequent invocations of the find() method will start at the first character not matched by
-     * this match.
+     * If the match succeeds then more information can be obtained viw the
+     * start, end, group methods, and subsequent invocations of the find()
+     * method will start at the first character not matched by this match.
      * 
-     * @return true if, and only if, a subsequence of the input sequences matches this matcher's patern.
+     * @return true if, and only if, a subsequence of the input sequences
+     *              matches this matcher's patern.
      * 
-     * @throws IndexOutOfBoundException if start is less than zero of if start is greated than the length
-     *                                  of the input sequence.
+     * @throws IndexOutOfBoundException if start is less than zero of if start
+     *                                  is greated than the length of the input
+     *                                  sequence.
      */
     bool find(int start);
 
     /**
-     * Returns the text that matched a given group of the regular expression. Explicit capturing groups
-     * in the pattern are numbered left to right in order of their opening parenthesis, starting at 1. The
-     * special group 0 represents the entire match (as if the entier pattern is surrounded by an implicit
-     * capturing group).
+     * Returns the text that matched a given group of the regular expression.
+     * Explicit capturing groups in the pattern are numbered left to right in
+     * order of their opening parenthesis, starting at 1. The special group 0
+     * represents the entire match (as if the entier pattern is surrounded by an
+     * implicit capturing group).
      * 
      * For example, "a((b)c)" matching "abc" would give the following groups:
      * 0 "abc"
      * 1 "bc"
      * 2 "b"
      * 
-     * An optional capturing group that failed to match as part of an overall sucessful match (for
-     * example "a(b)?c" matching "ac") returns null. A capturing group that matched the empty string (for
-     * example, "a(b?)c" matching "ac") returns the empty string.
+     * An optional capturing group that failed to match as part of an overall
+     * sucessful match (for example "a(b)?c" matching "ac") returns null. A
+     * capturing group that matched the empty string (for example, "a(b?)c"
+     * matching "ac") returns the empty string.
      * 
      * @throws IllegalStateException if no successful match has been made
      */
@@ -240,14 +248,17 @@ public:
     std::string group();
 
     /**
-     * Initiates a search to find a Pattern within the given bounds. The groups are filled with defaults
-     * values and the match of the root of the state machine is called. The state machine will hold the
-     * state of the match as it proceeds in this matcher.
+     * Initiates a search to find a Pattern within the given bounds. The groups
+     * are filled with defaults values and the match of the root of the state
+     * machine is called. The state machine will hold the state of the match as
+     * it proceeds in this matcher.
      *
-     * Matcher.from is not set here, because it is the 'hard' boundary of the start of the search which
-     * anchors will set to. The from param is the 'soft' boundary of the start of the search, meaning
-     * that the regex tries to match at that index but won't match there. Subsequent calls to the search
-     * methods start at a new 'soft' boundary which is the end of the previous match.
+     * Matcher.from is not set here, because it is the 'hard' boundary of the
+     * start of the search which anchors will set to. The from param is the
+     * 'soft' boundary of the start of the search, meaning that the regex tries
+     * to match at that index but won't match there. Subsequent calls to the
+     * search methods start at a new 'soft' boundary which is the end of the
+     * previous match.
      */
     bool search(int from);
 
@@ -261,10 +272,10 @@ public:
     /**
      * Resets this matcher.
      *
-     * <p> Resetting a matcher discards all of its explicit states information and sets its append
-     * position to zero. The matcher's region is set to the default region, which is its entire
-     * character sequence. The anchoring and transparency of this matcher's region boundaries are
-     * unaffected.
+     * <p> Resetting a matcher discards all of its explicit states information
+     * and sets its append position to zero. The matcher's region is set to the
+     * default region, which is its entire character sequence. The anchoring and
+     * transparency of this matcher's region boundaries are unaffected.
      */
     Matcher* reset();
 };

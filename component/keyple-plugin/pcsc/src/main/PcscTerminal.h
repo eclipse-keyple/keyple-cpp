@@ -137,7 +137,7 @@ private:
     /**
      *
      */
-    DWORD protocol;
+    DWORD mProtocol;
 
     /**
      *

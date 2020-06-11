@@ -76,7 +76,7 @@ public:
     template <typename... Args>
     void trace(const std::string& format, Args... args)
     {
-        if (level >= Level::logTrace)
+        if (mLevel >= Level::logTrace)
             log("TRACE", format, std::forward<Args>(args)...);
     }
 
@@ -86,7 +86,7 @@ public:
     template <typename... Args>
     void debug(const std::string& format, Args... args)
     {
-        if (level >= Level::logDebug)
+        if (mLevel >= Level::logDebug)
             log("DEBUG", format, std::forward<Args>(args)...);
     }
 
@@ -96,7 +96,7 @@ public:
     template <typename... Args>
     void warn(const std::string& format, Args... args)
     {
-        if (level >= Level::logWarn)
+        if (mLevel >= Level::logWarn)
             log("WARN", format, std::forward<Args>(args)...);
     }
 
@@ -106,7 +106,7 @@ public:
     template <typename... Args>
     void info(const std::string& format, Args... args)
     {
-        if (level >= Level::logInfo)
+        if (mLevel >= Level::logInfo)
             log("INFO", format, std::forward<Args>(args)...);
     }
 
@@ -116,7 +116,7 @@ public:
     template <typename... Args>
     void error(const std::string& format, Args... args)
     {
-        if (level >= Level::logError)
+        if (mLevel >= Level::logError)
             log("ERROR", format, std::forward<Args>(args)...);
     }
 
@@ -124,7 +124,7 @@ private:
     /**
      *
      */
-    static Level level;
+    static Level mLevel;
 
     /**
      *

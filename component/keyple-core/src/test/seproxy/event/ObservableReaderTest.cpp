@@ -38,7 +38,7 @@ public:
     const std::map<const std::string, const std::string> getParameters() const
         override
     {
-        return parameters;
+        return mPparameters;
     }
 
     void setParameter(const std::string& key, const std::string& value) override
@@ -138,7 +138,7 @@ public:
 private:
     std::string name;
 
-    std::map<const std::string, const std::string> parameters;
+    std::map<const std::string, const std::string> mPparameters;
 
     std::vector<std::shared_ptr<ReaderObserver>> observers;
 
