@@ -27,7 +27,7 @@ using namespace keyple::core::util;
 ApduRequest::ApduRequest(
   const std::string& name, const std::vector<uint8_t>& buffer, bool case4,
   std::shared_ptr<std::set<int>> successfulStatusCodes)
-: case4(case4), successfulStatusCodes(successfulStatusCodes), bytes(buffer),
+: bytes(buffer), case4(case4), successfulStatusCodes(successfulStatusCodes),
   mName(name)
 {
 }
