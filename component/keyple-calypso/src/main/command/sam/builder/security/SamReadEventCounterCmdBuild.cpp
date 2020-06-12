@@ -53,7 +53,7 @@ SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
         break;
     case SINGLE_COUNTER:
 
-        if (index < 0 || index > MAX_COUNTER_NUMB) {
+        if (index > MAX_COUNTER_NUMB) {
             throw IllegalArgumentException(StringHelper::formatSimple(
                 "Counter Number must be between 0 and %d", MAX_COUNTER_NUMB));
         }

@@ -85,7 +85,7 @@ public:
     /**
      *
      */
-    friend KEYPLECORE_API std::ostream& TLV::operator<<(std::ostream& os,
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
                                                         const TLV& tlv);
 
 private:

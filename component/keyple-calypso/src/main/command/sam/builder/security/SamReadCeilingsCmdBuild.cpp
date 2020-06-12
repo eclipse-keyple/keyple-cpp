@@ -56,7 +56,7 @@ SamReadCeilingsCmdBuild::SamReadCeilingsCmdBuild(
         p2 = 0xB0 + index;
         break;
     case SINGLE_CEILING:
-        if (index < 0 || index > MAX_CEILING_NUMB) {
+        if (index > MAX_CEILING_NUMB) {
             throw IllegalArgumentException(StringHelper::formatSimple(
                 "Counter Number must be between 0 and %d", MAX_CEILING_NUMB));
         }
