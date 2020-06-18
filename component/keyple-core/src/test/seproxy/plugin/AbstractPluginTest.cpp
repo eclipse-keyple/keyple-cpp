@@ -38,9 +38,9 @@ using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
 
-class PluginMock : public AbstractPlugin {
+class AP_AbstractPluginMock : public AbstractPlugin {
 public:
-    PluginMock(const std::string& name) : AbstractPlugin(name) {}
+    AP_AbstractPluginMock(const std::string& name) : AbstractPlugin(name) {}
 
     MOCK_METHOD((const std::map<const std::string, const std::string>),
                 getParameters, (), (const, override));
@@ -53,9 +53,10 @@ protected:
                 (override));
 };
 
-class ReaderMock : public AbstractReader {
+class AP_AbstractReaderMock : public AbstractReader {
 public:
-    ReaderMock(const std::string& pluginName, const std::string& readerName)
+    AP_AbstractReaderMock(const std::string& pluginName,
+                       const std::string& readerName)
     : AbstractReader(pluginName, readerName) {}
 
     MOCK_METHOD(bool, isSePresent, (), (override));
@@ -103,12 +104,13 @@ static int random(const int& max)
     return std::uniform_int_distribution<>(0, max)(eng);
 }
 
-static void listReaders(std::set<std::shared_ptr<SeReader>>& readers, int n,
-                          std::shared_ptr<CountDownLatch> lock)
+static void listReaders(
+    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> readers, int n,
+    std::shared_ptr<CountDownLatch> lock)
 {
     for (int i = 0; i < n; i++) {
-        for (const auto& reader : readers) {
-            logger->trace("list, readers: %s, reader %\n", readers.size(),
+        for (const auto& reader : *readers.get()) {
+            logger->trace("list, readers: %s, reader %\n", readers->size(),
                           reader->getName());
         }
 
@@ -123,20 +125,22 @@ static void listReaders(std::set<std::shared_ptr<SeReader>>& readers, int n,
     lock->countDown();
 }
 
-static void removeReaderThread(std::set<std::shared_ptr<SeReader>>& readers,
-                               int n, std::shared_ptr<CountDownLatch> lock)
+static void removeReaderThread(
+    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> readers, int n,
+    std::shared_ptr<CountDownLatch> lock)
 {
     for (int i = 0; i < n; i++) {
         try {
-            if (readers.begin() != readers.end())
-                readers.erase(readers.begin());
-            logger->trace("readers: %, remove first reader\n",readers.size());
+            std::set<std::shared_ptr<SeReader>> r = *readers.get();
+            if (r.begin() != r.end())
+                r.erase(r.begin());
+            logger->trace("readers: %, remove first reader\n",readers->size());
 
         } catch (const NoSuchElementException& e) {
             (void)e;
 
             /* List is empty */
-            logger->trace("readers: %, list is empty\n", readers.size());
+            logger->trace("readers: %, list is empty\n", readers->size());
         }
 
         try {
@@ -150,15 +154,16 @@ static void removeReaderThread(std::set<std::shared_ptr<SeReader>>& readers,
     lock->countDown();
 }
 
-static void addReaderThread(std::set<std::shared_ptr<SeReader>>& readers,
-                            int n, std::shared_ptr<CountDownLatch> lock)
+static void addReaderThread(
+    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> readers, int n,
+    std::shared_ptr<CountDownLatch> lock)
 {
    for (int i = 0; i < n; i++) {
         std::shared_ptr<SeReader> reader =
-            std::make_shared<ReaderMock>("pluginName",
-                                         std::to_string(random(1000)));
-            readers.insert(reader);
-            logger->trace("readers: %, add reader %\n", readers.size(),
+            std::make_shared<AP_AbstractReaderMock>(
+                "pluginName", std::to_string(random(1000)));
+            readers->insert(reader);
+            logger->trace("readers: %, add reader %\n", readers->size(),
                           reader->getName());
         try {
             Thread::sleep(10);
@@ -173,7 +178,7 @@ static void addReaderThread(std::set<std::shared_ptr<SeReader>>& readers,
 
 TEST(AbstractPluginTest, AbstractPlugin)
 {
-    PluginMock plugin("plugin");
+    AP_AbstractPluginMock plugin("plugin");
 }
 
 /**
@@ -184,23 +189,23 @@ TEST(AbstractPluginTest, AbstractPlugin)
  */
 TEST(AbstractPluginTest, addRemoveReadersMultiThreaded)
 {
-    PluginMock plugin("addRemoveReadersMultiThreaded");
+    AP_AbstractPluginMock plugin("addRemoveReadersMultiThreaded");
     std::set<std::shared_ptr<SeReader>> readers = plugin.getReaders();
+    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> spReaders = 
+        std::make_shared<std::set<std::shared_ptr<SeReader>>>(readers);
     std::shared_ptr<CountDownLatch> lock = std::make_shared<CountDownLatch>(10);
     std::thread thread[10];
 
-    srand(time(NULL));
-
-    thread[0] = std::thread(addReaderThread, readers, 10, lock);
-    thread[1] = std::thread(addReaderThread, readers, 10, lock);
-    thread[2] = std::thread(removeReaderThread, readers, 10, lock);
-    thread[3] = std::thread(listReaders, readers, 10, lock);
-    thread[4] = std::thread(addReaderThread, readers, 10, lock);
-    thread[5] = std::thread(removeReaderThread, readers, 10, lock);
-    thread[6] = std::thread(listReaders, readers, 10, lock);
-    thread[7] = std::thread(removeReaderThread,readers, 10, lock);
-    thread[8] = std::thread(listReaders, readers, 10, lock);
-    thread[9] = std::thread(removeReaderThread,readers, 10, lock);
+    thread[0] = std::thread(addReaderThread, spReaders, 10, lock);
+    thread[1] = std::thread(addReaderThread, spReaders, 10, lock);
+    thread[2] = std::thread(removeReaderThread, spReaders, 10, lock);
+    thread[3] = std::thread(listReaders, spReaders, 10, lock);
+    thread[4] = std::thread(addReaderThread, spReaders, 10, lock);
+    thread[5] = std::thread(removeReaderThread, spReaders, 10, lock);
+    thread[6] = std::thread(listReaders, spReaders, 10, lock);
+    thread[7] = std::thread(removeReaderThread, spReaders, 10, lock);
+    thread[8] = std::thread(listReaders, spReaders, 10, lock);
+    thread[9] = std::thread(removeReaderThread, spReaders, 10, lock);
     
     /* Wait for all thread to finish with timeout */
     //lock->await(std::chrono::seconds(10));
