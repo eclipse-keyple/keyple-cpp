@@ -13,14 +13,18 @@
  ******************************************************************************/
 
 #include "AbstractReader.h"
-#include "ReaderEvent.h"
-#include "SeRequest.h"
-#include "SeResponse.h"
+
 #include "KeypleReaderException.h"
 #include "KeypleChannelControlException.h"
 #include "KeypleIOReaderException.h"
 #include "MultiSeRequestProcessing.h"
+#include "ReaderEvent.h"
 #include "SeReader.h"
+#include "SeRequest.h"
+#include "SeResponse.h"
+
+/* Common */
+#include "exceptionhelper.h"
 #include "LoggerFactory.h"
 #include "System.h"
 
@@ -81,7 +85,7 @@ std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
     double elapsedMs =
         static_cast<double>((timeStamp - this->before) / 100000) / 10;
     this->before = timeStamp;
-    logger->debug("[%] transmit => SEREQUESTSET = %, elapsed % ms\n",
+    logger->trace("[%] transmit => SEREQUESTSET = %, elapsed % ms\n",
                   getName(), requestSet, elapsedMs);
 
     try {
@@ -113,7 +117,7 @@ std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
     timeStamp = System::nanoTime();
     elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
     this->before = timeStamp;
-    logger->debug("[%] transmit => SERESPONSESET = %, elapsed % ms\n",
+    logger->trace("[%] transmit => SERESPONSESET = %, elapsed % ms\n",
                   getName(), responseSet, elapsedMs);
 
     return responseSet;
@@ -131,7 +135,7 @@ AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest,
                          ChannelControl channelControl)
 {
     if (seRequest == nullptr) {
-        throw std::invalid_argument("seRequest must not be null\n");
+        throw IllegalArgumentException("seRequest must not be null\n");
     }
 
     /* Sets the forceClosing flag */
