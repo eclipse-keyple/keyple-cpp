@@ -21,9 +21,9 @@ using namespace testing;
 
 using namespace keyple::core::seproxy::plugin;
 
-class ObservablePluginMock : public AbstractObservablePlugin {
+class AOP_AbstractObservablePluginMock : public AbstractObservablePlugin {
 public:
-    ObservablePluginMock(const std::string& name)
+    AOP_AbstractObservablePluginMock(const std::string& name)
     : AbstractObservablePlugin(name) {}
 
     MOCK_METHOD((const std::map<const std::string, const std::string>),
@@ -36,7 +36,7 @@ public:
                 (override));
 };
 
-class PublicObserverMock : public ObservablePlugin::PluginObserver {
+class AOP_PublicObserverMock : public ObservablePlugin::PluginObserver {
 public:
     void update(const std::shared_ptr<PluginEvent> event) override
     {
@@ -50,22 +50,22 @@ public:
 
 TEST(AbstractObservablePluginTest, AbstractObservablePlugin)
 {
-    ObservablePluginMock plugin("plugin");
+    AOP_AbstractObservablePluginMock plugin("plugin");
 }
 
 TEST(AbstractObservablePluginTest, countObservers)
 {
-    ObservablePluginMock plugin("plugin");
+    AOP_AbstractObservablePluginMock plugin("plugin");
 
     ASSERT_EQ(plugin.countObservers(), 0);
 }
 
 TEST(AbstractObservablePluginTest, addObserver)
 {
-    ObservablePluginMock plugin("plugin");
+    AOP_AbstractObservablePluginMock plugin("plugin");
 
-    std::shared_ptr<PublicObserverMock> observer =
-        std::make_shared<PublicObserverMock>();
+    std::shared_ptr<AOP_PublicObserverMock> observer =
+        std::make_shared<AOP_PublicObserverMock>();
 
     plugin.addObserver(observer);
 
@@ -74,10 +74,10 @@ TEST(AbstractObservablePluginTest, addObserver)
 
 TEST(AbstractObservablePluginTest, removeObserver)
 {
-    ObservablePluginMock plugin("plugin");
+    AOP_AbstractObservablePluginMock plugin("plugin");
 
-    std::shared_ptr<PublicObserverMock> observer =
-        std::make_shared<PublicObserverMock>();
+    std::shared_ptr<AOP_PublicObserverMock> observer =
+        std::make_shared<AOP_PublicObserverMock>();
 
     plugin.addObserver(observer);
 
@@ -90,10 +90,10 @@ TEST(AbstractObservablePluginTest, removeObserver)
 
 TEST(AbstractObservablePluginTest, clearObservers)
 {
-    ObservablePluginMock plugin("plugin");
+    AOP_AbstractObservablePluginMock plugin("plugin");
 
-    std::shared_ptr<PublicObserverMock> observer =
-        std::make_shared<PublicObserverMock>();
+    std::shared_ptr<AOP_PublicObserverMock> observer =
+        std::make_shared<AOP_PublicObserverMock>();
 
     plugin.addObserver(observer);
 
@@ -107,10 +107,12 @@ TEST(AbstractObservablePluginTest, clearObservers)
 
 TEST(AbstractObservablePluginTest, notifyObservers)
 {
-    ObservablePluginMock plugin("plugin");
+    AOP_AbstractObservablePluginMock plugin("plugin");
 
-    std::shared_ptr<PublicObserverMock> observer =
-        std::make_shared<PublicObserverMock>();
+    std::shared_ptr<AOP_PublicObserverMock> observer =
+        std::make_shared<AOP_PublicObserverMock>();
+
+    plugin.addObserver(observer);
 
     ASSERT_FALSE(observer->notified);
 
