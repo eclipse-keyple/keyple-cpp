@@ -36,7 +36,7 @@ AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(
     const std::string& name)
 : AbstractObservablePlugin(name)
 {
-    logger->debug("constructor (name: %)\n", name);
+    logger->trace("constructor (name: %)\n", name);
 }
 
 void AbstractThreadedObservablePlugin::finalize()
@@ -53,9 +53,12 @@ void AbstractThreadedObservablePlugin::addObserver(
     AbstractObservablePlugin::addObserver(observer);
 
     if (countObservers() == 1) {
-        logger->debug("Start monitoring the plugin %\n", getName());
-        thread = std::make_shared<EventThread>(shared_from_this(), getName());
+        logger->trace("Start monitoring the plugin %\n", getName());
+        thread = std::make_shared<EventThread>(this, getName());
         thread->start();
+        /* Give some time to the thread */
+        Thread::sleep(100);
+
     }
 }
 
@@ -65,7 +68,7 @@ void AbstractThreadedObservablePlugin::removeObserver(
     AbstractObservablePlugin::removeObserver(observer);
 
     if (countObservers() == 0) {
-        logger->debug("Stop the plugin monitoring\n");
+        logger->trace("Stop the plugin monitoring\n");
         if (thread != nullptr) {
             thread->end();
         }
@@ -77,7 +80,7 @@ void AbstractThreadedObservablePlugin::clearObservers()
     AbstractObservablePlugin::clearObservers();
 
     if (thread != nullptr) {
-        logger->debug("Stop the plugin monitoring\n");
+        logger->trace("Stop the plugin monitoring\n");
         thread->end();
     }
 }
@@ -88,7 +91,7 @@ bool AbstractThreadedObservablePlugin::isMonitoring()
 }
 
 AbstractThreadedObservablePlugin::EventThread::EventThread(
-    std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance,
+    AbstractThreadedObservablePlugin* outerInstance,
     const std::string& pluginName)
 : outerInstance(outerInstance), pluginName(pluginName)
 {
@@ -96,7 +99,7 @@ AbstractThreadedObservablePlugin::EventThread::EventThread(
 
 void AbstractThreadedObservablePlugin::EventThread::end()
 {
-    outerInstance->logger->debug("stopping event thread\n");
+    outerInstance->logger->trace("stopping event thread\n");
 
     running = false;
     this->interrupt();
@@ -104,7 +107,7 @@ void AbstractThreadedObservablePlugin::EventThread::end()
 
 void* AbstractThreadedObservablePlugin::EventThread::run()
 {
-    outerInstance->logger->debug("starting event thread\n");
+    outerInstance->logger->trace("starting event thread\n");
 
     std::shared_ptr<std::set<std::string>> changedReaderNames =
         std::make_shared<std::set<std::string>>();

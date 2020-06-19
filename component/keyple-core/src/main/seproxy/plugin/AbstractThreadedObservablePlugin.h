@@ -90,6 +90,11 @@ public:
      */
     void clearObservers() final;
 
+    /**
+     *
+     */
+    virtual ~AbstractThreadedObservablePlugin() {}
+
 protected:
     /**
      * Instantiates an threaded observable plugin
@@ -154,10 +159,11 @@ private:
     public:
         /**
          * Constructor
+         * 
+         * Uses a raw pointer to not mess with weak_ptr & outer instances
          */
-
         EventThread(
-            std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance,
+            AbstractThreadedObservablePlugin* outerInstance,
             const std::string& pluginName);
 
         /**
@@ -174,9 +180,7 @@ private:
         /**
          *
          */
-        virtual ~EventThread()
-        {
-        }
+        virtual ~EventThread() {}
 
         /**
          *
@@ -192,7 +196,7 @@ private:
         /**
          *
          */
-        std::shared_ptr<AbstractThreadedObservablePlugin> outerInstance;
+        AbstractThreadedObservablePlugin* outerInstance;
 
         /**
          *
