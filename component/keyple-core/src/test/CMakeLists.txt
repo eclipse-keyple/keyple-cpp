@@ -125,7 +125,7 @@ ADD_EXECUTABLE(keyple_core_ut
 
 	# seproxy - plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservablePluginTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractPluginTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractPluginTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractReaderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractThreadedObservablePluginTest.cpp
 
