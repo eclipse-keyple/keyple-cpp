@@ -12,13 +12,28 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "ReaderPlugin.h"
-#include "SeReader.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
-namespace keyple {
-namespace core {
-namespace seproxy {
+#include "ReaderPoolPlugin.h"
 
-}
-}
+using namespace testing;
+
+using namespace keyple::core::seproxy;
+
+class RPP_ReaderPoolPluginMock : public ReaderPoolPlugin {
+public:
+    MOCK_METHOD((std::set<std::string>), getReaderGroupReferences, (),
+                (override));
+
+    MOCK_METHOD((std::shared_ptr<SeReader>), allocateReader,
+                (const std::string& groupReference), (override));
+
+    MOCK_METHOD(void, releaseReader, (std::shared_ptr<SeReader> seReader),
+                (override));
+};
+
+TEST(ReaderPoolPluginTest, ReaderPoolPlugin)
+{
+    RPP_ReaderPoolPluginMock plugin;
 }
