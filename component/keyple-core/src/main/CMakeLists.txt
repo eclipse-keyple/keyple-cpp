@@ -116,8 +116,6 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	# seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/AbstractSeProxyComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ChannelControl.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ReaderPlugin.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ReaderPoolPlugin.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeProxyService.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeSelector.cpp
