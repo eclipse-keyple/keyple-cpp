@@ -83,8 +83,8 @@ public:
      *         supported
      * @throws KeypleBaseException if the parameter fails to be set up
      */
-    virtual void setParameters(const std::map<std::string,
-        std::string>& parameters) = 0;
+    virtual void setParameters(const std::map<const std::string,
+        const std::string>& parameters) = 0;
 };
 
 }

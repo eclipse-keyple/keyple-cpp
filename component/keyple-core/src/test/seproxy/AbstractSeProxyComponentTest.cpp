@@ -12,30 +12,35 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
 #include "AbstractSeProxyComponent.h"
 
-namespace keyple {
-namespace core {
-namespace seproxy {
+using namespace testing;
 
-AbstractSeProxyComponent::AbstractSeProxyComponent(const std::string& name)
-: mName(name)
+using namespace keyple::core::seproxy;
+
+class ASPC_AbstractSeProxyComponentMock : public AbstractSeProxyComponent {
+public:
+    ASPC_AbstractSeProxyComponentMock(const std::string& name)
+    : AbstractSeProxyComponent(name) {}
+
+    MOCK_METHOD((const std::map<const std::string, const std::string>),
+                getParameters, (), (const, override));
+
+    MOCK_METHOD(void, setParameter,
+                (const std::string& key, const std::string& value), (override));
+};
+
+TEST(AbstractSeProxyComponentTest, AbstractSeProxyComponent)
 {
+    ASPC_AbstractSeProxyComponentMock proxy("proxy");
 }
 
-const std::string& AbstractSeProxyComponent::getName() const
+TEST(AbstractSeProxyComponentTest, getName)
 {
-    return mName;
-}
+    ASPC_AbstractSeProxyComponentMock proxy("proxy");
 
-void AbstractSeProxyComponent::setParameters(
-    const std::map<const std::string, const std::string>& parameters)
-{
-    for (const auto& en : parameters)
-        setParameter(en.first, en.second);
-
-}
-
-}
-}
+    ASSERT_EQ(proxy.getName(), "proxy");
 }

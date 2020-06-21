@@ -57,7 +57,7 @@ public:
      * @throws KeypleBaseException if one of the parameters could not be set up
      */
     virtual void setParameters(
-        const std::map<std::string, std::string>& parameters) final;
+        const std::map<const std::string, const std::string>& parameters) final;
 
 private:
     /**
