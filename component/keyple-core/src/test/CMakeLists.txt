@@ -131,9 +131,7 @@ ADD_EXECUTABLE(keyple_core_ut
 
 	# seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/AbstractSeProxyComponentTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ChannelControlTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/MultiSeRequestProcessingTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ReaderPluginTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ReaderPluginTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeProxyServiceTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeReaderTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeSelectorTest.cpp
