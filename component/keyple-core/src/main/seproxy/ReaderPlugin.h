@@ -48,9 +48,7 @@ public:
     /**
      *
      */
-    virtual ~ReaderPlugin()
-    {
-    }
+    virtual ~ReaderPlugin() {}
 
     /**
      * Gets the list of names of all readers
