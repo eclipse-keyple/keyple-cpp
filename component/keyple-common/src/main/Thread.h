@@ -218,6 +218,14 @@ public:
     /**
      *
      */
+    bool isInterrupted() const
+    {
+        return interrupted;
+    }
+
+    /**
+     *
+     */
     virtual void* run() = 0;
 
     /**

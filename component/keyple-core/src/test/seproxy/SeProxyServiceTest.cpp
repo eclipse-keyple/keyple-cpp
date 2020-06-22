@@ -12,105 +12,314 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "SeProxyServiceTest.h"
+#include <atomic>
+#include <regex>
+
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
 #include "SeProxyService.h"
+
+#include "AbstractThreadedObservablePlugin.h"
+#include "CountDownLatch.h"
+#include "InterruptedException.h"
+#include "MonitoringPool.h"
 #include "ReaderPlugin.h"
+#include "KeyplePluginInstantiationException.h"
 #include "KeyplePluginNotFoundException.h"
 
+using namespace testing;
 
-namespace keyple {
-namespace core {
-namespace seproxy {
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::plugin;
+using namespace keyple::core::seproxy::plugin::local;
 
-using KeyplePluginNotFoundException =
-    keyple::core::seproxy::exception::KeyplePluginNotFoundException;
+static const std::string PLUGIN_NAME_1 = "plugin1";
+static const std::string PLUGIN_NAME_2 = "plugin2";
 
-const std::shared_ptr<org::slf4j::Logger> SeProxyServiceTest::logger =
-    org::slf4j::LoggerFactory::getLogger(SeProxyServiceTest::typeid);
-std::string SeProxyServiceTest::PLUGIN_NAME = "plugin1";
+class SPS_AbstractThreadedObservablePluginMock
+    : public AbstractThreadedObservablePlugin {
+public:
+    const std::set<std::string> readerNames;
 
-void SeProxyServiceTest::setupBeforeEach()
+    SPS_AbstractThreadedObservablePluginMock(const std::string& name)
+        : AbstractThreadedObservablePlugin(name) {}
+
+    MOCK_METHOD((const std::map<const std::string, const std::string>),
+        getParameters, (), (const override));
+
+    MOCK_METHOD(void, setParameter,
+        (const std::string& key, const std::string& value), (override));
+
+    MOCK_METHOD(std::set<std::shared_ptr<SeReader>>, initNativeReaders, (),
+        (override));
+
+    MOCK_METHOD(std::shared_ptr<SeReader>, fetchNativeReader,
+        (const std::string& name), (override));
+
+    MOCK_METHOD(const std::set<std::string>&, fetchNativeReadersNames, (),
+        (override));
+};
+
+class SPS_AbstractPluginFactoryMock : public AbstractPluginFactory {
+public:
+
+    SPS_AbstractPluginFactoryMock(const std::string& name)
+    : pluginName(name), plugin(name) {}
+
+    ReaderPlugin& getPluginInstance() override
+    {
+        return plugin;
+    }
+
+    const std::string& getPluginName() override
+    {
+        return pluginName;
+    }
+
+private:
+    const std::string pluginName;
+
+    SPS_AbstractThreadedObservablePluginMock plugin;
+};
+
+TEST(SeProxyServiceTest, getInstance)
 {
+    SeProxyService& proxy = SeProxyService::getInstance();
 
-    // init class to test
-    proxyService = SeProxyService::getInstance();
+    (void)proxy;
 }
 
-void SeProxyServiceTest::testGetInstance()
+TEST(SeProxyServiceTest, getVersion)
 {
-    // test
-    assertNotNull(proxyService);
-    // assertNull(proxyService);
-}
-
-void SeProxyServiceTest::testGetVersion()
-{
-    // test that version follows semver guidelines
+    /* Test that version follows semver guidelines */
     std::string regex = "^([0-9]+)\\.([0-9]+)\\.([0-9]+)(?:-([0-9A-Za-z-]+(?:"
                         "\\.[0-9A-Za-z-]+)*))?(?:\\+[0-9A-Za-z-]+)?$";
-    std::string version = SeProxyService::getInstance()->getVersion();
-    logger->info("Version of SeProxyService {}", version);
-    std::cout << "Version of SeProxyService " << version << std::endl;
-    assertTrue(std::regex_match(version, std::regex(regex)));
+    
+    std::string version = SeProxyService::getInstance().getVersion();
+
+    ASSERT_TRUE(std::regex_match(version, std::regex(regex)));
 }
 
-void SeProxyServiceTest::testGetSetPlugins()
+TEST(SeProxyServiceTest, registerPlugin_Throws)
 {
-    // init
-    std::shared_ptr<ConcurrentSkipListSet<std::shared_ptr<ReaderPlugin>>>
-        plugins = getPluginList();
+    SeProxyService& proxy = SeProxyService::getInstance();
 
-    // test
-    proxyService->setPlugins(plugins);
-    assertArrayEquals(plugins,
-                      proxyService->getPlugins());
+    SPS_AbstractPluginFactoryMock* factory =
+        new SPS_AbstractPluginFactoryMock(PLUGIN_NAME_1);
+
+    /* Why should that throw ?? */
+    //EXPECT_THROW(proxy.registerPlugin(factory),
+    //             KeyplePluginInstantiationException);
+    (void)proxy;
+
+    delete factory;
 }
 
-void SeProxyServiceTest::testGetPlugin() throw(KeyplePluginNotFoundException)
+TEST(SeProxyServiceTest, registerPlugin)
 {
-    // init
+    SeProxyService& proxyService = SeProxyService::getInstance();
 
-    std::shared_ptr<ConcurrentSkipListSet<std::shared_ptr<ReaderPlugin>>>
-        plugins = getPluginList();
+    SPS_AbstractPluginFactoryMock* factory =
+        new SPS_AbstractPluginFactoryMock(PLUGIN_NAME_1);
 
-    proxyService->setPlugins(plugins);
+    proxyService.registerPlugin(factory);
 
-    // test
-    assertEquals(plugin1, proxyService->getPlugin(PLUGIN_NAME));
+    /* Results */
+    ReaderPlugin* testPlugin = proxyService.getPlugin(PLUGIN_NAME_1);
+    std::set<ReaderPlugin*> testPlugins = proxyService.getPlugins();
+
+    ASSERT_NE(testPlugin, nullptr);
+    ASSERT_EQ(testPlugin->getName(), PLUGIN_NAME_1);
+    ASSERT_EQ(static_cast<int>(testPlugins.size()), 1);
+
+    /* Unregister */
+    proxyService.unregisterPlugin(PLUGIN_NAME_1);
+
+    delete factory;
 }
 
-void SeProxyServiceTest::testGetPluginFail() throw(std::runtime_error)
+TEST(SeProxyServiceTest, registerPlugin_Twice)
 {
+    SeProxyService& proxyService = SeProxyService::getInstance();
 
-    // init
-    std::shared_ptr<ConcurrentSkipListSet<std::shared_ptr<ReaderPlugin>>>
-        plugins = getPluginList();
-    proxyService->setPlugins(plugins);
+    SPS_AbstractPluginFactoryMock* factory =
+        new SPS_AbstractPluginFactoryMock(PLUGIN_NAME_1);
 
-    // test
-    proxyService->getPlugin("unknown"); // Throw exception
+    proxyService.registerPlugin(factory);
+    proxyService.registerPlugin(factory);
+
+    /* Results */
+    std::set<ReaderPlugin*> testPlugins = proxyService.getPlugins();
+
+    /* Should not be added twice */
+    ASSERT_EQ(static_cast<int>(testPlugins.size()), 1);
+
+    /* Unregister */
+    proxyService.unregisterPlugin(PLUGIN_NAME_1);
+
+    delete factory;
 }
 
-std::shared_ptr<ConcurrentSkipListSet<std::shared_ptr<ReaderPlugin>>>
-SeProxyServiceTest::getPluginList()
+TEST(SeProxyServiceTest, registerPlugin_TwoPlugins)
 {
+    SeProxyService& proxyService = SeProxyService::getInstance();
 
-    // ReaderPlugin plugin2 = Mockito.mock(ReaderPlugin.class);
-    // when(plugin2.getName()).thenReturn(PLUGIN_NAME_2);
+    SPS_AbstractPluginFactoryMock* factory1 =
+        new SPS_AbstractPluginFactoryMock(PLUGIN_NAME_1);
 
-    when(plugin1->getName()).thenReturn(PLUGIN_NAME);
-    std::shared_ptr<ConcurrentSkipListSet<std::shared_ptr<ReaderPlugin>>>
-        plugins = std::make_shared<
-            ConcurrentSkipListSet<std::shared_ptr<ReaderPlugin>>>();
+    proxyService.registerPlugin(factory1);
 
-    plugins->add(plugin1);
-    // plugins.add(plugin2);
+    SPS_AbstractPluginFactoryMock* factory2 =
+        new SPS_AbstractPluginFactoryMock(PLUGIN_NAME_2);
 
-    assertEquals(1, plugins->size()); // impossible to add 2 ReaderPlugin mocks
+    proxyService.registerPlugin(factory2);
 
-    return plugins;
+    /* Results */
+    std::set<ReaderPlugin*> testPlugins = proxyService.getPlugins();
+
+    /* Should not be added twice */
+    ASSERT_EQ(static_cast<int>(testPlugins.size()), 2);
+
+    /* Unregister */
+    proxyService.unregisterPlugin(PLUGIN_NAME_1);
+    proxyService.unregisterPlugin(PLUGIN_NAME_2);
+
+    delete factory1;
+    delete factory2;
 }
 
+TEST(SeProxyServiceTest, getPlugin_Unknown)
+{
+    SeProxyService& proxyService = SeProxyService::getInstance();
+
+    EXPECT_THROW(proxyService.getPlugin("unknown"),
+                 KeyplePluginNotFoundException);
 }
+
+/**
+ * Test that a plugin can not be added twice with multi thread
+ *
+ * @throws Exception
+ */
+TEST(SeProxyServiceTest, testRegister_MultiThread)
+{
+    SeProxyService& proxyService = SeProxyService::getInstance();
+
+    SPS_AbstractPluginFactoryMock* factory =
+        new SPS_AbstractPluginFactoryMock(PLUGIN_NAME_1);
+
+    std::shared_ptr<CountDownLatch> latch =
+        std::make_shared<CountDownLatch>(1);
+
+    std::atomic<bool> running;
+    std::atomic<int> overlaps;
+
+    int threads = 10;
+    MonitoringPool service;
+    std::vector<std::future<void>> futures;
+
+    for (int t = 0; t < threads; ++t) {
+        futures.push_back(
+            std::async(
+                [&latch, &running, &overlaps, &proxyService, &factory]() {
+                    try {
+                        /*
+                         * All thread wait for the countdown
+                         */
+                        latch->await();
+                    } catch (const InterruptedException& e) {
+                        (void)e;
+                    }
+                
+                    if (running) {
+                        overlaps++;
+                    }
+
+                    running = true;
+                    try {
+                        proxyService.registerPlugin(factory);
+                    } catch (const KeyplePluginInstantiationException& e) {
+                        (void)e;
+                    }
+
+                    running = false;
+                }
+            )
+        );
+    }
+
+    /* Release all thread at once */
+    latch->countDown();
+
+    /* Wait for execution */
+    Thread::sleep(500);
+   
+    ASSERT_EQ(static_cast<int>(proxyService.getPlugins().size()), 1);
+
+    /* Unregister */
+    proxyService.unregisterPlugin(PLUGIN_NAME_1);
+
+    delete factory;
 }
+
+/**
+ * Test that a plugin can not be added twice with multi thread
+ *
+ * @throws Exception
+ */
+TEST(SeProxyServiceTest, unregisterMultiThread)
+{
+    SeProxyService& proxyService = SeProxyService::getInstance();
+
+    SPS_AbstractPluginFactoryMock* factory =
+        new SPS_AbstractPluginFactoryMock(PLUGIN_NAME_1);
+
+    /* Add a plugin */
+    proxyService.registerPlugin(factory);
+
+    std::shared_ptr<CountDownLatch> latch =
+        std::make_shared<CountDownLatch>(1);
+
+    std::atomic<bool> running;
+    std::atomic<int> overlaps;
+
+    int threads = 10;
+    MonitoringPool service;
+    std::vector<std::future<void>> futures;
+
+    for (int t = 0; t < threads; ++t) {
+        futures.push_back(
+            std::async(
+                [&latch, &running, &overlaps, &proxyService, &factory]() {
+                    try {
+                        /* All thread wait for the countdown */
+                        latch->await();
+                    } catch (InterruptedException e) {
+                        (void)e;
+                    }
+
+                    if (running) {
+                        overlaps++;
+                    }
+
+                    running = true;
+                    proxyService.unregisterPlugin(factory->getPluginName());
+                    running = false;
+                }
+            )
+        );
+    }
+
+    /* Release all thread at once */
+    latch->countDown();
+    Thread::sleep(500);
+    
+    ASSERT_EQ(static_cast<int>(proxyService.getPlugins().size()), 0);
+
+    /* Unregister */
+    proxyService.unregisterPlugin(PLUGIN_NAME_1);
+
+    delete factory;
 }

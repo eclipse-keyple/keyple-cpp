@@ -113,7 +113,7 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
         std::make_shared<std::set<std::string>>();
 
     try {
-        while (running) {
+        while ((!isInterrupted()) && running) {
             /* Retrieves the current readers names list */
             const std::set<std::string>& actualNativeReadersNames =
                 outerInstance->fetchNativeReadersNames();
@@ -219,6 +219,7 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
             /* sleep for a while. */
             Thread::sleep((long)outerInstance->threadWaitTimeout);
         }
+
     } catch (const InterruptedException& e) {
         outerInstance->logger->warn("[%] An exception occurred while "
                                     "monitoring plugin: %\n", pluginName, e);
