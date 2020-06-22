@@ -30,7 +30,7 @@ StubPluginFactory::StubPluginFactory(const std::string pluginName)
 {
 }
 
-const std::string& StubPluginFactory::getPluginName()
+const std::string& StubPluginFactory::getPluginName() const
 {
     return pluginName;
 }
