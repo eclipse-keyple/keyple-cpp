@@ -193,7 +193,7 @@ void StubPoolPluginImpl::setParameter(const std::string& key,
 }
 
 void StubPoolPluginImpl::setParameters(
-    const std::map<std::string, std::string>& parameters)
+    const std::map<const std::string, const std::string>& parameters)
 {
     stubPlugin.setParameters(parameters);
 }
