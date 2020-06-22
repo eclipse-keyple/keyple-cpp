@@ -68,12 +68,14 @@ public:
     SPS_AbstractPluginFactoryMock(const std::string& name)
     : pluginName(name), plugin(name) {}
 
+    virtual ~SPS_AbstractPluginFactoryMock() {}
+
     ReaderPlugin& getPluginInstance() override
     {
         return plugin;
     }
 
-    const std::string& getPluginName() override
+    const std::string& getPluginName() const override
     {
         return pluginName;
     }
@@ -296,7 +298,7 @@ TEST(SeProxyServiceTest, unregisterMultiThread)
                     try {
                         /* All thread wait for the countdown */
                         latch->await();
-                    } catch (InterruptedException e) {
+                    } catch (const InterruptedException& e) {
                         (void)e;
                     }
 

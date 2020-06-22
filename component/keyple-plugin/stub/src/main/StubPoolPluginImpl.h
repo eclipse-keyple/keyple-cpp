@@ -148,7 +148,8 @@ public:
     /**
      *
      */
-    void setParameters(const std::map<std::string, std::string>& parameters)
+    void setParameters(
+        const std::map<const std::string, const std::string>& parameters)
         override;
 };
 
