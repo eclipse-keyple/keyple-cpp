@@ -99,7 +99,8 @@ AbstractThreadedObservablePlugin::EventThread::EventThread(
 
 void AbstractThreadedObservablePlugin::EventThread::end()
 {
-    outerInstance->logger->trace("stopping event thread\n");
+    if (outerInstance && outerInstance->logger)
+        outerInstance->logger->trace("stopping event thread\n");
 
     running = false;
     this->interrupt();
