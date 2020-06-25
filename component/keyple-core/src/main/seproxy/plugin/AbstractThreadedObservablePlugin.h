@@ -180,7 +180,10 @@ private:
         /**
          *
          */
-        virtual ~EventThread() {}
+        virtual ~EventThread()
+        {
+            this->end();
+        }
 
         /**
          *
