@@ -23,7 +23,7 @@ namespace message {
 using namespace keyple::core::seproxy::event;
 
 DefaultSelectionsRequest::DefaultSelectionsRequest(
-    std::set<std::shared_ptr<SeRequest>>& selectionSeRequestSet,
+    std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet,
     MultiSeRequestProcessing multiSeRequestProcessing,
     ChannelControl channelControl)
 : selectionSeRequestSet(selectionSeRequestSet),
@@ -33,26 +33,26 @@ DefaultSelectionsRequest::DefaultSelectionsRequest(
 }
 
 DefaultSelectionsRequest::DefaultSelectionsRequest(
-    std::set<std::shared_ptr<SeRequest>>& selectionSeRequestSet)
+    std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet)
 : DefaultSelectionsRequest(selectionSeRequestSet,
                            MultiSeRequestProcessing::FIRST_MATCH,
                            ChannelControl::KEEP_OPEN)
 {
 }
 
-MultiSeRequestProcessing&
-DefaultSelectionsRequest::getMultiSeRequestProcessing()
+const MultiSeRequestProcessing&
+    DefaultSelectionsRequest::getMultiSeRequestProcessing() const
 {
     return multiSeRequestProcessing;
 }
 
-ChannelControl& DefaultSelectionsRequest::getChannelControl()
+const ChannelControl& DefaultSelectionsRequest::getChannelControl() const
 {
     return channelControl;
 }
 
-std::set<std::shared_ptr<SeRequest>>&
-DefaultSelectionsRequest::getSelectionSeRequestSet()
+const std::vector<std::shared_ptr<SeRequest>>&
+    DefaultSelectionsRequest::getSelectionSeRequestSet() const
 {
     return selectionSeRequestSet;
 }

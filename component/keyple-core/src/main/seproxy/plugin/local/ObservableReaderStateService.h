@@ -67,7 +67,7 @@ public:
      *
      * @return current monitoring state
      */
-    MonitoringState getCurrentMonitoringState();
+    const MonitoringState& getCurrentMonitoringState() const;
 
 protected:
     /**
@@ -75,7 +75,7 @@ protected:
      *
      * @return reader current state
      */
-    std::shared_ptr<AbstractObservableState> getCurrentState();
+    const std::shared_ptr<AbstractObservableState> getCurrentState() const;
 
 private:
     /**

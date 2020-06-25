@@ -27,7 +27,6 @@ namespace seproxy {
 
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
-using namespace keyple::core::seproxy;
 
 using FileOccurrence         = SeSelector::AidSelector::FileOccurrence;
 using FileControlInformation = SeSelector::AidSelector::FileControlInformation;
@@ -75,12 +74,12 @@ char FileOccurrence::getIsoBitMask()
     return this->isoBitMask;
 }
 
-bool FileOccurrence::operator==(const FileOccurrence& other)
+bool FileOccurrence::operator==(const FileOccurrence& other) const
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
-bool FileOccurrence::operator!=(const FileOccurrence& other)
+bool FileOccurrence::operator!=(const FileOccurrence& other) const
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -148,11 +147,13 @@ char FileControlInformation::getIsoBitMask()
 }
 
 bool FileControlInformation::operator==(const FileControlInformation& other)
+    const
 {
     return this->ordinalValue == other.ordinalValue;
 }
 
 bool FileControlInformation::operator!=(const FileControlInformation& other)
+    const
 {
     return this->ordinalValue != other.ordinalValue;
 }
@@ -269,25 +270,25 @@ std::shared_ptr<std::set<int>> AidSelector::getSuccessfulSelectionStatusCodes()
 
 SeSelector::AtrFilter::AtrFilter(const std::string& atrRegex)
 {
-    this->atrRegex = atrRegex;
+    mAtrRegex = atrRegex;
 }
 
 void SeSelector::AtrFilter::setAtrRegex(const std::string& atrRegex)
 {
-    this->atrRegex = atrRegex;
+    mAtrRegex = atrRegex;
 }
 
 std::string SeSelector::AtrFilter::getAtrRegex()
 {
-    return atrRegex;
+    return mAtrRegex;
 }
 
 bool SeSelector::AtrFilter::atrMatches(const std::vector<uint8_t>& atr)
 {
     bool m;
 
-    if (atrRegex.length() != 0) {
-        Pattern* p            = Pattern::compile(atrRegex);
+    if (mAtrRegex.length() != 0) {
+        Pattern* p            = Pattern::compile(mAtrRegex);
         std::string atrString = ByteArrayUtil::toHex(atr);
         m                     = p->matcher(atrString)->matches();
     } else {
@@ -297,7 +298,7 @@ bool SeSelector::AtrFilter::atrMatches(const std::vector<uint8_t>& atr)
     return m;
 }
 
-SeSelector::SeSelector(SeProtocol& seProtocol,
+SeSelector::SeSelector(const std::shared_ptr<SeProtocol> seProtocol,
                        std::shared_ptr<AtrFilter> atrFilter,
                        std::shared_ptr<AidSelector> aidSelector,
                        const std::string& extraInfo)
@@ -306,7 +307,7 @@ SeSelector::SeSelector(SeProtocol& seProtocol,
 {
 }
 
-const SeProtocol& SeSelector::getSeProtocol() const
+const std::shared_ptr<SeProtocol> SeSelector::getSeProtocol() const
 {
     return seProtocol;
 }
@@ -336,7 +337,9 @@ std::ostream& operator<<(std::ostream& os,
 
 std::ostream& operator<<(std::ostream& os, const SeSelector::AtrFilter& af)
 {
-    os << "ATRFILTER: {REGEX: " << af.atrRegex << "}";
+    os << "ATRFILTER: {"
+       << "REGEX = " << af.mAtrRegex
+       << "}";
 
     return os;
 }
@@ -345,31 +348,38 @@ std::ostream& operator<<(std::ostream& os, const SeSelector::AidSelector& a)
 {
     const std::shared_ptr<SeSelector::AidSelector::IsoAid>& aid = a.aidToSelect;
 
-    os << "AID: ";
+    os << "AIDSELECTOR: {";
 	if (aid)
 		os << *(aid.get());
     else
-		os << "null";
+		os << "AID = null";
+    os << "}";
 
     return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const SeSelector& ss)
 {
-    os << "SESELECTOR: {AID_SELECTOR = ";
+    os << "SESELECTOR: {";
 
+    
     if (ss.aidSelector)
-        os << *(ss.aidSelector.get());
+        os << *(ss.aidSelector.get()) << ", ";
     else
-        os << "null";
-
-    os << ", ATR_FILTER = ";
+        os << "AIDSELECTOR = null, ";
 
     if (ss.atrFilter)
-        os << *(ss.atrFilter.get());
+        os << *(ss.atrFilter.get()) << ", ";
     else
-		os << "null";
-	
+        os << "ATRFILTER = null, ";
+
+    os << "EXTRAINFO = " << ss.extraInfo << ", ";
+
+    if (ss.seProtocol)
+        os << ss.seProtocol;
+    else
+        os << "SEPROTOCOL = null";
+
     os << "}";
 
     return os;
@@ -381,7 +391,7 @@ std::ostream& operator<<(std::ostream& os,
 	if (ss)
 		os << *(ss.get());
     else
-		os << "SESELECTOR: null";
+		os << "SESELECTOR = null";
 
     return os;
 }

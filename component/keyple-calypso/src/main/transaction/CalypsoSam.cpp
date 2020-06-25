@@ -39,7 +39,7 @@ using namespace keyple::core::selection;
 using namespace keyple::core::util;
 
 CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
-                       TransmissionMode transmissionMode,
+                       const TransmissionMode& transmissionMode,
                        const std::string& extraInfo)
 : AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo),
   samRevision(SamRevision::C1) /* Default value to please compiler */

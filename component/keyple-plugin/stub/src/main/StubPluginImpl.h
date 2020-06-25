@@ -65,19 +65,19 @@ public:
      *
      */
     const std::map<const std::string, const std::string>
-    getParameters() override;
+        getParameters() const override;
 
     /**
      *
      */
-    void setParameter(const std::string& key,
-                      const std::string& value) override;
+    void setParameter(const std::string& key, const std::string& value)
+        override;
 
     /**
      *
      */
-    void plugStubReader(const std::string& readerName,
-                        bool synchronous) override;
+    void plugStubReader(const std::string& readerName, bool synchronous)
+        override;
 
     /**
      *

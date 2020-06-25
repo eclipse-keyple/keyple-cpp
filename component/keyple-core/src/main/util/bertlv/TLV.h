@@ -51,7 +51,7 @@ public:
      *
      * @param binary the byte array containing the TLV structure
      */
-    TLV(std::vector<uint8_t>& binary);
+    TLV(const std::vector<uint8_t>& binary);
 
     /**
      * Parse the byte array to find the expected TLV.
@@ -75,23 +75,24 @@ public:
      *
      * @return a byte array
      */
-    std::vector<uint8_t> getValue();
+    const std::vector<uint8_t> getValue();
 
     /**
      * @return the current position in the main array
      */
-    int getPosition();
+    int getPosition() const;
 
     /**
      *
      */
-    std::string toString();
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                        const TLV& tlv);
 
 private:
     /**
      *
      */
-    std::shared_ptr<Tag> tag;
+    std::shared_ptr<Tag> mTag;
 
     /**
      *
@@ -101,7 +102,7 @@ private:
     /**
      *
      */
-    std::vector<uint8_t> binary;
+    const std::vector<uint8_t> binary;
 
     /**
      *

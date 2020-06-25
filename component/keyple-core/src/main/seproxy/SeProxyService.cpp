@@ -73,7 +73,7 @@ bool SeProxyService::isRegistered(const std::string& pluginName)
     std::lock_guard<std::mutex> guard(MONITOR);
 
     for (ReaderPlugin* registeredPlugin : plugins) {
-        if (registeredPlugin->getName().compare(pluginName)) {
+        if (registeredPlugin->getName().compare(pluginName) == 0) {
             ret = true;
             break;
         }
@@ -117,7 +117,7 @@ std::string SeProxyService::getVersion()
     }
     */
 
-    return "no-version-found";
+    return "0.8.2";
 }
 
 }

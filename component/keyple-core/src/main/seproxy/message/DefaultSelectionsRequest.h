@@ -18,6 +18,7 @@
 
 #include "AbstractDefaultSelectionsRequest.h"
 #include "ChannelControl.h"
+#include "KeypleCoreExport.h"
 #include "MultiSeRequestProcessing.h"
 #include "ObservableReader.h"
 
@@ -43,13 +44,14 @@ using namespace keyple::core::seproxy::event;
  * Class containing the Set of {@link SeRequest} used to make a default
  * selection at the {@link ObservableReader} level.
  */
-class DefaultSelectionsRequest final : public AbstractDefaultSelectionsRequest {
+class KEYPLECORE_API DefaultSelectionsRequest final
+: public AbstractDefaultSelectionsRequest {
 public:
     /**
      *
      */
     DefaultSelectionsRequest(
-        std::set<std::shared_ptr<SeRequest>>& selectionSeRequestSet,
+        std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet,
         MultiSeRequestProcessing multiSeRequestProcessing,
         ChannelControl channelControl);
 
@@ -57,28 +59,30 @@ public:
      *
      */
     DefaultSelectionsRequest(
-        std::set<std::shared_ptr<SeRequest>>& selectionSeRequestSet);
+        std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet);
 
     /**
      *
      */
-    MultiSeRequestProcessing& getMultiSeRequestProcessing() override;
+    const MultiSeRequestProcessing& getMultiSeRequestProcessing() const
+        override;
 
     /**
      *
      */
-    ChannelControl& getChannelControl() override;
+    const ChannelControl& getChannelControl() const override;
 
     /**
      *
      */
-    std::set<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet() override;
+    const std::vector<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet()
+        const override;
 
 private:
     /**
      *
      */
-    std::set<std::shared_ptr<SeRequest>>& selectionSeRequestSet;
+    std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet;
 
     /**
      *

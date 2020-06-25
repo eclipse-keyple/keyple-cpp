@@ -48,7 +48,7 @@ CustomProtocols::CustomProtocols(const std::string& nameValue,
     (void)innerEnum;
 }
 
-std::string CustomProtocols::getName() const
+const std::string& CustomProtocols::getName() const
 {
     return name;
 }
@@ -90,7 +90,7 @@ CustomProtocols CustomProtocols::valueOf(const std::string& name)
     return valueList.front();
 }
 
-TransmissionMode CustomProtocols::getTransmissionMode() const
+const TransmissionMode& CustomProtocols::getTransmissionMode() const
 {
     return transmissionMode;
 }

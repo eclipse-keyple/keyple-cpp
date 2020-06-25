@@ -141,7 +141,8 @@ public: /**
      * @param poAidSelector the AID selection data
      * @param extraInfo information string (to be printed in logs)
      */
-    PoSelector(SeProtocol& seProtocol, std::shared_ptr<PoAtrFilter> poAtrFilter,
+    PoSelector(std::shared_ptr<SeProtocol> seProtocol,
+               std::shared_ptr<PoAtrFilter> poAtrFilter,
                std::shared_ptr<PoAidSelector> poAidSelector,
                const std::string& extraInfo);
 

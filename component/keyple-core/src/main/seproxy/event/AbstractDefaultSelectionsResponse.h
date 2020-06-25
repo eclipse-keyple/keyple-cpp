@@ -48,8 +48,8 @@ protected:
     /**
      * @return the list of {@link SeResponse}
      */
-    virtual std::list<std::shared_ptr<SeResponse>>&
-        getSelectionSeResponseSet() = 0;
+    virtual const std::list<std::shared_ptr<SeResponse>>&
+        getSelectionSeResponseSet() const = 0;
 };
 
 }

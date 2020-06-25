@@ -69,7 +69,7 @@ public:
     /**
      * @return the number of observers
      */
-    virtual int countObservers() final;
+    virtual int countObservers() const final;
 
     /**
      * This method shall be called only from a SE Proxy plugin implementing

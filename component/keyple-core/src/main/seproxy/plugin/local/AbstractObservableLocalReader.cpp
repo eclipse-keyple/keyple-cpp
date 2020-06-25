@@ -53,24 +53,27 @@ void AbstractObservableLocalReader::startSeDetection(
                   pollingMode);
 
     this->currentPollingMode = pollingMode;
-    this->stateService->onEvent(InternalEvent::START_DETECT);
+
+    if (this->stateService)
+        this->stateService->onEvent(InternalEvent::START_DETECT);
 }
 
 void AbstractObservableLocalReader::stopSeDetection()
 {
     logger->trace("[%] stop Se Detection\n", getName());
 
-    this->stateService->onEvent(InternalEvent::STOP_DETECT);
+    if (this->stateService)
+        this->stateService->onEvent(InternalEvent::STOP_DETECT);
 }
 
 void AbstractObservableLocalReader::setDefaultSelectionRequest(
     std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
     const ObservableReader::NotificationMode notificationMode)
 {
-    this->defaultSelectionsRequest =
+    mDefaultSelectionsRequest =
         std::dynamic_pointer_cast<DefaultSelectionsRequest>(
             defaultSelectionsRequest);
-    this->notificationMode = notificationMode;
+    mNotificationMode = notificationMode;
 }
 
 void AbstractObservableLocalReader::setDefaultSelectionRequest(
@@ -88,14 +91,15 @@ void AbstractObservableLocalReader::startRemovalSequence()
 {
     logger->trace("[%] start removal sequence of the reader\n", getName());
 
-    this->stateService->onEvent(InternalEvent::SE_PROCESSED);
+    if (this->stateService)
+        this->stateService->onEvent(InternalEvent::SE_PROCESSED);
 }
 
 std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
 {
     logger->trace("[%] process the inserted se\n", getName());
 
-    if (defaultSelectionsRequest == nullptr) {
+    if (mDefaultSelectionsRequest == nullptr) {
         logger->trace("[%] no default selection request defined, notify " \
                       "SE_INSERTED\n", getName());
 
@@ -112,9 +116,9 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
 
         try {
             std::list<std::shared_ptr<SeResponse>> seResponseList = transmitSet(
-                defaultSelectionsRequest->getSelectionSeRequestSet(),
-                defaultSelectionsRequest->getMultiSeRequestProcessing(),
-                defaultSelectionsRequest->getChannelControl());
+                mDefaultSelectionsRequest->getSelectionSeRequestSet(),
+                mDefaultSelectionsRequest->getMultiSeRequestProcessing(),
+                mDefaultSelectionsRequest->getChannelControl());
 
             for (auto seResponse : seResponseList) {
                 if (seResponse != nullptr &&
@@ -126,7 +130,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
                 }
             }
 
-            if (notificationMode ==
+            if (mNotificationMode ==
                 ObservableReader::NotificationMode::MATCHED_ONLY) {
                 /*
                  * Notify only if a SE matched the selection, just ignore if not
@@ -225,24 +229,28 @@ void AbstractObservableLocalReader::processSeRemoved()
         nullptr));
 }
 
-ObservableReader::PollingMode AbstractObservableLocalReader::getPollingMode()
+const ObservableReader::PollingMode&
+    AbstractObservableLocalReader::getPollingMode() const
 {
     return currentPollingMode;
 }
 
 void AbstractObservableLocalReader::switchState(const MonitoringState stateId)
 {
-    this->stateService->switchState(stateId);
+    if (this->stateService)
+        this->stateService->switchState(stateId);
 }
 
-MonitoringState AbstractObservableLocalReader::getCurrentMonitoringState()
+const MonitoringState&
+    AbstractObservableLocalReader::getCurrentMonitoringState() const
 {
     return this->stateService->getCurrentMonitoringState();
 }
 
 void AbstractObservableLocalReader::onEvent(const InternalEvent event)
 {
-    this->stateService->onEvent(event);
+    if (this->stateService)
+        this->stateService->onEvent(event);
 }
 
 void AbstractObservableLocalReader::addObserver(
@@ -287,7 +295,7 @@ void AbstractObservableLocalReader::notifyObservers(
         observer->update(event);
 }
 
-int AbstractObservableLocalReader::countObservers()
+int AbstractObservableLocalReader::countObservers() const
 {
     return observers.size();
 }

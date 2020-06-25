@@ -16,6 +16,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 /* Common */
 #include "KeypleCoreExport.h"
@@ -64,6 +65,65 @@ using namespace keyple::core::seproxy::message;
  */
 class KEYPLECORE_API MatchingSelection final
 : public std::enable_shared_from_this<MatchingSelection> {
+public:
+    /**
+     * Constructor
+     *
+     * @param selectionIndex the selection index
+     * @param seSelectionRequest the selection request
+     * @param matchingSe the matching SE
+     * @param selectionSeResponse the selection SeResponse
+     */
+    MatchingSelection(
+        int selectionIndex,
+        std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
+        const std::shared_ptr<AbstractMatchingSe> matchingSe,
+        std::shared_ptr<SeResponse> selectionSeResponse);
+
+    /**
+     * @return the AbstractMatchingSe
+     */
+    const std::shared_ptr<AbstractMatchingSe> getMatchingSe() const;
+
+    /**
+     * Get the parser for the targeted response.
+     *
+     * @param commandIndex the command index
+     * @return a parser object
+     */
+    std::shared_ptr<AbstractApduResponseParser>
+        getResponseParser(int commandIndex) const;
+
+    /**
+     * @return the info string provided with the Selector
+     */
+    const std::string getExtraInfo() const;
+
+    /**
+     * @return the index of the selection (order in the prepareSelection
+     *         command). 0 is the first selection.
+     */
+    int getSelectionIndex() const;
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const MatchingSelection& ms);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<MatchingSelection>& ms);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os,
+        const std::vector<std::shared_ptr<MatchingSelection>>& ms);
+
 private:
     /**
      *
@@ -84,52 +144,6 @@ private:
      *
      */
     const int selectionIndex;
-
-    /**
-     * Constructor
-     *
-     * @param selectionIndex the selection index
-     * @param seSelectionRequest the selection request
-     * @param matchingSe the matching SE
-     * @param selectionSeResponse the selection SeResponse
-     */
-public:
-    MatchingSelection(
-        int selectionIndex,
-        std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
-        std::shared_ptr<AbstractMatchingSe> matchingSe,
-        std::shared_ptr<SeResponse> selectionSeResponse);
-
-    /**
-     * @return the AbstractMatchingSe
-     */
-    std::shared_ptr<AbstractMatchingSe> getMatchingSe();
-
-    /**
-     * Get the parser for the targeted response.
-     *
-     * @param commandIndex the command index
-     * @return a parser object
-     */
-    std::shared_ptr<AbstractApduResponseParser>
-    getResponseParser(int commandIndex);
-
-    /**
-     * @return the info string provided with the Selector
-     */
-    const std::string& getExtraInfo() const;
-
-    /**
-     * @return the index of the selection (order in the prepareSelection
-     *         command). 0 is the first selection.
-     */
-    int getSelectionIndex();
-
-	/**
-	 *
-	 */
-    friend KEYPLECORE_API std::ostream& operator<<(
-        std::ostream& os, const MatchingSelection& ms);
 };
 
 }

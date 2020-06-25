@@ -28,8 +28,8 @@ DefaultSelectionsResponse::DefaultSelectionsResponse(
 {
 }
 
-std::list<std::shared_ptr<SeResponse>>&
-DefaultSelectionsResponse::getSelectionSeResponseSet()
+const std::list<std::shared_ptr<SeResponse>>&
+    DefaultSelectionsResponse::getSelectionSeResponseSet() const
 {
     return selectionSeResponseSet;
 }

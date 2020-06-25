@@ -16,7 +16,6 @@
 
 #include <list>
 #include <memory>
-#include <set>
 
 #include "ChannelControl.h"
 #include "MultiSeRequestProcessing.h"
@@ -126,10 +125,10 @@ public:
      * @throws KeypleReaderException An error occurs during transmit (channel,
      *         IO)
      */
-    virtual std::list<std::shared_ptr<SeResponse>>
-    transmitSet(std::set<std::shared_ptr<SeRequest>>& seApplicationRequest,
-                MultiSeRequestProcessing multiSeRequestProcessing,
-                ChannelControl channelControl) = 0;
+    virtual std::list<std::shared_ptr<SeResponse>> transmitSet(
+        const std::vector<std::shared_ptr<SeRequest>>& seApplicationRequest,
+        const MultiSeRequestProcessing& multiSeRequestProcessing,
+        const ChannelControl& channelControl) = 0;
 
     /**
      * Transmits a Set of {@link SeRequest} (list of {@link SeRequest}) to a SE
@@ -143,8 +142,8 @@ public:
      * @throws KeypleReaderException An error occurs during transmit (channel,
      *         IO)
      */
-    virtual std::list<std::shared_ptr<SeResponse>>
-    transmitSet(std::set<std::shared_ptr<SeRequest>>& seApplicationRequest) = 0;
+    virtual std::list<std::shared_ptr<SeResponse>> transmitSet(
+        const std::vector<std::shared_ptr<SeRequest>>& seApplicationRequest)= 0;
 
     /**
      * Transmits a single {@link SeRequest} (list of {@link ApduRequest}) and

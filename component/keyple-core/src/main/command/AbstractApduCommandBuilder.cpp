@@ -23,7 +23,6 @@ namespace core {
 namespace command {
 
 using namespace keyple::core::seproxy::message;
-using namespace keyple::core::command;
 
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
     CommandsTable& commandReference, std::shared_ptr<ApduRequest> request)

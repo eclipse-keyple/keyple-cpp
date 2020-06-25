@@ -30,45 +30,77 @@ using namespace keyple::core::seproxy::message;
 MatchingSelection::MatchingSelection(
     int selectionIndex,
     std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest,
-    std::shared_ptr<AbstractMatchingSe> matchingSe,
+    const std::shared_ptr<AbstractMatchingSe> matchingSe,
     std::shared_ptr<SeResponse> selectionSeResponse)
 : matchingSe(matchingSe), seSelectionRequest(seSelectionRequest),
   selectionSeResponse(selectionSeResponse), selectionIndex(selectionIndex)
 {
 }
 
-std::shared_ptr<AbstractMatchingSe> MatchingSelection::getMatchingSe()
+const std::shared_ptr<AbstractMatchingSe> MatchingSelection::getMatchingSe()
+    const
 {
     return matchingSe;
 }
 
 std::shared_ptr<AbstractApduResponseParser>
-MatchingSelection::getResponseParser(int commandIndex)
+    MatchingSelection::getResponseParser(int commandIndex) const
 {
+    if (!seSelectionRequest)
+        return nullptr;
+
     return seSelectionRequest->getCommandParser(selectionSeResponse,
                                                 commandIndex);
 }
 
-const std::string& MatchingSelection::getExtraInfo() const
+const std::string MatchingSelection::getExtraInfo() const
 {
+    if (!seSelectionRequest || !seSelectionRequest->getSeSelector())
+        return "";
+
     return seSelectionRequest->getSeSelector()->getExtraInfo();
 }
 
-int MatchingSelection::getSelectionIndex()
+int MatchingSelection::getSelectionIndex() const
 {
     return selectionIndex;
 }
 
 std::ostream& operator<<(std::ostream& os, const MatchingSelection& ms)
 {
-	os << "MATCHINGSELECTION: {"
-	   << "MATCHINGSE = " << ms.matchingSe << ", "
-	   << "SELECTIONREQUEST = " << ms.seSelectionRequest << ", "
-	   << "SELECTIONRESPONSE = " << ms.selectionSeResponse << ", "
-	   << "SELECTIONINDEX = " << ms.selectionIndex
-	   << "}";
+    os << "MATCHINGSELECTION: {"
+       << ms.matchingSe << ", "
+       << ms.seSelectionRequest << ", "
+       << ms.selectionSeResponse << ", "
+       << "SELECTIONINDEX = " << ms.selectionIndex
+       << "}";
 
-	return os;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::shared_ptr<MatchingSelection>& ms)
+{
+    if (ms)
+        os << *ms.get();
+    else
+        os << "MATCHINGSELECTION = null";
+
+    return os;
+}
+
+std::ostream& operator<<(
+    std::ostream& os, const std::vector<std::shared_ptr<MatchingSelection>>& ms)
+{
+    os << "MATCHINGSELECTIONS: {";
+    for (const auto& m : ms) {
+        if (m != *ms.begin())
+            os << ", ";
+        os << m;
+    }
+    os << "}";
+
+    return os;
 }
 
 }

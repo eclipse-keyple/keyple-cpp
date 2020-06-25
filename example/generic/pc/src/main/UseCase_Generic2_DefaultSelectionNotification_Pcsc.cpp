@@ -183,7 +183,7 @@ public:
         while (1);
     }
 
-    void update(std::shared_ptr<ReaderEvent> event)
+    void update(const std::shared_ptr<ReaderEvent> event)
     {
         if (event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
             /* the selection has one target, get the result at index 0 */

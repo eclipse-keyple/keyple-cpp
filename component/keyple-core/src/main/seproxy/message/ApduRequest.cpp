@@ -23,31 +23,31 @@ namespace message {
 
 using namespace keyple::core::util;
 
+
+ApduRequest::ApduRequest(
+  const std::string& name, const std::vector<uint8_t>& buffer, bool case4,
+  std::shared_ptr<std::set<int>> successfulStatusCodes)
+: bytes(buffer), case4(case4), successfulStatusCodes(successfulStatusCodes),
+  mName(name)
+{
+}
+
 ApduRequest::ApduRequest(const std::vector<uint8_t>& buffer, bool case4,
                          std::shared_ptr<std::set<int>> successfulStatusCodes)
-: case4(case4), successfulStatusCodes(successfulStatusCodes)
+: ApduRequest("", buffer, case4, successfulStatusCodes)
 {
-    this->bytes = buffer;
 }
 
-ApduRequest::ApduRequest(const std::string& name,
-                         const std::vector<uint8_t>& buffer, bool case4,
-                         std::shared_ptr<std::set<int>> successfulStatusCodes)
-: ApduRequest(buffer, case4, successfulStatusCodes)
-{
-    this->name = name;
-}
 
 ApduRequest::ApduRequest(const std::vector<uint8_t>& buffer, bool case4)
-: ApduRequest(buffer, case4, nullptr)
+: ApduRequest("", buffer, case4, nullptr)
 {
 }
 
 ApduRequest::ApduRequest(const std::string& name,
                          const std::vector<uint8_t>& buffer, bool case4)
-: ApduRequest(buffer, case4, nullptr)
+: ApduRequest(name, buffer, case4, nullptr)
 {
-    this->name = name;
 }
 
 bool ApduRequest::isCase4() const
@@ -57,7 +57,7 @@ bool ApduRequest::isCase4() const
 
 void ApduRequest::setName(const std::string& name)
 {
-    this->name = name;
+    mName = name;
 }
 
 std::shared_ptr<std::set<int>> ApduRequest::getSuccessfulStatusCodes()
@@ -65,39 +65,14 @@ std::shared_ptr<std::set<int>> ApduRequest::getSuccessfulStatusCodes()
     return successfulStatusCodes;
 }
 
-std::string ApduRequest::getName() const
+const std::string& ApduRequest::getName() const
 {
-    return name;
+    return mName;
 }
 
-const std::vector<uint8_t>& ApduRequest::getBytes()
+const std::vector<uint8_t>& ApduRequest::getBytes() const
 {
     return this->bytes;
-}
-
-std::string ApduRequest::toString() const
-{
-    std::string string = StringHelper::formatSimple(
-        "ApduRequest: NAME = %s, RAWDATA = %s", this->getName(),
-        ByteArrayUtil::toHex(bytes));
-
-    if (isCase4()) {
-        string.append(", case4");
-    }
-
-    if (successfulStatusCodes != nullptr) {
-        string.append(", additional successful status codes = ");
-        std::set<int>::const_iterator iterator = successfulStatusCodes->begin();
-        while (iterator != successfulStatusCodes->end()) {
-            string.append(StringHelper::formatSimple("%04X", *iterator));
-            if (iterator != successfulStatusCodes->end()) {
-                string.append(", ");
-            }
-            iterator++;
-        }
-    }
-
-    return string;
 }
 
 bool equals(std::shared_ptr<void> o)

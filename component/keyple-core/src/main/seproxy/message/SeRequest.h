@@ -24,7 +24,6 @@
 #include "ChannelControl.h"
 #include "ApduRequest.h"
 #include "KeypleCoreExport.h"
-#include "SeProtocol.h"
 
 /* Forward declaration */
 namespace keyple {
@@ -41,7 +40,6 @@ namespace seproxy {
 namespace message {
 
 using namespace keyple::core::seproxy;
-using namespace keyple::core::seproxy::protocol;
 
 /**
  * List of APDU requests that will result in a {@link SeResponse}
@@ -63,8 +61,8 @@ public:
      * @param channelState the channel management parameter allowing to close or
      *        keep the channel open after the request execution
      */
-    SeRequest(std::shared_ptr<SeSelector> seSelector,
-              std::vector<std::shared_ptr<ApduRequest>>& apduRequests);
+    SeRequest(const std::shared_ptr<SeSelector> seSelector,
+              const std::vector<std::shared_ptr<ApduRequest>>& apduRequests);
 
     /**
      * Constructor to be used when the SE is already selected (without {@link
@@ -74,21 +72,14 @@ public:
      * @param channelState a flag to tell if the channel has to be closed at the
      *        end
      */
-    SeRequest(std::vector<std::shared_ptr<ApduRequest>>& apduRequests);
-
-    /**
-     *
-     */
-    virtual ~SeRequest()
-    {
-    }
+    SeRequest(const std::vector<std::shared_ptr<ApduRequest>>& apduRequests);
 
     /**
      * Gets the SE seSelector.
      *
      * @return the current SE seSelector
      */
-    std::shared_ptr<SeSelector> getSeSelector() const;
+    const std::shared_ptr<SeSelector> getSeSelector() const;
 
     /**
      * Gets the apdu requests.
@@ -96,7 +87,7 @@ public:
      * @return the group of APDUs to be transmitted to the SE application for
      *         this instance of SERequest.
      */
-    std::vector<std::shared_ptr<ApduRequest>> getApduRequests() const;
+    const std::vector<std::shared_ptr<ApduRequest>>& getApduRequests() const;
 
     /**
      *¬
@@ -113,21 +104,26 @@ public:
 	/**
 	 *
 	 */
-    friend KEYPLECORE_API std::ostream&
-    operator<<(
+    friend KEYPLECORE_API std::ostream& operator<<(
 		std::ostream& os, const std::set<std::shared_ptr<SeRequest>>& s);
+
+    /**
+	 *
+	 */
+    friend KEYPLECORE_API std::ostream& operator<<(
+		std::ostream& os,const std::vector<std::shared_ptr<SeRequest>>& s);
 
 private:
     /**
      * SE seSelector is either an AID or an ATR regular expression
      */
-    std::shared_ptr<SeSelector> seSelector;
+    const std::shared_ptr<SeSelector> seSelector;
 
     /**
      * contains a group of APDUCommand to operate on the selected SE
      * application by the SE reader.
      */
-    std::vector<std::shared_ptr<ApduRequest>> apduRequests;
+    const std::vector<std::shared_ptr<ApduRequest>> apduRequests;
 };
 
 }

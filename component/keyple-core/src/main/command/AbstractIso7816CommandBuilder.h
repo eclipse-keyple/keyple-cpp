@@ -27,7 +27,6 @@ namespace keyple {
 namespace core {
 namespace command {
 
-using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
 /**

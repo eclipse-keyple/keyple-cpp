@@ -105,7 +105,7 @@ public:
      *        internal list
      * @param protocolRule a string use to define how to identify the protocol
      */
-    void addSeProtocolSetting(SeProtocol& seProtocol,
+    void addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol,
                               const std::string& protocolRule) override;
 
     /**
@@ -117,7 +117,8 @@ public:
       *       (astract class, therefore cannot be used in a set/map)
       */
     virtual void setSeProtocolSetting(
-        const std::map<SeProtocol, std::string>& protocolSetting) override;
+        const std::map<std::shared_ptr<SeProtocol>, std::string>&
+            protocolSetting) override;
 
 protected:
     /**
@@ -260,7 +261,7 @@ protected:
      * protocolFlagMatches (e.g. ATR regex for Pcsc plugins, technology name for
      * Nfc plugins, etc).
      */
-    std::map<SeProtocol, std::string> protocolsMap;
+    std::map<std::shared_ptr<SeProtocol>, std::string> protocolsMap;
 
     /**
      * Test if the current protocol matches the provided protocol flag.
@@ -277,7 +278,8 @@ protected:
      * @return true if the current protocol matches the provided protocol flag
      * @throws KeypleReaderException in case of a reader exception
      */
-    virtual bool protocolFlagMatches(const SeProtocol& protocolFlag) = 0;
+    virtual bool protocolFlagMatches(
+        const std::shared_ptr<SeProtocol> protocolFlag) = 0;
 
     /**
      * Do the transmission of all needed requestSet requests contained in the
@@ -291,10 +293,10 @@ protected:
      * @return SeResponseSet the response set
      * @throws KeypleIOReaderException if a reader error occurs
       */
-    std::list<std::shared_ptr<SeResponse>>
-    processSeRequestSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
-                        MultiSeRequestProcessing multiSeRequestProcessing,
-                        ChannelControl channelControl) final override;
+    std::list<std::shared_ptr<SeResponse>> processSeRequestSet(
+        const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+        const MultiSeRequestProcessing& multiSeRequestProcessing,
+        const ChannelControl& channelControl) final override;
 
     /**
      * Executes a request made of one or more Apdus and receives their answers.
@@ -307,8 +309,8 @@ protected:
      * @throws KeypleReaderException if a transmission fails
      */
     std::shared_ptr<SeResponse>
-    processSeRequest(std::shared_ptr<SeRequest> seRequest,
-                     ChannelControl channelControl) final override;
+    processSeRequest(const std::shared_ptr<SeRequest> seRequest,
+                     const ChannelControl& channelControl) final override;
 
     /**
      * Transmits an ApduRequest and receives the ApduResponse
@@ -348,7 +350,8 @@ private:
     /**
      * Predefined "get response" byte array
      */
-    std::vector<uint8_t> getResponseHackRequestBytes;
+    const std::vector<uint8_t> getResponseHackRequestBytes =
+        {0x00, 0xC0, 0x00, 0x00, 0x00};
 
     /**
      * Logical channel status flag
@@ -358,7 +361,7 @@ private:
     /**
      *
      */
-    bool forceGetDataFlag = false;
+    bool mForceGetDataFlag = false;
 
     /**
      * Current AID if any
@@ -390,8 +393,8 @@ private:
      * @return the response to the select application command
      * @throws KeypleIOReaderException if a reader error occurs
      */
-    std::shared_ptr<ApduResponse>
-    processExplicitAidSelection(SeSelector::AidSelector& aidSelector);
+    std::shared_ptr<ApduResponse> processExplicitAidSelection(
+        SeSelector::AidSelector& aidSelector);
 
     /**
      * This method is dedicated to the case where no FCI data is available in
@@ -402,8 +405,8 @@ private:
      *        main AidSelector
      * @return a ApduResponse containing the FCI
      */
-    std::shared_ptr<ApduResponse>
-    recoverSelectionFciData(SeSelector::AidSelector& aidSelector);
+    std::shared_ptr<ApduResponse> recoverSelectionFciData(
+        SeSelector::AidSelector& aidSelector);
 
     /**
      * Implements the logical processSeRequest.
@@ -419,8 +422,8 @@ private:
      * @throws IllegalStateException
      * @throws KeypleReaderException
      */
-    std::shared_ptr<SeResponse>
-    processSeRequestLogical(std::shared_ptr<SeRequest> seRequest);
+    std::shared_ptr<SeResponse> processSeRequestLogical(
+        std::shared_ptr<SeRequest> seRequest);
 
     /**
      * Execute a get response command in order to get outgoing data from

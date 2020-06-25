@@ -115,7 +115,7 @@ public:
     /**
      *
      */
-    const std::set<std::string> getReaderNames() override;
+    const std::set<std::string> getReaderNames() const override;
 
     /**
      *
@@ -125,7 +125,8 @@ public:
     /**
      *
      */
-    std::shared_ptr<SeReader> getReader(const std::string& name) override;
+    const std::shared_ptr<SeReader> getReader(const std::string& name) const
+        override;
 
     /**
      *
@@ -135,20 +136,21 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string>
-    getParameters() override;
+    const std::map<const std::string, const std::string> getParameters() const
+        override;
 
     /**
      *
      */
-    void setParameter(const std::string& key,
-                      const std::string& value) override;
+    void setParameter(const std::string& key, const std::string& value)
+        override;
 
     /**
      *
      */
     void setParameters(
-        const std::map<std::string, std::string>& parameters) override;
+        const std::map<const std::string, const std::string>& parameters)
+        override;
 };
 
 }

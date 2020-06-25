@@ -22,7 +22,6 @@ namespace seproxy {
 namespace event {
 
 using namespace keyple::core::seproxy;
-using namespace keyple::core::seproxy::event;
 
 using NotificationMode = ObservableReader::NotificationMode;
 

@@ -1,19 +1,22 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
+
+#include "CalypsoClassicTransactionEngine.h"
 
 #include "AppendRecordRespPars.h"
 #include "Byte.h"
 #include "ByteArrayUtil.h"
-#include "CalypsoClassicTransactionEngine.h"
 #include "CalypsoUtilities.h"
 #include "CalypsoPo.h"
 #include "CalypsoClassicInfo.h"
@@ -63,8 +66,8 @@ CalypsoClassicTransactionEngine::CalypsoClassicTransactionEngine()
 void CalypsoClassicTransactionEngine::setReaders(
     std::shared_ptr<SeReader> poReader, std::shared_ptr<SeReader> samReader)
 {
-    this->poReader  = poReader;
-    this->samReader = samReader;
+    mPoReader  = poReader;
+    mSamReader = samReader;
 }
 
 void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
@@ -318,13 +321,13 @@ void CalypsoClassicTransactionEngine::processSeMatch(
                  * not available.
                  */
                 this->samResource =
-                    CalypsoUtilities::checkSamAndOpenChannel(samReader);
+                    CalypsoUtilities::checkSamAndOpenChannel(mSamReader);
                 this->samChannelOpen = true;
             }
 
             std::shared_ptr<PoTransaction> poTransaction =
                 std::make_shared<PoTransaction>(
-                    std::make_shared<PoResource>(poReader, calypsoPo),
+                    std::make_shared<PoResource>(mPoReader, calypsoPo),
                     samResource, securitySettings);
 
             doCalypsoReadWriteTransaction(poTransaction, true);

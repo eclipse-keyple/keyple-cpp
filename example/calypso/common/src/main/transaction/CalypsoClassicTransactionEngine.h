@@ -191,7 +191,12 @@ private:
     /**
      *
      */
-    std::shared_ptr<SeReader> poReader, samReader;
+    std::shared_ptr<SeReader> mPoReader;
+        
+    /**
+     *
+     */
+    std::shared_ptr<SeReader> mSamReader;
 
     /**
      *

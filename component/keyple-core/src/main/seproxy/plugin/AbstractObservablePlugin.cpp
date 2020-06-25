@@ -56,7 +56,7 @@ void AbstractObservablePlugin::clearObservers()
 	observers.clear();
 }
 
-int AbstractObservablePlugin::countObservers()
+int AbstractObservablePlugin::countObservers() const
 {
     return observers.size();
 }

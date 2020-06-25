@@ -30,7 +30,6 @@ namespace seproxy {
 namespace event {
 
 using namespace keyple::core::seproxy;
-using namespace keyple::core::seproxy::event;
 
 /**
  * The ObservableReader interface provides the API for observable readers.
@@ -296,7 +295,7 @@ public:
     /**
      * @return the number of observers
      */
-    virtual int countObservers() = 0;
+    virtual int countObservers() const = 0;
 
     /**
      * Starts the SE detection. Once activated, the application can be notified
@@ -307,7 +306,7 @@ public:
      *        SINGLESHOT, the SE detection is stopped until a new call to
      *        startSeDetection is made.
      */
-    virtual void startSeDetection(PollingMode pollingMode) = 0;
+    virtual void startSeDetection(const PollingMode pollingMode) = 0;
 
     /**
      * Stops the SE detection.
@@ -328,10 +327,10 @@ public:
      *        notified even if the selection has failed (ALWAYS) or whether the
      *        SE insertion should be ignored in this case (MATCHED_ONLY).
      */
-    virtual void
-    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
-                                   defaultSelectionsRequest,
-                               NotificationMode notificationMode) = 0;
+    virtual void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        const NotificationMode notificationMode) = 0;
 
     /**
      * A combination of defining the default selection request and starting the
@@ -346,11 +345,11 @@ public:
      *        SE detection is stopped until a new call to startSeDetection is
      *        made.
      */
-    virtual void
-    setDefaultSelectionRequest(std::shared_ptr<AbstractDefaultSelectionsRequest>
-                                   defaultSelectionsRequest,
-                               NotificationMode notificationMode,
-                               PollingMode pollingMode) = 0;
+    virtual void setDefaultSelectionRequest(
+        std::shared_ptr<AbstractDefaultSelectionsRequest>
+            defaultSelectionsRequest,
+        const NotificationMode notificationMode,
+        const PollingMode pollingMode) = 0;
 
     /**
      * Signal sent by the application to the reader to indicate the end of the

@@ -58,8 +58,8 @@ public:
      * @param channelControl indicates if the channel has to be closed at the
      *        end of the processing
      */
-    SeSelection(const MultiSeRequestProcessing multiSeRequestProcessing,
-                const ChannelControl channelControl);
+    SeSelection(MultiSeRequestProcessing multiSeRequestProcessing,
+                ChannelControl channelControl);
 
     /**
      * Alternate constructor for standard usages.
@@ -129,6 +129,24 @@ public:
      */
     std::shared_ptr<AbstractDefaultSelectionsRequest> getSelectionOperation();
 
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const SeSelection& ss);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::unique_ptr<SeSelection>& ss);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<SeSelection>& ss);
+
 private:
     /**
      *
@@ -147,7 +165,7 @@ private:
     /**
      *
      */
-    std::set<std::shared_ptr<SeRequest>> selectionRequestSet;
+    std::vector<std::shared_ptr<SeRequest>> selectionRequestSet;
 
     /**
      *

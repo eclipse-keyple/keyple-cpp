@@ -55,7 +55,7 @@ public:
      */
     SamReadEventCounterCmdBuild(SamRevision& revision,
                                 SamEventCounterOperationType operationType,
-                                int index);
+                                uint8_t index);
 
 private:
     /**

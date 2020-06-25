@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -26,165 +27,94 @@ namespace core {
 namespace seproxy {
 namespace protocol {
 
-using namespace keyple::core::seproxy::protocol;
-
-class KEYPLECORE_API SeCommonProtocols final : public SeProtocol {
+class KEYPLECORE_API SeCommonProtocols {
 public:
-    /* ---- contactless standard / NFC compliant ------------- */
-    static SeCommonProtocols PROTOCOL_ISO14443_4;
-    static SeCommonProtocols PROTOCOL_ISO15693;
-
-    /* ---- contactless proprietary NFC compliant ------------ */
-    static SeCommonProtocols PROTOCOL_ISO14443_3A;
-    static SeCommonProtocols PROTOCOL_ISO14443_3B;
-    static SeCommonProtocols PROTOCOL_JIS_6319_4;
-    static SeCommonProtocols PROTOCOL_NDEF;
-    static SeCommonProtocols PROTOCOL_NDEF_FORMATABLE;
-    static SeCommonProtocols PROTOCOL_NFC_BARCODE;
-    static SeCommonProtocols PROTOCOL_MIFARE_UL;
-    static SeCommonProtocols PROTOCOL_MIFARE_CLASSIC;
-    static SeCommonProtocols PROTOCOL_MIFARE_DESFIRE;
-
-    /* ---- contactless proprietary not NFC compliant -------- */
-    static SeCommonProtocols PROTOCOL_B_PRIME;
-    static SeCommonProtocols PROTOCOL_MEMORY_ST25;
-
-    /* ---- contacts ISO standard ---------------------------- */
-    static SeCommonProtocols PROTOCOL_ISO7816_3;
-
-    /* ---- contacts proprietary ---------------- */
-    static SeCommonProtocols PROTOCOL_HSP;
-
     /**
      *
      */
-    enum class InnerEnum {
-        PROTOCOL_ISO14443_4,
-        PROTOCOL_ISO15693,
-        PROTOCOL_ISO14443_3A,
-        PROTOCOL_ISO14443_3B,
-        PROTOCOL_JIS_6319_4,
-        PROTOCOL_NDEF,
-        PROTOCOL_NDEF_FORMATABLE,
-        PROTOCOL_NFC_BARCODE,
-        PROTOCOL_MIFARE_UL,
-        PROTOCOL_MIFARE_CLASSIC,
-        PROTOCOL_MIFARE_DESFIRE,
-        PROTOCOL_B_PRIME,
-        PROTOCOL_MEMORY_ST25,
-        PROTOCOL_ISO7816_3,
-        PROTOCOL_HSP
-    };
-
-    /**
-     *
-     */
-    const InnerEnum innerEnumValue;
-
-    /**
-     * Constructor
-     */
-    SeCommonProtocols(const std::string& nameValue, InnerEnum innerEnum,
-                      const std::string& name,
-                      TransmissionMode transmissionMode);
-
-    /**
-     *
-     */
-    SeCommonProtocols(const SeCommonProtocols& s);
-
-    /**
-     *
-     */
-    virtual ~SeCommonProtocols();
-
-    /**
-     *
-     */
-    //SeCommonProtocols& operator=(const SeCommonProtocols& s);
-
-    /**
-     *
-     */
-    std::string getName() const override;
-
-    /**
-     *
-     */
-    TransmissionMode getTransmissionMode() const override;
-
-    /**
-     *
-     */
-    static std::vector<SeCommonProtocols> values();
-
-    /**
-     *
-     */
-    int ordinal();
-
-    /**
-     *
-     */
-    std::string toString();
-
-    /**
-     *
-     */
-    static SeCommonProtocols valueOf(const std::string& name);
-
-private:
-    /**
-     *
-     */
-    static std::vector<SeCommonProtocols> valueList;
-
-    /**
-     *
-     */
-    class StaticConstructor {
+    class KEYPLECORE_API SeCommonProtocol final : public SeProtocol {
     public:
+        /**
+         * Constructor
+         */
+        SeCommonProtocol(const std::string& name,
+                         const TransmissionMode& transmissionMode);
+
         /**
          *
          */
-        StaticConstructor();
+        const std::string& getName() const override;
+
+        /**
+         *
+         */
+        const TransmissionMode& getTransmissionMode() const override;
+
+    private:
+        /**
+         *
+         */
+        enum class InnerEnum {
+            PROTOCOL_ISO14443_4,
+            PROTOCOL_ISO15693,
+            PROTOCOL_ISO14443_3A,
+            PROTOCOL_ISO14443_3B,
+            PROTOCOL_JIS_6319_4,
+            PROTOCOL_NDEF,
+            PROTOCOL_NDEF_FORMATABLE,
+            PROTOCOL_NFC_BARCODE,
+            PROTOCOL_MIFARE_UL,
+            PROTOCOL_MIFARE_CLASSIC,
+            PROTOCOL_MIFARE_DESFIRE,
+            PROTOCOL_B_PRIME,
+            PROTOCOL_MEMORY_ST25,
+            PROTOCOL_ISO7816_3,
+            PROTOCOL_HSP
+        };
+
+        /**
+         *
+         */
+        const std::string name;
+
+        /**
+         *
+         */
+        const TransmissionMode transmissionMode;
     };
 
-    /**
-     *
-     */
-    static StaticConstructor staticConstructor;
+        /* ---- contactless standard / NFC compliant ------------- */
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_ISO14443_4;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_ISO15693;
+
+    /* ---- contactless proprietary NFC compliant ------------ */
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_ISO14443_3A;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_ISO14443_3B;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_JIS_6319_4;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_NDEF;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_NDEF_FORMATABLE;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_NFC_BARCODE;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_MIFARE_UL;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_MIFARE_CLASSIC;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_MIFARE_DESFIRE;
+
+    /* ---- contactless proprietary not NFC compliant -------- */
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_B_PRIME;
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_MEMORY_ST25;
+
+    /* ---- contacts ISO standard ---------------------------- */
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_ISO7816_3;
+
+    /* ---- contacts proprietary ---------------- */
+    static const std::shared_ptr<SeCommonProtocol> PROTOCOL_HSP;
 
     /**
      *
      */
-    const std::string nameValue;
-
-    /**
-     *
-     */
-    const std::string name;
-
-    /**
-     *
-     */
-    const TransmissionMode transmissionMode;
+    static const std::vector<std::shared_ptr<SeCommonProtocol>> values;
 };
 
 }
 }
 }
-}
-
-namespace std {
-
-using namespace keyple::core::seproxy::protocol;
-
-template <> struct hash<SeCommonProtocols> {
-    size_t operator()(const SeCommonProtocols& obj) const
-    {
-        return hash<int>()(obj.ordinalValue);
-    }
-};
-
 }

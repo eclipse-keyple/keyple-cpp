@@ -32,7 +32,6 @@ ApduResponse::ApduResponse(
 : bytes(buffer)
 {
     if (buffer.empty()) {
-        logger->debug("empty response\n");
         this->successful = false;
     } else {
         if (buffer.size() < 2) {
@@ -73,48 +72,26 @@ int ApduResponse::getStatusCode() const
 
 const std::vector<uint8_t>& ApduResponse::getBytes() const
 {
-    logger->debug("getBytes - 'bytes' size is %\n", this->bytes.size());
-
     return this->bytes;
 }
 
 std::vector<uint8_t> ApduResponse::getDataOut() const
 {
-    logger->debug("getDataOut - byte size is %\n", this->bytes.size());
-
     if (this->bytes.size() < 2)
         return std::vector<uint8_t>();
 
     return Arrays::copyOfRange(this->bytes, 0, this->bytes.size() - 2);
 }
 
-bool ApduResponse::equals(std::shared_ptr<void> o)
+bool ApduResponse::operator==(const ApduResponse& o) const
 {
-    if (o == shared_from_this()) {
-        return true;
-    }
-
-    if (!(std::static_pointer_cast<ApduResponse>(o) != nullptr)) {
-        return false;
-    }
-
-    std::shared_ptr<ApduResponse> resp =
-        std::static_pointer_cast<ApduResponse>(o);
-
-    return Arrays::equals(resp->getBytes(), this->bytes) &&
-           resp->isSuccessful() == this->successful;
+    return this->bytes == o.bytes &&
+           this->successful == o.successful;
 }
 
-int ApduResponse::hashCode()
+bool ApduResponse::operator!=(const ApduResponse& o) const
 {
-    int hash = 17;
-    hash     = 19 * hash + (this->successful ? 0 : 1);
-    hash     = 31 * hash + (bytes.empty() ? 0 : Arrays::hashCode(bytes));
-    return hash;
-}
-
-void ApduResponse::finalize()
-{
+    return !(*this == o);
 }
 
 std::ostream& operator<<(std::ostream& os, const ApduResponse& r)

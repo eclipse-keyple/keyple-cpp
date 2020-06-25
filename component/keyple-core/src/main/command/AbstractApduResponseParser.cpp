@@ -44,24 +44,24 @@ std::unordered_map<int, std::shared_ptr<StatusProperties>>
 AbstractApduResponseParser::AbstractApduResponseParser(
     const std::shared_ptr<ApduResponse>& response)
 {
-    this->response = response;
+    mResponse = response;
 }
 
 void AbstractApduResponseParser::setApduResponse(
     const std::shared_ptr<ApduResponse>& response)
 {
-    this->response = response;
+    mResponse = response;
 }
 
 const std::shared_ptr<ApduResponse>
     AbstractApduResponseParser::getApduResponse() const
 {
-    return response;
+    return mResponse;
 }
 
 int AbstractApduResponseParser::getStatusCode() const
 {
-    return response->getStatusCode();
+    return mResponse->getStatusCode();
 }
 
 std::shared_ptr<StatusProperties>

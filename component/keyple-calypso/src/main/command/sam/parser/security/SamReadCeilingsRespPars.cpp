@@ -36,7 +36,7 @@ SamReadCeilingsRespPars::SamReadCeilingsRespPars(
 
 std::vector<uint8_t> SamReadCeilingsRespPars::getCeilingsData() const
 {
-    return isSuccessful() ? response->getDataOut() : std::vector<uint8_t>();
+    return isSuccessful() ? mResponse->getDataOut() : std::vector<uint8_t>();
 }
 
 }

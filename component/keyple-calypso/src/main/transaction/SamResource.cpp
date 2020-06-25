@@ -31,33 +31,33 @@ SamResource::SamResource(std::shared_ptr<SeReader> seReader,
                          std::shared_ptr<CalypsoSam> calypsoSam)
 : SeResource<CalypsoSam>(seReader, calypsoSam)
 {
-    samResourceStatus = SamResourceStatus::FREE;
-    samIdentifier     = nullptr;
+    mSamResourceStatus = SamResourceStatus::FREE;
+    mSamIdentifier = nullptr;
 }
 
 bool SamResource::isSamResourceFree()
 {
-    return samResourceStatus == SamResourceStatus::FREE;
+    return mSamResourceStatus == SamResourceStatus::FREE;
 }
 
 void SamResource::setSamIdentifier(SamIdentifier* samIdentifier)
 {
-    this->samIdentifier = samIdentifier;
+    mSamIdentifier = samIdentifier;
 }
 
 bool SamResource::isSamMatching(const SamIdentifier* samIdentifier) const
 {
-    return samIdentifier->matches(this->samIdentifier);
+    return samIdentifier->matches(mSamIdentifier);
 }
 
 bool SamResource::isSamMatching(const SamIdentifier& samIdentifier) const
 {
-    return samIdentifier.matches(this->samIdentifier);
+    return samIdentifier.matches(mSamIdentifier);
 }
 
 void SamResource::setSamResourceStatus(SamResourceStatus samResourceStatus)
 {
-    this->samResourceStatus = samResourceStatus;
+    mSamResourceStatus = samResourceStatus;
 }
 
 }

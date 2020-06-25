@@ -51,12 +51,15 @@ INCLUDE_DIRECTORIES(
 	# Core
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/util
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/selection
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/event
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/local
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/local/monitoring
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/local/state
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/protocol
 
 	# google test and mock
@@ -65,88 +68,84 @@ INCLUDE_DIRECTORIES(
 	${GOOGLETEST_DIRECTORY}/googletest-src/googletest/include
 )
 
-ADD_EXECUTABLE(TU_keyple_util_test
-	# TU keyple util - bertlv
-	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/TLVTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/TagTest.cpp
-
-	# TU keyple util
-	${CMAKE_CURRENT_SOURCE_DIR}/util/ConfigurableTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/ByteArrayUtilTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/CountDownLatchTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/NameableTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/CoreBaseTest.cpp
-
-	# seproxy
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ChannelControl.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ReaderPlugin.cpp
-#	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeProxyServiceTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeReader.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeSelector.cpp
-
-	# seproxy - event
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsRequest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsResponse.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservablePlugin.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservableReader.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/PluginEvent.cpp
-#	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ReaderEventTest.cpp
-
-	# seproxy - message
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/AnswerToReset.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ApduRequestTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ApduResponseTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsRequest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsResponse.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ProxyReader.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SelectionStatus.cpp
-#	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeRequestTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponseTest.cpp
-
-	# seproxy - plugin
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractLocalReader.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractLoggedObservable.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservablePlugin.cpp
-#	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservableReaderTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractSelectionLocalReader.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractStaticPlugin.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractStaticReader.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractThreadedLocalReader.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractThreadedObservablePlugin.cpp
-
-	# seproxy - exception
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleApplicationSelectionException.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleBaseException.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleChannelStateException.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleIOReaderException.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeyplePluginException.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeyplePluginNotFoundException.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleReaderException.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleReaderNotFoundException.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleRuntimeException.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/NoStackTraceThrowable.cpp
-
-	# seproxy - protocol
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/SeCommonProtocols.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/SeProtocol.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/TransmissionMode.cpp
-
-	# selection
-	#${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractMatchingSe.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractSeSelectionRequest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/selection/MatchingSelection.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/selection/SelectionsResult.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/selection/SeResource.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/selection/SeSelection.cpp
+ADD_EXECUTABLE(keyple_core_ut
 
 	# command
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduCommandBuilderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduResponseParserTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractIso7816CommandBuilderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/CommandsTableTest.cpp
+
+	# selection
+	${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractMatchingSeTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractSeSelectionRequestTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/selection/MatchingSelectionTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/selection/SelectionsResultTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/selection/SeResourceTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/selection/SeSelectionTest.cpp
+
+	# seproxy - event
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsRequestTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsResponseTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservablePluginTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservableReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/PluginEventTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ReaderEventTest.cpp
+
+	# seproxy - message
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/AnswerToReset.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ApduRequestTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ApduResponseTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsRequestTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsResponseTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ProxyReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SelectionStatusTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeRequestTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponseTest.cpp
+
+	# util - bertlv
+	${CMAKE_CURRENT_SOURCE_DIR}/util/bertlv/TLVTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/util/bertlv/TagTest.cpp
+
+	# TU keyple util
+	${CMAKE_CURRENT_SOURCE_DIR}/util/ConfigurableTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/util/ByteArrayUtilTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/util/CountDownLatchTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/util/NameableTest.cpp
+
+	# seproxy - plugin - local - monitoring
+
+	# seproxy - plugin - local - state
+
+	# seproxy - plugin - local
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableLocalReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableStateTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/ObservableReaderStateServiceTest.cpp
+
+	# seproxy - plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservablePluginTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractPluginTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractThreadedObservablePluginTest.cpp
+
+	# seproxy
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/AbstractSeProxyComponentTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ReaderPluginTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeProxyServiceTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeReaderTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeSelectorTest.cpp
+
+	# seproxy - protocol
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/SeCommonProtocolsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/SeProtocolTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/TransmissionModeTest.cpp
+
+	#${CMAKE_CURRENT_SOURCE_DIR}/CoreBaseTest.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
 )
 
 SET(LINK_LIBS gtest gmock keyplecore keyplecalypso ${WINSCARD} )
 
-TARGET_LINK_LIBRARIES(TU_keyple_util_test ${LINK_LIBS})
+TARGET_LINK_LIBRARIES(keyple_core_ut ${LINK_LIBS})

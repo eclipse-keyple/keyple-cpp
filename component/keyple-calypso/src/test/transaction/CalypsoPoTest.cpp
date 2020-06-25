@@ -53,13 +53,11 @@ PoRevision CalypsoPoTest::getPoApplicationByte(uint8_t applicationByte)
         std::make_shared<AnswerToReset>(cResp);
     std::vector<std::shared_ptr<ApduResponse>> apduVecteurReponseVide = {
         nullptr};
-    SeCommonProtocols seCommonProtocols =
-        SeCommonProtocols::PROTOCOL_ISO14443_4;
     std::shared_ptr<SeResponse> selectionData = std::make_shared<SeResponse>(
         true, false, std::make_shared<SelectionStatus>(atrData, fciData, true),
         apduVecteurReponseVide);
 
-    TransmissionMode transm = TransmissionMode::NO_MODE;
+    TransmissionMode transm = TransmissionMode::CONTACTLESS;
     std::string extrainfo   = "";
     try {
         /* code */

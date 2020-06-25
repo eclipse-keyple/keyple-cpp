@@ -58,12 +58,12 @@ public:
     /**
      *
      */
-    std::string getName() const override;
+    const std::string& getName() const override;
 
     /**
      *
      */
-    TransmissionMode getTransmissionMode() const override;
+    const TransmissionMode& getTransmissionMode() const override;
 
     /**
      *

@@ -103,16 +103,16 @@ ReadRecordsRespPars::getRecords()
     std::shared_ptr<std::map<int, std::vector<uint8_t>>> records =
         std::make_shared<std::map<int, std::vector<uint8_t>>>();
 
-    if (!response->isSuccessful()) {
+    if (!mResponse->isSuccessful()) {
         /* return an empty map */
         // TODO should we raise an exception?
         return records;
     }
     if (readDataStructure == ReadDataStructure::SINGLE_RECORD_DATA) {
         records->emplace(static_cast<int>(recordNumber),
-                         response->getDataOut());
+                         mResponse->getDataOut());
     } else if (readDataStructure == ReadDataStructure::MULTIPLE_RECORD_DATA) {
-        std::vector<uint8_t> apdu = response->getDataOut();
+        std::vector<uint8_t> apdu = mResponse->getDataOut();
         int apduLen               = apdu.size();
         int index                 = 0;
         while (apduLen > 0) {
@@ -134,7 +134,7 @@ std::shared_ptr<std::map<int, int>> ReadRecordsRespPars::getCounters()
     std::shared_ptr<std::map<int, int>> counters =
         std::make_shared<std::map<int, int>>();
 
-    if (!response->isSuccessful()) {
+    if (!mResponse->isSuccessful()) {
         /* return an empty map */
         // TODO should we raise an exception?
         return counters;
@@ -142,7 +142,7 @@ std::shared_ptr<std::map<int, int>> ReadRecordsRespPars::getCounters()
 
     if (readDataStructure == ReadDataStructure::SINGLE_COUNTER ||
         readDataStructure == ReadDataStructure::MULTIPLE_COUNTER) {
-        std::vector<uint8_t> apdu = response->getDataOut();
+        std::vector<uint8_t> apdu = mResponse->getDataOut();
         int numberOfCounters      = apdu.size() / 3;
         int index                 = 0;
         int key                   = 1; // the first counter is indexed 1

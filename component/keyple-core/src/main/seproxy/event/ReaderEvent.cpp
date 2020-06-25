@@ -22,7 +22,6 @@ namespace seproxy {
 namespace event {
 
 using namespace keyple::core::seproxy::message;
-using namespace keyple::core::seproxy::event;
 
 using EventType = ReaderEvent::EventType;
 
@@ -61,9 +60,9 @@ EventType::EventType(const EventType& o)
 {
 }
 
-std::string EventType::getName()
+const std::string& EventType::getName() const
 {
-    return this->name;
+    return name;
 }
 
 bool EventType::operator==(const EventType& other) const
@@ -113,17 +112,17 @@ ReaderEvent::ReaderEvent(const std::string& pluginName,
 {
 }
 
-std::string ReaderEvent::getPluginName()
+const std::string& ReaderEvent::getPluginName() const
 {
     return pluginName;
 }
 
-std::string ReaderEvent::getReaderName()
+const std::string& ReaderEvent::getReaderName() const
 {
     return readerName;
 }
 
-ReaderEvent::EventType ReaderEvent::getEventType()
+const ReaderEvent::EventType& ReaderEvent::getEventType() const
 {
     return eventType;
 }

@@ -37,7 +37,7 @@ StubPluginImpl::StubPluginImpl(const std::string& pluginName)
 }
 
 const std::map<const std::string, const std::string>
-StubPluginImpl::getParameters()
+    StubPluginImpl::getParameters() const
 {
     return parameters;
 }

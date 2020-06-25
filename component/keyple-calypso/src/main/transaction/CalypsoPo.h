@@ -72,7 +72,8 @@ public:
      * @param extraInfo information string
      */
     CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
-              TransmissionMode transmissionMode, const std::string& extraInfo);
+              const TransmissionMode& transmissionMode,
+              const std::string& extraInfo);
 
     /**
      * The PO revision indicates the generation of the product presented.

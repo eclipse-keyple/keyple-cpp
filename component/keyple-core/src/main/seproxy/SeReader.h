@@ -91,8 +91,9 @@ public:
      *        internal list
      * @param protocolRule a string use to define how to identify the protocol
      */
-    virtual void addSeProtocolSetting(SeProtocol& seProtocol,
-                                      const std::string& protocolRule) = 0;
+    virtual void addSeProtocolSetting(
+        std::shared_ptr<SeProtocol> seProtocol,
+        const std::string& protocolRule) = 0;
 
     /**
      * Complete the current setting map with the provided map
@@ -100,12 +101,13 @@ public:
      * @param protocolSetting the protocol setting map
      */
     virtual void setSeProtocolSetting(
-        const std::map<SeProtocol, std::string>& protocolSetting) = 0;
+        const std::map<std::shared_ptr<SeProtocol>,
+                       std::string>& protocolSetting) = 0;
 
     /**
      * @return the transmission mode in use with this SE reader
      */
-    virtual TransmissionMode getTransmissionMode() = 0;
+    virtual const TransmissionMode& getTransmissionMode() const = 0;
 
     /**
      *

@@ -1,16 +1,19 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #include <stdio.h>
+#include <sstream>
 
 #include "Matcher.h"
 #include "Pattern.h"
@@ -32,9 +35,7 @@ bool Matcher::match(int from, int anchor)
     (void)from;
     (void)anchor;
 
-    /* Alex: let's stop here the Java code copy and try to use C++ regex */
-    std::regex word_regex(parentPattern->pattern);
-    if (std::regex_search(text, word_regex))
+    if (std::regex_search(text, parentPattern->pattern))
         return true;
 
     return false;
@@ -42,41 +43,16 @@ bool Matcher::match(int from, int anchor)
 
 bool Matcher::matches()
 {
-    return match(from, ENDANCHOR);
+    return match(mFrom, ENDANCHOR);
 }
 
 std::string Matcher::replaceAll(std::string replacement)
 {
-    (void)replacement;
-    std::string init_string = text;
-    std::string result;
-    bool bDone = true;
+   std::stringstream ss;
 
-    for (unsigned int index = 0; index < parentPattern->pattern.size();
-         index++) {
-        char sBuf[4];
+   ss << std::regex_replace(text, parentPattern->pattern, replacement);
 
-        snprintf(sBuf, sizeof(sBuf), "%c", parentPattern->pattern[index]);
-        std::string find = sBuf;
-        size_t find_len  = find.size();
-        size_t pos, from = 0;
-        while (std::string::npos != (pos = init_string.find(find, from))) {
-            result.append(init_string, from, pos - from);
-            result.append(replacement);
-            from  = pos + find_len;
-            bDone = true;
-        }
-        if (bDone) {
-            bDone = false;
-            result.append(init_string, from, std::string::npos);
-        }
-        init_string.clear();
-        init_string = result;
-    }
-    return init_string;
-
-    //    /* To be implemented */
-    //    return text;
+   return ss.str();
 }
 
 bool Matcher::find()
@@ -86,11 +62,11 @@ bool Matcher::find()
         nextSearchIndex++;
 
     /* If next search starts before region, start it at region */
-    if (nextSearchIndex < from)
-        nextSearchIndex = from;
+    if (nextSearchIndex < mFrom)
+        nextSearchIndex = mFrom;
 
     /* If next search starts beyond region then it fails */
-    if (nextSearchIndex > to) {
+    if (nextSearchIndex > mTo) {
         //for (int i = 0; i < (int)groups.size(); i++)
         //    groups[i] = -1;
         return false;
@@ -128,9 +104,8 @@ std::string Matcher::group()
 bool Matcher::search(int from)
 {
     subs = text.substr(from, text.length() - from);
-    std::regex word_regex(parentPattern->pattern);
 
-    if (std::regex_search(subs, groups, word_regex))
+    if (std::regex_search(subs, groups, parentPattern->pattern))
         return true;
 
     return false;
@@ -153,8 +128,8 @@ Matcher* Matcher::reset()
         locals[i] = -1;
 
     lastAppendPosition = 0;
-    from               = 0;
-    to                 = getTextLength();
+    mFrom = 0;
+    mTo = getTextLength();
 
     return this;
 }

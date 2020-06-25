@@ -66,7 +66,7 @@ public:
      */
     virtual std::shared_ptr<AbstractPoResponseParser> getResponseParser()
     {
-        return poResponseParser;
+        return mPoResponseParser;
     }
 
     /**
@@ -75,7 +75,7 @@ public:
     virtual void setResponseParser(
         std::shared_ptr<AbstractPoResponseParser> poResponseParser)
     {
-        this->poResponseParser = poResponseParser;
+        mPoResponseParser = poResponseParser;
     }
 
 private:
@@ -87,7 +87,7 @@ private:
     /**
      *
      */
-    std::shared_ptr<AbstractPoResponseParser> poResponseParser;
+    std::shared_ptr<AbstractPoResponseParser> mPoResponseParser;
 };
 
 }

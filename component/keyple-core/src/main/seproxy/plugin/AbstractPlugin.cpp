@@ -45,7 +45,7 @@ std::set<std::shared_ptr<SeReader>>& AbstractPlugin::getReaders()
     return readers;
 }
 
-const std::set<std::string> AbstractPlugin::getReaderNames()
+const std::set<std::string> AbstractPlugin::getReaderNames() const
 {
     std::set<std::string> readerNames;
 
@@ -63,12 +63,12 @@ int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
 /*
  * Alex: consider note in header comment (covariant return type).
  */
-std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string& name)
+const std::shared_ptr<SeReader> AbstractPlugin::getReader(
+    const std::string& name) const
 {
     for (auto reader : readers) {
         if (reader->getName() == name) {
-            return std::shared_ptr<SeReader>(
-                std::dynamic_pointer_cast<SeReader>(reader));
+            return reader;
         }
     }
 
