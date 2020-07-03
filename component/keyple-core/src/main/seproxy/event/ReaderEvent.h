@@ -244,7 +244,7 @@ private:
      * instantiated externally, we use DefaultSelectionsResponse here to keep
      * ReaderEvent serializable
      */
-    const std::shared_ptr<DefaultSelectionsResponse> defaultResponseSet;
+    const std::shared_ptr<DefaultSelectionsResponse> defaultResponses;
 };
 
 }

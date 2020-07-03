@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,6 +18,32 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 namespace event {
+
+AbstractDefaultSelectionsRequest::AbstractDefaultSelectionsRequest(
+  std::vector<std::shared_ptr<SeRequest>> selectionSeRequests,
+  const MultiSeRequestProcessing& multiSeRequestProcessing,
+  const ChannelControl& channelControl)
+: mSelectionSeRequests(selectionSeRequests),
+  mMultiSeRequestProcessing(multiSeRequestProcessing),
+  mChannelControl(channelControl) {}
+
+const std::vector<std::shared_ptr<SeRequest>>&
+    AbstractDefaultSelectionsRequest::getSelectionSeRequests() const
+{
+    return mSelectionSeRequests;
+}
+
+const MultiSeRequestProcessing&
+    AbstractDefaultSelectionsRequest::getMultiSeRequestProcessing() const
+{
+    return mMultiSeRequestProcessing;
+}
+
+const ChannelControl& AbstractDefaultSelectionsRequest::getChannelControl()
+    const
+{
+    return mChannelControl;
+}
 
 }
 }

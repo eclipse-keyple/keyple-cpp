@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -21,10 +21,9 @@
 /* Core */
 #include "AbstractSeProxyComponent.h"
 #include "DefaultSelectionsRequest.h"
-#include "KeypleChannelControlException.h"
 #include "KeypleCoreExport.h"
-#include "KeypleIOReaderException.h"
-#include "KeypleReaderException.h"
+#include "KeypleReaderIOException.h"
+#include "ObservableReader.h"
 #include "ProxyReader.h"
 
 namespace keyple {
@@ -37,10 +36,7 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
-using namespace keyple::core::util;
 using namespace keyple::common;
-
-using ReaderObserver = ObservableReader::ReaderObserver;
 
 /**
  * Abstract definition of an observable reader.
@@ -83,26 +79,17 @@ public:
      * <p>
      * As the method is final, it cannot be extended.
      *
-     * @param requestSet the request set
+     * @param seRequests the request set
      * @param multiSeRequestProcessing the multi SE request processing mode
      * @param channelControl the channel control indicator
      * @return the response set
-     * @throws KeypleReaderException if a reader error occurs
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
-    std::list<std::shared_ptr<SeResponse>> transmitSet(
-        const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+    std::vector<std::shared_ptr<SeResponse>> transmitSeRequests(
+        const std::vector<std::shared_ptr<SeRequest>>& seRequests,
         const MultiSeRequestProcessing& multiSeRequestProcessing,
         const ChannelControl& channelControl) override;
-
-    /**
-     * Simplified version of transmitSet for standard use.
-     *
-     * @param requestSet the request set
-     * @return the response set
-     * @throws KeypleReaderException if a reader error occurs
-     */
-    std::list<std::shared_ptr<SeResponse>> transmitSet(
-        const std::vector<std::shared_ptr<SeRequest>>& requestSet) override;
 
     /**
      * Execute the transmission of a {@link SeRequest} and returns a
@@ -115,20 +102,11 @@ public:
      *
      * @param seRequest the request to be transmitted
      * @return the received response
-     * @throws KeypleReaderException if a reader error occurs
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
-    std::shared_ptr<SeResponse>transmit(
+    std::shared_ptr<SeResponse>transmitSeRequest(
         std::shared_ptr<SeRequest> seRequest, ChannelControl channelControl)
-        override;
-
-    /**
-     * Simplified version of transmit for standard use.
-     *
-     * @param seRequest the request to be transmitted
-     * @return the received response
-     * @throws KeypleReaderException if a reader error occurs
-     */
-    std::shared_ptr<SeResponse> transmit(std::shared_ptr<SeRequest> seRequest)
         override;
 
     /**
@@ -181,16 +159,17 @@ protected:
      * <p>
      * This method is handled by transmitSet.
      *
-     * @param requestSet the Set of {@link SeRequest} to be processed
+     * @param seRequests a {@link List} of {@link SeRequest} to be processed
      * @param multiSeRequestProcessing the multi se processing mode
      * @param channelControl indicates if the channel has to be closed at the
      *        end of the processing
      * @return the List of {@link SeResponse} (responses to the Set of {@link
      *         SeRequest})
-     * @throws KeypleReaderException if reader error occurs
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
-    virtual std::list<std::shared_ptr<SeResponse>> processSeRequestSet(
-        const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+    virtual std::vector<std::shared_ptr<SeResponse>> processSeRequests(
+        const std::vector<std::shared_ptr<SeRequest>>& seRequests,
         const MultiSeRequestProcessing& multiSeRequestProcessing,
         const ChannelControl& channelControl) = 0;
 
@@ -204,7 +183,8 @@ protected:
      * @param channelControl a flag indicating if the channel has to be closed
      *        after the processing of the {@link SeRequest}
      * @return the {@link SeResponse} (responses to the {@link SeRequest})
-     * @throws KeypleReaderException if reader error occurs
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     virtual std::shared_ptr<SeResponse> processSeRequest(
         const std::shared_ptr<SeRequest> seRequest,
@@ -214,18 +194,18 @@ private:
     /**
      * Logger
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(AbstractReader));
 
     /**
      * Timestamp recorder
      */
-    long long before = 0;
+    long long mBefore = 0;
 
     /**
      *  Contains the name of the plugin
      */
-    const std::string pluginName;
+    const std::string mPluginName;
 };
 
 }

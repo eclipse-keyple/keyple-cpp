@@ -12,30 +12,25 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "AbstractSeProxyComponent.h"
+#pragma once
+
+#include "Error.h"
 
 namespace keyple {
-namespace core {
-namespace seproxy {
+namespace common {
 
-AbstractSeProxyComponent::AbstractSeProxyComponent(const std::string& name)
-: mName(name)
-{
-}
+class AssertionError : public Error {
+public:
+    /**
+     *
+     */
+    AssertionError() : Error() {}
 
-const std::string& AbstractSeProxyComponent::getName() const
-{
-    return mName;
-}
+    /**
+     *
+     */
+    AssertionError(const std::string& msg) : Error(msg) {}
+};
 
-void AbstractSeProxyComponent::setParameters(
-    const std::map<const std::string, const std::string>& parameters)
-{
-    for (const auto& en : parameters)
-        setParameter(en.first, en.second);
-
-}
-
-}
 }
 }

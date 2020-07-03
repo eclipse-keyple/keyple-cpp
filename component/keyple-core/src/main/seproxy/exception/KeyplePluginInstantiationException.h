@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -16,23 +16,37 @@
 #include <string>
 #include <memory>
 
-#include "KeypleBaseException.h"
+#include "KeyplePluginException.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace exception {
 
-class KeyplePluginInstantiationException : public KeypleBaseException {
+/**
+ * The exception {@code KeyplePluginInstantiationException} indicates that the
+ * plugin cannot be instantiated, possibly due to a problem with one of the
+ * associated readers.
+ */
+class KeyplePluginInstantiationException : public KeyplePluginException {
 public:
+    /**
+     * @param message the message to identify the exception context
+     */
     KeyplePluginInstantiationException(const std::string& msg)
-    : KeypleBaseException(msg)
+    : KeyplePluginException(msg)
     {
     }
 
-    KeyplePluginInstantiationException(const std::string& msg,
-                                       std::exception& cause)
-    : KeypleBaseException(msg, cause)
+    /**
+     * Encapsulates a lower level plugin exception
+     *
+     * @param message message to identify the exception context
+     * @param cause the cause
+     */
+    KeyplePluginInstantiationException(
+      const std::string& msg, std::exception& cause)
+    : KeyplePluginException(msg, cause)
     {
     }
 };

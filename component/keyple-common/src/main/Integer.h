@@ -4,7 +4,7 @@
 
 /* Common */
 #include "Character.h"
-#include "exceptionhelper.h"
+#include "NumberFormatException.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -32,10 +32,10 @@ private:
 public:
     /*
      * Constructor
-     * 
+     *
      * Constructs a newly allocated Integer object that represents the
      * specified int value.
-     * 
+     *
      * @param value the value to be represeneed by the Integer object
      */
     Integer(int value)
@@ -60,9 +60,9 @@ public:
      * is converted to signed decimal representation and returned as a string,
      * exactly as if the argument and radix 10 were given as arguments to the
      * method.
-     * 
+     *
      * @param i an integer to be converted
-     * 
+     *
      * @return a string representation of the argument in base 10
      */
     static std::string toString(int i)
@@ -75,7 +75,7 @@ public:
      * converted to signed decimal representation and returned as a string,
      * exactly as if the integer value were given as an argument to the
      * toString method.
-     * 
+     *
      * @return a string representation of the value of this object in base 10
      */
     std::string toString()

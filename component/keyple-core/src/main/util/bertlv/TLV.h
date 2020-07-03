@@ -97,17 +97,17 @@ private:
     /**
      *
      */
-    int length = 0;
+    int mLength = 0;
 
     /**
      *
      */
-    const std::vector<uint8_t> binary;
+    const std::vector<uint8_t> mBinary;
 
     /**
      *
      */
-    int position = 0;
+    int mPosition = 0;
 };
 
 }

@@ -13,6 +13,11 @@
  ******************************************************************************/
 
 #include "SeProxyService.h"
+
+/* Common */
+#include "IllegalArgumentException.h"
+
+/* Core */
 #include "ReaderPlugin.h"
 #include "KeyplePluginInstantiationException.h"
 #include "KeyplePluginNotFoundException.h"

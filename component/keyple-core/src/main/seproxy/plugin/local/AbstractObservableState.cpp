@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -16,11 +16,11 @@
 
 #include <chrono>
 
+/* Common */
+#include "AssertionError.h"
+
 /* Core */
 #include "AbstractObservableLocalReader.h"
-
-/* Common */
-#include "exceptionhelper.h"
 
 namespace keyple {
 namespace core {

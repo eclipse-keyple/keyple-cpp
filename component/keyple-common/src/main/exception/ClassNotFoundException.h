@@ -14,24 +14,25 @@
 
 #pragma once
 
-#include <string>
-#include <stdexcept>
-#include <memory>
-
-#include "KeypleReaderException.h"
+#include "Exception.h"
 
 namespace keyple {
-namespace core {
-namespace seproxy {
-namespace exception {
+namespace common {
 
-/**
- * Application selection failure in {@link ProxyReader} by AID or ATR
- */
-class KeypleApplicationSelectionException : public KeypleReaderException {
+class ClassNotFoundException : public Exception {
+public:
+    /**
+     *
+     */
+    ClassNotFoundException(const std::string& message) : Exception(message) {}
+
+    /**
+     *
+     */
+    ClassNotFoundException(
+      const std::string& message, const std::exception cause)
+    : Exception(message, cause) {}
 };
 
-}
-}
 }
 }

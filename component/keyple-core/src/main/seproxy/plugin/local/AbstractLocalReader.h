@@ -19,8 +19,6 @@
 #include <string>
 #include <vector>
 
-#include "exceptionhelper.h"
-
 /* Common */
 #include "LoggerFactory.h"
 #include "System.h"
@@ -31,7 +29,6 @@
 #include "ApduResponse.h"
 #include "ByteArrayUtil.h"
 #include "ChannelControl.h"
-#include "KeypleApplicationSelectionException.h"
 #include "KeypleCoreExport.h"
 #include "MultiSeRequestProcessing.h"
 #include "ObservableReader.h"
@@ -74,9 +71,7 @@ public:
     /**
      *
      */
-    virtual ~AbstractLocalReader()
-    {
-    }
+    virtual ~AbstractLocalReader() {}
 
     /**
      * Check the presence of a SE
@@ -87,6 +82,8 @@ public:
      * be refreshed through a call to the cardRemoved method.
      *
      * @return true if the SE is present
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     bool isSePresent() override;
 
@@ -94,8 +91,9 @@ public:
      * Tells if a logical channel is open
      *
      * @return true if the logical channel is open
+     * @deprecated will change in a later version
      */
-    bool isLogicalChannelOpen();
+    virtual bool isLogicalChannelOpen() const final;
 
     /**
      * Defines the protocol setting Map to allow SE to be differentiated
@@ -121,6 +119,17 @@ public:
             protocolSetting) override;
 
 protected:
+
+    /**
+     * PO selection map associating seProtocols and selection strings.
+     * <p>
+     * The String associated with a particular protocol can be anything that is
+     * relevant to be interpreted by reader plugins implementing
+     * protocolFlagMatches (e.g. ATR regex for Pcsc plugins, technology name for
+     * Nfc plugins, etc).
+     */
+    std::map<std::shared_ptr<SeProtocol>, std::string> mProtocolsMap;
+
     /**
      * Wrapper for the native method of the plugin specific local reader to
      * verify the presence of the SE.
@@ -131,12 +140,15 @@ protected:
      * This method is invoked by isSePresent.
      *
      * @return true if the SE is present
-     * @throws NoStackTraceThrowable exception without stack trace
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     virtual bool checkSePresence() = 0;
 
     /**
      * Close both logical and physical channels
+     *
+     * @deprecated will change in a later version
      */
     void closeLogicalAndPhysicalChannels();
 
@@ -185,7 +197,9 @@ protected:
      * @param seSelector the targeted application SE selector
      * @return the SelectionStatus containing the actual selection result (ATR
      *         and/or FCI and the matching status flag).
-     * @throws KeypleIOReaderException if a reader error occurs
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
+     * @deprecated will change in a later version
      */
     virtual std::shared_ptr<SelectionStatus>
         openLogicalChannel(std::shared_ptr<SeSelector> seSelector);
@@ -214,9 +228,9 @@ protected:
      *         FCI and a flag giving the selection process result. When ATR or
      *         FCI are not available, they are set to null but they can't be
      *         both null at the same time.
-     * @throws KeypleIOReaderException if a reader error occurs
-     * @throws KeypleApplicationSelectionException if the application selection
-     *         fails
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
+     * @deprecated will change in a later version
      */
     std::shared_ptr<SelectionStatus>
         openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector);
@@ -224,7 +238,8 @@ protected:
     /**
      * Attempts to open the physical channel
      *
-     * @throws KeypleChannelStateException if the channel opening fails
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     virtual void openPhysicalChannel() = 0;
 
@@ -234,7 +249,8 @@ protected:
      * This method must be implemented by the ProxyReader plugin (e.g.
      * Pcsc/Nfc/Omapi Reader).
      *
-     * @throws KeypleChannelStateException if a reader error occurs
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     virtual void closePhysicalChannel() = 0;
 
@@ -250,18 +266,10 @@ protected:
 
     /**
      * Close the logical channel.
+     *
+     * @deprecated will change in a later version
      */
     void closeLogicalChannel();
-
-    /**
-     * PO selection map associating seProtocols and selection strings.
-     * <p>
-     * The String associated with a particular protocol can be anything that is
-     * relevant to be interpreted by reader plugins implementing
-     * protocolFlagMatches (e.g. ATR regex for Pcsc plugins, technology name for
-     * Nfc plugins, etc).
-     */
-    std::map<std::shared_ptr<SeProtocol>, std::string> protocolsMap;
 
     /**
      * Test if the current protocol matches the provided protocol flag.
@@ -276,27 +284,34 @@ protected:
      *
      * @param protocolFlag the protocol flag
      * @return true if the current protocol matches the provided protocol flag
-     * @throws KeypleReaderException in case of a reader exception
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     virtual bool protocolFlagMatches(
         const std::shared_ptr<SeProtocol> protocolFlag) = 0;
 
     /**
-     * Do the transmission of all needed requestSet requests contained in the
-     * provided requestSet according to the protocol flag selection logic. The
-     * responseSet responses are returned in the responseSet object. The
-     * requestSet requests are ordered at application level and the responses
-     * match this order. When a requestSet is not matching the current PO, the
-     * responseSet responses pushed in the responseSet object is set to null.
+     * Do the transmission of all requests according to the protocol flag
+     * selection logic.<br>
+     * <br>
+     * The received responses are returned as {@link List} of {@link SeResponse}
+     * The requests are ordered at application level and the responses match
+     * this order.<br>
+     * When a request is not matching the current PO, the response responses
+     * pushed in the response List object is set to null.
      *
-     * @param requestSet the request set
-     * @return SeResponseSet the response set
-     * @throws KeypleIOReaderException if a reader error occurs
-      */
-    std::list<std::shared_ptr<SeResponse>> processSeRequestSet(
-        const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+     * @param seRequests the request list
+     * @param multiSeRequestProcessing the multi se processing mode
+     * @param channelControl indicates if the channel has to be closed at the
+     *        end of the processing
+     * @return the response list
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
+     */
+    std::vector<std::shared_ptr<SeResponse>> processSeRequests(
+        const std::vector<std::shared_ptr<SeRequest>>& seRequests,
         const MultiSeRequestProcessing& multiSeRequestProcessing,
-        const ChannelControl& channelControl) final override;
+        const ChannelControl& channelControl) final;
 
     /**
      * Executes a request made of one or more Apdus and receives their answers.
@@ -306,11 +321,24 @@ protected:
      *
      * @param seRequest the SeRequest
      * @return the SeResponse to the SeRequest
-     * @throws KeypleReaderException if a transmission fails
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
-    std::shared_ptr<SeResponse>
-    processSeRequest(const std::shared_ptr<SeRequest> seRequest,
-                     const ChannelControl& channelControl) final override;
+    std::shared_ptr<SeResponse> processSeRequest(
+        const std::shared_ptr<SeRequest> seRequest,
+        const ChannelControl& channelControl) final;
+
+
+    /**
+     * Indicates whether this array of bytes starts with this other one
+     *
+     * @param source the byte array to examine
+     * @param match the byte array to compare in <code>source</code>
+     * @return true if the starting bytes of <code>source</code> equal
+     *         <code>match</code>
+     */
+    static bool startsWith(const std::vector<uint8_t>& source,
+                           const std::vector<uint8_t>& match);
 
     /**
      * Transmits an ApduRequest and receives the ApduResponse
@@ -320,10 +348,11 @@ protected:
      *
      * @param apduRequest APDU request
      * @return APDU response
-     * @throws KeypleIOReaderException Exception faced
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
-    std::shared_ptr<ApduResponse>
-    processApduRequest(std::shared_ptr<ApduRequest> apduRequest);
+    std::shared_ptr<ApduResponse> processApduRequest(
+        std::shared_ptr<ApduRequest> apduRequest);
 
     /**
      * Transmits a single APDU and receives its response.
@@ -334,7 +363,8 @@ protected:
      *
      * @param apduIn byte buffer containing the ingoing data
      * @return apduResponse byte buffer containing the outgoing data.
-     * @throws KeypleIOReaderException if the transmission fails
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
 
     virtual std::vector<uint8_t> transmitApdu(
@@ -344,19 +374,19 @@ private:
     /**
      * Logger
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(AbstractLocalReader));
 
     /**
      * Predefined "get response" byte array
      */
-    const std::vector<uint8_t> getResponseHackRequestBytes =
+    const std::vector<uint8_t> mGetResponseHackRequestBytes =
         {0x00, 0xC0, 0x00, 0x00, 0x00};
 
     /**
      * Logical channel status flag
      */
-    bool logicalChannelIsOpen = false;
+    bool mLogicalChannelIsOpen = false;
 
     /**
      *
@@ -366,24 +396,17 @@ private:
     /**
      * Current AID if any
      */
-    std::shared_ptr<SeSelector::AidSelector::IsoAid> aidCurrentlySelected;
+    std::vector<uint8_t> mAidCurrentlySelected;
 
     /**
      * Current selection status
      */
-    std::shared_ptr<SelectionStatus> currentSelectionStatus;
-
-    /**
-     * Notification status flag used to avoid redundant notifications
-     *
-     * /!\ clang compiler error - field not used
-     */
-    //bool presenceNotified = false;
+    std::shared_ptr<SelectionStatus> mCurrentSelectionStatus;
 
     /**
      * Timestamp recorder
      */
-    long long before = 0;
+    long long mBefore = 0;
 
     /**
      * Executes the selection application command and returns the requested data
@@ -391,7 +414,8 @@ private:
      *
      * @param aidSelector the selection parameters
      * @return the response to the select application command
-     * @throws KeypleIOReaderException if a reader error occurs
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     std::shared_ptr<ApduResponse> processExplicitAidSelection(
         SeSelector::AidSelector& aidSelector);
@@ -404,6 +428,8 @@ private:
      * @param aidSelector used to retrieve the successful status codes from the
      *        main AidSelector
      * @return a ApduResponse containing the FCI
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     std::shared_ptr<ApduResponse> recoverSelectionFciData(
         SeSelector::AidSelector& aidSelector);
@@ -411,16 +437,16 @@ private:
     /**
      * Implements the logical processSeRequest.
      * <p>
-     * This method is called by processSeRequestSet and processSeRequest.
+     * This method is called by processSeRequests and processSeRequest.
      * <p>
      * It opens both physical and logical channels if needed.
      * <p>
-     * The logical channel is closed when CLOSE_AFTER is requested.
+     * The logical channel is closed when requested.
      *
-     * @param seRequest
+     * @param seRequest the {@link SeRequest} to be sent
      * @return seResponse
-     * @throws IllegalStateException
-     * @throws KeypleReaderException
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     std::shared_ptr<SeResponse> processSeRequestLogical(
         std::shared_ptr<SeRequest> seRequest);
@@ -434,7 +460,8 @@ private:
      * @param originalStatusCode the status code of the command that didn't
      *        return data
      * @return ApduResponse the response to the get response command
-     * @throws KeypleIOReaderException if the transmission fails.
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     std::shared_ptr<ApduResponse> case4HackGetResponse(int originalStatusCode);
 };

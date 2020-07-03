@@ -11,6 +11,12 @@ public:
      *
      */
     InterruptedException(const std::string& name) : Exception(name) {}
+
+    /**
+     *
+     */
+    InterruptedException(const std::string& name, const std::exception& cause)
+    : Exception(name, cause) {}
 };
 
 }

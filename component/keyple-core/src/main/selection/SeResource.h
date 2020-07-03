@@ -27,20 +27,31 @@ namespace selection {
 using namespace keyple::core::seproxy;
 
 /**
- * The SeResource class groups a AbstractMatchingSe and its associated SeReader
+ * The SeResource class groups a AbstractMatchingSe and its associated
+ * SeReader<br>
+ * TODO This class should be final.<br>
+ * For the moment, it is not, awaiting the rewriting of the code of a client
+ * class in Keyple-Calypso.
  */
 template <typename T>
 class SeResource : public std::enable_shared_from_this<SeResource<T>> {
     static_assert(std::is_base_of<AbstractMatchingSe, T>::value,
                   "T must inherit from AbstractMatchingSe");
-
 public:
+    /**
+     * Constructor
+     *
+     * @param seReader the {@link SeReader} with which the SE is communicating
+     * @param matchingSe the {@link AbstractMatchingSe} information structure
+     */
+    SeResource(std::shared_ptr<SeReader> seReader,
+               std::shared_ptr<T> matchingSe)
+    : seReader(seReader), matchingSe(matchingSe) {}
+
     /**
      *
      */
-    virtual ~SeResource()
-    {
-    }
+    virtual ~SeResource() {}
 
     /**
      * @return the current {@link SeReader} for this SE
@@ -56,19 +67,6 @@ public:
     virtual std::shared_ptr<T> getMatchingSe()
     {
         return matchingSe;
-    }
-
-protected:
-    /**
-     * Constructor
-     *
-     * @param seReader the {@link SeReader} with which the SE is communicating
-     * @param matchingSe the {@link AbstractMatchingSe} information structure
-     */
-    SeResource(std::shared_ptr<SeReader> seReader,
-               std::shared_ptr<T> matchingSe)
-    : seReader(seReader), matchingSe(matchingSe)
-    {
     }
 
 private:

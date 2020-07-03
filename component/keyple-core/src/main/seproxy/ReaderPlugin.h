@@ -18,32 +18,22 @@
 #include <string>
 
 /* Core */
-#include "Configurable.h"
 #include "KeypleCoreExport.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Nameable.h"
-
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-class SeReader;
-}
-}
-}
+#include "SeReader.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 
+using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::exception;
-using namespace keyple::core::util;
 
 /**
     * Card readers plugin interface.
     */
 class KEYPLECORE_API ReaderPlugin
-: public virtual Nameable, public virtual Configurable {
+: public virtual ProxyElement {
 public:
     /**
      *
@@ -60,10 +50,11 @@ public:
     /**
      * Gets the readers.
      *
-     * @return list of connected readers in this plugin, can be an empty list,
-     *         can not be null;
+     * @return the map of this plugin's connected reader's name and instance,
+     *         can be an empty list, can not be null;
      */
-    virtual std::set<std::shared_ptr<SeReader>>& getReaders() = 0;
+    virtual std::map<const std::string, std::shared_ptr<SeReader>>& getReaders()
+        = 0;
 
     /**
      * Gets the reader whose name is provided as an argument
@@ -73,7 +64,7 @@ public:
      * @throws KeypleReaderNotFoundException if the wanted reader is not found
      */
     virtual const std::shared_ptr<SeReader> getReader(const std::string& name)
-        const = 0;
+        = 0;
 };
 
 }

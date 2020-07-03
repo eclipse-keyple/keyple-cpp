@@ -15,6 +15,12 @@
 #include <iostream>
 
 #include "AbstractMatchingSe.h"
+
+/* Common */
+#include "IllegalStateException.h"
+
+/* Core*/
+#include "ApduResponse.h"
 #include "SeResponse.h"
 #include "SelectionStatus.h"
 
@@ -22,58 +28,65 @@ namespace keyple {
 namespace core {
 namespace selection {
 
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::protocol;
 
 AbstractMatchingSe::AbstractMatchingSe(
     const std::shared_ptr<SeResponse> selectionResponse,
-    const TransmissionMode& transmissionMode, const std::string& extraInfo)
-: selectionResponse(selectionResponse), transmissionMode(transmissionMode),
-  selectionExtraInfo(extraInfo)
+    const TransmissionMode& transmissionMode)
+: mTransmissionMode(transmissionMode)
 {
-    if (selectionResponse != nullptr) {
-        this->selectionStatus = selectionResponse->getSelectionStatus();
-    } else {
-        this->selectionStatus.reset();
-    }
+    std::shared_ptr<ApduResponse> fci =
+        selectionResponse->getSelectionStatus()->getFci();
+    if (fci)
+        mFciBytes = fci->getBytes();
+
+    std::shared_ptr<AnswerToReset> atr =
+        selectionResponse->getSelectionStatus()->getAtr();
+    if (atr)
+        mAtrBytes = atr->getBytes();
 }
 
-bool AbstractMatchingSe::isSelected()
+bool AbstractMatchingSe::hasFci() const
 {
-    bool isSelected;
-
-    if (selectionStatus != nullptr) {
-        isSelected = selectionStatus->hasMatched() &&
-                     selectionResponse->isLogicalChannelOpen();
-    } else {
-        isSelected = false;
-    }
-
-    return isSelected;
+    return mFciBytes.size() > 0;
 }
 
-std::shared_ptr<SelectionStatus> AbstractMatchingSe::getSelectionStatus()
+bool AbstractMatchingSe::hasAtr() const
 {
-    return selectionStatus;
+    return mAtrBytes.size() > 0;
+}
+
+const std::vector<uint8_t>& AbstractMatchingSe::getFciBytes() const
+{
+    if (hasFci())
+        return mFciBytes;
+
+    throw IllegalStateException(
+              "No FCI is available in this AbstractMatchingSe");
+}
+
+ const std::vector<uint8_t>& AbstractMatchingSe::getAtrBytes() const
+ {
+    if (hasAtr())
+        return mAtrBytes;
+
+    throw IllegalStateException(
+              "No ATR is available in this AbstractMatchingSe");
 }
 
 const TransmissionMode& AbstractMatchingSe::getTransmissionMode() const
 {
-    return transmissionMode;
-}
-
-std::string AbstractMatchingSe::getSelectionExtraInfo()
-{
-    return selectionExtraInfo;
+    return mTransmissionMode;
 }
 
 std::ostream& operator<<(std::ostream& os, const AbstractMatchingSe& ams)
 {
     os << "ABSTRACTMATCHINGSE: {"
-        << "SELECTIONRESPONSE = " << ams.selectionResponse << ", "
-        << "TRANSMISSIONMODE = " << ams.transmissionMode << ", "
-        << "SELECTIONSTATUS = " << ams.selectionStatus << ", "
-        << "EXTRAINFO = " << ams.selectionExtraInfo
+        << "TRANSMISSIONMODE = " << ams.mTransmissionMode << ", "
+        << "FCI = " << ams.mFciBytes << ", "
+        << "ATR = " << ams.mAtrBytes
         << "}";
 
     return os;

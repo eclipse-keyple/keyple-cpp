@@ -20,45 +20,6 @@
 #include "ChannelControl.h"
 #include "MultiSeRequestProcessing.h"
 #include "SeReader.h"
-#include "KeypleReaderException.h"
-
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SeRequestSet;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SeResponseSet;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SeRequest;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SeResponse;
-}
-}
-}
-}
 
 namespace keyple {
 namespace core {
@@ -117,33 +78,18 @@ public:
      * card currentState, timeout) have to be caught during the processing of
      * the SE request transmission.
      *
-     * @param seApplicationRequest the Set of application requests
+     * @param seRequests a {@link List} of application requests
      * @param multiSeRequestProcessing the multi se processing mode
      * @param channelControl indicates if the channel has to be closed at the
      *        end of the transmission
      * @return the SE response
-     * @throws KeypleReaderException An error occurs during transmit (channel,
-     *         IO)
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
-    virtual std::list<std::shared_ptr<SeResponse>> transmitSet(
-        const std::vector<std::shared_ptr<SeRequest>>& seApplicationRequest,
+    virtual std::vector<std::shared_ptr<SeResponse>> transmitSeRequests(
+        const std::vector<std::shared_ptr<SeRequest>>& seRequests,
         const MultiSeRequestProcessing& multiSeRequestProcessing,
         const ChannelControl& channelControl) = 0;
-
-    /**
-     * Transmits a Set of {@link SeRequest} (list of {@link SeRequest}) to a SE
-     * application and get back the corresponding a List of {@link SeResponse}.
-     * <p>
-     * The {@link MultiSeRequestProcessing} and {@link ChannelControl} flags are
-     * set to their standard value.
-     *
-     * @param seApplicationRequest the Set of application requests
-     * @return the SE response
-     * @throws KeypleReaderException An error occurs during transmit (channel,
-     *         IO)
-     */
-    virtual std::list<std::shared_ptr<SeResponse>> transmitSet(
-        const std::vector<std::shared_ptr<SeRequest>>& seApplicationRequest)= 0;
 
     /**
      * Transmits a single {@link SeRequest} (list of {@link ApduRequest}) and
@@ -163,36 +109,16 @@ public:
      * card currentState, timeout) have to be caught during the processing of
      * the SE request transmission. *
      *
-     * @param seApplicationRequest the SeRequest to transmit
+     * @param seRequest the SeRequest to transmit
      * @param channelControl a flag to tell if the channel has to be closed at
      *        the end
      * @return SeResponse the response to the SeRequest
-     * @throws KeypleReaderException in case of a reader exception
-     * @throws IllegalArgumentException if a bad argument is provided
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
-    virtual std::shared_ptr<SeResponse>
-    transmit(std::shared_ptr<SeRequest> seApplicationRequest,
-             ChannelControl channelControl) = 0;
-
-    /**
-     * Transmits a single {@link SeRequest} (list of {@link ApduRequest}) and
-     * get back the corresponding {@link SeResponse}
-     * <p>
-     * The usage of this method is conditioned to the presence of a SE in the
-     * selected reader.
-     * <p>
-     * The {@link SeRequest} is processed and the received {@link SeResponse} is
-     * returned.
-     * <p>
-     * The {@link ChannelControl} flag is set to its standard value.
-     *
-     * @param seApplicationRequest the SeRequest to transmit
-     * @return SeResponse the response to the SeRequest
-     * @throws KeypleReaderException in case of a reader exception
-     * @throws IllegalArgumentException if a bad argument is provided
-     */
-    virtual std::shared_ptr<SeResponse>
-    transmit(std::shared_ptr<SeRequest> seApplicationRequest) = 0;
+    virtual std::shared_ptr<SeResponse> transmitSeRequest(
+        std::shared_ptr<SeRequest> seRequest,
+        ChannelControl channelControl) = 0;
 };
 
 }

@@ -12,12 +12,75 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "CommandsTable.h"
+#pragma once
+
+#include <exception>
+#include <stdexcept>
+#include <iostream>
 
 namespace keyple {
-namespace core {
-namespace command {
+namespace common {
 
-}
+class Exception : public std::exception {
+public:
+    /**
+     *
+     */
+    Exception() {}
+
+    /**
+     *
+     */
+    Exception(const std::string& message) : message(message) {}
+
+    /**
+     *
+     */
+    Exception(const std::string& message, const std::exception cause)
+    : message(message), cause(cause)
+    {
+    }
+
+    /**
+	 * Returns the detail message string of this exception.
+	 */
+    std::string getMessage() const
+    {
+        return message;
+    }
+
+    /**
+	 * Returns the cause of the exception.
+	 */
+    const std::exception getCause() const
+    {
+        return cause;
+    }
+
+    /**
+     *
+     */
+    friend std::ostream& operator<<(std::ostream& os, const Exception& e)
+    {
+		os << "EXCEPTION: {"
+           << "MESSAGE = " << e.message << ", "
+           << "CAUSE = " << e.cause.what()
+		   << "}";
+
+        return os;
+    }
+
+private:
+    /**
+	 *
+	 */
+    const std::string message;
+
+    /**
+	 *
+	 */
+    const std::exception cause;
+};
+
 }
 }

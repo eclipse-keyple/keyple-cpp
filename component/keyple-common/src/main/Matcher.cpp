@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,9 +15,9 @@
 #include <stdio.h>
 #include <sstream>
 
+#include "IndexOutOfBoundException.h"
 #include "Matcher.h"
 #include "Pattern.h"
-#include "exceptionhelper.h"
 #include "stringhelper.h"
 
 namespace keyple {

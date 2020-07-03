@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <future>
+
 /* Common */
 #include "LoggerFactory.h"
 

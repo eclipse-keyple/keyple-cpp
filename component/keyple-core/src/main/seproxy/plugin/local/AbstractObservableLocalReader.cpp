@@ -115,12 +115,13 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
         bool aSeMatched = false;
 
         try {
-            std::list<std::shared_ptr<SeResponse>> seResponseList = transmitSet(
-                mDefaultSelectionsRequest->getSelectionSeRequestSet(),
-                mDefaultSelectionsRequest->getMultiSeRequestProcessing(),
-                mDefaultSelectionsRequest->getChannelControl());
+            std::vector<std::shared_ptr<SeResponse>> seResponses =
+                transmitSeRequests(
+                    mDefaultSelectionsRequest->getSelectionSeRequests(),
+                    mDefaultSelectionsRequest->getMultiSeRequestProcessing(),
+                    mDefaultSelectionsRequest->getChannelControl());
 
-            for (auto seResponse : seResponseList) {
+            for (auto seResponse : seResponses) {
                 if (seResponse != nullptr &&
                     seResponse->getSelectionStatus()->hasMatched()) {
                     logger->trace("[%] a default selection has matched\n",
@@ -140,7 +141,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
                         getPluginName(), getName(),
                         ReaderEvent::EventType::SE_MATCHED,
                         std::make_shared<DefaultSelectionsResponse>(
-                            seResponseList));
+                            seResponses));
                 } else {
                     logger->trace("[%] selection hasn't matched, do not throw" \
                                   " any event because of MATCHED_ONLY flag\n",
@@ -158,20 +159,20 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
                         getPluginName(), getName(),
                         ReaderEvent::EventType::SE_MATCHED,
                         std::make_shared<DefaultSelectionsResponse>(
-                            seResponseList));
+                            seResponses));
                 } else {
                     /*
                      * The SE didn't match, notify an SE_INSERTED event with the
                      * received response
                      */
                     logger->trace("[%] none of % default selection matched\n",
-                                  getName(), seResponseList.size());
+                                  getName(), seResponses.size());
 
                     return std::make_shared<ReaderEvent>(
                         getPluginName(), getName(),
                         ReaderEvent::EventType::SE_INSERTED,
                         std::make_shared<DefaultSelectionsResponse>(
-                            seResponseList));
+                            seResponses));
                 }
             }
         } catch (const KeypleReaderException& e) {
@@ -195,7 +196,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
      */
     try {
         closePhysicalChannel();
-    } catch (const KeypleChannelControlException& e) {
+    } catch (const KeypleReaderIOException& e) {
         logger->error("Error while closing physical channel. %\n", e);
     }
 
@@ -212,7 +213,7 @@ bool AbstractObservableLocalReader::isSePresentPing()
     try {
         logger->trace("[%] Ping SE\n", getName());
         transmitApdu(apdu);
-    } catch (const KeypleIOReaderException& e) {
+    } catch (const KeypleReaderIOException& e) {
         logger->trace("[%] Exception occurred in isSePresentPing. Message: %\n",
                       getName(), e.getMessage());
         return false;
