@@ -14,22 +14,11 @@
 
 #pragma once
 
-#include <list>
+#include <vector>
 #include <memory>
 
 #include "AbstractDefaultSelectionsResponse.h"
 #include "KeypleCoreExport.h"
-
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SeResponseSet;
-}
-}
-}
-}
 
 namespace keyple {
 namespace core {
@@ -40,7 +29,9 @@ using namespace keyple::core::seproxy::event;
 
 /**
  * Class containing the List of {@link SeResponse} used from a default selection
- * made at the {@link ObservableReader} level.
+ * made at the {@link ObservableReader} level.<br>
+ * It implements the {@link AbstractDefaultSelectionsResponse} class by
+ * providing it with a public constructor.
  */
 class KEYPLECORE_API DefaultSelectionsResponse final
 : public AbstractDefaultSelectionsResponse {
@@ -49,19 +40,7 @@ public:
      *
      */
     DefaultSelectionsResponse(
-        std::list<std::shared_ptr<SeResponse>>& selectionSeResponseSet);
-
-    /**
-     *
-     */
-    const std::list<std::shared_ptr<SeResponse>>& getSelectionSeResponseSet()
-        const;
-
-private:
-    /**
-     * The List of {@link SeResponse}
-     */
-    std::list<std::shared_ptr<SeResponse>> selectionSeResponseSet;
+        const std::vector<std::shared_ptr<SeResponse>>& selectionSeResponseSet);
 };
 
 }

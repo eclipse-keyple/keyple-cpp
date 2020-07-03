@@ -13,7 +13,6 @@
  ******************************************************************************/
 
 #include "DefaultSelectionsResponse.h"
-#include "ObservableReader.h"
 
 namespace keyple {
 namespace core {
@@ -23,15 +22,9 @@ namespace message {
 using namespace keyple::core::seproxy::event;
 
 DefaultSelectionsResponse::DefaultSelectionsResponse(
-    std::list<std::shared_ptr<SeResponse>>& selectionSeResponseSet)
-: selectionSeResponseSet(selectionSeResponseSet)
+    const std::vector<std::shared_ptr<SeResponse>>& selectionSeResponseSet)
+: AbstractDefaultSelectionsResponse(selectionSeResponseSet)
 {
-}
-
-const std::list<std::shared_ptr<SeResponse>>&
-    DefaultSelectionsResponse::getSelectionSeResponseSet() const
-{
-    return selectionSeResponseSet;
 }
 
 }

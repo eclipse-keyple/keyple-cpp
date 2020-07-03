@@ -17,34 +17,21 @@
 #include "Exception.h"
 
 namespace keyple {
-namespace core {
-namespace seproxy {
-namespace exception {
+namespace common {
 
-using namespace keyple::common;
-
-/**
- * Base Exception for all Keyple Checked Exception
- */
-class KeypleBaseException : public Exception {
+class RuntimeException : public Exception {
 public:
     /**
      *
      */
-    KeypleBaseException(const std::string& msg) : Exception(msg)
-    {
-    }
+    RuntimeException(const std::string& message) : Exception(message) {}
 
     /**
      *
      */
-    KeypleBaseException(const std::string& msg, const std::exception& cause)
-    : Exception(msg, cause)
-    {
-    }
+    RuntimeException(const std::string& message, const std::exception cause)
+    : Exception(message, cause) {}
 };
 
-}
-}
 }
 }

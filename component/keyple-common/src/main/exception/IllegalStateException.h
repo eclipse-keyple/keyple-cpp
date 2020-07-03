@@ -12,17 +12,27 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "SeReader.h"
+#pragma once
+
+#include "Exception.h"
 
 namespace keyple {
-namespace core {
-namespace seproxy {
+namespace common {
 
-bool SeReader::operator==(const SeReader& o)
-{
-    return !this->getName().compare(o.getName());
-}
+class IllegalStateException : public Exception {
+public:
+    /**
+     *
+     */
+    IllegalStateException(const std::string& message) : Exception(message) {}
 
-}
+    /**
+     *
+     */
+    IllegalStateException(
+      const std::string& message, const std::exception cause)
+    : Exception(message, cause) {}
+};
+
 }
 }

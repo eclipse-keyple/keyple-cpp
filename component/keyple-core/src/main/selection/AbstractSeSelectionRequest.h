@@ -21,47 +21,14 @@
 
 /* Common */
 #include "KeypleCoreExport.h"
-#include "exceptionhelper.h"
+#include "IllegalArgumentException.h"
 
 /* Core */
-#include "AbstractApduResponseParser.h"
+#include "AbstractApduCommandBuilder.h"
+#include "AbstractMatchingSe.h"
+#include "KeypleException.h"
+#include "SeRequest.h"
 #include "SeSelector.h"
-
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class ApduRequest;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SeRequest;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SeResponse;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace selection {
-class AbstractMatchingSe;
-}
-}
-}
 
 namespace keyple {
 namespace core {
@@ -69,7 +36,7 @@ namespace selection {
 
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy;
-//using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::message;
 
 /**
  * The AbstractSeSelectionRequest class combines a SeSelector with additional
@@ -78,82 +45,117 @@ using namespace keyple::core::seproxy;
  * This class may also be extended to add particular features specific to a SE
  * family.
  */
+template<class T>
 class KEYPLECORE_API AbstractSeSelectionRequest
-: public std::enable_shared_from_this<AbstractSeSelectionRequest> {
+: public std::enable_shared_from_this<AbstractSeSelectionRequest<T>> {
 public:
     /**
      *
      */
-    const std::shared_ptr<SeSelector> seSelector;
+    const std::shared_ptr<SeSelector> mSeSelector;
 
     /**
      *
      */
-    AbstractSeSelectionRequest(std::shared_ptr<SeSelector> seSelector);
+    AbstractSeSelectionRequest<T>(std::shared_ptr<SeSelector> seSelector)
+    : mSeSelector(seSelector) {}
 
     /**
      *
      */
-    virtual ~AbstractSeSelectionRequest();
+    virtual ~AbstractSeSelectionRequest<T>() {}
 
     /**
      * Returns a selection SeRequest built from the information provided in the
-     * constructor and possibly completed with the seSelectionApduRequestList
+     * constructor and possibly completed with the commandBuilders list
      *
      * @return the selection SeRequest
      */
-    std::shared_ptr<SeRequest> getSelectionRequest();
+    virtual std::shared_ptr<SeRequest> getSelectionRequest()
+    {
+        std::vector<std::shared_ptr<ApduRequest>> seSelectionrApduRequests;
+
+        for (const auto& commandBuilder : mCommandBuilders) {
+
+            /* C++ specific. Java uses a template with "extends" keyword */
+            std::shared_ptr<AbstractApduCommandBuilder> builder =
+                std::static_pointer_cast<AbstractApduCommandBuilder>(
+                    commandBuilder);
+            if (!builder)
+                throw IllegalArgumentException(
+                          "template class does not extend" \
+                          "AbstractApduCommandBuilder");
+
+            seSelectionrApduRequests.push_back(
+                commandBuilder->getApduRequest());
+
+            return std::make_shared<SeRequest>(mSeSelector,
+                                               seSelectionrApduRequests);
+        }
+    }
 
     /**
      *
      */
-    virtual std::shared_ptr<SeSelector> getSeSelector();
+    virtual std::shared_ptr<SeSelector> getSeSelector()
+    {
+        return mSeSelector;
+    }
 
     /**
-     * Return the parser corresponding to the command whose index is provided.
      *
-     * @param seResponse the received SeResponse containing the commands raw
-     *        responses
-     * @param commandIndex the command index
-     * @return a parser of the type matching the command
      */
-    virtual std::shared_ptr<AbstractApduResponseParser>
-    getCommandParser(std::shared_ptr<SeResponse> seResponse, int commandIndex);
+    friend std::ostream& operator<<(std::ostream& os,
+                                    const AbstractSeSelectionRequest<T>& asr)
+    {
+        os << "ABSTRACTSELECTIONREQUEST: {"
+        << "APDUREQUESTLIST = " << asr.seSelectionApduRequestList
+        << "}";
+
+        return os;
+    }
 
     /**
      * Virtual parse method
      *
      * @param seResponse the SE response received
      * @return a {@link AbstractMatchingSe}
+     * @throws KeypleException if an error occurs while parsing the SE response
+     *
+     * Note: protected in Java, triggers error when used in SeSelection.cpp
      */
     virtual const std::shared_ptr<AbstractMatchingSe> parse(
         std::shared_ptr<SeResponse> seResponse) = 0;
 
-    /**
-     *
-     */
-    friend std::ostream& operator<<(std::ostream& os,
-                                    const AbstractSeSelectionRequest& asr);
-
 protected:
     /**
-     * Add an additional {@link ApduRequest} to be executed after the selection
-     * process if it succeeds.
+     * Add an additional {@link AbstractApduCommandBuilder} for the command to
+     * be executed after the selection process if it succeeds.
      * <p>
-     * If more than one {@link ApduRequest} is added, all will be executed in
-     * the order in which they were added.
+     * If more than one {@link AbstractApduCommandBuilder} is added, all will be
+     * executed in the order in which they were added.
      *
-     * @param apduRequest an {@link ApduRequest}
+     * @param commandBuilder an {@link AbstractApduCommandBuilder}
      */
-    void addApduRequest(std::shared_ptr<ApduRequest> apduRequest);
+    void addCommandBuilder(std::shared_ptr<T> commandBuilder)
+    {
+        mCommandBuilders.push_back(commandBuilder);
+    }
 
     /**
-     * Optional apdu requests list to be executed following the selection
-     * process
+     * @return the current command builder list
      */
+    const std::vector<std::shared_ptr<T>> getCommandBuilders() const
+    {
+        return mCommandBuilders;
+    }
+
 private:
-    std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList =
-        std::vector<std::shared_ptr<ApduRequest>>();
+    /**
+     * Optional command nuilber list of command to be executed following the
+     * selection process
+     */
+    const std::vector<std::shared_ptr<T>> mCommandBuilders;
 };
 
 }

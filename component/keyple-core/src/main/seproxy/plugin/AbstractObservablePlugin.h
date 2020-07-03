@@ -19,7 +19,7 @@
 /* Core */
 #include "AbstractPlugin.h"
 #include "KeypleCoreExport.h"
-#include "ObservablePlugin.h"
+#include "ObservablePluginNotifier.h"
 #include "PluginEvent.h"
 
 /* Common */
@@ -30,13 +30,14 @@ namespace core {
 namespace seproxy {
 namespace plugin {
 
+using namespace keyple::core::seproxy::plugin::local;
 
 /**
  * The {@link AbstractObservablePlugin} class provides the means to observe a
  * plugin (insertion/removal of readers).
  */
 class KEYPLECORE_API AbstractObservablePlugin
-: public AbstractPlugin, public virtual ObservablePlugin {
+: public AbstractPlugin, public virtual ObservablePluginNotifier {
 public:
     /**
      * Add a plugin observer.
@@ -63,6 +64,8 @@ public:
 
     /**
      * Remove all observers at once
+     *
+     * @deprecated will change in a later version
      */
     virtual void clearObservers() override;
 
@@ -86,6 +89,7 @@ protected:
      * Instantiates a observable plugin.
      *
      * @param name name of the plugin
+     * @throw KeypleReaderException when an issue is raised with reader
      */
     AbstractObservablePlugin(const std::string& name);
 

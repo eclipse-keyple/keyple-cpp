@@ -14,9 +14,12 @@
 
 #include <iostream>
 
+/* Common */
+#include "IllegalStateException.h"
+
+/* Core */
 #include "AbstractMatchingSe.h"
 #include "SelectionsResult.h"
-#include "MatchingSelection.h"
 
 namespace keyple {
 namespace core {
@@ -26,56 +29,74 @@ SelectionsResult::SelectionsResult()
 {
 }
 
-void SelectionsResult::addMatchingSelection(
-    std::shared_ptr<MatchingSelection> matchingSelection)
+void SelectionsResult::addMatchingSe(
+    int selectionIndex,
+    const std::shared_ptr<AbstractMatchingSe> matchingSe, bool isSelected)
 {
-    if (!matchingSelection)
-        return;
+    if (!matchingSe)
+        mMatchingSeMap.insert({selectionIndex, matchingSe});
 
-    matchingSelectionList.push_back(matchingSelection);
-
-    /* Test if the current selection is active */
-    if (matchingSelection->getMatchingSe() != nullptr &&
-        matchingSelection->getMatchingSe()->isSelected()) {
-        hasActiveSelection_Renamed = true;
-    }
+    /* If the current selection is active, we keep its index */
+    if (isSelected)
+        mActiveSelectionIndex = selectionIndex;
 }
 
-const std::shared_ptr<MatchingSelection> SelectionsResult::getActiveSelection()
-    const
+const std::shared_ptr<AbstractMatchingSe>
+    SelectionsResult::getActiveMatchingSe()
 {
-    std::shared_ptr<MatchingSelection> activeSelection = nullptr;
+    std::shared_ptr<AbstractMatchingSe> matchingSe =
+        mMatchingSeMap[mActiveSelectionIndex];
 
-    for (auto matchingSelection : matchingSelectionList) {
-        if (matchingSelection != nullptr &&
-            matchingSelection->getMatchingSe()->isSelected()) {
-            activeSelection = matchingSelection;
-            break;
-        }
-    }
-    return activeSelection;
+    if (!matchingSe)
+        throw IllegalStateException("No active Matching SE is available");
+
+    return matchingSe;
 }
 
-const  std::vector<std::shared_ptr<MatchingSelection>>&
+const std::map<int, std::shared_ptr<AbstractMatchingSe>>&
     SelectionsResult::getMatchingSelections() const
 {
-    return matchingSelectionList;
+    return mMatchingSeMap;
 }
 
-const std::shared_ptr<MatchingSelection>
-    SelectionsResult::getMatchingSelection(int selectionIndex) const
+const std::shared_ptr<AbstractMatchingSe>
+    SelectionsResult::getMatchingSe(int selectionIndex)
 {
-    for (auto matchingSelection : matchingSelectionList) {
-        if (matchingSelection->getSelectionIndex() == selectionIndex) {
-            return matchingSelection;
-        }
-    }
-    return nullptr;
+    return mMatchingSeMap[selectionIndex];
 }
 
 bool SelectionsResult::hasActiveSelection() const
 {
-    return hasActiveSelection_Renamed;
+    return mActiveSelectionIndex ? true : false;
+}
+
+bool SelectionsResult::hasSelectionMatched(int selectionIndex) const
+{
+    return mMatchingSeMap.count(selectionIndex) ? true : false;
+}
+
+
+int SelectionsResult::getActiveSelectionIndex() const
+{
+    if (hasActiveSelection())
+        return mActiveSelectionIndex;
+
+    throw IllegalStateException("No active Matching SE is available");
+}
+
+
+std::ostream& operator<<(
+    std::ostream& os,
+    const std::map<int, std::shared_ptr<AbstractMatchingSe>>& sr)
+{
+    os << "MATCHINGSELECTIONS: {";
+
+    for (const auto& p : sr)
+        os << p.first << "-" << p.second << " ";
+
+    os << "}";
+
+    return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const SelectionsResult& sr)

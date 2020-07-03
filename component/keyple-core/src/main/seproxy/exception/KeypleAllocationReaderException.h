@@ -14,19 +14,17 @@
 
 #pragma once
 
-#include "KeypleBaseException.h"
+#include "KeypleException.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace exception {
 
-using namespace keyple::common;
-
 /**
  * Base Exception for all Keyple Checked Exception
  */
-class KeypleAllocationReaderException : public KeypleBaseException {
+class KeypleAllocationReaderException : public KeypleException {
 public:
     /**
      *

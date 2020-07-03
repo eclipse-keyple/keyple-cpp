@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -48,8 +48,8 @@ public:
      * *
      *
      * @return presence status
-     * @throws KeypleIOReaderException in the event of a communication failure
-     *         with the reader (disconnection)
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     virtual bool waitForCardAbsentNative() = 0;
 

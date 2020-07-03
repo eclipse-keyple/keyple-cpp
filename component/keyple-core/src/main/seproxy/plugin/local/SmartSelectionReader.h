@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -16,10 +16,7 @@
 
 /* Core */
 #include "ApduResponse.h"
-#include "KeypleApplicationSelectionException.h"
-#include "KeypleChannelControlException.h"
 #include "KeypleCoreExport.h"
-#include "KeypleIOReaderException.h"
 #include "SeReader.h"
 #include "SeSelector.h"
 
@@ -40,9 +37,8 @@ public:
      *
      * @param aidSelector the selection data
      * @return an ApduResponse containing the SE answer to selection
-     * @throws KeypleIOReaderException if a communication error occurs
-     * @throws KeypleChannelControlException if channel control error occurs
-     * @throws KeypleApplicationSelectionException if selection error occurs
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     virtual std::shared_ptr<ApduResponse>
         openChannelForAid(SeSelector::AidSelector& aidSelector) = 0;

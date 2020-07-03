@@ -15,8 +15,8 @@
 #include <iostream>
 
 #include "AbstractApduCommandBuilder.h"
+
 #include "ApduRequest.h"
-#include "CommandsTable.h"
 
 namespace keyple {
 namespace core {
@@ -25,47 +25,48 @@ namespace command {
 using namespace keyple::core::seproxy::message;
 
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
-    CommandsTable& commandReference, std::shared_ptr<ApduRequest> request)
+  const std::shared_ptr<SeCommand> commandRef,
+  const std::shared_ptr<ApduRequest> request)
+: mName(commandRef->getName()), mCommandRef(commandRef), mRequest(request)
 {
-    this->name    = commandReference.getName();
-    this->request = request;
-
-    // set APDU name for non null request
+    /* Set APDU name for non null request */
     if (request != nullptr) {
-        this->request->setName(commandReference.getName());
+        mRequest->setName(commandRef->getName());
     }
 }
 
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
-    const std::string& name, std::shared_ptr<ApduRequest> request)
+  const std::string& name, std::shared_ptr<ApduRequest> request)
+: mName(name), mCommandRef(nullptr), mRequest(request)
 {
-    this->name    = name;
-    this->request = request;
-
-    // set APDU name for non null request
+    /* Set APDU name for non null request */
     if (request != nullptr) {
-        this->request->setName(name);
+        mRequest->setName(name);
     }
 }
 
 void AbstractApduCommandBuilder::addSubName(const std::string& subName)
 {
     if (subName.length() != 0) {
-        this->name = this->name + " - " + subName;
-        if (request != nullptr) {
-            this->request->setName(this->name);
-        }
+        mName += " - " + subName;
+        if (mRequest != nullptr)
+            mRequest->setName(mName);
     }
+}
+
+std::shared_ptr<SeCommand> AbstractApduCommandBuilder::getCommandRef()
+{
+    return mCommandRef;
 }
 
 std::string AbstractApduCommandBuilder::getName() const
 {
-    return this->name;
+    return mName;
 }
 
 std::shared_ptr<ApduRequest> AbstractApduCommandBuilder::getApduRequest() const
 {
-    return request;
+    return mRequest;
 }
 
 }

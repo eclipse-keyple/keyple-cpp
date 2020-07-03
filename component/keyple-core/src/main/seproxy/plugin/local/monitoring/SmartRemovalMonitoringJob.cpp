@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,7 +14,7 @@
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
-#include "KeypleIOReaderException.h"
+#include "KeypleReaderIOException.h"
 #include "SmartRemovalMonitoringJob.h"
 
 namespace keyple {
@@ -42,7 +42,7 @@ void SmartRemovalMonitoringJob::monitoringJob(
             logger->trace("[%] waitForCardAbsentNative => return false, task"
                           " interrupted\n", reader->getName());
         }
-    } catch (KeypleIOReaderException& e) {
+    } catch (KeypleReaderIOException& e) {
         logger->trace("[%] waitForCardAbsent => Error while polling SE with "
                       "waitForCardAbsent, %\n", reader->getName(),
 			          e.getMessage());

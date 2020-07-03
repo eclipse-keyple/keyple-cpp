@@ -16,28 +16,14 @@
 
 #include <memory>
 
-#include "Configurable.h"
-#include "Nameable.h"
+#include "ProxyElement.h"
 #include "SeProtocol.h"
 #include "TransmissionMode.h"
 
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace protocol {
-class SeProtocolSetting;
-}
-}
-}
-}
-
 namespace keyple {
 namespace core {
 namespace seproxy {
 
-using namespace keyple::core::util;
-using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::protocol;
 
 /**
@@ -50,20 +36,19 @@ using namespace keyple::core::seproxy::protocol;
  * </ul>
  * Interface used by applications processing SE.
  */
-class SeReader : public virtual Nameable, public virtual Configurable {
+class SeReader : public virtual ProxyElement {
 public:
     /**
      *
      */
-    virtual ~SeReader()
-    {
-    }
+    virtual ~SeReader() {}
 
     /**
      * Checks if is SE present.
      *
      * @return true if a Secure Element is present in the reader
-     * @throws KeypleIOReaderException if error while reading SE
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     virtual bool isSePresent() = 0;
 
@@ -112,7 +97,10 @@ public:
     /**
      *
      */
-    bool operator==(const SeReader& o);
+    virtual bool operator==(const SeReader& o) const
+    {
+        return this->getName() ==  o.getName();
+    }
 };
 
 }

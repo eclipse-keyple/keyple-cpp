@@ -25,7 +25,7 @@
 #include "ApduRequest.h"
 
 /* Calypso */
-#include "CommandsTable.h"
+#include "SeCommand.h"
 
 namespace keyple {
 namespace core {
@@ -38,7 +38,7 @@ using namespace keyple::core::seproxy::message;
  * <p>
  * It provides the generic getters to retrieve:
  * <ul>
- * <li>the name of the command,</li>
+ * <li>the SE command reference,</li>
  * <li>the built APDURequest,</li>
  * <li>the corresponding AbstractApduResponseParser class.</li>
  * </ul>
@@ -49,24 +49,34 @@ class KEYPLECORE_API AbstractApduCommandBuilder
 private:
     /**
      * The command name (will appear in logs)
+     *
+     * @deprecated use {@code reference} field instead
      */
-    std::string name;
+    std::string mName;
 
 protected:
     /**
+     * The reference field is used to find the type of command concerned when
+     * manipulating a list of abstract builder objects. Unfortunately, the
+     * diversity of these objects does not allow the use of simple generic
+     * methods.
+     */
+    const std::shared_ptr<SeCommand> mCommandRef;
+
+    /**
      * The byte array APDU request
      */
-    std::shared_ptr<ApduRequest> request;
+    std::shared_ptr<ApduRequest> mRequest;
 
 public:
     /**
     * the generic abstract constructor to build an APDU request with a command
     * reference and a byte array.
     *
-    * @param commandReference command reference
+    * @param commandRef command reference
     * @param request request
     */
-    AbstractApduCommandBuilder(CommandsTable& commandReference,
+    AbstractApduCommandBuilder(const std::shared_ptr<SeCommand> commandRef,
                                std::shared_ptr<ApduRequest> request);
 
     /**
@@ -83,17 +93,19 @@ public:
     virtual void addSubName(const std::string& subName);
 
     /**
-    * Gets the name.
-    *
-    * @return the name of the APDU command from the CalypsoCommands information.
-    */
+     * @return the current command identification
+     */
+    virtual std::shared_ptr<SeCommand> getCommandRef();
+
+    /**
+     * @return the name of the APDU command from the CalypsoCommands
+     *         information.
+     */
     virtual std::string getName() const;
 
     /**
-    * Gets the request.
-    *
-    * @return the request
-    */
+     * @return the request
+     */
     virtual std::shared_ptr<ApduRequest> getApduRequest() const;
 };
 

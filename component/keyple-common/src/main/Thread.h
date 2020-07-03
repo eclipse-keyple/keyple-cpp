@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -30,12 +32,9 @@ public:
 	 * Automatically generated names are of the form "Thread-"+n, where n is an
 	 * integer.
 	 */
-    Thread() : name("Thread-x"), mThread(nullptr)
-    {
-        interrupted = false;
-        detached    = true;
-        alive       = false;
-    }
+    Thread()
+    : mAlive(false), mName("Thread-x"), mInterrupted(false), mThread(nullptr),
+      mDetached(true) {}
 
     /**
 	 * Constructor
@@ -45,18 +44,16 @@ public:
 	 *
 	 * @param name the name of the new thread
 	 */
-    Thread(const std::string& name) : alive(false), name(name), mThread(nullptr)
-    {
-        interrupted = false;
-        detached    = true;
-    }
+    Thread(const std::string& name)
+    : mAlive(false), mName(name), mInterrupted(false), mThread(nullptr),
+      mDetached(true) {}
 
     /**
 	 * Destructor
 	 */
     virtual ~Thread()
     {
-        if (alive == 1 && detached == 0) {
+        if (mAlive == 1 && mDetached == 0) {
             mThread->detach();
         }
     }
@@ -77,13 +74,13 @@ public:
     {
         int result;
 
-        interrupted = false;
+        mInterrupted = false;
 
         mThread = new std::thread(runThread, this);
         result = mThread ? 0 : -1;
 
         if (result == 0)
-            alive = 1;
+            mAlive = 1;
     }
 
     /**
@@ -110,9 +107,9 @@ public:
     {
         int result = -1;
 
-        if (alive == 1) {
+        if (mAlive == 1) {
             mThread->join();
-            detached = 1;
+            mDetached = 1;
         }
 
         return result;
@@ -128,9 +125,9 @@ public:
     {
         int result = -1;
 
-        if (alive == 1 && detached == 0) {
+        if (mAlive == 1 && mDetached == 0) {
             mThread->detach();
-            detached = 1;
+            mDetached = 1;
         }
 
         return result;
@@ -212,7 +209,7 @@ public:
 	 */
     void interrupt()
     {
-        interrupted = true;
+        mInterrupted = true;
     }
 
     /**
@@ -220,7 +217,7 @@ public:
      */
     bool isInterrupted() const
     {
-        return interrupted;
+        return mInterrupted;
     }
 
     /**
@@ -241,7 +238,7 @@ public:
      */
     std::string getName()
     {
-        return name;
+        return mName;
     }
 
     /**
@@ -255,18 +252,18 @@ public:
     /**
      *
      */
-    int alive;
+    int mAlive;
 
 private:
     /**
      *
      */
-    const std::string name;
+    const std::string mName;
 
     /**
      *
      */
-    bool interrupted;
+    bool mInterrupted;
 
     /**
      *
@@ -276,7 +273,7 @@ private:
     /**
      *
      */
-    int detached;
+    int mDetached;
 };
 
 }

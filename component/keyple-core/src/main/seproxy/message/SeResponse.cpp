@@ -77,7 +77,7 @@ std::ostream& operator<<(std::ostream& os,
 }
 
 std::ostream& operator<<(std::ostream& os,
-                         const std::list<std::shared_ptr<SeResponse>>& sr)
+                         const std::vector<std::shared_ptr<SeResponse>>& sr)
 {
 	os << "SERESPONSES: { ";
 	for (const auto& r : sr) {
