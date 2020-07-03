@@ -14,12 +14,14 @@
 
 #pragma once
 
+#include "ReaderPlugin.h"
+
 namespace keyple {
 namespace core {
 namespace seproxy {
 
 class PluginFactory {
-
+public:
     /**
      * Retrieve the name of the plugin that will be instantiated by this factory
      * (can be static or dynamic)
