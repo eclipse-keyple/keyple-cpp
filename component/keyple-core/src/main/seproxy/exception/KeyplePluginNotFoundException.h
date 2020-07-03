@@ -25,16 +25,14 @@ namespace seproxy {
 namespace exception {
 
 /**
- * Exception thrown when {@link org.eclipse.keyple.seproxy.ReaderPlugin} is not
- * found
+ * The exception {@code KeyplePluginNotFoundException} indicates that the plugin
+ * is not found, generally when it has not been previously registered to the
+ * {@link SeProxyService}.
  */
 class KeyplePluginNotFoundException : public KeyplePluginException {
 public:
     /**
-     * Exception thrown when {@link org.eclipse.keyple.seproxy.ReaderPlugin} is
-     * not found
-     *
-     * @param pluginName : pluginName that has not been found
+     * @param pluginName the name of the plugin that has not been found
      */
     KeyplePluginNotFoundException(const std::string& pluginName)
     : KeyplePluginException("Plugin with name " + pluginName + " was not found")

@@ -12,60 +12,32 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#pragma once
-
-#include <string>
-#include <typeinfo>
+#include "AbstractSeProxyComponent.h"
 
 namespace keyple {
 namespace core {
-namespace command {
+namespace seproxy {
+namespace plugin {
 
-class CommandsTable {
-public:
-    /**
-     *
-     */
-    CommandsTable()
-    {
-    }
+AbstractSeProxyComponent::AbstractSeProxyComponent(const std::string& name)
+: mName(name)
+{
+}
 
-    /**
-     *
-     */
-    CommandsTable(const CommandsTable& other)
-    {
-        (void)other;
-    }
+const std::string& AbstractSeProxyComponent::getName() const
+{
+    return mName;
+}
 
-    /**
-     *
-     */
-    virtual ~CommandsTable()
-    {
-    }
+void AbstractSeProxyComponent::setParameters(
+    const std::map<const std::string, const std::string>& parameters)
+{
+    for (const auto& en : parameters)
+        setParameter(en.first, en.second);
 
-    /**
-     *
-     */
-    virtual const std::string& getName() const = 0;
+}
 
-    /**
-     *
-     */
-    virtual uint8_t getInstructionByte() const = 0;
-
-    /**
-     *
-     */
-    virtual const std::type_info& getCommandBuilderClass() const = 0;
-
-    /**
-     *
-     */
-    virtual const std::type_info& getResponseParserClass() const = 0;
-};
-
+}
 }
 }
 }

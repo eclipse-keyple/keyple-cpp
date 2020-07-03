@@ -50,9 +50,7 @@ public:
         /**
          *
          */
-        virtual ~ReaderObserver()
-        {
-        }
+        virtual ~ReaderObserver() {}
 
         /**
          *
@@ -114,9 +112,7 @@ public:
         /**
          *
          */
-        virtual ~NotificationMode()
-        {
-        }
+        virtual ~NotificationMode() {}
 
         /**
          *
@@ -253,9 +249,7 @@ public:
     /**
      *
      */
-    virtual ~ObservableReader()
-    {
-    }
+    virtual ~ObservableReader() {}
 
     /**
      * Add a reader observer.
@@ -278,14 +272,6 @@ public:
      */
     virtual void removeObserver(const std::shared_ptr<ReaderObserver> observer)
         = 0;
-
-    /**
-     * Push a ReaderEvent of the {@link ObservableReader} to its registered
-     * observers.
-     *
-     * @param event the event (see {@link ReaderEvent})
-     */
-    virtual void notifyObservers(const std::shared_ptr<ReaderEvent> event) = 0;
 
     /**
      * Remove all observers at once

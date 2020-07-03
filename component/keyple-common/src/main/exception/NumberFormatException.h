@@ -14,51 +14,30 @@
 
 #pragma once
 
-#include <string>
-#include <stdexcept>
-#include <memory>
-
-/* Common */
-#include "KeypleCoreExport.h"
-
-/* Core */
-#include "KeypleReaderException.h"
+#include "Exception.h"
 
 namespace keyple {
-namespace core {
-namespace seproxy {
-namespace exception {
+namespace common {
 
-/**
- * Exception thrown when Channel Operations (open/close) failed in a {@link
- * ProxyReader}
- */
-class KEYPLECORE_API KeypleChannelControlException
-: public KeypleReaderException {
+class NumberFormatException : public Exception {
 public:
     /**
-     * New exception to be thrown
      *
-     * @param message : message to identify the exception and the context
      */
-    KeypleChannelControlException(const std::string& msg)
-    : KeypleReaderException(msg)
-    {
-    }
+    NumberFormatException() : Exception() {}
 
     /**
-     * Encapsulate a lower level reader exception
      *
-     * @param message : message to add some context to the exception
-     * @param cause : lower level exception
      */
-    KeypleChannelControlException(const std::string& msg, std::exception& cause)
-    : KeypleReaderException(msg, cause)
-    {
-    }
+    NumberFormatException(const std::string& message) : Exception(message) {}
+
+    /**
+     *
+     */
+    NumberFormatException(
+      const std::string& message, const std::exception cause)
+    : Exception(message, cause) {}
 };
 
-}
-}
 }
 }

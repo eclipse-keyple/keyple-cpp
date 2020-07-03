@@ -14,47 +14,25 @@
 
 #pragma once
 
-#include <string>
+#include "Exception.h"
 
 namespace keyple {
-namespace core {
-namespace util {
+namespace common {
 
-/**
- * Allow {@link ProxyReader}s and {@link ReaderPlugin}s to be named.
- */
-class Nameable {
-
+class NoSuchMethodException : public Exception {
 public:
     /**
      *
      */
-    Nameable()
-    {
-    }
+    NoSuchMethodException(const std::string& message) : Exception(message) {}
 
     /**
      *
      */
-    Nameable(const Nameable& o)
-    {
-        (void)o;
-    }
-
-    /**
-     *
-     */
-    virtual ~Nameable()
-    {
-    }
-
-    /**
-     *
-     * @return the unique name of the item
-     */
-    virtual const std::string& getName() const = 0;
+    NoSuchMethodException(
+      const std::string& message, const std::exception cause)
+    : Exception(message, cause) {}
 };
 
-}
 }
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -38,19 +38,27 @@ using namespace keyple::core::seproxy::message;
 AbstractPlugin::AbstractPlugin(const std::string& name)
 : AbstractSeProxyComponent(name)
 {
+    /*
+     * /!\ C++ vs. Java: C++ cannot call a pure virtual function from a
+     *                   constructor. That call must be made in the plugins
+     *                   implementation directly
+     *
+     * mReaders = initNativeReaders();
+     */
 }
 
-std::set<std::shared_ptr<SeReader>>& AbstractPlugin::getReaders()
+std::map<const std::string, std::shared_ptr<SeReader>>&
+    AbstractPlugin::getReaders()
 {
-    return readers;
+    return mReaders;
 }
 
 const std::set<std::string> AbstractPlugin::getReaderNames() const
 {
     std::set<std::string> readerNames;
 
-    for (auto reader : readers)
-        readerNames.insert(reader->getName());
+    for (const auto& reader : mReaders)
+        readerNames.insert(reader.first);
 
     return readerNames;
 }
@@ -60,19 +68,14 @@ int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
     return getName().compare(plugin->getName());
 }
 
-/*
- * Alex: consider note in header comment (covariant return type).
- */
 const std::shared_ptr<SeReader> AbstractPlugin::getReader(
-    const std::string& name) const
+    const std::string& name)
 {
-    for (auto reader : readers) {
-        if (reader->getName() == name) {
-            return reader;
-        }
-    }
+    const std::shared_ptr<SeReader> seReader = mReaders[name];
+    if (!seReader)
+        throw KeypleReaderNotFoundException(name);
 
-    throw KeypleReaderNotFoundException(name);
+    return seReader;
 }
 
 }

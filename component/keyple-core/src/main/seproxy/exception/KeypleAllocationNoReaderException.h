@@ -12,53 +12,28 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "KeypleReaderException.h"
+#pragma once
+
+#include "KeypleException.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace exception {
 
-using namespace keyple::core::seproxy::message;
+/**
+ * The exception {@code KeypleAllocationNoReaderException} indicates that no
+ * reader were available during allocation invocation.
+ */
+class KeypleAllocationNoReaderException : public KeypleException {
+public:
+    KeypleAllocationNoReaderException(const std::string& message)
+    : KeypleException(message) {}
 
-KeypleReaderException::KeypleReaderException(const std::string& msg)
-: KeypleBaseException(msg)
-{
-}
-
-KeypleReaderException::KeypleReaderException(const std::string& msg,
-                                             const std::exception& cause)
-: KeypleBaseException(msg, cause)
-{
-}
-
-KeypleReaderException::KeypleReaderException(const KeypleReaderException& o)
-: KeypleBaseException(o.getMessage(), o.getCause())
-{
-}
-
-std::list<std::shared_ptr<SeResponse>>&
-KeypleReaderException::getSeResponseSet()
-{
-    return mSeResponseList;
-}
-
-void KeypleReaderException::setSeResponseSet(
-    std::list<std::shared_ptr<SeResponse>> seResponseList)
-{
-    mSeResponseList = seResponseList;
-}
-
-std::shared_ptr<SeResponse> KeypleReaderException::getSeResponse()
-{
-    return mSeResponse;
-}
-
-void KeypleReaderException::setSeResponse(
-    std::shared_ptr<SeResponse> seResponse)
-{
-    mSeResponse = seResponse;
-}
+    KeypleAllocationNoReaderException(const std::string&  message,
+                                      const std::exception& cause)
+    : KeypleException(message, cause) {}
+};
 
 }
 }

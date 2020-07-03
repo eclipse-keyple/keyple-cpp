@@ -41,10 +41,12 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/command
+	${CMAKE_CURRENT_SOURCE_DIR}/command/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction
 
 	/* Helpers */
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/exception
 )
 
 ADD_LIBRARY(${LIBRARY_NAME} SHARED
@@ -53,14 +55,10 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduCommandBuilder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduResponseParser.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractIso7816CommandBuilder.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/CommandsTable.cpp
 
 	# selection
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractMatchingSe.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractSeSelectionRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/selection/MatchingSelection.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/SelectionsResult.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/selection/SeResource.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/SeSelection.cpp
 
 	# seproxy - event
@@ -71,7 +69,6 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ReaderEvent.cpp
 
 	# seproxy - exception
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/exception/KeypleReaderException.cpp
 
 	# seproxy - message
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/AnswerToReset.cpp
@@ -79,7 +76,6 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ApduResponse.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/DefaultSelectionsResponse.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/ProxyReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SelectionStatus.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message/SeResponse.cpp
@@ -103,9 +99,10 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/ObservableReaderStateService.cpp
 
 	# seproxy - plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservablePlugin.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractPlugin.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractReader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservablePlugin.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractSeProxyComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractThreadedObservablePlugin.cpp
 
 	# seproxy - protocol
@@ -114,16 +111,12 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/TransmissionMode.cpp
 
 	# seproxy
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/AbstractSeProxyComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ChannelControl.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeProxyService.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeSelector.cpp
 
 	# util
 	${CMAKE_CURRENT_SOURCE_DIR}/util/ByteArrayUtil.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/Configurable.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/Nameable.cpp
 
 	# util - bertlv
 	${CMAKE_CURRENT_SOURCE_DIR}/util/bertlv/Tag.cpp

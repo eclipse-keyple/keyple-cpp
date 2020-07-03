@@ -14,58 +14,26 @@
 
 #pragma once
 
-#include <map>
-
-/* Common */
-#include "Configurable.h"
-#include "Nameable.h"
-
-/* Core */
-#include "KeypleCoreExport.h"
+#include "Exception.h"
 
 namespace keyple {
-namespace core {
-namespace seproxy {
+namespace common {
 
-using namespace keyple::core::util;
-
-/**
- * This abstract class mutualizes the management of the name and part of the
- * configuration of SeProxy components (plugins and readers)
- */
-class KEYPLECORE_API AbstractSeProxyComponent
-: public virtual Nameable, public virtual Configurable {
+class InvocationTargetException : public Exception {
 public:
     /**
-     * Constructor
      *
-     * @param name the name of the component
      */
-    AbstractSeProxyComponent(const std::string& name);
+    InvocationTargetException(const std::string& message)
+    : Exception(message) {}
 
-    /**
-     * @return the name of the component
-     */
-    virtual const std::string& getName() const final;
-
-    /**
-     * Sets at once a set of parameters for a reader
-     * <p>
-     * See {@link #setParameter(String, String)} for more details
-     *
-     * @param parameters a Map &lt;String, String&gt; parameter set
-     * @throws KeypleBaseException if one of the parameters could not be set up
-     */
-    virtual void setParameters(
-        const std::map<const std::string, const std::string>& parameters) final;
-
-private:
     /**
      *
      */
-    const std::string mName;
+    InvocationTargetException(
+      const std::string& message, const std::exception cause)
+    : Exception(message, cause) {}
 };
 
-}
 }
 }

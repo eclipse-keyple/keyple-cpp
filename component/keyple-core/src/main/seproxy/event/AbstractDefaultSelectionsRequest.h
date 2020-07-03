@@ -15,6 +15,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 /* Core */
 #include "KeypleCoreExport.h"
@@ -42,6 +43,9 @@ using namespace keyple::core::seproxy::message;
  * <li>an indicator to control the physical channel to stipulate whether it
  * should be closed or left open at the end of the selection process
  * </ul>
+ * The purpose of this abstract class is to hide the constructor that is defined
+ * as public in its implementation
+ * {@link keyple::core::seproxy::message::DefaultSelectionsRequest}.
  */
 class KEYPLECORE_API AbstractDefaultSelectionsRequest
 : public std::enable_shared_from_this<AbstractDefaultSelectionsRequest> {
@@ -49,27 +53,52 @@ public:
     /**
      *
      */
-    virtual ~AbstractDefaultSelectionsRequest()
-    {
-    }
+    virtual ~AbstractDefaultSelectionsRequest() {}
+
+
+    /**
+     * @return the list of requests that make up the selection
+     */
+    virtual const std::vector<std::shared_ptr<SeRequest>>&
+        getSelectionSeRequests() const final;
+
+    /**
+     * @return the flag indicating whether the selection process should stop
+     *         after the first matching or process all
+     */
+    virtual const MultiSeRequestProcessing& getMultiSeRequestProcessing() const
+        final;
+
+    /**
+     * @return the flag indicating whether the logic channel is to be kept open
+     *          or closed
+     */
+    virtual const ChannelControl& getChannelControl() const final;
 
 protected:
     /**
-     * @return the selection request set
+     *
      */
-    virtual const std::vector<std::shared_ptr<SeRequest>>&
-        getSelectionSeRequestSet() const = 0;
+    AbstractDefaultSelectionsRequest(
+        std::vector<std::shared_ptr<SeRequest>> selectionSeRequests,
+        const MultiSeRequestProcessing& multiSeRequestProcessing,
+        const ChannelControl& channelControl);
+
+private:
+    /**
+     *
+     */
+    const std::vector<std::shared_ptr<SeRequest>> mSelectionSeRequests;
 
     /**
-     * @return the multi SE request mode
+     *
      */
-    virtual const MultiSeRequestProcessing& getMultiSeRequestProcessing() const
-        = 0;
+    const MultiSeRequestProcessing mMultiSeRequestProcessing;
 
     /**
-     * @return the channel control
+     *
      */
-    virtual const ChannelControl& getChannelControl() const = 0;
+    const ChannelControl mChannelControl;
 };
 
 }

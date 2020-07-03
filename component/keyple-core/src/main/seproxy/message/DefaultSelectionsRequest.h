@@ -14,24 +14,10 @@
 
 #pragma once
 
-#include <memory>
-
 #include "AbstractDefaultSelectionsRequest.h"
 #include "ChannelControl.h"
 #include "KeypleCoreExport.h"
 #include "MultiSeRequestProcessing.h"
-#include "ObservableReader.h"
-
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SeRequestSet;
-}
-}
-}
-}
 
 namespace keyple {
 namespace core {
@@ -42,7 +28,9 @@ using namespace keyple::core::seproxy::event;
 
 /**
  * Class containing the Set of {@link SeRequest} used to make a default
- * selection at the {@link ObservableReader} level.
+ * selection at the {@link ObservableReader} level.<br>
+ * It implements the {@link AbstractDefaultSelectionsRequest} class by providing
+ * it with a public constructor.
  */
 class KEYPLECORE_API DefaultSelectionsRequest final
 : public AbstractDefaultSelectionsRequest {
@@ -51,48 +39,9 @@ public:
      *
      */
     DefaultSelectionsRequest(
-        std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet,
-        MultiSeRequestProcessing multiSeRequestProcessing,
-        ChannelControl channelControl);
-
-    /**
-     *
-     */
-    DefaultSelectionsRequest(
-        std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet);
-
-    /**
-     *
-     */
-    const MultiSeRequestProcessing& getMultiSeRequestProcessing() const
-        override;
-
-    /**
-     *
-     */
-    const ChannelControl& getChannelControl() const override;
-
-    /**
-     *
-     */
-    const std::vector<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet()
-        const override;
-
-private:
-    /**
-     *
-     */
-    std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet;
-
-    /**
-     *
-     */
-    MultiSeRequestProcessing multiSeRequestProcessing;
-
-    /**
-     *
-     */
-    ChannelControl channelControl;
+        const std::vector<std::shared_ptr<SeRequest>>& selectionSeRequests,
+        const MultiSeRequestProcessing& multiSeRequestProcessing,
+        const ChannelControl& channelControl);
 };
 
 }

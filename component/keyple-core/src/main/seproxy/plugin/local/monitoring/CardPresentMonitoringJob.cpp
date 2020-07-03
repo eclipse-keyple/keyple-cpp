@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -17,6 +17,7 @@
 
 /* Common */
 #include "InterruptedException.h"
+#include "KeypleReaderIOException.h"
 #include "Thread.h"
 
 namespace keyple {
@@ -66,7 +67,7 @@ void CardPresentMonitoringJob::monitoringJob(
                 return;
             }
 
-        } catch (KeypleIOReaderException& e) {
+        } catch (KeypleReaderIOException& e) {
             (void)e;
             loop = false;
             /* What do do here */

@@ -80,14 +80,6 @@ public:
         void removeObserver(const std::shared_ptr<PluginObserver> observer) = 0;
 
     /**
-     * Push a PluginEvent of the {@link ObservablePlugin} to its registered
-     * observers.
-     *
-     * @param event the event (see {@link PluginEvent})
-     */
-    virtual void notifyObservers(const std::shared_ptr<PluginEvent> event) = 0;
-
-    /**
      * Remove all observers at once
      */
     virtual void clearObservers() = 0;

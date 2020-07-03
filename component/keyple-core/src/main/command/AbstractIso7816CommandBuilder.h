@@ -52,8 +52,9 @@ public:
      * @param commandReference command reference
      * @param request ApduRequest
      */
-    AbstractIso7816CommandBuilder(CommandsTable& commandReference,
-                                  std::shared_ptr<ApduRequest> request);
+    AbstractIso7816CommandBuilder(
+        const std::shared_ptr<SeCommand> commandReference,
+        std::shared_ptr<ApduRequest> request);
 
     /**
      * Abstract constructor to build a command with a command name and an
@@ -100,11 +101,15 @@ protected:
      * @param dataIn bytes sent in the data field of the command. dataIn.limit
      *        will be Lc (Number of bytes present in the data field of the
      *        command)
+     * @param le maximum number of bytes expected in the data field of the
+     *        response to the command (set to 0 is the case where ingoing and
+     *        outgoing are present. Let the lower layer to handle the actual
+     *        length [case4])
      * @return an ApduRequest
      */
-    virtual std::shared_ptr<ApduRequest>
-    setApduRequest(uint8_t cla, const CommandsTable& command, uint8_t p1,
-                   uint8_t p2, const std::vector<uint8_t>& dataIn);
+    virtual std::shared_ptr<ApduRequest> setApduRequest(
+        const uint8_t cla, const std::shared_ptr<SeCommand> command,
+        const uint8_t p1, const uint8_t p2, const std::vector<uint8_t>& dataIn);
 
     /**
      * Helper method to create an ApduRequest from separated elements.
@@ -136,9 +141,9 @@ protected:
      *        length [case4])
      * @return an ApduRequest
      */
-    virtual std::shared_ptr<ApduRequest>
-    setApduRequest(uint8_t cla, const CommandsTable& command, uint8_t p1,
-                   uint8_t p2, uint8_t le);
+    virtual std::shared_ptr<ApduRequest> setApduRequest(
+        const uint8_t cla, const std::shared_ptr<SeCommand> command,
+        const uint8_t p1, const uint8_t p2, const uint8_t le);
 
     /**
      * Helper method to create an ApduRequest from separated elements.
@@ -173,9 +178,10 @@ protected:
      *        length [case4])
      * @return an ApduRequest
      */
-    virtual std::shared_ptr<ApduRequest>
-    setApduRequest(uint8_t cla, const CommandsTable& command, uint8_t p1,
-                   uint8_t p2, const std::vector<uint8_t>& dataIn, uint8_t le);
+    virtual std::shared_ptr<ApduRequest> setApduRequest(
+        const uint8_t cla, const std::shared_ptr<SeCommand> command,
+        const uint8_t p1, const uint8_t p2, const std::vector<uint8_t>& dataIn,
+        const uint8_t le);
 
     /**
      *

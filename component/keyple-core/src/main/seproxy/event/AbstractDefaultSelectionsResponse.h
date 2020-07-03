@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <list>
+#include <vector>
 #include <memory>
 
 /* Core */
@@ -32,7 +32,10 @@ using namespace keyple::core::seproxy::message;
  * The abstract class defining the default selections response in return to the
  * default selection made when the SE was inserted..
  * <p>
- * The default selections response provides a list of {@link SeResponse}
+ * The default selections response provides a list of {@link SeResponse}<br>
+ * The purpose of this abstract class is to hide the constructor that is defined
+ * as public in its implementation
+ * {@link keyple::core::seproxy::message::DefaultSelectionsRequest}.
  */
 class KEYPLECORE_API AbstractDefaultSelectionsResponse
 : public std::enable_shared_from_this<AbstractDefaultSelectionsResponse> {
@@ -40,16 +43,26 @@ public:
     /**
      *
      */
-    virtual ~AbstractDefaultSelectionsResponse()
-    {
-    }
+    virtual ~AbstractDefaultSelectionsResponse() {}
 
-protected:
     /**
      * @return the list of {@link SeResponse}
      */
-    virtual const std::list<std::shared_ptr<SeResponse>>&
-        getSelectionSeResponseSet() const = 0;
+    virtual const std::vector<std::shared_ptr<SeResponse>>&
+        getSelectionSeResponses() const;
+
+protected:
+    /**
+     *
+     */
+    AbstractDefaultSelectionsResponse(
+        const std::vector<std::shared_ptr<SeResponse>>& selectionSeResponses);
+
+private:
+    /**
+     *
+     */
+    const std::vector<std::shared_ptr<SeResponse>> mSelectionSeResponses;
 };
 
 }

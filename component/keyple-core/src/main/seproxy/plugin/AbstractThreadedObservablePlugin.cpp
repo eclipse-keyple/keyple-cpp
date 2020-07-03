@@ -14,9 +14,11 @@
 
 /* Core */
 #include "AbstractThreadedObservablePlugin.h"
+
 #include "AbstractObservableLocalReader.h"
 #include "PluginEvent.h"
 #include "KeypleReaderException.h"
+#include "KeypleReaderIOException.h"
 #include "InterruptedException.h"
 
 namespace keyple {
@@ -36,13 +38,13 @@ AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(
     const std::string& name)
 : AbstractObservablePlugin(name)
 {
-    logger->trace("constructor (name: %)\n", name);
+    mLogger->trace("constructor (name: %)\n", name);
 }
 
 void AbstractThreadedObservablePlugin::finalize()
 {
-    thread->end();
-    logger->trace("[%] observable Plugin thread ended\n", getName());
+    mThread->end();
+    mLogger->trace("[%] observable Plugin thread ended\n", getName());
 
     //AbstractPlugin::finalize();
 }
@@ -53,9 +55,9 @@ void AbstractThreadedObservablePlugin::addObserver(
     AbstractObservablePlugin::addObserver(observer);
 
     if (countObservers() == 1) {
-        logger->trace("Start monitoring the plugin %\n", getName());
-        thread = std::make_shared<EventThread>(this, getName());
-        thread->start();
+        mLogger->trace("Start monitoring the plugin %\n", getName());
+        mThread = std::make_shared<EventThread>(this, getName());
+        mThread->start();
         /* Give some time to the thread */
         Thread::sleep(100);
 
@@ -68,9 +70,9 @@ void AbstractThreadedObservablePlugin::removeObserver(
     AbstractObservablePlugin::removeObserver(observer);
 
     if (countObservers() == 0) {
-        logger->trace("Stop the plugin monitoring\n");
-        if (thread != nullptr) {
-            thread->end();
+        mLogger->trace("Stop the plugin monitoring\n");
+        if (mThread != nullptr) {
+            mThread->end();
         }
     }
 }
@@ -79,51 +81,52 @@ void AbstractThreadedObservablePlugin::clearObservers()
 {
     AbstractObservablePlugin::clearObservers();
 
-    if (thread != nullptr) {
-        logger->trace("Stop the plugin monitoring\n");
-        thread->end();
+    if (mThread != nullptr) {
+        mLogger->trace("Stop the plugin monitoring\n");
+        mThread->end();
     }
 }
 
 bool AbstractThreadedObservablePlugin::isMonitoring()
 {
-    return thread != nullptr && thread->isAlive() && thread->isMonitoring();
+    return mThread != nullptr && mThread->isAlive() && mThread->isMonitoring();
 }
 
 AbstractThreadedObservablePlugin::EventThread::EventThread(
     AbstractThreadedObservablePlugin* outerInstance,
     const std::string& pluginName)
-: outerInstance(outerInstance), pluginName(pluginName)
+: mOuterInstance(outerInstance), mPluginName(pluginName)
 {
 }
 
 void AbstractThreadedObservablePlugin::EventThread::end()
 {
-    if (outerInstance && outerInstance->logger)
-        outerInstance->logger->trace("stopping event thread\n");
+    if (mOuterInstance && mOuterInstance->mLogger)
+        mOuterInstance->mLogger->trace("stopping event thread\n");
 
-    running = false;
+    mRunning = false;
     this->interrupt();
 }
 
 void* AbstractThreadedObservablePlugin::EventThread::run()
 {
-    outerInstance->logger->trace("starting event thread\n");
+    mOuterInstance->mLogger->trace("starting event thread\n");
 
     std::shared_ptr<std::set<std::string>> changedReaderNames =
         std::make_shared<std::set<std::string>>();
 
     try {
-        while ((!isInterrupted()) && running) {
+        while ((!isInterrupted()) && mRunning) {
             /* Retrieves the current readers names list */
             const std::set<std::string>& actualNativeReadersNames =
-                outerInstance->fetchNativeReadersNames();
+                mOuterInstance->fetchNativeReadersNames();
 
             /*
              * Checks if it has changed this algorithm favors cases where
              * nothing changes.
              */
-            if (outerInstance->nativeReadersNames != actualNativeReadersNames) {
+            if (mOuterInstance->mNativeReadersNames != actualNativeReadersNames)
+            {
                 /*
                  * Parse the current readers list, notify for disappeared
                  * readers, update readers list
@@ -132,33 +135,35 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
                 /* build changed reader names list */
                 changedReaderNames->clear();
 
-                for (auto it : outerInstance->readers) {
-                    if (actualNativeReadersNames.find(it->getName()) ==
-                        actualNativeReadersNames.end()) {
-                        changedReaderNames->insert(it->getName());
+                for (const auto& pair : mOuterInstance->mReaders) {
+                    if (actualNativeReadersNames.find(pair.second->getName())
+                        == actualNativeReadersNames.end()) {
+                        changedReaderNames->insert(pair.second->getName());
                     }
                 }
 
                 /* notify disconnections if any and update the reader list */
                 if (changedReaderNames->size() > 0) {
                     /* grouped notification */
-                    outerInstance->notifyObservers(
+                    mOuterInstance->notifyObservers(
                         std::make_shared<PluginEvent>(
-                            this->pluginName, changedReaderNames,
+                            mPluginName, changedReaderNames,
                             PluginEvent::EventType::READER_DISCONNECTED));
 
                     /* list update */
-                    for (auto it = outerInstance->readers.begin();
-                              it != outerInstance->readers.end(); ) {
+                    for (auto it = mOuterInstance->mReaders.begin();
+                              it != mOuterInstance->mReaders.end(); ) {
 
-                        if (actualNativeReadersNames.find((*it)->getName()) ==
+                        if (actualNativeReadersNames.find(
+                                (*it).second->getName()) ==
                             actualNativeReadersNames.end()) {
                             /*
                              * Removes any possible observers before removing
                              * the reader.
                              */
-                            std::shared_ptr<AbstractObservableLocalReader> observableR =
-                                std::dynamic_pointer_cast<AbstractObservableLocalReader>(*it);
+                            std::shared_ptr<ObservableReader>
+                                observableR = std::dynamic_pointer_cast<
+                                        ObservableReader>((*it).second);
 
                             if (observableR) {
                                 observableR->clearObservers();
@@ -167,16 +172,16 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
                                 observableR->stopSeDetection();
                             }
 
-                            outerInstance->logger->trace(
+                            mOuterInstance->mLogger->trace(
                                 "[%][%] Plugin thread => Remove unplugged "
-                                "reader from readers list\n", pluginName,
-                                (*it)->getName());
+                                "reader from readers list\n", mPluginName,
+                                (*it).second->getName());
 
                             /* remove reader name from the current list */
-                            outerInstance->nativeReadersNames.erase(
-                                (*it)->getName());
+                            mOuterInstance->mNativeReadersNames.erase(
+                                (*it).second->getName());
 
-                            it = outerInstance->readers.erase(it);
+                            it = mOuterInstance->mReaders.erase(it);
                         } else {
                             it++;
                         }
@@ -191,45 +196,46 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
                  * update readers list
                  */
                 for (auto readerName : actualNativeReadersNames) {
-                    if (outerInstance->nativeReadersNames.find(readerName) !=
-                        outerInstance->nativeReadersNames.end()) {
+                    if (mOuterInstance->mNativeReadersNames.find(readerName) !=
+                        mOuterInstance->mNativeReadersNames.end()) {
                         std::shared_ptr<SeReader> reader =
-                            outerInstance->fetchNativeReader(readerName);
-                        outerInstance->readers.insert(reader);
+                            mOuterInstance->fetchNativeReader(readerName);
+                        mOuterInstance->mReaders.insert({reader->getName(),
+                                                         reader});
 
                         /* add to the notification list */
                         changedReaderNames->insert(readerName);
-                        outerInstance->logger->trace(
+                        mOuterInstance->mLogger->trace(
                             "[%][%] Plugin thread => Add plugged reader to "
-                            "readers list\n", pluginName, reader->getName());
+                            "readers list\n", mPluginName, reader->getName());
 
                         /* add reader name to the current list */
-                        outerInstance->nativeReadersNames.insert(readerName);
+                        mOuterInstance->mNativeReadersNames.insert(readerName);
                     }
                 }
 
                 /* notify connections if any */
                 if (changedReaderNames->size() > 0) {
-                    outerInstance->notifyObservers(
+                    mOuterInstance->notifyObservers(
                         std::make_shared<PluginEvent>(
-                            this->pluginName, changedReaderNames,
+                            mPluginName, changedReaderNames,
                             PluginEvent::EventType::READER_CONNECTED));
                 }
             }
 
             /* sleep for a while. */
-            Thread::sleep((long)outerInstance->threadWaitTimeout);
+            Thread::sleep((long)mOuterInstance->mThreadWaitTimeout);
         }
 
     } catch (const InterruptedException& e) {
-        outerInstance->logger->warn("[%] An exception occurred while "
-                                    "monitoring plugin: %\n", pluginName, e);
+        mOuterInstance->mLogger->warn("[%] An exception occurred while "
+                                     "monitoring plugin: %\n", mPluginName, e);
 
         /* Restore interrupted state */
         //Thread::currentThread().interrupt();
     } catch (const KeypleReaderException& e) {
-        outerInstance->logger->warn("[%] An exception occurred while "
-                                    "monitoring plugin: %\n", pluginName, e);
+        mOuterInstance->mLogger->warn("[%] An exception occurred while "
+                                     "monitoring plugin: %\n", mPluginName, e);
     }
 
     return nullptr;
@@ -237,12 +243,12 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
 
 bool AbstractThreadedObservablePlugin::EventThread::isAlive()
 {
-    return alive;
+    return mAlive;
 }
 
 bool AbstractThreadedObservablePlugin::EventThread::isMonitoring()
 {
-    return running;
+    return mRunning;
 }
 
 }

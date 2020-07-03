@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,64 +14,32 @@
 
 #pragma once
 
-#include <exception>
-#include <stdexcept>
-#include <iostream>
+#include "ObservablePlugin.h"
 
 namespace keyple {
-namespace common {
+namespace core {
+namespace seproxy {
+namespace plugin {
+namespace local {
 
-class Exception : public std::exception {
-public:
-    Exception(const std::string& message) : message(message)
-    {
-    }
+using namespace keyple::core::seproxy::event;
 
-    Exception(const std::string& message, const std::exception cause)
-    : message(message), cause(cause)
-    {
-    }
-
+/**
+ * The {@link ObservableReaderNotifier} interface provides the API to notify the
+ * observers of a {@link ObservableReader}
+ */
+class ObservablePluginNotifier : public ObservablePlugin {
     /**
-	 * Returns the detail message string of this exception.
-	 */
-    std::string getMessage() const
-    {
-        return message;
-    }
-
-    /**
-	 * Returns the cause of the exception.
-	 */
-    const std::exception getCause() const
-    {
-        return cause;
-    }
-
-    /**
+     * Push a ReaderEvent of the {@link ObservableReaderNotifier} to its
+     * registered observers.
      *
+     * @param event the event (see {@link ReaderEvent})
      */
-    friend std::ostream& operator<<(std::ostream& os, const Exception& e)
-    {
-		os << "EXCEPTION: {"
-           << "MESSAGE = " << e.message << ", "
-           << "CAUSE = " << e.cause.what()
-		   << "}";
-
-        return os;
-    }
-
-private:
-    /**
-	 *
-	 */
-    const std::string message;
-
-    /**
-	 *
-	 */
-    const std::exception cause;
+    virtual void notifyObservers(const std::shared_ptr<PluginEvent> event) = 0;
 };
 
+}
+}
+}
 }
 }

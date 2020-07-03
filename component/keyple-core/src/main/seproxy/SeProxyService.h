@@ -19,8 +19,6 @@
 #include <mutex>
 #include <set>
 
-#include "exceptionhelper.h"
-
 /* Common */
 #include "LoggerFactory.h"
 #include "Object.h"
@@ -29,24 +27,6 @@
 #include "AbstractPluginFactory.h"
 #include "KeypleCoreExport.h"
 #include "KeyplePluginNotFoundException.h"
-
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-class ReaderPlugin;
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace exception {
-class KeyplePluginNotFoundException;
-}
-}
-}
-}
 
 namespace keyple {
 namespace core {

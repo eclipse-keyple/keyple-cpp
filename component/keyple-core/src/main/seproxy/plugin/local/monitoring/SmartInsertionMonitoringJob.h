@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -39,7 +39,7 @@ namespace monitoring {
  * <p>
  * When an SE is present, an internal SE_INSERTED event is fired.
  * <p>
- * If a communication problem with the reader occurs (KeypleIOReaderException)
+ * If a communication problem with the reader occurs (KeypleReaderIOException)
  * an internal STOP_DETECT event is fired.
  */
 class KEYPLECORE_API SmartInsertionMonitoringJob : public MonitoringJob {
@@ -57,9 +57,9 @@ public:
     /**
      *
      */
-    std::future<void>
-    startMonitoring(AbstractObservableState* state,
-                    std::atomic<bool>& cancellationFlag) override;
+    std::future<void> startMonitoring(
+        AbstractObservableState* state,
+        std::atomic<bool>& cancellationFlag) override;
 
     /**
      *

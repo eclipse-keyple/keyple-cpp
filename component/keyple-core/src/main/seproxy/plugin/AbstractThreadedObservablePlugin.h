@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,7 +18,9 @@
 #include <stdexcept>
 #include <memory>
 
-#include "exceptionhelper.h"
+/* Common */
+#include "LoggerFactory.h"
+#include "Thread.h"
 
 /* Core */
 #include "AbstractObservablePlugin.h"
@@ -26,21 +28,6 @@
 #include "ObservablePlugin.h"
 #include "ObservableReader.h"
 #include "SeReader.h"
-
-/* Common */
-#include "LoggerFactory.h"
-#include "Thread.h"
-
-/* Forward class declarations  */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace plugin {
-class EventThread;
-}
-}
-}
-}
 
 namespace keyple {
 namespace core {
@@ -87,6 +74,8 @@ public:
      * <p>
      * Overrides the method defined in {@link AbstractObservablePlugin}, the
      * thread is ended.
+     *
+     * @deprecated will change in a later version
      */
     void clearObservers() final;
 
@@ -96,26 +85,32 @@ public:
     virtual ~AbstractThreadedObservablePlugin() {}
 
 protected:
-    /**
-     * Instantiates an threaded observable plugin
-     *
-     * @param name name of the plugin
-     */
-    AbstractThreadedObservablePlugin(const std::string& name);
 
     /**
      * Thread wait timeout in ms
      *
      * This timeout value will determined the latency to detect changes
      */
-    long long threadWaitTimeout = SETTING_THREAD_TIMEOUT_DEFAULT;
+    long long mThreadWaitTimeout = SETTING_THREAD_TIMEOUT_DEFAULT;
+
+    /**
+     * Instantiates an threaded observable plugin
+     *
+     * @param name name of the plugin
+     * @throw KeypleReaderNotFoundException if the reader was not found by its
+     *        name
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
+     */
+    AbstractThreadedObservablePlugin(const std::string& name);
 
     /**
      * Fetch the list of connected native reader (usually from third party
      * library) and returns their names (or id)
      *
      * @return connected readers' name list
-     * @throws KeypleReaderException if a reader error occurs
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     virtual const std::set<std::string>& fetchNativeReadersNames() = 0;
 
@@ -126,7 +121,10 @@ protected:
      *
      * @param name the reader name
      * @return the list of AbstractReader objects.
-     * @throws KeypleReaderException if a reader error occurs
+     * @throw KeypleReaderNotFoundException if the reader was not found by its
+     *        name
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     virtual std::shared_ptr<SeReader>
         fetchNativeReader(const std::string& name) = 0;
@@ -136,6 +134,7 @@ protected:
      *
      * @return true, if the background job is monitoring, false in all other
      *         cases.
+     * @deprecated will change in a later version
      */
     bool isMonitoring();
 
@@ -143,6 +142,7 @@ protected:
      * Called when the class is unloaded. Attempt to do a clean exit.
      *
      * @throws Throwable a generic exception
+     * @deprecated will change in a later version
      */
     void finalize() /* override */;
 
@@ -159,7 +159,7 @@ private:
     public:
         /**
          * Constructor
-         * 
+         *
          * Uses a raw pointer to not mess with weak_ptr & outer instances
          */
         EventThread(
@@ -199,29 +199,29 @@ private:
         /**
          *
          */
-        AbstractThreadedObservablePlugin* outerInstance;
+        AbstractThreadedObservablePlugin* mOuterInstance;
 
         /**
          *
          */
-        const std::string pluginName;
+        const std::string mPluginName;
 
         /**
          *
          */
-        bool running = true;
+        bool mRunning = true;
     };
 
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(AbstractThreadedObservablePlugin));
 
     /**
      * Local thread to monitoring readers presence
      */
-    std::shared_ptr<EventThread> thread;
+    std::shared_ptr<EventThread> mThread;
 
     /**
      * List of names of the physical (native) connected readers This list helps
@@ -230,7 +230,7 @@ private:
      * Insertion, removal, and access operations safely execute concurrently by
      * multiple threads.
      */
-    std::set<std::string> nativeReadersNames;
+    std::set<std::string> mNativeReadersNames;
 };
 
 }

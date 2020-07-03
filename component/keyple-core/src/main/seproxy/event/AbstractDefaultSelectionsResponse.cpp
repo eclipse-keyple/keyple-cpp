@@ -19,6 +19,16 @@ namespace core {
 namespace seproxy {
 namespace event {
 
+AbstractDefaultSelectionsResponse::AbstractDefaultSelectionsResponse(
+  const std::vector<std::shared_ptr<SeResponse>>& selectionSeResponses)
+: mSelectionSeResponses(selectionSeResponses) {}
+
+const std::vector<std::shared_ptr<SeResponse>>&
+    AbstractDefaultSelectionsResponse::getSelectionSeResponses() const
+{
+    return mSelectionSeResponses;
+}
+
 }
 }
 }

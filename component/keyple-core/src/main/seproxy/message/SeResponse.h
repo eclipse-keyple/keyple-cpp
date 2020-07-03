@@ -24,27 +24,9 @@
 #include "Object.h"
 
 /* Core */
+#include "ApduResponse.h"
 #include "KeypleCoreExport.h"
-
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SelectionStatus;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class ApduResponse;
-}
-}
-}
-}
+#include "SelectionStatus.h"
 
 namespace keyple {
 namespace core {
@@ -119,16 +101,16 @@ public:
                                                    const SeResponse& sr);
 
     /**
-	 *
-	 */
+     *
+     */
     friend KEYPLECORE_API std::ostream& operator<<(
-		std::ostream& os, const std::shared_ptr<SeResponse>& sr);
+		    std::ostream& os, const std::shared_ptr<SeResponse>& sr);
 
-	/**
-	 *
-	 */
+    /**
+     *
+     */
     friend KEYPLECORE_API std::ostream& operator<<(
-		std::ostream& os, const std::list<std::shared_ptr<SeResponse>>& sr);
+		    std::ostream& os, const std::vector<std::shared_ptr<SeResponse>>& sr);
 
 private:
     /**

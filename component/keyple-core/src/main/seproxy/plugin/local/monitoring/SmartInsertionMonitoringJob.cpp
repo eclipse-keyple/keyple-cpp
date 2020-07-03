@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -16,7 +16,7 @@
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
-#include "KeypleIOReaderException.h"
+#include "KeypleReaderIOException.h"
 #include "InterruptedException.h"
 
 using namespace keyple::core::seproxy::exception;
@@ -49,7 +49,7 @@ void SmartInsertionMonitoringJob::monitoringJob(
             state->onEvent(InternalEvent::SE_INSERTED);
         }
 
-    } catch (KeypleIOReaderException& e) {
+    } catch (KeypleReaderIOException& e) {
         logger->trace("[%] waitForCardPresent => Error while polling SE with"
                       " waitForCardPresent. %\n",
                       reader->getName(), e.getMessage());

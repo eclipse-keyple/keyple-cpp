@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,13 +18,12 @@
 
 #include "AbstractDefaultSelectionsRequest.h"
 #include "AbstractLocalReader.h"
-#include "KeypleChannelControlException.h"
 #include "KeypleCoreExport.h"
-#include "KeypleIOReaderException.h"
+#include "KeypleReaderIOException.h"
 #include "KeypleReaderException.h"
 #include "DefaultSelectionsRequest.h"
 #include "DefaultSelectionsResponse.h"
-#include "ObservableReader.h"
+#include "ObservableReaderNotifier.h"
 #include "ReaderEvent.h"
 #include "SeResponse.h"
 
@@ -67,8 +66,10 @@ enum class InternalEvent {
  * It provides the means to configure the plugin's behavior when a SE is
  * detected.
  *
+ * </p>
  * The event management implements a ObservableReaderStateService state machine
  * that is composed of four states.
+ *
  * <ol>
  * <li>WAIT_FOR_START_DETECTION
  * <p>
@@ -87,7 +88,6 @@ enum class InternalEvent {
  * <li>A default selection is defined: in this case it is played and its result
  * leads to an event notification SE_INSERTED or SE_MATCHED or no event (see
  * setDefaultSelectionRequest)
- *
  * <li>There is no default selection: a SE_INSERTED event is then notified.
  * <p>
  * In the case where an event has been notified to the application, the state
@@ -124,12 +124,14 @@ enum class InternalEvent {
  * </ol>
  */
 class KEYPLECORE_API AbstractObservableLocalReader
-: public AbstractLocalReader, public virtual ObservableReader {
+: public AbstractLocalReader, public virtual ObservableReaderNotifier {
 public:
     /**
      * Reader constructor
+     *
      * <p>
      * Force the definition of a name through the use of super method.
+     *
      * <p>
      *
      * @param pluginName the name of the plugin that instantiated the reader
@@ -140,23 +142,28 @@ public:
 
     /**
      * Check the presence of a SE
+     *
      * <p>
      * This method is recommended for non-observable readers.
+     *
      * <p>
      * When the SE is not present the logical and physical channels status may
      * be refreshed through a call to the processSeRemoved method.
      *
      * @return true if the SE is present
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     bool isSePresent() final;
 
     /**
      * Starts the SE detection. Once activated, the application can be notified
-     * of the arrival of an
-     * SE.
+     * of the arrival of an SE.
+     *
      * <p>
      * This method must be overloaded by readers depending on the particularity
      * of their management of the start of SE detection.
+     *
      * <p>
      * Note: they must call the super method with the argument PollingMode.
      *
@@ -170,6 +177,7 @@ public:
 
     /**
      * Stops the SE detection.
+     *
      * <p>
      * This method must be overloaded by readers depending on the particularity
      * of their management of the start of SE detection.
@@ -180,13 +188,16 @@ public:
      * If defined, the prepared DefaultSelectionRequest will be processed as
      * soon as a SE is inserted. The result of this request set will be added to
      * the reader event notified to the application.
+     *
      * <p>
      * If it is not defined (set to null), a simple SE detection will be
      * notified in the end.
+     *
      * <p>
      * Depending on the notification mode, the observer will be notified
      * whenever an SE is inserted, regardless of the selection status, or only
      * if the current SE matches the selection criteria.
+     *
      * <p>
      *
      * @param defaultSelectionsRequest the {@link
@@ -222,12 +233,15 @@ public:
     /**
      * This method is invoked when a SE is inserted in the case of an observable
      * reader.
+     *
      * <p>
      * e.g. from the monitoring thread in the case of a Pcsc plugin or from the
      * NfcAdapter callback method onTagDiscovered in the case of a Android NFC
      * plugin.
+     *
      * <p>
      * It will return a ReaderEvent in the following cases:
+     *
      * <ul>
      * <li>SE_INSERTED: if no default selection request was defined
      * <li>SE_MATCHED: if a default selection request was defined in any mode
@@ -236,6 +250,7 @@ public:
      * mode but no SE matched the selection (the DefaultSelectionsResponse is
      * however transmitted)
      * </ul>
+     *
      * <p>
      * It returns null if a default selection is defined in MATCHED_ONLY mode
      * but no SE matched the selection.
@@ -243,6 +258,7 @@ public:
      * @return ReaderEvent that should be notified to observers, contains the
      *         results of the default selection if any, can be null if no event
      *         should be sent
+     * @deprecated will change in a later version
      */
     std::shared_ptr<ReaderEvent> processSeInserted();
 
@@ -250,8 +266,10 @@ public:
      * Sends a neutral APDU to the SE to check its presence. The status of the
      * response is not verified as long as the mere fact that the SE responds is
      * sufficient to indicate whether or not it is present.
+     *
      * <p>
      * This method has to be called regularly until the SE no longer respond.
+     *
      * <p>
      * Having this method not final allows a reader plugin to implement its own
      * method.
@@ -263,14 +281,15 @@ public:
     /**
      * This method is invoked when a SE is removed in the case of an observable
      * reader.
+     *
      * <p>
      * It will also be invoked if isSePresent is called and at least one of the
      * physical or logical channels is still open (case of a non-observable
      * reader)
+     *
      * <p>
      * The SE will be notified removed only if it has been previously notified
      * present (observable reader only)
-     *
      */
     void processSeRemoved();
 
@@ -298,16 +317,6 @@ public:
     void onEvent(const InternalEvent event);
 
     /**
-     * This method initiates the SE removal sequence.
-     * <p>
-     * The reader will remain in the WAIT_FOR_SE_REMOVAL state as long as the SE
-     * is present. It will change to the WAIT_FOR_START_DETECTION or
-     * WAIT_FOR_SE_INSERTION state depending on what was set when the detection
-     * was started.
-     */
-    void startRemovalSequence();
-
-    /**
      * Changes the state of the state machine
      *
      * @param stateId : new stateId
@@ -316,6 +325,7 @@ public:
 
     /**
      * Add a {@link ObservableReader.ReaderObserver}.
+     *
      * <p>
      * The observer will receive all the events produced by this reader (se
      * insertion, removal, etc.)
@@ -327,6 +337,7 @@ public:
 
     /**
      * Remove a {@link ObservableReader.ReaderObserver}.
+     *
      * <p>
      * The observer will do not receive any of the events produced by this
      * reader.
@@ -356,16 +367,33 @@ public:
      /**
      * Allows the application to signal the end of processing and thus proceed
      * with the removal sequence, followed by a restart of the card search.
+     *
      * <p>
      * Do nothing if the closing of the physical channel has already been
      * requested.
+     *
      * <p>
      * Send a request without APDU just to close the physical channel if it has
      * not already been
      * closed.
-     *
      */
     void notifySeProcessed() final;
+
+    /**
+     * This method initiates the SE removal sequence.
+     *
+     * <p>
+     * The reader will remain in the WAIT_FOR_SE_REMOVAL state as long as the SE
+     * is present. It will change to the WAIT_FOR_START_DETECTION or
+     * WAIT_FOR_SE_INSERTION state depending on what was set when the detection
+     * was started.
+     *
+     * @deprecated will change in a later version
+     *
+     * /!\ C++ vs. Java : This function is protected in Java. Triggers error
+     *                    when used in AbstractLocalReader.cpp
+     */
+    void startRemovalSequence();
 
 protected:
     /**
@@ -378,16 +406,17 @@ protected:
      * Initialize the ObservableReaderStateService with the possible states and
      * their implementation. ObservableReaderStateService define the initial
      * state.
+     *
      * <p>
      * Make sure to initialize the stateService in your reader constructor with
      * stateService = initStateService()
+     *
      * <p>
      *
      * @return initialized state stateService with possible states and the init
      * state
      */
-    virtual
-        std::shared_ptr<ObservableReaderStateService> initStateService() = 0;
+    virtual std::shared_ptr<ObservableReaderStateService> initStateService() =0;
 
 private:
     /**

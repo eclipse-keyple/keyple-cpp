@@ -14,62 +14,41 @@
 
 #pragma once
 
-#include <string>
 #include <map>
-
-#include "KeypleBaseException.h"
 
 namespace keyple {
 namespace core {
-namespace util {
-
-using namespace keyple::core::seproxy::exception;
+namespace seproxy {
 
 /**
  * Allow {@link ProxyReader}s and {@link ReaderPlugin}s to receive configuration
  * parameters.
  */
-class Configurable {
+class ProxyElement {
 public:
     /**
-     *
+     * @return the unique name of the item
      */
-    Configurable()
-    {
-    }
-
-    /**
-     *
-     */
-    Configurable(const Configurable& o)
-    {
-        (void)o;
-    }
-
-    /**
-     *
-     */
-    virtual ~Configurable()
-    {
-    }
+    virtual const std::string& getName() const = 0;
 
     /**
      * Gets the parameters
      *
      * @return the configuration of the item
      */
-    virtual const std::map<const std::string, const std::string>
+    virtual const std::map<const std::string, const std::string>&
         getParameters() const = 0;
 
     /**
-     * allows to define a proprietary setting for a reader or a plugin
+     * Allows to define a proprietary setting for a reader or a plugin
      * (contactless protocols polling sequence, baud rate, … etc.).
      *
      * @param key the parameter key
      * @param value the parameter value
      * @throws IllegalArgumentException if the parameter or the value is not
      *         supported
-     * @throws KeypleBaseException if the parameter fails to be set up
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     virtual void setParameter(const std::string& key, const std::string& value)
         = 0;
@@ -81,10 +60,10 @@ public:
      * @param parameters Parameters to setup
      * @throws IllegalArgumentException if the parameters or the values is not
      *         supported
-     * @throws KeypleBaseException if the parameter fails to be set up
+     * @throws KeypleException if the parameter fails to be set up
      */
-    virtual void setParameters(const std::map<const std::string,
-        const std::string>& parameters) = 0;
+    virtual void setParameters(
+        const std::map<const std::string, const std::string> parameters) = 0;
 };
 
 }

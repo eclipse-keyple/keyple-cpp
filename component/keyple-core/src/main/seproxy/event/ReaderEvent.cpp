@@ -107,7 +107,7 @@ ReaderEvent::ReaderEvent(const std::string& pluginName,
                          std::shared_ptr<AbstractDefaultSelectionsResponse>
                              defaultSelectionsResponse)
 : eventType(eventType), pluginName(pluginName), readerName(readerName),
-  defaultResponseSet(std::static_pointer_cast<DefaultSelectionsResponse>(
+  defaultResponses(std::static_pointer_cast<DefaultSelectionsResponse>(
       defaultSelectionsResponse))
 {
 }
@@ -162,7 +162,7 @@ std::ostream& operator<<(std::ostream& os, const ReaderEvent& re)
 const std::shared_ptr<AbstractDefaultSelectionsResponse>
 ReaderEvent::getDefaultSelectionsResponse() const
 {
-    return defaultResponseSet;
+    return defaultResponses;
 }
 
 }
