@@ -14,6 +14,10 @@
 
 #include "AbstractApduResponseParser.h"
 
+/* Common */
+#include "Exception.h"
+
+/* Core */
 #include "KeypleSeCommandException.h"
 #include "KeypleSeCommandUnknownStatusException.h"
 
@@ -21,6 +25,7 @@ namespace keyple {
 namespace core {
 namespace command {
 
+using namespace keyple::common;
 using namespace keyple::core::command::exception;
 using namespace keyple::core::seproxy::message;
 
@@ -94,12 +99,12 @@ void AbstractApduResponseParser::checkStatus()
     /* Status code is not referenced, or not successful */
 
     /* Exception class */
-    std::shared_ptr<KeypleSeCommandException> exceptionClass =
-            props != nullptr ? props->getExceptionClass() : nullptr;
+    const std::type_info& exceptionClass =
+        props != nullptr ? props->getExceptionClass() : typeid(Exception);
 
     /* Message */
-    const std::string& message = props != nullptr ? props->getInformation()
-        : "Unknown status";
+    const std::string& message =
+        props != nullptr ? props->getInformation() : "Unknown status";
 
     /* Command reference */
     std::shared_ptr<SeCommand> commandRef = getCommandRef();
@@ -126,7 +131,7 @@ const std::shared_ptr<AbstractApduCommandBuilder>
 
 const std::shared_ptr<KeypleSeCommandException>
     AbstractApduResponseParser::buildCommandException(
-        const std::shared_ptr<KeypleSeCommandException> exceptionClass,
+        const std::type_info& exceptionClass,
         const std::string& message,
         const std::shared_ptr<SeCommand> commandRef,
         const std::shared_ptr<Integer> statusCode)
@@ -141,12 +146,12 @@ const std::shared_ptr<KeypleSeCommandException>
 
 StatusProperties::StatusProperties(
   const std::string& information)
-: mSuccessful(true), mInformation(information), mExceptionClass(nullptr) {}
+: mSuccessful(true), mInformation(information),
+  mExceptionClass(typeid(Exception)) {}
 
 StatusProperties::StatusProperties(
-  const std::string& information,
-  const std::shared_ptr<KeypleSeCommandException> exceptionClass)
-: mSuccessful(exceptionClass == nullptr), mInformation(information),
+  const std::string& information, const std::type_info& exceptionClass)
+: mSuccessful(true), mInformation(information),
   mExceptionClass(exceptionClass) {}
 
 bool StatusProperties::isSuccessful() const
@@ -159,8 +164,7 @@ const std::string& StatusProperties::getInformation() const
     return mInformation;
 }
 
-const std::shared_ptr<KeypleSeCommandException>
-    StatusProperties::getExceptionClass() const
+const std::type_info& StatusProperties::getExceptionClass() const
 {
     return mExceptionClass;
 }

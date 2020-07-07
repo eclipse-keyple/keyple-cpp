@@ -62,9 +62,8 @@ public:
          * @param information the status information
          * @param exceptionClass the associated exception class
          */
-        StatusProperties(
-            const std::string& information,
-            const std::shared_ptr<KeypleSeCommandException> exceptionClass);
+        StatusProperties(const std::string& information,
+                         const std::type_info& exceptionClass);
 
         /**
          *
@@ -86,8 +85,7 @@ public:
         /**
          * @return the nullable exception class
          */
-        virtual const std::shared_ptr<KeypleSeCommandException>
-            getExceptionClass() const;
+        virtual const std::type_info&  getExceptionClass() const;
 
     private:
         /**
@@ -103,7 +101,7 @@ public:
         /**
          * The associated exception class in case of error status
          */
-        std::shared_ptr<KeypleSeCommandException> mExceptionClass;
+        const std::type_info& mExceptionClass;
     };
 
     /**
@@ -191,7 +189,7 @@ protected:
      * @return a new instance not null
      */
     const std::shared_ptr<KeypleSeCommandException> buildCommandException(
-            const std::shared_ptr<KeypleSeCommandException> exceptionClass,
+            const std::type_info& exceptionClass,
             const std::string& message,
             const std::shared_ptr<SeCommand> commandRef,
             const std::shared_ptr<Integer> statusCode);
