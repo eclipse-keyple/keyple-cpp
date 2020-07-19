@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -21,13 +21,10 @@ namespace keyple {
 namespace plugin {
 namespace stub {
 
+using namespace keyple::core::seproxy::event;
+
 class StubReader : public virtual ObservableReader {
 public:
-    const std::string ALLOWED_PARAMETER_1   = "parameter1";
-    const std::string ALLOWED_PARAMETER_2   = "parameter2";
-    const std::string CONTACTLESS_PARAMETER = "contactless";
-    const std::string CONTACTS_PARAMETER    = "contacts";
-
     /**
      * Insert a stub se into the reader. Will raise a SE_INSERTED event.
      *
