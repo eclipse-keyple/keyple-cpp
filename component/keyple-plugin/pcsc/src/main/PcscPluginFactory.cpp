@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,9 +14,11 @@
 
 #include "PcscPluginFactory.h"
 
+/* Common */
+#include "Exception.h"
+
 /* Core */
 #include "KeyplePluginInstantiationException.h"
-#include "KeypleRuntimeException.h"
 
 /* PC/SC Plugin */
 #include "PcscPlugin.h"
@@ -26,19 +28,21 @@ namespace keyple {
 namespace plugin {
 namespace pcsc {
 
+using namespace keyple::core::seproxy::exception;
+
 const std::string& PcscPluginFactory::getPluginName() const
 {
     return PcscPlugin::PLUGIN_NAME;
 }
 
-ReaderPlugin& PcscPluginFactory::getPluginInstance()
+std::shared_ptr<ReaderPlugin> PcscPluginFactory::getPlugin() const
 {
     try {
         return PcscPluginImpl::getInstance();
-    } catch (KeypleRuntimeException& e) {
+    } catch (const Exception& e) {
         throw KeyplePluginInstantiationException(
             "Can not access Smartcard.io readers, check "
-            "initNativeReaders trace",
+            "createVirtual trace",
             e);
     }
 }
