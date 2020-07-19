@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -64,7 +64,7 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string>
+    const std::map<const std::string, const std::string>&
         getParameters() const override;
 
     /**
@@ -116,10 +116,11 @@ protected:
     /**
      * Init native Readers to empty Set
      *
-     * @return the list of SeReader objects.
+     * @return the map of SeReader objects.
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::set<std::shared_ptr<SeReader>> initNativeReaders() override;
+    std::map<const std::string, std::shared_ptr<SeReader>> initNativeReaders()
+        override;
 
     /**
      * Fetch the reader whose name is provided as an argument. Returns the
@@ -131,8 +132,8 @@ protected:
      * @param readerName name of the reader
      * @return the reader object
      */
-    std::shared_ptr<SeReader>
-    fetchNativeReader(const std::string& readerName) override;
+    std::shared_ptr<SeReader> fetchNativeReader(const std::string& readerName)
+        override;
 
 private:
     // private static final StubPlugin uniqueInstance = new StubPlugin();
@@ -140,18 +141,18 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(StubPluginImpl));
 
     /**
      *
      */
-    std::map<const std::string, const std::string> parameters;
+    std::map<const std::string, const std::string> mParameters;
 
     /**
      * Simulated list of real-time connected stubReader
      */
-    std::set<std::string> connectedStubNames;
+    std::set<std::string> mConnectedStubNames;
 };
 
 }

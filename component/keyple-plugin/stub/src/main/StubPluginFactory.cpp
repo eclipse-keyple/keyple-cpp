@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -16,7 +16,6 @@
 
 /* Core */
 #include "KeyplePluginInstantiationException.h"
-#include "KeypleRuntimeException.h"
 
 /* Stub Plugin */
 #include "StubPluginImpl.h"
@@ -25,19 +24,23 @@ namespace keyple {
 namespace plugin {
 namespace stub {
 
-StubPluginFactory::StubPluginFactory(const std::string pluginName)
-: pluginName(pluginName)
+StubPluginFactory::StubPluginFactory(const std::string& pluginName)
+: mPluginName(pluginName)
 {
 }
 
 const std::string& StubPluginFactory::getPluginName() const
 {
-    return pluginName;
+    return mPluginName;
 }
 
-ReaderPlugin& StubPluginFactory::getPluginInstance()
+std::shared_ptr<ReaderPlugin> StubPluginFactory::getPlugin() const
 {
-    return *(new StubPluginImpl(pluginName));
+    try {
+        return std::make_shared<StubPluginImpl>(mPluginName);
+    } catch (const Exception& e) {
+        throw KeyplePluginInstantiationException("Cannot access StubPlugin", e);
+    }
 }
 
 }

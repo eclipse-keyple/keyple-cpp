@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -17,7 +17,6 @@
 #include <map>
 
 /* Core */
-#include "KeypleBaseException.h"
 #include "KeypleReaderException.h"
 #include "KeypleReaderNotFoundException.h"
 #include "ReaderPlugin.h"
@@ -45,17 +44,17 @@ public:
     /**
      *
      */
-    StubPluginImpl& stubPlugin;
+    std::shared_ptr<StubPluginImpl> mStubPlugin;
 
     /**
      * groupReference, seReader = limitation each
      */
-    std::map<const std::string, std::shared_ptr<StubReaderImpl>> readerPool;
+    std::map<const std::string, std::shared_ptr<StubReaderImpl>> mReaderPool;
 
     /**
      * Can have only one reader
      */
-    std::map<const std::string, const std::string> allocatedReader;
+    std::map<const std::string, const std::string> mAllocatedReader;
 
     /**
      *
@@ -75,10 +74,9 @@ public:
     /**
      *
      */
-    std::shared_ptr<SeReader>
-    plugStubPoolReader(const std::string& groupReference,
-                       const std::string& readerName,
-                       std::shared_ptr<StubSecureElement> se) override;
+    std::shared_ptr<SeReader> plugStubPoolReader(
+        const std::string& groupReference, const std::string& readerName,
+        std::shared_ptr<StubSecureElement> se) override;
 
     /**
      *
@@ -91,9 +89,13 @@ public:
      * @param groupReference the reference of the group to which the reader
      *        belongs (may be null depending on the implementation made)
      * @return seReader if available, null otherwise
+     * @throw KeypleAllocationReaderException if the allocation failed due to a
+     *        technical error
+     * @throw KeypleAllocationNoReaderException if the allocation failed due to
+     *        lack of available reader
      */
-    std::shared_ptr<SeReader>
-    allocateReader(const std::string& groupReference) override;
+    std::shared_ptr<SeReader> allocateReader(const std::string& groupReference)
+        override;
 
     /**
      * Release a reader
@@ -106,7 +108,7 @@ public:
      *
      */
     const std::map<const std::string, const std::string>&
-    listAllocatedReaders();
+        listAllocatedReaders();
 
     /*
      * Delegate methods to embedded stub plugin
@@ -120,13 +122,13 @@ public:
     /**
      *
      */
-    std::set<std::shared_ptr<SeReader>>& getReaders() override;
+    std::map<const std::string, std::shared_ptr<SeReader>>& getReaders()
+        override;
 
     /**
      *
      */
-    const std::shared_ptr<SeReader> getReader(const std::string& name) const
-        override;
+    const std::shared_ptr<SeReader> getReader(const std::string& name) override;
 
     /**
      *
@@ -136,7 +138,7 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string> getParameters() const
+    const std::map<const std::string, const std::string>& getParameters() const
         override;
 
     /**
