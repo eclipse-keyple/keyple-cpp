@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,7 +15,6 @@
 #pragma once
 
 /* Common */
-#include "exceptionhelper.h"
 #include "LoggerFactory.h"
 #include "stringhelper.h"
 
@@ -49,24 +48,13 @@ public:
     /**
      * This constructor should only be called by PcscPlugin PCSC reader
      * parameters are initialized with their default values as defined in
-     * setParameter. See {@link #setParameter(String, String)} for more details
+     * setParameter. See  {@link Configurable#setParameter(String, String)} for
+     * more details
      *
      * @param pluginName the name of the plugin
      * @param terminal the PC/SC terminal
      */
     PcscReaderImpl(const std::string& pluginName, PcscTerminal& terminal);
-
-    /**
-     *
-     */
-    //PcscReaderImpl(const PcscReaderImpl& o);
-
-    /**
-     *
-     */
-    virtual ~PcscReaderImpl()
-    {
-    }
 
     /**
      * Set a parameter.
@@ -94,16 +82,15 @@ public:
      * <li>eject: Eject</li>
      * </ul>
      * </li>
-     * <li><strong>thread_wait_timeout</strong>: Number of milliseconds towait</li>
+     * <li><strong>thread_wait_timeout</strong>: Number of milliseconds towait
+     * </li>
      * </ul>
      *
      * @param name Parameter name
      * @param value Parameter value
-     * @throws KeypleBaseException This method can fail when disabling the
-     *         exclusive mode as it's executed instantly
-     * @throws IllegalArgumentException when parameter is wrong
-     *
-     *
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed, when disabling the exclusive mode as it's
+     *        executed instantly
      */
     void setParameter(const std::string& name,
                       const std::string& value) override;
@@ -111,7 +98,7 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string> getParameters() const
+    const std::map<const std::string, const std::string>& getParameters() const
         override;
 
     /**
@@ -185,7 +172,8 @@ protected:
      *
      * @param protocolFlag the protocol flag
      * @return true if the current SE matches the protocol flag
-     * @throws KeypleReaderException if the protocol mask is not found
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
         override;
@@ -216,7 +204,8 @@ protected:
      * exclusivity is granted for a limited time (ex. 5 seconds). After this
      * delay, the card is automatically resetted.
      *
-     * @throws KeypleChannelStateException if a reader error occurs
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     void openPhysicalChannel() override;
 
@@ -235,17 +224,17 @@ private:
      * execute. This will correspond to the capacity to react to the interrupt
      * signal of the thread (see cancel method of the Future object).
      */
-    const long insertLatency = 500;
+    static const long INSERT_LATENCY = 500;
 
     /**
      *
      */
-    const long removalLatency = 500;
+    static const long REMOVAL_LATENCY = 500;
 
     /**
      * clang compiler warning - not used
      */
-    //const long insertWaitTimeout = 200;
+    //static const long INSERT_WAIT_TIMEOUT = 200;
 
     /**
      *
@@ -307,6 +296,11 @@ private:
      */
     const std::shared_ptr<Logger> logger =
         LoggerFactory::getLogger(typeid(PcscReaderImpl));
+
+    /**
+     * /!\ C++ vs. Java: Added. See setParameter() and getParameters()
+     */
+    std::map<const std::string, const std::string> mParameters;
 
 };
 
