@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,6 +18,8 @@
 #include "stringhelper.h"
 
 /* Core */
+#include "IllegalArgumentException.h"
+#include "IllegalStateException.h"
 #include "KeypleAllocationReaderException.h"
 
 /* Stub plugin */
@@ -32,15 +34,16 @@ using namespace keyple::common;
 using namespace keyple::core::seproxy;
 
 StubPoolPluginImpl::StubPoolPluginImpl(const std::string& pluginName)
-: stubPlugin(dynamic_cast<StubPluginImpl&>(
-      std::make_shared<StubPoolPluginFactory>(pluginName)->getPluginInstance()))
+: mStubPlugin(
+    std::dynamic_pointer_cast<StubPluginImpl>(
+        std::make_shared<StubPoolPluginFactory>(pluginName)->getPlugin()))
 {
     /* Create an embedded stubplugin to manage reader */
 }
 
 const std::string& StubPoolPluginImpl::getName() const
 {
-    return stubPlugin.getName();
+    return mStubPlugin->getName();
 }
 
 std::set<std::string> StubPoolPluginImpl::getReaderGroupReferences()
@@ -48,30 +51,29 @@ std::set<std::string> StubPoolPluginImpl::getReaderGroupReferences()
     std::set<std::string> v;
     std::map<const std::string, std::shared_ptr<StubReaderImpl>>::iterator it;
 
-    for (it = readerPool.begin(); it != readerPool.end(); ++it)
+    for (it = mReaderPool.begin(); it != mReaderPool.end(); ++it)
         v.insert(it->first);
 
     return v;
 }
 
-std::shared_ptr<SeReader>
-StubPoolPluginImpl::plugStubPoolReader(const std::string& groupReference,
-                                       const std::string& readerName,
-                                       std::shared_ptr<StubSecureElement> se)
+std::shared_ptr<SeReader> StubPoolPluginImpl::plugStubPoolReader(
+    const std::string& groupReference, const std::string& readerName,
+    std::shared_ptr<StubSecureElement> se)
 {
     try {
         /* Create new reader */
-        stubPlugin.plugStubReader(readerName, true);
+        mStubPlugin->plugStubReader(readerName, true);
 
         /* Get new reader */
         std::shared_ptr<StubReaderImpl> newReader =
             std::dynamic_pointer_cast<StubReaderImpl>(
-                stubPlugin.getReader(readerName));
+                mStubPlugin->getReader(readerName));
 
         newReader->insertSe(se);
 
         /* Map reader to groupReference */
-        readerPool.insert(
+        mReaderPool.insert(
             std::pair<const std::string, std::shared_ptr<StubReaderImpl>>(
                 groupReference, newReader));
 
@@ -88,13 +90,13 @@ void StubPoolPluginImpl::unplugStubPoolReader(const std::string& groupReference)
     try {
         /* Get reader */
         std::shared_ptr<SeReader> stubReader =
-            readerPool.find(groupReference)->second;
+            mReaderPool.find(groupReference)->second;
 
         /* Remove reader from pool */
-        readerPool.erase(groupReference);
+        mReaderPool.erase(groupReference);
 
         /* Remove reader from plugin */
-        stubPlugin.unplugStubReader(stubReader->getName(), true);
+        mStubPlugin->unplugStubReader(stubReader->getName(), true);
 
     } catch (KeypleReaderException& e) {
         (void)e;
@@ -105,23 +107,22 @@ void StubPoolPluginImpl::unplugStubPoolReader(const std::string& groupReference)
     }
 }
 
-std::shared_ptr<SeReader>
-StubPoolPluginImpl::allocateReader(const std::string& groupReference)
+std::shared_ptr<SeReader> StubPoolPluginImpl::allocateReader(
+    const std::string& groupReference)
 {
     /* Find the reader in the readerPool */
     std::shared_ptr<StubReaderImpl> seReader =
-        readerPool.find(groupReference)->second;
+        mReaderPool.find(groupReference)->second;
 
     /* Check if the reader is available */
     if (seReader == nullptr ||
-        allocatedReader.find(seReader->getName()) != allocatedReader.end()) {
+        mAllocatedReader.find(seReader->getName()) != mAllocatedReader.end()) {
         throw KeypleAllocationReaderException(
                  "Impossible to allocate a reader for groupReference : " +
                  groupReference + ". Has the reader being plugged to this " +
                  "referenceGroup?");
     } else {
-        allocatedReader.insert(std::pair<const std::string, const std::string>(
-            seReader->getName(), groupReference));
+        mAllocatedReader.insert({seReader->getName(), groupReference});
         return seReader;
     }
 }
@@ -150,52 +151,53 @@ void StubPoolPluginImpl::releaseReader(std::shared_ptr<SeReader> seReader)
         stubReader->insertSe(se);
     }
 
-    allocatedReader.erase(seReader->getName());
+    mAllocatedReader.erase(seReader->getName());
 }
 
 const std::map<const std::string, const std::string>&
-StubPoolPluginImpl::listAllocatedReaders()
+    StubPoolPluginImpl::listAllocatedReaders()
 {
-    return allocatedReader;
+    return mAllocatedReader;
 }
 
 const std::set<std::string> StubPoolPluginImpl::getReaderNames() const
 {
-    return stubPlugin.getReaderNames();
+    return mStubPlugin->getReaderNames();
 }
 
-std::set<std::shared_ptr<SeReader>>& StubPoolPluginImpl::getReaders()
+std::map<const std::string, std::shared_ptr<SeReader>>&
+    StubPoolPluginImpl::getReaders()
 {
-    return stubPlugin.getReaders();
+    return mStubPlugin->getReaders();
 }
 
 const std::shared_ptr<SeReader> StubPoolPluginImpl::getReader(
-    const std::string& name) const
+    const std::string& name)
 {
-    return stubPlugin.getReader(name);
+    return mStubPlugin->getReader(name);
 }
 
 int StubPoolPluginImpl::compareTo(std::shared_ptr<ReaderPlugin> plugin)
 {
-    return stubPlugin.compareTo(plugin);
+    return mStubPlugin->compareTo(plugin);
 }
 
-const std::map<const std::string, const std::string>
+const std::map<const std::string, const std::string>&
     StubPoolPluginImpl::getParameters() const
 {
-    return stubPlugin.getParameters();
+    return mStubPlugin->getParameters();
 }
 
 void StubPoolPluginImpl::setParameter(const std::string& key,
                                       const std::string& value)
 {
-    stubPlugin.setParameter(key, value);
+    mStubPlugin->setParameter(key, value);
 }
 
 void StubPoolPluginImpl::setParameters(
     const std::map<const std::string, const std::string>& parameters)
 {
-    stubPlugin.setParameters(parameters);
+    mStubPlugin->setParameters(parameters);
 }
 
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -20,7 +20,6 @@
 #include <memory>
 
 /* Common */
-#include "exceptionhelper.h"
 #include "LoggerFactory.h"
 #include "stringhelper.h"
 
@@ -99,7 +98,7 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string> getParameters() const
+    const std::map<const std::string, const std::string>& getParameters() const
         override;
 
     /**

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,7 +15,7 @@
 #pragma once
 
 /* Core */
-#include "AbstractPluginFactory.h"
+#include "PluginFactory.h"
 
 /* Plugin */
 #include "KeyplePluginStubExport.h"
@@ -29,14 +29,14 @@ using namespace keyple::core::seproxy;
 /**
  * Builds a {@link StubPlugin}
  */
-class KEYPLEPLUGINSTUB_API StubPluginFactory : public AbstractPluginFactory {
+class KEYPLEPLUGINSTUB_API StubPluginFactory : public PluginFactory {
 public:
     /**
      * Create the factory
      *
      * @param pluginName name of the plugin that will be instantiated
      */
-    StubPluginFactory(const std::string pluginName);
+    StubPluginFactory(const std::string& pluginName);
 
     /**
      *
@@ -52,16 +52,16 @@ public:
      * Returns an instance of the {@link PcscPlugin} if the platform is ready
      *
      * @return PcscPlugin instance
-     * @throws KeyplePluginInstantiationException if Smartcard.io library is not
-     * ready
+     * @throw KeyplePluginInstantiationException if Smartcard.io library is not
+     *        ready
      */
-    ReaderPlugin& getPluginInstance() override;
+    std::shared_ptr<ReaderPlugin> getPlugin() const override;
 
 private:
     /**
      *
      */
-    const std::string pluginName;
+    const std::string mPluginName;
 };
 
 }

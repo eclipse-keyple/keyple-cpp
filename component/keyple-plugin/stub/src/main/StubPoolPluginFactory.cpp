@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,6 +14,12 @@
 
 #include "StubPoolPluginFactory.h"
 
+/* Core */
+#include "KeyplePluginInstantiationException.h"
+
+/* Stub */
+#include "StubPoolPluginImpl.h"
+
 namespace keyple {
 namespace plugin {
 namespace stub {
@@ -22,18 +28,22 @@ using namespace keyple::core::seproxy;
 
 
 StubPoolPluginFactory::StubPoolPluginFactory(const std::string& pluginName)
-: pluginName(pluginName), uniqueInstance(pluginName)
+: mPluginName(pluginName)
 {
 }
 
 const std::string& StubPoolPluginFactory::getPluginName() const
 {
-    return pluginName;
+    return mPluginName;
 }
 
-ReaderPlugin& StubPoolPluginFactory::getPluginInstance()
+std::shared_ptr<ReaderPlugin> StubPoolPluginFactory::getPlugin() const
 {
-    return uniqueInstance;
+    try {
+        return std::make_shared<StubPoolPluginImpl>(mPluginName);
+    } catch (const Exception& e) {
+        throw KeyplePluginInstantiationException("Cannot access StubPool", e);
+    }
 }
 
 }

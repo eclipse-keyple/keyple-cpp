@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,9 +14,8 @@
 
 /* Core */
 #include "ByteArrayUtil.h"
-#include "KeypleBaseException.h"
-#include "KeypleChannelControlException.h"
-#include "KeypleIOReaderException.h"
+#include "IllegalArgumentException.h"
+#include "KeypleReaderIOException.h"
 #include "KeypleReaderException.h"
 #include "ObservableReaderStateService.h"
 #include "SeProtocol.h"
@@ -93,7 +92,7 @@ std::vector<uint8_t> StubReaderImpl::transmitApdu(
     const std::vector<uint8_t>& apduIn)
 {
     if (se == nullptr) {
-        throw KeypleIOReaderException("No SE available.");
+        throw KeypleReaderIOException("No SE available.");
     }
 
     return se->processApdu(apduIn);
@@ -105,7 +104,7 @@ bool StubReaderImpl::protocolFlagMatches(
     bool result;
 
     if (se == nullptr) {
-        throw KeypleReaderException("No SE available.");
+        throw KeypleReaderIOException("No SE available.");
     }
 
     /* Test protocolFlag to check if ATR based protocol filtering is required */
@@ -115,13 +114,13 @@ bool StubReaderImpl::protocolFlagMatches(
     }
 
     /*
-         * The requestSet will be executed only if the protocol match the
-         * requestElement
-         */
-    const std::string& selectionMask = protocolsMap.find(protocolFlag)->second;
+     * The request will be executed only if the protocol match the
+     * requestElement.
+     */
+    const std::string& selectionMask = mProtocolsMap.find(protocolFlag)->second;
 
     if (selectionMask.empty()) {
-        throw KeypleReaderException("Target selector mask not found!");
+        throw KeypleReaderIOException("Target selector mask not found!");
     }
 
     Pattern* p                  = Pattern::compile(selectionMask);
@@ -150,20 +149,10 @@ bool StubReaderImpl::checkSePresence()
 void StubReaderImpl::setParameter(const std::string& name,
                                   const std::string& value)
 {
-    if (!name.compare(StubReader::ALLOWED_PARAMETER_1) ||
-        !name.compare(StubReader::ALLOWED_PARAMETER_2)) {
-        parameters.insert(
-            std::pair<const std::string, const std::string>(name, value));
-    } else if (!name.compare(StubReader::CONTACTS_PARAMETER)) {
-        transmissionMode = TransmissionMode::CONTACTS;
-    } else if (!name.compare(StubReader::CONTACTLESS_PARAMETER)) {
-        transmissionMode = TransmissionMode::CONTACTLESS;
-    } else {
-        throw KeypleReaderException("parameter name not supported : " + name);
-    }
+    parameters.insert({name, value});
 }
 
-const std::map<const std::string, const std::string>
+const std::map<const std::string, const std::string>&
     StubReaderImpl::getParameters() const
 {
     return parameters;
