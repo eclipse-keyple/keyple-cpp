@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -25,6 +25,7 @@
 #include <ostream>
 #include <sstream>
 #include <vector>
+#include <set>
 
 #ifdef __GNUG__ // gnu C++ compiler
 #include <cxxabi.h>
@@ -240,4 +241,7 @@ namespace std {
  */
 KEYPLECOMMON_API std::ostream& operator<<(std::ostream& os,
                                 const std::vector<uint8_t>& v);
+
+KEYPLECOMMON_API std::ostream& operator<<(std::ostream& os,
+                                          const std::set<std::string>& s);
 }
