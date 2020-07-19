@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,7 +15,7 @@
 #pragma once
 
 /* Core */
-#include "AbstractPluginFactory.h"
+#include "PluginFactory.h"
 
 /* Plugin */
 #include "KeyplePluginPcscExport.h"
@@ -29,14 +29,13 @@ using namespace keyple::core::seproxy;
 /**
  * Builds a {@link PcscPlugin}
  */
-class KEYPLEPLUGINPCSC_API PcscPluginFactory : public AbstractPluginFactory {
+class KEYPLEPLUGINPCSC_API PcscPluginFactory : public PluginFactory {
 public:
     /**
      *
      */
     const std::string& getPluginName() const override;
 
-protected:
     /**
      * Returns an instance of the {@link PcscPlugin} if the platform is ready
      *
@@ -44,7 +43,7 @@ protected:
      * @throws KeyplePluginInstantiationException if Smartcard.io library is not
      * ready
      */
-    ReaderPlugin& getPluginInstance() override;
+    std::shared_ptr<ReaderPlugin> getPlugin() const override;
 };
 
 }

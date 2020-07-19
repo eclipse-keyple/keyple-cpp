@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,9 +15,8 @@
 #include "PcscPluginImpl.h"
 
 /* Core */
-#include "KeypleBaseException.h"
-#include "KeypleReaderException.h"
-#include "KeypleRuntimeException.h"
+#include "KeypleReaderIOException.h"
+#include "KeypleReaderNotFoundException.h"
 
 /* PC/SC plugin */
 #include "PcscReader.h"
@@ -30,25 +29,31 @@ namespace pcsc {
 
 using namespace keyple::core::seproxy::exception;
 
-PcscPluginImpl PcscPluginImpl::uniqueInstance;
+std::shared_ptr<PcscPluginImpl> PcscPluginImpl::mInstance;
 
 PcscPluginImpl::PcscPluginImpl() : AbstractThreadedObservablePlugin(PLUGIN_NAME)
 {
-    this->readers = initNativeReaders();
+    mReaders = initNativeReaders();
 }
 
-PcscPluginImpl& PcscPluginImpl::getInstance()
+std::shared_ptr<PcscPluginImpl> PcscPluginImpl::getInstance()
 {
-    if (uniqueInstance.readers.size() == 0)
-        throw KeypleRuntimeException("Reader list is not accessible");
+    if (!mInstance) {
+        /*
+         * Intermediate raw pointer required because constructor is private,
+         * std::make_shared would trigger compilation errors
+         */
+        PcscPluginImpl* tmp = new PcscPluginImpl();
+        mInstance = std::shared_ptr<PcscPluginImpl>(tmp);
+    }
 
-    return uniqueInstance;
+    return mInstance;
 }
 
-const std::map<const std::string, const std::string>
+const std::map<const std::string, const std::string>&
     PcscPluginImpl::getParameters() const
 {
-    return std::map<const std::string, const std::string>();
+    return mParameters;
 }
 
 void PcscPluginImpl::setParameter(const std::string& key,
@@ -81,16 +86,16 @@ const std::set<std::string>& PcscPluginImpl::fetchNativeReadersNames()
         logger->trace("fetchNativeReadersNames - terminal list is not "
                       "accessible, name: %, exception: %, cause: %\n",
                       getName(), e.getMessage(), e.getCause().what());
-        throw KeypleReaderException("Could not access terminals list", e);
+        throw KeypleReaderIOException("Could not access terminals list", e);
     }
 
     return nativeReadersNames;
 }
 
-std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
+std::map<const std::string, std::shared_ptr<SeReader>>
+    PcscPluginImpl::initNativeReaders()
 {
-    logger->debug("initNativeReaders - creating new list\n");
-    std::set<std::shared_ptr<SeReader>> nativeReaders;
+    std::map<const std::string, std::shared_ptr<SeReader>> nativeReaders;
 
     /*
      * activate a special processing "SCARD_E_NO_NO_SERVICE" (on Windows
@@ -120,15 +125,15 @@ std::set<std::shared_ptr<SeReader>> PcscPluginImpl::initNativeReaders()
 
     try {
         for (auto& term : terminals) {
-            logger->debug("initNativeReaders - inserting terminal into list\n");
-            nativeReaders.insert(std::dynamic_pointer_cast<SeReader>(
-                std::make_shared<PcscReaderImpl>(getName(), term)));
+            std::shared_ptr<PcscReaderImpl> pcscReader =
+                std::make_shared<PcscReaderImpl>(getName(), term);
+            nativeReaders.insert({pcscReader->getName(), pcscReader});
         }
     } catch (PcscTerminalException& e) {
         logger->trace("[%] terminal list not accessible, msg: %, cause: %",
                       getName(), e.getMessage(), e.getCause().what());
         /*
-         * Throw new KeypleReaderException("Could not access terminals list",
+         * Throw new KeypleReaderIOException("Could not access terminals list",
          * e); do not propagate exception at the constructor will propagate it
          * as a keyple::core::seproxy::exception::KeypleRuntimeException/
          */
@@ -141,38 +146,36 @@ std::shared_ptr<SeReader>
 PcscPluginImpl::fetchNativeReader(const std::string& name)
 {
     /* Return the current reader if it is already listed */
-    for (auto reader : readers) {
-        if (reader->getName() == name) {
-            return reader;
-        }
-    }
+    if (mReaders.find(name) != mReaders.end())
+        return mReaders[name];
 
     /*
      * Parse the current PC/SC readers list to create the ProxyReader(s)
      * associated with new reader(s)
      */
-    std::shared_ptr<AbstractReader> reader = nullptr;
+    std::shared_ptr<SeReader> seReader = nullptr;
     std::vector<PcscTerminal>& terminals = getTerminals();
     std::vector<std::string> terminalList;
 
     try {
         for (auto& term : terminals) {
             if (!term.getName().compare(name)) {
-                reader =
-                    std::make_shared<PcscReaderImpl>(this->getName(), term);
+                logger->trace("[%s] fetchNativeReader => CardTerminal in new " \
+                              "PcscReader: %\n", getName(), terminals);
+                seReader = std::make_shared<PcscReaderImpl>(getName(), term);
             }
         }
-    } catch (PcscTerminalException& e) {
+    } catch (const PcscTerminalException& e) {
         logger->trace("[%] caught PcscTerminalException (msg: %, cause: %)\n",
                       getName(), e.getMessage(), e.getCause().what());
-        throw KeypleReaderException("Could not access terminals list", e);
+        throw KeypleReaderIOException("Could not access terminals list", e);
     }
 
-    if (reader == nullptr) {
-        throw KeypleReaderException("Reader " + name + " not found!");
+    if (seReader == nullptr) {
+        throw KeypleReaderNotFoundException("Reader " + name + " not found!");
     }
 
-    return reader;
+    return seReader;
 }
 
 std::vector<PcscTerminal>& PcscPluginImpl::getTerminals()
@@ -187,7 +190,7 @@ std::vector<PcscTerminal>& PcscPluginImpl::getTerminals()
 
     } catch (PcscTerminalException& e) {
         (void)e;
-        logger->error("getTerminalsv - error listing terminals\n");
+        logger->error("unexpected exception - %", e);
     }
 
     return mTerminals;

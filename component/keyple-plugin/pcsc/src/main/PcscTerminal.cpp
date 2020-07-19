@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,7 +15,7 @@
 #include <cstring>
 
 /* Common */
-#include "exceptionhelper.h"
+#include "IllegalArgumentException.h"
 #include "System.h"
 #include "Thread.h"
 
@@ -38,14 +38,14 @@ std::string pcsc_stringify_error(LONG rv)
 #endif
 
 PcscTerminal::PcscTerminal(const std::string& name)
-: context(0), handle(0), state(0), name(name), contextEstablished(false)
+: mContext(0), mHandle(0), mState(0), mName(name), mContextEstablished(false)
 {
-    memset(&pioSendPCI, 0, sizeof(SCARD_IO_REQUEST));
+    memset(&mPioSendPCI, 0, sizeof(SCARD_IO_REQUEST));
 }
 
 const std::string& PcscTerminal::getName() const
 {
-    return this->name;
+    return mName;
 }
 
 const std::vector<std::string>& PcscTerminal::listTerminals()
@@ -106,32 +106,32 @@ void PcscTerminal::establishContext()
 {
     LONG ret;
 
-    if (this->contextEstablished)
+    if (mContextEstablished)
         return;
 
-    ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &this->context);
+    ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &mContext);
     if (ret != SCARD_S_SUCCESS) {
-        this->contextEstablished = false;
-        logger->error("SCardEstablishContext failed with error: %\n",
+        mContextEstablished = false;
+        mLogger->error("SCardEstablishContext failed with error: %\n",
                       std::string(pcsc_stringify_error(ret)));
         throw PcscTerminalException("SCardEstablishContext failed");
     }
 
-    this->contextEstablished = true;
+    mContextEstablished = true;
 }
 
 void PcscTerminal::releaseContext()
 {
-    logger->debug("releaseContext - contextEstablished: %\n",
-                  contextEstablished ? "yes" : "no");
+    mLogger->debug("releaseContext - contextEstablished: %\n",
+                  mContextEstablished ? "yes" : "no");
 
-    if (!this->contextEstablished)
+    if (!mContextEstablished)
         return;
 
-    logger->debug("releaseContext - releasing context\n");
+    mLogger->debug("releaseContext - releasing context\n");
 
-    SCardReleaseContext(this->context);
-    this->contextEstablished = false;
+    SCardReleaseContext(mContext);
+    mContextEstablished = false;
 }
 
 bool PcscTerminal::isCardPresent(bool release)
@@ -143,17 +143,17 @@ bool PcscTerminal::isCardPresent(bool release)
     try {
         establishContext();
     } catch (PcscTerminalException& e) {
-        logger->error("isCardPresent - caught PcscTerminalException %\n", e);
+        mLogger->error("isCardPresent - caught PcscTerminalException %\n", e);
         throw e;
     }
 
-    rv = SCardConnect(this->context, (LPCSTR)this->name.c_str(),
+    rv = SCardConnect(mContext, (LPCSTR)mName.c_str(),
                       SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
                       &hCard, &protocol);
     if (rv != SCARD_S_SUCCESS) {
         if (rv != static_cast<LONG>(SCARD_E_NO_SMARTCARD) &&
             rv != static_cast<LONG>(SCARD_W_REMOVED_CARD))
-            logger->debug("isCardPresent - error connecting to card (%)\n",
+            mLogger->debug("isCardPresent - error connecting to card (%)\n",
                           std::string(pcsc_stringify_error(rv)));
 
         if (release)
@@ -174,13 +174,13 @@ bool PcscTerminal::waitForCardPresent(long long timeout)
     long long current;
     long long start = System::currentTimeMillis();
 
-    logger->trace("waitForCardPresent - waiting for card insertion for % ms\n",
+    mLogger->trace("waitForCardPresent - waiting for card insertion for % ms\n",
                   timeout);
 
     do {
         present = isCardPresent(false);
         if (present) {
-            logger->trace("waitForCardPresent - card present\n");
+            mLogger->trace("waitForCardPresent - card present\n");
             return true;
         }
 
@@ -191,7 +191,7 @@ bool PcscTerminal::waitForCardPresent(long long timeout)
 
         current = System::currentTimeMillis();
         if (current > (start + timeout)) {
-            logger->trace("waitForCardPresent - timeout\n");
+            mLogger->trace("waitForCardPresent - timeout\n");
             return false;
         }
 
@@ -208,12 +208,12 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
     BYTE _atr[33];
     DWORD atrLen = sizeof(_atr);
 
-    logger->debug("openAndConnect - protocol: %\n", protocol);
+    mLogger->debug("openAndConnect - protocol: %\n", protocol);
 
     try {
         establishContext();
     } catch (PcscTerminalException& e) {
-        logger->error("openAndConnect - caught PcscTerminalException %\n", e);
+        mLogger->error("openAndConnect - caught PcscTerminalException %\n", e);
         throw e;
     }
 
@@ -230,14 +230,14 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
         throw IllegalArgumentException("Unsupported protocol " + protocol);
     }
 
-    logger->debug("openAndConnect - connecting tp % with protocol: %, "
-                  "connectProtocol: % and sharingMode: %\n", name,
+    mLogger->debug("openAndConnect - connecting tp % with protocol: %, "
+                  "connectProtocol: % and sharingMode: %\n", mName,
                   protocol, connectProtocol, sharingMode);
 
-    rv = SCardConnect(context, name.c_str(), sharingMode,
-                      connectProtocol, &handle, &mProtocol);
+    rv = SCardConnect(mContext, mName.c_str(), sharingMode,
+                      connectProtocol, &mHandle, &mProtocol);
     if (rv != SCARD_S_SUCCESS) {
-        logger->error("openAndConnect - SCardConnect failed (%)\n",
+        mLogger->error("openAndConnect - SCardConnect failed (%)\n",
                       std::string(pcsc_stringify_error(rv)));
         releaseContext();
         throw PcscTerminalException("openAndConnect failed");
@@ -245,33 +245,33 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
 
     switch (mProtocol) {
     case SCARD_PROTOCOL_T0:
-        this->pioSendPCI = *SCARD_PCI_T0;
+        mPioSendPCI = *SCARD_PCI_T0;
         break;
     case SCARD_PROTOCOL_T1:
-        this->pioSendPCI = *SCARD_PCI_T1;
+        mPioSendPCI = *SCARD_PCI_T1;
         break;
     }
 
-    rv = SCardStatus(this->handle, (LPSTR)reader, &readerLen, &this->state,
+    rv = SCardStatus(mHandle, (LPSTR)reader, &readerLen, &mState,
                      &mProtocol, _atr, &atrLen);
     if (rv != SCARD_S_SUCCESS) {
-        logger->error("openAndConnect - SCardStatus failed (s)\n",
+        mLogger->error("openAndConnect - SCardStatus failed (s)\n",
                       std::string(pcsc_stringify_error(rv)));
         releaseContext();
         throw PcscTerminalException("openAndConnect failed");
     } else {
-        logger->debug("openAndConnect - card state: %\n", state);
+        mLogger->debug("openAndConnect - card state: %\n", mState);
     }
 
-    this->atr.clear();
-    this->atr.insert(this->atr.end(), _atr, _atr + atrLen);
+    mAtr.clear();
+    mAtr.insert(mAtr.end(), _atr, _atr + atrLen);
 }
 
 void PcscTerminal::closeAndDisconnect(bool reset)
 {
-    logger->debug("closeAndDisconnect - reset: %\n", reset ? "yes" : "no");
+    mLogger->debug("closeAndDisconnect - reset: %\n", reset ? "yes" : "no");
 
-    SCardDisconnect(this->context, reset ? SCARD_LEAVE_CARD : SCARD_RESET_CARD);
+    SCardDisconnect(mContext, reset ? SCARD_LEAVE_CARD : SCARD_RESET_CARD);
 
     releaseContext();
 }
@@ -282,13 +282,13 @@ bool PcscTerminal::waitForCardAbsent(long long timeout)
     long long current;
     long long start = System::currentTimeMillis();
 
-    logger->trace("waitForCardAbsent - waiting for card removal for % ms\n",
+    mLogger->trace("waitForCardAbsent - waiting for card removal for % ms\n",
                   timeout);
 
     do {
         present = isCardPresent(false);
         if (!present) {
-            logger->trace("waitForCardAbsent - card absent\n");
+            mLogger->trace("waitForCardAbsent - card absent\n");
             return true;
         }
 
@@ -299,7 +299,7 @@ bool PcscTerminal::waitForCardAbsent(long long timeout)
 
         current = System::currentTimeMillis();
         if (current > (start + timeout)) {
-            logger->trace("waitForCardAbsent - timeout\n");
+            mLogger->trace("waitForCardAbsent - timeout\n");
             return false;
         }
 
@@ -308,7 +308,7 @@ bool PcscTerminal::waitForCardAbsent(long long timeout)
 
 const std::vector<uint8_t>& PcscTerminal::getATR()
 {
-    return this->atr;
+    return mAtr;
 }
 
 std::vector<uint8_t>
@@ -325,7 +325,7 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
     bool t1GetResponse = true;
     bool t1StripLe     = true;
 
-    logger->debug("transmitApdu - c-apdu >> %\n", apduIn);
+    mLogger->debug("transmitApdu - c-apdu >> %\n", apduIn);
 
     /*
      * Note that we modify the 'command' array in some cases, so it must
@@ -362,10 +362,10 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
         char r_apdu[261];
         DWORD dwRecv = sizeof(r_apdu);
         long rv;
-        rv = SCardTransmit(this->handle, &this->pioSendPCI, (LPCBYTE)_apduIn.data(),
+        rv = SCardTransmit(mHandle, &mPioSendPCI, (LPCBYTE)_apduIn.data(),
                       _apduIn.size(), NULL, (LPBYTE)r_apdu, &dwRecv);
         if (rv != SCARD_S_SUCCESS) {
-            logger->error("SCardEstablishContext failed with error: %\n",
+            mLogger->error("SCardEstablishContext failed with error: %\n",
                           std::string(pcsc_stringify_error(rv)));
             throw PcscTerminalException("ScardTransmit failed");
         }
@@ -397,7 +397,7 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
         break;
     }
 
-    logger->debug("transmitApdu - r-apdu << %\n", result);
+    mLogger->debug("transmitApdu - r-apdu << %\n", result);
 
     return result;
 }
@@ -412,7 +412,7 @@ void PcscTerminal::endExclusive()
 
 bool PcscTerminal::operator==(const PcscTerminal& o) const
 {
-    return !name.compare(o.name);
+    return !mName.compare(o.mName);
 }
 
 bool PcscTerminal::operator!=(const PcscTerminal& o) const
@@ -423,7 +423,7 @@ bool PcscTerminal::operator!=(const PcscTerminal& o) const
 std::ostream& operator<<(std::ostream& os, const PcscTerminal& t)
 {
     os << "PCSCTERMINAL: {"
-       << "NAME = " << t.name
+       << "NAME = " << t.mName
 	   << "}";
 
     return os;
