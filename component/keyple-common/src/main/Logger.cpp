@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -71,4 +71,19 @@ std::ostream& operator<<(std::ostream& os, const std::vector<uint8_t>& v)
 
     return os;
 }
+
+std::ostream& operator<<(std::ostream& os, const std::set<std::string>& s)
+{
+    os << "{";
+    for (auto it = s.begin(); it != s.end(); ++it)
+    {
+        if (it != s.begin())
+            os << ", ";
+        os << *it;
+    }
+    os << "}";
+
+    return os;
+}
+
 }
