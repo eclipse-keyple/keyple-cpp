@@ -29,7 +29,7 @@ using namespace keyple::core::seproxy;
 /**
  * Builds a {@link StubPlugin}
  */
-class KEYPLEPLUGINSTUB_API StubPluginFactory : public PluginFactory {
+class KEYPLEPLUGINSTUB_API StubPluginFactory final : public PluginFactory {
 public:
     /**
      * Create the factory
@@ -37,11 +37,6 @@ public:
      * @param pluginName name of the plugin that will be instantiated
      */
     StubPluginFactory(const std::string& pluginName);
-
-    /**
-     *
-     */
-    virtual ~StubPluginFactory() = default;
 
     /**
      *
