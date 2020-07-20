@@ -12,325 +12,193 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "StubPluginTest.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
-#include "KeypleReaderException.h"
-#include "PluginEvent.h"
+#include "StubPlugin.h"
+
+#include "CountDownLatch.h"
+#include "StubPluginImpl.h"
 #include "StubPluginFactory.h"
+#include "StubReader.h"
 #include "Thread.h"
 
-namespace keyple {
-namespace plugin {
-namespace stub {
+using namespace testing;
 
-using StubPlugin            = keyple::plugin::stub::StubPlugin;
-using ObservablePlugin      = keyple::core::seproxy::event::ObservablePlugin;
-using PluginEvent           = keyple::core::seproxy::event::PluginEvent;
-using KeypleReaderException =
-   keyple::core::seproxy::exception::KeypleReaderException;
-using Logger                = keyple::common::Logger;
-using LoggerFactory         = keyple::common::LoggerFactory;
+using namespace keyple::common;
+using namespace keyple::plugin::stub;
 
-using namespace std::chrono; // nanoseconds, system_clock, seconds
+class PluginObserverMock : public ObservablePlugin::PluginObserver {
+public:
+    PluginObserverMock()
+    : mReaderConnected(1)
+    {
+    }
 
-void StubPluginTest::SetUp()
-{
-    BaseStubTest::SetUp();
+    void update(std::shared_ptr<PluginEvent> event) override
+    {
+        ASSERT_EQ(event->getEventType(),
+                  PluginEvent::EventType::READER_CONNECTED);
+        ASSERT_EQ(static_cast<int>(event->getReaderNames().size()), 1);
+        ASSERT_EQ(*event->getReaderNames().begin(), READER_NAME);
+
+        mReaderConnected.countDown();
+    }
+
+    CountDownLatch mReaderConnected;
+
+private:
+    const std::string READER_NAME = "plugOneReaderSync_sucess";
+};
+
+static const std::string PLUGIN_NAME = "stub1";
+
+
+TEST(StubPluginTest, instantiatePlugin)
+ {
+    std::shared_ptr<StubPluginImpl> stubPlugin =
+        std::dynamic_pointer_cast<StubPluginImpl>(
+            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+
+    const std::string PLUGIN_NAME = "test1";
+
+    StubPluginFactory factory(PLUGIN_NAME);
+
+    std::shared_ptr<ReaderPlugin> plugin = factory.getPlugin();
+
+   ASSERT_EQ(plugin->getName(), PLUGIN_NAME);
 }
 
-void StubPluginTest::TearDown()
+/* Plug one reader synchronously Check: Count if created */
+TEST(StubPluginTest, plugOneReaderSync_success)
 {
-    BaseStubTest::TearDown();
+    std::shared_ptr<StubPluginImpl> stubPlugin =
+        std::dynamic_pointer_cast<StubPluginImpl>(
+            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+
+    const std::string READER_NAME = "plugOneReaderSync_sucess";
+
+    /* Connect reader */
+    stubPlugin->plugStubReader(READER_NAME, TransmissionMode::CONTACTLESS,
+                               true);
+
+    ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
+
+    std::shared_ptr<StubReader> stubReader =
+        std::dynamic_pointer_cast<StubReader>(
+            stubPlugin->getReaders()[0]);
+
+    ASSERT_EQ(stubReader->getName(), READER_NAME);
+    ASSERT_EQ(stubReader->getTransmissionMode(), TransmissionMode::CONTACTLESS);
 }
 
-void StubPluginTest::TestBody()
+/* Plug one reader synchronously Check: Event thrown */
+TEST(StubPluginTest, plugOneReaderSyncEvent_success)
 {
-    BaseStubTest::TestBody();
-}
+    std::shared_ptr<StubPluginImpl> stubPlugin =
+        std::dynamic_pointer_cast<StubPluginImpl>(
+            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
 
-void StubPluginTest::testA_PlugOneReaderCount()
-{
-    const std::string READER_NAME = "testA_PlugOneReaderCount";
-
-    // connect reader
-    stubPlugin->plugStubReader(READER_NAME, true);
-    ASSERT_EQ(1, static_cast<int>(stubPlugin->getReaders().size()));
-}
-
-void StubPluginTest::testA_PlugOneReaderEvent()
-{
-    std::shared_ptr<CountDownLatch> readerConnected = std::make_shared<CountDownLatch>(1);
     const std::string READER_NAME = "testA_PlugReaders";
 
-    // add READER_CONNECTED assert observer
-    stubPlugin->addObserver(
-        std::make_shared<PluginObserverAnonymousInnerClass>(
-            shared_from_this(), readerConnected, READER_NAME));
+    std::shared_ptr<PluginObserverMock> plugin =
+        std::make_shared<PluginObserverMock>();
 
-    stubPlugin->plugStubReader(READER_NAME, false);
-    //readerConnected->await(2, SECONDS );
-    Thread::sleep(2);
-    ASSERT_EQ(0, static_cast<int>(readerConnected->getCount()));
-}
+    /* add READER_CONNECTED assert observer */
+    stubPlugin->addObserver(plugin);
 
-StubPluginTest::PluginObserverAnonymousInnerClass
-    ::PluginObserverAnonymousInnerClass(
-        std::shared_ptr<StubPluginTest> outerInstance,
-        std::shared_ptr<CountDownLatch> readerConnected,
-        const std::string &READER_NAME)
-{
-    this->outerInstance = outerInstance;
-    this->readerConnected = readerConnected;
-    this->READER_NAME = READER_NAME;
-}
-
-void StubPluginTest::PluginObserverAnonymousInnerClass::update(
-    std::shared_ptr<PluginEvent> event_Renamed)
-{
-    //ASSERT_EQ(PluginEvent::EventType::READER_CONNECTED, event_Renamed->getEventType());
-    ASSERT_EQ(1, static_cast<int>(event_Renamed->getReaderNames().size()));
-    std::string Var1 = READER_NAME;
-    std::string Var2 = (*event_Renamed->getReaderNames().begin());// first());
-    ASSERT_EQ(Var1, Var2 );
-    readerConnected->countDown();
-}
-
-void StubPluginTest::testA_UnplugOneReaderCount()
-{
-    const std::string READER_NAME = "testA_UnplugOneReaderCount";
-    // connect reader
     stubPlugin->plugStubReader(READER_NAME, true);
-    ASSERT_EQ(1, static_cast<int>(stubPlugin->getReaders().size()));
+    plugin->mReaderConnected.await(std::chrono::seconds(2));
+
+    ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
+    ASSERT_EQ(plugin->mReaderConnected.getCount(), 0);
+}
+
+/* Unplug one reader synchronously Check: Count if removed */
+TEST(StubPluginTest, unplugOneReader_success)
+{
+    std::shared_ptr<StubPluginImpl> stubPlugin =
+        std::dynamic_pointer_cast<StubPluginImpl>(
+            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+
+    const std::string READER_NAME = "unplugOneReader_success";
+
+    /* Connect reader */
+    stubPlugin->plugStubReader(READER_NAME, true);
+
+    ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
+
     stubPlugin->unplugStubReader(READER_NAME, true);
-    ASSERT_EQ(0, static_cast<int>(stubPlugin->getReaders().size()));
+
+    ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 0);
 }
 
-void StubPluginTest::testB_UnplugOneReaderEvent()
+
+
+/* Plug same reader twice Check : only one reader */
+TEST(StubPluginTest, plugSameReaderTwice_fail)
 {
-    std::shared_ptr<CountDownLatch> readerConnected =
-        std::make_shared<CountDownLatch>(1);
-    std::shared_ptr<CountDownLatch> readerDisconnected =
-        std::make_shared<CountDownLatch>(1);
-    const std::string READER_NAME = "testB_PlugUnplugOneReaders";
+    std::shared_ptr<StubPluginImpl> stubPlugin =
+        std::dynamic_pointer_cast<StubPluginImpl>(
+            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
 
-    std::shared_ptr<ObservablePlugin::PluginObserver> disconnected_obs =
-        std::make_shared<PluginObserverAnonymousInnerClass2>(
-            shared_from_this(), readerConnected, readerDisconnected,
-            READER_NAME);
-
-    // add READER_DISCONNECTED assert observer
-    stubPlugin->addObserver(disconnected_obs);
-
-    // plug a reader
-    stubPlugin->plugStubReader(READER_NAME, false);
-
-    //readerConnected->await(2, TimeUnit::SECONDS);
-
-    // unplug reader
-    stubPlugin->unplugStubReader(READER_NAME, false);
-
-    // wait for event to be raised
-    //readerDisconnected->await(2, TimeUnit::SECONDS);
-    ASSERT_EQ(0, static_cast<int>(readerDisconnected->getCount()));
-}
-
-StubPluginTest::PluginObserverAnonymousInnerClass2
-    ::PluginObserverAnonymousInnerClass2(
-        std::shared_ptr<StubPluginTest> outerInstance,
-        std::shared_ptr<CountDownLatch> readerConnected,
-        std::shared_ptr<CountDownLatch> readerDisconnected,
-        const std::string &READER_NAME)
-{
-    this->outerInstance = outerInstance;
-    this->readerConnected = readerConnected;
-    this->readerDisconnected = readerDisconnected;
-    this->READER_NAME = READER_NAME;
-    event_i = 1;
-}
-
-void StubPluginTest::PluginObserverAnonymousInnerClass2::update(
-    std::shared_ptr<PluginEvent> event_Renamed)
-{
-    outerInstance->logger->info("event {} {}", event_Renamed->getEventType(),
-                                event_Renamed->getReaderNames().size());
-    if (event_i == 1)
-    {
-        //ASSERT_EQ(PluginEvent::EventType::READER_CONNECTED,
-        //          event_Renamed->getEventType());
-        readerConnected->countDown();
-    }
-    // analyze the second event, should be a READER_DISCONNECTED
-    if (event_i == 2)
-    {
-        //ASSERT_EQ(PluginEvent::EventType::READER_DISCONNECTED,
-        //          event_Renamed->getEventType());
-        ASSERT_EQ(1, static_cast<int>(event_Renamed->getReaderNames().size()));
-        ASSERT_EQ(READER_NAME, *event_Renamed->getReaderNames().begin());
-        readerDisconnected->countDown();
-    }
-    event_i++;
-}
-
-void StubPluginTest::testC_PlugSameReaderTwice()
-{
     const std::string READER_NAME = "testC_PlugSameReaderTwice";
 
     stubPlugin->plugStubReader(READER_NAME, true);
     stubPlugin->plugStubReader(READER_NAME, true);
-    logger->debug("Stubplugin readers size %s\n",
-                  stubPlugin->getReaders().size());
 
-    ASSERT_EQ(1, static_cast<int>(stubPlugin->getReaders().size()));
+    ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
 }
 
-void StubPluginTest::testD_GetName()
+/* Get name */
+TEST(StubPluginTest, getName_success)
 {
-    //ASSERT_STREQ( nullptr, stubPlugin->getName() );
+    std::shared_ptr<StubPluginImpl> stubPlugin =
+        std::dynamic_pointer_cast<StubPluginImpl>(
+            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+
+    ASSERT_NE(stubPlugin->getName(), "");
 }
 
-void StubPluginTest::testE_PlugMultiReadersCount()
+/**
+ * Plug many readers at once sync
+ *
+ * Check : count readers
+ */
+TEST(StubPluginTest, plugMultiReadersSync_success)
 {
-    const std::set<std::string> READERS_LIST = {
-        "E_Reader1", "E_Reader2", "E_Reader3"};
+    std::shared_ptr<StubPluginImpl> stubPlugin =
+        std::dynamic_pointer_cast<StubPluginImpl>(
+            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
 
-    // connect readers at once
-    stubPlugin->plugStubReaders(READERS_LIST, true);
-    logger->info("Stub Readers connected %s\n",
-                 "stubPlugin.getReaderNames()<fixme>");
-    ASSERT_EQ(READERS_LIST, stubPlugin->getReaderNames());
-    ASSERT_EQ(3, static_cast<int>(stubPlugin->getReaders().size()));
+    const std::set<std::string> newReaders = {
+        "EC_reader1", "EC_reader2", "EC_reader3"};
+
+    /* Connect readers at once */
+    stubPlugin->plugStubReaders(newReaders, true);
+
+    ASSERT_EQ(stubPlugin->getReaderNames(), newReaders);
+    ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 3);
 }
 
-void StubPluginTest::testE_PlugMultiReadersEvent()
+
+
+/* Plug and unplug many readers at once synchronously Check : count */
+TEST(StubPluginTest, plugUnplugMultiReadersSync_success)
 {
-    std::set<std::string> READERS_LIST = {
-        "E_Reader1", "E_Reader2", "E_Reader3"};
+    std::shared_ptr<StubPluginImpl> stubPlugin =
+        std::dynamic_pointer_cast<StubPluginImpl>(
+            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
 
-    // lock test until message is received
-    std::shared_ptr<CountDownLatch> readerConnected =
-    std::make_shared<CountDownLatch>(1);
-
-    // add READER_CONNECTED assert observer
-    stubPlugin->addObserver(
-        std::make_shared<PluginObserverAnonymousInnerClass3>(
-            shared_from_this(), READERS_LIST, readerConnected));
-
-    // connect readers
-    stubPlugin->plugStubReaders(READERS_LIST, false);
-
-    // wait for event to be raised
-    //readerConnected->await(2, TimeUnit::SECONDS);
-    ASSERT_EQ(0, static_cast<int>(readerConnected->getCount()));
-}
-
-StubPluginTest::PluginObserverAnonymousInnerClass3
-    ::PluginObserverAnonymousInnerClass3(
-         std::shared_ptr<StubPluginTest> outerInstance,
-         const std::set<std::string>& READERS,
-         std::shared_ptr<CountDownLatch> readerConnected)
-: READERS(READERS)
-{
-    this->outerInstance = outerInstance;
-    this->readerConnected = readerConnected;
-}
-
-void StubPluginTest::PluginObserverAnonymousInnerClass3::update(
-    std::shared_ptr<PluginEvent> event_Renamed)
-{
-    outerInstance->logger->info("event %d %d\n", event_Renamed->getEventType(),
-                                event_Renamed->getReaderNames().size());
-
-    //ASSERT_EQ(PluginEvent::EventType::READER_CONNECTED,
-    //          event_Renamed->getEventType());
-    ASSERT_EQ(3, static_cast<int>(event_Renamed->getReaderNames().size()));
-    ASSERT_EQ(READERS, event_Renamed->getReaderNames());
-    readerConnected->countDown();
-}
-
-void StubPluginTest::testF_PlugUnplugMultiReadersCount()
-{
-    std::set<std::string> READERS_LIST = {
+    const std::set<std::string> READERS = {
         "FC_Reader1", "FC_Reader2", "FC_Reader3"};
 
     // connect readers at once
-    stubPlugin->plugStubReaders(READERS_LIST, true);
-    ASSERT_EQ(3, static_cast<int>(stubPlugin->getReaders().size()));
-    stubPlugin->unplugStubReaders(READERS_LIST, true);
-    ASSERT_EQ(0, static_cast<int>(stubPlugin->getReaders().size()));
-}
+    stubPlugin->plugStubReaders(READERS, true);
 
-void StubPluginTest::testF_PlugUnplugMultiReadersEvent()
-{
-    std::set<std::string> READERS_LIST = {
-        "F_Reader1", "F_Reader2", "F_Reader3"};
+    ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 3);
 
-    // lock test until message is received
-    std::shared_ptr<CountDownLatch> readerConnected =
-        std::make_shared<CountDownLatch>(1);
-    std::shared_ptr<CountDownLatch> readerDisconnected =
-        std::make_shared<CountDownLatch>(1);
+    stubPlugin->unplugStubReaders(READERS, true);
 
-    std::shared_ptr<ObservablePlugin::PluginObserver> assertDisconnect =
-        std::make_shared<PluginObserverAnonymousInnerClass4>(
-            shared_from_this(), READERS_LIST, readerConnected,
-            readerDisconnected);
-
-    // add assert DISCONNECT assert observer
-    stubPlugin->addObserver(assertDisconnect);
-
-    // connect reader
-    stubPlugin->plugStubReaders(READERS_LIST, false);
-
-    //ASSERT_TRUE(readerConnected->await(5, TimeUnit::SECONDS));
-
-    stubPlugin->unplugStubReaders(READERS_LIST, false);
-
-    //ASSERT_TRUE(readerDisconnected->await(5, TimeUnit::SECONDS));
-
-    Thread::sleep(1000); // Todo fix me, should works without sleep
-    ASSERT_EQ(0, static_cast<int>(stubPlugin->getReaders().size()));
-    ASSERT_EQ(0, static_cast<int>(readerConnected->getCount()));
-    ASSERT_EQ(0, static_cast<int>(readerDisconnected->getCount()));
-}
-
-StubPluginTest::PluginObserverAnonymousInnerClass4
-    ::PluginObserverAnonymousInnerClass4(
-        std::shared_ptr<StubPluginTest> outerInstance,
-        const std::set<std::string>& READERS,
-        std::shared_ptr<CountDownLatch> readerConnected,
-        std::shared_ptr<CountDownLatch> readerDisconnected)
-: READERS(READERS)
-{
-    this->outerInstance = outerInstance;
-    this->readerConnected = readerConnected;
-    this->readerDisconnected = readerDisconnected;
-    event_i = 1;
-}
-
-void StubPluginTest::PluginObserverAnonymousInnerClass4::update(
-    const std::shared_ptr<PluginEvent> event_Renamed)
-{
-    outerInstance->logger->info("event %s %s\n", event_Renamed->getEventType(),
-                                event_Renamed->getReaderNames().size());
-    if (event_i == 1)
-    {
-        //ASSERT_EQ(PluginEvent::EventType::READER_CONNECTED,
-        //          event_Renamed->getEventType());
-        readerConnected->countDown();
-    }
-
-    // analyze the second event, should be a READER_DISCONNECTED
-    if (event_i == 2)
-    {
-        //ASSERT_EQ(PluginEvent::EventType::READER_DISCONNECTED,
-        //          event_Renamed->getEventType());
-        ASSERT_EQ(3, static_cast<int>(event_Renamed->getReaderNames().size()));
-        ASSERT_EQ(READERS, event_Renamed->getReaderNames());
-        readerDisconnected->countDown();
-    }
-    event_i++;
-}
-
-}
-}
+    ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 0);
 }
