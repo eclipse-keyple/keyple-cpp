@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -111,7 +111,7 @@ public:
      * @param builder the reference of the builder that created the parser
      */
     AbstractApduResponseParser(
-        const std::shared_ptr<ApduResponse>& response,
+        const std::shared_ptr<ApduResponse> response,
         const std::shared_ptr<AbstractApduCommandBuilder> builder);
 
     /**

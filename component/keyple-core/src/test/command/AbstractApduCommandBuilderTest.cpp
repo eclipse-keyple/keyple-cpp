@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -17,11 +17,13 @@
 
 #include "AbstractApduCommandBuilder.h"
 
+#include "SeCommand.h"
+
 using namespace keyple::core::command;
 
 using namespace testing;
 
-class CommandsTableMock : public CommandsTable {
+class SeCommandMock : public SeCommand {
 public:
     MOCK_METHOD(const std::string&, getName, (), (const, override));
     MOCK_METHOD(uint8_t, getInstructionByte, (), (const, override));
@@ -35,13 +37,15 @@ TEST(AbstractApduCommandBuilderTest, AbstractApduCommandBuilder1)
 {
     /* Instantiate AbstractApduCommandBuilder using first constructor */
 
-    CommandsTableMock table;
+    std::shared_ptr<SeCommandMock> table =
+        std::make_shared<SeCommandMock>();
+
     const std::vector<uint8_t> apdu = {0x11, 0x22, 0x33, 0X44};
     std::shared_ptr<ApduRequest> request =
         std::make_shared<ApduRequest>(apdu, false);
 
     const std::string name = "CommandsTableMock";
-    EXPECT_CALL(table, getName()).WillRepeatedly(ReturnRef(name));
+    EXPECT_CALL(*table.get(), getName()).WillRepeatedly(ReturnRef(name));
 
     AbstractApduCommandBuilder builder(table, request);
 }
@@ -50,13 +54,15 @@ TEST(AbstractApduCommandBuilderTest, AbstractApduCommandBuilder1_getName)
 {
     /* Instantiate AbstractApduCommandBuilder using first constructor */
 
-    CommandsTableMock table;
+    std::shared_ptr<SeCommandMock> table =
+        std::make_shared<SeCommandMock>();
+
     const std::vector<uint8_t> apdu = {0x11, 0x22, 0x33, 0X44};
     std::shared_ptr<ApduRequest> request =
         std::make_shared<ApduRequest>(apdu, false);
 
     const std::string name = "CommandsTableMock";
-    EXPECT_CALL(table, getName()).WillRepeatedly(ReturnRef(name));
+    EXPECT_CALL(*table.get(), getName()).WillRepeatedly(ReturnRef(name));
 
     AbstractApduCommandBuilder builder(table, request);
 
@@ -71,13 +77,15 @@ TEST(AbstractApduCommandBuilderTest, AbstractApduCommandBuilder1_addSubName)
 {
     /* Instantiate AbstractApduCommandBuilder using first constructor */
 
-    CommandsTableMock table;
+    std::shared_ptr<SeCommandMock> table =
+        std::make_shared<SeCommandMock>();
+
     const std::vector<uint8_t> apdu = {0x11, 0x22, 0x33, 0X44};
     std::shared_ptr<ApduRequest> request =
         std::make_shared<ApduRequest>(apdu, false);
 
     const std::string name = "CommandsTableMock";
-    EXPECT_CALL(table, getName()).WillRepeatedly(ReturnRef(name));
+    EXPECT_CALL(*table.get(), getName()).WillRepeatedly(ReturnRef(name));
 
     AbstractApduCommandBuilder builder(table, request);
 
@@ -88,13 +96,15 @@ TEST(AbstractApduCommandBuilderTest, AbstractApduCommandBuilder1_getApduRequest)
 {
     /* Instantiate AbstractApduCommandBuilder using first constructor */
 
-    CommandsTableMock table;
+    std::shared_ptr<SeCommandMock> table =
+        std::make_shared<SeCommandMock>();
+
     const std::vector<uint8_t> apdu = {0x11, 0x22, 0x33, 0X44};
     std::shared_ptr<ApduRequest> request =
         std::make_shared<ApduRequest>(apdu, false);
 
     const std::string name = "CommandsTableMock";
-    EXPECT_CALL(table, getName()).WillRepeatedly(ReturnRef(name));
+    EXPECT_CALL(*table.get(), getName()).WillRepeatedly(ReturnRef(name));
 
     AbstractApduCommandBuilder builder(table, request);
 

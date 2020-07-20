@@ -23,15 +23,15 @@ using namespace keyple::core::util::bertlv;
 
 TEST(TagTest, Tag)
 {
-    Tag tag1(0x55, Tag::TagClass::APPLICATION, Tag::TagType::CONSTRUCTED);
-    
+    Tag tag1(0x55, Tag::TagClass::APPLICATION, Tag::TagType::CONSTRUCTED, 2);
+
     Tag tag2({0x55, 0x05, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55}, 0);
 }
 
 TEST(TagTest, getTagNumber)
 {
-    Tag tag1(0x55, Tag::TagClass::APPLICATION, Tag::TagType::PRIMITIVE);
-    
+    Tag tag1(0x55, Tag::TagClass::APPLICATION, Tag::TagType::PRIMITIVE, 2);
+
     ASSERT_EQ(tag1.getTagNumber(), 0x55);
 
     Tag tag2({0xBF, 0x55, 0x01, 0x00}, 0);
@@ -41,16 +41,16 @@ TEST(TagTest, getTagNumber)
 
 TEST(Tag, getTagClass)
 {
-    Tag tag1(0x55, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
+    Tag tag1(0x55, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE, 2);
     ASSERT_EQ(tag1.getTagClass(), Tag::TagClass::UNIVERSAL);
 
-    Tag tag2(0x55, Tag::TagClass::APPLICATION, Tag::TagType::PRIMITIVE);
+    Tag tag2(0x55, Tag::TagClass::APPLICATION, Tag::TagType::PRIMITIVE, 2);
     ASSERT_EQ(tag2.getTagClass(), Tag::TagClass::APPLICATION);
 
-    Tag tag3(0x55, Tag::TagClass::CONTEXT, Tag::TagType::PRIMITIVE);
+    Tag tag3(0x55, Tag::TagClass::CONTEXT, Tag::TagType::PRIMITIVE, 2);
     ASSERT_EQ(tag3.getTagClass(), Tag::TagClass::CONTEXT);
 
-    Tag tag4(0x55, Tag::TagClass::PRIVATE, Tag::TagType::PRIMITIVE);
+    Tag tag4(0x55, Tag::TagClass::PRIVATE, Tag::TagType::PRIMITIVE, 2);
     ASSERT_EQ(tag4.getTagClass(), Tag::TagClass::PRIVATE);
 
     Tag tag5({0x1F, 0x55, 0x01, 0x00}, 0);
@@ -69,23 +69,23 @@ TEST(Tag, getTagClass)
 TEST(Tag, getTagClass_Bad1)
 {
     EXPECT_THROW(Tag(0x55, static_cast<Tag::TagClass>(10),
-                     Tag::TagType::PRIMITIVE),
+                     Tag::TagType::PRIMITIVE, 2),
                  std::invalid_argument);
 }
 
 TEST(Tag, getTagClass_Bad2)
 {
     EXPECT_THROW(Tag(0x55, static_cast<Tag::TagClass>(-10),
-                     Tag::TagType::PRIMITIVE),
+                     Tag::TagType::PRIMITIVE, 2),
                  std::invalid_argument);
 }
 
 TEST(Tag, getTagType)
 {
-    Tag tag1(0x55, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
+    Tag tag1(0x55, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE, 2);
     ASSERT_EQ(tag1.getTagType(), Tag::TagType::PRIMITIVE);
 
-    Tag tag2(0x55, Tag::TagClass::APPLICATION, Tag::TagType::CONSTRUCTED);
+    Tag tag2(0x55, Tag::TagClass::APPLICATION, Tag::TagType::CONSTRUCTED, 2);
     ASSERT_EQ(tag2.getTagType(), Tag::TagType::CONSTRUCTED);
 
     Tag tag3({0x1F, 0x55, 0x01, 0x00}, 0);
@@ -97,40 +97,31 @@ TEST(Tag, getTagType)
 
 TEST(Tag, getSize)
 {
-    Tag tag1(0x15, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
-    ASSERT_EQ(tag1.getSize(), 1);
+    Tag tag1(0x15, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE, 1);
+    ASSERT_EQ(tag1.getTagSize(), 1);
 
-    Tag tag2(0x1E, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
-    ASSERT_EQ(tag2.getSize(), 1);
-
-    Tag tag3(0x1F, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
-    ASSERT_EQ(tag3.getSize(), 2);
-
-    Tag tag4(0x7F, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
-    ASSERT_EQ(tag4.getSize(), 2);
-
-    Tag tag5(0x80, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
-    ASSERT_EQ(tag5.getSize(), 3);
-
-    Tag tag6(0x3FFF, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
-    ASSERT_EQ(tag6.getSize(), 3);
-
-    Tag tag7(0x4000, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
-    ASSERT_EQ(tag7.getSize(), 4);
-
-    Tag tag8(0x1FFFFF, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
-    ASSERT_EQ(tag8.getSize(), 4);
-
-    Tag tag9(0x200000, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
-    ASSERT_EQ(tag9.getSize(), 5);
+    Tag tag2(0x1E, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE, 2);
+    ASSERT_EQ(tag2.getTagSize(), 2);
 }
 
 TEST(Tag, equals)
 {
-    Tag tag1(0x55, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE);
+    Tag tag1(0x55, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE, 2);
     Tag tag2({0x1F, 0x55, 0x01, 0x00}, 0);
     Tag tag3({0x6F, 0x55, 0x01, 0x00}, 0);
     ASSERT_EQ(tag1, tag2);
     ASSERT_NE(tag1, tag3);
     ASSERT_NE(tag2, tag3);
+
+    Tag tag4(0x05, Tag::TagClass::UNIVERSAL, Tag::TagType::CONSTRUCTED, 1);
+    Tag tag5({0x25, 0x01, 0x00}, 0);
+    ASSERT_EQ(tag4, tag5);
+
+    Tag tag6(0x07, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE, 1);
+    Tag tag7({0x07, 0x01, 0x00}, 0);
+    ASSERT_EQ(tag6, tag7);
+
+    Tag tag8(0x12, Tag::TagClass::UNIVERSAL, Tag::TagType::PRIMITIVE, 2);
+    Tag tag9({0x1F, 0x12, 0x01, 0x00}, 0);
+    ASSERT_EQ(tag8, tag9);
 }

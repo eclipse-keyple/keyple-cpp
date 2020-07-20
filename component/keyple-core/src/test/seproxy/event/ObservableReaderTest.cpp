@@ -25,130 +25,97 @@ using namespace keyple::core::seproxy::event;
 
 class ObservableReaderMock : public ObservableReader {
 public:
-    ObservableReaderMock(const TransmissionMode& transmissionMode)
-    : ObservableReader(), transmissionMode(transmissionMode)
-    {
-    }
+    MOCK_METHOD((const std::string&),
+                getName,
+                (),
+                (const, override));
 
-    const std::string& getName() const override
-    {
-        return name;
-    }
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
 
-    const std::map<const std::string, const std::string> getParameters() const
-        override
-    {
-        return mPparameters;
-    }
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
 
-    void setParameter(const std::string& key, const std::string& value) override
-    {
-        (void)key;
-        (void)value;
-    }
+    MOCK_METHOD(void,
+                setParameters,
+                ((const std::map<const std::string, const std::string>&)),
+                (override));
 
-    void setParameters(
-        const std::map<const std::string, const std::string>& parameters)
-        override
-    {
-        (void)parameters;
-    }
+    MOCK_METHOD(void,
+                addObserver,
+                (const std::shared_ptr<ReaderObserver>),
+                (override));
 
-    void addObserver(const std::shared_ptr<ReaderObserver> observer) override
-    {
-        observers.push_back(observer);
-    }
+    MOCK_METHOD(void,
+                removeObserver,
+                (const std::shared_ptr<ReaderObserver>),
+                (override));
 
-    void removeObserver(const std::shared_ptr<ReaderObserver> observer) override
-    {
-        observers.erase(std::remove(observers.begin(), observers.end(),
-	                            observer), observers.end());
-    }
+    MOCK_METHOD(void,
+                clearObservers,
+                (),
+                (override));
 
-    void notifyObservers(const std::shared_ptr<ReaderEvent> event) override
-    {
-        (void)event;
-    }
+    MOCK_METHOD(int,
+                countObservers,
+                (),
+                (const, override));
 
-    void clearObservers() override
-    {
-        observers.clear();
-    }
+    MOCK_METHOD(void,
+                startSeDetection,
+                (PollingMode pollingMode),
+                (override));
 
-    int countObservers() const override
-    {
-        return observers.size();
-    }
+    MOCK_METHOD(void,
+                stopSeDetection,
+                (),
+                (override));
 
-    void startSeDetection(PollingMode pollingMode) override
-    {
-        (void)pollingMode;
-    }
+    MOCK_METHOD(bool,
+                isSePresent,
+                (),
+                (override));
 
-    void stopSeDetection() override
-    {
-    }
+    MOCK_METHOD(void,
+                addSeProtocolSetting,
+                (std::shared_ptr<SeProtocol>, const std::string&),
+                (override));
 
-    bool isSePresent() override
-    {
-        return true;
-    }
+    MOCK_METHOD(void,
+                setSeProtocolSetting,
+                ((const std::map<std::shared_ptr<SeProtocol>, std::string>&)),
+                (override));
 
-    void addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol,
-                              const std::string& protocolRule) override
-    {
-        (void)seProtocol;
-        (void)protocolRule;
-    }
+    MOCK_METHOD(void,
+                setDefaultSelectionRequest,
+                (std::shared_ptr<AbstractDefaultSelectionsRequest>,
+                 NotificationMode, PollingMode),
+                (override));
 
-    void setSeProtocolSetting(const std::map<std::shared_ptr<SeProtocol>,
-                              std::string>& protocolSetting) override
-    {
-        (void)protocolSetting;
-    }
+    MOCK_METHOD(void,
+                notifySeProcessed,
+                (),
+                (override));
 
-    void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
-        NotificationMode notificationMode,
-        PollingMode pollingMode) override
-    {
-        (void)defaultSelectionsRequest;
-        (void)notificationMode;
-        (void)pollingMode;
-    }
+    MOCK_METHOD(const TransmissionMode&,
+                getTransmissionMode,
+                (),
+                (const, override));
 
-    void notifySeProcessed() override
-    {
-    }
-
-    const TransmissionMode& getTransmissionMode() const override
-    {
-        return transmissionMode;
-    }
-
-    void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
-        NotificationMode notificationMode) override
-    {
-        (void)defaultSelectionsRequest;
-        (void)notificationMode;
-    }
-
-private:
-    std::string name;
-
-    std::map<const std::string, const std::string> mPparameters;
-
-    std::vector<std::shared_ptr<ReaderObserver>> observers;
-
-    const TransmissionMode transmissionMode;
+    MOCK_METHOD(void,
+                setDefaultSelectionRequest,
+                (std::shared_ptr<AbstractDefaultSelectionsRequest>,
+                 NotificationMode),
+                (override));
 };
 
 TEST(ObservableReaderTest, ObservableReader)
 {
-    ObservableReaderMock reader(TransmissionMode::CONTACTLESS);
+    ObservableReaderMock reader;
 }
 
 

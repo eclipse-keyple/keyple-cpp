@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -24,10 +24,10 @@
 #include "AbstractReader.h"
 #include "ChannelControl.h"
 #include "CountDownLatch.h"
-#include "exceptionhelper.h"
 #include "InterruptedException.h"
 #include "LoggerFactory.h"
 #include "MultiSeRequestProcessing.h"
+#include "NoSuchElementException.h"
 #include "SeProtocol.h"
 #include "Thread.h"
 
@@ -36,20 +36,25 @@ using namespace testing;
 using namespace keyple::common;
 using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::protocol;
-using namespace keyple::core::util;
 
 class AP_AbstractPluginMock : public AbstractPlugin {
 public:
     AP_AbstractPluginMock(const std::string& name) : AbstractPlugin(name) {}
 
-    MOCK_METHOD((const std::map<const std::string, const std::string>),
-                getParameters, (), (const, override));
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
 
-    MOCK_METHOD(void, setParameter, (const std::string& key,
-                const std::string& value), (override));
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
 
 protected:
-    MOCK_METHOD(std::set<std::shared_ptr<SeReader>>, initNativeReaders, (),
+    MOCK_METHOD((std::map<const std::string, std::shared_ptr<SeReader>>),
+                initNativeReaders,
+                (),
                 (override));
 };
 
@@ -59,34 +64,46 @@ public:
                        const std::string& readerName)
     : AbstractReader(pluginName, readerName) {}
 
-    MOCK_METHOD(bool, isSePresent, (), (override));
+    MOCK_METHOD(bool,
+                isSePresent,
+                (),
+                (override));
 
-    MOCK_METHOD(void, addSeProtocolSetting,
-                (std::shared_ptr<SeProtocol> seProtocol,
-                 const std::string& protocolRule), (override));
+    MOCK_METHOD(void,
+                addSeProtocolSetting,
+                (std::shared_ptr<SeProtocol>, const std::string&),
+                (override));
 
-    MOCK_METHOD(void, setSeProtocolSetting, 
-                ((const std::map<std::shared_ptr<SeProtocol>,
-                std::string>& protocolSetting)), (override));
-    
-    MOCK_METHOD(const TransmissionMode&, getTransmissionMode, (),
+    MOCK_METHOD(void,
+                setSeProtocolSetting,
+                ((const std::map<std::shared_ptr<SeProtocol>, std::string>&)),
+                (override));
+
+    MOCK_METHOD(const TransmissionMode&,
+                getTransmissionMode,
+                (),
                 (const, override));
 
-    MOCK_METHOD((const std::map<const std::string, const std::string>),
-                getParameters, (), (const, override));
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
 
-    MOCK_METHOD(void, setParameter, (const std::string& key,
-                const std::string& value), (override));
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
 
 protected:
-    MOCK_METHOD(std::list<std::shared_ptr<SeResponse>>, processSeRequestSet,
-                (const std::vector<std::shared_ptr<SeRequest>>& requestSet,
-                 const MultiSeRequestProcessing& multiSeRequestProcessing,
-                 const ChannelControl& channelControl), (override));
+    MOCK_METHOD(std::vector<std::shared_ptr<SeResponse>>,
+                processSeRequests,
+                (const std::vector<std::shared_ptr<SeRequest>>&,
+                 const MultiSeRequestProcessing&, const ChannelControl&),
+                (override));
 
-    MOCK_METHOD(std::shared_ptr<SeResponse>, processSeRequest, 
-                (const std::shared_ptr<SeRequest> seRequest,
-                 const ChannelControl& channelControl),
+    MOCK_METHOD(std::shared_ptr<SeResponse>,
+                processSeRequest,
+                (const std::shared_ptr<SeRequest>, const ChannelControl&),
                 (override));
 };
 
@@ -105,13 +122,14 @@ static int random(const int& max)
 }
 
 static void listReaders(
-    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> readers, int n,
-    std::shared_ptr<CountDownLatch> lock)
+    std::shared_ptr<std::map<const std::string, std::shared_ptr<SeReader>>>
+        readers,
+    int n, std::shared_ptr<CountDownLatch> lock)
 {
     for (int i = 0; i < n; i++) {
-        for (const auto& reader : *readers.get()) {
+        for (const auto& pair : *readers.get()) {
             logger->trace("list, readers: %s, reader %\n", readers->size(),
-                          reader->getName());
+                          pair.second->getName());
         }
 
         try {
@@ -126,15 +144,20 @@ static void listReaders(
 }
 
 static void removeReaderThread(
-    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> readers, int n,
-    std::shared_ptr<CountDownLatch> lock)
+    std::shared_ptr<std::map<const std::string, std::shared_ptr<SeReader>>>
+        readers, int n, std::shared_ptr<CountDownLatch> lock)
 {
     for (int i = 0; i < n; i++) {
         try {
-            std::set<std::shared_ptr<SeReader>> r = *readers.get();
-            if (r.begin() != r.end())
-                r.erase(r.begin());
-            logger->trace("readers: %, remove first reader\n",readers->size());
+            if (readers->size() > 0) {
+                std::map<const std::string, std::shared_ptr<SeReader>>
+                    ::iterator it = readers->begin();
+                readers->erase(it);
+                logger->trace("readers: %, remove first reader\n",
+                              readers->size());
+            } else {
+                throw NoSuchElementException("Empty reader list");
+            }
 
         } catch (const NoSuchElementException& e) {
             (void)e;
@@ -155,14 +178,15 @@ static void removeReaderThread(
 }
 
 static void addReaderThread(
-    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> readers, int n,
-    std::shared_ptr<CountDownLatch> lock)
+    std::shared_ptr<std::map<const std::string, std::shared_ptr<SeReader>>>
+        readers,
+    int n, std::shared_ptr<CountDownLatch> lock)
 {
    for (int i = 0; i < n; i++) {
         std::shared_ptr<SeReader> reader =
             std::make_shared<AP_AbstractReaderMock>(
                 "pluginName", std::to_string(random(1000)));
-            readers->insert(reader);
+            readers->insert({reader->getName(), reader});
             logger->trace("readers: %, add reader %\n", readers->size(),
                           reader->getName());
         try {
@@ -190,9 +214,12 @@ TEST(AbstractPluginTest, AbstractPlugin)
 TEST(AbstractPluginTest, addRemoveReadersMultiThreaded)
 {
     AP_AbstractPluginMock plugin("addRemoveReadersMultiThreaded");
-    std::set<std::shared_ptr<SeReader>> readers = plugin.getReaders();
-    std::shared_ptr<std::set<std::shared_ptr<SeReader>>> spReaders = 
-        std::make_shared<std::set<std::shared_ptr<SeReader>>>(readers);
+    std::map<const std::string, std::shared_ptr<SeReader>> readers =
+        plugin.getReaders();
+    std::shared_ptr<std::map<const std::string, std::shared_ptr<SeReader>>>
+        spReaders =
+           std::make_shared<std::map<const std::string,
+                                     std::shared_ptr<SeReader>>>(readers);
     std::shared_ptr<CountDownLatch> lock = std::make_shared<CountDownLatch>(10);
     std::thread thread[10];
 
@@ -206,7 +233,7 @@ TEST(AbstractPluginTest, addRemoveReadersMultiThreaded)
     thread[7] = std::thread(removeReaderThread, spReaders, 10, lock);
     thread[8] = std::thread(listReaders, spReaders, 10, lock);
     thread[9] = std::thread(removeReaderThread, spReaders, 10, lock);
-    
+
     /* Wait for all thread to finish with timeout */
     //lock->await(std::chrono::seconds(10));
     for (int i = 0; i < 10; i++)

@@ -95,17 +95,7 @@ public:
             /**
              *
              */
-            FileOccurrence(const FileOccurrence& o);
-
-            /**
-             *
-             */
-            virtual ~FileOccurrence() {}
-
-            /**
-             *
-             */
-            virtual char getIsoBitMask();
+            char getIsoBitMask();
 
             /**
              *
@@ -116,11 +106,6 @@ public:
              *
              */
             bool operator!=(const FileOccurrence& other) const;
-
-            /**
-             *
-             */
-            FileOccurrence& operator=(const FileOccurrence& other);
 
             /**
              *
@@ -211,12 +196,7 @@ public:
             /**
              *
              */
-            virtual ~FileControlInformation() {}
-
-            /**
-             *
-             */
-            virtual char getIsoBitMask();
+            char getIsoBitMask();
 
             /**
              *
@@ -271,7 +251,7 @@ public:
             /**
              *
              */
-            InnerEnum mInnerEnumValue;
+            //InnerEnum mInnerEnumValue; // not used
 
             /**
              *
@@ -363,6 +343,7 @@ public:
              */
             FileControlInformation mFileControlInformation =
                 FileControlInformation::FCI;
+
         private:
             /**
              * Private constructor
@@ -386,11 +367,6 @@ public:
         friend std::ostream& operator<<(std::ostream& os, const AidSelector& a);
 
         /**
-         *
-         */
-        virtual ~AidSelector() {}
-
-        /**
          * Gets a new builder.
          *
          * @return a new builder instance
@@ -402,25 +378,25 @@ public:
          *
          * @return byte array containing the AID
          */
-        virtual const std::vector<uint8_t>& getAidToSelect() const;
+        const std::vector<uint8_t>& getAidToSelect() const;
 
         /**
          * @return the file occurrence parameter
          */
-        virtual FileOccurrence getFileOccurrence() const;
+        FileOccurrence getFileOccurrence() const;
 
         /**
          * @return the file control information parameter
          */
-        virtual FileControlInformation getFileControlInformation() const;
+        FileControlInformation getFileControlInformation() const;
 
         /**
          * Gets the list of successful selection status codes
          *
          * @return the list of status codes
          */
-        virtual std::shared_ptr<std::set<int>>
-            getSuccessfulSelectionStatusCodes() const;
+        std::shared_ptr<std::set<int>> getSuccessfulSelectionStatusCodes()
+            const;
 
         /**
          * Add as status code to be accepted to the list of successful selection
@@ -428,7 +404,7 @@ public:
          *
          * @param statusCode the status code to be accepted
          */
-        virtual void addSuccessfulStatusCode(int statusCode);
+        void addSuccessfulStatusCode(int statusCode);
 
     private:
         /**
@@ -451,8 +427,7 @@ public:
          * that should be considered successful although they are different from
          * 9000
          */
-        std::shared_ptr<std::set<int>> mSuccessfulSelectionStatusCodes =
-            std::make_shared<std::set<int>>();
+        std::shared_ptr<std::set<int>> mSuccessfulSelectionStatusCodes;
 
         /**
          * Private constructor
@@ -592,6 +567,11 @@ public:
      * @return a new builder instance
      */
     static std::unique_ptr<SeSelectorBuilder> builder();
+
+    /**
+     *
+     */
+    SeSelector(const SeSelector& o) = default;
 
     /**
      *

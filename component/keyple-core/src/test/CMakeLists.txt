@@ -1,19 +1,20 @@
-#
-# Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-#
-# All rights reserved. This program and the accompanying materials are made available under the
-# terms of the Eclipse Public License version 2.0 which accompanies this distribution, and is
-# available at https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html
-#
+#******************************************************************************
+#  Copyright (c) 2020 Calypso Networks Association                            *
+#  https://www.calypsonet-asso.org/                                           *
+#                                                                             *
+#  See the NOTICE file(s) distributed with this work for additional           *
+#  information regarding copyright ownership.                                 *
+#                                                                             *
+#  This program and the accompanying materials are made available under the   *
+#  terms of the Eclipse Public License 2.0 which is available at              *
+#  http://www.eclipse.org/legal/epl-2.0                                       *
+#                                                                             *
+#  SPDX-License-Identifier: EPL-2.0                                           *
+# *****************************************************************************/
 
 SET(CMAKE_MACOSX_RPATH 1)
 SET(CMAKE_CXX_STANDARD 11)
 PROJECT(TU C CXX)
-
-IF(WIN32)
-	ADD_COMPILE_OPTIONS(/wd4275 /wd4251 /wd4290)
-ENDIF(WIN32)
-
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -36,14 +37,9 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/command
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction
 
-	# calypso
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main/command
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main/command/po
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main/command/po/parser
-
 	# common
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/exception
 
 	# TLV
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/util/bertlv
@@ -51,6 +47,7 @@ INCLUDE_DIRECTORIES(
 	# Core
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/util
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/selection
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/event
@@ -68,18 +65,17 @@ INCLUDE_DIRECTORIES(
 	${GOOGLETEST_DIRECTORY}/googletest-src/googletest/include
 )
 
-ADD_EXECUTABLE(keyple_core_ut
+ADD_EXECUTABLE(keyplecore_ut
 
 	# command
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduCommandBuilderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduResponseParserTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractIso7816CommandBuilderTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/CommandsTableTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/SeCommandTest.cpp
 
 	# selection
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractMatchingSeTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/AbstractSeSelectionRequestTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/selection/MatchingSelectionTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/SelectionsResultTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/SeResourceTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/selection/SeSelectionTest.cpp
@@ -108,29 +104,33 @@ ADD_EXECUTABLE(keyple_core_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/util/bertlv/TagTest.cpp
 
 	# TU keyple util
-	${CMAKE_CURRENT_SOURCE_DIR}/util/ConfigurableTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/util/ByteArrayUtilTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/util/CountDownLatchTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/NameableTest.cpp
 
 	# seproxy - plugin - local - monitoring
 
 	# seproxy - plugin - local - state
 
 	# seproxy - plugin - local
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReaderSelectionTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReaderTransmitTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableLocalReaderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableStateTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractSmartInsertionThreadedReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractSmartPresenceThreadedReaderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/ObservableReaderStateServiceTest.cpp
 
 	# seproxy - plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservablePluginTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractPluginTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractSeProxyComponentTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractThreadedObservablePluginTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/ObservablePluginNotifierTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/ObservableReaderNotifierTest.cpp
 
 	# seproxy
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/AbstractSeProxyComponentTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/ReaderPluginTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeProxyServiceTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/seproxy/SeReaderTest.cpp
@@ -141,11 +141,9 @@ ADD_EXECUTABLE(keyple_core_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/SeProtocolTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol/TransmissionModeTest.cpp
 
-	#${CMAKE_CURRENT_SOURCE_DIR}/CoreBaseTest.cpp
-	
 	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
 )
 
-SET(LINK_LIBS gtest gmock keyplecore keyplecalypso ${WINSCARD} )
+SET(LINK_LIBS gtest gmock keyplecore ${WINSCARD} )
 
-TARGET_LINK_LIBRARIES(keyple_core_ut ${LINK_LIBS})
+TARGET_LINK_LIBRARIES(keyplecore_ut ${LINK_LIBS})

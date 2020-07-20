@@ -21,7 +21,7 @@ using namespace testing;
 
 using namespace keyple::core::seproxy::message;
 
-static std::list<std::shared_ptr<SeResponse>> responses;
+static std::vector<std::shared_ptr<SeResponse>> responses;
 
 TEST(DefaultSelectionsResponseTest, DefaultSelectionsResponse)
 {
@@ -32,5 +32,5 @@ TEST(DefaultSelectionsResponseTest, getSelectionSeResponseSet)
 {
     DefaultSelectionsResponse response(responses);
 
-    ASSERT_EQ(response.getSelectionSeResponseSet(), responses);
+    ASSERT_EQ(response.getSelectionSeResponses(), responses);
 }

@@ -12,12 +12,18 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+#include "Logger.h"
+
 using namespace testing;
+
+using namespace keyple::common;
 
 int main(int argc, char** argv)
 {
     /* Initialize GTest */
     ::InitGoogleTest(&argc, argv);
+
+    Logger::setLoggerLevel(Logger::Level::logError);
 
     /* Run */
     return RUN_ALL_TESTS();

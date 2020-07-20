@@ -33,7 +33,7 @@ void SelectionsResult::addMatchingSe(
     int selectionIndex,
     const std::shared_ptr<AbstractMatchingSe> matchingSe, bool isSelected)
 {
-    if (!matchingSe)
+    if (matchingSe)
         mMatchingSeMap.insert({selectionIndex, matchingSe});
 
     /* If the current selection is active, we keep its index */
@@ -44,8 +44,14 @@ void SelectionsResult::addMatchingSe(
 const std::shared_ptr<AbstractMatchingSe>
     SelectionsResult::getActiveMatchingSe()
 {
-    std::shared_ptr<AbstractMatchingSe> matchingSe =
-        mMatchingSeMap[mActiveSelectionIndex];
+    std::shared_ptr<AbstractMatchingSe> matchingSe = nullptr;
+
+    /*
+     * Do not use operator[] to check existence. This would alter the map with
+     * a null element if not exiting.
+     */
+    if (mMatchingSeMap.find(mActiveSelectionIndex) != mMatchingSeMap.end())
+        matchingSe = mMatchingSeMap[mActiveSelectionIndex];
 
     if (!matchingSe)
         throw IllegalStateException("No active Matching SE is available");
@@ -62,12 +68,19 @@ const std::map<int, std::shared_ptr<AbstractMatchingSe>>&
 const std::shared_ptr<AbstractMatchingSe>
     SelectionsResult::getMatchingSe(int selectionIndex)
 {
-    return mMatchingSeMap[selectionIndex];
+    /*
+     * Do not use operator[] to check existence. This would alter the map with
+     * a null element if not exiting.
+     */
+    if (mMatchingSeMap.find(selectionIndex) != mMatchingSeMap.end())
+        return mMatchingSeMap[selectionIndex];
+    else
+        return nullptr;
 }
 
 bool SelectionsResult::hasActiveSelection() const
 {
-    return mActiveSelectionIndex ? true : false;
+    return mActiveSelectionIndex >= 0 ? true : false;
 }
 
 bool SelectionsResult::hasSelectionMatched(int selectionIndex) const

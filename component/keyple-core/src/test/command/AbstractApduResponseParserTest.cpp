@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -12,34 +12,41 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include <unordered_map>
+#include <map>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 #include "AbstractApduResponseParser.h"
-
-using namespace keyple::core::command;
+#include "KeypleSeCommandException.h"
 
 using namespace testing;
 
+using namespace keyple::core::command;
+using namespace keyple::core::command::exception;
+
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-class AbstractApduResponseParserMock : public AbstractApduResponseParser {
+class AARP_AbstractApduResponseParserMock : public AbstractApduResponseParser {
 public:
-    AbstractApduResponseParserMock(
+    AARP_AbstractApduResponseParserMock(
         const std::shared_ptr<ApduResponse>& response)
-    : AbstractApduResponseParser(response)
+    : AbstractApduResponseParser(response, nullptr)
     {
         STATUS_TABLE.emplace(
-	    0x9999, std::make_shared<StatusProperties>(true, "sw 9999"));
+            0x9999,
+            std::make_shared<StatusProperties>("sw 9999"));
         STATUS_TABLE.emplace(
-	    0x6500, std::make_shared<StatusProperties>(false, "sw 6500"));
+            0x6500,
+            std::make_shared<StatusProperties>(
+                "sw 6500", typeid(KeypleSeCommandException)));
         STATUS_TABLE.emplace(
-	    0x6400, std::make_shared<StatusProperties>(false, "sw 6400"));
+            0x6400,
+            std::make_shared<StatusProperties>(
+                "sw 6400", typeid(KeypleSeCommandException)));
     }
 
-    std::unordered_map<int, std::shared_ptr<StatusProperties>>
+    std::map<int, std::shared_ptr<StatusProperties>>
         getMockStatusTable()
     {
         return AbstractApduResponseParser::getStatusTable();
@@ -55,7 +62,7 @@ TEST(AbstractApduResponseParserTest, AbstractApduResponseParser)
     std::shared_ptr<ApduResponse> response =
         std::make_shared<ApduResponse>(apdu, successfulStatusCodes);
 
-    AbstractApduResponseParser parser(response);
+    AARP_AbstractApduResponseParserMock parser(response);
 }
 
 TEST(AbstractApduResponseParserTest, getApduResponse)
@@ -67,7 +74,7 @@ TEST(AbstractApduResponseParserTest, getApduResponse)
     std::shared_ptr<ApduResponse> response =
         std::make_shared<ApduResponse>(apdu, successfulStatusCodes);
 
-    AbstractApduResponseParser parser(response);
+    AARP_AbstractApduResponseParserMock parser(response);
 
     /* Tests that response is properly set in contstructor */
 
@@ -83,7 +90,7 @@ TEST(AbstractApduResponseParserTest, setApduResponse)
     std::shared_ptr<ApduResponse> response =
         std::make_shared<ApduResponse>(apdu, successfulStatusCodes);
 
-    AbstractApduResponseParser parser(response);
+    AARP_AbstractApduResponseParserMock parser(response);
 
     const std::vector<uint8_t> newApdu = {0x11, 0x22, 0x33, 0x55};
     std::shared_ptr<ApduResponse> newResponse =
@@ -105,7 +112,7 @@ TEST(AbstractApduResponseParserTest, isSuccessful)
     std::shared_ptr<ApduResponse> okResp =
         std::make_shared<ApduResponse>(okApdu, codes);
 
-    AbstractApduResponseParser parser(okResp);
+    AARP_AbstractApduResponseParserMock parser(okResp);
 
     ASSERT_TRUE(parser.isSuccessful());
 
@@ -126,7 +133,7 @@ TEST(AbstractApduResponseParserTest, getStatusInformation)
     std::shared_ptr<ApduResponse> okResp =
         std::make_shared<ApduResponse>(okApdu, codes);
 
-    AbstractApduResponseParser parser(okResp);
+    AARP_AbstractApduResponseParserMock parser(okResp);
 
     ASSERT_EQ(parser.getStatusInformation(), "Success");
 
@@ -145,12 +152,12 @@ TEST(AbstractApduResponseParserTest, getStatusTable)
     std::shared_ptr<ApduResponse> resp =
         std::make_shared<ApduResponse>(apdu, nullptr);
 
-    AbstractApduResponseParserMock parser(resp);
+    AARP_AbstractApduResponseParserMock parser(resp);
 
-    std::unordered_map<int, std::shared_ptr<StatusProperties>> statusTable =
+    std::map<int, std::shared_ptr<StatusProperties>> statusTable =
         parser.getMockStatusTable();
 
-    ASSERT_EQ(4, static_cast<uint8_t>(statusTable.size()));
+    ASSERT_EQ(4, static_cast<int>(statusTable.size()));
 
     ASSERT_NE(statusTable.find(0x9000), statusTable.end());
     ASSERT_NE(statusTable.find(0x9999), statusTable.end());

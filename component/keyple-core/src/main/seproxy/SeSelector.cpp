@@ -67,10 +67,6 @@ FileOccurrence::FileOccurrence(const std::string& name, InnerEnum innerEnum,
 : mInnerEnumValue(innerEnum), mNameValue(name), mOrdinalValue(mNextOrdinal++),
   mIsoBitMask(isoBitMask) {}
 
-FileOccurrence::FileOccurrence(const FileOccurrence& o)
-: mInnerEnumValue(o.mInnerEnumValue), mNameValue(o.mNameValue),
-  mOrdinalValue(o.mOrdinalValue), mIsoBitMask(o.mIsoBitMask) {}
-
 char FileOccurrence::getIsoBitMask()
 {
     return mIsoBitMask;
@@ -106,16 +102,6 @@ bool FileOccurrence::operator==(const FileOccurrence& other) const
 bool FileOccurrence::operator!=(const FileOccurrence& other) const
 {
     return this->mOrdinalValue != other.mOrdinalValue;
-}
-
-FileOccurrence& FileOccurrence::operator=(const FileOccurrence& other)
-{
-    this->mInnerEnumValue = other.mInnerEnumValue;
-    this->mNameValue = other.mNameValue;
-    this->mOrdinalValue = other.mOrdinalValue;
-    this->mIsoBitMask = other.mIsoBitMask;
-
-    return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const FileOccurrence& fc)
@@ -155,8 +141,12 @@ int FileControlInformation::mNextOrdinal = 0;
 FileControlInformation::FileControlInformation(const std::string& name,
                                                InnerEnum innerEnum,
                                                char isoBitMask)
-: mInnerEnumValue(innerEnum), mNameValue(name), mOrdinalValue(mNextOrdinal++),
-  mIsoBitMask(isoBitMask) {}
+: //mInnerEnumValue(innerEnum),
+  mNameValue(name), mOrdinalValue(mNextOrdinal++),
+  mIsoBitMask(isoBitMask)
+{
+    (void)innerEnum;
+}
 
 char FileControlInformation::getIsoBitMask()
 {
@@ -214,7 +204,9 @@ AidSelector::AidSelector(AidSelectorBuilder* builder)
 : mFileOccurrence(builder->mFileOccurrence),
   mFileControlInformation(builder->mFileControlInformation),
   mAidToSelect(builder->mAidToSelect),
-  mSuccessfulSelectionStatusCodes(nullptr) {}
+  mSuccessfulSelectionStatusCodes(nullptr)
+  {
+  }
 
 const std::vector<uint8_t>& AidSelector::getAidToSelect() const
 {
@@ -240,6 +232,9 @@ std::shared_ptr<std::set<int>> AidSelector::getSuccessfulSelectionStatusCodes()
 void AidSelector::addSuccessfulStatusCode(int statusCode)
 {
     /* The list is kept null until a code is added */
+    if (!mSuccessfulSelectionStatusCodes)
+        mSuccessfulSelectionStatusCodes = std::make_shared<std::set<int>>();
+
     mSuccessfulSelectionStatusCodes->insert(statusCode);
 }
 
@@ -413,7 +408,7 @@ std::ostream& operator<<(std::ostream& os, const SeSelector& ss)
     if (ss.mSeProtocol)
         os << ss.mSeProtocol;
     else
-        os << "SEPROTOCOL = null";
+        os << "SEPROTOCOL = null, ";
 
     if (ss.mAidSelector)
         os << *(ss.mAidSelector.get()) << ", ";
@@ -421,9 +416,9 @@ std::ostream& operator<<(std::ostream& os, const SeSelector& ss)
         os << "AIDSELECTOR = null, ";
 
     if (ss.mAtrFilter)
-        os << *(ss.mAtrFilter.get()) << ", ";
+        os << *(ss.mAtrFilter.get());
     else
-        os << "ATRFILTER = null, ";
+        os << "ATRFILTER = null";
 
     os << "}";
 

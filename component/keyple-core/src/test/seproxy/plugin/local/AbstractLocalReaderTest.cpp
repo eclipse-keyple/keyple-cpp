@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -23,107 +23,103 @@ using namespace testing;
 
 using namespace keyple::core::seproxy::plugin::local;
 
-class LocalReaderMock : public AbstractLocalReader {
+class ALR_AbstractLocalReaderMock : public AbstractLocalReader {
 public:
-    LocalReaderMock(
+    ALR_AbstractLocalReaderMock(
       const std::string& pluginName, const std::string& readerName)
     : AbstractLocalReader(pluginName, readerName)
     {
     }
 
-    const std::map<const std::string, const std::string> getParameters() const
-        override
-    {
-        return parameters;
-    }
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
 
-    void setParameter(const std::string& key, const std::string& value) override
-    {
-        parameters.insert(
-            std::pair<const std::string, const std::string>(key, value));
-    }
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
 
-    const TransmissionMode& getTransmissionMode() const override
-    {
-        return  transmissionMode;
-    }
+    MOCK_METHOD((const TransmissionMode&),
+                getTransmissionMode,
+                (),
+                (const, override));
 
-    bool checkSePresence() override
-    {
-        return true;
-    }
+    MOCK_METHOD(bool,
+                checkSePresence,
+                (),
+                (override));
 
-    const std::vector<uint8_t>& getATR() override
-    {
-        return atr;
-    }
+    MOCK_METHOD((const std::vector<uint8_t>&),
+                getATR,
+                (),
+                (override));
 
-    void openPhysicalChannel() override
-    {
-    }
+    MOCK_METHOD(void,
+                openPhysicalChannel,
+                (),
+                (override));
 
-    void closePhysicalChannel() override
-    {
-    }
+    MOCK_METHOD(void,
+                closePhysicalChannel,
+                (),
+                (override));
 
-    bool isPhysicalChannelOpen() override
-    {
-        return false;
-    }
+    MOCK_METHOD(bool,
+                isPhysicalChannelOpen,
+                (),
+                (override));
 
-    bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
-        override
-    {
-        (void)protocolFlag;
+    MOCK_METHOD((std::shared_ptr<SelectionStatus>),
+                openLogicalChannel,
+                (std::shared_ptr<SeSelector> seSelector),
+                (override));
 
-        return false;
-    }
+    MOCK_METHOD(bool,
+                protocolFlagMatches,
+                (const std::shared_ptr<SeProtocol>),
+                (override));
 
-    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn)
-        override
-    {
-        (void)apduIn;
-
-        return {0x11, 0x22, 0x33, 0x44, 0x90, 0x00};
-    }
-
-private:
-    std::map<const std::string, const std::string> parameters;
-
-    const TransmissionMode transmissionMode = TransmissionMode::CONTACTLESS;
-
-    const std::vector<uint8_t> atr = {0x11, 0x22, 0x33, 0x44, 0x55};
+    MOCK_METHOD(std::vector<uint8_t>,
+                transmitApdu,
+                (const std::vector<uint8_t>&),
+                (override));
 };
 
 TEST(AbstractLocalReaderTest, AbstractLocalReader)
 {
-    LocalReaderMock reader("pluginName", "readerName");
+    ALR_AbstractLocalReaderMock reader("pluginName", "readerName");
 }
 
 TEST(AbstractLocalReaderTest, isSePresent)
 {
-    LocalReaderMock reader("pluginName", "readerName");
+    ALR_AbstractLocalReaderMock reader("pluginName", "readerName");
+
+    EXPECT_CALL(reader, checkSePresence())
+        .Times(1)
+        .WillOnce(Return(true));
 
     ASSERT_TRUE(reader.isSePresent());
 }
 
 TEST(AbstractLocalReaderTest, isLogicalChannelOpen)
 {
-    LocalReaderMock reader("pluginName", "readerName");
+    ALR_AbstractLocalReaderMock reader("pluginName", "readerName");
 
     ASSERT_FALSE(reader.isLogicalChannelOpen());
 }
 
 TEST(AbstractLocalReaderTest, addSeProtocolSetting)
 {
-    LocalReaderMock reader("pluginName", "readerName");
+    ALR_AbstractLocalReaderMock reader("pluginName", "readerName");
 
     reader.addSeProtocolSetting(SeCommonProtocols::PROTOCOL_ISO14443_4, "rule");
 }
 
 TEST(AbstractLocalReaderTest, setSeProtocolSetting)
 {
-    LocalReaderMock reader("pluginName", "readerName");
+    ALR_AbstractLocalReaderMock reader("pluginName", "readerName");
 
     const std::map<std::shared_ptr<SeProtocol>, std::string> setting;
 

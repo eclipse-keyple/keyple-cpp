@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -12,12 +12,10 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include <unordered_map>
-
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "CommandsTable.h"
+#include "SeCommand.h"
 
 using namespace keyple::core::command;
 
