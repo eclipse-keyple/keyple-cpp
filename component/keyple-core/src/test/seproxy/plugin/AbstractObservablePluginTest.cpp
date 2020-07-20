@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -26,13 +26,19 @@ public:
     AOP_AbstractObservablePluginMock(const std::string& name)
     : AbstractObservablePlugin(name) {}
 
-    MOCK_METHOD((const std::map<const std::string, const std::string>),
-                getParameters, (), (const override));
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
 
-    MOCK_METHOD(void, setParameter,
-                (const std::string& key, const std::string& value), (override));
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
 
-    MOCK_METHOD(std::set<std::shared_ptr<SeReader>>, initNativeReaders, (),
+    MOCK_METHOD((std::map<const std::string, std::shared_ptr<SeReader>>),
+                initNativeReaders,
+                (),
                 (override));
 };
 

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -51,7 +51,7 @@ std::map<int, std::shared_ptr<StatusProperties>>&
 }
 
 AbstractApduResponseParser::AbstractApduResponseParser(
-  const std::shared_ptr<ApduResponse>& response,
+  const std::shared_ptr<ApduResponse> response,
   const std::shared_ptr<AbstractApduCommandBuilder> builder)
 : mResponse(response), mBuilder(builder)
 {
@@ -72,7 +72,17 @@ const std::shared_ptr<ApduResponse>
 const std::shared_ptr<StatusProperties>
     AbstractApduResponseParser::getStatusCodeProperties() const
 {
-    return getStatusTable()[mResponse->getStatusCode()];
+    int sc = mResponse->getStatusCode();
+    std::map<int, std::shared_ptr<StatusProperties>>& st = getStatusTable();
+
+    /*
+     * /!\ Cannot use operator[] to check key/value existence since an unknown
+     * status code would modify the table with empty data
+     */
+    if (st.find(sc) != st.end())
+        return st[sc];
+    else
+        return nullptr;
 }
 
 bool AbstractApduResponseParser::isSuccessful() const
@@ -151,7 +161,7 @@ StatusProperties::StatusProperties(
 
 StatusProperties::StatusProperties(
   const std::string& information, const std::type_info& exceptionClass)
-: mSuccessful(true), mInformation(information),
+: mSuccessful(false), mInformation(information),
   mExceptionClass(exceptionClass) {}
 
 bool StatusProperties::isSuccessful() const

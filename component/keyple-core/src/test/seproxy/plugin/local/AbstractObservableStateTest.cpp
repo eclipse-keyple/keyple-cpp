@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -30,70 +30,69 @@ using namespace testing;
 using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::plugin::local::state;
 
-class ObservableLocalReaderMock : public AbstractObservableLocalReader {
+class AOS_AbstractObservableLocalReader : public AbstractObservableLocalReader {
 public:
-    ObservableLocalReaderMock(
+    AOS_AbstractObservableLocalReader(
       const std::string& pluginName, const std::string& readerName)
     : AbstractObservableLocalReader(pluginName, readerName)
     {
         this->stateService = initStateService();
     }
 
-    const std::map<const std::string, const std::string> getParameters() const
-        override
-    {
-        return parameters;
-    }
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
 
-    void setParameter(const std::string& key, const std::string& value) override
-    {
-        (void)key;
-        (void)value;
-    }
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
 
-    const TransmissionMode& getTransmissionMode() const override
-    {
-        return  transmissionMode;
-    }
+    MOCK_METHOD((const TransmissionMode&),
+                getTransmissionMode,
+                (),
+                (const, override));
 
-    bool checkSePresence() override
-    {
-        return true;
-    }
+    MOCK_METHOD(bool,
+                checkSePresence,
+                (),
+                (override));
 
-    const std::vector<uint8_t>& getATR() override
-    {
-        return atr;
-    }
+    MOCK_METHOD((const std::vector<uint8_t>&),
+                getATR,
+                (),
+                (override));
 
-    void openPhysicalChannel() override
-    {
-    }
+    MOCK_METHOD(void,
+                openPhysicalChannel,
+                (),
+                (override));
 
-    void closePhysicalChannel() override
-    {
-    }
+    MOCK_METHOD(void,
+                closePhysicalChannel,
+                (),
+                (override));
 
-    bool isPhysicalChannelOpen() override
-    {
-        return false;
-    }
+    MOCK_METHOD(bool,
+                isPhysicalChannelOpen,
+                (),
+                (override));
 
-    bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
-        override
-    {
-        (void)protocolFlag;
+    MOCK_METHOD((std::shared_ptr<SelectionStatus>),
+                openLogicalChannel,
+                (std::shared_ptr<SeSelector> seSelector),
+                (override));
 
-        return false;
-    }
+    MOCK_METHOD(bool,
+                protocolFlagMatches,
+                (const std::shared_ptr<SeProtocol>),
+                (override));
 
-    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn)
-        override
-    {
-        (void)apduIn;
-
-        return {0x11, 0x22, 0x33, 0x44, 0x90, 0x00};
-    }
+    MOCK_METHOD(std::vector<uint8_t>,
+                transmitApdu,
+                (const std::vector<uint8_t>&),
+                (override));
 
     std::shared_ptr<ObservableReaderStateService> initStateService() override
     {
@@ -126,56 +125,50 @@ public:
         return std::make_shared<ObservableReaderStateService>(
             this, states, MonitoringState::WAIT_FOR_START_DETECTION);
     }
-
-private:
-    std::map<const std::string, const std::string> parameters;
-
-    const TransmissionMode transmissionMode = TransmissionMode::CONTACTLESS;
-
-    const std::vector<uint8_t> atr = {0x11, 0x22, 0x33, 0x44, 0x55};
 };
 
-class ObservableStateMock : public AbstractObservableState {
+class AOS_ObservableStateMock : public AbstractObservableState {
 public:
-    ObservableStateMock()
-    : AbstractObservableState(MonitoringState::WAIT_FOR_START_DETECTION,
-                              new ObservableLocalReaderMock("plugin", "reader"))
+    AOS_ObservableStateMock()
+    : AbstractObservableState(
+          MonitoringState::WAIT_FOR_START_DETECTION,
+          new AOS_AbstractObservableLocalReader("plugin", "reader"))
     {
     }
 
     void onEvent(const InternalEvent event)
     {
-	switch (event) {
-	case InternalEvent::START_DETECT:
-	    switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
-	    break;
-	case InternalEvent::SE_INSERTED:
-	    switchState(MonitoringState::WAIT_FOR_SE_PROCESSING);
-	    break;
-	case InternalEvent::SE_PROCESSED:
-	    switchState(MonitoringState::WAIT_FOR_SE_REMOVAL);
-	    break;
-	case InternalEvent::SE_REMOVED:
-	    switchState(MonitoringState::WAIT_FOR_START_DETECTION);
-	    break;
-	case InternalEvent::STOP_DETECT:
-	    switchState(MonitoringState::WAIT_FOR_START_DETECTION);
-	    break;
-	case InternalEvent::TIME_OUT:
-	    switchState(MonitoringState::WAIT_FOR_START_DETECTION);
-	    break;
-	}
+        switch (event) {
+        case InternalEvent::START_DETECT:
+            switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
+            break;
+        case InternalEvent::SE_INSERTED:
+            switchState(MonitoringState::WAIT_FOR_SE_PROCESSING);
+            break;
+        case InternalEvent::SE_PROCESSED:
+            switchState(MonitoringState::WAIT_FOR_SE_REMOVAL);
+            break;
+        case InternalEvent::SE_REMOVED:
+            switchState(MonitoringState::WAIT_FOR_START_DETECTION);
+            break;
+        case InternalEvent::STOP_DETECT:
+            switchState(MonitoringState::WAIT_FOR_START_DETECTION);
+            break;
+        case InternalEvent::TIME_OUT:
+            switchState(MonitoringState::WAIT_FOR_START_DETECTION);
+            break;
+        }
     }
 };
 
 TEST(AbstractObservableStateTest, AbstractObservableState)
 {
-    ObservableStateMock state;
+    AOS_ObservableStateMock state;
 }
 
 TEST(AbstractObservableStateTest, onEvent)
 {
-     ObservableStateMock state;
+     AOS_ObservableStateMock state;
 
      state.onEvent(InternalEvent::START_DETECT);
 

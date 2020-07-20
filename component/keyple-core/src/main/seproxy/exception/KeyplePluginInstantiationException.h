@@ -45,7 +45,7 @@ public:
      * @param cause the cause
      */
     KeyplePluginInstantiationException(
-      const std::string& msg, std::exception& cause)
+      const std::string& msg, const std::exception& cause)
     : KeyplePluginException(msg, cause)
     {
     }

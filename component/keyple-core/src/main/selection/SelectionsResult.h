@@ -21,6 +21,7 @@
 #include "Integer.h"
 
 /* Core */
+#include "AbstractMatchingSe.h"
 #include "KeypleCoreExport.h"
 
 namespace keyple {
@@ -125,7 +126,7 @@ private:
     /**
      *
      */
-    int mActiveSelectionIndex = 0;
+    int mActiveSelectionIndex = -1;
 
     /**
      *

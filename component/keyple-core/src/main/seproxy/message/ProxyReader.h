@@ -14,12 +14,13 @@
 
 #pragma once
 
-#include <list>
 #include <memory>
 
 #include "ChannelControl.h"
 #include "MultiSeRequestProcessing.h"
 #include "SeReader.h"
+#include "SeRequest.h"
+#include "SeResponse.h"
 
 namespace keyple {
 namespace core {
@@ -27,7 +28,7 @@ namespace seproxy {
 namespace message {
 
 using namespace keyple::core::seproxy;
-using namespace keyple::core::seproxy::exception;
+using namespace keyple::core::seproxy::message;
 
 /**
  * ProxyReader interface
@@ -49,9 +50,7 @@ public:
     /**
      *
      */
-    virtual ~ProxyReader()
-    {
-    }
+    virtual ~ProxyReader() {}
 
     /**
      * Transmits a Set of {@link SeRequest} (list of {@link SeRequest}) to a SE

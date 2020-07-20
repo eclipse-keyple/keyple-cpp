@@ -21,20 +21,17 @@ using namespace testing;
 
 using namespace keyple::core::seproxy::event;
 
-class AbstractDefaultSelectionsResponseMock :
+class ADSR_AbstractDefaultSelectionsResponseMock :
 public AbstractDefaultSelectionsResponse {
-protected:
-    const std::list<std::shared_ptr<SeResponse>>&
-        getSelectionSeResponseSet() const override
-    {
-        return responses;
-    }
-
-private:
-    std::list<std::shared_ptr<SeResponse>> responses;
+public:
+    ADSR_AbstractDefaultSelectionsResponseMock(
+      const std::vector<std::shared_ptr<SeResponse>>& selectionSeResponses)
+    : AbstractDefaultSelectionsResponse(selectionSeResponses) {}
 };
 
 TEST(AbstractDefaultSelectionsResponseTest, AbstractDefaultSelectionsResponse)
 {
-    AbstractDefaultSelectionsResponseMock response;
+    const std::vector<std::shared_ptr<SeResponse>> selectionSeResponses;
+
+    ADSR_AbstractDefaultSelectionsResponseMock response(selectionSeResponses);
 }

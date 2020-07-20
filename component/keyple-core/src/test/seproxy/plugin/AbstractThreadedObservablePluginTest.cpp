@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -29,19 +29,29 @@ public:
     ATOP_AbstractThreadedObservablePluginMock(const std::string& name)
     : AbstractThreadedObservablePlugin(name) {}
 
-    MOCK_METHOD((const std::map<const std::string, const std::string>),
-                getParameters, (), (const override));
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const override));
 
-    MOCK_METHOD(void, setParameter,
-                (const std::string& key, const std::string& value), (override));
-
-    MOCK_METHOD(std::set<std::shared_ptr<SeReader>>, initNativeReaders, (),
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string& key, const std::string& value),
                 (override));
 
-    MOCK_METHOD(std::shared_ptr<SeReader>, fetchNativeReader,
-                (const std::string& name), (override));
+    MOCK_METHOD((std::map<const std::string, std::shared_ptr<SeReader>>),
+                initNativeReaders,
+                (),
+                (override));
 
-    MOCK_METHOD(const std::set<std::string>&, fetchNativeReadersNames, (),
+    MOCK_METHOD(std::shared_ptr<SeReader>,
+                fetchNativeReader,
+                (const std::string& name),
+                (override));
+
+    MOCK_METHOD(const std::set<std::string>&,
+                fetchNativeReadersNames,
+                (),
                 (override));
 };
 
@@ -84,7 +94,7 @@ TEST(AbstractThreadedObservablePluginTest, addObserver)
     ASSERT_EQ(plugin.countObservers(), 1);
 
     /*
-     * Cannot test protected function, cannot override it in mock, need to find 
+     * Cannot test protected function, cannot override it in mock, need to find
      * a way
      */
     //ASSERT_TRUE(plugin.isMonitoring());

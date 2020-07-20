@@ -49,21 +49,21 @@ bool AbstractObservableLocalReader::isSePresent()
 void AbstractObservableLocalReader::startSeDetection(
     const ObservableReader::PollingMode pollingMode)
 {
-    logger->trace("[%] start Se Detection with pollingMode %\n", getName(),
+    mLogger->trace("[%] start Se Detection with pollingMode %\n", getName(),
                   pollingMode);
 
-    this->currentPollingMode = pollingMode;
+    mCurrentPollingMode = pollingMode;
 
-    if (this->stateService)
-        this->stateService->onEvent(InternalEvent::START_DETECT);
+    if (mStateService)
+        mStateService->onEvent(InternalEvent::START_DETECT);
 }
 
 void AbstractObservableLocalReader::stopSeDetection()
 {
-    logger->trace("[%] stop Se Detection\n", getName());
+    mLogger->trace("[%] stop Se Detection\n", getName());
 
-    if (this->stateService)
-        this->stateService->onEvent(InternalEvent::STOP_DETECT);
+    if (mStateService)
+        mStateService->onEvent(InternalEvent::STOP_DETECT);
 }
 
 void AbstractObservableLocalReader::setDefaultSelectionRequest(
@@ -89,18 +89,18 @@ void AbstractObservableLocalReader::setDefaultSelectionRequest(
 
 void AbstractObservableLocalReader::startRemovalSequence()
 {
-    logger->trace("[%] start removal sequence of the reader\n", getName());
+    mLogger->trace("[%] start removal sequence of the reader\n", getName());
 
-    if (this->stateService)
-        this->stateService->onEvent(InternalEvent::SE_PROCESSED);
+    if (mStateService)
+        mStateService->onEvent(InternalEvent::SE_PROCESSED);
 }
 
 std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
 {
-    logger->trace("[%] process the inserted se\n", getName());
+    mLogger->trace("[%] process the inserted se\n", getName());
 
     if (mDefaultSelectionsRequest == nullptr) {
-        logger->trace("[%] no default selection request defined, notify " \
+        mLogger->trace("[%] no default selection request defined, notify " \
                       "SE_INSERTED\n", getName());
 
         /* No default request is defined, just notify the SE insertion */
@@ -124,7 +124,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
             for (auto seResponse : seResponses) {
                 if (seResponse != nullptr &&
                     seResponse->getSelectionStatus()->hasMatched()) {
-                    logger->trace("[%] a default selection has matched\n",
+                    mLogger->trace("[%] a default selection has matched\n",
                                   getName());
                     aSeMatched = true;
                     break;
@@ -143,7 +143,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
                         std::make_shared<DefaultSelectionsResponse>(
                             seResponses));
                 } else {
-                    logger->trace("[%] selection hasn't matched, do not throw" \
+                    mLogger->trace("[%] selection hasn't matched, do not throw" \
                                   " any event because of MATCHED_ONLY flag\n",
                                   getName());
                     return nullptr;
@@ -165,7 +165,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
                      * The SE didn't match, notify an SE_INSERTED event with the
                      * received response
                      */
-                    logger->trace("[%] none of % default selection matched\n",
+                    mLogger->trace("[%] none of % default selection matched\n",
                                   getName(), seResponses.size());
 
                     return std::make_shared<ReaderEvent>(
@@ -181,7 +181,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
              * channels.
              */
             closeLogicalAndPhysicalChannels();
-            logger->debug("An IO Exception occurred while processing the "
+            mLogger->debug("An IO Exception occurred while processing the "
                           "default selection. %\n", e);
             /*
              * In this case the SE has been removed or not read correctly, do
@@ -197,7 +197,7 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
     try {
         closePhysicalChannel();
     } catch (const KeypleReaderIOException& e) {
-        logger->error("Error while closing physical channel. %\n", e);
+        mLogger->error("Error while closing physical channel. %\n", e);
     }
 
     /* No event returned */
@@ -211,10 +211,10 @@ bool AbstractObservableLocalReader::isSePresentPing()
 
     /* Transmits the APDU and checks for the IO exception */
     try {
-        logger->trace("[%] Ping SE\n", getName());
+        mLogger->trace("[%] Ping SE\n", getName());
         transmitApdu(apdu);
     } catch (const KeypleReaderIOException& e) {
-        logger->trace("[%] Exception occurred in isSePresentPing. Message: %\n",
+        mLogger->trace("[%] Exception occurred in isSePresentPing. Message: %\n",
                       getName(), e.getMessage());
         return false;
     }
@@ -233,25 +233,25 @@ void AbstractObservableLocalReader::processSeRemoved()
 const ObservableReader::PollingMode&
     AbstractObservableLocalReader::getPollingMode() const
 {
-    return currentPollingMode;
+    return mCurrentPollingMode;
 }
 
 void AbstractObservableLocalReader::switchState(const MonitoringState stateId)
 {
-    if (this->stateService)
-        this->stateService->switchState(stateId);
+    if (mStateService)
+        mStateService->switchState(stateId);
 }
 
 const MonitoringState&
     AbstractObservableLocalReader::getCurrentMonitoringState() const
 {
-    return this->stateService->getCurrentMonitoringState();
+    return mStateService->getCurrentMonitoringState();
 }
 
 void AbstractObservableLocalReader::onEvent(const InternalEvent event)
 {
-    if (this->stateService)
-        this->stateService->onEvent(event);
+    if (mStateService)
+        mStateService->onEvent(event);
 }
 
 void AbstractObservableLocalReader::addObserver(
@@ -260,11 +260,11 @@ void AbstractObservableLocalReader::addObserver(
     if (observer == nullptr)
         return;
 
-    logger->trace("Adding an observer of '%'\n", getName());
+    mLogger->trace("Adding an observer of '%'\n", getName());
 
-    mtx.lock();
-    observers.push_back(observer);
-    mtx.unlock();
+    mMutex.lock();
+    mObservers.push_back(observer);
+    mMutex.unlock();
 }
 
 void AbstractObservableLocalReader::removeObserver(
@@ -273,24 +273,24 @@ void AbstractObservableLocalReader::removeObserver(
     if (observer == nullptr)
         return;
 
-    logger->trace("[%] Deleting a reader observer\n", getName());
+    mLogger->trace("[%] Deleting a reader observer\n", getName());
 
-    mtx.lock();
-    observers.remove(observer);
-    mtx.unlock();
+    mMutex.lock();
+    mObservers.remove(observer);
+    mMutex.unlock();
 }
 
 void AbstractObservableLocalReader::notifyObservers(
     const std::shared_ptr<ReaderEvent> event)
 {
-    logger->trace("[%] Notifying a reader event to % observers. EVENTNAME =" \
+    mLogger->trace("[%] Notifying a reader event to % observers. EVENTNAME =" \
                   " %\n", getName(), countObservers(),
                   event->getEventType().getName());
 
-    mtx.lock();
+    mMutex.lock();
     std::list<std::shared_ptr<ObservableReader::ReaderObserver>>
-        observersCopy(observers);
-    mtx.unlock();
+        observersCopy(mObservers);
+    mMutex.unlock();
 
     for (const auto& observer : observersCopy)
         observer->update(event);
@@ -298,12 +298,12 @@ void AbstractObservableLocalReader::notifyObservers(
 
 int AbstractObservableLocalReader::countObservers() const
 {
-    return observers.size();
+    return mObservers.size();
 }
 
 void AbstractObservableLocalReader::clearObservers()
 {
-   observers.clear();
+   mObservers.clear();
 }
 
 void AbstractObservableLocalReader::notifySeProcessed()
@@ -312,14 +312,14 @@ void AbstractObservableLocalReader::notifySeProcessed()
         try {
             /* Close the physical channel thanks to CLOSE_AFTER flag */
             processSeRequest(nullptr, ChannelControl::CLOSE_AFTER);
-            logger->trace("Explicit communication closing requested, starting" \
+            mLogger->trace("Explicit communication closing requested, starting" \
                           " removal sequence\n");
         } catch (const KeypleReaderException &e) {
-            logger->error("KeypleReaderException while terminating. %\n",
+            mLogger->error("KeypleReaderException while terminating. %\n",
                           e.getMessage());
         }
     } else {
-        logger->trace("Explicit physical channel closing already requested\n");
+        mLogger->trace("Explicit physical channel closing already requested\n");
     }
 }
 

@@ -28,7 +28,7 @@ using namespace keyple::core::seproxy::event;
  * The {@link ObservableReaderNotifier} interface provides the API to notify the
  * observers of a {@link ObservableReader}
  */
-class ObservablePluginNotifier : public ObservablePlugin {
+class ObservablePluginNotifier : public virtual ObservablePlugin {
     /**
      * Push a ReaderEvent of the {@link ObservableReaderNotifier} to its
      * registered observers.

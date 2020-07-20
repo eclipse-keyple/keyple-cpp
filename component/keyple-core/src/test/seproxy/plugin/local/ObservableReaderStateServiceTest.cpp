@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -27,122 +27,115 @@ using namespace testing;
 using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::plugin::local::state;
 
-class ObservableLocalReaderMock : public AbstractObservableLocalReader {
+class AOSS_AbstractObservableLocalReader
+: public AbstractObservableLocalReader {
 public:
-    ObservableLocalReaderMock(
+    AOSS_AbstractObservableLocalReader(
       const std::string& pluginName, const std::string& readerName)
     : AbstractObservableLocalReader(pluginName, readerName)
     {
         this->stateService = initStateService();
     }
 
-    const std::map<const std::string, const std::string> getParameters() const
-        override
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
+
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
+
+    MOCK_METHOD((const TransmissionMode&),
+                getTransmissionMode,
+                (),
+                (const, override));
+
+    MOCK_METHOD(bool,
+                checkSePresence,
+                (),
+                (override));
+
+    MOCK_METHOD((const std::vector<uint8_t>&),
+                getATR,
+                (),
+                (override));
+
+    MOCK_METHOD(void,
+                openPhysicalChannel,
+                (),
+                (override));
+
+    MOCK_METHOD(void,
+                closePhysicalChannel,
+                (),
+                (override));
+
+    MOCK_METHOD(bool,
+                isPhysicalChannelOpen,
+                (),
+                (override));
+
+    MOCK_METHOD((std::shared_ptr<SelectionStatus>),
+                openLogicalChannel,
+                (std::shared_ptr<SeSelector> seSelector),
+                (override));
+
+    MOCK_METHOD(bool,
+                protocolFlagMatches,
+                (const std::shared_ptr<SeProtocol>),
+                (override));
+
+    MOCK_METHOD(std::vector<uint8_t>,
+                transmitApdu,
+                (const std::vector<uint8_t>&),
+                (override));
+
+    std::shared_ptr<ObservableReaderStateService> initStateService() override
     {
-        return parameters;
-    }
+        mStates.insert(
+            std::pair<MonitoringState,
+                      std::shared_ptr<AbstractObservableState>>(
+                MonitoringState::WAIT_FOR_START_DETECTION,
+                std::make_shared<WaitForStartDetect>(this)));
 
-    void setParameter(const std::string& key, const std::string& value) override
-    {
-        (void)key;
-        (void)value;
-    }
+        mStates.insert(
+            std::pair<MonitoringState,
+                      std::shared_ptr<AbstractObservableState>>(
+                MonitoringState::WAIT_FOR_SE_INSERTION,
+                std::make_shared<WaitForSeInsertion>(this)));
 
-    const TransmissionMode& getTransmissionMode() const override
-    {
-        return  transmissionMode;
-    }
+        mStates.insert(
+            std::pair<MonitoringState,
+                      std::shared_ptr<AbstractObservableState>>(
+                MonitoringState::WAIT_FOR_SE_PROCESSING,
+                std::make_shared<WaitForSeProcessing>(this)));
 
-    bool checkSePresence() override
-    {
-        return true;
-    }
+        mStates.insert(
+            std::pair<MonitoringState,
+                      std::shared_ptr<AbstractObservableState>>(
+                MonitoringState::WAIT_FOR_SE_REMOVAL,
+                std::make_shared<WaitForSeRemoval>(this)));
 
-    const std::vector<uint8_t>& getATR() override
-    {
-        return atr;
-    }
-
-    void openPhysicalChannel() override
-    {
-    }
-
-    void closePhysicalChannel() override
-    {
-    }
-
-    bool isPhysicalChannelOpen() override
-    {
-        return false;
-    }
-
-    bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
-        override
-    {
-        (void)protocolFlag;
-
-        return false;
-    }
-
-    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn)
-        override
-    {
-        (void)apduIn;
-
-        return {0x11, 0x22, 0x33, 0x44, 0x90, 0x00};
+        return std::make_shared<ObservableReaderStateService>(
+            this, mStates, MonitoringState::WAIT_FOR_START_DETECTION);
     }
 
     const std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>
         getStates()
     {
-        std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>
-            states;
-
-        states.insert(
-            std::pair<MonitoringState,
-                        std::shared_ptr<AbstractObservableState>>(
-                MonitoringState::WAIT_FOR_START_DETECTION,
-                std::make_shared<WaitForStartDetect>(this)));
-
-        states.insert(
-            std::pair<MonitoringState,
-                        std::shared_ptr<AbstractObservableState>>(
-                MonitoringState::WAIT_FOR_SE_INSERTION,
-                std::make_shared<WaitForSeInsertion>(this)));
-
-        states.insert(
-            std::pair<MonitoringState,
-                        std::shared_ptr<AbstractObservableState>>(
-                MonitoringState::WAIT_FOR_SE_PROCESSING,
-                std::make_shared<WaitForSeProcessing>(this)));
-
-        states.insert(
-            std::pair<MonitoringState,
-                        std::shared_ptr<AbstractObservableState>>(
-                MonitoringState::WAIT_FOR_SE_REMOVAL,
-                std::make_shared<WaitForSeRemoval>(this)));
-
-        return states;
-    }
-
-    std::shared_ptr<ObservableReaderStateService> initStateService() override
-    {
-        return std::make_shared<ObservableReaderStateService>(
-            this, this->getStates(), MonitoringState::WAIT_FOR_START_DETECTION);
+        return mStates;
     }
 
 private:
-    std::map<const std::string, const std::string> parameters;
-
-    const TransmissionMode transmissionMode = TransmissionMode::CONTACTLESS;
-
-    const std::vector<uint8_t> atr = {0x11, 0x22, 0x33, 0x44, 0x55};
+    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>> mStates;
 };
 
 TEST(ObservableReaderStateServiceTest, ObservableReaderStateService)
 {
-    ObservableLocalReaderMock* reader =
-        new ObservableLocalReaderMock("plugin", "reader");
+    AOSS_AbstractObservableLocalReader* reader =
+        new AOSS_AbstractObservableLocalReader("plugin", "reader");
 
     ObservableReaderStateService service(
         reader, reader->getStates(), MonitoringState::WAIT_FOR_SE_INSERTION);
@@ -151,8 +144,8 @@ TEST(ObservableReaderStateServiceTest, ObservableReaderStateService)
 
 TEST(ObservableReaderStateServiceTest, getCurrentMonitoringState)
 {
-    ObservableLocalReaderMock* reader =
-        new ObservableLocalReaderMock("plugin", "reader");
+    AOSS_AbstractObservableLocalReader* reader =
+        new AOSS_AbstractObservableLocalReader("plugin", "reader");
 
     ObservableReaderStateService service(
         reader, reader->getStates(), MonitoringState::WAIT_FOR_SE_INSERTION);
@@ -163,8 +156,8 @@ TEST(ObservableReaderStateServiceTest, getCurrentMonitoringState)
 
 TEST(ObservableReaderStateServiceTest, switchState)
 {
-    ObservableLocalReaderMock* reader =
-        new ObservableLocalReaderMock("plugin", "reader");
+    AOSS_AbstractObservableLocalReader* reader =
+        new AOSS_AbstractObservableLocalReader("plugin", "reader");
 
     ObservableReaderStateService service(
         reader, reader->getStates(), MonitoringState::WAIT_FOR_SE_INSERTION);

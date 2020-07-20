@@ -21,35 +21,23 @@ using namespace testing;
 
 using namespace keyple::core::seproxy::event;
 
-class AbstractDefaultSelectionsRequestMock
+class ADSR_AbstractDefaultSelectionsRequestMock
 : public AbstractDefaultSelectionsRequest {
-protected:
-    const std::vector<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet()
-        const
-    {
-        return requests;
-    }
-
-    const MultiSeRequestProcessing& getMultiSeRequestProcessing() const
-    {
-        return processing;
-    }
-
-    const ChannelControl& getChannelControl() const
-    {
-	    return channelControl;
-    }
-
-private:
-    std::vector<std::shared_ptr<SeRequest>> requests;
-
-    MultiSeRequestProcessing processing;
-
-    ChannelControl channelControl;
+public:
+    ADSR_AbstractDefaultSelectionsRequestMock(
+      std::vector<std::shared_ptr<SeRequest>> selectionSeRequests,
+      const MultiSeRequestProcessing& multiSeRequestProcessing,
+      const ChannelControl& channelControl)
+    : AbstractDefaultSelectionsRequest(selectionSeRequests,
+      multiSeRequestProcessing, channelControl) {}
 };
 
 TEST(AbstractDefaultSelectionsRequestTest, AbstractDefaultSelectionsRequest)
 {
-    AbstractDefaultSelectionsRequestMock mock;
-}
+    std::vector<std::shared_ptr<SeRequest>> selectionSeRequests;
 
+    ADSR_AbstractDefaultSelectionsRequestMock mock(
+        selectionSeRequests, MultiSeRequestProcessing::FIRST_MATCH,
+        ChannelControl::CLOSE_AFTER
+    );
+}

@@ -118,6 +118,97 @@ public:
         const std::map<std::shared_ptr<SeProtocol>, std::string>&
             protocolSetting) override;
 
+    /**
+     * Build a select application command, transmit it to the SE and deduct the
+     * SelectionStatus.
+     *
+     * @param seSelector the targeted application SE selector
+     * @return the SelectionStatus containing the actual selection result (ATR
+     *         and/or FCI and the matching status flag).
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
+     * @deprecated will change in a later version
+     *
+     * /!\ C++ vs. Java: this function is protected in Java
+     */
+    virtual std::shared_ptr<SelectionStatus>
+        openLogicalChannel(std::shared_ptr<SeSelector> seSelector);
+
+    /**
+     * Open (if needed) a physical channel and try to establish a logical
+     * channel.
+     *
+     * <p>
+     * The logical opening is done either by sending a Select Application
+     * command (AID based selection) or by checking the current ATR received
+     * from the SE (ATR based selection).
+     * <p>
+     * If the selection is successful, the logical channel is considered open.
+     * On the contrary, if the selection fails, the logical channel remains
+     * closed.
+     * <p>
+     * This method relies on the abstracts methods openLogicalChannelByAtr and
+     * openLogicalChannelByAid implemented either by {@link
+     * AbstractSelectionLocalReader} or by any other derived class that provides
+     * a SE selection mechanism (e.g. OmapiReader).
+     *
+     * @param seSelector the SE Selector: either the AID of the application to
+     *        select or an ATR selection regular expression
+     * @return a {@link SelectionStatus} object containing the SE ATR, the SE
+     *         FCI and a flag giving the selection process result. When ATR or
+     *         FCI are not available, they are set to null but they can't be
+     *         both null at the same time.
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
+     * @deprecated will change in a later version
+     *
+     * /!\ C++ vs. Java: this function is protected in Java
+     */
+    std::shared_ptr<SelectionStatus>
+        openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector);
+
+    /**
+     * Do the transmission of all requests according to the protocol flag
+     * selection logic.<br>
+     * <br>
+     * The received responses are returned as {@link List} of {@link SeResponse}
+     * The requests are ordered at application level and the responses match
+     * this order.<br>
+     * When a request is not matching the current PO, the response responses
+     * pushed in the response List object is set to null.
+     *
+     * @param seRequests the request list
+     * @param multiSeRequestProcessing the multi se processing mode
+     * @param channelControl indicates if the channel has to be closed at the
+     *        end of the processing
+     * @return the response list
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
+     *
+     * /!\ C++ vs. Java: this function is protected in Java
+     */
+    std::vector<std::shared_ptr<SeResponse>> processSeRequests(
+        const std::vector<std::shared_ptr<SeRequest>>& seRequests,
+        const MultiSeRequestProcessing& multiSeRequestProcessing,
+        const ChannelControl& channelControl) final;
+
+    /**
+     * Executes a request made of one or more Apdus and receives their answers.
+     * The selection of the application is handled.
+     * <p>
+     * The physical channel is closed if requested.
+     *
+     * @param seRequest the SeRequest
+     * @return the SeResponse to the SeRequest
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
+     *
+     * /!\ C++ vs. Java: this function is protected in Java
+     */
+    std::shared_ptr<SeResponse> processSeRequest(
+        const std::shared_ptr<SeRequest> seRequest,
+        const ChannelControl& channelControl) final;
+
 protected:
 
     /**
@@ -191,51 +282,6 @@ protected:
      */
 
     /**
-     * Build a select application command, transmit it to the SE and deduct the
-     * SelectionStatus.
-     *
-     * @param seSelector the targeted application SE selector
-     * @return the SelectionStatus containing the actual selection result (ATR
-     *         and/or FCI and the matching status flag).
-     * @throws KeypleReaderIOException if the communication with the reader or
-     *         the SE has failed
-     * @deprecated will change in a later version
-     */
-    virtual std::shared_ptr<SelectionStatus>
-        openLogicalChannel(std::shared_ptr<SeSelector> seSelector);
-
-    /**
-     * Open (if needed) a physical channel and try to establish a logical
-     * channel.
-     *
-     * <p>
-     * The logical opening is done either by sending a Select Application
-     * command (AID based selection) or by checking the current ATR received
-     * from the SE (ATR based selection).
-     * <p>
-     * If the selection is successful, the logical channel is considered open.
-     * On the contrary, if the selection fails, the logical channel remains
-     * closed.
-     * <p>
-     * This method relies on the abstracts methods openLogicalChannelByAtr and
-     * openLogicalChannelByAid implemented either by {@link
-     * AbstractSelectionLocalReader} or by any other derived class that provides
-     * a SE selection mechanism (e.g. OmapiReader).
-     *
-     * @param seSelector the SE Selector: either the AID of the application to
-     *        select or an ATR selection regular expression
-     * @return a {@link SelectionStatus} object containing the SE ATR, the SE
-     *         FCI and a flag giving the selection process result. When ATR or
-     *         FCI are not available, they are set to null but they can't be
-     *         both null at the same time.
-     * @throws KeypleReaderIOException if the communication with the reader or
-     *         the SE has failed
-     * @deprecated will change in a later version
-     */
-    std::shared_ptr<SelectionStatus>
-        openLogicalChannelAndSelect(std::shared_ptr<SeSelector> seSelector);
-
-    /**
      * Attempts to open the physical channel
      *
      * @throws KeypleReaderIOException if the communication with the reader or
@@ -289,45 +335,6 @@ protected:
      */
     virtual bool protocolFlagMatches(
         const std::shared_ptr<SeProtocol> protocolFlag) = 0;
-
-    /**
-     * Do the transmission of all requests according to the protocol flag
-     * selection logic.<br>
-     * <br>
-     * The received responses are returned as {@link List} of {@link SeResponse}
-     * The requests are ordered at application level and the responses match
-     * this order.<br>
-     * When a request is not matching the current PO, the response responses
-     * pushed in the response List object is set to null.
-     *
-     * @param seRequests the request list
-     * @param multiSeRequestProcessing the multi se processing mode
-     * @param channelControl indicates if the channel has to be closed at the
-     *        end of the processing
-     * @return the response list
-     * @throw KeypleReaderIOException if the communication with the reader or
-     *        the SE has failed
-     */
-    std::vector<std::shared_ptr<SeResponse>> processSeRequests(
-        const std::vector<std::shared_ptr<SeRequest>>& seRequests,
-        const MultiSeRequestProcessing& multiSeRequestProcessing,
-        const ChannelControl& channelControl) final;
-
-    /**
-     * Executes a request made of one or more Apdus and receives their answers.
-     * The selection of the application is handled.
-     * <p>
-     * The physical channel is closed if requested.
-     *
-     * @param seRequest the SeRequest
-     * @return the SeResponse to the SeRequest
-     * @throw KeypleReaderIOException if the communication with the reader or
-     *        the SE has failed
-     */
-    std::shared_ptr<SeResponse> processSeRequest(
-        const std::shared_ptr<SeRequest> seRequest,
-        const ChannelControl& channelControl) final;
-
 
     /**
      * Indicates whether this array of bytes starts with this other one
