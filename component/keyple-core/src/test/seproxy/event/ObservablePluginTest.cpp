@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -25,90 +25,63 @@ using namespace keyple::core::seproxy::event;
 
 class ObservablePluginMock : public ObservablePlugin {
 public:
-    void addObserver(const std::shared_ptr<PluginObserver> observer) override
-    {
-        observers.push_back(observer);
-    }
+    MOCK_METHOD(void,
+                addObserver,
+                (const std::shared_ptr<PluginObserver>),
+                (override));
 
-    void removeObserver(const std::shared_ptr<PluginObserver> observer) override
-    {
-        observers.erase(std::remove(observers.begin(), observers.end(),
-	                            observer), observers.end());
-    }
+    MOCK_METHOD(void,
+                removeObserver,
+                (const std::shared_ptr<PluginObserver>),
+                (override));
 
-    void notifyObservers(const std::shared_ptr<PluginEvent> event) override
-    {
-        (void)event;
-    }
+    MOCK_METHOD(void,
+                clearObservers,
+                (),
+                (override));
 
-    void clearObservers() override
-    {
-        observers.clear();
-    }
+    MOCK_METHOD(int,
+                countObservers,
+                (),
+                (const, override));
 
-    int countObservers() const override
-    {
-        return observers.size();
-    }
+    MOCK_METHOD((const std::string&),
+                getName,
+                (),
+                (const, override));
 
-    const std::string& getName() const override
-    {
-        return mName;
-    }
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
 
-    const std::map<const std::string, const std::string> getParameters() const
-        override
-    {
-        return mParameters;
-    }
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
 
-    void setParameter(const std::string& key, const std::string& value) override
-    {
-        (void)key;
-        (void)value;
-    }
+    MOCK_METHOD(void,
+                setParameters,
+                ((const std::map<const std::string, const std::string>&)),
+                (override));
 
-    void setParameters(
-        const std::map<const std::string, const std::string>& parameters)
-        override
-    {
-        (void)parameters;
-    }
+    MOCK_METHOD((const std::set<std::string>),
+                getReaderNames,
+                (),
+                (const, override));
 
-    const std::set<std::string> getReaderNames() const override
-    {
-        return readerNames;
-    }
+    MOCK_METHOD((std::map<const std::string, std::shared_ptr<SeReader>>&),
+                getReaders,
+                (),
+                (override));
 
-    std::set<std::shared_ptr<SeReader>>& getReaders() override
-    {
-        return readers;
-    }
-
-    const std::shared_ptr<SeReader> getReader(const std::string& name) const
-        override
-    {
-        (void)name;
-
-        return reader;
-    }
-
-private:
-    std::vector<std::shared_ptr<PluginObserver>> observers;
-
-    std::string mName;
-
-    std::map<const std::string, const std::string> mParameters;
-
-    std::set<std::string> readerNames;
-
-    std::set<std::shared_ptr<SeReader>> readers;
-
-    std::shared_ptr<SeReader> reader;
+    MOCK_METHOD((const std::shared_ptr<SeReader>),
+                getReader,
+                (const std::string&),
+                (override));
 };
 
 TEST(ObservablePluginTest, ObservablePlugin)
 {
 	ObservablePluginMock plugin;
 }
-

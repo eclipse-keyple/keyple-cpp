@@ -88,10 +88,10 @@ public:
 
             seSelectionrApduRequests.push_back(
                 commandBuilder->getApduRequest());
-
-            return std::make_shared<SeRequest>(mSeSelector,
-                                               seSelectionrApduRequests);
         }
+
+        return std::make_shared<SeRequest>(mSeSelector,
+                                            seSelectionrApduRequests);
     }
 
     /**
@@ -127,7 +127,6 @@ public:
     virtual const std::shared_ptr<AbstractMatchingSe> parse(
         std::shared_ptr<SeResponse> seResponse) = 0;
 
-protected:
     /**
      * Add an additional {@link AbstractApduCommandBuilder} for the command to
      * be executed after the selection process if it succeeds.
@@ -136,6 +135,8 @@ protected:
      * executed in the order in which they were added.
      *
      * @param commandBuilder an {@link AbstractApduCommandBuilder}
+     *
+     * /!\ C++ vs. Java: this function is protected in Java
      */
     void addCommandBuilder(std::shared_ptr<T> commandBuilder)
     {
@@ -144,6 +145,8 @@ protected:
 
     /**
      * @return the current command builder list
+     *
+     * /!\ C++ vs. Java: this function is protected in Java
      */
     const std::vector<std::shared_ptr<T>> getCommandBuilders() const
     {
@@ -155,7 +158,7 @@ private:
      * Optional command nuilber list of command to be executed following the
      * selection process
      */
-    const std::vector<std::shared_ptr<T>> mCommandBuilders;
+    std::vector<std::shared_ptr<T>> mCommandBuilders;
 };
 
 }

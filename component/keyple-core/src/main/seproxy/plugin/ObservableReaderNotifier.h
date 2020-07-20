@@ -29,7 +29,7 @@ using namespace keyple::core::seproxy::event;
  * The {@link ObservableReaderNotifier} interface provides the API to notify the
  * observers of a {@link ObservableReader}
  */
-class ObservableReaderNotifier : public ObservableReader {
+class ObservableReaderNotifier : public virtual ObservableReader {
     /**
      * Push a ReaderEvent of the {@link ObservableReaderNotifier} to its
      * registered observers.

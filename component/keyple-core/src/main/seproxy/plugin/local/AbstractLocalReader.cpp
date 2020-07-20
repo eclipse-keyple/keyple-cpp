@@ -90,7 +90,7 @@ std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannel(
             throw KeypleReaderIOException("Didn't get an ATR from the SE");
         }
 
-        mLogger->debug("[%] openLogicalChannel => ATR = %\n",
+        mLogger->trace("[%] openLogicalChannel => ATR = %\n",
                       getName(), atr);
 
         if (!seSelector->getAtrFilter()->atrMatches(atr)) {
@@ -290,8 +290,8 @@ std::vector<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequests(
                     /* Build a SeResponseSet with the available data. */
                     ex.setSeResponses(responses);
                     mLogger->debug("[%] processSeRequests => transmit : " \
-						          "process interrupted, collect previous " \
-						          "responses %\n", getName(), responses);
+                                   "process interrupted, collect previous " \
+                                   "responses %\n", getName(), responses);
                     throw ex;
                 }
 

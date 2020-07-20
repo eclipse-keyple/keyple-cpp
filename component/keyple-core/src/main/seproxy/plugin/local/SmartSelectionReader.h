@@ -30,7 +30,7 @@ namespace local {
  * Interface implemented by readers able to handle natively the SE selection
  * process (e.g. Android OMAPI readers).
  */
-class KEYPLECORE_API SmartSelectionReader : public SeReader {
+class KEYPLECORE_API SmartSelectionReader : public virtual SeReader {
 public:
     /**
      * Opens a logical channel for the provided AID

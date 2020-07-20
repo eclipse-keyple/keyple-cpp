@@ -37,15 +37,22 @@ AbstractMatchingSe::AbstractMatchingSe(
     const TransmissionMode& transmissionMode)
 : mTransmissionMode(transmissionMode)
 {
-    std::shared_ptr<ApduResponse> fci =
-        selectionResponse->getSelectionStatus()->getFci();
-    if (fci)
-        mFciBytes = fci->getBytes();
+    /* /!\ C++ vs. Java: check getSelectionStatus() existence */
 
-    std::shared_ptr<AnswerToReset> atr =
-        selectionResponse->getSelectionStatus()->getAtr();
-    if (atr)
-        mAtrBytes = atr->getBytes();
+    if (selectionResponse) {
+        const std::shared_ptr<SelectionStatus> selectionStatus =
+            selectionResponse->getSelectionStatus();
+
+        if (selectionStatus) {
+            std::shared_ptr<ApduResponse> fci = selectionStatus->getFci();
+            if (fci)
+                mFciBytes = fci->getBytes();
+
+            std::shared_ptr<AnswerToReset> atr = selectionStatus->getAtr();
+            if (atr)
+                mAtrBytes = atr->getBytes();
+        }
+    }
 }
 
 bool AbstractMatchingSe::hasFci() const

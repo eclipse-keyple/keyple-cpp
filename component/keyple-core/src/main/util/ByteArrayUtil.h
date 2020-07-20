@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -77,7 +77,7 @@ public:
      * @return the resulting int
      * @throws IllegalArgumentException if the buffer has a bad length
      */
-    static int threeBytesToInt(std::vector<uint8_t>& bytes, int offset);
+    static int threeBytesToInt(const std::vector<uint8_t>& bytes, int offset);
 
 private:
     /**

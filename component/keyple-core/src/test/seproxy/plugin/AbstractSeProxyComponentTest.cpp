@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -12,39 +12,39 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#pragma once
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
-#include "KeypleException.h"
+#include "AbstractSeProxyComponent.h"
 
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace exception {
+using namespace testing;
 
-/**
- * Base Exception for all Keyple Checked Exception
- */
-class KeypleAllocationReaderException : public KeypleException {
+using namespace keyple::core::seproxy::plugin;
+
+class ASPC_AbstractSeProxyComponentMock : public AbstractSeProxyComponent {
 public:
-    /**
-     *
-     */
-    KeypleAllocationReaderException(const std::string& msg)
-    : KeypleException(msg)
-    {
-    }
+    ASPC_AbstractSeProxyComponentMock(const std::string& name)
+    : AbstractSeProxyComponent(name) {}
 
-    /**
-     *
-     */
-    KeypleAllocationReaderException(const std::string& msg,
-                                    const std::exception& cause)
-    : KeypleException(msg, cause)
-    {
-    }
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
+
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
 };
 
+TEST(AbstractSeProxyComponentTest, AbstractSeProxyComponent)
+{
+    ASPC_AbstractSeProxyComponentMock proxy("proxy");
 }
-}
-}
+
+TEST(AbstractSeProxyComponentTest, getName)
+{
+    ASPC_AbstractSeProxyComponentMock proxy("proxy");
+
+    ASSERT_EQ(proxy.getName(), "proxy");
 }

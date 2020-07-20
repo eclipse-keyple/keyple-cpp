@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -33,97 +33,81 @@ using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::plugin::local::state;
 using namespace keyple::core::util;
 
-class DefaultSelectionsRequestMock: public AbstractDefaultSelectionsRequest {
+class AOLR_AbstractDefaultSelectionsRequestMock
+: public AbstractDefaultSelectionsRequest {
 public:
-    const std::vector<std::shared_ptr<SeRequest>>& getSelectionSeRequestSet()
-        const override
-    {
-        return requests;
-    }
-
-    const MultiSeRequestProcessing& getMultiSeRequestProcessing() const override
-    {
-        return processing;
-    }
-
-    const ChannelControl& getChannelControl() const override
-    {
-        return control;
-    }
-
-private:
-    std::vector<std::shared_ptr<SeRequest>> requests;
-
-    const MultiSeRequestProcessing processing =
-        MultiSeRequestProcessing::FIRST_MATCH;
-
-    const ChannelControl control = ChannelControl::CLOSE_AFTER;
+    AOLR_AbstractDefaultSelectionsRequestMock(
+      std::vector<std::shared_ptr<SeRequest>> selectionSeRequests,
+      const MultiSeRequestProcessing& multiSeRequestProcessing,
+      const ChannelControl& channelControl)
+    : AbstractDefaultSelectionsRequest(selectionSeRequests,
+          multiSeRequestProcessing, channelControl) {}
 };
 
-class ObservableLocalReaderMock : public AbstractObservableLocalReader {
+class AOLR_AbstractObservableLocalReaderMock
+: public AbstractObservableLocalReader {
 public:
-    ObservableLocalReaderMock(
+    AOLR_AbstractObservableLocalReaderMock(
       const std::string& pluginName, const std::string& readerName)
     : AbstractObservableLocalReader(pluginName, readerName)
     {
         this->stateService = initStateService();
     }
 
-    const std::map<const std::string, const std::string> getParameters() const
-        override
-    {
-        return parameters;
-    }
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
 
-    void setParameter(const std::string& key, const std::string& value) override
-    {
-        (void)key;
-        (void)value;
-    }
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
 
-    const TransmissionMode& getTransmissionMode() const override
-    {
-        return  transmissionMode;
-    }
+    MOCK_METHOD((const TransmissionMode&),
+                getTransmissionMode,
+                (),
+                (const, override));
 
-    bool checkSePresence() override
-    {
-        return true;
-    }
+    MOCK_METHOD(bool,
+                checkSePresence,
+                (),
+                (override));
 
-    const std::vector<uint8_t>& getATR() override
-    {
-        return atr;
-    }
+    MOCK_METHOD((const std::vector<uint8_t>&),
+                getATR,
+                (),
+                (override));
 
-    void openPhysicalChannel() override
-    {
-    }
+    MOCK_METHOD(void,
+                openPhysicalChannel,
+                (),
+                (override));
 
-    void closePhysicalChannel() override
-    {
-    }
+    MOCK_METHOD(void,
+                closePhysicalChannel,
+                (),
+                (override));
 
-    bool isPhysicalChannelOpen() override
-    {
-        return false;
-    }
+    MOCK_METHOD(bool,
+                isPhysicalChannelOpen,
+                (),
+                (override));
 
-    bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
-        override
-    {
-        (void)protocolFlag;
+    MOCK_METHOD((std::shared_ptr<SelectionStatus>),
+                openLogicalChannel,
+                (std::shared_ptr<SeSelector> seSelector),
+                (override));
 
-        return false;
-    }
+    MOCK_METHOD(bool,
+                protocolFlagMatches,
+                (const std::shared_ptr<SeProtocol>),
+                (override));
 
-    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn)
-        override
-    {
-        (void)apduIn;
-
-        return {0x11, 0x22, 0x33, 0x44, 0x90, 0x00};
-    }
+    MOCK_METHOD(std::vector<uint8_t>,
+                transmitApdu,
+                (const std::vector<uint8_t>&),
+                (override));
 
     std::shared_ptr<ObservableReaderStateService> initStateService() override
     {
@@ -156,13 +140,6 @@ public:
         return std::make_shared<ObservableReaderStateService>(
             this, states, MonitoringState::WAIT_FOR_START_DETECTION);
     }
-
-private:
-    std::map<const std::string, const std::string> parameters;
-
-    const TransmissionMode transmissionMode = TransmissionMode::CONTACTLESS;
-
-    const std::vector<uint8_t> atr = {0x11, 0x22, 0x33, 0x44, 0x55};
 };
 
 class ReaderObserverMock : public ObservableReader::ReaderObserver {
@@ -221,12 +198,21 @@ static std::shared_ptr<SeSelector> getSelector(
      */
     const std::vector<uint8_t> aid = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
 
-    return std::make_shared<SeSelector>(
-               SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
-               std::make_shared<SeSelector::AidSelector>(
-                   std::make_shared<SeSelector::AidSelector::IsoAid>(aid),
-                   selectionStatusCode),
-               "seselector");
+    std::shared_ptr<SeSelector::AidSelector> aidSelector =
+        SeSelector::AidSelector::builder()
+            ->aidToSelect(aid)
+            .build();
+
+    if (selectionStatusCode) {
+        for (const auto& code : *selectionStatusCode.get())
+            aidSelector->addSuccessfulStatusCode(code);
+    }
+
+    return SeSelector::builder()
+              ->seProtocol(SeCommonProtocols::PROTOCOL_ISO14443_4)
+              .atrFilter(nullptr)
+              .aidSelector(aidSelector)
+              .build();
 }
 
 static std::shared_ptr<SeRequest> getSeRequestSample()
@@ -237,29 +223,35 @@ static std::shared_ptr<SeRequest> getSeRequestSample()
 
 TEST(AbstractObservableLocalReaderTest, AbstractObservableLocalReader)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 }
 
 TEST(AbstractObservableLocalReaderTest, isSePresent)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
     ASSERT_TRUE(reader.isSePresent());
 }
 
 TEST(AbstractObservableLocalReaderTest, setDefaultSelectionRequest)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
+
+    std::vector<std::shared_ptr<SeRequest>> selectionSeRequests;
 
     reader.setDefaultSelectionRequest(
-        std::make_shared<DefaultSelectionsRequestMock>(),
+        std::make_shared<AOLR_AbstractDefaultSelectionsRequestMock>(
+            selectionSeRequests, MultiSeRequestProcessing::FIRST_MATCH,
+            ChannelControl::CLOSE_AFTER),
         ObservableReader::NotificationMode::ALWAYS);
 
     ASSERT_EQ(reader.getPollingMode(),
               ObservableReader::PollingMode::SINGLESHOT);
 
     reader.setDefaultSelectionRequest(
-        std::make_shared<DefaultSelectionsRequestMock>(),
+        std::make_shared<AOLR_AbstractDefaultSelectionsRequestMock>(
+            selectionSeRequests, MultiSeRequestProcessing::FIRST_MATCH,
+            ChannelControl::CLOSE_AFTER),
         ObservableReader::NotificationMode::ALWAYS,
         ObservableReader::PollingMode::REPEATING);
 
@@ -269,7 +261,7 @@ TEST(AbstractObservableLocalReaderTest, setDefaultSelectionRequest)
 
 TEST(AbstractObservableLocalReaderTest, processSeInserted)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
     std::shared_ptr<ReaderEvent> event = reader.processSeInserted();
 
@@ -279,24 +271,30 @@ TEST(AbstractObservableLocalReaderTest, processSeInserted)
 
 TEST(AbstractObservableLocalReaderTest, isSePresentPing)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
     ASSERT_TRUE(reader.isSePresentPing());
 }
 
 TEST(AbstractObservableLocalReaderTest, getPollingMode)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
+
+    std::vector<std::shared_ptr<SeRequest>> selectionSeRequests;
 
     reader.setDefaultSelectionRequest(
-        std::make_shared<DefaultSelectionsRequestMock>(),
+        std::make_shared<AOLR_AbstractDefaultSelectionsRequestMock>(
+            selectionSeRequests, MultiSeRequestProcessing::FIRST_MATCH,
+            ChannelControl::CLOSE_AFTER),
         ObservableReader::NotificationMode::ALWAYS);
 
     ASSERT_EQ(reader.getPollingMode(),
               ObservableReader::PollingMode::SINGLESHOT);
 
     reader.setDefaultSelectionRequest(
-        std::make_shared<DefaultSelectionsRequestMock>(),
+        std::make_shared<AOLR_AbstractDefaultSelectionsRequestMock>(
+            selectionSeRequests, MultiSeRequestProcessing::FIRST_MATCH,
+            ChannelControl::CLOSE_AFTER),
         ObservableReader::NotificationMode::ALWAYS,
         ObservableReader::PollingMode::REPEATING);
 
@@ -306,7 +304,7 @@ TEST(AbstractObservableLocalReaderTest, getPollingMode)
 
 TEST(AbstractObservableLocalReaderTest, addObserver)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
     ASSERT_EQ(reader.countObservers(), 0);
 
@@ -321,7 +319,7 @@ TEST(AbstractObservableLocalReaderTest, addObserver)
 
 TEST(AbstractObservableLocalReaderTest, removeObserver)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
     ASSERT_EQ(reader.countObservers(), 0);
 
@@ -347,7 +345,7 @@ TEST(AbstractObservableLocalReaderTest, removeObserver)
 
 TEST(AbstractObservableLocalReaderTest, clearObservers)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
     reader.addObserver(std::make_shared<ReaderObserverMock>());
 
@@ -360,7 +358,7 @@ TEST(AbstractObservableLocalReaderTest, clearObservers)
 
 TEST(AbstractObservableLocalReaderTest, notifyObservers)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
     std::shared_ptr<ReaderObserverMock> observer =
         std::make_shared<ReaderObserverMock>();
@@ -379,7 +377,7 @@ TEST(AbstractObservableLocalReaderTest, notifyObservers)
 
 TEST(AbstractObservableLocalReaderTest, getCurrentMonitoringState)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
     ASSERT_EQ(reader.getCurrentMonitoringState(),
               MonitoringState::WAIT_FOR_START_DETECTION);
@@ -423,24 +421,38 @@ TEST(AbstractObservableLocalReaderTest, getCurrentMonitoringState)
               MonitoringState::WAIT_FOR_SE_INSERTION);
 }
 
+/*
+ * Cannot mock function processSeRequest() because it's final in
+ * AbstractLocalReader...
+ */
 TEST(AbstractObservableLocalReaderTest, notifySeProcessed_withForceClosing)
 {
-    ObservableLocalReaderMock reader("pluginName", "readerName");
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
     /* Keep open */
-    std::shared_ptr<SeRequest> request = getSeRequestSample();
-    //reader.transmit(request, ChannelControl::KEEP_OPEN);
+    reader.transmitSeRequest(getSeRequestSample(), ChannelControl::KEEP_OPEN);
+
+//    EXPECT_CALL(reader, processSeRequest(_,_))
+//        .Times(1);
 
     /* Force closing */
-    //reader.notifySeProcessed();
+    reader.notifySeProcessed();
+}
 
-    /*
-     * processSeRequest is 'protected final'. can't override it in mock,
-     * can't use it directly with 'reader'. Not sure I can make that test
-     * happen...
-     *
-     * EXPECT_CALL(reader, processSeRequest(nullptr,
-     *                                      ChannelControl::CLOSE_AFTER))
-     *   .times(1);
-     */
+/*
+ * Cannot mock function processSeRequest() because it's final in
+ * AbstractLocalReader...
+ */
+TEST(AbstractObservableLocalReaderTest, notifySeProcessed_withoutForceClosing)
+{
+    AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
+
+    /* Close after */
+    reader.transmitSeRequest(getSeRequestSample(), ChannelControl::CLOSE_AFTER);
+
+//    EXPECT_CALL(reader, processSeRequest(_,_))
+//        .Times(0);
+
+    /* Force closing is not called (only the transmit) */
+    reader.notifySeProcessed();
 }

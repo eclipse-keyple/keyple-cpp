@@ -400,7 +400,7 @@ protected:
      * Service that handles Internal Events and their impact on the current
      * state of the reader
      */
-    std::shared_ptr<ObservableReaderStateService> stateService;
+    std::shared_ptr<ObservableReaderStateService> mStateService;
 
     /**
      * Initialize the ObservableReaderStateService with the possible states and
@@ -422,7 +422,7 @@ private:
     /**
      * Logger
     */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(AbstractObservableLocalReader));
 
     /**
@@ -439,20 +439,20 @@ private:
     /**
      *
      */
-    ObservableReader::PollingMode currentPollingMode =
+    ObservableReader::PollingMode mCurrentPollingMode =
         ObservableReader::PollingMode::SINGLESHOT;
 
 
     /**
      * The observers of this object
      */
-    std::list<std::shared_ptr<ObservableReader::ReaderObserver>> observers;
+    std::list<std::shared_ptr<ObservableReader::ReaderObserver>> mObservers;
 
     /*
      * This object will be used to synchronize the access to the observers list
      * in order to be thread safe
      */
-    std::mutex mtx;
+    std::mutex mMutex;
 };
 
 

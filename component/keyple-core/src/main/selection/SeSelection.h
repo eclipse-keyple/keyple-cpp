@@ -168,7 +168,7 @@ private:
     /**
      *
      */
-    int mSelectionIndex = 0;
+    //int mSelectionIndex = 0; // not used
 
     /**
      *

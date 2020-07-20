@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -13,8 +13,10 @@
  ******************************************************************************/
 
 #include "ByteArrayUtil.h"
-#include "Pattern.h"
+
 #include "Character.h"
+#include "IllegalArgumentException.h"
+#include "Pattern.h"
 #include "stringbuilder.h"
 
 namespace keyple {
@@ -55,7 +57,7 @@ std::vector<uint8_t> ByteArrayUtil::fromHex(const std::string& hex)
         c = static_cast<char>(toupper((unsigned char)c));
 
     if (_hex.length() % 2 != 0) {
-        throw std::invalid_argument("Odd numbered hex array");
+        throw IllegalArgumentException("Odd numbered hex array");
     }
 
     std::vector<uint8_t> byteArray(_hex.length() / 2);
@@ -97,10 +99,12 @@ std::string ByteArrayUtil::toHex(const std::vector<uint8_t>& byteArray)
     return hexStringBuilder->toString();
 }
 
-int ByteArrayUtil::threeBytesToInt(std::vector<uint8_t>& bytes, int offset)
+int ByteArrayUtil::threeBytesToInt(const std::vector<uint8_t>& bytes,
+                                   int offset)
 {
     if (bytes.empty() || (int)bytes.size() < offset + 3 || offset < 0) {
-        throw std::invalid_argument("Bad data for converting 3-byte integers.");
+        throw IllegalArgumentException(
+                  "Bad data for converting 3-byte integers.");
     }
 
     return ((static_cast<int>(bytes[offset])) << 16) +
