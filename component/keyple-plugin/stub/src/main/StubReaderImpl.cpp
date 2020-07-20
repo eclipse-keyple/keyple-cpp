@@ -51,9 +51,9 @@ StubReaderImpl::StubReaderImpl(const std::string& pluginName,
 : AbstractObservableLocalReader(pluginName, readerName)
 {
     /* Create a executor service with one thread whose name is customized */
-    this->executorService = std::make_shared<MonitoringPool>();
+    mExecutorService = std::make_shared<MonitoringPool>();
 
-    this->stateService = initStateService();
+    mStateService = initStateService();
 }
 
 StubReaderImpl::StubReaderImpl(const std::string& pluginName,
@@ -61,41 +61,38 @@ StubReaderImpl::StubReaderImpl(const std::string& pluginName,
                                TransmissionMode transmissionMode)
 : StubReaderImpl(pluginName, name)
 {
-    this->transmissionMode = transmissionMode;
+    mTransmissionMode = transmissionMode;
 }
 
 const std::vector<uint8_t>& StubReaderImpl::getATR()
 {
-    return se->getATR();
+    return mSe->getATR();
 }
 
 bool StubReaderImpl::isPhysicalChannelOpen()
 {
-    return se != nullptr && se->isPhysicalChannelOpen();
+    return mSe != nullptr && mSe->isPhysicalChannelOpen();
 }
 
 void StubReaderImpl::openPhysicalChannel()
 {
-    if (se != nullptr) {
-        se->openPhysicalChannel();
-    }
+    if (mSe != nullptr)
+        mSe->openPhysicalChannel();
 }
 
 void StubReaderImpl::closePhysicalChannel()
 {
-    if (se != nullptr) {
-        se->closePhysicalChannel();
-    }
+    if (mSe != nullptr)
+        mSe->closePhysicalChannel();
 }
 
 std::vector<uint8_t> StubReaderImpl::transmitApdu(
     const std::vector<uint8_t>& apduIn)
 {
-    if (se == nullptr) {
+    if (mSe == nullptr)
         throw KeypleReaderIOException("No SE available.");
-    }
 
-    return se->processApdu(apduIn);
+    return mSe->processApdu(apduIn);
 }
 
 bool StubReaderImpl::protocolFlagMatches(
@@ -103,15 +100,13 @@ bool StubReaderImpl::protocolFlagMatches(
 {
     bool result;
 
-    if (se == nullptr) {
+    if (mSe == nullptr)
         throw KeypleReaderIOException("No SE available.");
-    }
 
     /* Test protocolFlag to check if ATR based protocol filtering is required */
     //if (protocolFlag != null) {
-    if (!isPhysicalChannelOpen()) {
+    if (!isPhysicalChannelOpen())
         openPhysicalChannel();
-    }
 
     /*
      * The request will be executed only if the protocol match the
@@ -119,18 +114,17 @@ bool StubReaderImpl::protocolFlagMatches(
      */
     const std::string& selectionMask = mProtocolsMap.find(protocolFlag)->second;
 
-    if (selectionMask.empty()) {
+    if (selectionMask.empty())
         throw KeypleReaderIOException("Target selector mask not found!");
-    }
 
-    Pattern* p                  = Pattern::compile(selectionMask);
-    const std::string& protocol = se->getSeProcotol();
+    Pattern* p = Pattern::compile(selectionMask);
+    const std::string& protocol = mSe->getSeProcotol();
     if (!p->matcher(protocol)->matches()) {
-        logger->trace("[%] protocolFlagMatches => unmatching SE. "
-                      "PROTOCOLFLAG = %\n", getName(), protocolFlag);
+        mLogger->trace("[%] protocolFlagMatches => unmatching SE. " \
+                       "PROTOCOLFLAG = %\n", getName(), protocolFlag);
         result = false;
     } else {
-        logger->trace("[%] protocolFlagMatches => matching SE. PROTOCOLFLAG =" \
+        mLogger->trace("[%] protocolFlagMatches => matching SE. PROTOCOLFLAG ="\
 			          " %\n", getName(), protocolFlag);
         result = true;
     }
@@ -143,61 +137,61 @@ bool StubReaderImpl::protocolFlagMatches(
 
 bool StubReaderImpl::checkSePresence()
 {
-    return se != nullptr;
+    return mSe != nullptr;
 }
 
 void StubReaderImpl::setParameter(const std::string& name,
                                   const std::string& value)
 {
-    parameters.insert({name, value});
+    mParameters.insert({name, value});
 }
 
 const std::map<const std::string, const std::string>&
     StubReaderImpl::getParameters() const
 {
-    return parameters;
+    return mParameters;
 }
 
 const TransmissionMode& StubReaderImpl::getTransmissionMode() const
 {
-    return transmissionMode;
+    return mTransmissionMode;
 }
 
-void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> _se)
+void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> se)
 {
-    logger->debug("Insert SE %\n", _se);
+    mLogger->debug("Insert SE %\n", se);
 
     /* Clean channels status */
     if (isPhysicalChannelOpen()) {
         try {
             closePhysicalChannel();
         } catch (KeypleReaderException& e) {
-            logger->error("Error while closing channel reader. %\n",
-                          e.getMessage());
+            mLogger->error("Error while closing channel reader. %\n",
+                           e.getMessage());
         }
     }
-    if (_se != nullptr) {
-        se = _se;
-    }
+
+    if (se != nullptr)
+        mSe = se;
 }
 
 void StubReaderImpl::removeSe()
 {
-    logger->debug("Remove SE %\n", se);
+    mLogger->debug("Remove SE %\n", mSe);
 
-    se = nullptr;
+    mSe = nullptr;
 }
 
 std::shared_ptr<StubSecureElement> StubReaderImpl::getSe()
 {
-    return se;
+    return mSe;
 }
 
 bool StubReaderImpl::waitForCardPresent()
 {
-    loopWaitSe = true;
+    mLoopWaitSe = true;
 
-    while (loopWaitSe) {
+    while (mLoopWaitSe) {
         if (checkSePresence()) {
             return true;
         }
@@ -205,7 +199,7 @@ bool StubReaderImpl::waitForCardPresent()
         try {
             Thread::sleep(10);
         } catch (InterruptedException& e) {
-            logger->debug("Sleep was interrupted - %\n", e);
+            mLogger->debug("Sleep was interrupted - %\n", e);
         }
     }
 
@@ -216,25 +210,26 @@ bool StubReaderImpl::waitForCardPresent()
 
 void StubReaderImpl::stopWaitForCard()
 {
-    loopWaitSe = false;
+    mLoopWaitSe = false;
 }
 
 bool StubReaderImpl::waitForCardAbsentNative()
 {
-    loopWaitSeRemoval = true;
+    mLoopWaitSeRemoval = true;
 
-    while (loopWaitSeRemoval) {
+    while (mLoopWaitSeRemoval) {
         if (!checkSePresence()) {
-            logger->trace("[%] card removed\n", getName());
+            mLogger->trace("[%] card removed\n", getName());
             return true;
         }
 
         try {
             Thread::sleep(10);
         } catch (InterruptedException& e) {
-            logger->debug("Sleep was interrupted - %\n", e);
+            mLogger->debug("Sleep was interrupted - %\n", e);
         }
     }
+
     return false;
     // logger.trace("[{}] no card was removed", this.getName());
     // return false;
@@ -242,15 +237,14 @@ bool StubReaderImpl::waitForCardAbsentNative()
 
 void StubReaderImpl::stopWaitForCardRemoval()
 {
-    loopWaitSeRemoval = false;
+    mLoopWaitSeRemoval = false;
 }
 
 std::shared_ptr<ObservableReaderStateService> StubReaderImpl::initStateService()
 {
-    if (executorService == nullptr) {
+    if (mExecutorService == nullptr)
         throw IllegalArgumentException("Executor service has not been "
                                        "initialized");
-    }
 
     std::map<MonitoringState, std::shared_ptr<AbstractObservableState>> states;
 
@@ -264,21 +258,21 @@ std::shared_ptr<ObservableReaderStateService> StubReaderImpl::initStateService()
             MonitoringState::WAIT_FOR_SE_INSERTION,
             std::make_shared<WaitForSeInsertion>(
                 this, std::make_shared<SmartInsertionMonitoringJob>(this),
-                executorService)));
+                mExecutorService)));
 
     states.insert(
         std::pair<MonitoringState, std::shared_ptr<AbstractObservableState>>(
             MonitoringState::WAIT_FOR_SE_PROCESSING,
             std::make_shared<WaitForSeProcessing>(
                 this, std::make_shared<SmartRemovalMonitoringJob>(this),
-                executorService)));
+                mExecutorService)));
 
     states.insert(
         std::pair<MonitoringState, std::shared_ptr<AbstractObservableState>>(
             MonitoringState::WAIT_FOR_SE_REMOVAL,
             std::make_shared<WaitForSeRemoval>(
                 this, std::make_shared<SmartRemovalMonitoringJob>(this),
-                executorService)));
+                mExecutorService)));
 
     return std::make_shared<ObservableReaderStateService>(
         this, states, MonitoringState::WAIT_FOR_SE_INSERTION);

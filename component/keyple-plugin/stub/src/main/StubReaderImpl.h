@@ -156,7 +156,7 @@ protected:
     /**
      *
      */
-    std::shared_ptr<MonitoringPool> executorService;
+    std::shared_ptr<MonitoringPool> mExecutorService;
 
     /**
      *
@@ -188,33 +188,33 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(StubReaderImpl));
 
     /**
      *
      */
-    std::shared_ptr<StubSecureElement> se;
+    std::shared_ptr<StubSecureElement> mSe;
 
     /**
      *
      */
-    std::map<const std::string, const std::string> parameters;
+    std::map<const std::string, const std::string> mParameters;
 
     /**
      *
      */
-    TransmissionMode transmissionMode = TransmissionMode::CONTACTLESS;
+    TransmissionMode mTransmissionMode = TransmissionMode::CONTACTLESS;
 
     /**
      *
      */
-    std::atomic<bool> loopWaitSe;
+    std::atomic<bool> mLoopWaitSe;
 
     /**
      *
      */
-    std::atomic<bool> loopWaitSeRemoval;
+    std::atomic<bool> mLoopWaitSeRemoval;
 };
 
 }
