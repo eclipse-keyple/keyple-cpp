@@ -26,7 +26,6 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 
-using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::exception;
 
 /**

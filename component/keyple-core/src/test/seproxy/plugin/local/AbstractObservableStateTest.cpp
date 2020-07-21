@@ -36,7 +36,7 @@ public:
       const std::string& pluginName, const std::string& readerName)
     : AbstractObservableLocalReader(pluginName, readerName)
     {
-        this->stateService = initStateService();
+        mStateService = initStateService();
     }
 
     MOCK_METHOD((const std::map<const std::string, const std::string>&),

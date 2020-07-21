@@ -181,7 +181,7 @@ private:
 
 class ASPTR_ReaderObserverMock : public ObservableReader::ReaderObserver {
 public:
-    void update(std::shared_ptr<ReaderEvent> event)
+    void update(std::shared_ptr<ReaderEvent> event) override
     {
         (void)event;
     }

@@ -364,6 +364,7 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponseSet3)
         ASSERT_EQ(responses[2], nullptr);
 
     } catch (const KeypleReaderException& ex) {
+        (void)ex;
         FAIL();
     }
 }
@@ -386,6 +387,7 @@ TEST(AbstractLocalReaderTransmitTest, transmitFirstMatch)
         ASSERT_EQ(static_cast<int>(responses[0]->getApduResponses().size()), 4);
 
     } catch (const KeypleReaderException& ex) {
+        (void)ex;
         FAIL();
     }
 }
@@ -457,6 +459,7 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponse3)
         ASSERT_EQ(static_cast<int>(seResponse->getApduResponses().size()), 3);
 
     } catch (const KeypleReaderException& ex) {
+        (void)ex;
         FAIL();
     }
 }

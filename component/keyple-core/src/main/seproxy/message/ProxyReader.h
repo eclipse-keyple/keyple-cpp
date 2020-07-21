@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -28,7 +28,6 @@ namespace seproxy {
 namespace message {
 
 using namespace keyple::core::seproxy;
-using namespace keyple::core::seproxy::message;
 
 /**
  * ProxyReader interface

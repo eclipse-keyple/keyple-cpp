@@ -81,10 +81,12 @@ private:
 };
 
 const std::shared_ptr<SS_SeCommandMock> SS_SeCommandMock::COMMAND_1 =
-    std::make_shared<SS_SeCommandMock>("COMMAND_1", 0xc1);
+    std::make_shared<SS_SeCommandMock>(
+        "COMMAND_1", static_cast<uint8_t>(0xc1));
 
 const std::shared_ptr<SS_SeCommandMock> SS_SeCommandMock::COMMAND_2 =
-    std::make_shared<SS_SeCommandMock>("COMMAND_2", 0xc2);
+    std::make_shared<SS_SeCommandMock>(
+        "COMMAND_2", static_cast<uint8_t>(0xc2));
 
 class SS_AbstractSeSelectionRequestMock
 : public AbstractSeSelectionRequest<AbstractApduCommandBuilder> {

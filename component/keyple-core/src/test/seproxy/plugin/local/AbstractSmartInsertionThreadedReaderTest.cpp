@@ -57,7 +57,7 @@ public:
     : AbstractObservableLocalReader(pluginName, readerName),
       mMockDetect(mockDetect)
     {
-        stateService = initStateService();
+        mStateService = initStateService();
     }
 
     std::shared_ptr<ObservableReaderStateService> initStateService() override
@@ -189,7 +189,7 @@ private:
 
 class ASITR_ReaderObserverMock : public ObservableReader::ReaderObserver {
 public:
-    void update(std::shared_ptr<ReaderEvent> event)
+    void update(std::shared_ptr<ReaderEvent> event) override
     {
         (void)event;
     }
