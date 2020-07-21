@@ -49,7 +49,7 @@ public:
 
     std::shared_ptr<ApduRequest> setApduRequest(
         uint8_t cla, const std::shared_ptr<SeCommand> command, uint8_t p1,
-        uint8_t p2, const std::vector<uint8_t>& dataIn)
+        uint8_t p2, const std::vector<uint8_t>& dataIn) override
     {
         return AbstractIso7816CommandBuilder::setApduRequest(cla, command, p1,
                                                              p2, dataIn);
@@ -57,7 +57,7 @@ public:
 
     std::shared_ptr<ApduRequest> setApduRequest(
         uint8_t cla, const std::shared_ptr<SeCommand> command, uint8_t p1,
-        uint8_t p2, const std::vector<uint8_t>& dataIn, uint8_t le)
+        uint8_t p2, const std::vector<uint8_t>& dataIn, uint8_t le) override
     {
         return AbstractIso7816CommandBuilder::setApduRequest(cla, command, p1,
 	                                                     p2, dataIn, le);
@@ -65,7 +65,7 @@ public:
 
     std::shared_ptr<ApduRequest> setApduRequest(
         uint8_t cla, const std::shared_ptr<SeCommand> command, uint8_t p1,
-        uint8_t p2, uint8_t le)
+        uint8_t p2, uint8_t le) override
     {
         return AbstractIso7816CommandBuilder::setApduRequest(cla, command, p1,
                                                              p2, le);

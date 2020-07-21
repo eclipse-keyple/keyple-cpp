@@ -80,13 +80,14 @@ public:
     /**
      *
      */
-    friend std::ostream& operator<<(std::ostream& os, const SelectionStatus& s);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const SelectionStatus& s);
 
     /**
      *
      */
-    friend std::ostream& operator<<(std::ostream& os,
-                                    const std::shared_ptr<SelectionStatus>& s);
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<SelectionStatus>& s);
 
 private:
     /**

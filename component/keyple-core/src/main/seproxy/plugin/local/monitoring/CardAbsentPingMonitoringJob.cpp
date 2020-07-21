@@ -71,9 +71,10 @@ void CardAbsentPingMonitoringJob::monitoringJob(
             /* Wait for a bit */
             Thread::sleep(removalWait);
         } catch (InterruptedException& ignored) {
+            (void)ignored;
             /* Restore interrupted state... */
-            std::terminate();
             loop = false;
+            std::terminate();
         }
     }
 

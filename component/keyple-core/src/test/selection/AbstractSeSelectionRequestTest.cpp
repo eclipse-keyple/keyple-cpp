@@ -95,9 +95,11 @@ private:
 };
 
 const std::shared_ptr<ASSR_SeCommandMock> ASSR_SeCommandMock::COMMAND1 =
-        std::make_shared<ASSR_SeCommandMock>("Command 1", 0x01);
+    std::make_shared<ASSR_SeCommandMock>(
+        "Command 1", static_cast<uint8_t>(0x01));
 const std::shared_ptr<ASSR_SeCommandMock> ASSR_SeCommandMock::COMMAND2 =
-        std::make_shared<ASSR_SeCommandMock>("Command 2", 0x02);
+    std::make_shared<ASSR_SeCommandMock>(
+       "Command 2", static_cast<uint8_t>(0x02));
 
 static const std::string AID = "112233445566";
 static const std::string APDU1 = "00 11 2233 01 11";
@@ -105,7 +107,7 @@ static const std::string APDU2 = "00 11 2233 01 22";
 
 static const std::vector<uint8_t> apdu = {0x11, 0x22, 0x33, 0x44, 0x55};
 
-static std::shared_ptr<SeSelector> seSelector =
+static std::shared_ptr<SeSelector> selector =
     SeSelector::builder()
         ->seProtocol(SeCommonProtocols::PROTOCOL_ISO14443_4)
         .aidSelector(SeSelector::AidSelector::builder()->aidToSelect(AID)
@@ -119,15 +121,15 @@ TEST(AbstractSeSelectionRequestTest, AbstractSeSelectionRequest_NullPtr)
 
 TEST(AbstractSeSelectionRequestTest, AbstractSeSelectionRequest)
 {
-    ASSR_SeSelectionRequestMock request(seSelector);
+    ASSR_SeSelectionRequestMock request(selector);
 }
 
 TEST(AbstractSeSelectionRequestTest, getSelectionRequest)
 {
-    ASSR_SeSelectionRequestMock request(seSelector);
+    ASSR_SeSelectionRequestMock request(selector);
 
     ASSERT_NE(request.getSelectionRequest(), nullptr);
-    ASSERT_EQ(request.getSelectionRequest()->getSeSelector(), seSelector);
+    ASSERT_EQ(request.getSelectionRequest()->getSeSelector(), selector);
 }
 
 TEST(AbstractSeSelectionRequestTest, getSeSelector_Nullptr)
@@ -139,15 +141,15 @@ TEST(AbstractSeSelectionRequestTest, getSeSelector_Nullptr)
 
 TEST(AbstractSeSelectionRequestTest, getSeSelector)
 {
-    ASSR_SeSelectionRequestMock request(seSelector);
+    ASSR_SeSelectionRequestMock request(selector);
 
-    ASSERT_EQ(request.getSeSelector(), seSelector);
+    ASSERT_EQ(request.getSeSelector(), selector);
 }
 
 TEST(AbstractSeSelectionRequestTest,
      addCommandBuilder_GetCommandBuilders_getSelectionRequest)
 {
-    ASSR_SeSelectionRequestMock request(seSelector);
+    ASSR_SeSelectionRequestMock request(selector);
 
     std::shared_ptr<ApduRequest> apduRequest1 =
         std::make_shared<ApduRequest>(ByteArrayUtil::fromHex(APDU1), true);

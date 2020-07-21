@@ -279,7 +279,7 @@ public:
          *
          * @since 0.9
          */
-        class AidSelectorBuilder {
+        class KEYPLECORE_API AidSelectorBuilder {
         public:
             /**
              * Friend declaration to allow access to private members to
@@ -364,7 +364,8 @@ public:
         /**
          *
          */
-        friend std::ostream& operator<<(std::ostream& os, const AidSelector& a);
+        friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                       const AidSelector& a);
 
         /**
          * Gets a new builder.
@@ -482,7 +483,8 @@ public:
         /**
          *
          */
-        friend std::ostream& operator<<(std::ostream& os, const AtrFilter& af);
+        friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                       const AtrFilter& af);
 
     private:
         /**
@@ -497,7 +499,7 @@ public:
      *
      * @since 0.9
      */
-    class SeSelectorBuilder {
+    class KEYPLECORE_API SeSelectorBuilder {
     public:
         /**
          * Friend declaration to give access to private members

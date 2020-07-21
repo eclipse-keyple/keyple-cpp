@@ -42,9 +42,6 @@ public:
 
 static std::vector<std::shared_ptr<ApduResponse>> empty;
 
-static std::shared_ptr<SeResponse> seResponse =
-    std::make_shared<SeResponse>(true, true, nullptr, empty);
-
 TEST(AbstractMatchingSeTest, AbstractMatchingSe_Nullptr)
 {
     MatchingSeMock matchingSe(nullptr, TransmissionMode::CONTACTLESS);
@@ -52,6 +49,9 @@ TEST(AbstractMatchingSeTest, AbstractMatchingSe_Nullptr)
 
 TEST(AbstractMatchingSeTest, AbstractMatchingSe)
 {
+    std::shared_ptr<SeResponse> seResponse =
+        std::make_shared<SeResponse>(true, true, nullptr, empty);
+
     MatchingSeMock matchingSe(seResponse, TransmissionMode::CONTACTLESS);
 }
 

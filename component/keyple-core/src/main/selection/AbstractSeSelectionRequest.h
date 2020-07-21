@@ -46,8 +46,7 @@ using namespace keyple::core::seproxy::message;
  * family.
  */
 template<class T>
-class KEYPLECORE_API AbstractSeSelectionRequest
-: public std::enable_shared_from_this<AbstractSeSelectionRequest<T>> {
+class KEYPLECORE_API AbstractSeSelectionRequest {
 public:
     /**
      *
@@ -148,7 +147,8 @@ public:
      *
      * /!\ C++ vs. Java: this function is protected in Java
      */
-    const std::vector<std::shared_ptr<T>> getCommandBuilders() const
+    const std::vector<std::shared_ptr<T>> getCommandBuilders()
+        const
     {
         return mCommandBuilders;
     }
