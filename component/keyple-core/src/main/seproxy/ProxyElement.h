@@ -15,6 +15,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 
 namespace keyple {
 namespace core {
