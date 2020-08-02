@@ -23,6 +23,11 @@ namespace seproxy {
 class PluginFactory {
 public:
     /**
+     *
+     */
+    virtual ~PluginFactory() = default;
+
+    /**
      * Retrieve the name of the plugin that will be instantiated by this factory
      * (can be static or dynamic)
      *

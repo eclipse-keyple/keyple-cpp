@@ -165,7 +165,7 @@ const std::set<std::string> StubPoolPluginImpl::getReaderNames() const
     return mStubPlugin->getReaderNames();
 }
 
-std::map<const std::string, std::shared_ptr<SeReader>>&
+ConcurrentMap<const std::string, std::shared_ptr<SeReader>>&
     StubPoolPluginImpl::getReaders()
 {
     return mStubPlugin->getReaders();

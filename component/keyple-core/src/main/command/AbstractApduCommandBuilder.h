@@ -45,37 +45,14 @@ using namespace keyple::core::seproxy::message;
  */
 class KEYPLECORE_API AbstractApduCommandBuilder
 : public std::enable_shared_from_this<AbstractApduCommandBuilder> {
-
-private:
-    /**
-     * The command name (will appear in logs)
-     *
-     * @deprecated use {@code reference} field instead
-     */
-    std::string mName;
-
-protected:
-    /**
-     * The reference field is used to find the type of command concerned when
-     * manipulating a list of abstract builder objects. Unfortunately, the
-     * diversity of these objects does not allow the use of simple generic
-     * methods.
-     */
-    const std::shared_ptr<SeCommand> mCommandRef;
-
-    /**
-     * The byte array APDU request
-     */
-    std::shared_ptr<ApduRequest> mRequest;
-
 public:
     /**
-    * the generic abstract constructor to build an APDU request with a command
-    * reference and a byte array.
-    *
-    * @param commandRef command reference
-    * @param request request
-    */
+     * the generic abstract constructor to build an APDU request with a command
+     * reference and a byte array.
+     *
+     * @param commandRef command reference
+     * @param request request
+     */
     AbstractApduCommandBuilder(const std::shared_ptr<SeCommand> commandRef,
                                std::shared_ptr<ApduRequest> request);
 
@@ -84,6 +61,11 @@ public:
      */
     AbstractApduCommandBuilder(const std::string& name,
                                std::shared_ptr<ApduRequest> request);
+
+    /**
+     *
+     */
+    virtual ~AbstractApduCommandBuilder() = default;
 
     /**
     * Append a string to the current name
@@ -107,6 +89,28 @@ public:
      * @return the request
      */
     virtual std::shared_ptr<ApduRequest> getApduRequest() const;
+
+protected:
+    /**
+     * The reference field is used to find the type of command concerned when
+     * manipulating a list of abstract builder objects. Unfortunately, the
+     * diversity of these objects does not allow the use of simple generic
+     * methods.
+     */
+    const std::shared_ptr<SeCommand> mCommandRef;
+
+    /**
+     * The byte array APDU request
+     */
+    std::shared_ptr<ApduRequest> mRequest;
+
+private:
+    /**
+     * The command name (will appear in logs)
+     *
+     * @deprecated use {@code reference} field instead
+     */
+    std::string mName;
 };
 
 }

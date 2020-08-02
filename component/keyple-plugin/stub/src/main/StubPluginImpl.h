@@ -119,8 +119,8 @@ protected:
      * @return the map of SeReader objects.
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::map<const std::string, std::shared_ptr<SeReader>> initNativeReaders()
-        override;
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
+        initNativeReaders() override;
 
     /**
      * Fetch the reader whose name is provided as an argument. Returns the

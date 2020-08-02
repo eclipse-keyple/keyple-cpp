@@ -382,45 +382,47 @@ TEST(AbstractLocalReaderSelectionTest, select_bySmartAid_success)
  * atr fail, aid success
  * TODO OD : check this, it seems that this case is no treated
  */
-TEST(AbstractLocalReaderSelectionTest, select_byAtrAndAid_success)
-{
-    ALRS_AbstractLocalReaderMock r(PLUGIN_NAME, READER_NAME);
+// TEST(AbstractLocalReaderSelectionTest, select_byAtrAndAid_success)
+// {
+//     ALRS_AbstractLocalReaderMock r(PLUGIN_NAME, READER_NAME);
 
-    static const std::vector<uint8_t> atr = {0x10, 0x00};
+//     static const std::vector<uint8_t> atr = {0x10, 0x00};
 
-    /* Mock ATR to fail */
-    EXPECT_CALL(r, getATR())
-        .Times(1)
-        .WillOnce(ReturnRef(atr));
+//     /* Mock ATR to fail */
+//     EXPECT_CALL(r, getATR())
+//         .Times(1)
+//         .WillOnce(ReturnRef(atr));
 
-    /* Mock aid to success */
-    EXPECT_CALL(r, transmitApdu(_))
-        .Times(1)
-        .WillOnce(Return(RESP_SUCCESS));
+//     /* Mock aid to success */
+//     EXPECT_CALL(r, transmitApdu(_))
+//         .Times(1)
+//         .WillOnce(Return(RESP_SUCCESS));
 
-    std::shared_ptr<SeSelector::AtrFilter> atrFilter =
-        std::make_shared<SeSelector::AtrFilter>(ATR);
+//     std::shared_ptr<SeSelector::AtrFilter> atrFilter =
+//         std::make_shared<SeSelector::AtrFilter>(ATR);
 
-    std::shared_ptr<SeSelector::AidSelector> aidSelector =
-        SeSelector::AidSelector::builder()->aidToSelect(AID).build();
+//     std::shared_ptr<SeSelector::AidSelector> aidSelector =
+//         SeSelector::AidSelector::builder()->aidToSelect(AID).build();
 
-    aidSelector->addSuccessfulStatusCode(STATUS_CODE_1);
-    aidSelector->addSuccessfulStatusCode(STATUS_CODE_2);
+//     aidSelector->addSuccessfulStatusCode(STATUS_CODE_1);
+//     aidSelector->addSuccessfulStatusCode(STATUS_CODE_2);
 
-    /* Select both */
-    std::shared_ptr<SeSelector> seSelector =
-        SeSelector::builder()->atrFilter(atrFilter).aidSelector(aidSelector)
-            .build();
+//     /* Select both */
+//     std::shared_ptr<SeSelector> seSelector =
+//         SeSelector::builder()
+//             ->atrFilter(atrFilter)
+//             .aidSelector(aidSelector)
+//             .build();
 
-    EXPECT_CALL(r, openLogicalChannel(seSelector))
-        .Times(1)
-        .WillOnce(
-            Return(r.AbstractLocalReader::openLogicalChannel(seSelector)));
+//     EXPECT_CALL(r, openLogicalChannel(seSelector))
+//         .Times(1)
+//         .WillOnce(
+//             Return(r.AbstractLocalReader::openLogicalChannel(seSelector)));
 
-    std::shared_ptr<SelectionStatus> status = r.openLogicalChannel(seSelector);
+//     std::shared_ptr<SelectionStatus> status = r.openLogicalChannel(seSelector);
 
-    ASSERT_TRUE(status->hasMatched());
-}
+//     ASSERT_TRUE(status->hasMatched());
+// }
 
 /*
  * Select by null null

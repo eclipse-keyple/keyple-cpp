@@ -200,7 +200,7 @@ const std::string READER_NAME = "AbsSmartInsertionTheadedReaderTest";
 
 static std::shared_ptr<ObservableReader::ReaderObserver> getObs()
 {
-    return std::shared_ptr<ASITR_ReaderObserverMock>();
+    return std::make_shared<ASITR_ReaderObserverMock>();
 }
 
 /* Observers management + Thread instantiation ============================== */

@@ -38,16 +38,17 @@ std::shared_ptr<ReaderPlugin> SeProxyService::registerPlugin(
     if (pluginFactory == nullptr)
         throw IllegalArgumentException("Factory must not be null");
 
-     std::lock_guard<std::mutex> guard(MONITOR);
+    std::lock_guard<std::mutex> guard(MONITOR);
 
-    const std::string pluginName = pluginFactory->getPluginName();
+    const std::string& pluginName = pluginFactory->getPluginName();
 
     if (mPlugins.count(pluginName)) {
         mLogger->warn("Plugin has already been registered to the platform :" \
                       " %\n", pluginName);
-        return mPlugins[pluginName];
+        return mPlugins.find(pluginName)->second;
     } else {
-        std::shared_ptr<ReaderPlugin> pluginInstance = pluginFactory->getPlugin();
+        std::shared_ptr<ReaderPlugin> pluginInstance =
+            pluginFactory->getPlugin();
         mLogger->info("Registering a new Plugin to the platform : %\n",
                       pluginName);
         mPlugins.insert({pluginName, pluginInstance});
@@ -57,7 +58,6 @@ std::shared_ptr<ReaderPlugin> SeProxyService::registerPlugin(
 
 bool SeProxyService::unregisterPlugin(const std::string& pluginName)
 {
-
     std::lock_guard<std::mutex> guard(MONITOR);
 
     if (mPlugins.count(pluginName)) {
@@ -89,11 +89,13 @@ std::shared_ptr<ReaderPlugin> SeProxyService::getPlugin(const std::string& name)
 {
     std::lock_guard<std::mutex> guard(MONITOR);
 
-    std::shared_ptr<ReaderPlugin> readerPlugin = mPlugins[name];
-    if (!readerPlugin)
-        throw KeyplePluginNotFoundException(name);
+    ConcurrentMap<const std::string, std::shared_ptr<ReaderPlugin>>
+        ::const_iterator it;
 
-    return readerPlugin;
+    if ((it = mPlugins.find(name)) != mPlugins.end())
+        return it->second;
+    else
+        throw KeyplePluginNotFoundException(name);
 }
 
 std::string SeProxyService::getVersion()

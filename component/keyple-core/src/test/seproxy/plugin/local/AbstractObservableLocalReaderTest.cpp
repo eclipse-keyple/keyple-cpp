@@ -22,6 +22,7 @@
 #include "ObservableReaderStateService.h"
 #include "ReaderEvent.h"
 #include "SeCommonProtocols.h"
+#include "SeResponse.h"
 #include "WaitForSeInsertion.h"
 #include "WaitForSeProcessing.h"
 #include "WaitForSeRemoval.h"
@@ -29,6 +30,7 @@
 
 using namespace testing;
 
+using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::plugin::local::state;
 using namespace keyple::core::util;
@@ -94,11 +96,6 @@ public:
                 (),
                 (override));
 
-    MOCK_METHOD((std::shared_ptr<SelectionStatus>),
-                openLogicalChannel,
-                (std::shared_ptr<SeSelector> seSelector),
-                (override));
-
     MOCK_METHOD(bool,
                 protocolFlagMatches,
                 (const std::shared_ptr<SeProtocol>),
@@ -107,6 +104,11 @@ public:
     MOCK_METHOD(std::vector<uint8_t>,
                 transmitApdu,
                 (const std::vector<uint8_t>&),
+                (override));
+
+    MOCK_METHOD(std::shared_ptr<SeResponse>,
+                processSeRequest,
+                (const std::shared_ptr<SeRequest>, const ChannelControl&),
                 (override));
 
     std::shared_ptr<ObservableReaderStateService> initStateService() override
@@ -153,6 +155,42 @@ public:
 
     bool updated = false;
 };
+
+static void configure(AOLR_AbstractObservableLocalReaderMock& reader)
+{
+    const std::vector<uint8_t> atr;
+    const std::map<const std::string, const std::string> parameters;
+
+    EXPECT_CALL(reader, checkSePresence())
+        .WillRepeatedly(Return(false));
+
+    EXPECT_CALL(reader, getATR())
+        .WillRepeatedly(ReturnRef(atr));
+
+    EXPECT_CALL(reader, openPhysicalChannel())
+        .WillRepeatedly(Return());
+
+    EXPECT_CALL(reader, closePhysicalChannel())
+        .WillRepeatedly(Return());
+
+    EXPECT_CALL(reader, isPhysicalChannelOpen())
+        .WillRepeatedly(Return(false));
+
+    EXPECT_CALL(reader, protocolFlagMatches(_))
+        .WillRepeatedly(Return(false));
+
+    EXPECT_CALL(reader, transmitApdu(_))
+        .WillRepeatedly(Return(std::vector<uint8_t>({})));
+
+    EXPECT_CALL(reader, getTransmissionMode())
+        .WillRepeatedly(ReturnRefOfCopy(TransmissionMode::NONE));
+
+    EXPECT_CALL(reader, getParameters())
+        .WillRepeatedly(ReturnRef(parameters));
+
+    EXPECT_CALL(reader, setParameter(_,_))
+        .WillRepeatedly(Return());
+}
 
 static std::shared_ptr<std::set<int>> getSuccessFulStatusCode()
 {
@@ -221,6 +259,49 @@ static std::shared_ptr<SeRequest> getSeRequestSample()
                getSelector(getSuccessFulStatusCode()), getApduList());
 }
 
+static std::shared_ptr<ApduResponse> getSuccessfullResponse()
+{
+    return std::make_shared<ApduResponse>(
+               ByteArrayUtil::fromHex("FEDCBA98 9000h"), nullptr);
+}
+
+static std::vector<std::shared_ptr<ApduResponse>> getAListOfAPDUs()
+{
+    std::vector<std::shared_ptr<ApduResponse>> apdus;
+
+    apdus.push_back(getSuccessfullResponse());
+
+    return apdus;
+}
+
+static std::shared_ptr<SeResponse> getASeResponse()
+{
+    std::vector<std::shared_ptr<ApduResponse>> responses =
+        getAListOfAPDUs();
+
+    return std::make_shared<SeResponse>(
+               true, true,
+               std::make_shared<SelectionStatus>(
+                   std::make_shared<AnswerToReset>(
+                       ByteArrayUtil::fromHex(
+                           "3B8F8001804F0CA000000306030001000000006A")),
+                   std::make_shared<ApduResponse>(
+                       ByteArrayUtil::fromHex("9000"), nullptr),
+                   true),
+               responses);
+}
+
+#if 0
+static std::vector<std::shared_ptr<SeResponse>> getSeResponses()
+{
+    std::vector<std::shared_ptr<SeResponse>> responses;
+
+    responses.push_back(getASeResponse());
+
+    return responses;
+}
+#endif
+
 TEST(AbstractObservableLocalReaderTest, AbstractObservableLocalReader)
 {
     AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
@@ -229,6 +310,10 @@ TEST(AbstractObservableLocalReaderTest, AbstractObservableLocalReader)
 TEST(AbstractObservableLocalReaderTest, isSePresent)
 {
     AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
+
+    EXPECT_CALL(reader, checkSePresence())
+        .Times(1)
+        .WillOnce(Return(true));
 
     ASSERT_TRUE(reader.isSePresent());
 }
@@ -272,6 +357,10 @@ TEST(AbstractObservableLocalReaderTest, processSeInserted)
 TEST(AbstractObservableLocalReaderTest, isSePresentPing)
 {
     AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
+
+    EXPECT_CALL(reader, transmitApdu(_))
+        .Times(1)
+        .WillOnce(Return(std::vector<uint8_t>({0x90, 0X00})));
 
     ASSERT_TRUE(reader.isSePresentPing());
 }
@@ -379,6 +468,9 @@ TEST(AbstractObservableLocalReaderTest, getCurrentMonitoringState)
 {
     AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
+    EXPECT_CALL(reader, closePhysicalChannel())
+        .WillRepeatedly(Return());
+
     ASSERT_EQ(reader.getCurrentMonitoringState(),
               MonitoringState::WAIT_FOR_START_DETECTION);
 
@@ -421,37 +513,40 @@ TEST(AbstractObservableLocalReaderTest, getCurrentMonitoringState)
               MonitoringState::WAIT_FOR_SE_INSERTION);
 }
 
-/*
- * Cannot mock function processSeRequest() because it's final in
- * AbstractLocalReader...
- */
 TEST(AbstractObservableLocalReaderTest, notifySeProcessed_withForceClosing)
 {
     AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
+    configure(reader);
+
+    /*
+     * FIXME: Should verify that one of the calls has "nullptr & CLOSE_AFTER"
+     * as arguments
+     */
+    EXPECT_CALL(reader, processSeRequest(_,_))
+        .Times(2)
+        .WillRepeatedly(Return(getASeResponse()));
+
     /* Keep open */
     reader.transmitSeRequest(getSeRequestSample(), ChannelControl::KEEP_OPEN);
-
-//    EXPECT_CALL(reader, processSeRequest(_,_))
-//        .Times(1);
 
     /* Force closing */
     reader.notifySeProcessed();
 }
 
-/*
- * Cannot mock function processSeRequest() because it's final in
- * AbstractLocalReader...
- */
 TEST(AbstractObservableLocalReaderTest, notifySeProcessed_withoutForceClosing)
 {
     AOLR_AbstractObservableLocalReaderMock reader("pluginName", "readerName");
 
+    configure(reader);
+
+    /* FIXME: Should verify that arg2 is never CLOSE_AFTER */
+    EXPECT_CALL(reader, processSeRequest(_,_))
+        .Times(1);
+
     /* Close after */
     reader.transmitSeRequest(getSeRequestSample(), ChannelControl::CLOSE_AFTER);
 
-//    EXPECT_CALL(reader, processSeRequest(_,_))
-//        .Times(0);
 
     /* Force closing is not called (only the transmit) */
     reader.notifySeProcessed();
