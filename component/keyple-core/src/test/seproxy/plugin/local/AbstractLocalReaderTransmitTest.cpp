@@ -74,11 +74,6 @@ public:
                 (),
                 (override));
 
-    MOCK_METHOD((std::shared_ptr<SelectionStatus>),
-                openLogicalChannel,
-                (std::shared_ptr<SeSelector> seSelector),
-                (override));
-
     MOCK_METHOD(bool,
                 protocolFlagMatches,
                 (const std::shared_ptr<SeProtocol>),
@@ -96,8 +91,13 @@ static const std::string READER_NAME = "AbsLocalReaderTransmitTest";
 static const std::string ATR = "0000";
 static const std::string AID = "A000000291A000000191";
 
+static const std::vector<uint8_t> ATR_vec = {0x00, 0x00};
+
 static const int STATUS_CODE_1 = 1;
 static const int STATUS_CODE_2 = 2;
+
+static const std::vector<uint8_t> RESP_SUCCESS = ByteArrayUtil::fromHex("90 00");
+static const std::vector<uint8_t> RESP_FAIL = ByteArrayUtil::fromHex("00 00");
 
 static const std::vector<uint8_t> APDU_SUCCESS = ByteArrayUtil::fromHex("00 01");
 static const std::vector<uint8_t> APDU_FAIL = ByteArrayUtil::fromHex("00 02");
@@ -253,17 +253,68 @@ static std::shared_ptr<SeRequest> getPartialRequest(int scenario)
     return std::make_shared<SeRequest>(aidSelector, poApduRequests);
 }
 
+static inline void configure(ALRT_AbstractLocalReaderMock& r)
+{
+    /* Accept PROTOCOL_ISO14443_4 */
+    EXPECT_CALL(r,
+                protocolFlagMatches(
+                    std::dynamic_pointer_cast<SeProtocol>(
+                        SeCommonProtocols::PROTOCOL_ISO14443_4)))
+        .WillRepeatedly(Return(true));
+
+    /* Refuse PROTOCOL_MIFARE_UL */
+    EXPECT_CALL(r,
+                protocolFlagMatches(
+                    std::dynamic_pointer_cast<SeProtocol>(
+                        SeCommonProtocols::PROTOCOL_MIFARE_UL)))
+        .WillRepeatedly(Return(false));
+
+    /* Return atr */
+    EXPECT_CALL(r, getATR())
+        .WillRepeatedly(ReturnRef(ATR_vec));
+
+    /* Success apdu */
+    EXPECT_CALL(r, transmitApdu(APDU_SUCCESS))
+        .WillRepeatedly(Return(RESP_SUCCESS));
+
+    /* Fail apdu */
+    EXPECT_CALL(r, transmitApdu(APDU_FAIL))
+        .WillRepeatedly(Return(RESP_FAIL));
+
+    /* I/O exception apdu */
+    EXPECT_CALL(r, transmitApdu(APDU_IOEXC))
+        .Times(AtMost(1))
+        .WillOnce(Throw(KeypleReaderIOException("io exception transmitting")));
+
+    /* Aid selection */
+    EXPECT_CALL(r,
+                transmitApdu(
+                    ByteArrayUtil::fromHex(
+                        "00 A4 04 00 0A A0 00 00 02 91 A0 00 00 01 91 00")))
+        .Times(AtMost(1))
+        .WillOnce(
+            Return(
+                ByteArrayUtil::fromHex(
+                    "6F25840BA000000291A00000019102A516BF0C13C70800000000C0E1" \
+                    "1FA653070A3C230C1410019000")));
+
+    /* Physical channel is open */
+    EXPECT_CALL(r, isPhysicalChannelOpen())
+        .WillRepeatedly(Return(true));
+
+    EXPECT_CALL(r, closePhysicalChannel())
+        .WillRepeatedly(Return());
+}
+
 TEST(AbstractLocalReaderTransmitTest, transmitPartialResponseSet0)
 {
     ALRT_AbstractLocalReaderMock reader(PLUGIN_NAME, READER_NAME);
 
+    configure(reader);
+
     /* Init Request */
     const std::vector<std::shared_ptr<SeRequest>> seRequests =
         getPartialRequestList(0);
-
-    EXPECT_CALL(reader, protocolFlagMatches(_))
-        .Times(AtLeast(1))
-        .WillRepeatedly(Return(false));
 
     try {
         /* Test */
@@ -284,12 +335,10 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponseSet1)
 {
     ALRT_AbstractLocalReaderMock reader(PLUGIN_NAME, READER_NAME);
 
+    configure(reader);
+
     const std::vector<std::shared_ptr<SeRequest>> seRequests =
         getPartialRequestList(1);
-
-    EXPECT_CALL(reader, protocolFlagMatches(_))
-        .Times(AtLeast(1))
-        .WillRepeatedly(Return(false));
 
     try {
         /* Test */
@@ -305,8 +354,6 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponseSet1)
                                        .size()), 4);
         ASSERT_EQ(static_cast<int>(ex.getSeResponses()[1]->getApduResponses()
                                        .size()), 2);
-        ASSERT_EQ(static_cast<int>(ex.getSeResponses()[2]->getApduResponses()
-                                       .size()), 2);
     }
 }
 
@@ -314,12 +361,10 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponseSet2)
 {
     ALRT_AbstractLocalReaderMock reader(PLUGIN_NAME, READER_NAME);
 
+    configure(reader);
+
     const std::vector<std::shared_ptr<SeRequest>> seRequests =
         getPartialRequestList(2);
-
-    EXPECT_CALL(reader, protocolFlagMatches(_))
-        .Times(AtLeast(1))
-        .WillRepeatedly(Return(false));
 
     try {
         /* Test */
@@ -344,12 +389,10 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponseSet3)
 {
     ALRT_AbstractLocalReaderMock reader(PLUGIN_NAME, READER_NAME);
 
+    configure(reader);
+
     const std::vector<std::shared_ptr<SeRequest>> seRequests =
         getPartialRequestList(3);
-
-    EXPECT_CALL(reader, protocolFlagMatches(_))
-        .Times(AtLeast(1))
-        .WillRepeatedly(Return(false));
 
     try {
         /* Test */
@@ -372,6 +415,8 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponseSet3)
 TEST(AbstractLocalReaderTransmitTest, transmitFirstMatch)
 {
     ALRT_AbstractLocalReaderMock reader(PLUGIN_NAME, READER_NAME);
+
+    configure(reader);
 
     const std::vector<std::shared_ptr<SeRequest>> seRequests =
         getPartialRequestList(3);
@@ -396,6 +441,8 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponse0)
 {
     ALRT_AbstractLocalReaderMock reader(PLUGIN_NAME, READER_NAME);
 
+    configure(reader);
+
     std::shared_ptr<SeRequest> seRequest = getPartialRequest(0);
 
     try {
@@ -413,6 +460,8 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponse0)
 TEST(AbstractLocalReaderTransmitTest, transmitPartialResponse1)
 {
     ALRT_AbstractLocalReaderMock reader(PLUGIN_NAME, READER_NAME);
+
+    configure(reader);
 
     std::shared_ptr<SeRequest> seRequest = getPartialRequest(1);
 
@@ -432,6 +481,8 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponse2)
 {
     ALRT_AbstractLocalReaderMock reader(PLUGIN_NAME, READER_NAME);
 
+    configure(reader);
+
     std::shared_ptr<SeRequest> seRequest = getPartialRequest(2);
 
     try {
@@ -449,6 +500,8 @@ TEST(AbstractLocalReaderTransmitTest, transmitPartialResponse2)
 TEST(AbstractLocalReaderTransmitTest, transmitPartialResponse3)
 {
     ALRT_AbstractLocalReaderMock reader(PLUGIN_NAME, READER_NAME);
+
+    configure(reader);
 
     std::shared_ptr<SeRequest> seRequest = getPartialRequest(3);
 

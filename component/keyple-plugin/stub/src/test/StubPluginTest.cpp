@@ -28,9 +28,9 @@ using namespace testing;
 using namespace keyple::common;
 using namespace keyple::plugin::stub;
 
-class PluginObserverMock : public ObservablePlugin::PluginObserver {
+class SP_PluginObserverMock : public ObservablePlugin::PluginObserver {
 public:
-    PluginObserverMock()
+    SP_PluginObserverMock()
     : mReaderConnected(1)
     {
     }
@@ -56,10 +56,6 @@ static const std::string PLUGIN_NAME = "stub1";
 
 TEST(StubPluginTest, instantiatePlugin)
  {
-    std::shared_ptr<StubPluginImpl> stubPlugin =
-        std::dynamic_pointer_cast<StubPluginImpl>(
-            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
-
     const std::string PLUGIN_NAME = "test1";
 
     StubPluginFactory factory(PLUGIN_NAME);
@@ -86,7 +82,7 @@ TEST(StubPluginTest, plugOneReaderSync_success)
 
     std::shared_ptr<StubReader> stubReader =
         std::dynamic_pointer_cast<StubReader>(
-            stubPlugin->getReaders()[0]);
+            stubPlugin->getReaders().begin()->second);
 
     ASSERT_EQ(stubReader->getName(), READER_NAME);
     ASSERT_EQ(stubReader->getTransmissionMode(), TransmissionMode::CONTACTLESS);
@@ -101,8 +97,8 @@ TEST(StubPluginTest, plugOneReaderSyncEvent_success)
 
     const std::string READER_NAME = "testA_PlugReaders";
 
-    std::shared_ptr<PluginObserverMock> plugin =
-        std::make_shared<PluginObserverMock>();
+    std::shared_ptr<SP_PluginObserverMock> plugin =
+        std::make_shared<SP_PluginObserverMock>();
 
     /* add READER_CONNECTED assert observer */
     stubPlugin->addObserver(plugin);

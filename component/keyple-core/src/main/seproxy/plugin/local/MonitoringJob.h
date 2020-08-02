@@ -45,6 +45,11 @@ class AbstractObservableState;
 class KEYPLECORE_API MonitoringJob {
 public:
     /**
+     *
+     */
+    virtual ~MonitoringJob() = default;
+
+    /**
      * Define a Runnable task of the monitoring job
      *
      * @param state reference to the state the monitoring job in running against
@@ -59,9 +64,9 @@ public:
     /**
      *
      */
-    virtual std::future<void>
-    startMonitoring(AbstractObservableState* state,
-                    std::atomic<bool>& cancellationFlag) = 0;
+    virtual std::future<void> startMonitoring(
+        AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
+        = 0;
 
     /**
      * Should stop/interrupt the monitoring job

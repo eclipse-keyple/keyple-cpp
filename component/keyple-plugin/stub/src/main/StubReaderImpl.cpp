@@ -198,7 +198,7 @@ bool StubReaderImpl::waitForCardPresent()
 
         try {
             Thread::sleep(10);
-        } catch (InterruptedException& e) {
+        } catch (const InterruptedException& e) {
             mLogger->debug("Sleep was interrupted - %\n", e);
         }
     }

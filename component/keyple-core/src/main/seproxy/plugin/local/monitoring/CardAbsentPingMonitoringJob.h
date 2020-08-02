@@ -69,9 +69,9 @@ public:
     /**
      *
      */
-    std::future<void>
-    startMonitoring(AbstractObservableState* state,
-                    std::atomic<bool>& cancellationFlag) override;
+    std::future<void> startMonitoring(
+        AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
+        override;
 
     /**
      *
@@ -88,23 +88,23 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(CardAbsentPingMonitoringJob));
 
     /**
      *
      */
-    AbstractObservableLocalReader* reader;
+    AbstractObservableLocalReader* mReader;
 
     /**
      *
      */
-    std::atomic<bool> loop;
+    std::atomic<bool> mLoop;
 
     /**
      *
      */
-    long removalWait = 200;
+    long mRemovalWait = 200;
 };
 
 }

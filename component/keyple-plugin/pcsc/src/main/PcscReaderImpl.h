@@ -239,17 +239,17 @@ private:
     /**
      *
      */
-    std::atomic<bool> loopWaitSe;
+    std::atomic<bool> mLoopWaitSe;
 
     /**
      *
      */
-    std::atomic<bool> loopWaitSeRemoval;
+    std::atomic<bool> mLoopWaitSeRemoval;
 
     /**
      *
      */
-    std::shared_ptr<MonitoringPool> executorService;
+    std::shared_ptr<MonitoringPool> mExecutorService;
 
     /**
      * clang compiler warning - not used
@@ -264,37 +264,37 @@ private:
     /**
      *
      */
-    PcscTerminal& terminal;
+    PcscTerminal& mTerminal;
 
     /**
      *
      */
-    std::string parameterCardProtocol;
+    std::string mParameterCardProtocol;
 
     /**
      *
      */
-    bool cardExclusiveMode = false;
+    bool mCardExclusiveMode = false;
 
     /**
      *
      */
-    bool cardReset = false;
+    bool mCardReset = false;
 
     /**
      *
      */
-    bool channelOpen = false;
+    bool mChannelOpen = false;
 
     /**
      *
      */
-    TransmissionMode transmissionMode;
+    TransmissionMode mTransmissionMode;
 
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(PcscReaderImpl));
 
     /**

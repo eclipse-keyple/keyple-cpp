@@ -36,7 +36,7 @@ public:
                 (const std::string&, const std::string&),
                 (override));
 
-    MOCK_METHOD((std::map<const std::string, std::shared_ptr<SeReader>>),
+    MOCK_METHOD((ConcurrentMap<const std::string, std::shared_ptr<SeReader>>),
                 initNativeReaders,
                 (),
                 (override));

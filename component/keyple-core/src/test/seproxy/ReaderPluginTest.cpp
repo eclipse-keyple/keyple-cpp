@@ -28,7 +28,7 @@ public:
                 (),
                 (const, override));
 
-    MOCK_METHOD((std::map<const std::string, std::shared_ptr<SeReader>>&),
+    MOCK_METHOD((ConcurrentMap<const std::string, std::shared_ptr<SeReader>>&),
                 getReaders,
                 (),
                 (override));

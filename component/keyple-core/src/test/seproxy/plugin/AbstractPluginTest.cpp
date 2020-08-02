@@ -52,7 +52,7 @@ public:
                 (override));
 
 protected:
-    MOCK_METHOD((std::map<const std::string, std::shared_ptr<SeReader>>),
+    MOCK_METHOD((ConcurrentMap<const std::string, std::shared_ptr<SeReader>>),
                 initNativeReaders,
                 (),
                 (override));
@@ -122,14 +122,17 @@ static int random(const int& max)
 }
 
 static void listReaders(
-    std::shared_ptr<std::map<const std::string, std::shared_ptr<SeReader>>>
-        readers,
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& readers,
     int n, std::shared_ptr<CountDownLatch> lock)
 {
     for (int i = 0; i < n; i++) {
-        for (const auto& pair : *readers.get()) {
-            logger->trace("list, readers: %s, reader %\n", readers->size(),
-                          pair.second->getName());
+        /* Copy map to avoid listing something that has already changed */
+        const ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
+            _readers = readers;
+
+        for (const auto& pair : _readers) {
+            logger->trace("list, readers: %, reader %\n",
+                          _readers.size(), pair.second->getName());
         }
 
         try {
@@ -144,17 +147,16 @@ static void listReaders(
 }
 
 static void removeReaderThread(
-    std::shared_ptr<std::map<const std::string, std::shared_ptr<SeReader>>>
-        readers, int n, std::shared_ptr<CountDownLatch> lock)
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& readers,
+    int n, std::shared_ptr<CountDownLatch> lock)
 {
     for (int i = 0; i < n; i++) {
         try {
-            if (readers->size() > 0) {
-                std::map<const std::string, std::shared_ptr<SeReader>>
-                    ::iterator it = readers->begin();
-                readers->erase(it);
+            if (readers.size() > 0) {
+                if (readers.begin() != readers.end())
+                    readers.erase(readers.begin());
                 logger->trace("readers: %, remove first reader\n",
-                              readers->size());
+                              readers.size());
             } else {
                 throw NoSuchElementException("Empty reader list");
             }
@@ -163,7 +165,7 @@ static void removeReaderThread(
             (void)e;
 
             /* List is empty */
-            logger->trace("readers: %, list is empty\n", readers->size());
+            logger->trace("readers: %, list is empty\n", readers.size());
         }
 
         try {
@@ -178,16 +180,15 @@ static void removeReaderThread(
 }
 
 static void addReaderThread(
-    std::shared_ptr<std::map<const std::string, std::shared_ptr<SeReader>>>
-        readers,
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& readers,
     int n, std::shared_ptr<CountDownLatch> lock)
 {
    for (int i = 0; i < n; i++) {
         std::shared_ptr<SeReader> reader =
             std::make_shared<AP_AbstractReaderMock>(
                 "pluginName", std::to_string(random(1000)));
-            readers->insert({reader->getName(), reader});
-            logger->trace("readers: %, add reader %\n", readers->size(),
+            readers.insert({reader->getName(), reader});
+            logger->trace("readers: %, add reader %\n", readers.size(),
                           reader->getName());
         try {
             Thread::sleep(10);
@@ -214,25 +215,22 @@ TEST(AbstractPluginTest, AbstractPlugin)
 TEST(AbstractPluginTest, addRemoveReadersMultiThreaded)
 {
     AP_AbstractPluginMock plugin("addRemoveReadersMultiThreaded");
-    std::map<const std::string, std::shared_ptr<SeReader>> readers =
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& readers =
         plugin.getReaders();
-    std::shared_ptr<std::map<const std::string, std::shared_ptr<SeReader>>>
-        spReaders =
-           std::make_shared<std::map<const std::string,
-                                     std::shared_ptr<SeReader>>>(readers);
+
     std::shared_ptr<CountDownLatch> lock = std::make_shared<CountDownLatch>(10);
     std::thread thread[10];
 
-    thread[0] = std::thread(addReaderThread, spReaders, 10, lock);
-    thread[1] = std::thread(addReaderThread, spReaders, 10, lock);
-    thread[2] = std::thread(removeReaderThread, spReaders, 10, lock);
-    thread[3] = std::thread(listReaders, spReaders, 10, lock);
-    thread[4] = std::thread(addReaderThread, spReaders, 10, lock);
-    thread[5] = std::thread(removeReaderThread, spReaders, 10, lock);
-    thread[6] = std::thread(listReaders, spReaders, 10, lock);
-    thread[7] = std::thread(removeReaderThread, spReaders, 10, lock);
-    thread[8] = std::thread(listReaders, spReaders, 10, lock);
-    thread[9] = std::thread(removeReaderThread, spReaders, 10, lock);
+    thread[0] = std::thread(addReaderThread, std::ref(readers), 10, lock);
+    thread[1] = std::thread(addReaderThread, std::ref(readers), 10, lock);
+    thread[2] = std::thread(removeReaderThread, std::ref(readers), 10, lock);
+    thread[3] = std::thread(listReaders, std::ref(readers), 10, lock);
+    thread[4] = std::thread(addReaderThread, std::ref(readers), 10, lock);
+    thread[5] = std::thread(removeReaderThread, std::ref(readers), 10, lock);
+    thread[6] = std::thread(listReaders, std::ref(readers), 10, lock);
+    thread[7] = std::thread(removeReaderThread, std::ref(readers), 10, lock);
+    thread[8] = std::thread(listReaders, std::ref(readers), 10, lock);
+    thread[9] = std::thread(removeReaderThread, std::ref(readers), 10, lock);
 
     /* Wait for all thread to finish with timeout */
     //lock->await(std::chrono::seconds(10));

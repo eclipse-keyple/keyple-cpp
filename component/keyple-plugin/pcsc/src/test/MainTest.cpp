@@ -8,12 +8,18 @@
 
 #include "gtest/gtest.h"
 
+#include "Logger.h"
+
 using namespace testing;
+
+using namespace keyple::common;
 
 int main(int argc, char **argv)
 {
     /* Initialize GTest */
     ::testing::InitGoogleTest(&argc, argv);
+
+    Logger::setLoggerLevel(Logger::Level::logError);
 
     /* Run */
     return RUN_ALL_TESTS();

@@ -92,10 +92,10 @@ const std::set<std::string>& PcscPluginImpl::fetchNativeReadersNames()
     return nativeReadersNames;
 }
 
-std::map<const std::string, std::shared_ptr<SeReader>>
+ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
     PcscPluginImpl::initNativeReaders()
 {
-    std::map<const std::string, std::shared_ptr<SeReader>> nativeReaders;
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>> nativeReaders;
 
     /*
      * activate a special processing "SCARD_E_NO_NO_SERVICE" (on Windows
@@ -146,8 +146,10 @@ std::shared_ptr<SeReader>
 PcscPluginImpl::fetchNativeReader(const std::string& name)
 {
     /* Return the current reader if it is already listed */
-    if (mReaders.find(name) != mReaders.end())
-        return mReaders[name];
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
+        ::const_iterator it;
+    if ((it = mReaders.find(name)) != mReaders.end())
+        return it->second;
 
     /*
      * Parse the current PC/SC readers list to create the ProxyReader(s)

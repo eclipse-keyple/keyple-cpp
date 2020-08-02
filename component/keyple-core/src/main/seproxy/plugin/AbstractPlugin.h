@@ -56,8 +56,8 @@ public:
      *
      * @return the current readers map, can be an empty
      */
-    virtual std::map<const std::string, std::shared_ptr<SeReader>>& getReaders()
-        override;
+    virtual ConcurrentMap<const std::string, std::shared_ptr<SeReader>>&
+        getReaders() override;
 
     /**
      * Returns the current list of reader names.
@@ -96,7 +96,7 @@ protected:
     /**
      * The list of readers
      */
-    std::map<const std::string, std::shared_ptr<SeReader>> mReaders;
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>> mReaders;
 
     /**
      * Instanciates a new ReaderPlugin. Retrieve the current readers list.
@@ -123,7 +123,7 @@ protected:
      * @throw KeypleReaderIOException if the communication with the reader or
      *        the SE has failed
      */
-    virtual std::map<const std::string, std::shared_ptr<SeReader>>
+    virtual ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
         initNativeReaders() = 0;
 };
 
