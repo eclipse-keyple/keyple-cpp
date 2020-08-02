@@ -28,13 +28,13 @@ namespace monitoring {
 
 CardAbsentPingMonitoringJob::CardAbsentPingMonitoringJob(
     AbstractObservableLocalReader* reader)
-: reader(reader)
+: mReader(reader)
 {
 }
 
 CardAbsentPingMonitoringJob::CardAbsentPingMonitoringJob(
     AbstractObservableLocalReader* reader, long removalWait)
-: reader(reader), removalWait(removalWait)
+: mReader(reader), mRemovalWait(removalWait)
 {
 }
 
@@ -43,48 +43,50 @@ void CardAbsentPingMonitoringJob::monitoringJob(
 {
     long retries = 0;
 
-    logger->debug("[%] Polling from isSePresentPing\n", reader->getName());
+    mLogger->debug("[%] Polling from isSePresentPing\n", mReader->getName());
 
     /* Re-init loop value to true */
-    loop = true;
+    mLoop = true;
 
-    while (loop) {
+    while (mLoop) {
         if (cancellationFlag) {
-            logger->debug("[%] monitoring job cancelled\n", reader->getName());
+            mLogger->debug("[%] monitoring job cancelled\n",
+                           mReader->getName());
             return;
         }
 
-        if (!reader->isSePresentPing()) {
-            logger->debug("[%] The SE stopped responding\n",
-                          reader->getName());
-            loop = false;
+        if (!mReader->isSePresentPing()) {
+            mLogger->debug("[%] The SE stopped responding\n",
+                           mReader->getName());
+            mLoop = false;
             state->onEvent(InternalEvent::SE_REMOVED);
             return;
         }
 
         retries++;
 
-        logger->trace("[%] Polling retries : %\n", reader->getName(),
+        mLogger->trace("[%] Polling retries : %\n", mReader->getName(),
                       retries);
 
         try {
             /* Wait for a bit */
-            Thread::sleep(removalWait);
-        } catch (InterruptedException& ignored) {
+            Thread::sleep(mRemovalWait);
+        } catch (const InterruptedException& ignored) {
             (void)ignored;
             /* Restore interrupted state... */
-            loop = false;
+            mLoop = false;
             std::terminate();
         }
     }
 
-    logger->debug("[%] Polling loop has been stopped\n", reader->getName());
+    mLogger->debug("[%] Polling loop has been stopped\n", mReader->getName());
 }
 
 void CardAbsentPingMonitoringJob::stop()
 {
-    logger->debug("[%] Stop Polling\n", reader->getName());
-    loop = false;
+    mLogger->debug("[%] Stop Polling\n", mReader->getName());
+
+    mLoop = false;
 }
 
 std::future<void> CardAbsentPingMonitoringJob::startMonitoring(

@@ -187,10 +187,10 @@ public:
      *
      * /!\ C++ vs. Java: this function is protected in Java
      */
-    std::vector<std::shared_ptr<SeResponse>> processSeRequests(
+    virtual std::vector<std::shared_ptr<SeResponse>> processSeRequests(
         const std::vector<std::shared_ptr<SeRequest>>& seRequests,
         const MultiSeRequestProcessing& multiSeRequestProcessing,
-        const ChannelControl& channelControl) final;
+        const ChannelControl& channelControl) override; //final;
 
     /**
      * Executes a request made of one or more Apdus and receives their answers.
@@ -205,9 +205,9 @@ public:
      *
      * /!\ C++ vs. Java: this function is protected in Java
      */
-    std::shared_ptr<SeResponse> processSeRequest(
+    virtual std::shared_ptr<SeResponse> processSeRequest(
         const std::shared_ptr<SeRequest> seRequest,
-        const ChannelControl& channelControl) final;
+        const ChannelControl& channelControl) override; //final;
 
 protected:
 

@@ -154,7 +154,7 @@ public:
      * @throw KeypleReaderIOException if the communication with the reader or
      *        the SE has failed
      */
-    bool isSePresent() final;
+    bool isSePresent(); //final;
 
     /**
      * Starts the SE detection. Once activated, the application can be notified
@@ -260,7 +260,7 @@ public:
      *         should be sent
      * @deprecated will change in a later version
      */
-    std::shared_ptr<ReaderEvent> processSeInserted();
+    virtual std::shared_ptr<ReaderEvent> processSeInserted(); //final;
 
     /**
      * Sends a neutral APDU to the SE to check its presence. The status of the

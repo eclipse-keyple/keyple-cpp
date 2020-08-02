@@ -100,7 +100,7 @@ void StubPluginImpl::plugStubReaders(const std::set<std::string>& readerNames,
     /* Add new readerNames to the connectedStubNames */
     if (newNames.size() > 0) {
         if (synchronous) {
-            std::map<const std::string, std::shared_ptr<StubReaderImpl>>
+            ConcurrentMap<const std::string, std::shared_ptr<StubReaderImpl>>
                 newReaders;
 
             for (auto& name : newNames) {
@@ -181,11 +181,12 @@ const std::set<std::string>& StubPluginImpl::fetchNativeReadersNames()
     return mConnectedStubNames;
 }
 
-std::map<const std::string, std::shared_ptr<SeReader>>
+ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
     StubPluginImpl::initNativeReaders()
 {
     /* Init Stub Readers response object */
-    std::map<const std::string, std::shared_ptr<SeReader>> newNativeReaders;
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
+        newNativeReaders;
 
     return newNativeReaders;
 }
@@ -195,8 +196,8 @@ std::shared_ptr<SeReader> StubPluginImpl::fetchNativeReader(
 {
     std::shared_ptr<SeReader> reader = nullptr;
 
-    std::map<const std::string, std::shared_ptr<SeReader>>::iterator it =
-        mReaders.find(readerName);
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
+        ::const_iterator it = mReaders.find(readerName);
 
     if (it != mReaders.end())
         reader = it->second;

@@ -122,7 +122,7 @@ public:
     /**
      *
      */
-    std::map<const std::string, std::shared_ptr<SeReader>>& getReaders()
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& getReaders()
         override;
 
     /**

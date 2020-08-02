@@ -47,7 +47,7 @@ AbstractPlugin::AbstractPlugin(const std::string& name)
      */
 }
 
-std::map<const std::string, std::shared_ptr<SeReader>>&
+ConcurrentMap<const std::string, std::shared_ptr<SeReader>>&
     AbstractPlugin::getReaders()
 {
     return mReaders;
@@ -71,11 +71,13 @@ int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
 const std::shared_ptr<SeReader> AbstractPlugin::getReader(
     const std::string& name)
 {
-    const std::shared_ptr<SeReader> seReader = mReaders[name];
-    if (!seReader)
-        throw KeypleReaderNotFoundException(name);
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
+        ::const_iterator it;
 
-    return seReader;
+    if ((it = mReaders.find(name)) != mReaders.end())
+        return it->second;
+    else
+        throw KeypleReaderNotFoundException(name);
 }
 
 }

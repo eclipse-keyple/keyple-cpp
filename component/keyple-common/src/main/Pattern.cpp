@@ -24,6 +24,9 @@ Pattern::Pattern(std::string pattern, int flags)
 
 Pattern* Pattern::compile(std::string regularExpression, int flags)
 {
+    /* Compiler hack */
+    (void)mFlags;
+
     return new Pattern(regularExpression, flags);
 }
 

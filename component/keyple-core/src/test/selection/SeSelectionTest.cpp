@@ -160,6 +160,7 @@ std::unique_ptr<SeSelection> createSeSelection()
     std::shared_ptr<SeSelector> seSelector2 =
         SeSelector::builder()
             ->seProtocol(SeCommonProtocols::PROTOCOL_B_PRIME)
+            .atrFilter(std::make_shared<SeSelector::AtrFilter>(".*"))
             .aidSelector(aidSelector2)
             .build();
 
@@ -254,8 +255,7 @@ TEST(SeSelectionTest, SeSelection2_prepareSelection)
 
     ASSERT_EQ(nullptr,seRequest1->getSeSelector()->getAtrFilter());
 
-    /* This test does not make sense since getAtrFilter is nullptr... */
-    //ASSERT_EQ(".*", seRequest2->getSeSelector()->getAtrFilter()->getAtrRegex());
+    ASSERT_EQ(".*", seRequest2->getSeSelector()->getAtrFilter()->getAtrRegex());
 
     ASSERT_EQ(2, static_cast<int>(seRequest1->getApduRequests().size()));
     ASSERT_EQ(0, static_cast<int>(seRequest2->getApduRequests().size()));

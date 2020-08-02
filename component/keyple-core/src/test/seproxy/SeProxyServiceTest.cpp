@@ -54,7 +54,7 @@ public:
                 (const std::string&, const std::string&),
                 (override));
 
-    MOCK_METHOD((std::map<const std::string, std::shared_ptr<SeReader>>),
+    MOCK_METHOD((ConcurrentMap<const std::string, std::shared_ptr<SeReader>>),
                 initNativeReaders,
                 (),
                 (override));
@@ -111,10 +111,20 @@ TEST(SeProxyServiceTest, getVersion)
 
 TEST(SeProxyServiceTest, failingPlugin)
 {
+    SeProxyService& proxyService = SeProxyService::getInstance();
+
     std::shared_ptr<SPS_PluginFactoryMock> factory =
         std::make_shared<SPS_PluginFactoryMock>();
 
-    EXPECT_THROW(factory->getPlugin(),
+    EXPECT_CALL(*factory.get(), getPluginName())
+        .Times(1)
+        .WillOnce(ReturnRef(PLUGIN_NAME_1));
+
+    EXPECT_CALL(*factory.get(), getPlugin())
+        .Times(1)
+        .WillOnce(Throw(KeyplePluginInstantiationException("")));
+
+    EXPECT_THROW(proxyService.registerPlugin(factory),
                  KeyplePluginInstantiationException);
 }
 
@@ -155,8 +165,8 @@ TEST(SeProxyServiceTest, registerPlugin_Twice)
         std::make_shared<SPS_PluginFactoryMock>();
 
     EXPECT_CALL(*factory.get(), getPluginName())
-        .Times(1)
-        .WillOnce(ReturnRef(PLUGIN_NAME_1));
+        .Times(2)
+        .WillRepeatedly(ReturnRef(PLUGIN_NAME_1));
 
     EXPECT_CALL(*factory.get(), getPlugin())
         .Times(1)
@@ -311,8 +321,7 @@ TEST(SeProxyServiceTest, unregisterMultiThread)
         std::make_shared<SPS_PluginFactoryMock>();
 
     EXPECT_CALL(*factory.get(), getPluginName())
-        .Times(1)
-        .WillOnce(ReturnRef(PLUGIN_NAME_1));
+        .WillRepeatedly(ReturnRef(PLUGIN_NAME_1));
 
     EXPECT_CALL(*factory.get(), getPlugin())
         .Times(1)
@@ -320,6 +329,7 @@ TEST(SeProxyServiceTest, unregisterMultiThread)
 
     /* Add a plugin */
     proxyService.registerPlugin(factory);
+    proxyService.unregisterPlugin(factory->getPluginName());
 
     std::shared_ptr<CountDownLatch> latch =
         std::make_shared<CountDownLatch>(1);
@@ -334,7 +344,8 @@ TEST(SeProxyServiceTest, unregisterMultiThread)
     for (int t = 0; t < threads; ++t) {
         futures.push_back(
             std::async(
-                [&latch, &running, &overlaps, &proxyService, &factory]() {
+                std::launch::async,
+                [latch, &running, &overlaps, &proxyService, factory]() {
                     try {
                         /* All thread wait for the countdown */
                         latch->await();

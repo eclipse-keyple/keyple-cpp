@@ -17,6 +17,9 @@
 #include <set>
 #include <string>
 
+/* Common */
+#include "ConcurrentMap.h"
+
 /* Core */
 #include "KeypleCoreExport.h"
 #include "KeypleReaderNotFoundException.h"
@@ -52,8 +55,8 @@ public:
      * @return the map of this plugin's connected reader's name and instance,
      *         can be an empty list, can not be null;
      */
-    virtual std::map<const std::string, std::shared_ptr<SeReader>>& getReaders()
-        = 0;
+    virtual ConcurrentMap<const std::string, std::shared_ptr<SeReader>>&
+        getReaders() = 0;
 
     /**
      * Gets the reader whose name is provided as an argument

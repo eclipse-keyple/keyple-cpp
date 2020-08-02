@@ -27,7 +27,7 @@ using namespace keyple::core::seproxy::message;
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
   const std::shared_ptr<SeCommand> commandRef,
   const std::shared_ptr<ApduRequest> request)
-: mName(commandRef->getName()), mCommandRef(commandRef), mRequest(request)
+: mCommandRef(commandRef), mRequest(request), mName(commandRef->getName())
 {
     /* Set APDU name for non null request */
     if (request != nullptr) {
@@ -37,7 +37,7 @@ AbstractApduCommandBuilder::AbstractApduCommandBuilder(
 
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
   const std::string& name, std::shared_ptr<ApduRequest> request)
-: mName(name), mCommandRef(nullptr), mRequest(request)
+: mCommandRef(nullptr), mRequest(request), mName(name)
 {
     /* Set APDU name for non null request */
     if (request != nullptr) {

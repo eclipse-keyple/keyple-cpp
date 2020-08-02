@@ -628,7 +628,7 @@ AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
 
     /* We expect here a 0x9000 status code */
     std::shared_ptr<ApduResponse> getResponseHackResponse =
-        std::make_shared<ApduResponse>(mGetResponseHackRequestBytes, nullptr);
+        std::make_shared<ApduResponse>(getResponseHackResponseBytes, nullptr);
 
     timeStamp    = System::nanoTime();
     elapsed10ms = (timeStamp - mBefore) / 100000;
