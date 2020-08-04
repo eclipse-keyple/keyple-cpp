@@ -17,6 +17,7 @@
 
 #include "AbstractSeSelectionRequest.h"
 
+#include "AbstractApduCommandBuilder.h"
 #include "AbstractApduResponseParser.h"
 #include "AbstractMatchingSe.h"
 #include "ByteArrayUtil.h"

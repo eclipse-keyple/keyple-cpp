@@ -93,6 +93,11 @@ protected:
      */
     AbstractObservablePlugin(const std::string& name);
 
+    /**
+     *
+     */
+    virtual ~AbstractObservablePlugin() = default;
+
 private:
     /**
      *

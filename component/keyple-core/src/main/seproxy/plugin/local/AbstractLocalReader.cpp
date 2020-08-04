@@ -638,9 +638,9 @@ AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
 
     if (getResponseHackResponse->isSuccessful()) {
         /* Replace the two last status word bytes by the original status word */
-        getResponseHackResponseBytes[mGetResponseHackRequestBytes.size() - 2] =
+        getResponseHackResponseBytes[getResponseHackResponseBytes.size() - 2] =
             static_cast<uint8_t>((originalStatusCode & 0xff00) >> 8);
-        getResponseHackResponseBytes[mGetResponseHackRequestBytes.size() - 1] =
+        getResponseHackResponseBytes[getResponseHackResponseBytes.size() - 1] =
             static_cast<uint8_t>(originalStatusCode & 0x00ff);
     }
 

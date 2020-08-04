@@ -16,11 +16,9 @@
 
 #include <string>
 #include <vector>
-#include "exceptionhelper.h"
 #include <memory>
 
 /* Calypso */
-#include "CommandsTable.h"
 #include "KeypleCalypsoExport.h"
 #include "PoRevision.h"
 

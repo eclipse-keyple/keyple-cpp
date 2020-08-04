@@ -29,6 +29,12 @@ using namespace keyple::core::seproxy::event;
  * observers of a {@link ObservableReader}
  */
 class ObservablePluginNotifier : public virtual ObservablePlugin {
+public:
+    /**
+     *
+     */
+    virtual ~ObservablePluginNotifier() = default;
+
     /**
      * Push a ReaderEvent of the {@link ObservableReaderNotifier} to its
      * registered observers.
