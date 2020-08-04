@@ -112,6 +112,11 @@ protected:
     AbstractPlugin(const std::string& name);
 
     /**
+     *
+     */
+    virtual ~AbstractPlugin() = default;
+
+    /**
      * Init connected native readers (from third party library) and returns a
      * map of corresponding {@link SeReader} whith their name as key.
      * <p>

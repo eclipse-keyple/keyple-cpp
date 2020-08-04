@@ -215,7 +215,7 @@ private:
     template <typename... Args>
     void log(const std::string& label, const std::string& format, Args... args)
     {
-        mtx->lock();
+        const std::lock_guard<std::mutex> lock(*mtx);
 
         /* Header */
         std::printf("[%s]   [%5s]   [%-100s]   ", getCurrentTimestamp().c_str(),
@@ -226,8 +226,6 @@ private:
         printf(os, format.c_str(), args...);
         const std::string& str = os.str();
         std::printf("%s", str.c_str());
-
-        mtx->unlock();
     }
 };
 

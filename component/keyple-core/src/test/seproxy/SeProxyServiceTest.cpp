@@ -37,13 +37,11 @@ using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::plugin::local;
 
 class SPS_AbstractThreadedObservablePluginMock
-    : public AbstractThreadedObservablePlugin {
+: public AbstractThreadedObservablePlugin {
 public:
-    const std::set<std::string> readerNames;
-
     SPS_AbstractThreadedObservablePluginMock(const std::string& name)
-        : AbstractThreadedObservablePlugin(name) {}
-
+    : AbstractThreadedObservablePlugin(name) {}
+    
     MOCK_METHOD((const std::map<const std::string, const std::string>&),
                 getParameters,
                 (),
@@ -86,10 +84,16 @@ public:
 static const std::string PLUGIN_NAME_1 = "plugin1";
 static const std::string PLUGIN_NAME_2 = "plugin2";
 
-static std::shared_ptr<SPS_AbstractThreadedObservablePluginMock> plugin1 =
-    std::make_shared<SPS_AbstractThreadedObservablePluginMock>(PLUGIN_NAME_1);
-static std::shared_ptr<SPS_AbstractThreadedObservablePluginMock> plugin2 =
-    std::make_shared<SPS_AbstractThreadedObservablePluginMock>(PLUGIN_NAME_2);
+static std::shared_ptr<SPS_AbstractThreadedObservablePluginMock> plugin1;
+static std::shared_ptr<SPS_AbstractThreadedObservablePluginMock> plugin2;
+
+TEST(SeProxyService, init)
+{
+    plugin1 = std::make_shared<SPS_AbstractThreadedObservablePluginMock>(
+                  PLUGIN_NAME_1);
+    plugin2 = std::make_shared<SPS_AbstractThreadedObservablePluginMock>(
+                  PLUGIN_NAME_2);
+}
 
 TEST(SeProxyServiceTest, getInstance)
 {

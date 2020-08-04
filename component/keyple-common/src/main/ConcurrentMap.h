@@ -40,15 +40,22 @@ private:
     /**
      *
      */
+#ifndef _WIN32
     typedef typename __gnu_cxx
         ::__alloc_traits<std::allocator<std::pair<const K, V>>>::template
         rebind<value_type>::other _Pair_alloc_type;
+#endif
 
     /**
      *
      */
+#ifdef _WIN32
+    typedef std::_Tree<std::_Tmap_traits<K, V, std::less<K>,
+        std::allocator<std::pair<const K, V>>, false>> _Rep_type;
+#else
     typedef std::_Rb_tree<key_type, value_type, std::_Select1st<value_type>,
-                std::less<K>, _Pair_alloc_type> _Rep_type;
+        std::less<K>, _Pair_alloc_type> _Rep_type;
+#endif
 
 public:
     /**
@@ -80,13 +87,17 @@ public:
     }
 
     /**
+     *
+     */
+    ~ConcurrentMap<K, V>() = default;
+
+    /**
      * Single element (1)
      */
     std::pair<iterator, bool> insert(const std::pair<const K, V>& val)
     {
         const std::lock_guard<std::mutex> lock(mMutex);
-        std::pair<iterator, bool> res = mMap.insert(val);
-        return res;
+        return mMap.insert(val);
     }
 
     /**
@@ -95,8 +106,7 @@ public:
     iterator insert(const_iterator position, const value_type& val)
     {
         const std::lock_guard<std::mutex> lock(mMutex);
-        iterator it = mMap.insert(position, val);
-        return it;
+        return mMap.insert(position, val);
     }
 
     /**
@@ -106,8 +116,7 @@ public:
     iterator insert(const_iterator position, P&& val)
     {
         const std::lock_guard<std::mutex> lock(mMutex);
-        iterator it = mMap.insert(position, val);
-        return it;
+        return mMap.insert(position, val);
     }
 
     /**
@@ -120,15 +129,16 @@ public:
         mMap.insert(first, last);
     }
 
-
     /**
      *
      */
     iterator erase(const_iterator position)
     {
         const std::lock_guard<std::mutex> lock(mMutex);
-        iterator it = mMap.erase(position);
-        return it;
+        if (position != mMap.end())
+            return mMap.erase(position);
+        else
+            return mMap.end();
     }
 
     /**
@@ -137,8 +147,7 @@ public:
     size_type erase(const K& k)
     {
         const std::lock_guard<std::mutex> lock(mMutex);
-        size_type e = mMap.erase(k);
-        return e;
+        return mMap.erase(k);
     }
 
     /**
@@ -147,8 +156,7 @@ public:
     const_iterator find(const key_type& k)
     {
         const std::lock_guard<std::mutex> lock(mMutex);
-        const_iterator it = mMap.find(k);
-        return it;
+        return mMap.find(k);
     }
 
     /**
@@ -168,7 +176,7 @@ public:
     /**
      *
      */
-    iterator end()  noexcept
+    iterator end() noexcept
     {
         return mMap.end();
     }
@@ -187,8 +195,7 @@ public:
     size_type count(const K& k)
     {
         const std::lock_guard<std::mutex> lock(mMutex);
-        size_type c = mMap.count(k);
-        return c;
+        return mMap.count(k);
     }
 
     /**
@@ -197,8 +204,7 @@ public:
      */
     size_type size() const noexcept
     {
-        size_type s = mMap.size();
-        return s;
+        return mMap.size();
     }
 
     /**

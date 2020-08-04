@@ -90,7 +90,7 @@ public:
         }
 
         return std::make_shared<SeRequest>(mSeSelector,
-                                            seSelectionrApduRequests);
+                                           seSelectionrApduRequests);
     }
 
     /**
@@ -108,7 +108,7 @@ public:
                                     const AbstractSeSelectionRequest<T>& asr)
     {
         os << "ABSTRACTSELECTIONREQUEST: {"
-        << "APDUREQUESTLIST = " << asr.seSelectionApduRequestList
+        << asr.mSeSelector
         << "}";
 
         return os;
@@ -147,8 +147,7 @@ public:
      *
      * /!\ C++ vs. Java: this function is protected in Java
      */
-    const std::vector<std::shared_ptr<T>> getCommandBuilders()
-        const
+    const std::vector<std::shared_ptr<T>> getCommandBuilders() const
     {
         return mCommandBuilders;
     }
@@ -160,6 +159,9 @@ private:
      */
     std::vector<std::shared_ptr<T>> mCommandBuilders;
 };
+
+/* Explicit template instanciation */
+template class AbstractSeSelectionRequest<AbstractApduCommandBuilder>;
 
 }
 }

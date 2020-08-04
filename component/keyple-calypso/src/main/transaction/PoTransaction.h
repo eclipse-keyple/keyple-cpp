@@ -18,7 +18,6 @@
 #include <unordered_map>
 #include <vector>
 #include <stdexcept>
-#include "exceptionhelper.h"
 #include <memory>
 
 /* Calypso */

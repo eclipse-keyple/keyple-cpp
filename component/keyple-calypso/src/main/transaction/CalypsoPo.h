@@ -27,7 +27,6 @@
 
 /* Common */
 #include "KeypleCalypsoExport.h"
-#include "exceptionhelper.h"
 #include "LoggerFactory.h"
 
 namespace keyple {
