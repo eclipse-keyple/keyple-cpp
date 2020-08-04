@@ -40,7 +40,7 @@ public:
     /**
      *
      */
-    virtual ~ReaderPlugin() {}
+    virtual ~ReaderPlugin() = default;
 
     /**
      * Gets the list of names of all readers

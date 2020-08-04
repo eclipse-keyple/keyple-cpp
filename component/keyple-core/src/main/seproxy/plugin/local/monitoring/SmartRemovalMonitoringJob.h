@@ -65,9 +65,9 @@ public:
     /**
      *
      */
-    std::future<void>
-    startMonitoring(AbstractObservableState* state,
-                    std::atomic<bool>& cancellationFlag) override;
+    std::future<void> startMonitoring(
+        AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
+        override;
 
     /**
      *
@@ -84,13 +84,13 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(SmartRemovalMonitoringJob));
 
     /**
      *
      */
-    SmartRemovalReader* reader;
+    SmartRemovalReader* mReader;
 };
 
 }

@@ -27,7 +27,6 @@
 #include "ReadDataStructure.h"
 
 /* Common */
-#include "exceptionhelper.h"
 #include "KeypleCalypsoExport.h"
 #include "LoggerFactory.h"
 

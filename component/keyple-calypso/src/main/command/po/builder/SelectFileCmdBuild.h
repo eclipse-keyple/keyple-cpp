@@ -23,8 +23,6 @@
 #include "PoSendableInSession.h"
 #include "SelectFileRespPars.h"
 
-#include "exceptionhelper.h"
-
 namespace keyple {
 namespace calypso {
 namespace command {

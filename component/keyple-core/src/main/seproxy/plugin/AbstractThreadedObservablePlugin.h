@@ -82,7 +82,7 @@ public:
     /**
      *
      */
-    virtual ~AbstractThreadedObservablePlugin() {}
+    virtual ~AbstractThreadedObservablePlugin() = default;
 
 protected:
 

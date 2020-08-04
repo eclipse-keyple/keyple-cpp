@@ -28,7 +28,6 @@
 #include "AbstractPoResponseParser.h"
 
 /* Common */
-#include "exceptionhelper.h"
 #include "KeypleCalypsoExport.h"
 #include "stringbuilder.h"
 

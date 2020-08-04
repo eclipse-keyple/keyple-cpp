@@ -39,6 +39,11 @@ public:
     AbstractSeProxyComponent(const std::string& name);
 
     /**
+     *
+     */
+    virtual ~AbstractSeProxyComponent() = default;
+
+    /**
      * @return the name of the component
      */
     virtual const std::string& getName() const override;
