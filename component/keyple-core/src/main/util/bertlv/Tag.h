@@ -43,7 +43,10 @@ public:
     /**
      *
      */
-    enum class TagType { PRIMITIVE, CONSTRUCTED };
+    enum class TagType {
+        PRIMITIVE,
+        CONSTRUCTED
+    };
 
     /**
      *

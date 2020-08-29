@@ -48,7 +48,7 @@ public:
     /**
      * @return the status code (nullable)
      */
-    const std::shared_ptr<Integer> getStatusCode() const
+    const std::shared_ptr<int> getStatusCode() const
     {
         return mStatusCode;
     }
@@ -61,7 +61,7 @@ protected:
      */
     KeypleSeCommandException(const std::string& message,
                              const std::shared_ptr<SeCommand> command,
-                             const std::shared_ptr<Integer> statusCode)
+                             const std::shared_ptr<int> statusCode)
     : KeypleException(message), mCommand(command), mStatusCode(statusCode) {}
 
 private:
@@ -73,7 +73,7 @@ private:
     /**
      * The status code (optional)
      */
-    const std::shared_ptr<Integer> mStatusCode;
+    const std::shared_ptr<int> mStatusCode;
 };
 
 }

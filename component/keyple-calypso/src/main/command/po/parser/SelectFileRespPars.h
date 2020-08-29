@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,12 +14,13 @@
 
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <vector>
 #include <memory>
 
 /* Core */
 #include "AbstractApduResponseParser.h"
+#include "Tag.h"
 
 /* Common */
 #include "LoggerFactory.h"
@@ -27,6 +28,7 @@
 /* Calypso */
 #include "AbstractPoResponseParser.h"
 #include "KeypleCalypsoExport.h"
+#include "SelectFileCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -35,6 +37,7 @@ namespace po {
 namespace parser {
 
 using namespace keyple::core::command;
+using namespace keyple::core::util::bertlv;
 using namespace keyple::calypso::command::po;
 using namespace keyple::common;
 
@@ -43,8 +46,8 @@ using namespace keyple::common;
  * structured fields of data from response to a Select File command (available
  * from the parent class).
  * <p>
- * The FCI structure is analyzed and all subfields are made available through as
- * many getters.
+ * The value of the Proprietary Information tag is extracted from the Select
+ * File response and made available using the corresponding getter.
  */
 class KEYPLECALYPSO_API SelectFileRespPars final
 : public AbstractPoResponseParser {
@@ -70,100 +73,24 @@ public:
      * Instantiates a new SelectFileRespPars.
      *
      * @param response the response from the PO
+     * @param builder the reference to the builder that created this parser
      */
-    SelectFileRespPars(std::shared_ptr<ApduResponse> response);
+    SelectFileRespPars(std::shared_ptr<ApduResponse> response,
+                       SelectFileCmdBuild* builder);
 
     /**
-     *
+     * @return the content of the proprietary information tag present in the
+     *         response to the Select File command
      */
-    bool isSelectionSuccessful();
-
-    /**
-     *
-     */
-    int getLid();
-
-    /**
-     *
-     */
-    uint8_t getSfi();
-
-    /**
-     *
-     */
-    uint8_t getFileType();
-
-    /**
-     *
-     */
-    uint8_t getEfType();
-
-    /**
-     *
-     */
-    int getRecSize();
-
-    /**
-     *
-     */
-    uint8_t getNumRec();
-
-    /**
-     *
-     */
-    std::vector<uint8_t> getAccessConditions();
-
-    /**
-     *
-     */
-    std::vector<uint8_t> getKeyIndexes();
-
-    /**
-     *
-     */
-    uint8_t getSimulatedCounterFileSfi();
-
-    /**
-     *
-     */
-    uint8_t getSimulatedCounterNumber();
-
-    /**
-     *
-     */
-    int getSharedEf();
-
-    /**
-     *
-     */
-    uint8_t getDfStatus();
-
-    /**
-     *
-     */
-    std::vector<uint8_t> getFileBinaryData();
-
-    /**
-     *
-     */
-    std::vector<uint8_t> getRfu();
-
-    /**
-     *
-     */
-    std::vector<uint8_t> getKvcInfo();
-
-    /**
-     *
-     */
-    std::vector<uint8_t> getKifInfo();
-
-    /**
-     *
-     */
-    std::vector<uint8_t> getSelectionData();
+    const std::vector<uint8_t>& getProprietaryInformation();
 
 protected:
+    /**
+     *
+     */
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
+        const override;
+
     /**
      *
      */
@@ -177,124 +104,24 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(SelectFileRespPars));
 
     /**
      *
      */
-    static std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 
     /**
      *
      */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        StaticConstructor();
-    };
+    std::vector<uint8_t> mProprietaryInformation;
 
     /**
-     *
+     * Proprietary Information: context-specific class, primitive, tag number
+     * 5h => tag field 85h
      */
-    static SelectFileRespPars::StaticConstructor staticConstructor;
-
-    /**
-     *
-     */
-    std::vector<uint8_t> fileBinaryData;
-
-    /**
-     *
-     */
-    int lid = 0;
-
-    /**
-     *
-     */
-    uint8_t sfi = 0;
-
-    /**
-     *
-     */
-    uint8_t fileType = 0;
-
-    /**
-     *
-     */
-    uint8_t efType = 0;
-
-    /**
-     *
-     */
-    int recSize = 0;
-
-    /**
-     *
-     */
-    uint8_t numRec = 0;
-
-    /**
-     *
-     */
-    std::vector<uint8_t> accessConditions;
-
-    /**
-     *
-     */
-    std::vector<uint8_t> keyIndexes;
-
-    /**
-     *
-     */
-    uint8_t simulatedCounterFileSfi = 0;
-
-    /**
-     *
-     */
-    uint8_t simulatedCounterNumber = 0;
-
-    /**
-     *
-     */
-    int sharedEf = 0;
-
-    /**
-     *
-     */
-    uint8_t dfStatus = 0;
-
-    /**
-     *
-     */
-    std::vector<uint8_t> rfu;
-
-    /**
-     *
-     */
-    std::vector<uint8_t> kvcInfo;
-
-    /**
-     *
-     */
-    std::vector<uint8_t> kifInfo;
-
-    /**
-     *
-     */
-    bool selectionSuccessful = false;
-
-    /**
-     * Method extracting the various fields from the FCI structure returned by the PO.
-     * <p>
-     * The successful flag (see isSelectionSuccessful) is based on the response status word.
-     * <p>
-     * The parsingDone flag is set to avoid multiple call to this method while getting several
-     * attributes. TODO Handle Rev1/Rev2 PO
-     */
-    void parseResponse();
+    static const Tag TAG_PROPRIETARY_INFORMATION;
 };
 
 }

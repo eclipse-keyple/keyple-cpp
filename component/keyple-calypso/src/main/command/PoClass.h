@@ -69,9 +69,7 @@ public:
     /**
      *
      */
-    virtual ~PoClass()
-    {
-    }
+    virtual ~PoClass() = default;
 
     /**
      *

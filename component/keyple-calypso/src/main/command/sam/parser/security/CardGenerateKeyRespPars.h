@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,11 +14,12 @@
 
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <vector>
 #include <memory>
 
 #include "AbstractSamResponseParser.h"
+#include "CardGenerateKeyCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -36,59 +37,30 @@ public:
      * Instantiates a new CardGenerateKeyRespPars.
      *
      * @param response from the SAM
+     * @param builder the reference to the builder that created this parser
      */
-    CardGenerateKeyRespPars(std::shared_ptr<ApduResponse> response);
-
-    /**
-     *
-     */
-    virtual ~CardGenerateKeyRespPars()
-    {
-    }
+    CardGenerateKeyRespPars(const std::shared_ptr<ApduResponse> response,
+                            CardGenerateKeyCmdBuild* builder);
 
     /**
      * Gets the 32 bytes of ciphered data.
      *
      * @return the ciphered data byte array or null if the operation failed
      */
-    virtual std::vector<uint8_t> getCipheredData() const;
+    const std::vector<uint8_t> getCipheredData() const;
 
 protected:
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<StatusProperties>>
-    getStatusTable() const override;
-
-    /**
-     *
-     */
-    std::shared_ptr<CardGenerateKeyRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<CardGenerateKeyRespPars>(
-            AbstractSamResponseParser::shared_from_this());
-    }
+    const std::map<int, std::shared_ptr<StatusProperties>>&
+        getStatusTable() const override;
 
 private:
     /**
      *
      */
-    static std::unordered_map<int, std::shared_ptr<StatusProperties>>
-        STATUS_TABLE;
-
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static CardGenerateKeyRespPars::StaticConstructor staticConstructor;
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

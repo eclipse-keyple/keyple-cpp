@@ -44,7 +44,7 @@ AbstractApduResponseParser::StaticConstructor::StaticConstructor()
 AbstractApduResponseParser::StaticConstructor
     AbstractApduResponseParser::staticConstructor;
 
-std::map<int, std::shared_ptr<StatusProperties>>&
+const std::map<int, std::shared_ptr<StatusProperties>>&
     AbstractApduResponseParser::getStatusTable() const
 {
     return STATUS_TABLE;
@@ -73,14 +73,16 @@ const std::shared_ptr<StatusProperties>
     AbstractApduResponseParser::getStatusCodeProperties() const
 {
     int sc = mResponse->getStatusCode();
-    std::map<int, std::shared_ptr<StatusProperties>>& st = getStatusTable();
+    const std::map<int, std::shared_ptr<StatusProperties>>& st =
+        getStatusTable();
 
     /*
      * /!\ Cannot use operator[] to check key/value existence since an unknown
      * status code would modify the table with empty data
      */
-    if (st.find(sc) != st.end())
-        return st[sc];
+    std::map<int, std::shared_ptr<StatusProperties>>::const_iterator it;
+    if ((it = st.find(sc)) != st.end())
+        return it->second;
     else
         return nullptr;
 }
@@ -99,7 +101,7 @@ std::string AbstractApduResponseParser::getStatusInformation() const
     return props != nullptr ? props->getInformation() : "";
 }
 
-void AbstractApduResponseParser::checkStatus()
+void AbstractApduResponseParser::checkStatus() const
 {
     std::shared_ptr<StatusProperties> props = getStatusCodeProperties();
 
@@ -124,7 +126,7 @@ void AbstractApduResponseParser::checkStatus()
 
     /* Throw the exception */
     throw *buildCommandException(exceptionClass, message, commandRef,
-                                 std::make_shared<Integer>(statusCode)).get();
+                                 std::make_shared<int>(statusCode)).get();
 }
 
 const std::shared_ptr<SeCommand> AbstractApduResponseParser::getCommandRef()
@@ -144,7 +146,7 @@ const std::shared_ptr<KeypleSeCommandException>
         const std::type_info& exceptionClass,
         const std::string& message,
         const std::shared_ptr<SeCommand> commandRef,
-        const std::shared_ptr<Integer> statusCode)
+        const std::shared_ptr<int> statusCode) const
 {
     (void)exceptionClass;
 

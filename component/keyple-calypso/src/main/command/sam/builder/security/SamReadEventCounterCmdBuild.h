@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,6 +18,7 @@
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommands.h"
 #include "KeypleCalypsoExport.h"
+#include "SamReadEventCounterRespPars.h"
 #include "SamRevision.h"
 
 namespace keyple {
@@ -32,8 +33,8 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Unlock APDU command.
  */
-class KEYPLECALYPSO_API SamReadEventCounterCmdBuild
-: public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API SamReadEventCounterCmdBuild final
+: public AbstractSamCommandBuilder<SamReadEventCounterRespPars> {
 public:
     /**
      *
@@ -51,17 +52,27 @@ public:
     enum SamEventCounterOperationType { COUNTER_RECORD, SINGLE_COUNTER };
 
     /**
+     * Instantiate a new SamReadEventCounterCmdBuild
+     *
+     * @param revision revision of the SAM
+     * @param operationType the counter operation type
+     * @param index the counter index
+     */
+    SamReadEventCounterCmdBuild(
+        const SamRevision& revision,
+        const SamEventCounterOperationType operationType, const uint8_t index);
+
+    /**
      *
      */
-    SamReadEventCounterCmdBuild(SamRevision& revision,
-                                SamEventCounterOperationType operationType,
-                                uint8_t index);
+    std::shared_ptr<SamReadEventCounterRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command reference
      */
-    CalypsoSamCommands command = CalypsoSamCommands::READ_EVENT_COUNTER;
+    static const CalypsoSamCommand& mCommand;
 };
 
 }

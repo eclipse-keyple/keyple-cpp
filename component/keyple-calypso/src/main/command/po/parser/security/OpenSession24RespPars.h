@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -19,10 +19,10 @@
 
 /* Core */
 #include "ApduResponse.h"
-#include "exceptionhelper.h"
 
 /* Calypso */
 #include "AbstractOpenSessionRespPars.h"
+#include "OpenSession24CmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -37,9 +37,13 @@ class KEYPLECALYPSO_API OpenSession24RespPars final
 : public AbstractOpenSessionRespPars {
 public:
     /**
+     * Instantiates a new OpenSession24RespPars from the response.
      *
+     * @param response from OpenSession24RespPars
+     * @param builder the reference to the builder that created this parser
      */
-    OpenSession24RespPars(std::shared_ptr<ApduResponse> response);
+    OpenSession24RespPars(std::shared_ptr<ApduResponse> response,
+                          OpenSession24CmdBuild* builder);
 
     /**
      *

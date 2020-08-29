@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -13,6 +13,7 @@
  ******************************************************************************/
 
 #include "OpenSession10RespPars.h"
+
 #include "ApduResponse.h"
 #include "AbstractOpenSessionRespPars.h"
 
@@ -31,12 +32,8 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::core::seproxy::message;
 
 OpenSession10RespPars::OpenSession10RespPars(
-    std::shared_ptr<ApduResponse> response)
-: AbstractOpenSessionRespPars(response, PoRevision::REV1_0)
-{
-    std::vector<uint8_t> data = response->getDataOut();
-    this->secureSession       = toSecureSession(data);
-}
+  std::shared_ptr<ApduResponse> response, OpenSession10CmdBuild* builder)
+: AbstractOpenSessionRespPars(response, builder, PoRevision::REV1_0) {}
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
 OpenSession10RespPars::toSecureSession(
@@ -49,7 +46,7 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
 OpenSession10RespPars::createSecureSession(
     const std::vector<uint8_t>& apduResponseData)
 {
-    bool previousSessionRatified = true;
+    bool previousSessionRatified;
 
     /**
      * In rev 1.0 mode, the response to the Open Secure Session command is as
@@ -73,14 +70,22 @@ OpenSession10RespPars::createSecureSession(
      * data</li>
      * </ul>
      */
+    std::vector<uint8_t> data;
+
     switch (apduResponseData.size()) {
     case 4:
-    case 33:
         previousSessionRatified = true;
         break;
+    case 33:
+        previousSessionRatified = true;
+        std::copy(apduResponseData + 4, apduResponseData + 33, data.begin());
+        break;
     case 6:
+        previousSessionRatified = false;
+        break;
     case 35:
         previousSessionRatified = false;
+        std::copy(apduResponseData + 6, apduResponseData + 35, data.begin());
         break;
     default:
         throw IllegalStateException(
@@ -89,15 +94,14 @@ OpenSession10RespPars::createSecureSession(
     }
 
     /* KVC doesn't exist and is set to null for this type of PO */
-    std::vector<uint8_t> emptyVector;
     std::vector<uint8_t> challengeTransactionCounter =
-        Arrays::copyOfRange(apduResponseData, 1, 4);
+        Arrays::copyOfRange(apduResponseData, 0, 3);
     std::vector<uint8_t> challengeRandomNumber =
-        Arrays::copyOfRange(apduResponseData, 4, 5);
+        Arrays::copyOfRange(apduResponseData, 3, 4);
 
     return std::make_shared<SecureSession>(
         challengeTransactionCounter, challengeRandomNumber,
-        previousSessionRatified, false, nullptr, emptyVector, apduResponseData);
+        previousSessionRatified, false, nullptr, data, apduResponseData);
 }
 
 }

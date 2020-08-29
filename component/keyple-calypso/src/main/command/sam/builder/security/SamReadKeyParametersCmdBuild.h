@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,7 +15,8 @@
 #pragma once
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
+#include "SamReadKeyParametersRespPars.h"
 #include "SamRevision.h"
 
 namespace keyple {
@@ -30,7 +31,8 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Read Key Parameters APDU command.
  */
-class SamReadKeyParametersCmdBuild : public AbstractSamCommandBuilder {
+class SamReadKeyParametersCmdBuild final
+: public AbstractSamCommandBuilder<SamReadKeyParametersRespPars> {
 public:
     /**
      *
@@ -50,36 +52,44 @@ public:
     /**
      *
      */
-    SamReadKeyParametersCmdBuild(SamRevision& revision);
+    SamReadKeyParametersCmdBuild(const SamRevision& revision);
 
     /**
      *
      */
-    SamReadKeyParametersCmdBuild(SamRevision& revision, uint8_t kif);
+    SamReadKeyParametersCmdBuild(const SamRevision& revision,
+                                 const uint8_t kif);
 
     /**
      *
      */
-    SamReadKeyParametersCmdBuild(SamRevision& revision, uint8_t kif,
-                                 uint8_t kvc);
+    SamReadKeyParametersCmdBuild(const SamRevision& revision, const uint8_t kif,
+                                 const uint8_t kvc);
 
     /**
      *
      */
-    SamReadKeyParametersCmdBuild(SamRevision& revision, SourceRef& sourceKeyRef,
-                                 uint8_t recordNumber);
+    SamReadKeyParametersCmdBuild(const SamRevision& revision,
+                                 const SourceRef& sourceKeyRef,
+                                 const uint8_t recordNumber);
 
     /**
      *
      */
-    SamReadKeyParametersCmdBuild(SamRevision& revision, uint8_t kif,
-                                 NavControl& navControl);
+    SamReadKeyParametersCmdBuild(const SamRevision& revision, const uint8_t kif,
+                                 const NavControl& navControl);
+
+    /**
+     *
+     */
+    std::shared_ptr<SamReadKeyParametersRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command reference
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::READ_KEY_PARAMETERS;
+    static const CalypsoSamCommands& mCommand;
 };
 
 }

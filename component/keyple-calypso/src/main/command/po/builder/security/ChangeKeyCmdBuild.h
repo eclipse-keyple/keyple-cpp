@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -19,7 +19,6 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
-#include "CalypsoPoCommands.h"
 #include "ChangeKeyRespPars.h"
 #include "PoClass.h"
 
@@ -37,12 +36,6 @@ using namespace keyple::core::seproxy::message;
 
 class KEYPLECALYPSO_API ChangeKeyCmdBuild
 : public AbstractPoCommandBuilder<ChangeKeyRespPars> {
-private:
-    /**
-     *
-     */
-    CalypsoPoCommands& command = CalypsoPoCommands::CHANGE_KEY;
-
 public:
     /**
      * Change Key Calypso command
@@ -57,8 +50,17 @@ public:
     /**
      *
      */
-    std::shared_ptr<ChangeKeyRespPars>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<ChangeKeyRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
+
+    /**
+     *
+     * This command can't be executed in session and therefore doesn't uses the
+     * session buffer.
+     *
+     * @return false
+     */
+    virtual bool isSessionBufferUsed() const override;
 
 protected:
     /**
@@ -69,6 +71,12 @@ protected:
         return std::static_pointer_cast<ChangeKeyCmdBuild>(
             AbstractPoCommandBuilder<ChangeKeyRespPars>::shared_from_this());
     }
+
+private:
+    /**
+     *
+     */
+    CalypsoPoCommand& command = CalypsoPoCommand::CHANGE_KEY;
 };
 
 }

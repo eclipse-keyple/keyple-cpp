@@ -52,9 +52,10 @@ public:
      * @param selectionStatus the SE selection status
      * @param apduResponses the apdu responses
      */
-    SeResponse(bool logicalChannelIsOpen, bool channelPreviouslyOpen,
+    SeResponse(const bool logicalChannelIsOpen,
+               const bool channelPreviouslyOpen,
                std::shared_ptr<SelectionStatus> selectionStatus,
-               std::vector<std::shared_ptr<ApduResponse>>& apduResponses);
+               const std::vector<std::shared_ptr<ApduResponse>>& apduResponses);
 
     /**
      * Was channel previously open.
@@ -83,7 +84,7 @@ public:
      * @return the group of APDUs responses returned by the SE application for
      *         this instance of SEResponse.
      */
-    std::vector<std::shared_ptr<ApduResponse>> getApduResponses() const;
+    const std::vector<std::shared_ptr<ApduResponse>>& getApduResponses() const;
 
     /**
      *
@@ -117,23 +118,23 @@ private:
      * is defined as true by the SE reader in case a logical channel was already
      * open with the target SE application.
      */
-    bool channelPreviouslyOpen = false;
+    const bool mChannelPreviouslyOpen;
 
     /**
      * true if the channel is open
      */
-    const bool logicalChannelIsOpen;
+    const bool mLogicalChannelIsOpen;
 
     /**
      *
      */
-    const std::shared_ptr<SelectionStatus> selectionStatus;
+    const std::shared_ptr<SelectionStatus> mSelectionStatus;
 
     /**
      * could contain a group of APDUResponse returned by the selected SE
      * application on the SE reader.
      */
-    std::vector<std::shared_ptr<ApduResponse>> apduResponses;
+    std::vector<std::shared_ptr<ApduResponse>> mApduResponses;
 };
 
 }

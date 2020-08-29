@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -19,7 +19,8 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
+#include "DigestUpdateMultipleRespPars.h"
 #include "SamRevision.h"
 
 namespace keyple {
@@ -34,19 +35,26 @@ using namespace keyple::calypso::command::sam;
 /**
  * This class provides the dedicated constructor to build the SAM Digest Update
  * Multiple APDU command.
- *
  */
-class DigestUpdateMultipleCmdBuild : public AbstractSamCommandBuilder {
+class DigestUpdateMultipleCmdBuild final
+: public AbstractSamCommandBuilder<DigestUpdateMultipleRespPars> {
 public:
     /**
      * Instantiates a new DigestUpdateMultipleCmdBuild.
      *
      * @param revision the revision
+     * @param encryptedSession the encrypted session flag, true if encrypted
      * @param digestData the digest data
-     * @throws IllegalArgumentException - if the request is inconsistent
      */
-    DigestUpdateMultipleCmdBuild(SamRevision revision,
-                                 std::vector<uint8_t>& digestData);
+    DigestUpdateMultipleCmdBuild(const SamRevision revision,
+                                 const bool encryptedSession,
+                                 const std::vector<uint8_t>& digestData);
+
+    /**
+     *
+     */
+    std::shared_ptr<DigestUpdateMultipleRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -62,7 +70,7 @@ private:
     /**
      * The command
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_UPDATE_MULTIPLE;
+    static const CalypsoSamCommand& mCommand;
 };
 
 }

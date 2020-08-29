@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,15 +14,13 @@
 
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <vector>
-#include <stdexcept>
 #include <memory>
 
-/* Core */
-#include "AbstractApduResponseParser.h"
-
 /* Calypso */
+#include "AbstractPoResponseParser.h"
+#include "CloseSessionCmdBuild.h"
 #include "KeypleCalypsoExport.h"
 
 namespace keyple {
@@ -40,14 +38,16 @@ using namespace keyple::core::seproxy::message;
  * 9.5.2 - Close Secure Session
  */
 class KEYPLECALYPSO_API CloseSessionRespPars final
-: public AbstractApduResponseParser {
+: public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new CloseSessionRespPars from the response.
      *
      * @param response from CloseSessionCmdBuild
+     * @param builder the reference to the builder that created this parser
      */
-    CloseSessionRespPars(std::shared_ptr<ApduResponse> response);
+    CloseSessionRespPars(std::shared_ptr<ApduResponse> response,
+                         CloseSessionCmdBuild* builder);
 
     /**
      *
@@ -63,9 +63,8 @@ protected:
     /**
      *
      */
-    std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    getStatusTable() const override;
+    std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        getStatusTable() const override;
 
     /**
      *
@@ -90,26 +89,9 @@ private:
     /**
      *
      */
-    static std::unordered_map<
+    static std::map<
         int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
         STATUS_TABLE;
-
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        /**
-         *
-         */
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static CloseSessionRespPars::StaticConstructor staticConstructor;
 
     /**
      *

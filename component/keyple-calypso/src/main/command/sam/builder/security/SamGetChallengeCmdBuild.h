@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -17,6 +19,7 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommands.h"
+#include "SamGetChallengeRespPars.h"
 #include "SamRevision.h"
 
 /* Common */
@@ -34,8 +37,8 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Get Challenge APDU command.
  */
-class KEYPLECALYPSO_API SamGetChallengeCmdBuild
-: public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API SamGetChallengeCmdBuild final
+: public AbstractSamCommandBuilder<SamGetChallengeRespPars> {
 public:
     /**
      * Instantiates a new SamGetChallengeCmdBuild.
@@ -45,15 +48,14 @@ public:
      * @throws IllegalArgumentException - if the expected response length has
      *         wrong value.
      */
-    SamGetChallengeCmdBuild(SamRevision revision,
-                            uint8_t expectedResponseLength);
+    SamGetChallengeCmdBuild(const SamRevision& revision,
+                            const uint8_t expectedResponseLength);
 
     /**
      *
      */
-    virtual ~SamGetChallengeCmdBuild()
-    {
-    }
+    std::shared_ptr<SamGetChallengeRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -69,7 +71,7 @@ private:
     /**
      * The command reference
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::GET_CHALLENGE;
+    static const CalypsoSamCommand& mCommand;
 };
 
 }

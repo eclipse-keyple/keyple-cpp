@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -17,11 +17,10 @@
 #include <vector>
 #include <memory>
 
-/* Core */
-#include "AbstractApduResponseParser.h"
-
 /* Calypso */
+#include "AbstractPoResponseParser.h"
 #include "KeypleCalypsoExport.h"
+#include "PoGetChallengeCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -38,14 +37,16 @@ using namespace keyple::core::seproxy::message;
  * challenge
  */
 class KEYPLECALYPSO_API PoGetChallengeRespPars final
-: public AbstractApduResponseParser {
+: public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new PoGetChallengeRespPars.
      *
      * @param response the response from PO Get Challenge APDU Command
+     * @param builder the reference to the builder that created this parser
      */
-    PoGetChallengeRespPars(std::shared_ptr<ApduResponse> response);
+    PoGetChallengeRespPars(std::shared_ptr<ApduResponse> response,
+                           PoGetChallengeCmdBuild* builder);
 
     /**
      *

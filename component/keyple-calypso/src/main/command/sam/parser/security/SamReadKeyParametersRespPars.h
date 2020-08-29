@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,8 +14,12 @@
 
 #pragma once
 
+#include <map>
+
 /* Calypso */
 #include "AbstractSamResponseParser.h"
+#include "KeypleCalypsoExport.h"
+#include "SamReadKeyParametersCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -25,25 +29,42 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::security;
 
 /**
  * SAM read key parameters.
  */
-class SamReadKeyParametersRespPars : public AbstractSamResponseParser {
+class KEYPLECALYPSO_API SamReadKeyParametersRespPars final
+: public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new SamReadKeyParametersRespPars.
      *
      * @param response of the SamReadKeyParametersRespPars
+     * @param builder the reference to the builder that created this parser
      */
-    SamReadKeyParametersRespPars(std::shared_ptr<ApduResponse> response);
+    SamReadKeyParametersRespPars(const std::shared_ptr<ApduResponse> response,
+                                 SamReadKeyParametersCmdBuild* builder);
 
     /**
      * Gets the key parameters.
      *
      * @return the key parameters
      */
-    std::vector<uint8_t> getKeyParameters() const;
+    const std::vector<uint8_t> getKeyParameters() const;
+
+protected:
+    /**
+     *
+     */
+    const std::map<int, std::shared_ptr<StatusProperties>>&
+        getStatusTable() const override;
+
+private:
+    /**
+     *
+     */
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

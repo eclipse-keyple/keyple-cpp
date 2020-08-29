@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,12 +14,14 @@
 
 #pragma once
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 /* Core */
 #include "AbstractSamResponseParser.h"
 
+/* Calypso */
+#include "DigestCloseCmdBuild.h"
 #include "KeypleCalypsoExport.h"
 
 namespace keyple {
@@ -36,39 +38,37 @@ using namespace keyple::core::seproxy::message;
  * Digest close response parser. See specs: Calypso / page 54 / 7.4.2 - Session
  * MAC computation
  */
-class KEYPLECALYPSO_API DigestCloseRespPars
+class KEYPLECALYPSO_API DigestCloseRespPars final
 : public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new DigestCloseRespPars.
      *
      * @param response from the DigestCloseCmdBuild
+     * @param builder the reference to the builder that created this parser
      */
-    DigestCloseRespPars(std::shared_ptr<ApduResponse> response);
-
-    /**
-     *
-     */
-    virtual ~DigestCloseRespPars()
-    {
-    }
+    DigestCloseRespPars(const std::shared_ptr<ApduResponse> response,
+                        DigestCloseCmdBuild* builder);
 
     /**
      * Gets the sam signature.
      *
      * @return the sam half session signature
      */
-    virtual std::vector<uint8_t> getSignature() const;
+    const std::vector<uint8_t> getSignature() const;
 
 protected:
     /**
      *
      */
-    std::shared_ptr<DigestCloseRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<DigestCloseRespPars>(
-            AbstractSamResponseParser::shared_from_this());
-    }
+    const std::map<int, std::shared_ptr<StatusProperties>>&
+        getStatusTable() const override;
+
+private:
+    /**
+     *
+     */
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

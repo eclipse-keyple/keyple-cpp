@@ -54,13 +54,13 @@ public:
      * @param request request
      */
     AbstractApduCommandBuilder(const std::shared_ptr<SeCommand> commandRef,
-                               std::shared_ptr<ApduRequest> request);
+                               const std::shared_ptr<ApduRequest> request);
 
     /**
      *
      */
     AbstractApduCommandBuilder(const std::string& name,
-                               std::shared_ptr<ApduRequest> request);
+                               const std::shared_ptr<ApduRequest> request);
 
     /**
      *

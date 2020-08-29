@@ -67,7 +67,7 @@ public:
         /**
          *
          */
-        virtual ~StatusProperties() {}
+        virtual ~StatusProperties() = default;
 
         /**
          * Gets the successful.
@@ -116,7 +116,7 @@ public:
     /**
      *
      */
-    virtual ~AbstractApduResponseParser() {}
+    virtual ~AbstractApduResponseParser() = default;
 
     /**
      * Sets the Apdu response to parse
@@ -155,7 +155,7 @@ public:
      *
      * @throws KeypleSeCommandException if status is not successful.
      */
-    void checkStatus();
+    virtual void checkStatus() const;
 
 protected:
     /**
@@ -191,12 +191,12 @@ protected:
             const std::type_info& exceptionClass,
             const std::string& message,
             const std::shared_ptr<SeCommand> commandRef,
-            const std::shared_ptr<Integer> statusCode);
+            const std::shared_ptr<int> statusCode) const;
 
     /**
      * @return the internal status table
      */
-    virtual std::map<int, std::shared_ptr<StatusProperties>>&
+    virtual const std::map<int, std::shared_ptr<StatusProperties>>&
         getStatusTable() const;
 
     /**

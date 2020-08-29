@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -29,16 +29,12 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::core::seproxy::message;
 
 OpenSession31RespPars::OpenSession31RespPars(
-    std::shared_ptr<ApduResponse> response)
-: AbstractOpenSessionRespPars(response, PoRevision::REV3_1)
-{
-    std::vector<uint8_t> data = response->getDataOut();
-    secureSession       = toSecureSession(data);
-}
+  std::shared_ptr<ApduResponse> response, OpenSession31CmdBuild* builder)
+: AbstractOpenSessionRespPars(response, builder, PoRevision::REV3_1) {}
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-OpenSession31RespPars::toSecureSession(
-    const std::vector<uint8_t>& apduResponseData)
+    OpenSession31RespPars::toSecureSession(
+        const std::vector<uint8_t>& apduResponseData)
 {
     bool previousSessionRatified       = (apduResponseData[4] == 0x00);
     bool manageSecureSessionAuthorized = false;

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -12,8 +12,12 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "AbstractPoResponseParser.h"
 #include "AbstractOpenSessionRespPars.h"
+
+#include <typeinfo>
+
+/* Calypso */
+#include "AbstractPoResponseParser.h"
 #include "AbstractApduResponseParser.h"
 #include "ApduResponse.h"
 #include "OpenSession10RespPars.h"
@@ -22,6 +26,7 @@
 #include "OpenSession32RespPars.h"
 
 /* Common */
+#include "ClassNotFoundException.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -38,72 +43,86 @@ using namespace keyple::core::seproxy::message;
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 std::unordered_map<int, std::shared_ptr<StatusProperties>>
-    AbstractOpenSessionRespPars::STATUS_TABLE;
-
-AbstractOpenSessionRespPars::StaticConstructor::StaticConstructor()
-{
-    std::unordered_map<int, std::shared_ptr<StatusProperties>> m(
-        AbstractApduResponseParser::STATUS_TABLE);
-
-    m.emplace(0x6700, std::make_shared<StatusProperties>(
-                          false, "Lc value not supported."));
-    m.emplace(0x6900, std::make_shared<StatusProperties>(
-                          false, "Transaction Counter is 0"));
-    m.emplace(0x6981,
-              std::make_shared<StatusProperties>(
-                  false,
-                  "Command forbidden (read requested and current EF is a "
-                  "Binary file)."));
-    m.emplace(0x6982,
-              std::make_shared<StatusProperties>(
-                  false,
-                  std::string("Security conditions not fulfilled (PIN code not "
-                              "presented, AES key forbidding the ") +
-                      "compatibility mode, "
-                      "encryption required)."));
-    m.emplace(0x6985,
-              std::make_shared<StatusProperties>(
-                  false, "Access forbidden (Never access mode, Session already "
-                         "opened)."));
-    m.emplace(
+    AbstractOpenSessionRespPars::STATUS_TABLE = {
+    {
+        0x6700,
+        std::make_shared<StatusProperties>(
+            "Lc value not supported.",
+            typeid(CalypsoPoIllegalParameterException))
+    }, {
+        0x6900,
+        std::make_shared<StatusProperties>(
+            "Transaction Counter is 0",
+            typeid(CalypsoPoTerminatedException))
+    }, {
+        0x6981,
+        std::make_shared<StatusProperties>(
+            "Command forbidden (read requested and current EF is a " \
+            "Binary file).",
+            typeid(CalypsoPoDataAccessException))
+    }, {
+        0x6982,
+        std::make_shared<StatusProperties>(
+            "Security conditions not fulfilled (PIN code not presented," \
+            " AES key forbidding the compatibility mode, encryption "  \
+            "required).",
+            typeid(CalypsoPoSecurityContextException))
+    }, {
+        0x6985,
+        std::make_shared<StatusProperties>(
+            "Access forbidden (Never access mode, Session already " \
+            "opened).",
+            typeid(CalypsoPoAccessForbiddenException))
+    }, {
         0x6986,
         std::make_shared<StatusProperties>(
-            false, "Command not allowed (read requested and no current EF)."));
-    m.emplace(0x6A81,
-              std::make_shared<StatusProperties>(false, "Wrong key index."));
-    m.emplace(0x6A82,
-              std::make_shared<StatusProperties>(false, "File not found."));
-    m.emplace(0x6A83,
-              std::make_shared<StatusProperties>(
-                  false, "Record not found (record index is above NumRec)."));
-    m.emplace(0x6B00,
-              std::make_shared<StatusProperties>(
-                  false,
-                  "P1 or P2 value not supported (key index incorrect, wrong "
-                  "P2)."));
-
-    STATUS_TABLE = m;
-}
-
-AbstractOpenSessionRespPars::StaticConstructor
-    AbstractOpenSessionRespPars::staticConstructor;
+            "Command not allowed (read requested and no current EF).",
+            typeid(CalypsoPoDataAccessException))
+    }, {
+        0x6A81,
+        std::make_shared<StatusProperties>(
+            "Wrong key index.",
+            typeid(CalypsoPoIllegalParameterException))
+    }, {
+        0x6A82,
+        std::make_shared<StatusProperties>(
+            "File not found.",
+            typeid(CalypsoPoDataAccessException))
+    }, {
+        0x6A83,
+        std::make_shared<StatusProperties>(
+            "Record not found (record index is above NumRec).",
+            typeid(CalypsoPoDataAccessException))
+    }, {
+        0x6B00,
+        std::make_shared<StatusProperties>(
+            "P1 or P2 value not supported (key index incorrect, wrong " \
+            "P2).",
+            typeid(CalypsoPoIllegalParameterException))
+    }, {
+        0x61FF,
+        std::make_shared<StatusProperties>(
+            "Correct execution (ISO7816 T=0).",
+            typeid(ClassNotFoundException))
+    }
+};
 
 std::unordered_map<int, std::shared_ptr<StatusProperties>>
-AbstractOpenSessionRespPars::getStatusTable() const
+    AbstractOpenSessionRespPars::getStatusTable() const
 {
     // At this stage, the status table is the same for everyone
     return STATUS_TABLE;
 }
 
 AbstractOpenSessionRespPars::AbstractOpenSessionRespPars(
-    std::shared_ptr<ApduResponse> response, PoRevision revision)
-: AbstractPoResponseParser(response) //, revision(revision)
+  std::shared_ptr<ApduResponse> response,
+  AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>* builder,
+  PoRevision revision)
+: AbstractPoResponseParser(response, builder)
 {
-    /*
-     * Alex: this member is (was) declared in the class but not used. Commenting
-     * it until it is necessary.
-     */
-    (void)revision;
+    const std::vector<uint8_t> dataOut = response.getDataOut();
+    if (dataOut.length())
+        mSecureSession = toSecureSession(dataOut);
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars>
@@ -112,14 +131,14 @@ AbstractOpenSessionRespPars::create(std::shared_ptr<ApduResponse> response,
 {
     switch (revision) {
     case PoRevision::REV1_0:
-        return std::make_shared<OpenSession10RespPars>(response);
+        return std::make_shared<OpenSession10RespPars>(response, mBuilder);
     case PoRevision::REV2_4:
-        return std::make_shared<OpenSession24RespPars>(response);
+        return std::make_shared<OpenSession24RespPars>(response, mBuilder);
     case PoRevision::REV3_1:
     case PoRevision::REV3_1_CLAP:
-        return std::make_shared<OpenSession31RespPars>(response);
+        return std::make_shared<OpenSession31RespPars>(response, mBuilder);
     case PoRevision::REV3_2:
-        return std::make_shared<OpenSession32RespPars>(response);
+        return std::make_shared<OpenSession32RespPars>(response, mBuilder);
     default:
         throw std::invalid_argument(StringHelper::formatSimple(
             "Unknow revision %d", static_cast<int>(revision)));
@@ -128,40 +147,38 @@ AbstractOpenSessionRespPars::create(std::shared_ptr<ApduResponse> response,
 
 const std::vector<uint8_t>& AbstractOpenSessionRespPars::getPoChallenge()
 {
-    return secureSession->getChallengeRandomNumber();
+    return mSecureSession->getChallengeRandomNumber();
 }
 
 int AbstractOpenSessionRespPars::getTransactionCounterValue()
 {
-    std::vector<uint8_t> counter =
-        secureSession->getChallengeTransactionCounter();
-
-    return counter[0] << 24 | counter[1] << 16 | counter[2] << 8 | counter[3];
+    return ByteArrayUtil::threeBytesToInt(
+               mSecureSession->getChallengeTransactionCounter(), 0);
 }
 
 bool AbstractOpenSessionRespPars::wasRatified()
 {
-    return secureSession->isPreviousSessionRatified();
+    return mSecureSession->isPreviousSessionRatified();
 }
 
 bool AbstractOpenSessionRespPars::isManageSecureSessionAuthorized()
 {
-    return secureSession->isManageSecureSessionAuthorized();
+    return mSecureSession->isManageSecureSessionAuthorized();
 }
 
 char AbstractOpenSessionRespPars::getSelectedKif()
 {
-    return secureSession->getKIF();
+    return mSecureSession->getKIF();
 }
 
 std::shared_ptr<Byte> AbstractOpenSessionRespPars::getSelectedKvc()
 {
-    return secureSession->getKVC();
+    return mSecureSession->getKVC();
 }
 
 const std::vector<uint8_t>& AbstractOpenSessionRespPars::getRecordDataRead()
 {
-    return secureSession->getOriginalData();
+    return mSecureSession->getOriginalData();
 }
 
 AbstractOpenSessionRespPars::SecureSession::SecureSession(
@@ -189,8 +206,8 @@ AbstractOpenSessionRespPars::SecureSession::SecureSession(
   challengeRandomNumber(challengeRandomNumber),
   previousSessionRatified(previousSessionRatified),
   manageSecureSessionAuthorized(manageSecureSessionAuthorized),
-  kif(0xff), kvc(kvc), originalData(originalData),
-  secureSessionData(secureSessionData)
+  kif(0xff), kvc(kvc != nullptr ? kvc : std::make_shared<Byte>(0xff)),
+  originalData(originalData), secureSessionData(secureSessionData)
 {
 }
 
@@ -203,7 +220,8 @@ AbstractOpenSessionRespPars::SecureSession::SecureSession(
   challengeRandomNumber(challengeRandomNumber),
   previousSessionRatified(previousSessionRatified),
   manageSecureSessionAuthorized(manageSecureSessionAuthorized),
-  kif(0xff), kvc(kvc), secureSessionData(secureSessionData)
+  kif(0xff), kvc(kvc != nullptr ? kvc : std::make_shared<Byte>(0xff)),
+  secureSessionData(secureSessionData)
 {
 }
 

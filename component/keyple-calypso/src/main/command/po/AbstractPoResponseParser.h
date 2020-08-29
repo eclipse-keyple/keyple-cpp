@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,6 +15,8 @@
 #pragma once
 
 /* Calypso */
+#include "AbstractPoCommandBuilder.h"
+#include "AbstractPoResponseParser.h"
 #include "KeypleCalypsoExport.h"
 
 /* Core */
@@ -32,25 +34,40 @@ class KEYPLECALYPSO_API AbstractPoResponseParser
 : public AbstractApduResponseParser {
 public:
     /**
-     * the generic abstract constructor to build a parser of the APDU response.
+     * The generic abstract constructor to build a parser of the APDU response.
      *
      * @param response response to parse
+     * @param builder the reference of the builder that created the parser
      */
-    AbstractPoResponseParser(std::shared_ptr<ApduResponse> response);
+    AbstractPoResponseParser(
+        std::shared_ptr<ApduResponse> response,
+        AbstractPoCommandBuilder<AbstractPoResponseParser>* builder);
 
     /**
      *
      */
-    virtual ~AbstractPoResponseParser()
-    {
-    }
+    virtual ~AbstractPoResponseParser() = default;
+
+    /**
+     *
+     */
+    const std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
+        getBuilder() const override;
+
+    /**
+     *
+     */
+    void checkStatus() const override;
 
 protected:
-    std::shared_ptr<AbstractPoResponseParser> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractPoResponseParser>(
-            AbstractApduResponseParser::shared_from_this());
-    }
+    /**
+     *
+     */
+    KeypleSeCommandException buildCommandException(
+        const std::type_info& exceptionClass,
+        const std::string& message,
+        const std::shared_ptr<SeCommand> commandRef,
+        const int statusCode) override;
 };
 
 }

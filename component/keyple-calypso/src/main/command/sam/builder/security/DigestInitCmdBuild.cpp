@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,6 +14,8 @@
 
 #include "DigestInitCmdBuild.h"
 
+/* Common */
+#include "IllegalArgumentException.h"
 #include "System.h"
 
 namespace keyple {
@@ -25,39 +27,40 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
-DigestInitCmdBuild::DigestInitCmdBuild(SamRevision revision,
-                                       bool verificationMode, bool rev3_2Mode,
-                                       uint8_t workKeyRecordNumber,
-                                       uint8_t workKeyKif, uint8_t workKeyKVC,
-                                       std::vector<uint8_t>& digestData)
-: AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_INIT, nullptr)
+const CalypsoSamCommand& DigestInitCmdBuild::mCommand =
+    CalypsoSamCommand::DIGEST_INIT;
+
+DigestInitCmdBuild::DigestInitCmdBuild(
+  const SamRevision revision, const bool verificationMode,
+  const bool confidentialSessionMode, const uint8_t workKeyRecordNumber,
+  const uint8_t workKeyKif, const uint8_t workKeyKVC,
+  const std::vector<uint8_t>& digestData)
+: AbstractSamCommandBuilder(CalypsoSamCommand::DIGEST_INIT, nullptr)
 {
-    this->defaultRevision = revision;
+    mDefaultRevision = revision;
 
     if (workKeyRecordNumber == 0x00 &&
         (workKeyKif == 0x00 || workKeyKVC == 0x00)) {
-        throw std::invalid_argument("Bad key record number, kif or kvc!");
+        throw IllegalArgumentException("Bad key record number, kif or kvc!");
     }
 
     if (digestData.empty()) {
-        throw std::invalid_argument("Digest data is null!");
+        throw IllegalArgumentException("Digest data is null!");
     }
 
     uint8_t cla = SamRevision::S1D == (this->defaultRevision) ? 0x94 : 0x80;
     uint8_t p1  = 0x00;
 
-    if (verificationMode) {
+    if (verificationMode)
         p1 += 1;
-    }
 
-    if (rev3_2Mode) {
+    if (confidentialSessionMode)
         p1 += 2;
-    }
 
     uint8_t p2 = 0xFF;
-    if (workKeyKif == 0xFF) {
+
+    if (workKeyKif == 0xFF)
         p2 = workKeyRecordNumber;
-    }
 
     std::vector<uint8_t> dataIn;
 
@@ -67,15 +70,16 @@ DigestInitCmdBuild::DigestInitCmdBuild(SamRevision revision,
         dataIn[1] = workKeyKVC;
         System::arraycopy(digestData, 0, dataIn, 2, digestData.size());
     } else {
-        dataIn.clear();
+        dataIn = digestData;
     }
 
-    /*
-     * CalypsoRequest calypsoRequest =
-     *     new CalypsoRequest(cla, CalypsoCommands.SAM_DIGEST_INIT, p1, p2,
-     *                        dataIn);
-     */
-    request = setApduRequest(cla, command, p1, p2, dataIn);
+    mRequest = setApduRequest(cla, command, p1, p2, dataIn);
+}
+
+std::shared_ptr<DigestInitRespPars> DigestInitCmdBuild:createResponseParser(
+    const std::shared_ptr<ApduResponse> apduResponse)
+{
+    return std::make_shared<DigestInitRespPars>(apduResponse, this);
 }
 
 }

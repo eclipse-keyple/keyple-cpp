@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -32,12 +32,8 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::core::seproxy::message;
 
 OpenSession24RespPars::OpenSession24RespPars(
-    std::shared_ptr<ApduResponse> response)
-: AbstractOpenSessionRespPars(response, PoRevision::REV2_4)
-{
-    std::vector<uint8_t> data = response->getDataOut();
-    this->secureSession       = toSecureSession(data);
-}
+  std::shared_ptr<ApduResponse> response, OpenSession24CmdBuild* builder)
+: AbstractOpenSessionRespPars(response, PoRevision::REV2_4) {}
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
 OpenSession24RespPars::toSecureSession(
