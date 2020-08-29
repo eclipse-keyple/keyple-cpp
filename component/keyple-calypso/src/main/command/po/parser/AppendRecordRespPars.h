@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,10 +14,11 @@
 
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <memory>
 
 #include "AbstractPoResponseParser.h"
+#include "AppendRecordCmdBuild.h"
 #include "KeypleCalypsoExport.h"
 
 namespace keyple {
@@ -35,40 +36,15 @@ using namespace keyple::core::seproxy::message;
  */
 class KEYPLECALYPSO_API AppendRecordRespPars final
 : public AbstractPoResponseParser {
-private:
-    /**
-     *
-     */
-    static std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
-
-private:
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        /**
-         *
-         */
-        StaticConstructor();
-    };
-
-private:
-    /**
-     *
-     */
-    static AppendRecordRespPars::StaticConstructor staticConstructor;
-
 public:
     /**
      * Instantiates a new AppendRecordRespPars.
      *
      * @param response the response from the PO
+     * @param builder the reference to the builder that created this parser
      */
-    AppendRecordRespPars(std::shared_ptr<ApduResponse> response);
+    AppendRecordRespPars(std::shared_ptr<ApduResponse> response,
+                         AppendRecordCmdBuild* builder);
 
 protected:
     /**
@@ -76,9 +52,8 @@ protected:
      *
      * @return Status table
      */
-    std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    getStatusTable() const override;
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
+        const override;
 
     /**
      *
@@ -88,6 +63,12 @@ protected:
         return std::static_pointer_cast<AppendRecordRespPars>(
             AbstractPoResponseParser::shared_from_this());
     }
+
+private:
+    /**
+     *
+     */
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

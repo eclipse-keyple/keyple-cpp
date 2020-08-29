@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,9 +14,14 @@
 
 #pragma once
 
+#include <map>
 #include <memory>
 
+/* Core */
 #include "AbstractApduResponseParser.h"
+
+/* Calypso */
+#include "AbstractSamCommandBuilder.h"
 
 namespace keyple {
 namespace calypso {
@@ -32,18 +37,46 @@ public:
      * Constructor to build a parser of the APDU response.
      *
      * @param response response to parse
+     * @param builder the reference of the builder that created the parser
      */
-    AbstractSamResponseParser(std::shared_ptr<ApduResponse> response);
+    AbstractSamResponseParser(const std::shared_ptr<ApduResponse> response,
+                              AbstractSamCommandBuilder* builder);
+
+    /**
+     *
+     */
+    virtual ~AbstractSamResponseParser() = default;
+
+    /**
+     * {@inheritDoc}
+     */
+    std::shared_ptr<bstractSamCommandBuilder> getBuilder() override;
+
+    /**
+     * {@inheritDoc}
+     */
+    void checkStatus() const override;
 
 protected:
     /**
      *
      */
-    std::shared_ptr<AbstractSamResponseParser> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractSamResponseParser>(
-            AbstractApduResponseParser::shared_from_this());
-    }
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+
+    /**
+     *
+     */
+    const std::map<int, std::shared_ptr<StatusProperties>>&
+        getStatusTable() const override;
+
+    /**
+     * {@inheritDoc}
+     */
+    KeypleSeCommandException buildCommandException(
+        const type_info& exceptionClass,
+        const std::string& message, SeCommand commandRef, int statusCode)
+        override;
+
 };
 
 }

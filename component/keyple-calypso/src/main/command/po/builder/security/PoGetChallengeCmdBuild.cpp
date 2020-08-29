@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -13,7 +13,12 @@
  ******************************************************************************/
 
 #include "PoGetChallengeCmdBuild.h"
+
+/* Calypso */
+#include "CalypsoPoCommand.h"
 #include "PoGetChallengeRespPars.h"
+
+/* Core */
 #include "ApduResponse.h"
 
 namespace keyple {
@@ -40,7 +45,12 @@ std::shared_ptr<PoGetChallengeRespPars>
 PoGetChallengeCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<PoGetChallengeRespPars>(apduResponse);
+    return std::make_shared<PoGetChallengeRespPars>(apduResponse, this);
+}
+
+bool OpenSession10CmdBuild::isSessionBufferUsed() const
+{
+    return false;
 }
 
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -13,8 +13,15 @@
  ******************************************************************************/
 
 #include "AppendRecordCmdBuild.h"
+
+/* Calypso */
 #include "AppendRecordRespPars.h"
+
+/* Core */
 #include "ApduResponse.h"
+
+/* Common */
+#include "stringhelper.h"
 
 namespace keyple {
 namespace calypso {
@@ -27,23 +34,41 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
 AppendRecordCmdBuild::AppendRecordCmdBuild(
-    PoClass poClass, uint8_t sfi, const std::vector<uint8_t>& newRecordData,
-    const std::string& extraInfo)
+    PoClass poClass, uint8_t sfi, const std::vector<uint8_t>& newRecordData)
 : AbstractPoCommandBuilder<AppendRecordRespPars>(
-      CalypsoPoCommands::APPEND_RECORD, nullptr)
+      CalypsoPoCommand::APPEND_RECORD, nullptr),
+  mSfi(sfi), mData(newRecordData)
 {
-    this->request = setApduRequest(poClass.getValue(), command, 0x00,
-                                   sfi == 0 ? 0x00 : sfi * 8, newRecordData);
-    if (extraInfo != "") {
-        this->addSubName(extraInfo);
-    }
+    const uint8_t cla = poClass.getValue();
+    const uint8_t p1 = 0x00;
+    const uint8_t p2 = (sfi == 0) ? 0x00 : (sfi * 8);
+
+    request = setApduRequest(cla, command, p1, p2, newRecordData);
+
+    const std::string extraInfo = StringHelper::formatSimple("SFI=%02X", sfi);
+    addSubName(extraInfo);
 }
 
 std::shared_ptr<AppendRecordRespPars>
 AppendRecordCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<AppendRecordRespPars>(apduResponse);
+    return std::make_shared<AppendRecordRespPars>(apduResponse, this);
+}
+
+bool AppendRecordCmdBuild::isSessionBufferUsed() const
+{
+    return true;
+}
+
+uint8_t AppendRecordCmdBuild::getSfi() const
+{
+    return mSfi;
+}
+
+const std::vector<uint8_t>& AppendRecordCmdBuild::getData() const
+{
+    return mData;
 }
 
 }

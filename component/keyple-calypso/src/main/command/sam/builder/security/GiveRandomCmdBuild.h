@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -19,7 +19,8 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
+#include "GiveRandomRespPars.h"
 #include "SamRevision.h"
 
 namespace keyple {
@@ -34,19 +35,26 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Give Random APDU command.
  */
-class GiveRandomCmdBuild : public AbstractSamCommandBuilder {
+class GiveRandomCmdBuild final
+: public AbstractSamCommandBuilder<GiveRandomRespPars> {
 public:
     /**
      * Instantiates a new DigestUpdateCmdBuild.
      *
      * @param revision of the SAM
      * @param random the random data
-     * @throws IllegalArgumentException - if the random data is null or has a
-     *         length not equal to 8
-     *
-     *         TODO implement specific settings for rev < 3
+     * @throw IllegalArgumentException - if the random data is null or has a
+     *        length not equal to 8
+     *        TODO implement specific settings for rev < 3
      */
-    GiveRandomCmdBuild(SamRevision revision, std::vector<uint8_t>& random);
+    GiveRandomCmdBuild(const SamRevision& revision,
+                       const std::vector<uint8_t>& random);
+
+    /**
+     *
+     */
+    std::shared_ptr<GiveRandomRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -62,7 +70,7 @@ private:
     /**
      * The command reference
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::GIVE_RANDOM;
+    static const CalypsoSamCommand& mCommand;
 };
 
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -20,7 +20,7 @@
 #include <memory>
 
 #include "AbstractOpenSessionCmdBuild.h"
-#include "OpenSession10RespPars.h"
+#include "AbstractOpenSessionRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -33,7 +33,7 @@ using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::core::seproxy::message;
 
 class KEYPLECALYPSO_API OpenSession10CmdBuild final
-: public AbstractOpenSessionCmdBuild<OpenSession10RespPars> {
+: public AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars> {
 public:
     /**
      * Instantiates a new AbstractOpenSessionCmdBuild.
@@ -41,20 +41,39 @@ public:
      * @param keyIndex the key index
      * @param samChallenge the sam challenge returned by the SAM Get Challenge
      *        APDU command
-     * @param sfiToSelect the sfi to select
-     * @param recordNumberToRead the record number to read
-     * @param extraInfo extra information included in the logs (can be null or
-     *        empty)
-     * @throws IllegalArgumentException - if key index is 0 (rev 1.0)
-     * @throws IllegalArgumentException - if the request is inconsistent
+     * @param sfi the sfi to select
+     * @param recordNumber the record number to read
+     * @throw IllegalArgumentException - if key index is 0 (rev 1.0)
+     * @throw IllegalArgumentException - if the request is inconsistent
      */
     OpenSession10CmdBuild(uint8_t keyIndex,
                           const std::vector<uint8_t>& samChallenge,
-                          uint8_t sfiToSelect, uint8_t recordNumberToRead,
-                          const std::string& extraInfo);
+                          uint8_t sfi, uint8_t recordNumber);
 
-    std::shared_ptr<OpenSession10RespPars>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    /**
+     *
+     */
+    std::shared_ptr<OpenSession10RespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
+
+    /**
+     *
+     * This command can't be executed in session and therefore doesn't uses the
+     * session buffer.
+     *
+     * @return false
+     */
+    virtual bool isSessionBufferUsed() const override;
+
+    /**
+     *
+     */
+    virtual const uint8_t getSfi() const;
+
+    /**
+     *
+     */
+    virtual const uint8_t getRecordNumber() const;
 
 protected:
     std::shared_ptr<OpenSession10CmdBuild> shared_from_this()
@@ -63,6 +82,13 @@ protected:
             AbstractOpenSessionCmdBuild<
                 OpenSession10RespPars>::shared_from_this());
     }
+
+private:
+    /**
+     * Construction arguments used for parsing
+     */
+    const uint8_t mSfi;
+    const uint8_t mRecordNumber;
 };
 
 }

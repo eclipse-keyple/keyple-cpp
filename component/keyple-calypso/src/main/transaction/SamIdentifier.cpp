@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -23,53 +23,85 @@ namespace transaction {
 
 using namespace keyple::common;
 
-SamIdentifier::SamIdentifier(const SamRevision& samRevision,
-                             const std::string& serialNumber,
-                             const std::string& groupReference)
-: samRevision(samRevision), serialNumber(serialNumber),
-  groupReference(groupReference)
+/* SAM IDENTIFIER ----------------------------------------------------------- */
+
+SamIdentifier::SamIdentifier(const SamIdentifierBuilder* builder)
+: mSamRevision(builder->mSamRevision),
+  mSerialNumber(builder->mSerialNumber),
+  mGroupReference(builder->mGroupReference) {}
+
+std::unique_ptr<SamIdentifierBuilder> SamIdentifier::builder()
 {
+    return std::unique_ptr<SamIdentifierBuilder>(new SamIdentifierBuilder());
 }
 
 const SamRevision& SamIdentifier::getSamRevision() const
 {
-    return samRevision;
+    return mSamRevision;
 }
 
 const std::string& SamIdentifier::getSerialNumber() const
 {
-    return serialNumber;
+    return mSerialNumber;
 }
 
 const std::string& SamIdentifier::getGroupReference() const
 {
-    return groupReference;
+    return mGroupReference;
 }
 
-bool SamIdentifier::matches(const SamIdentifier* samIdentifier) const
+bool SamIdentifier::matches(const std::shared_ptr<SamIdentifier> samIdentifier)
+    const
 {
     if (samIdentifier == nullptr) {
         return true;
     }
 
     if (samIdentifier->getSamRevision() != SamRevision::AUTO &&
-        samIdentifier->getSamRevision() != samRevision) {
+        samIdentifier->getSamRevision() != mSamRevision) {
         return false;
     }
 
-    if (!samIdentifier->getSerialNumber().empty()) {
+    if (samIdentifier->getSerialNumber() != "") {
         Pattern* p = Pattern::compile(samIdentifier->getSerialNumber());
-        if (!p->matcher(serialNumber)->matches()) {
+        if (!p->matcher(mSerialNumber)->matches())
             return false;
-        }
     }
 
-    if (!samIdentifier->getGroupReference().empty() &&
-        !samIdentifier->getGroupReference().compare(groupReference)) {
+    if (samIdentifier->getGroupReference() != "" &&
+        samIdentifier->getGroupReference() != mGroupReference) {
         return false;
     }
 
     return true;
+}
+
+/* SAM IDENTIFIER BUILDER --------------------------------------------------- */
+
+SamIdentifierBuilder& SamIdentifierBuilder::samRevision(
+    const SamRevision samRevision)
+{
+    mSamRevision = samRevision;
+    return *this;
+}
+
+SamIdentifierBuilder& SamIdentifierBuilder::serialNumber(
+    const std::string& serialNumber)
+{
+    mSerialNumber = serialNumber;
+    return *this;
+}
+
+SamIdentifierBuilder& SamIdentifierBuilder::groupReference(
+    const std::string& groupReference)
+{
+    mGroupReference = groupReference;
+    return *this;
+}
+
+std::unique_ptr<SamIdentifier> SamIdentifierBuilder::build()
+{
+    return std::unique_ptr<SamIndentifier>(new SamIdentifier(this));
 }
 
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -19,6 +19,7 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommands.h"
+#include "DigestCloseRespPars.h"
 #include "SamRevision.h"
 
 /* Common */
@@ -36,7 +37,8 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Digest Close APDU command.
  */
-class KEYPLECALYPSO_API DigestCloseCmdBuild : public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API DigestCloseCmdBuild final
+: public AbstractSamCommandBuilder<DigestCloseRespPars> {
 public:
     /**
      * Instantiates a new DigestCloseCmdBuild .
@@ -46,14 +48,14 @@ public:
      * @throws IllegalArgumentException - if the expected response length is
      *         wrong.
      */
-    DigestCloseCmdBuild(SamRevision revision, uint8_t expectedResponseLength);
+    DigestCloseCmdBuild(const SamRevision revision,
+                        const uint8_t expectedResponseLength);
 
     /**
      *
      */
-    virtual ~DigestCloseCmdBuild()
-    {
-    }
+    std::shared_ptr<DigestCloseRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -69,7 +71,7 @@ private:
     /**
      * The command
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_CLOSE;
+    static const CalypsoSamCommand& mCommand;
 };
 
 }

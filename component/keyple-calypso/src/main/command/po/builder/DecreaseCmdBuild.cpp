@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -26,40 +26,55 @@ using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
-DecreaseCmdBuild::DecreaseCmdBuild(PoClass poClass, char sfi,
-                                   char counterNumber, int decValue,
-                                   const std::string& extraInfo)
-: AbstractPoCommandBuilder<DecreaseRespPars>(CalypsoPoCommands::DECREASE,
-                                             nullptr)
+DecreaseCmdBuild::DecreaseCmdBuild(
+  PoClass poClass, uint8_t sfi, uint8_t counterNumber, int decValue)
+: AbstractPoCommandBuilder<DecreaseRespPars>(
+    CalypsoPoCommand::DECREASE, nullptr),
+  mSfi(sfi), mCounterNumber(counterNumber), mDecValue(decValue)
 {
-    // only counter number >= 1 are allowed
-    if (counterNumber < 1) {
-        throw std::invalid_argument("Counter number out of range!");
-    }
+    const uint8_t cla = poClass.getValue();
 
-    // check if the incValue is in the allowed interval
-    if (decValue < 0 || decValue > 0xFFFFFF) {
-        throw std::invalid_argument("Decrement value out of range!");
-    }
-
-    // convert the integer value into a 3-byte buffer
+    /* Convert the integer value into a 3-byte buffer */
     std::vector<uint8_t> decValueBuffer(3);
     decValueBuffer[0] = static_cast<char>((decValue >> 16) & 0xFF);
     decValueBuffer[1] = static_cast<char>((decValue >> 8) & 0xFF);
     decValueBuffer[2] = static_cast<char>(decValue & 0xFF);
 
+    const uint8_t p2 = sfi * 8;
+
     /* this is a case4 command, we set Le = 0 */
-    this->request = setApduRequest(poClass.getValue(), command, counterNumber,
-                                   sfi * 8, decValueBuffer, 0x00);
-    if (extraInfo != "") {
-        this->addSubName(extraInfo);
-    }
+    request = setApduRequest(cla, command, counterNumber, p2, decValueBuffer,0);
+
+    const std::string extraInfo =
+        StringHelper::formatSimple("SFI=%02X, COUNTER=%d, DECREMENT=%d", sfi,
+                                   counterNumber, decValue);
+    addSubName(extraInfo);
 }
 
 std::shared_ptr<DecreaseRespPars> DecreaseCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<DecreaseRespPars>(apduResponse);
+    return std::make_shared<DecreaseRespPars>(apduResponse, this);
+}
+
+bool DecreaseCmdBuild::isSessionBufferUsed() const
+{
+    return true;
+}
+
+uint8_t DecreaseCmdBuild::getSfi() const
+{
+    return mSfi;
+}
+
+int DecreaseCmdBuild::getCounterNumber() const
+{
+    return mCounterNumber;
+}
+
+int DecreaseCmdBuild::getDecValue() const
+{
+    return mDecValue;
 }
 
 }

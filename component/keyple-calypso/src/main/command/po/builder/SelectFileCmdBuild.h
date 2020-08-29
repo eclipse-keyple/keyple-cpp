@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,9 +18,9 @@
 #include <vector>
 
 #include "AbstractPoCommandBuilder.h"
-#include "CalypsoPoCommands.h"
+#include "CalypsoPoCommand.h"
 #include "PoClass.h"
-#include "PoSendableInSession.h"
+#include "SelectFileControl.h"
 #include "SelectFileRespPars.h"
 
 namespace keyple {
@@ -40,22 +40,17 @@ using namespace keyple::core::seproxy::message;
  *
  */
 class KEYPLECALYPSO_API SelectFileCmdBuild final
-: public AbstractPoCommandBuilder<SelectFileRespPars>,
-  public PoSendableInSession {
+: public AbstractPoCommandBuilder<SelectFileRespPars> {
 public:
-    /**
-     *
-     */
-    enum class SelectControl { FIRST, NEXT, CURRENT_DF };
-
     /**
      * Instantiates a new SelectFileCmdBuild to select the first, next or
      * current file in the current DF.
      *
      * @param poClass indicates which CLA byte should be used for the Apdu
-     * @param selectControl the selection mode control: FIRST, NEXT or CURRENT
+     * @param selectFileControl the selection mode control: FIRST, NEXT or
+     *        CURRENT
      */
-    SelectFileCmdBuild(PoClass poClass, SelectControl selectControl);
+    SelectFileCmdBuild(PoClass poClass, SelectFileControl selectFileControl);
 
     /**
      * Instantiates a new SelectFileCmdBuild to select the first, next or
@@ -70,24 +65,44 @@ public:
     /**
      *
      */
-    std::shared_ptr<SelectFileRespPars>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<SelectFileRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
-protected:
     /**
+     * This command doesn't modify the contents of the PO and therefore doesn't
+     * uses the session buffer.
      *
+     * @return false
      */
-    std::shared_ptr<SelectFileCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<SelectFileCmdBuild>(
-            AbstractPoCommandBuilder<SelectFileRespPars>::shared_from_this());
-    }
+    bool isSessionBufferUsed() const override;
+
+    /**
+     * The selection path can be null if the chosen constructor targets the
+     * current EF
+     *
+     * @return the selection path or null
+     */
+    const std::vector<uint8_t>& getPath() const;
+
+    /**
+     * The file selection control can be null if the chosen constructor targets
+     * an explicit path
+     *
+     * @return the select file control or null
+     */
+    SelectFileControl getSelectFileControl() const;
 
 private:
     /**
      *
      */
-    CalypsoPoCommands& command = CalypsoPoCommands::SELECT_FILE;
+    CalypsoPoCommand& command = CalypsoPoCommand::SELECT_FILE;
+
+    /**
+     * Construction arguments
+     */
+    const std::vector<uint8_t> mPath;
+    const SelectFileControl mSelectFileControl;
 };
 
 /**

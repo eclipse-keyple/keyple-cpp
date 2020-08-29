@@ -118,6 +118,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
 	# util
 	${CMAKE_CURRENT_SOURCE_DIR}/util/ByteArrayUtil.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/util/KeypleAssert.cpp
 
 	# util - bertlv
 	${CMAKE_CURRENT_SOURCE_DIR}/util/bertlv/Tag.cpp

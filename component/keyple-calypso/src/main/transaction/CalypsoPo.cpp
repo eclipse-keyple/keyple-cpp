@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -36,240 +36,435 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::selection;
 using namespace keyple::core::util;
 
+const int CalypsoPo::SI_BUFFER_SIZE_INDICATOR = 0;
+const int CalypsoPo::SI_PLATFORM = 1;
+const int CalypsoPo::SI_APPLICATION_TYPE = 2;
+const int CalypsoPo::SI_APPLICATION_SUBTYPE = 3;
+const int CalypsoPo::SI_SOFTWARE_ISSUER = 4;
+const int CalypsoPo::SI_SOFTWARE_VERSION = 5;
+const int CalypsoPo::SI_SOFTWARE_REVISION = 6;
+
+const uint8_t CalypsoPo::APP_TYPE_WITH_CALYPSO_PIN = 0x01;
+const uint8_t CalypsoPo::APP_TYPE_WITH_CALYPSO_SV = 0x02;
+const uint8_t CalypsoPo::APP_TYPE_RATIFICATION_COMMAND_REQUIRED = 0x04;
+const uint8_t CalypsoPo::APP_TYPE_CALYPSO_REV_32_MODE = 0x08;
+const uint8_t CalypsoPo::APP_TYPE_WITH_PUBLIC_AUTHENTICATION = 0x10;
+
+const int PO_REV1_ATR_LENGTH = 20;
+const int REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION = 3;
+const int REV2_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION = 6;
+
+const std::vector<int> CalypsoPo::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE = {
+    0, 0, 0, 0, 0, 0, 215, 256, 304, 362, 430, 512, 608, 724, 861, 1024, 1217,
+    1448, 1722, 2048, 2435, 2896, 3444, 4096, 4870, 5792, 6888, 8192, 9741,
+    11585, 13777, 16384, 19483, 23170, 27554, 32768, 38967, 46340, 55108, 65536,
+    77935, 92681, 110217, 131072, 155871, 185363, 220435, 262144, 311743,
+    370727, 440871, 524288, 623487, 741455, 881743, 1048576
+};
+
 CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
-                     const TransmissionMode& transmissionMode,
-                     const std::string& extraInfo)
-: AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo),
-  poAtr(selectionResponse->getSelectionStatus()->getAtr()->getBytes())
+                     const TransmissionMode& transmissionMode)
+: AbstractMatchingSe(selectionResponse, transmissionMode)
 {
+    int bufferSizeIndicator;
+    int bufferSizeValue;
 
-    /*
-     * The selectionSeResponse may not include a FCI field (e.g. old PO Calypso
-     * Rev 1)
-     */
-    if (selectionResponse->getSelectionStatus()->getFci()->isSuccessful()) {
-        std::shared_ptr<ApduResponse> fci =
-            selectionResponse->getSelectionStatus()->getFci();
-        /*
-         * Parse PO FCI - to retrieve Calypso Revision, Serial Number, &amp; DF
-         * Name (AID)
-         */
-        std::shared_ptr<GetDataFciRespPars> poFciRespPars =
-            std::make_shared<GetDataFciRespPars>(fci);
+    if (hasFci() && static_cast<int>(getFciBytes().size()) > 2) {
 
         /*
-         * Resolve the PO revision from the application type byte:
-         *
-         * <ul> <li>if
-         * <code>%1-------</code>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;CLAP&nbsp;&nbsp;
-         * &rarr;&nbsp;&
-         * nbsp; REV3.1</li> <li>if
-         * <code>%00101---</code>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV3.2</li> <li>
-         * if
-         * <code>%00100---</code>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV3.1</li>
-         * <li>otherwise&nbsp;&nbsp;&rarr;&nbsp;&nbsp;REV2.4</li> </ul>
+         * Parse PO FCI - to retrieve DF Name (AID), Serial Number, &amp;
+         * StartupInfo
          */
-        char applicationTypeByte = poFciRespPars->getApplicationTypeByte();
-        if ((applicationTypeByte & (1 << 7)) != 0) {
-            /* CLAP */
-            this->revision = PoRevision::REV3_1_CLAP;
-        } else if ((applicationTypeByte >> 3) == static_cast<char>(0x05)) {
-            this->revision = PoRevision::REV3_2;
-        } else if ((applicationTypeByte >> 3) == static_cast<char>(0x04)) {
-            this->revision = PoRevision::REV3_1;
-        } else {
-            this->revision = PoRevision::REV2_4;
-        }
+        GetDataFciRespPars poFciRespPars(
+            selectionResponse->getSelectionStatus()->getFci(), nullptr);
 
-        this->dfName = poFciRespPars->getDfName();
+        /* 4 fields extracted by the low level parser */
+        mDfName = poFciRespPars.getDfName();
+        mCalypsoSerialNumber = poFciRespPars.getApplicationSerialNumber();
+        mStartupInfo = poFciRespPars.getDiscretionaryData();
+        mIsDfInvalidated = poFciRespPars.isDfInvalidated();
 
-        this->applicationSerialNumber =
-            poFciRespPars->getApplicationSerialNumber();
+        const uint8_t applicationType = getApplicationType();
+        mRevision = determineRevision(applicationType);
 
-        if (this->revision == PoRevision::REV2_4) {
+        /* Session buffer size */
+        bufferSizeIndicator = mStartupInfo[SI_BUFFER_SIZE_INDICATOR];
+        bufferSizeValue =
+            BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE[bufferSizeIndicator];
+
+        if (revision == PoRevision::REV2_4) {
             /*
-             * old cards have their modification counter in number of commands
+             * Old cards have their modification counter in number of commands
              */
-            modificationCounterIsInBytes = false;
-            this->modificationsCounterMax =
+            mModificationCounterIsInBytes = false;
+            mModificationsCounterMax =
                 REV2_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
         } else {
-            this->modificationsCounterMax = poFciRespPars->getBufferSizeValue();
+            mModificationsCounterMax = bufferSizeValue;
         }
-        this->bufferSizeIndicator = poFciRespPars->getBufferSizeIndicator();
-        this->bufferSizeValue     = poFciRespPars->getBufferSizeValue();
-        this->platform            = poFciRespPars->getPlatformByte();
-        this->applicationType     = poFciRespPars->getApplicationTypeByte();
-        this->isRev3_2ModeAvailable_Renamed =
-            poFciRespPars->isRev3_2ModeAvailable();
-        this->isRatificationCommandRequired_Renamed =
-            poFciRespPars->isRatificationCommandRequired();
-        this->hasCalypsoStoredValue_Renamed =
-            poFciRespPars->hasCalypsoStoredValue();
-        this->hasCalypsoPin_Renamed = poFciRespPars->hasCalypsoPin();
-        this->applicationSubtypeByte =
-            poFciRespPars->getApplicationSubtypeByte();
-        this->softwareIssuerByte = poFciRespPars->getSoftwareIssuerByte();
-        this->softwareVersion    = poFciRespPars->getSoftwareVersionByte();
-        this->softwareRevision   = poFciRespPars->getSoftwareRevisionByte();
-        this->isDfInvalidated_Renamed = poFciRespPars->isDfInvalidated();
+
+        mIsConfidentialSessionModeSupported =
+            (applicationType & APP_TYPE_CALYPSO_REV_32_MODE) != 0;
+        mIsDeselectRatificationSupported =
+            (applicationType & APP_TYPE_RATIFICATION_COMMAND_REQUIRED) == 0;
+        mIsSvFeatureAvailable =
+            (applicationType & APP_TYPE_WITH_CALYPSO_SV) != 0;
+        mIsPinFeatureAvailable =
+            (applicationType & APP_TYPE_WITH_CALYPSO_PIN) != 0;
+        mIsPublicAuthenticationSupported =
+            (applicationType & APP_TYPE_WITH_PUBLIC_AUTHENTICATION) != 0;
     } else {
         /*
-         * FCI is not provided: we consider it is Calypso PO rev 1, it's serial
-         * number is provided in the ATR
+         * FCI is not provided: we consider it is Calypso PO rev 1, it's serial number is
+         * provided in the ATR
          */
+        if (!hasAtr())
+            throw IllegalStateException(
+                      "Unable to identify this PO: Neither the CFI nor the " \
+                      "ATR are available.");
+
+        const std::vector<uint8_t> atr = getAtrBytes();
 
         /*
-         * basic check: we expect to be here following a selection based on the
+         * Basic check: we expect to be here following a selection based on the
          * ATR
          */
-        if (poAtr.size() != PO_REV1_ATR_LENGTH) {
-            throw IllegalStateException(StringHelper::formatSimple(
-                "Unexpected ATR length: %s", ByteArrayUtil::toHex(poAtr)));
-        }
+        if (static_cast<int>(atr.size()) != PO_REV1_ATR_LENGTH)
+            throw IllegalStateException(
+                    "Unexpected ATR length: " +
+                    ByteArrayUtil::toHex(getAtrBytes()));
 
-        this->revision = PoRevision::REV1_0;
-        this->dfName.clear();
-        this->applicationSerialNumber = std::vector<uint8_t>(8);
-        /* old cards have their modification counter in number of commands */
-        this->modificationCounterIsInBytes = false;
+        mRevision = PoRevision::REV1_0;
+
+        /* C++: those two lines below seem useless */
+        //mDfName = null;
+
+        /* Old cards have their modification counter in number of commands */
+        mModificationCounterIsInBytes = false;
+
         /*
-         * the array is initialized with 0 (cf. default value for primitive
+         * The array is initialized with 0 (cf. default value for primitive
          * types)
          */
-        System::arraycopy(poAtr, 12, this->applicationSerialNumber, 4, 4);
-        this->modificationsCounterMax =
+        System.::arraycopy(atr, 12, mCalypsoSerialNumber, 4, 4);
+        mModificationsCounterMax =
             REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
 
-        this->bufferSizeIndicator = 0;
-        this->bufferSizeValue =
-            REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
-        this->platform                              = poAtr[6];
-        this->applicationType                       = poAtr[7];
-        this->applicationSubtypeByte                = poAtr[8];
-        this->isRev3_2ModeAvailable_Renamed         = false;
-        this->isRatificationCommandRequired_Renamed = true;
-        this->hasCalypsoStoredValue_Renamed         = false;
-        this->hasCalypsoPin_Renamed                 = false;
-        this->softwareIssuerByte                    = poAtr[9];
-        this->softwareVersion                       = poAtr[10];
-        this->softwareRevision                      = poAtr[11];
-        this->isDfInvalidated_Renamed               = false;
+        /* Create buffer size indicator */
+        mStartupInfo[0] = mModificationsCounterMax;
+        /*
+         * Create the startup info with the 6 bytes of the ATR from position 6
+         */
+        System::arraycopy(atr, 6, mStartupInfo, 1, 6);
+
+        /* TODO check these flags */
+        mIsConfidentialSessionModeSupported = false;
+        mIsDeselectRatificationSupported = true;
+        mIsSvFeatureAvailable = false;
+        mIsPinFeatureAvailable = false;
+        mIsPublicAuthenticationSupported = false;
+        mIsDfInvalidated = false;
     }
 
-    logger->trace("REVISION = %, SERIALNUMBER = %, DFNAME = %\n",
-                  revision, applicationSerialNumber, dfName);
-}
-
-PoRevision CalypsoPo::getRevision()
-{
-    return this->revision;
-}
-
-const std::vector<uint8_t>& CalypsoPo::getDfName() const
-{
-    return dfName;
-}
-
-const std::vector<uint8_t>& CalypsoPo::getApplicationSerialNumber() const
-{
-    return applicationSerialNumber;
-}
-
-const std::vector<uint8_t>& CalypsoPo::getAtr() const
-{
-    return poAtr;
-}
-
-bool CalypsoPo::isModificationsCounterInBytes()
-{
-    return modificationCounterIsInBytes;
-}
-
-int CalypsoPo::getModificationsCounter()
-{
-    return modificationsCounterMax;
-}
-
-char CalypsoPo::getBufferSizeIndicator()
-{
-    return bufferSizeIndicator;
-}
-
-int CalypsoPo::getBufferSizeValue()
-{
-    return bufferSizeValue;
-}
-
-char CalypsoPo::getPlatformByte()
-{
-    return platform;
-}
-
-char CalypsoPo::getApplicationTypeByte()
-{
-    return applicationType;
-}
-
-bool CalypsoPo::isRev3_2ModeAvailable()
-{
-    return isRev3_2ModeAvailable_Renamed;
-}
-
-bool CalypsoPo::isRatificationCommandRequired()
-{
-    return isRatificationCommandRequired_Renamed;
-}
-
-bool CalypsoPo::hasCalypsoStoredValue()
-{
-    return hasCalypsoStoredValue_Renamed;
-}
-
-bool CalypsoPo::hasCalypsoPin()
-{
-    return hasCalypsoPin_Renamed;
-}
-
-char CalypsoPo::getApplicationSubtypeByte()
-{
-    return applicationSubtypeByte;
-}
-
-char CalypsoPo::getSoftwareIssuerByte()
-{
-    return softwareIssuerByte;
-}
-
-char CalypsoPo::getSoftwareVersionByte()
-{
-    return softwareVersion;
-}
-
-char CalypsoPo::getSoftwareRevisionByte()
-{
-    return softwareRevision;
-}
-
-bool CalypsoPo::isDfInvalidated()
-{
-    return isDfInvalidated_Renamed;
-}
-
-PoClass CalypsoPo::getPoClass()
-{
     /*
      * Rev1 and Rev2 expects the legacy class byte while Rev3 expects the ISO
      * class byte
      */
-    if (revision == PoRevision::REV1_0 || revision == PoRevision::REV2_4) {
-        logger->trace("PO revision = %, PO class = %\n", revision,
-			          std::string("PoClass::LEGACY"));
-        return PoClass::LEGACY;
+    if (revision == PoRevision::REV1_0 || revision == PoRevision::REV2_4)
+        mPoClass = PoClass::LEGACY;
+    else
+        mPoClass = PoClass::ISO;
+}
+
+const PoRevision CalypsoPo::getRevision()
+{
+    return mRevision;
+}
+
+const std::vector<uint8_t>& CalypsoPo::getDfNameBytes() const
+{
+    return mDfName;
+}
+
+const std::string CalypsoPo::getDfName() const
+{
+    return ByteArrayUtil::toHex(getDfNameBytes());
+}
+
+const std::vector<uint8_t>& getCalypsoSerialNumber() const
+{
+    return mCalypsoSerialNumber;
+}
+
+const std::vector<uint8_t> CalypsoPo::getApplicationSerialNumberBytes() const
+{
+    std::vector<uint8_t> applicationSerialNumber = mCalypsoSerialNumber;
+    applicationSerialNumber[0] = 0;
+    applicationSerialNumber[1] = 0;
+
+    return applicationSerialNumber;
+}
+
+const std::string CalypsoPo::getApplicationSerialNumber() const
+{
+    return ByteArrayUtil::toHex(getApplicationSerialNumberBytes());
+}
+
+const std::string CalypsoPo::getStartupInfo() const
+{
+    return ByteArrayUtil::toHex(mStartupInfo);
+}
+
+const bool CalypsoPo::isSerialNumberExpiring() const
+{
+    throw IllegalStateException("Not yet implemented");
+}
+
+const std::vector<uint8_t>& CalypsoPo::getSerialNumberExpirationBytes()
+{
+    throw IllegalStateException("Not yet implemented");
+}
+
+const int getPayloadCapacity() const
+{
+    /* TODO make this value dependent on the type of PO identified */
+    return 250;
+}
+
+const std::string CalypsoPo::getAtr() const
+{
+    return ByteArrayUtil::toHex(getAtrBytes());
+}
+
+const bool CalypsoPo::isModificationsCounterInBytes() const
+{
+    return mModificationCounterIsInBytes;
+}
+
+const int CalypsoPo::getModificationsCounter() const
+{
+    return mModificationsCounterMax;
+}
+
+const uint8_t CalypsoPo::getPlatform() const
+{
+    return mStartupInfo[SI_PLATFORM];
+}
+
+const uint8_t CalypsoPo::getApplicationType() const
+{
+    return mStartupInfo[SI_APPLICATION_TYPE];
+}
+
+const bool CalypsoPo::isConfidentialSessionModeSupported() const;
+{
+    return mIsConfidentialSessionModeSupported;
+}
+
+const bool CalypsoPo::isDeselectRatificationSupported() const
+{
+    return mIsDeselectRatificationSupported;
+}
+
+const bool CalypsoPo::isSvFeatureAvailable() const
+{
+    return mIsSvFeatureAvailable;
+}
+
+const bool CalypsoPo::isPinFeatureAvailable() const
+{
+    return mIsPinFeatureAvailable;
+}
+
+const bool isPublicAuthenticationSupported() const
+{
+    return mIsPublicAuthenticationSupported;
+}
+
+const uint8_t CalypsoPo::getApplicationSubtype() const
+{
+    return mStartupInfo[SI_APPLICATION_SUBTYPE];
+}
+
+const uint8_t CalypsoPo::getSoftwareIssuer() const
+{
+    return mStartupInfo[SI_SOFTWARE_ISSUER];
+}
+
+const uint8_t CalypsoPo::getSoftwareVersion() const
+{
+    return mStartupInfo[SI_SOFTWARE_VERSION];
+}
+
+const uint8_t CalypsoPo::getSoftwareRevision() const
+{
+    return mStartupInfo[SI_SOFTWARE_REVISION];
+}
+
+const uint8_t getSessionModification() const
+{
+    return mStartupInfo[SI_BUFFER_SIZE_INDICATOR];
+}
+
+const bool CalypsoPo::isDfInvalidated() const
+{
+    return mIsDfInvalidated;
+}
+
+const bool CalypsoPo::isDfRatified() const
+{
+    return mIsDfRatified;
+}
+
+void CalypsoPo::setDfRatified(const bool dfRatified)
+{
+    mIsDfRatified = dfRatified;
+}
+
+const PoClass CalypsoPo::getPoClass() const
+{
+    return mPoClass;
+}
+
+const DirectoryHeader& CalypsoPo::getDirectoryHeader() const
+{
+    return mDirectoryHeader;
+}
+
+CalypsoPo* CalypsoPo::setDirectoryHeader(const DirectoryHeader& directoryHeader)
+{
+    mDirectoryHeader = directoryHeader;
+
+    return this;
+}
+
+const std::shared_ptr<ElementaryFile> CalypsoPo::getFileBySfi(const uint8_t sfi)
+    const
+{
+    const std::shared_ptr<ElementaryFile> ef = mEfBySfi.get(sfi);
+    if (ef == nullptr)
+        throw NoSuchElementException(
+                  StringHelper::formatSimple(
+                      "EF with SFI [0x%02x] is not found.", sfi));
+
+    return ef;
+}
+
+const std::shared_ptr<ElementaryFile> CalypsoPo::getFileByLid(
+    const uint16_t lid)
+{
+    const std::shared_ptr<Byte> sfi = mSfiByLid.get(lid);
+    if (sfi == nullptr) {
+        throw NoSuchElementException(
+                  StringHelper::formatSimple(
+                      "EF with LID [%04x] is not found.", lid));
+    }
+
+    return mEfBySfi.get(sfi);
+}
+
+const std::map<std::shared_ptr<Byte>, std::shared_ptr<ElementaryFile>>&
+    CalypsoPo::getAllFiles() const
+{
+    return mEfBySfi;
+}
+
+void CalypsoPo::setFileHeader(const uint8_t sfi, const FileHeader& header)
+{
+    std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
+    ef->setHeader(header);
+    mSfiByLid.insert({header.getLid(), sfi});
+}
+
+void CalypsoPo::setContent(const uint8_t sfi,
+                           const int numRecord,
+                           const std::vector<uint8_t>& content)
+{
+    std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
+    ef->getData().setContent(numRecord, content);
+}
+
+void CalypsoPo::setCounter(const uint8_t sfi,
+                           const int numCounter,
+                           const std::vector<uint8_t>& content)
+{
+    std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
+    ef->getData().setCounter(numCounter, content);
+}
+
+void CalypsoPo::setContent(const uint8_t sfi,
+                           const int numRecord,
+                           const std::vector<uint8_t>& content,
+                           const int offset)
+{
+    std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
+    ef->getData().setContent(numRecord, content, offset);
+}
+
+void CalypsoPo::fillContent(const uint8_t sfi,
+                            const int numRecord,
+                            const std::vector<uint8_t>& content)
+{
+    std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
+    ef->getData().fillContent(numRecord, content);
+}
+
+void CalypsoPo::addCyclicContent(const uint8_t sfi,
+                                 const std::vector<uint8_t>& content)
+{
+    std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
+    ef->getData().addCyclicContent(content);
+}
+
+void CalypsoPo::backupFiles()
+{
+    copyMapFiles(mEfBySfi, mEfBySfiBackup);
+    copyMapSfi(mSfiByLid, mSfiByLidBackup);
+}
+
+void CalypsoPo::restoreFiles()
+{
+    copyMapFiles(mEfBySfiBackup, mEfBySfi);
+    copyMapSfi(mSfiByLidBackup, mSfiByLid);
+}
+
+std::shared_ptr<ElementaryFile> CalypsoPo::getOrCreateFile(const uint8_t sfi)
+{
+    std::shared_ptr<ElementaryFile> ef = mEfBySfi.get(sfi);
+    if (ef == nullptr) {
+        ef = std::make_shared<ElementaryFile>(sfi);
+        mEfBySfi.put({sfi, ef});
+    }
+
+    return ef;
+}
+
+void CalypsoPo::copyMapFiles(
+    const std::map<std::shared_ptr<Byte>,
+                    std::shared_ptr<ElementaryFile>>& src,
+    std::map<std::shared_ptr<Byte>, std::shared_ptr<ElementaryFile>>& dest)
+{
+    dest = src;
+}
+
+void CalypsoPo::copyMapSfi(const std::map<<uint16_t, uint8_t> src,
+                           std::map<uint16_t, uint8_t> dest)
+{
+    dest = src;
+}
+
+const PoRevision& CalypsoPo::determineRevision(const uint8_t applicationType)
+    const
+{
+    if ((applicationType & (1 << 7)) != 0) {
+        /* CLAP */
+        return PoRevision::REV3_1_CLAP;
+    } else if ((applicationType >> 3) == 0x05) {
+        return PoRevision::REV3_2;
+    } else if ((applicationType >> 3) == 0x04) {
+        return PoRevision.REV3_1;
     } else {
-        logger->trace("PO revision = %, PO class = %\n", revision,
-			          std::string("PoClass::ISO"));
-        return PoClass::ISO;
+        return PoRevision.REV2_4;
     }
 }
 

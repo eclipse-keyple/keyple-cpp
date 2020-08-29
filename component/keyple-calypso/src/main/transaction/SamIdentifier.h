@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -34,34 +34,69 @@ using namespace keyple::calypso::command::sam;
  * Group reference (key group reference)
  */
 class SamIdentifier {
-private:
-    /**
-     *
-     */
-    const SamRevision& samRevision;
-
-    /**
-     *
-     */
-    const std::string serialNumber;
-
-    /**
-     *
-     */
-    const std::string groupReference;
-
 public:
     /**
-     * Constructor for a SamIdentifier
+     * Builder for a {@link SamIdentifier}
      *
-     * @param samRevision the SAM revision
-     * @param serialNumber the SAM serial number as an hex string or a regular
-     *        expression
-     * @param groupReference the group reference string
+     * @since 0.9
      */
-    SamIdentifier(const SamRevision& samRevision,
-                  const std::string& serialNumber,
-                  const std::string& groupReference);
+    static class SamIdentifierBuilder final {
+
+        /**
+         * Sets the targeted SAM revision
+         *
+         * @param samRevision the {@link SamRevision} of the targeted SAM
+         * @return the builder instance
+         */
+        SamIdentifierBuilder& samRevision(const SamRevision samRevision);
+
+        /**
+         * Sets the targeted SAM serial number
+         *
+         * @param serialNumber the serial number of the targeted SAM as regex
+         * @return the builder instance
+         */
+        SamIdentifierBuilder& serialNumber(const std::string& serialNumber);
+
+        /**
+         * Sets the targeted SAM group reference
+         *
+         * @param groupReference the group reference of the targeted SAM as a
+         *        string
+         * @return the builder instance
+         */
+        SamIdentifierBuilder& groupReference(const std::string& groupReference);
+
+        /**
+         * Build a new {@code SamIdentifier}.
+         *
+         * @return a new instance
+         */
+        std::unique_ptr<SamIdentifier> build();
+
+    private:
+        /**
+         *
+         */
+        SamRevision& mSamRevision;
+
+        /**
+         *
+         */
+        std::string mSerialNumber = "":
+
+        /**
+         *
+         */
+        std::string mGroupReference = "";
+    };
+
+    /**
+     * Gets a new builder.
+     *
+     * @return a new builder instance
+     */
+    static std::unique_ptr<SamIdentifierBuilder> builder();
 
     /**
      * @return the SAM revision
@@ -97,7 +132,28 @@ public:
      *        the current object
      * @return true if the identifier provided matches the current identifier
      */
-    bool matches(const SamIdentifier* samIdentifier) const;
+    bool matches(const std::shared_ptr<SamIdentifier> samIdentifier) const;
+
+private:
+    /**
+     *
+     */
+    const SamRevision& mSamRevision;
+
+    /**
+     *
+     */
+    const std::string mSerialNumber;
+
+    /**
+     *
+     */
+    const std::string mGroupReference;
+
+    /**
+     * Private constructor
+     */
+    SamIdentifier(const SamIdentifierBuilder* builder);
 };
 
 }

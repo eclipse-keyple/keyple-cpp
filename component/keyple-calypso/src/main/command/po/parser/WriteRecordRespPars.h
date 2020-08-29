@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,13 +14,15 @@
 
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <memory>
 
 /* Core */
-#include "AbstractApduResponseParser.h"
 #include "AbstractPoResponseParser.h"
 #include "ApduResponse.h"
+
+/* Calypso */
+#include "WriteRecordCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -40,19 +42,20 @@ class KEYPLECALYPSO_API WriteRecordRespPars final
 : public AbstractPoResponseParser {
 public:
     /**
-     * Instantiates a new WriteRecordRespPars.
+     * Instantiates a new WriteRecordRespPars
      *
      * @param response the response from the PO
+     * @param builder the reference to the builder that created this parser
      */
-    WriteRecordRespPars(std::shared_ptr<ApduResponse> response);
+    WriteRecordRespPars(std::shared_ptr<ApduResponse> response,
+                        WriteRecordCmdBuild* builder);
 
 protected:
     /**
      *
      */
-    std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    getStatusTable() const override;
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
+        const override;
 
     /**
      *
@@ -67,23 +70,7 @@ private:
     /**
      *
      */
-    static std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
-
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static WriteRecordRespPars::StaticConstructor staticConstructor;
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

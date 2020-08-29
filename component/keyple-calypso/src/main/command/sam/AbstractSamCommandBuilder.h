@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -16,9 +16,13 @@
 
 #include <memory>
 
+/* Core */
 #include "AbstractIso7816CommandBuilder.h"
+
+/* Calypso */
+#include "AbstractSamResponseParser.h"
 #include "SamRevision.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
 
 namespace keyple {
 namespace calypso {
@@ -33,35 +37,43 @@ using namespace keyple::core::seproxy::message;
  * <p>
  * Used directly, this class can serve as low level command builder.
  */
-class AbstractSamCommandBuilder : public AbstractIso7816CommandBuilder {
+template<class T>
+class AbstractSamCommandBuilder<T> : public AbstractIso7816CommandBuilder {
 public:
-    /**
-     *
-     */
-    AbstractSamCommandBuilder(CalypsoSamCommands& reference,
-                              std::shared_ptr<ApduRequest> request);
+    static_assert(std::is_base_of<AbstractSamResponseParser, T>::value,
+                  "T must inherit from keyple::core::command" \
+                  "::AbstractApduResponseParser");
 
     /**
      *
      */
-    virtual ~AbstractSamCommandBuilder()
-    {
-    }
+    AbstractSamCommandBuilder(const CalypsoSamCommand& reference,
+                              const std::shared_ptr<ApduRequest> request);
+
+    /**
+     *
+     */
+    virtual ~AbstractSamCommandBuilder() = default;
+
+    /**
+     * Create the response parser matching the builder
+     *
+     * @param apduResponse the response data from the SE
+     * @return an {@link AbstractApduResponseParser}
+     */
+    virtual std::unique_ptr<T> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) = 0;
+
+    /**
+     *
+     */
+    const std::shared_ptr<CalypsoSamCommand> getCommandRef() const override;
 
 protected:
     /**
      *
      */
-    SamRevision defaultRevision = SamRevision::S1D; // 94
-
-    /**
-     *
-     */
-    std::shared_ptr<AbstractSamCommandBuilder> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractSamCommandBuilder>(
-            AbstractIso7816CommandBuilder::shared_from_this());
-    }
+    SamRevision& mDefaultRevision = SamRevision::C1;
 };
 
 }

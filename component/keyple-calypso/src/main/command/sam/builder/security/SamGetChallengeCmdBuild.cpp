@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,6 +14,9 @@
 
 #include "SamGetChallengeCmdBuild.h"
 
+/* Common */
+#include "IllegalArgumentException.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -22,24 +25,36 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::common;
 
-SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(SamRevision revision,
-                                                 uint8_t expectedResponseLength)
+const CalypsoSamCommand& SamGetChallengeCmdBuild::mCommand =
+    CalypsoSamCommand::GET_CHALLENGE;
+
+SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(
+  const SamRevision& revision, cosnt uint8_t expectedResponseLength)
 : AbstractSamCommandBuilder(CalypsoSamCommands::GET_CHALLENGE, nullptr)
 {
-    this->defaultRevision = revision;
+    mDefaultRevision = revision;
 
     if (expectedResponseLength != 0x04 && expectedResponseLength != 0x08) {
-        throw std::invalid_argument(
-            StringHelper::formatSimple("Bad challenge length! Expected "
-                                       "4 or 8, got %s",
-                                       expectedResponseLength));
+        throw IllegalArgumentException(
+                  StringHelper::formatSimple(
+                      "Bad challenge length! Expected 4 or 8, got %d",
+                      expectedResponseLength));
     }
 
-    uint8_t cla = this->defaultRevision.getClassByte();
+    const uint8_t cla = mDefaultRevision.getClassByte();
+    const uint8_t p1 = 0x00;
+    const uint8_t p2 = 0x00;
 
-    /* CalypsoRequest calypsoRequest = new CalypsoRequest(); */
-    request = setApduRequest(cla, command, 0x00, 0x00, expectedResponseLength);
+    mRequest = setApduRequest(cla, command, p1, p2, expectedResponseLength);
+}
+
+std::shared_ptr<SamGetChallengeRespPars>
+    SamGetChallengeCmdBuild::createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse)
+{
+    return std::make_shared<SamGetChallengeRespPars>(apduResponse, this);
 }
 
 }

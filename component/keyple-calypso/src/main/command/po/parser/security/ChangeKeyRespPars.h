@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,11 +14,12 @@
 
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <memory>
 #include <string>
 
 #include "AbstractPoResponseParser.h"
+#include "ChangeKeyCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -35,49 +36,31 @@ private:
     /**
      *
      */
-    static std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+    static
+    std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
         STATUS_TABLE;
-
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        /**
-         *
-         */
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static ChangeKeyRespPars::StaticConstructor staticConstructor;
 
 public:
     /**
      * Instantiates a new ChangeKeyRespPars
      *
      * @param response the response from the PO
+     * @param builder the reference to the builder that created this parser
      */
-    ChangeKeyRespPars(std::shared_ptr<ApduResponse> response);
+    ChangeKeyRespPars(std::shared_ptr<ApduResponse> response,
+                      ChangeKeyCmdBuild* builder);
 
     /**
      *
      */
-    virtual ~ChangeKeyRespPars()
-    {
-    }
+    virtual ~ChangeKeyRespPars() = default;
 
 protected:
     /**
      *
      */
-    std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    getStatusTable() const override;
+    std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        getStatusTable() const override;
 
 protected:
     /**

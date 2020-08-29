@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,6 +14,9 @@
 
 #include "DigestUpdateCmdBuild.h"
 
+/* Common */
+#include "IllegalArgumentException.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -22,26 +25,33 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::common;
 
-DigestUpdateCmdBuild::DigestUpdateCmdBuild(SamRevision revision,
-                                           bool encryptedSession,
-                                           std::vector<uint8_t>& digestData)
-: AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_UPDATE, nullptr)
+const CalypsoSamCommand& DigestUpdateCmdBuild::mCommand =
+    CalypsoSamCommand::DIGEST_UPDATE;
+
+DigestUpdateCmdBuild::DigestUpdateCmdBuild(
+  const SamRevision& revision, const bool encryptedSession,
+  const std::vector<uint8_t>& digestData)
+: AbstractSamCommandBuilder(CalypsoSamCommand::DIGEST_UPDATE, nullptr)
 {
-    this->defaultRevision = revision;
+    mDefaultRevision = revision;
 
-    uint8_t cla = this->defaultRevision.getClassByte();
-    uint8_t p2  = encryptedSession ? 0x80 : 0x00;
+    const uint8_t cla = mDefaultRevision.getClassByte();
+    const uint8_t p1 = 0x00;
+    const uint8_t p2  = encryptedSession ? 0x80 : 0x00;
 
-    if (digestData.size() == 0 || digestData.size() > 255) {
-        throw std::invalid_argument("Digest data null or too long!");
-    }
+    if (digestData.size() == 0 || digestData.size() > 255)
+        throw IllegalArgumentException("Digest data null or too long!");
 
-    /*
-     * CalypsoRequest calypsoRequest = new CalypsoRequest(cla, command, p1, p2,
-     * digestData);
-     */
-    request = setApduRequest(cla, command, 0x00, p2, digestData);
+    mRequest = setApduRequest(cla, command, p1, p2, digestData);
+}
+
+std::shared_ptr<DigestUpdateRespPars>
+    DigestUpdateCmdBuild::createResponseParser(
+    const std::shared_ptr<ApduResponse> apduResponse)
+{
+    return std::make_shared<DigestUpdateRespPars>(apduResponse, this);
 }
 
 }

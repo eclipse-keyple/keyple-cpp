@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -39,44 +39,93 @@ using namespace keyple::core::seproxy;
  * The {@link SamSelector} class extends {@link SeSelector} to handle specific
  * Calypso SAM needs such as model identification.
  */
-class KEYPLECALYPSO_API SamSelector : public SeSelector {
+class KEYPLECALYPSO_API SamSelector final : public SeSelector {
 public:
     /**
-     * Create a SeSelector to perform the SAM selection
-     * <p>
-     * Two optional parameters
+     * Builder of {@link SamSelector}
      *
-     * @param samRevision the expected SAM revision (subtype)
-     * @param serialNumber the expected serial number as an hex string (padded
-     *        with 0 on the left). Can be a sub regex (e.g. "AEC0....") or null
-     *        to allow any serial number.
-     * @param extraInfo information string (to be printed in logs)
+     * @since 0.9
      */
-    SamSelector(const SamRevision& samRevision, const std::string& serialNumber,
-                const std::string& extraInfo);
+    static class SamSelectorBuilder : public SeSelector::SeSelectorBuilder {
+    public:
+        /**
+         *
+         */
+        SamSelectorBuilder();
+
+        /**
+         * Sets the SAM revision
+         *
+         * @param samRevision the {@link SamRevision} of the targeted SAM
+         * @return the builder instance
+         */
+        SamSelectorBuilder& samRevision(const SamRevision samRevision);
+
+        /**
+         * Sets the SAM serial number regex
+         *
+         * @param serialNumber the serial number of the targeted SAM as regex
+         * @return the builder instance
+         */
+        SamSelectorBuilder& serialNumber(const std::string& serialNumber);
+
+        /**
+         * Sets the SAM identifier
+         *
+         * @param samIdentifier the {@link SamIdentifier} of the targeted SAM
+         * @return the builder instance
+         */
+        SamSelectorBuilder& samIdentifier(const SamIdentifier& samIdentifier);
+
+        /**
+         * {@inheritDoc}
+         */
+        SamSelectorBuilder& seProtocol(
+            const std::shared_ptr<SeProtocol> seProtocol) override;
+
+        /**
+         * {@inheritDoc}
+         */
+        SamSelectorBuilder& atrFilter(
+            const std::shared_ptr<AtrFilter> atrFilter) override;
+
+        /**
+         * {@inheritDoc}
+         */
+        SamSelectorBuilder& aidSelector(
+            const std::shared_ptr<AidSelector> aidSelector) override;
+
+        /**
+         * Build a new {@code SamSelector}.
+         *
+         * @return a new instance
+         */
+        std::unique_ptr<SamSelector> build() override;
+
+    private:
+        /**
+         *
+         */
+        SamRevision mSamRevision;
+
+        /**
+         *
+         */
+        std::string mSerialNumber;
+    };
 
     /**
-     * Create a SeSelector to perform the SAM selection
-     * <p>
-     * Two optional parameters.
+     * Gets a new builder.
      *
-     * @param samIdentifier the expected SAM identification: revision (subtype),
-     *        serial number as an hex string (padded with 0 on the left; can be
-     *        a sub regex e.g. "AEC0....") and groupReference (not needed here).
-     * @param extraInfo information string (to be printed in logs)
+     * @return a new builder instance
      */
-    SamSelector(const SamIdentifier& samIdentifier,
-                const std::string& extraInfo);
+    static std::unique_ptr<SamSelectorBuilder> builder();
 
-protected:
+private:
     /**
-     *
+     * Private constructor
      */
-    std::shared_ptr<SamSelector> shared_from_this()
-    {
-        return std::static_pointer_cast<SamSelector>(
-            SeSelector::shared_from_this());
-    }
+    SamSelector(SamSelectorBuilder* builder);
 };
 
 }

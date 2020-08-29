@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -23,41 +23,55 @@ namespace transaction {
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
 
-PoSelector::PoSelector(std::shared_ptr<SeProtocol> seProtocol,
-                       std::shared_ptr<PoAtrFilter> poAtrFilter,
-                       std::shared_ptr<PoAidSelector> poAidSelector,
-                       const std::string& extraInfo)
-: SeSelector(seProtocol, poAtrFilter, poAidSelector, extraInfo)
+/* PO SELECTOR -------------------------------------------------------------- */
+
+const int PoSelector::SW_PO_INVALIDATED = 0x6283;
+
+PoSelector::PoSelector(PoSelectorBuilder* builder)
+: SeSelector(builder)
 {
+    if (builder->mInvalidatedPo == InvalidatedPo::ACCEPT)
+        getAidSelector()->addSuccessfulStatusCode(SW_PO_INVALIDATED);
 }
 
-const std::shared_ptr<std::set<int>>
-    PoSelector::PoAidSelector::successfulSelectionStatusCodes =
-        std::make_shared<std::set<int>>();
-
-PoSelector::PoAidSelector::PoAidSelector(
-    std::shared_ptr<IsoAid> aidToSelect, InvalidatedPo invalidatedPo,
-    FileOccurrence fileOccurrence,
-    FileControlInformation fileControlInformation)
-: AidSelector(aidToSelect,
-              invalidatedPo == InvalidatedPo::ACCEPT
-                  ? successfulSelectionStatusCodes
-                  : nullptr,
-              fileOccurrence, fileControlInformation)
+std::unique_ptr<PoSelectorBuilder> PoSelector::builder()
 {
+    return std::unique_ptr<PoSelectorBuilder>(new PoSelectorBuilder());
 }
 
-PoSelector::PoAidSelector::PoAidSelector(std::shared_ptr<IsoAid> aidToSelect,
-                                         InvalidatedPo invalidatedPo)
-: AidSelector(aidToSelect, invalidatedPo == InvalidatedPo::ACCEPT
-                               ? successfulSelectionStatusCodes
-                               : nullptr)
+/* PO SELECTOR BUILDER ------------------------------------------------------ */
+
+PoSelectorBuilder::PoSelectorBuilder()
+: SeSelector::SeSelectorBuilder() {}
+
+PoSelectorBuilder& PoSelectorBuilder::invalidatedPo(
+    const InvalidatedPo invalidatedPo)
 {
+    mInvalidatedPo = invalidatedPo;
+    return *this;
 }
 
-PoSelector::PoAtrFilter::PoAtrFilter(const std::string& atrRegex)
-: AtrFilter(atrRegex)
+PoSelectorBuilder& PoSelectorBuilder::seProtocol(
+    const std::shared_ptr<SeProtocol> seProtocol) override
 {
+    return SeSelector::SeSelectorBuilder::seProtocol(seProtocol);
+}
+
+PoSelectorBuilder& PoSelectorBuilder::atrFilter(
+    const std::shared_ptr<AtrFilter> atrFilter) override
+{
+    return SeSelector::SeSelectorBuilder::atrFilter(atrFilter);
+}
+
+PoSelectorBuilder& PoSelectorBuilder::aidSelector(
+    const std::shared_ptr<AidSelector> aidSelector) override
+{
+    return SeSelector::SeSelectorBuilder::aidSelector(aidSelector);
+}
+
+std::unique_ptr<PoSelector> PoSelectorBuilder::build() override
+{
+    return std::unique_ptr<PoSelectorBuilder>(new PoSelector(this));
 }
 
 }

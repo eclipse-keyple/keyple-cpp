@@ -54,7 +54,7 @@ public:
      */
     AbstractIso7816CommandBuilder(
         const std::shared_ptr<SeCommand> commandReference,
-        std::shared_ptr<ApduRequest> request);
+        const std::shared_ptr<ApduRequest> request);
 
     /**
      * Abstract constructor to build a command with a command name and an
@@ -64,14 +64,12 @@ public:
      * @param request ApduRequest
      */
     AbstractIso7816CommandBuilder(const std::string& name,
-                                  std::shared_ptr<ApduRequest> request);
+                                  const std::shared_ptr<ApduRequest> request);
 
     /**
      *
      */
-    virtual ~AbstractIso7816CommandBuilder()
-    {
-    }
+    virtual ~AbstractIso7816CommandBuilder() = default;
 
 protected:
     /**
@@ -182,15 +180,6 @@ protected:
         const uint8_t cla, const std::shared_ptr<SeCommand> command,
         const uint8_t p1, const uint8_t p2, const std::vector<uint8_t>& dataIn,
         const uint8_t le);
-
-    /**
-     *
-     */
-    std::shared_ptr<AbstractIso7816CommandBuilder> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractIso7816CommandBuilder>(
-            AbstractApduCommandBuilder::shared_from_this());
-    }
 };
 
 }

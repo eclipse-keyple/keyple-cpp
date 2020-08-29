@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -16,6 +16,7 @@
 #include "stringhelper.h"
 
 /* Calypso */
+#include "CalypsoPoCommand.h"
 #include "CloseSessionCmdBuild.h"
 #include "CloseSessionRespPars.h"
 
@@ -80,7 +81,12 @@ std::shared_ptr<CloseSessionRespPars>
 CloseSessionCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<CloseSessionRespPars>(apduResponse);
+    return std::make_shared<CloseSessionRespPars>(apduResponse, this);
+}
+
+bool CloseSessionCmdBuild::isSessionBufferUsed() const
+{
+    return false;
 }
 
 }

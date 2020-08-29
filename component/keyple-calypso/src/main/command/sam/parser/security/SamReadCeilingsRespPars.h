@@ -14,8 +14,12 @@
 
 #pragma once
 
+#include <map>
+
 /* Calypso */
 #include "AbstractSamResponseParser.h"
+#include "KeypleCalypsoExport.h"
+#include "SamReadCeilingsCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -25,25 +29,42 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::security;
 
 /**
  * SAM read ceilings.
  */
-class SamReadCeilingsRespPars : public AbstractSamResponseParser {
+class KEYPLECALYPSO_API SamReadCeilingsRespPars final
+: public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new SamReadEventCounterRespPars.
      *
      * @param response of the SamReadEventCounterRespPars
+     * @param builder the reference to the builder that created this parser
      */
-    SamReadCeilingsRespPars(std::shared_ptr<ApduResponse> response);
+    SamReadCeilingsRespPars(const std::shared_ptr<ApduResponse> response,
+                            SamReadCeilingsCmdBuild* builder);
 
     /**
      * Gets the key parameters.
      *
      * @return the ceilings data (Value or Record)
      */
-    std::vector<uint8_t> getCeilingsData() const;
+    const std::vector<uint8_t> getCeilingsData() const;
+
+protected:
+    /**
+     *
+     */
+    const std::map<int, std::shared_ptr<StatusProperties>>&
+        getStatusTable() const override;
+
+private:
+    /**
+     *
+     */
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

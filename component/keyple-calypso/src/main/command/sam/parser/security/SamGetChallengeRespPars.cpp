@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -13,7 +13,12 @@
  ******************************************************************************/
 
 #include "SamGetChallengeRespPars.h"
+
+/* Core */
 #include "ApduResponse.h"
+
+/* Calypso */
+#include "CalypsoSamIllegalParameterException.h"
 
 namespace keyple {
 namespace calypso {
@@ -23,15 +28,31 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::core::seproxy::message;
 
+const std::map<int, std::shared_ptr<StatusProperties>>
+    SamGetChallengeRespPars::STATUS_TABLE = {
+    {
+        0x6700,
+        std::make_shared<StatusProperties>(
+            "Incorrect Le.",
+            typeid(CalypsoSamIllegalParameterException))
+    }
+};
+
 SamGetChallengeRespPars::SamGetChallengeRespPars(
-    std::shared_ptr<ApduResponse> response)
-: AbstractSamResponseParser(response)
+  const std::shared_ptr<ApduResponse> response,
+  SamGetChallengeCmdBuild* builder)
+: AbstractSamResponseParser(response, builder) {}
+
+const std::map<int, std::shared_ptr<StatusProperties>>&
+    SamGetChallengeRespPars::getStatusTable() const
 {
+    return STATUS_TABLE;
 }
 
-std::vector<uint8_t> SamGetChallengeRespPars::getChallenge() const
+const std::vector<uint8_t> SamGetChallengeRespPars::getChallenge() const
 {
     return isSuccessful() ? mResponse->getDataOut() : std::vector<uint8_t>();
 }

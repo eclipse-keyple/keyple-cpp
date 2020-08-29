@@ -12,11 +12,17 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-/* Calypso */
 #include "SamReadCeilingsRespPars.h"
+
+/* Common */
+#include "ClassNotFoundException.h"
 
 /* Core */
 #include "ApduResponse.h"
+
+/* Calypso */
+#include "CalypsoSamCounterOverflowException.h"
+#include "CalypsoSamIllegalParameterException.h"
 
 namespace keyple {
 namespace calypso {
@@ -26,15 +32,42 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::exception;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
 
+const std::map<int, std::shared_ptr<StatusProperties>>
+    SamReadCeilingsRespPars::STATUS_TABLE = {
+    {
+        0x6900,
+        std::make_shared<StatusProperties>(
+            "An event counter cannot be incremented.",
+            typeid(CalypsoSamCounterOverflowException))
+    }, {
+        0x6A00,
+        std::make_shared<StatusProperties>(
+            "Incorrect P1 or P2.",
+            typeid(CalypsoSamIllegalParameterException))
+    }, {
+        0x6200,
+        std::make_shared<StatusProperties>(
+            "Correct execution with warning: data not signed.",
+            typeid(ClassNotFouncException))
+    }
+};
+
 SamReadCeilingsRespPars::SamReadCeilingsRespPars(
-    std::shared_ptr<ApduResponse> response)
-: AbstractSamResponseParser(response)
+  const std::shared_ptr<ApduResponse> response,
+  SamReadCeilingsCmdBuild* builder)
+: AbstractSamResponseParser(response, builder) {}
+
+const std::map<int, std::shared_ptr<StatusProperties>>&
+    SamReadCeilingsRespPars::getStatusTable() const
 {
+    return STATUS_TABLE;
 }
 
-std::vector<uint8_t> SamReadCeilingsRespPars::getCeilingsData() const
+const std::vector<uint8_t> SamReadCeilingsRespPars::getCeilingsData() const
 {
     return isSuccessful() ? mResponse->getDataOut() : std::vector<uint8_t>();
 }

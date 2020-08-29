@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -19,8 +19,9 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
 #include "SamRevision.h"
+#include "UnlockRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -34,10 +35,11 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Unlock APDU command.
  */
-class UnlockCmdBuild : public AbstractSamCommandBuilder {
+class UnlockCmdBuild final
+: public AbstractSamCommandBuilder<UnlockRespPars> {
 public:
     /**
-     * Builder constructor
+     * Builder constructorli
      *
      * @param revision the SAM revision
      * @param unlockData the unlock data
@@ -45,11 +47,17 @@ public:
     UnlockCmdBuild(const SamRevision& revision,
                    const std::vector<uint8_t>& unlockData);
 
+    /**
+     *
+     */
+    std::shared_ptr<UnlockRespPars> createResponseParser
+        const std::shared_ptr<ApduResponse> apduResponse) override;
+
 private:
     /**
      * The command reference
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::UNLOCK;
+    static const CalypsoSamCommand& mCommand;
 };
 
 }
