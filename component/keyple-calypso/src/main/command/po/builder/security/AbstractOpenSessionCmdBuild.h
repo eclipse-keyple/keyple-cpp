@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -21,8 +21,10 @@
 #include <type_traits>
 
 /* Calypso */
+#include "AbstractOpenSessionRespPars.h"
 #include "AbstractPoCommandBuilder.h"
-#include "CalypsoPoCommands.h"
+#include "AbstractPoResponseParser.h"
+#include "CalypsoPoCommand.h"
 #include "KeypleCalypsoExport.h"
 #include "PoRevision.h"
 
@@ -49,26 +51,68 @@ public:
      * Instantiates a new AbstractOpenSessionCmdBuild.
      *
      * @param revision the revision of the PO
-     * @throws IllegalArgumentException - if the key index is 0 and rev is 2.4
-     * @throws IllegalArgumentException - if the request is inconsistent
+     * @throw IllegalArgumentException - if the key index is 0 and rev is 2.4
+     * @throw IllegalArgumentException - if the request is inconsistent
      */
-    AbstractOpenSessionCmdBuild(PoRevision revision)
+    AbstractOpenSessionCmdBuild(PoRevision revision);
     : AbstractPoCommandBuilder<T>(
-          CalypsoPoCommands ::getOpenSessionForRev(revision), nullptr)
+          CalypsoPoCommand::getOpenSessionForRev(revision), nullptr) {}
+
+    template <typename T>
+    static  std::shared_ptr<AbstractOpenSessionCmdBuild<T>> create(
+        PoRevision revision, uint8_t debitKeyIndex,
+        const std::vector<uint8_t>& sessionTerminalChallenge, uint8_t sfi,
+        uint8_t recordNumber)
     {
+        switch (revision) {
+        case PoRevision::REV1_0: {
+            std::shared_ptr<OpenSession10CmdBuild> cmd =
+                std::make_shared<OpenSession10CmdBuild>(
+                    debitKeyIndex, sessionTerminalChallenge, sfi, recordNumber);
+            return std::shared_ptr<AbstractOpenSessionCmdBuild<T>>(
+                cmd, reinterpret_cast<AbstractOpenSessionCmdBuild<T>*>(
+                    cmd.get()));
+        }
+        case PoRevision::REV2_4: {
+            std::shared_ptr<OpenSession24CmdBuild> cmd =
+                std::make_shared<OpenSession24CmdBuild>(
+                    debitKeyIndex, sessionTerminalChallenge, sfi, recordNumber);
+            return std::shared_ptr<AbstractOpenSessionCmdBuild<T>>(
+                cmd, reinterpret_cast<AbstractOpenSessionCmdBuild<T>*>(
+                    cmd.get()));
+        }
+        case PoRevision::REV3_1:
+        case PoRevision::REV3_1_CLAP: {
+            std::shared_ptr<OpenSession31CmdBuild> cmd =
+                std::make_shared<OpenSession31CmdBuild>(
+                    debitKeyIndex, sessionTerminalChallenge, sfi, recordNumber);
+            return std::shared_ptr<AbstractOpenSessionCmdBuild<T>>(
+                cmd, reinterpret_cast<AbstractOpenSessionCmdBuild<T>*>(
+                    cmd.get()));
+        }
+        case PoRevision::REV3_2: {
+            std::shared_ptr<OpenSession32CmdBuild> cmd =
+                std::make_shared<OpenSession32CmdBuild>(
+                    debitKeyIndex, sessionTerminalChallenge, sfi, recordNumber);
+            return std::shared_ptr<AbstractOpenSessionCmdBuild<T>>(
+                cmd, reinterpret_cast<AbstractOpenSessionCmdBuild<T>*>(
+                    cmd.get()));
+        }
+        default:
+            throw std::invalid_argument(StringHelper::formatSimple(
+                "Revision %d isn't supported", static_cast<int>(revision)));
+        }
     }
 
-    static std::shared_ptr<AbstractOpenSessionCmdBuild<T>>
-    create(PoRevision revision, uint8_t debitKeyIndex,
-           const std::vector<uint8_t>& sessionTerminalChallenge, uint8_t sfi,
-           uint8_t recordNb, const std::string& extraInfo);
+    /**
+     * @return the SFI of the file read while opening the secure session
+     */
+    virtual const uint8_t getSfi() const = 0;
 
-protected:
-    std::shared_ptr<AbstractOpenSessionCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractOpenSessionCmdBuild>(
-            AbstractPoCommandBuilder<T>::shared_from_this());
-    }
+    /**
+     * @return the record number to read
+     */
+    virtual const uint8_t getRecordNumber() const  = 0;
 };
 
 }

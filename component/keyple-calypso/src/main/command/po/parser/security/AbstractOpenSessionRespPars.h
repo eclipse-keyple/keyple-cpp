@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -171,9 +171,7 @@ public:
         /**
          *
          */
-        virtual ~SecureSession()
-        {
-        }
+        virtual ~SecureSession() = default;
 
         /**
          *
@@ -228,69 +226,33 @@ public:
         virtual const std::vector<uint8_t>& getSecureSessionData();
     };
 
-private:
-    /**
-     *
-     */
-    static std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
-
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static AbstractOpenSessionRespPars::StaticConstructor staticConstructor;
-
-protected:
-    /**
-     *
-     */
-    std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    getStatusTable() const override;
-
-private:
-    /**
-     *
-     */
-    //const PoRevision revision;
-
-public:
     /**
      * The secure session
      */
-    std::shared_ptr<SecureSession> secureSession;
+    std::shared_ptr<SecureSession> mSecureSession;
 
     /**
      * Instantiates a new AbstractOpenSessionRespPars.
      *
      * @param response the response from Open secure session APDU command
+     * @param builder the reference to the builder that created this parser
      * @param revision the revision of the PO
      */
-    AbstractOpenSessionRespPars(std::shared_ptr<ApduResponse> response,
-                                PoRevision revision);
+    AbstractOpenSessionRespPars(
+        std::shared_ptr<ApduResponse> response,
+        AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>* builder
+        PoRevision revision);
 
     /**
      *
      */
-    virtual ~AbstractOpenSessionRespPars()
-    {
-    }
+    virtual ~AbstractOpenSessionRespPars() = default;
 
     /**
      *
      */
-    static std::shared_ptr<AbstractOpenSessionRespPars>
-    create(std::shared_ptr<ApduResponse> response, PoRevision revision);
+    std::shared_ptr<AbstractOpenSessionRespPars> create(
+        std::shared_ptr<ApduResponse> response, PoRevision revision);
 
     /*
      * C++: This method is called from the class constructor. It *cannot* be
@@ -338,11 +300,25 @@ protected:
     /**
      *
      */
+    std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        getStatusTable() const override;
+
+    /**
+     *
+     */
     std::shared_ptr<AbstractOpenSessionRespPars> shared_from_this()
     {
         return std::static_pointer_cast<AbstractOpenSessionRespPars>(
             AbstractApduResponseParser::shared_from_this());
     }
+
+private:
+    /**
+     *
+     */
+    static std::map<
+        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+        STATUS_TABLE;
 };
 
 }

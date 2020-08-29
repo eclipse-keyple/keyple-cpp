@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -13,11 +13,6 @@
  ******************************************************************************/
 
 #include "SamSelectionRequest.h"
-#include "SeSelector.h"
-#include "SeProtocol.h"
-#include "CalypsoSam.h"
-#include "SeResponse.h"
-#include "AbstractSamResponseParser.h"
 
 namespace keyple {
 namespace calypso {
@@ -29,30 +24,14 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
 
 SamSelectionRequest::SamSelectionRequest(
-    std::shared_ptr<SamSelector> samSelector)
-: AbstractSeSelectionRequest(samSelector)
-{
-}
+  std::shared_ptr<SamSelector> samSelector)
+: AbstractSeSelectionRequest<AbstractApduCommandBuilder>(samSelector) {}
 
-const std::shared_ptr<AbstractMatchingSe> SamSelectionRequest::parse(
+const std::shared_ptr<CalypsoSam> SamSelectionRequest::parse(
     std::shared_ptr<SeResponse> seResponse)
 {
-    return std::dynamic_pointer_cast<AbstractMatchingSe>(
-        std::make_shared<CalypsoSam>(
-            seResponse, seSelector->getSeProtocol()->getTransmissionMode(),
-            seSelector->getExtraInfo()));
-}
-
-std::shared_ptr<AbstractApduResponseParser>
-SamSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse,
-                                      int commandIndex)
-{
-    (void)seResponse;
-    (void)commandIndex;
-
-    /* not yet implemented in keyple-calypso */
-    // TODO add a generic command parser
-    throw IllegalStateException("No parsers available for this request.");
+    return std::make_shared<CalypsoSam>(
+               seResponse, mSeSelector->getSeProtocol()->getTransmissionMode());
 }
 
 }

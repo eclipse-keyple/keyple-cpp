@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -19,7 +19,8 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
+#include "DigestAuthenticateRespPars.h"
 #include "SamRevision.h"
 
 namespace keyple {
@@ -34,8 +35,8 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the Digest Authenticate APDU command.
  */
-class KEYPLECALYPSO_API DigestAuthenticateCmdBuild
-: public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API DigestAuthenticateCmdBuild final
+: public AbstractSamCommandBuilder<DigestAuthenticateRespPars> {
 public:
     /**
      * Instantiates a new DigestAuthenticateCmdBuild .
@@ -45,15 +46,14 @@ public:
      * @throws IllegalArgumentException - if the signature is null or has a
      *         wrong length.
      */
-    DigestAuthenticateCmdBuild(SamRevision revision,
-                               std::vector<uint8_t>& signature);
+    DigestAuthenticateCmdBuild(const SamRevision& revision,
+                               const std::vector<uint8_t>& signature);
 
     /**
      *
      */
-    virtual ~DigestAuthenticateCmdBuild()
-    {
-    }
+    std::shared_ptr<DigestAuthenticateRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -69,7 +69,7 @@ private:
     /**
      * The command
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_AUTHENTICATE;
+    static const CalypsoSamCommand& mCommand;
 };
 
 }

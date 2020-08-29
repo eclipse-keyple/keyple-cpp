@@ -14,8 +14,12 @@
 
 #pragma once
 
+#include <map>
+
 /* Calypso */
 #include "AbstractSamResponseParser.h"
+#include "KeypleCalypsoExport.h"
+#include "UnlockCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -25,18 +29,35 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::security;
 
 /**
  * Unlock response parser.
  */
-class UnlockRespPars : public AbstractApduResponseParser {
+class KEYPLECALYPSO_API UnlockRespPars final
+: public AbstractApduResponseParser {
 public:
     /**
      * Instantiates a new {@link UnlockRespPars}.
      *
      * @param response the response
+     * @param builder the reference to the builder that created this parser
      */
-    UnlockRespPars(std::shared_ptr<ApduResponse> response);
+    UnlockRespPars(const std::shared_ptr<ApduResponse> response,
+                   UnlockCmdBuild* builder);
+
+protected:
+    /**
+     *
+     */
+    const std::map<int, std::shared_ptr<StatusProperties>>&
+        getStatusTable() const override;
+
+private:
+    /**
+     *
+     */
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

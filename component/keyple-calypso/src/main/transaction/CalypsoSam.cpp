@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -39,9 +39,8 @@ using namespace keyple::core::selection;
 using namespace keyple::core::util;
 
 CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
-                       const TransmissionMode& transmissionMode,
-                       const std::string& extraInfo)
-: AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo),
+                       const TransmissionMode& transmissionMode)
+: AbstractMatchingSe(selectionResponse, transmissionMode),
   samRevision(SamRevision::C1) /* Default value to please compiler */
 {
     std::string atrString = ByteArrayUtil::toHex(
@@ -98,44 +97,44 @@ CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
     }
 }
 
-SamRevision CalypsoSam::getSamRevision()
+const SamRevision& CalypsoSam::getSamRevision() const
 {
-    return samRevision;
+    return mSamRevision;
 }
 
-std::vector<uint8_t> CalypsoSam::getSerialNumber()
+const std::vector<uint8_t>& CalypsoSam::getSerialNumber() const
 {
-    return serialNumber;
+    return mSerialNumber;
 }
 
-uint8_t CalypsoSam::getPlatform()
+const uint8_t CalypsoSam::getPlatform() const
 {
-    return platform;
+    return mPlatform;
 }
 
-uint8_t CalypsoSam::getApplicationType()
+const uint8_t CalypsoSam::getApplicationType() const
 {
-    return applicationType;
+    return mApplicationType;
 }
 
-uint8_t CalypsoSam::getApplicationSubType()
+const uint8_t CalypsoSam::getApplicationSubType() const
 {
-    return applicationSubType;
+    return mApplicationSubType;
 }
 
-uint8_t CalypsoSam::getSoftwareIssuer()
+const uint8_t CalypsoSam::getSoftwareIssuer() const
 {
-    return softwareIssuer;
+    return mSoftwareIssuer;
 }
 
-uint8_t CalypsoSam::getSoftwareVersion()
+const uint8_t CalypsoSam::getSoftwareVersion() const
 {
-    return softwareVersion;
+    return mSoftwareVersion;
 }
 
-uint8_t CalypsoSam::getSoftwareRevision()
+const uint8_t CalypsoSam::getSoftwareRevision() const
 {
-    return softwareRevision;
+    return mSoftwareRevision;
 }
 
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -22,6 +22,7 @@
 
 /* Calypso */
 #include "AbstractOpenSessionRespPars.h"
+#include "OpenSession31CmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -36,15 +37,19 @@ class KEYPLECALYPSO_API OpenSession31RespPars final
 : public AbstractOpenSessionRespPars {
 public:
     /**
+     * Instantiates a new OpenSession31RespPars from the response.
      *
+     * @param response from OpenSession31RespPars
+     * @param builder the reference to the builder that created this parser
      */
-    OpenSession31RespPars(std::shared_ptr<ApduResponse> response);
+    OpenSession31RespPars(std::shared_ptr<ApduResponse> response,
+                          OpenSession31CmdBuild* builder);
 
     /**
      *
      */
-    std::shared_ptr<SecureSession>
-    toSecureSession(const std::vector<uint8_t>& apduResponseData);
+    std::shared_ptr<SecureSession> toSecureSession(
+        const std::vector<uint8_t>& apduResponseData);
 
 protected:
     /**

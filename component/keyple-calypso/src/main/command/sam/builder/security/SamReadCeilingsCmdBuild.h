@@ -16,7 +16,8 @@
 
 /* Calypso */
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
+#include "SamReadCeilingsRespPars.h"
 #include "SamRevision.h"
 
 namespace keyple {
@@ -31,38 +32,49 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Read Ceilings APDU command.
  */
-class SamReadCeilingsCmdBuild : public AbstractSamCommandBuilder {
+class SamReadCeilingsCmdBuild final
+: public AbstractSamCommandBuilder<SamReadCeilingsRespPars> {
 public:
     /**
      *
      */
-    static const int MAX_CEILING_NUMB;
+    static const int MAX_CEILING_NUMB = 26;
 
     /**
      *
      */
-    static const int MAX_CEILING_REC_NUMB;
+    static const int MAX_CEILING_REC_NUMB = 3;
 
     /**
      *
      */
-    enum CeilingsOperationType {
+    enum class CeilingsOperationType {
         CEILING_RECORD,
-
         SINGLE_CEILING
     };
 
     /**
+     * Instantiates a new SamReadCeilingsCmdBuild.
+     *
+     * @param revision revision of the SAM
+     * @param operationType the counter operation type
+     * @param index the counter index
+     */
+    SamReadCeilingsCmdBuild(const SamRevision& revision,
+                            cosnt CeilingsOperationType operationType,
+                            const uint8_t index);
+
+    /**
      *
      */
-    SamReadCeilingsCmdBuild(SamRevision& revision,
-                            CeilingsOperationType operationType, uint8_t index);
+    std::shared_ptr<SamReadCeilingsRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command reference
      */
-    static const CalypsoSamCommands& command;
+    static const CalypsoSamCommand& mCommand;
 };
 
 }

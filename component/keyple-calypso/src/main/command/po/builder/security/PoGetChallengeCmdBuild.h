@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -17,7 +17,6 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
-#include "CalypsoPoCommands.h"
 #include "PoClass.h"
 #include "PoGetChallengeRespPars.h"
 
@@ -43,7 +42,7 @@ private:
     /**
      *
      */
-    CalypsoPoCommands& command = CalypsoPoCommands::GET_CHALLENGE;
+    CalypsoPoCommand& command = CalypsoPoCommand::GET_CHALLENGE;
 
 public:
     /**
@@ -56,8 +55,17 @@ public:
     /**
      *
      */
-    std::shared_ptr<PoGetChallengeRespPars>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<PoGetChallengeRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
+
+    /**
+     *
+     * This command can't be executed in session and therefore doesn't uses the
+     * session buffer.
+     *
+     * @return false
+     */
+    virtual bool isSessionBufferUsed() const override;
 
 protected:
     /**

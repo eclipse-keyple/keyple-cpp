@@ -35,7 +35,7 @@ public:
      */
     KeypleSeCommandUnknownStatusException(
       const std::string& message, const std::shared_ptr<SeCommand> command,
-      const std::shared_ptr<Integer> statusCode)
+      const std::shared_ptr<int> statusCode)
     : KeypleSeCommandException(message, command, statusCode) {}
 };
 

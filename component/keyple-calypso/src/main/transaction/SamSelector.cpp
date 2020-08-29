@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -12,69 +12,126 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-/* Core */
-#include "SeCommonProtocols.h"
-
-/* Calypso */
 #include "SamSelector.h"
+
+/* Common */
+#include "IllegalArgumentException.h"
+
+/* Core */
+#include "SeProtocol.h"
 
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::common;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
 
-SamSelector::SamSelector(const SamRevision& samRevision,
-                         const std::string& serialNumber,
-                         const std::string& extraInfo)
-: SeSelector(SeCommonProtocols::PROTOCOL_ISO7816_3,
-             std::make_shared<SeSelector::AtrFilter>(""), nullptr, extraInfo)
+/* SAM SELECTOR ------------------------------------------------------------- */
+
+SamSelector::SamSelector(SamSelectorBuilder* builder)
+: SeSelector(builder)
 {
     std::string atrRegex;
     std::string snRegex;
 
-    /* check if serialNumber is defined */
-    if (serialNumber == "" || serialNumber.empty()) {
-        /* match all serial numbers */
+    /* Check if serialNumber is defined */
+    if (builder->serialNumber == "")
+        /* Match all serial numbers */
         snRegex = ".{8}";
-    } else {
-        /* match the provided serial number (could be a regex substring) */
-        snRegex = serialNumber;
-    }
+    else
+        /* Match the provided serial number (could be a regex substring) */
+        snRegex = builder->serialNumber;
 
     /*
-     * build the final Atr regex according to the SAM subtype and serial number
+     * Build the final Atr regex according to the SAM subtype and serial number
      * if any.
      *
-     * The header is starting with 3B, its total length is 4 or 6 bytes (8 or 10
-     * hex digits)
+     * The header is starting with 3B, its total length is 4 or 6 bytes (8 or
+     * 10 hex digits)
      */
-    switch (samRevision.innerEnumValue) {
-    case SamRevision::InnerEnum::C1:
-    case SamRevision::InnerEnum::S1D:
-    case SamRevision::InnerEnum::S1E:
+    switch (builder->samRevision) {
+    case SamRevision::C1:
+    case SamRevision::S1D:
+    case SamRevision::S1E:
         atrRegex = "3B(.{6}|.{10})805A..80" +
-                   samRevision.getApplicationTypeMask() + "20.{4}" + snRegex +
+                   builder->samRevision.getApplicationTypeMask() +
+                   "20.{4}" +
+                   snRegex +
                    "829000";
         break;
-    case SamRevision::InnerEnum::AUTO:
-        /* match any ATR */
+    case SamRevision::AUTO:
+        /* Match any ATR */
         atrRegex = ".*";
         break;
     default:
-        throw std::invalid_argument("Unknown SAM subtype.");
+        throw IllegalArgumentException("Unknown SAM subtype.");
     }
 
-    this->getAtrFilter()->setAtrRegex(atrRegex);
+    getAtrFilter()->setAtrRegex(atrRegex);
 }
 
-SamSelector::SamSelector(const SamIdentifier& samIdentifier,
-                         const std::string& extraInfo)
-: SamSelector(samIdentifier.getSamRevision(), samIdentifier.getSerialNumber(),
-              extraInfo)
+std::unique_ptr<SamSelectorBuilder> SamSelector::builder()
 {
+    return std::unique_ptr<SamSelectorBuilder>(new SamSelectorBuilder());
+}
+
+/* SAM SELECTOR BUILDER ----------------------------------------------------- */
+
+ SamSelectorBuilder::SamSelectorBuilder()
+ : SeSelector::SeSelectorBuilder(), mAtrFiler(std::make_shared<AtrFilter>("")){}
+
+SamSelectorBuilder& SamSelectorBuilder::samRevision(
+    const SamRevision samRevision)
+{
+    mSamRevision = samRevision;
+    return *this;
+}
+
+SamSelectorBuilder& SamSelectorBuilder::serialNumber(
+    const std::string& serialNumber)
+{
+    mSerialNumber = serialNumber;
+    return *this;
+}
+
+SamSelectorBuilder& SamSelectorBuilder::samIdentifier(
+    const SamIdentifier& samIdentifier)
+{
+    mSamRevision = samIdentifier->getSamRevision();
+    mSerialNumber = samIdentifier->getSerialNumber();
+    return this;
+}
+
+SamSelectorBuilder& SamSelectorBuilder::seProtocol(
+    const std::shared_ptr<SeProtocol> seProtocol)
+{
+    return SeSelector::SeSelectorBuilder::seProtocol(seProtocol);
+}
+
+/**
+ * {@inheritDoc}
+ */
+SamSelectorBuilder& SamSelectorBuilder::atrFilter(
+    const std::shared_ptr<AtrFilter> atrFilter)
+{
+    return SeSelector::SeSelectorBuilder::atrFilter(atrFilter);
+}
+
+/**
+ * {@inheritDoc}
+ */
+SamSelectorBuilder& SamSelectorBuilder::aidSelector(
+    const std::shared_ptr<AidSelector> aidSelector)
+{
+    return SeSelector::SeSelectorBuilder::.aidSelector(aidSelector);
+}
+
+std::unique_ptr<SamSelector> SamSelectorBuilder::build()
+{
+    return std::unique_ptr<SamSelector>(new SamSelector(this));
 }
 
 }

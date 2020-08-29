@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -17,11 +17,11 @@
 #include <memory>
 
 /* Calypso */
-#include "AbstractSamResponseParser.h"
 #include "CalypsoSam.h"
 #include "SamSelector.h"
 
 /* Core */
+#include "AbstractApduCommandBuilder.h"
 #include "AbstractSeSelectionRequest.h"
 #include "KeypleCalypsoExport.h"
 #include "SeProtocol.h"
@@ -32,6 +32,7 @@ namespace calypso {
 namespace transaction {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::core::command;
 using namespace keyple::core::selection;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
@@ -42,7 +43,7 @@ using namespace keyple::core::seproxy::message;
  * Calypso SAMs
  */
 class KEYPLECALYPSO_API SamSelectionRequest
-: public AbstractSeSelectionRequest {
+: public AbstractSeSelectionRequest<AbstractApduCommandBuilder> {
 public:
     /**
      * Create a {@link SamSelectionRequest}
@@ -52,13 +53,6 @@ public:
      */
     SamSelectionRequest(std::shared_ptr<SamSelector> samSelector);
 
-    /**
-     *
-     */
-    std::shared_ptr<AbstractApduResponseParser>
-    getCommandParser(std::shared_ptr<SeResponse> seResponse,
-                     int commandIndex) override;
-
 protected:
     /**
      * Create a CalypsoSam object containing the selection data received from
@@ -67,17 +61,8 @@ protected:
      * @param seResponse the SE response received
      * @return a {@link CalypsoSam}
      */
-    const std::shared_ptr<AbstractMatchingSe> parse(
+    const std::shared_ptr<CalypsoSam> parse(
         std::shared_ptr<SeResponse> seResponse) override;
-
-    /**
-     *
-     */
-    std::shared_ptr<SamSelectionRequest> shared_from_this()
-    {
-        return std::static_pointer_cast<SamSelectionRequest>(
-            AbstractSeSelectionRequest::shared_from_this());
-    }
 };
 
 }

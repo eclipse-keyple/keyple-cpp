@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -33,13 +33,18 @@ GetDataFciCmdBuild::GetDataFciCmdBuild(PoClass poClass)
 : AbstractPoCommandBuilder<GetDataFciRespPars>(CalypsoPoCommands::GET_DATA_FCI,
                                                nullptr)
 {
-    request = setApduRequest(poClass.getValue(), command, 0, 0x6F, 0x00);
+    request = setApduRequest(poClass.getValue(), command, 0x00, 0x6F, 0x00);
 }
 
 std::shared_ptr<GetDataFciRespPars> GetDataFciCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<GetDataFciRespPars>(apduResponse);
+    return std::make_shared<GetDataFciRespPars>(apduResponse, this);
+}
+
+bool GetDataFciCmdBuild::isSessionBufferUsed() const
+{
+    return false;
 }
 
 }

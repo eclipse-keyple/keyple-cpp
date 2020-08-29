@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,8 +14,12 @@
 
 #pragma once
 
+/* Core */
 #include "ApduResponse.h"
+
+/* Calypso */
 #include "AbstractOpenSessionRespPars.h"
+#include "OpenSession32CmdBuild.h"
 
 #include <vector>
 #include <memory>
@@ -33,9 +37,13 @@ class KEYPLECALYPSO_API OpenSession32RespPars final
 : public AbstractOpenSessionRespPars {
 public:
     /**
+     * Instantiates a new OpenSession32RespPars from the response.
      *
+     * @param response from OpenSession32RespPars
+     * @param builder the reference to the builder that created this parser
      */
-    OpenSession32RespPars(std::shared_ptr<ApduResponse> response);
+    OpenSession32RespPars(std::shared_ptr<ApduResponse> response,
+                          OpenSession32CmdBuild* builder);
 
     /**
      * Method to get a Secure Session from the response in revision 3.2 mode.
@@ -43,14 +51,14 @@ public:
      * @param apduResponseData the apdu response data
      * @return a SecureSession
      */
-    std::shared_ptr<SecureSession>
-    toSecureSession(const std::vector<uint8_t>& apduResponseData);
+    std::shared_ptr<SecureSession> toSecureSession(
+        const std::vector<uint8_t>& apduResponseData);
 
     /**
      *
      */
-    static std::shared_ptr<SecureSession>
-    createSecureSession(const std::vector<uint8_t>& apduResponse);
+    static std::shared_ptr<SecureSession> createSecureSession(
+        const std::vector<uint8_t>& apduResponse);
 
 protected:
     /**

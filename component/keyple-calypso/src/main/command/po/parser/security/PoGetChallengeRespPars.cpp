@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -26,8 +26,8 @@ using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
 PoGetChallengeRespPars::PoGetChallengeRespPars(
-    std::shared_ptr<ApduResponse> response)
-: AbstractApduResponseParser(response)
+  std::shared_ptr<ApduResponse> response, PoGetChallengeCmdBuild* builder)
+: AbstractPoResponseParser(response, builder)
 {
 }
 

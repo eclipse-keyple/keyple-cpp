@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -23,15 +23,32 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
+const CalypsoSamCommand& DigestUpdateMultipleCmdBuild::mCommand =
+    CalypsoSamCommand::DIGEST_UPDATE_MULTIPLE;
+
 DigestUpdateMultipleCmdBuild::DigestUpdateMultipleCmdBuild(
-    SamRevision revision, std::vector<uint8_t>& digestData)
-: AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_UPDATE_MULTIPLE, nullptr)
+  const SamRevision revision, const bool encryptedSession,
+  const std::vector<uint8_t>& digestData)
+: AbstractSamCommandBuilder(CalypsoSamCommand::DIGEST_UPDATE_MULTIPLE, nullptr)
 {
-    this->defaultRevision = revision;
+    mDefaultRevision = revision;
 
-    uint8_t cla = this->defaultRevision.getClassByte();
+    const uint8_t cla = mDefaultRevision.getClassByte();
+    const uint8_t p1 = 0x00;
+    const uint8_t p2 = encryptedSession ? 0x80 : 0x00;
 
-    request = setApduRequest(cla, command, 0x80, 0x00, digestData);
+    if (static_cast<int>(digestData.size()) == 0 ||
+        static_cast<int>(digestData.size()) > 255)
+            throw IllegalArgumentException("Digest data null or too long!");
+
+    mRequest = setApduRequest(cla, command, p1, p2, digestData);
+}
+
+std::shared_ptr<DigestUpdateMultipleRespPars>
+    DigestUpdateMultipleCmdBuild::createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse)
+{
+    return std::make_shared<DigestUpdateMultipleRespPars>(apduResponse, this);
 }
 
 }

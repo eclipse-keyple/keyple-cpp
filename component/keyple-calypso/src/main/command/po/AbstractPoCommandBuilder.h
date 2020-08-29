@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -17,49 +17,57 @@
 #include <memory>
 #include <type_traits>
 
-#include "AbstractApduResponseParser.h"
-#include "AbstractIso7816CommandBuilder.h"
-#include "CalypsoPoCommands.h"
+/* Common */
+#include "LoggerFactory.h"
+
+/* Core */
+
 #include "ApduRequest.h"
 #include "ApduResponse.h"
+
+/* Calypso */
+#include "AbstractPoCommandBuilder.h"
+#include "AbstractIso7816CommandBuilder.h"
+#include "CalypsoPoCommand.h"
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 
+class AbstractPoResponseParser;
+
+using namespace keyple::calypso::command::po;
+using namespace keyple::common;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
 /**
  * Abstract class for all PO command builders.
  */
-template <typename T>
+template<typename T>
 class KEYPLECALYPSO_API AbstractPoCommandBuilder
 : public AbstractIso7816CommandBuilder {
 public:
-    /*
-    static_assert(std::is_base_of<AbstractApduResponseParser, T>::value, "T must inherit from org.eclipse.keyple.core.command.AbstractApduResponseParser");
-    */
+    static_assert(std::is_base_of<AbstractPoResponseParser, T>::value,
+                  "T must inherit from keyple::core::command" \
+                  "::AbstractApduResponseParser");
 
     /**
      * Constructor dedicated for the building of referenced Calypso commands
-     * 
-     * @param reference a command reference from the Calypso command table
+     *
+     * @param commandRef a command reference from the Calypso command table
      * @param request the ApduRequest (the instruction byte will be overwritten)
      */
-    AbstractPoCommandBuilder(CalypsoPoCommands& reference,
-                             std::shared_ptr<ApduRequest> request)
-    : AbstractIso7816CommandBuilder(reference, request)
-    {
-    }
+    AbstractPoCommandBuilder(
+      CalypsoPoCommand& commandRef, std::shared_ptr<ApduRequest> request)
+    : AbstractIso7816CommandBuilder(commandRef, request) {}
 
     /**
      *
      */
-    virtual ~AbstractPoCommandBuilder()
-    {
-    }
+    virtual ~AbstractPoCommandBuilder() = default;
 
     /**
      * Create the response parser matching the builder
@@ -67,18 +75,32 @@ public:
      * @param apduResponse the response data from the SE
      * @return an {@link AbstractApduResponseParser}
      */
-    virtual std::shared_ptr<T>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) = 0;
+    virtual std::shared_ptr<T> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) = 0;
 
-protected:
     /**
      *
      */
-    std::shared_ptr<AbstractPoCommandBuilder> shared_from_this()
+    virtual std::shared_ptr<CalypsoPoCommand> getCommandRef() const override
     {
-        return std::static_pointer_cast<AbstractPoCommandBuilder>(
-            AbstractIso7816CommandBuilder::shared_from_this());
+        return std::dynamic_pointer_cast<CalypsoPoCommand>(mCommandRef);
     }
+
+    /**
+     * Indicates if the session buffer is used when executing this command.
+     * <p>
+     * Allows the management of the overflow of this buffer.
+     *
+     * @return true if this command uses the session buffer
+     */
+    virtual bool isSessionBufferUsed() const;
+
+protected:
+    /**
+     * common logger for all builders
+     */
+    const std::shared_ptr<Logger> mLogger =
+        LoggerFactory::getLogger(typeid(AbstractPoCommandBuilder));
 };
 
 }

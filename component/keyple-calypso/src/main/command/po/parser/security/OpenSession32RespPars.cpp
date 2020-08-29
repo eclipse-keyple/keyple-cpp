@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -29,12 +29,8 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::core::seproxy::message;
 
 OpenSession32RespPars::OpenSession32RespPars(
-    std::shared_ptr<ApduResponse> response)
-: AbstractOpenSessionRespPars(response, PoRevision::REV3_2)
-{
-    std::vector<uint8_t> data = response->getDataOut();
-    this->secureSession       = toSecureSession(data);
-}
+  std::shared_ptr<ApduResponse> response, OpenSession32CmdBuild* builder)
+: AbstractOpenSessionRespPars(response, builder, PoRevision::REV3_2) {}
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
 OpenSession32RespPars::toSecureSession(
@@ -53,12 +49,12 @@ OpenSession32RespPars::createSecureSession(
      * ratification: if the bit 0 of flag is set then the previous security has
      * been ratified
      */
-    bool previousSessionRatified = (flag & (1 << 0)) == 0x00;
+    bool previousSessionRatified = (flag & 0x01) == 0x00;
     /*
      * secure security: if the bit 1 of flag is set then the secure security is
      * authorized
      */
-    bool manageSecureSessionAuthorized = (flag & (1 << 1)) == 0x02;
+    bool manageSecureSessionAuthorized = (flag & 0x02) == 0x02;
 
     char kif       = apduResponse[9];
     int dataLength = apduResponse[11];

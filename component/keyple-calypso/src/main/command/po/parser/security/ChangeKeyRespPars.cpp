@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -13,8 +13,17 @@
  ******************************************************************************/
 
 #include "ChangeKeyRespPars.h"
+
+/* Core */
 #include "AbstractApduResponseParser.h"
 #include "ApduResponse.h"
+
+/* Calypso */
+#include "CalypsoPoAccessForbiddenException.h"
+#include "CalypsoPoIllegalParameterException.h"
+#include "CalypsoPoSecurityContextException.h"
+#include "CalypsoPoSecurityDataException.h"
+#include "CalypsoPoTerminatedException.h"
 
 namespace keyple {
 namespace calypso {
@@ -24,66 +33,65 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
-std::unordered_map<
-    int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    ChangeKeyRespPars::STATUS_TABLE;
-
-ChangeKeyRespPars::StaticConstructor::StaticConstructor()
-{
-    std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        m(AbstractApduResponseParser::STATUS_TABLE);
-    m.emplace(
+std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+    ChangeKeyRespPars::STATUS_TABLE = {
+    {
         0x6700,
         std::make_shared<AbstractApduResponseParser::StatusProperties>(
-            false,
-            std::string(
-                "Lc value not supported (not 04h, 10h, 18h, 20h or 18h not ") +
-                "supported)."));
-    m.emplace(0x6900,
-              std::make_shared<AbstractApduResponseParser::StatusProperties>(
-                  false, "Transaction Counter is 0."));
-    m.emplace(0x6982,
-              std::make_shared<AbstractApduResponseParser::StatusProperties>(
-                  false, "Security conditions not fulfilled (Get Challenge not "
-                         "done: challenge unavailable)."));
-    m.emplace(
+            "Lc value not supported (not 04h, 10h, 18h, 20h).",
+            typeid(CalypsoPoIllegalParameterException))
+    }, {
+        0x6900,
+        std::make_shared<AbstractApduResponseParser::StatusProperties>(
+            "Transaction Counter is 0.",
+            typeid(CalypsoPoTerminatedException))
+    }, {
+        0x6982,
+        std::make_shared<AbstractApduResponseParser::StatusProperties>(
+            "Security conditions not fulfilled (Get Challenge not " \
+            "done: challenge unavailable).",
+            typeid(CalypsoPoSecurityContextException))
+    }, {
         0x6985,
         std::make_shared<AbstractApduResponseParser::StatusProperties>(
-            false,
-            "Access forbidden (a session is open or DF is invalidated)."));
-    m.emplace(0x6988,
-              std::make_shared<AbstractApduResponseParser::StatusProperties>(
-                  false, "Incorrect Cryptogram."));
-    m.emplace(0x6A80,
-              std::make_shared<AbstractApduResponseParser::StatusProperties>(
-                  false, "Decrypted message incorrect (key algorithm not "
-                         "supported, incorrect padding, etc.)."));
-    m.emplace(0x6A87,
-              std::make_shared<AbstractApduResponseParser::StatusProperties>(
-                  false, "Lc not compatible with P2."));
-    m.emplace(0x6B00,
-              std::make_shared<AbstractApduResponseParser::StatusProperties>(
-                  false, "Incorrect P1, P2."));
-    m.emplace(0x9000,
-              std::make_shared<AbstractApduResponseParser::StatusProperties>(
-                  false, "Successful execution."));
-    STATUS_TABLE = m;
-}
+            "Access forbidden (a session is open or DF is invalidated).",
+            typeid(CalypsoPoAccessForbiddenException))
+    }, {
+        0x6988,
+        std::make_shared<AbstractApduResponseParser::StatusProperties>(
+            "Incorrect Cryptogram.",
+            typeid(CalypsoPoSecurityDataException))
+    }, {
+        0x6A80,
+        std::make_shared<AbstractApduResponseParser::StatusProperties>(
+            "Decrypted message incorrect (key algorithm not " \
+            "supported, incorrect padding, etc.).",
+            typeid(CalypsoPoSecurityDataException))
+    }, {
+        0x6A87,
+        std::make_shared<AbstractApduResponseParser::StatusProperties>(
+            "Lc not compatible with P2.",
+            typeid(CalypsoPoIllegalParameterException))
+    }, {
+        0x6B00,
+        std::make_shared<AbstractApduResponseParser::StatusProperties>(
+            "Incorrect P1, P2.",
+            typeid(CalypsoPoIllegalParameterException))
+    }
+};
 
-ChangeKeyRespPars::StaticConstructor ChangeKeyRespPars::staticConstructor;
-
-ChangeKeyRespPars::ChangeKeyRespPars(std::shared_ptr<ApduResponse> response)
-: AbstractPoResponseParser(response)
+ChangeKeyRespPars::ChangeKeyRespPars(
+  std::shared_ptr<ApduResponse> response, ChangeKeyCmdBuild *builder
+: AbstractPoResponseParser(response, builder)
 {
 }
 
-std::unordered_map<
-    int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-ChangeKeyRespPars::getStatusTable() const
+std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+    ChangeKeyRespPars::getStatusTable() const
 {
     return STATUS_TABLE;
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -28,21 +28,22 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
+const CalypsoSamCommand& SamReadEventCounterCmdBuild::mCommand =
+    CalypsoSamCommand::READ_EVENT_COUNTER;
 const int SamReadEventCounterCmdBuild::MAX_COUNTER_NUMB     = 26;
 const int SamReadEventCounterCmdBuild::MAX_COUNTER_REC_NUMB = 3;
 
 SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
-    SamRevision& revision, SamEventCounterOperationType operationType,
-    uint8_t index)
+  cosnt SamRevision& revision, const SamEventCounterOperationType operationType,
+  const uint8_t index)
 : AbstractSamCommandBuilder(command, nullptr)
 {
-    this->defaultRevision = revision;
+    mDefaultRevision = revision;
 
-    uint8_t cla = this->defaultRevision.getClassByte();
-    uint8_t p2  = 0x00;
+    const uint8_t cla = mDefaultRevision.getClassByte();
+    uint8_t p2;
 
-    switch (operationType) {
-    case COUNTER_RECORD:
+    if (operationType == SamEventCounterOperationType::COUNTER_RECORD) {
         if (index < 1 || index > MAX_COUNTER_REC_NUMB) {
             throw IllegalArgumentException(StringHelper::formatSimple(
                 "Record Number must be between 1 and %d",
@@ -50,22 +51,29 @@ SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
         }
 
         p2 = 0xE0 + index;
-        break;
-    case SINGLE_COUNTER:
 
+    /* SINGLE_COUNTER */
+    } else {
         if (index > MAX_COUNTER_NUMB) {
             throw IllegalArgumentException(StringHelper::formatSimple(
                 "Counter Number must be between 0 and %d", MAX_COUNTER_NUMB));
         }
 
-        p2 = 0x81 + index;
+        p2 = 0x80 + index;
         break;
     default:
         throw IllegalStateException(StringHelper::formatSimple(
             "Unsupported OperationType parameter %d", operationType));
     }
 
-    request = setApduRequest(cla, command, 0x00, p2, 0x00);
+    mRequest = setApduRequest(cla, command, 0x00, p2, 0x00);
+}
+
+std::shared_ptr<SamReadEventCounterRespPars>
+    SamReadEventCounterCmdBuild::createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse)
+{
+    return std::make_shared<SamReadEventCounterRespPars>(apduResponse, this);
 }
 
 }

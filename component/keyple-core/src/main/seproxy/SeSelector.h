@@ -502,6 +502,11 @@ public:
     class KEYPLECORE_API SeSelectorBuilder {
     public:
         /**
+         *
+         */
+        virtual ~SeSelectorBuilder() = default;
+
+        /**
          * Friend declaration to give access to private members
          */
         friend SeSelector;
@@ -512,7 +517,7 @@ public:
          * @param seProtocol the {@link SeProtocol} of the targeted SE
          * @return the builder instance
          */
-        SeSelectorBuilder& seProtocol(
+        virtual SeSelectorBuilder& seProtocol(
             const std::shared_ptr<SeProtocol> seProtocol);
 
         /**
@@ -521,7 +526,7 @@ public:
          * @param atrFilter the {@link AtrFilter} of the targeted SE
          * @return the builder instance
          */
-        SeSelectorBuilder& atrFilter(
+        virtual SeSelectorBuilder& atrFilter(
             const std::shared_ptr<AtrFilter> atrFilter);
 
         /**
@@ -530,7 +535,7 @@ public:
          * @param aidSelector the {@link AidSelector} of the targeted SE
          * @return the builder instance
          */
-        SeSelectorBuilder& aidSelector(
+        virtual SeSelectorBuilder& aidSelector(
             const std::shared_ptr<AidSelector> aidSelector);
 
         /**
@@ -538,7 +543,7 @@ public:
          *
          * @return a new instance
          */
-        std::unique_ptr<SeSelector> build();
+        virtual std::unique_ptr<SeSelector> build();
 
     protected :
         /**

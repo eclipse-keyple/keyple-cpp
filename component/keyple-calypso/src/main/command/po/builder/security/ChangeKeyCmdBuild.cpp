@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -13,8 +13,13 @@
  ******************************************************************************/
 
 #include "ChangeKeyCmdBuild.h"
-#include "ChangeKeyRespPars.h"
+
+/* Core */
 #include "ApduResponse.h"
+
+/* Calypso */
+#include "CalypsoPoCommand.h"
+#include "ChangeKeyRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -47,7 +52,12 @@ ChangeKeyCmdBuild::ChangeKeyCmdBuild(PoClass poClass, uint8_t keyIndex,
 std::shared_ptr<ChangeKeyRespPars> ChangeKeyCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<ChangeKeyRespPars>(apduResponse);
+    return std::make_shared<ChangeKeyRespPars>(apduResponse, this);
+}
+
+bool ChangeKeyCmdBuild::isSessionBufferUsed() const
+{
+    return false;
 }
 
 }

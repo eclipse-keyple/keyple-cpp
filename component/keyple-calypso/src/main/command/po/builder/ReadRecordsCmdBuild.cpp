@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -28,48 +28,53 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
-ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, uint8_t sfi,
-                                         ReadDataStructure readDataStructure,
-                                         uint8_t firstRecordNumber,
-                                         bool readJustOneRecord,
-                                         uint8_t expectedLength,
-                                         const std::string& extraInfo)
-: AbstractPoCommandBuilder<ReadRecordsRespPars>(CalypsoPoCommands::READ_RECORDS,
-                                                nullptr),
-  firstRecordNumber(firstRecordNumber),
+ReadRecordsCmdBuild::ReadRecordsCmdBuild(
+  const PoClass poClass, const uint8_t sfi, const uint8_t firstRecordNumber,
+  const ReadMode readMode, const int expectedLength)
+: AbstractPoCommandBuilder<ReadRecordsRespPars>(
+      CalypsoPoCommand::READ_RECORDS, nullptr),
+  mSfi(sfi), mFirstRecordNumber(firstRecordNumber), mReadMode(readMode)
 
   readDataStructure(readDataStructure)
 {
-    if (firstRecordNumber < 1) {
-        throw std::invalid_argument("Bad record number (< 1)");
-    }
-
-    uint8_t p2 = sfi == 0x00 ? 0x05 : (sfi * 8) + 5;
-    if (readJustOneRecord)
+    const uint8_t p1 = firstRecordNumber;
+    const uint8_t p2 = sfi == 0x00 ? 0x05 : (sfi * 8) + 5;
+    if (readMode == ReadMode::ONE_RECORD)
         p2 -= 0x01;
+    const uint8_t le = expectedLength;
 
-    this->request = setApduRequest(poClass.getValue(), command,
-                                   firstRecordNumber, p2, expectedLength);
-    if (extraInfo != "") {
-        this->addSubName(extraInfo);
-    }
-}
+    request = setApduRequest(poClass.getValue(), command, p1, p2, le);
 
-ReadRecordsCmdBuild::ReadRecordsCmdBuild(PoClass poClass, uint8_t sfi,
-                                         ReadDataStructure readDataStructure,
-                                         uint8_t firstRecordNumber,
-                                         bool readJustOneRecord,
-                                         const std::string& extraInfo)
-: ReadRecordsCmdBuild(poClass, sfi, readDataStructure, firstRecordNumber,
-                      readJustOneRecord, 0x00, extraInfo)
-{
+    const std::string extraInfo = StringHelper::formatSimple(
+        "SFI=%02X, REC=%d, READMODE=%s, EXPECTEDLENGTH=%d",
+         sfi, firstRecordNumber, readMode, expectedLength);
+    addSubName(extraInfo);
 }
 
 std::shared_ptr<ReadRecordsRespPars> ReadRecordsCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<ReadRecordsRespPars>(
-        apduResponse, readDataStructure, firstRecordNumber);
+    return std::make_shared<ReadRecordsRespPars>(apduResponse, this);
+}
+
+bool ReadRecordsCmdBuild::isSessionBufferUsed() const
+{
+    return false;
+}
+
+uint8_t ReadRecordsCmdBuild::getSfi() const
+{
+    return mSfi;
+}
+
+uint8_t ReadRecordsCmdBuild::getFirstRecordNumber() const
+{
+    return mFirstRecordNumber;
+}
+
+ReadMode ReadRecordsCmdBuild::getReadMode() const
+{
+    return mReadMode;
 }
 
 }

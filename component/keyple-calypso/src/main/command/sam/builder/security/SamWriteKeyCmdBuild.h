@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,8 +15,9 @@
 #pragma once
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
 #include "SamRevision.h"
+#include "SamWriteKeyRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -30,7 +31,8 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Write Key APDU command.
  */
-class SamWriteKeyCmdBuild : public AbstractSamCommandBuilder {
+class SamWriteKeyCmdBuild final
+: public AbstractSamCommandBuilder<SamWriteKeyRespPars> {
 public:
     /**
      * Builder constructor
@@ -40,14 +42,21 @@ public:
      * @param keyReference the key reference (P2)
      * @param keyData the key data
      */
-    SamWriteKeyCmdBuild(SamRevision& revision, uint8_t writingMode,
-                        uint8_t keyReference, std::vector<uint8_t>& keyData);
+    SamWriteKeyCmdBuild(const SamRevision& revision, const uint8_t writingMode,
+                        const uint8_t keyReference,
+                        const std::vector<uint8_t>& keyData);
+
+    /**
+     *
+     */
+    std::shared_ptr<SamWriteKeyRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command reference
      */
-    CalypsoSamCommands command = CalypsoSamCommands::WRITE_KEY;
+    static const CalypsoSamCommands& mCommand;
 };
 
 }

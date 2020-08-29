@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -19,7 +19,8 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
+#include "DigestUpdateRespPars.h"
 #include "SamRevision.h"
 
 namespace keyple {
@@ -36,29 +37,28 @@ using namespace keyple::calypso::command::sam;
  * twice for each command executed during a session. First time for the command
  * sent and second time for the answer received
  */
-class KEYPLECALYPSO_API DigestUpdateCmdBuild
-: public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API DigestUpdateCmdBuild final
+: public AbstractSamCommandBuilder<DigestUpdateRespPars> {
 public:
     /**
      * Instantiates a new DigestUpdateCmdBuild.
      *
      * @param revision of the SAM
-     * @param encryptedSession the encrypted session
+     * @param encryptedSession the encrypted session flag, true if encrypted
      * @param digestData all bytes from command sent by the PO or response from
      *        the command
-     * @throws IllegalArgumentException - if the digest data is null or has a
-     *         length &gt; 255
-     * @throws IllegalArgumentException - if the request is inconsistent
+     * @throw IllegalArgumentException - if the digest data is null or has a
+     *        length &gt; 255
      */
-    DigestUpdateCmdBuild(SamRevision revision, bool encryptedSession,
-                         std::vector<uint8_t>& digestData);
+    DigestUpdateCmdBuild(const SamRevision revision,
+                         const bool encryptedSession,
+                         const std::vector<uint8_t>& digestData);
 
     /**
      *
      */
-    virtual ~DigestUpdateCmdBuild()
-    {
-    }
+    std::shared_ptr<DigestUpdateRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -74,7 +74,7 @@ private:
     /**
      * The command reference
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_UPDATE;
+    static const CalypsoSamCommand& mCommand;
 };
 
 }

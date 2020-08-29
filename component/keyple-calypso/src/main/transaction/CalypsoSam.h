@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -49,115 +49,101 @@ public:
      * @param selectionResponse the selection response from the SAM
      * @param transmissionMode the current {@link TransmissionMode} (contacts or
      *        contactless)
-     * @param extraInfo textual information
      */
     CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
-              const TransmissionMode& transmissionMode,
-              const std::string& extraInfo);
+               const TransmissionMode& transmissionMode);
 
     /**
      *
      */
-    virtual ~CalypsoSam()
-    {
-    }
+    virtual ~CalypsoSam() = default;
+d
+    /**
+     *
+     */
+    virtual const SamRevision& getSamRevision() const;
 
     /**
      *
      */
-    virtual SamRevision getSamRevision();
+    virtual const std::vector<uint8_t>& getSerialNumber() const;
 
     /**
      *
      */
-    virtual std::vector<uint8_t> getSerialNumber();
+    virtual const uint8_t getPlatform() const;
 
     /**
      *
      */
-    virtual uint8_t getPlatform();
+    virtual const uint8_t getApplicationType() const;
 
     /**
      *
      */
-    virtual uint8_t getApplicationType();
+    virtual const uint8_t getApplicationSubType() const;
 
     /**
      *
      */
-    virtual uint8_t getApplicationSubType();
+    virtual const uint8_t getSoftwareIssuer() const;
 
     /**
      *
      */
-    virtual uint8_t getSoftwareIssuer();
+    virtual const uint8_t getSoftwareVersion() const;
 
     /**
      *
      */
-    virtual uint8_t getSoftwareVersion();
-
-    /**
-     *
-     */
-    virtual uint8_t getSoftwareRevision();
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<CalypsoSam> shared_from_this()
-    {
-        return std::static_pointer_cast<CalypsoSam>(
-            AbstractMatchingSe::shared_from_this());
-    }
+    virtual const uint8_t getSoftwareRevision() const;
 
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(CalypsoSam));
 
     /**
      *
      */
-    SamRevision samRevision;
+    SamRevision mSamRevision;
 
     /**
      *
      */
-    std::vector<uint8_t> serialNumber = std::vector<uint8_t>(4);
+    std::vector<uint8_t> mSerialNumber;
 
     /**
      *
      */
-    uint8_t platform = 0;
+    uint8_t mPlatform = 0;
 
     /**
      *
      */
-    uint8_t applicationType = 0;
+    uint8_t mApplicationType = 0;
 
     /**
      *
      */
-    uint8_t applicationSubType = 0;
+    uint8_t mApplicationSubType = 0;
 
     /**
      *
      */
-    uint8_t softwareIssuer = 0;
+    uint8_t mSoftwareIssuer = 0;
 
     /**
      *
      */
-    uint8_t softwareVersion = 0;
+    uint8_t mSoftwareVersion = 0;
 
     /**
      *
      */
-    uint8_t softwareRevision = 0;
+    uint8_t mSoftwareRevision = 0;
 };
 
 }

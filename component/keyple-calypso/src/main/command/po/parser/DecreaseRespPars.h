@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,18 +15,16 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <vector>
 #include <memory>
 
-/* Common */
-#include "exceptionhelper.h"
-
 /* Core */
-#include "AbstractApduResponseParser.h"
+#include "AbstractPoResponseParser.h"
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"
+#include "DecreaseCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -48,30 +46,24 @@ public:
      * Instantiates a new DecreaseRespPars.
      *
      * @param response the response from the PO
+     * @param builder the reference to the builder that created this parser
      */
-    DecreaseRespPars(std::shared_ptr<ApduResponse> response);
+    DecreaseRespPars(std::shared_ptr<ApduResponse> response,
+                     DecreaseCmdBuild* builder);
 
     /**
      * Returns the new counter value as an int between 0
      *
      * @return the new value
-     * @throws IllegalStateException - if the counter value is not available
-     *         from the command response.
      */
     int getNewValue();
-
-    /**
-     *
-     */
-    std::string toString();
 
 protected:
     /**
      *
      */
-    std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    getStatusTable() const override;
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
+        const override;
 
     /**
      *
@@ -86,23 +78,7 @@ private:
     /**
      *
      */
-    static std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
-
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static DecreaseRespPars::StaticConstructor staticConstructor;
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

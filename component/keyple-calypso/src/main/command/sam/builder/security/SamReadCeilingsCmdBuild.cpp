@@ -30,32 +30,34 @@ using namespace keyple::calypso::command::sam;
 
 using CeilingsOperationType = SamReadCeilingsCmdBuild::CeilingsOperationType;
 
-const CalypsoSamCommands& SamReadCeilingsCmdBuild::command =
+const CalypsoSamCommands& SamReadCeilingsCmdBuild::mCommand =
     CalypsoSamCommands::READ_CEILINGS;
 const int SamReadCeilingsCmdBuild::MAX_CEILING_NUMB     = 26;
 const int SamReadCeilingsCmdBuild::MAX_CEILING_REC_NUMB = 3;
 
 SamReadCeilingsCmdBuild::SamReadCeilingsCmdBuild(
-    SamRevision& revision, CeilingsOperationType operationType, uint8_t index)
-: AbstractSamCommandBuilder(CalypsoSamCommands::READ_CEILINGS, nullptr)
+  const SamRevision& revision, const CeilingsOperationType operationType,
+  const uint8_t index)
+: AbstractSamCommandBuilder(CalypsoSamCommand::READ_CEILINGS, nullptr)
 {
-    this->defaultRevision = revision;
+    mDefaultRevision = revision;
 
-    uint8_t cla = this->defaultRevision.getClassByte();
-    uint8_t p1  = 0x00;
+    const uint8_t cla = mDefaultRevision.getClassByte();
+    uint8_t p1;
     uint8_t p2;
 
-    switch (operationType) {
-    case CEILING_RECORD:
-        if (index < 1 || index > MAX_CEILING_REC_NUMB) {
-            throw IllegalArgumentException(StringHelper::formatSimple(
-                "Record Number must be between 1 and  %d",
-                MAX_CEILING_REC_NUMB));
-        }
+    it (operationType == CeilingsOperationType::CEILING_RECORD) {
+        if (index < 0 || index > MAX_CEILING_REC_NUMB)
+            throw IllegalArgumentException(
+                      StringHelper::formatSimple(
+                          "Record Number must be between 1 and  %d",
+                          MAX_CEILING_REC_NUMB));
 
+        p1 = 0x00;
         p2 = 0xB0 + index;
-        break;
-    case SINGLE_CEILING:
+
+    /* SINGLE_CEILING */
+    } else {
         if (index > MAX_CEILING_NUMB) {
             throw IllegalArgumentException(StringHelper::formatSimple(
                 "Counter Number must be between 0 and %d", MAX_CEILING_NUMB));
@@ -63,13 +65,16 @@ SamReadCeilingsCmdBuild::SamReadCeilingsCmdBuild(
 
         p1 = index;
         p2 = 0xB8;
-        break;
-    default:
-        throw IllegalStateException(StringHelper::formatSimple(
-            "Unsupported OperationType parameter %d", operationType));
     }
 
-    request = setApduRequest(cla, command, p1, p2, 0x00);
+    mRequest = setApduRequest(cla, command, p1, p2, 0x00);
+}
+
+std::shared_ptr<SamReadCeilingsRespPars>
+    SamReadCeilingsCmdBuild::createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse)
+{
+    return std::make_shared<SamReadCeilingsRespPars>(apduResponse, this);
 }
 
 }

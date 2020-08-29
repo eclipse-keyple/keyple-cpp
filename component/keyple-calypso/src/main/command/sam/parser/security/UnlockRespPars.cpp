@@ -13,11 +13,15 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-/* Calypso */
 #include "UnlockRespPars.h"
 
 /* Core */
 #include "ApduResponse.h"
+
+/* Calypso */
+#include "CalypsoSamAccessForbiddenException.h"
+#include "CalypsoSamIllegalParameterException.h"
+#include "CalypsoSamSecurityDataException.h"
 
 namespace keyple {
 namespace calypso {
@@ -27,11 +31,37 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::core::seproxy::message;
 
-UnlockRespPars::UnlockRespPars(std::shared_ptr<ApduResponse> response)
-: AbstractApduResponseParser(response)
+const std::map<int, std::shared_ptr<StatusProperties>>
+    UnlockRespPars::STATUS_TABLE = {
+    {
+        0x6700,
+        std::make_shared<StatusProperties>(
+            "Incorrect Lc.",
+            typeid(CalypsoSamIllegalParameterException))
+    }, {
+        0x6985,
+        std::make_shared<StatusProperties>(
+            "Preconditions not satisfied.",
+            typeid(CalypsoSamAccessForbiddenException))
+    }, {
+        0x6988,
+        std::make_shared<StatusProperties>(
+            "Incorrect UnlockData.",
+            typeid(CalypsoSamSecurityDataException))
+    }
+};
+
+UnlockRespPars::UnlockRespPars(
+ const std::shared_ptr<ApduResponse> response, UnlockCmdBuild* buidlder)
+: AbstractApduResponseParser(response, builder) {}
+
+const std::map<int, std::shared_ptr<StatusProperties>>&
+    UnlockRespPars::getStatusTable() const
 {
+    return STATUS_TABLE;
 }
 
 }

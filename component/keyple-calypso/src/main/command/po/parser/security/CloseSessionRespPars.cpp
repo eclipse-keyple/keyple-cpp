@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -16,6 +16,9 @@
 #include "ApduResponse.h"
 
 /* Calypso */
+#include "CalypsoPoAccessForbiddenException.h"
+#include "CalypsoPoIllegalParameterException.h"
+#include "CalypsoPoSecurityDataException.h"
 #include "CloseSessionRespPars.h"
 
 /* Common */
@@ -31,33 +34,35 @@ namespace security {
 
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
+using namespace keyple::calypso::command::po::exception;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 std::unordered_map<int, std::shared_ptr<StatusProperties>>
-    CloseSessionRespPars::STATUS_TABLE;
-
-CloseSessionRespPars::StaticConstructor::StaticConstructor()
-{
-    std::unordered_map<int, std::shared_ptr<StatusProperties>> m(
-        AbstractApduResponseParser::STATUS_TABLE);
-
-    m.emplace(0x6700,
-              std::make_shared<StatusProperties>(
-                  false,
-                  "Lc signatureLo not supported (e.g. Lc=4 with a Revision "
-                  "3.2 mode for Open Secure Session)."));
-    m.emplace(0x6B00, std::make_shared<StatusProperties>(
-                          false, "P1 or P2 signatureLo not supported."));
-    m.emplace(0x6988, std::make_shared<StatusProperties>(
-                          false, "incorrect signatureLo."));
-    m.emplace(0x6985, std::make_shared<StatusProperties>(
-                          false, "No security was opened."));
-
-    STATUS_TABLE = m;
-}
-
-CloseSessionRespPars::StaticConstructor CloseSessionRespPars::staticConstructor;
+    CloseSessionRespPars::STATUS_TABLE = {
+    {
+        0x6700,
+        std::make_shared<StatusProperties>(
+            "Lc signatureLo not supported (e.g. Lc=4 with a Revision " \
+            "3.2 mode for Open Secure Session).",
+            typeid(CalypsoPoIllegalParameterException))
+    }, {
+        0x6B00,
+        std::make_shared<StatusProperties>(
+            "P1 or P2 signatureLo not supported.",
+            typeid(CalypsoPoIllegalParameterException))
+    }, {
+        0x6988,
+        std::make_shared<StatusProperties>(
+            "incorrect signatureLo.",
+             typeid(CalypsoPoSecurityDataException))
+    }, {
+        0x6985,
+        std::make_shared<StatusProperties>(
+            "No security was opened.",
+            typeid(CalypsoPoAccessForbiddenException))
+    }
+};
 
 std::unordered_map<
     int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
@@ -67,11 +72,10 @@ CloseSessionRespPars::getStatusTable() const
 }
 
 CloseSessionRespPars::CloseSessionRespPars(
-    std::shared_ptr<ApduResponse> response)
-: AbstractApduResponseParser(response)
+  std::shared_ptr<ApduResponse> response, CloseSessionCmdBuild* builder)
+: AbstractPoResponseParser(response, builder)
 {
-    std::vector<uint8_t> data = response->getDataOut();
-    parse(data);
+    parse(response->getDataOut());
 }
 
 void CloseSessionRespPars::parse(const std::vector<uint8_t>& response)

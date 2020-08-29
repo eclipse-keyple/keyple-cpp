@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -27,15 +27,17 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
-UnlockCmdBuild::UnlockCmdBuild(const SamRevision& revision,
-                               const std::vector<uint8_t>& unlockData)
+const CalypsoSamCommand& UnlockCmdBuild::mCommand = CalypsoSamCommand::UNLOCK;
+
+UnlockCmdBuild::UnlockCmdBuild(
+  const SamRevision& revision, const std::vector<uint8_t>& unlockData)
 : AbstractSamCommandBuilder(CalypsoSamCommands::UNLOCK, nullptr)
 {
-    this->defaultRevision = revision;
+    mDefaultRevision = revision;
 
-    uint8_t cla = this->defaultRevision.getClassByte();
-    uint8_t p1  = 0x00;
-    uint8_t p2  = 0x00;
+    const  uint8_t cla = mDefaultRevision.getClassByte();
+    const uint8_t p1  = 0x00;
+    const uint8_t p2  = 0x00;
 
     if (unlockData.empty()) {
         throw IllegalArgumentException("Unlock data null!");
@@ -46,7 +48,13 @@ UnlockCmdBuild::UnlockCmdBuild(const SamRevision& revision,
                                        "bytes long!");
     }
 
-    request = setApduRequest(cla, command, p1, p2, unlockData);
+    mRequest = setApduRequest(cla, command, p1, p2, unlockData);
+}
+
+std::shared_ptr<UnlockRespPars> UnlockCmdBuild::createResponseParser
+    const std::shared_ptr<ApduResponse> apduResponse)
+{
+    return std::make_shared<UnlockRespPars>(apduResponse, this);
 }
 
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -15,8 +15,9 @@
 #pragma once
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
 #include "SamRevision.h"
+#include "SelectDiversifierRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -31,42 +32,31 @@ using namespace keyple::calypso::command::sam;
  * This class provides the dedicated constructor to build the SAM Select
  * Diversifier APDU command.
  */
-class SelectDiversifierCmdBuild : public AbstractSamCommandBuilder {
+class SelectDiversifierCmdBuild final
+: public AbstractSamCommandBuilder<SelectDiversifierRespPars> {
 public:
     /**
      * Instantiates a new SelectDiversifierCmdBuild.
      *
      * @param revision the SAM revision
      * @param diversifier the application serial number
-     * @throws IllegalArgumentException - if the diversifier is null or has a
-     *         wrong length
-     * @throws IllegalArgumentException - if the request is inconsistent
+     * @throw IllegalArgumentException - if the diversifier is null or has a
+     *        wrong length
      */
-    SelectDiversifierCmdBuild(SamRevision revision,
-                              std::vector<uint8_t>& diversifier);
+    SelectDiversifierCmdBuild(const SamRevision& revision,
+                              const std::vector<uint8_t>& diversifier);
 
     /**
      *
      */
-    virtual ~SelectDiversifierCmdBuild()
-    {
-    }
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<SelectDiversifierCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<SelectDiversifierCmdBuild>(
-            AbstractSamCommandBuilder::shared_from_this());
-    }
+    std::shared_ptr<SelectDiversifierRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::SELECT_DIVERSIFIER;
+    static const CalypsoSamCommands& mCommand;
 };
 
 }

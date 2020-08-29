@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -19,7 +19,8 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
+#include "DigestInitRespPars.h"
 #include "SamRevision.h"
 
 namespace keyple {
@@ -34,35 +35,35 @@ using namespace keyple::calypso::command::sam;
 /**
  * Builder for the SAM Digest Init APDU command.
  */
-class KEYPLECALYPSO_API DigestInitCmdBuild
-: public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API DigestInitCmdBuild final
+: public AbstractSamCommandBuilder<DigestInitRespPars> {
 public:
     /**
      * Instantiates a new DigestInitCmdBuild.
      *
      * @param revision of the SAM
      * @param verificationMode the verification mode
-     * @param rev3_2Mode the rev 3 2 mode
+     * @param confidentialSessionMode the confidential session mode (rev 3.2)
      * @param workKeyRecordNumber the work key record number
      * @param workKeyKif from the AbstractOpenSessionCmdBuild response
      * @param workKeyKVC from the AbstractOpenSessionCmdBuild response
      * @param digestData all data out from the AbstractOpenSessionCmdBuild
      *        response
-     * @throws IllegalArgumentException - if the work key record number
-     * @throws IllegalArgumentException - if the digest data is null
-     * @throws IllegalArgumentException - if the request is inconsistent
+     * @throw IllegalArgumentException - if the work key record number
+     * @throw IllegalArgumentException - if the digest data is null
+     * @throw IllegalArgumentException - if the request is inconsistent
      */
-    DigestInitCmdBuild(SamRevision revision, bool verificationMode,
-                       bool rev3_2Mode, uint8_t workKeyRecordNumber,
-                       uint8_t workKeyKif, uint8_t workKeyKVC,
-                       std::vector<uint8_t>& digestData);
+    DigestInitCmdBuild(const SamRevision& revision, const bool verificationMode,
+                       const bool confidentialSessionMode,
+                       const uint8_t workKeyRecordNumber,
+                       const uint8_t workKeyKif, const uint8_t workKeyKVC,
+                       const std::vector<uint8_t>& digestData);
 
     /**
      *
      */
-    virtual ~DigestInitCmdBuild()
-    {
-    }
+    std::shared_ptr<DigestInitRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 protected:
     /**
@@ -78,7 +79,7 @@ private:
     /**
      * The command.
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_INIT;
+    static const CalypsoSamCommand& mCommand;
 };
 
 }

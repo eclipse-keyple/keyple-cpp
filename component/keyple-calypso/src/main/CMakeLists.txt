@@ -32,11 +32,13 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security
 	${CMAKE_CURRENT_SOURCE_DIR}/exception
@@ -55,34 +57,30 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/command
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/command/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/selection
 
 
 	/* Helpers */
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/exception
 )
 
 ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
 	# calypso - command
 	${CMAKE_CURRENT_SOURCE_DIR}/command/PoClass.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/SendableInSession.cpp
 
 	# calypso - command - po
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/AbstractPoCommandBuilder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/AbstractPoResponseParser.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/CalypsoPoCommands.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/PoBuilderParser.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/PoCustomModificationCommandBuilder.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/PoCustomReadCommandBuilder.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/PoModificationCommand.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/CalypsoPoCommand.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/PoRevision.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/PoSendableInSession.cpp
 
 	# calypso - command - po - builder
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/AppendRecordCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/DecreaseCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/GetDataFciCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/GetDataTraceCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/IncreaseCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/ReadRecordsCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/SelectFileCmdBuild.cpp
@@ -90,7 +88,6 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/WriteRecordCmdBuild.cpp
 
 	# calypso - command - po - builder - security
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/AbstractOpenSessionCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/ChangeKeyCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/CloseSessionCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/OpenSession10CmdBuild.cpp
@@ -98,13 +95,14 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/OpenSession31CmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/OpenSession32CmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/PoGetChallengeCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/RatificationCmdBuild.cpp
 
 	# calypso - command - po - parser
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/AppendRecordRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/DecreaseRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/GetDataFciRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/GetDataTraceRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/IncreaseRespPars.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/ReadDataStructure.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/ReadRecordsRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/SelectFileRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/UpdateRecordRespPars.cpp
@@ -124,10 +122,8 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	# calypso - command - sam
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/AbstractSamCommandBuilder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/AbstractSamResponseParser.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/CalypsoSamCommands.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/SamBuilderParser.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/CalypsoSamCommand.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/SamRevision.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/SamSendableInSession.cpp
 
 	# calypso - command - sam - builder - security
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/CardGenerateKeyCmdBuild.cpp
@@ -137,7 +133,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/DigestUpdateCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/DigestUpdateMultipleCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/GiveRandomCmdBuild.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamGetChallengeCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamGetChallengeCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamReadCeilingsCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamReadEventCounterCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamReadKeyParametersCmdBuild.cpp
@@ -163,21 +159,25 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 
 	# calypso - transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoPo.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoPoUtils.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoSam.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoResource.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/DirectoryHeader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/ElementaryFile.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/FileData.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/FileHeader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoCommandManager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSecuritySettings.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelector.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoTransaction.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamCommandProcessor.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamIdentifier.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResource.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResourceManager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResourceManagerDefault.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResourceManagerFactory.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResourceManagerPool.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelector.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SecuritySettings.cpp
-
-	# calypso - transaction - exception
-	${CMAKE_CURRENT_SOURCE_DIR}/transaction/exception/KeypleCalypsoSecureSessionException.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/transaction/exception/KeypleCalypsoSecureSessionUnauthorizedKvcException.cpp
 )
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} keyplecore)

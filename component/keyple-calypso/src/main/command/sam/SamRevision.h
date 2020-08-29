@@ -86,9 +86,7 @@ public:
     /**
      *
      */
-    virtual ~SamRevision()
-    {
-    }
+    virtual ~SamRevision() = default;
 
     /**
      *
