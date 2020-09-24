@@ -66,7 +66,7 @@ public:
      * @return the current AbstractPoCommandBuilder list
      */
     const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-        AbstractPoResponseParser>> getPoCommandBuilders();
+        AbstractPoResponseParser>>> getPoCommandBuilders();
 
     /**
      * Returns the parser positioned at the indicated index

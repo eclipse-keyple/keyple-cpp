@@ -16,10 +16,15 @@
 
 #include "CalypsoPoTransactionException.h"
 
+/* Calypso */
+#include "CalypsoPoCommandException.h"
+
 namespace keyple {
 namespace calypso {
 namespace transaction {
 namespace exception {
+
+using namespace keyple::calypso::command::po::exception;
 
 /**
  * The exception {@code CalypsoPoCloseSecureSessionException} indicates that the

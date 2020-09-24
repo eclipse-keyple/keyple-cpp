@@ -17,6 +17,9 @@
 /* Common */
 #include "IllegalArgumentException.h"
 
+/* Calypso */
+#include "DigestUpdateRespPars.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -25,15 +28,16 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 using namespace keyple::common;
 
-const CalypsoSamCommand& DigestUpdateCmdBuild::mCommand =
-    CalypsoSamCommand::DIGEST_UPDATE;
-
 DigestUpdateCmdBuild::DigestUpdateCmdBuild(
-  const SamRevision& revision, const bool encryptedSession,
+  const SamRevision& revision,
+  const bool encryptedSession,
   const std::vector<uint8_t>& digestData)
-: AbstractSamCommandBuilder(CalypsoSamCommand::DIGEST_UPDATE, nullptr)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::DIGEST_UPDATE),
+    nullptr)
 {
     mDefaultRevision = revision;
 
@@ -44,14 +48,15 @@ DigestUpdateCmdBuild::DigestUpdateCmdBuild(
     if (digestData.size() == 0 || digestData.size() > 255)
         throw IllegalArgumentException("Digest data null or too long!");
 
-    mRequest = setApduRequest(cla, command, p1, p2, digestData);
+    mRequest = setApduRequest(cla, mCommand, p1, p2, digestData);
 }
 
-std::shared_ptr<DigestUpdateRespPars>
+std::unique_ptr<DigestUpdateRespPars>
     DigestUpdateCmdBuild::createResponseParser(
-    const std::shared_ptr<ApduResponse> apduResponse)
+        const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<DigestUpdateRespPars>(apduResponse, this);
+    return std::unique_ptr<DigestUpdateRespPars>(
+               new DigestUpdateRespPars(apduResponse, this));
 }
 
 }

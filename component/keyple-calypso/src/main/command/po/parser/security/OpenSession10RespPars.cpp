@@ -19,6 +19,7 @@
 
 /* Common */
 #include "Arrays.h"
+#include "IllegalStateException.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -29,21 +30,22 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
+
+using SecureSession = AbstractOpenSessionRespPars::SecureSession;
 
 OpenSession10RespPars::OpenSession10RespPars(
   std::shared_ptr<ApduResponse> response, OpenSession10CmdBuild* builder)
 : AbstractOpenSessionRespPars(response, builder, PoRevision::REV1_0) {}
 
-std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-OpenSession10RespPars::toSecureSession(
+std::shared_ptr<SecureSession> OpenSession10RespPars::toSecureSession(
     const std::vector<uint8_t>& apduResponseData)
 {
     return createSecureSession(apduResponseData);
 }
 
-std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-OpenSession10RespPars::createSecureSession(
+std::shared_ptr<SecureSession> OpenSession10RespPars::createSecureSession(
     const std::vector<uint8_t>& apduResponseData)
 {
     bool previousSessionRatified;
@@ -78,14 +80,18 @@ OpenSession10RespPars::createSecureSession(
         break;
     case 33:
         previousSessionRatified = true;
-        std::copy(apduResponseData + 4, apduResponseData + 33, data.begin());
+        std::copy(apduResponseData.begin() + 4,
+                  apduResponseData.begin() + 33,
+                  data.begin());
         break;
     case 6:
         previousSessionRatified = false;
         break;
     case 35:
         previousSessionRatified = false;
-        std::copy(apduResponseData + 6, apduResponseData + 35, data.begin());
+        std::copy(apduResponseData.begin() + 6,
+                  apduResponseData.begin() + 35,
+                  data.begin());
         break;
     default:
         throw IllegalStateException(

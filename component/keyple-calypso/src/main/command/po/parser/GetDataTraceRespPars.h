@@ -23,6 +23,8 @@ namespace command {
 namespace po {
 namespace parser {
 
+using namespace keyple::calypso::command::po::builder;
+
 /**
  * Returns the traceability data obtained from the Get Data command response.
  * <p>
@@ -51,10 +53,8 @@ private:
     /**
      *
      */
-    static std::map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
-}
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+};
 
 }
 }

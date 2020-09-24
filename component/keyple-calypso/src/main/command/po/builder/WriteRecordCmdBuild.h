@@ -18,12 +18,13 @@
 #include "PoClass.h"
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommand.h"
-#include "PoModificationCommand.h"
-#include "PoSendableInSession.h"
-#include "WriteRecordRespPars.h"
 
 /* Core */
 #include "ApduResponse.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class WriteRecordRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -52,31 +53,46 @@ public:
      * @throw IllegalArgumentException - if record number is &lt; 1
      * @throw IllegalArgumentException - if the request is inconsistent
      */
-    WriteRecordCmdBuild(const PoClass poClass, const uint8_t sfi,
+    WriteRecordCmdBuild(const PoClass poClass,
+                        const uint8_t sfi,
                         const uint8_t recordNumber,
                         const std::vector<uint8_t>& newRecordData);
 
     /**
      *
      */
-    std::shared_ptr<WriteRecordRespPars> createResponseParser(
+    std::unique_ptr<WriteRecordRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
-protected:
     /**
+     * This command can modify the contents of the PO in session and therefore
+     * uses the session buffer.
      *
+     * @return true
      */
-    std::shared_ptr<WriteRecordCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<WriteRecordCmdBuild>(
-            AbstractPoCommandBuilder<WriteRecordRespPars>::shared_from_this());
-    }
+    bool isSessionBufferUsed() const override;
+
+
+    /**
+     * @return the SFI of the accessed file
+     */
+    int getSfi() const;
+
+    /**
+     * @return the number of the accessed record
+     */
+    int getRecordNumber() const;
+
+    /**
+     * @return the data sent to the PO
+     */
+    const std::vector<uint8_t>& getData() const;
 
 private:
     /**
      * The command
      */
-    CalypsoPoCommand& command = CalypsoPoCommand::WRITE_RECORD;
+    const CalypsoPoCommand& command = CalypsoPoCommand::WRITE_RECORD;
 
     /**
      * Construction arguments

@@ -17,6 +17,9 @@
 /* Common */
 #include "IllegalArgumentException.h"
 
+/* Calypso */
+#include "SamGetChallengeRespPars.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -27,12 +30,11 @@ namespace security {
 using namespace keyple::calypso::command::sam;
 using namespace keyple::common;
 
-const CalypsoSamCommand& SamGetChallengeCmdBuild::mCommand =
-    CalypsoSamCommand::GET_CHALLENGE;
-
 SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(
-  const SamRevision& revision, cosnt uint8_t expectedResponseLength)
-: AbstractSamCommandBuilder(CalypsoSamCommands::GET_CHALLENGE, nullptr)
+  const SamRevision& revision, const uint8_t expectedResponseLength)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::GET_CHALLENGE),
+    nullptr)
 {
     mDefaultRevision = revision;
 
@@ -47,14 +49,15 @@ SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(
     const uint8_t p1 = 0x00;
     const uint8_t p2 = 0x00;
 
-    mRequest = setApduRequest(cla, command, p1, p2, expectedResponseLength);
+    mRequest = setApduRequest(cla, mCommand, p1, p2, expectedResponseLength);
 }
 
-std::shared_ptr<SamGetChallengeRespPars>
+std::unique_ptr<SamGetChallengeRespPars>
     SamGetChallengeCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<SamGetChallengeRespPars>(apduResponse, this);
+    return std::unique_ptr<SamGetChallengeRespPars>(
+               new SamGetChallengeRespPars(apduResponse, this));
 }
 
 }

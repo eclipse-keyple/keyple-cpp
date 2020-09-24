@@ -15,15 +15,19 @@
 #include "SelectFileRespPars.h"
 
 /* Common */
+#include "ClassNotFoundException.h"
+#include "IllegalArgumentException.h"
+#include "IllegalStateException.h"
 #include "stringhelper.h"
+#include "System.h"
 
 /* Calypso */
 #include "CalypsoPoDataAccessException.h"
 #include "CalypsoPoIllegalParameterException.h"
 
-/* Common */
-#include "ClassNotFoundException.h"
-#include "System.h"
+/* Core */
+#include "KeypleAssert.h"
+#include "TLV.h"
 
 namespace keyple {
 namespace calypso {
@@ -31,6 +35,8 @@ namespace command {
 namespace po {
 namespace parser {
 
+using namespace keyple::calypso::command::po::exception;
+using namespace keyple::common;
 using namespace keyple::core::command;
 using namespace keyple::core::util;
 
@@ -61,7 +67,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 
 SelectFileRespPars::SelectFileRespPars(
   std::shared_ptr<ApduResponse> response, SelectFileCmdBuild* builder)
-: AbstractPoResponseParser(response, builder)
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
 {
     mProprietaryInformation.clear();
 }
@@ -75,20 +83,18 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
 
 const std::vector<uint8_t>& SelectFileRespPars::getProprietaryInformation()
 {
-    if (static_cast<int>(mProprietaryInformation.size()= == 0) {
+    if (mProprietaryInformation.size() == 0) {
         TLV tlv(mResponse->getDataOut());
 
-        if (!tlv.parse(TAG_PROPRIETARY_INFORMATION, 0)) {
+        if (!tlv.parse(std::make_shared<Tag>(TAG_PROPRIETARY_INFORMATION), 0))
             throw IllegalStateException(
                       "Proprietary information: tag not found.");
-        }
 
         mProprietaryInformation = tlv.getValue();
-        if (static_cast<int>(mProprietaryInformation.size()) != 23)
-            throw IllegalArgumentException(
-                      StringHelper::formatSimple(
-                          "Argument [%s] has a value [%d] not equal to [%d].",
-                          name, number, value)):
+
+        KeypleAssert::getInstance().isEqual(mProprietaryInformation.size(),
+                                            23,
+                                            "proprietaryInformation");
     }
 
     return mProprietaryInformation;

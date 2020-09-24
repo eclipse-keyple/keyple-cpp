@@ -14,33 +14,46 @@
 
 #include "FileHeader.h"
 
+#include <iomanip>
+
+/* Common */
+#include "Logger.h"
+
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
+using FileHeaderBuilder = FileHeader::FileHeaderBuilder;
+using FileType = FileHeader::FileType;
+
+/* FILE HEADER -------------------------------------------------------------- */
+
 FileHeader::FileHeader(FileHeaderBuilder* builder)
-: mLid(builder->mLid), mRecordsNumber(builder->mRecordsNumber),
-  mRecordSize(builder->mRecordSize), mType(builder->mType),
-  mAccessConditions(builder->mAccessConditions), mDfStatus(builder->mDfStatus),
-  mSharedReference(builder->mSharedReference), mShared(builder->mShared) {}
+: mLid(builder->mLid),
+  mRecordsNumber(builder->mRecordsNumber),
+  mRecordSize(builder->mRecordSize),
+  mType(builder->mType),
+  mAccessConditions(builder->mAccessConditions),
+  mDfStatus(builder->mDfStatus),
+  mSharedReference(builder->mSharedReference),
+  mShared(builder->mShared) {}
 
-
-const uint16_t FileHeader::getLid() const
+uint16_t FileHeader::getLid() const
 {
     return mLid;
 }
 
-const int FileHeader::getRecordsNumber() const
+int FileHeader::getRecordsNumber() const
 {
     return mRecordsNumber;
 }
 
-const int FileHeader::getRecordSize() const
+int FileHeader::getRecordSize() const
 {
     return mRecordSize;
 }
 
-const FileType FileHeader::getType() const
+FileType FileHeader::getType() const
 {
     return mType;
 }
@@ -55,17 +68,17 @@ const std::vector<uint8_t>& FileHeader::getKeyIndexes() const
     return mKeyIndexes;
 }
 
-const uint8_t FileHeader::getDfStatus() const
+uint8_t FileHeader::getDfStatus() const
 {
     return mDfStatus;
 }
 
-const bool FileHeader::isShared() const
+bool FileHeader::isShared() const
 {
     return mShared;
 }
 
-const uint16_t FileHeader::getSharedReference() const
+uint16_t FileHeader::getSharedReference() const
 {
     return mSharedReference;
 }
@@ -80,29 +93,31 @@ bool FileHeader::operator==(const FileHeader& o) const
     return mLid == o.mLid;
 }
 
-std::ostream& FileHeader::operator<<(std::ostream& os, const FileHeader& fh)
-    const
+std::ostream& operator<<(std::ostream& os, const FileHeader& fh)
 {
     os << "FILEHEADER : {"
-       << "LID = 0x" << std::hex << setfill('0') << setw(4) << fh.mLid << ", "
+       << "LID = 0x" << std::hex << std::setfill('0') << std::setw(4)
+                     << fh.mLid << ", "
        << "RECORDSNUMBER = " << fh.mRecordsNumber << ", "
        << "RECORDSSIZE = " << fh.mRecordSize << ", "
        << "TYPE = " << fh.mType << ", "
        << "ACCCESSCONDITIONS = " << fh.mAccessConditions << ", "
        << "KEYINDEXES = " << fh.mKeyIndexes << ", "
-       << "DFSTATUS = 0x" << std::hex << setfill('0') << setw(2)
-           << fh.mDfStatus << ",  ";
+       << "DFSTATUS = 0x" << std::hex << std::setfill('0') << std::setw(2)
+                          << fh.mDfStatus << ",  ";
 
     if (fh.mShared)
-       os << "SHAREDREFERENCE = 0x" << std::hex << setfill('0') << setw(8)
-          << fh.mSharedReference;
+       os << "SHAREDREFERENCE = 0x" << std::hex << std::setfill('0')
+                                    << std::setw(8) << fh.mSharedReference;
     else
-       << "SHAREDREFERENCE = null";
+       os << "SHAREDREFERENCE = null";
 
     os << "}";
 
     return os;
 }
+
+/* FILE HEADER BUILDER ------------------------------------------------------ */
 
 FileHeaderBuilder::FileHeaderBuilder()
 : mShared(false) {}
@@ -161,6 +176,34 @@ FileHeaderBuilder& FileHeaderBuilder::sharedReference(
 std::unique_ptr<FileHeader> FileHeaderBuilder::build()
 {
     return std::unique_ptr<FileHeader>(new FileHeader(this));
+}
+
+/* FILE TYPE ---------------------------------------------------------------- */
+
+std::ostream& operator<<(std::ostream& os, const FileType ft)
+{
+    switch (ft) {
+    case FileType::LINEAR:
+        os << "LINEAR";
+        break;
+    case FileType::BINARY:
+        os << "BINARY";
+        break;
+    case FileType::COUNTERS:
+        os << "COUNTERS";
+        break;
+    case FileType::CYCLIC:
+        os << "CYCLIC";
+        break;
+    case FileType::SIMULATED_COUNTERS:
+        os << "SIMULATED COUNTERS";
+        break;
+    default:
+        os << "UNKNOWN";
+        break;
+    }
+
+    return os;
 }
 
 }

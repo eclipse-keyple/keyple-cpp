@@ -14,6 +14,9 @@
 
 #include "ChangeKeyCmdBuild.h"
 
+/* Common */
+#include "IllegalArgumentException.h"
+
 /* Core */
 #include "ApduResponse.h"
 
@@ -31,28 +34,37 @@ namespace security {
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
 
-ChangeKeyCmdBuild::ChangeKeyCmdBuild(PoClass poClass, uint8_t keyIndex,
-                                     std::vector<uint8_t>& cryptogram)
-: AbstractPoCommandBuilder<ChangeKeyRespPars>(CalypsoPoCommands::CHANGE_KEY,
-                                              nullptr)
+ChangeKeyCmdBuild::ChangeKeyCmdBuild(
+  const PoClass poClass,
+  const uint8_t keyIndex,
+  const std::vector<uint8_t>& cryptogram)
+: AbstractPoCommandBuilder<ChangeKeyRespPars>(
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::CHANGE_KEY),
+      nullptr)
 {
 
     if (cryptogram.empty() ||
         (cryptogram.size() != 0x18 && cryptogram.size() != 0x20)) {
-        throw std::invalid_argument("Bad cryptogram value.");
+        throw IllegalArgumentException("Bad cryptogram value.");
     }
 
-    this->request =
-        setApduRequest(poClass.getValue(), command, 0x00, keyIndex, cryptogram);
-    this->addSubName("Change Key");
+    mRequest = setApduRequest(poClass.getValue(),
+                              command,
+                              0x00,
+                              keyIndex,
+                              cryptogram);
+
+    addSubName("Change Key");
 }
 
-std::shared_ptr<ChangeKeyRespPars> ChangeKeyCmdBuild::createResponseParser(
+std::unique_ptr<ChangeKeyRespPars> ChangeKeyCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<ChangeKeyRespPars>(apduResponse, this);
+    return std::unique_ptr<ChangeKeyRespPars>(
+               new ChangeKeyRespPars(apduResponse, this));
 }
 
 bool ChangeKeyCmdBuild::isSessionBufferUsed() const

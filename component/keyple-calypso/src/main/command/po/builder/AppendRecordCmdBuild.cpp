@@ -34,26 +34,31 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
 AppendRecordCmdBuild::AppendRecordCmdBuild(
-    PoClass poClass, uint8_t sfi, const std::vector<uint8_t>& newRecordData)
+  const PoClass poClass,
+  const uint8_t sfi,
+  const std::vector<uint8_t>& newRecordData)
 : AbstractPoCommandBuilder<AppendRecordRespPars>(
-      CalypsoPoCommand::APPEND_RECORD, nullptr),
-  mSfi(sfi), mData(newRecordData)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::APPEND_RECORD),
+      nullptr),
+  mSfi(sfi),
+  mData(newRecordData)
 {
     const uint8_t cla = poClass.getValue();
     const uint8_t p1 = 0x00;
     const uint8_t p2 = (sfi == 0) ? 0x00 : (sfi * 8);
 
-    request = setApduRequest(cla, command, p1, p2, newRecordData);
+    mRequest = setApduRequest(cla, command, p1, p2, newRecordData);
 
     const std::string extraInfo = StringHelper::formatSimple("SFI=%02X", sfi);
     addSubName(extraInfo);
 }
 
-std::shared_ptr<AppendRecordRespPars>
-AppendRecordCmdBuild::createResponseParser(
-    std::shared_ptr<ApduResponse> apduResponse)
+std::unique_ptr<AppendRecordRespPars>
+    AppendRecordCmdBuild::createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<AppendRecordRespPars>(apduResponse, this);
+    return std::unique_ptr<AppendRecordRespPars>(
+               new AppendRecordRespPars(apduResponse, this));
 }
 
 bool AppendRecordCmdBuild::isSessionBufferUsed() const

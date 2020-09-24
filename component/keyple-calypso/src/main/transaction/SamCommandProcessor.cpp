@@ -126,7 +126,7 @@ const uint8_t SamCommandProcessor::determineWorkKif(
 }
 
 void SamCommandProcessor::initializeDigester(
-    const AccessLevel accessLevel,
+    const AccessLevel& accessLevel,
     const bool sessionEncryption,
     const bool verificationMode,
     const uint8_t poKif,

@@ -18,6 +18,9 @@
 #include "IllegalArgumentException.h"
 #include "stringhelper.h"
 
+/* Calypso */
+#include "DigestAuthenticateRespPars.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -26,6 +29,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 using namespace keyple::common;
 
 const CalypsoSamCommand& DigestAuthenticateCmdBuild::mCommand =
@@ -33,7 +37,9 @@ const CalypsoSamCommand& DigestAuthenticateCmdBuild::mCommand =
 
 DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
   const SamRevision& revision, const std::vector<uint8_t>& signature)
-: AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_AUTHENTICATE, nullptr)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::DIGEST_AUTHENTICATE),
+    nullptr)
 {
     mDefaultRevision = revision;
 
@@ -52,13 +58,15 @@ DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
     const uint8_t p1 = 0x00;
     const uint8_t p2 = 0x00;
 
-    mRequest = setApduRequest(cla, command, p1, p2, signature);
+    mRequest = setApduRequest(cla, mCommand, p1, p2, signature);
 }
 
-std::shared_ptr<DigestAuthenticateRespPars> createResponseParser(
-    const std::shared_ptr<ApduResponse> apduResponse)
+std::unique_ptr<DigestAuthenticateRespPars>
+    DigestAuthenticateCmdBuild::createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<DigestAuthenticateRespPars>(apduResponse, this);
+    return std::unique_ptr<DigestAuthenticateRespPars>(
+               new DigestAuthenticateRespPars(apduResponse, this));
 }
 
 }

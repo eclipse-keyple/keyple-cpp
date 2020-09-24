@@ -76,8 +76,11 @@ public:
     /** The po decrease counter. */
     static const CalypsoPoCommand SELECT_FILE;
 
-    /* The po change key */
+    /** The po change key */
     static const CalypsoPoCommand CHANGE_KEY;
+
+    /** The po get data for traceability */
+    static const CalypsoPoCommand GET_DATA_TRACE;
 
     /**
      * The generic constructor of CalypsoCommands.
@@ -85,21 +88,21 @@ public:
      * @param name the name
      * @param instructionByte the instruction byte
      */
-    CalypsoPoCommand(const std::string& name, uint8_t instructionByte);
+    CalypsoPoCommand(const std::string& name, const uint8_t instructionByte);
 
     /**
      * Gets the name.
      *
      * @return the command name
      */
-    virtual const std::string& getName() const override;
+    const std::string& getName() const;
 
     /**
      * Gets the instruction byte.
      *
      * @return the value of INS byte
      */
-    virtual uint8_t getInstructionByte() const override;
+    uint8_t getInstructionByte() const;
 
     /**
      * Get the right open-session command for a given {@link PoRevision}

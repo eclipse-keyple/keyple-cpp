@@ -16,6 +16,7 @@
 
 /* Common */
 #include "ClassNotFoundException.h"
+#include "IllegalStateException.h"
 
 /* Core */
 #include "ByteArrayUtil.h"
@@ -23,6 +24,7 @@
 /* Calypso */
 #include "CalypsoPoAccessForbiddenException.h"
 #include "CalypsoPoDataAccessException.h"
+#include "CalypsoPoDataOutOfBoundsException.h"
 #include "CalypsoPoIllegalParameterException.h"
 #include "CalypsoPoSecurityContextException.h"
 #include "CalypsoPoSessionBufferOverflowException.h"
@@ -42,7 +44,7 @@ using namespace keyple::core::util;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-std::map<int, std::shared_ptr<StatusProperties>>
+const std::map<int, std::shared_ptr<StatusProperties>>
     DecreaseRespPars::STATUS_TABLE = {
     {
         0x6400,
@@ -91,7 +93,7 @@ std::map<int, std::shared_ptr<StatusProperties>>
     }, {
         0x6103,
         std::make_shared<StatusProperties>(
-            "Successful execution.", typeid(ClassNotFoundException)));
+            "Successful execution.", typeid(ClassNotFoundException))
     }
 };
 
@@ -103,17 +105,21 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
 
 DecreaseRespPars::DecreaseRespPars(
   std::shared_ptr<ApduResponse> response, DecreaseCmdBuild* builder)
-: AbstractPoResponseParser(response, builder) {}
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+{}
 
 int DecreaseRespPars::getNewValue()
 {
     std::vector<uint8_t> newValueBuffer = getApduResponse()->getDataOut();
-    if (newValueBuffer.size() == 3) {
+
+    if (newValueBuffer.size() == 3)
         return ByteArrayUtil::threeBytesToInt(newValueBuffer, 0);
-    } else {
-        throw IllegalStateException("No counter value available in response "
-                                    "to the Decrease command.");
-    }
+
+
+    throw IllegalStateException("No counter value available in response " \
+                                "to the Decrease command.");
 }
 
 }

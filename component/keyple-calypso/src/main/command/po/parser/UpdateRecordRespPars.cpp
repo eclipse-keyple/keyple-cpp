@@ -92,9 +92,10 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
 
 UpdateRecordRespPars::UpdateRecordRespPars(
   std::shared_ptr<ApduResponse> response, UpdateRecordCmdBuild* builder)
-: AbstractPoResponseParser(response, builder)
-{
-}
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+{}
 
 }
 }

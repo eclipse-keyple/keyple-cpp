@@ -48,7 +48,7 @@ public:
      * @return the SFI
      * @since 0.9
      */
-    const uint8_t getSfi() const;
+    uint8_t getSfi() const;
 
     /**
      * Gets the file header.
@@ -65,14 +65,14 @@ public:
      * @param header the file header (should be not null)
      * @return the current instance.
      */
-    ElementaryFile& setHeader(const FileHeader& header);
+    ElementaryFile& setHeader(const std::shared_ptr<FileHeader> header);
     /**
      * Gets the file data.
      *
      * @return a not null data reference.
      * @since 0.9
      */
-    const FileData& getData() const;
+    FileData& getData() const;
 
     /**
      * Comparison is based on field "sfi".
@@ -87,7 +87,7 @@ public:
      *
      */
     friend KEYPLECALYPSO_API std::ostream& operator<<(
-        std::ostream& os, const ElementaryFile& ef) const;
+        std::ostream& os, const ElementaryFile& ef);
 
 private:
     /**
@@ -98,13 +98,12 @@ private:
     /**
      *
      */
-    FileHeader mHeader;
+    std::shared_ptr<FileHeader> mHeader;
 
     /**
      *
      */
-    FileData mData;
-
+    std::shared_ptr<FileData> mData;
 
     /**
      * (private)<br>
@@ -113,7 +112,7 @@ private:
      * @param sfi the SFI
      * @param data the data
      */
-    ElementaryFile(const uint8_t sfi, const FileData& data);
+    ElementaryFile(const uint8_t sfi, const std::shared_ptr<FileData> data);
 };
 
 }

@@ -15,12 +15,16 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
+#include <ostream>
 #include <vector>
+
+/* Calypso */
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
 namespace transaction {
-
 
 /**
  * The class {@code FileHeader} contains all metadata of a Calypso EF.
@@ -40,12 +44,19 @@ public:
         SIMULATED_COUNTERS
     };
 
+    friend std::ostream& operator<<(std::ostream& os, const FileType ft);
+
     /**
      * (package-private)<br>
      * Builder pattern
      */
     class FileHeaderBuilder final {
     public:
+        /**
+         * Authorize access to private members
+         */
+        friend FileHeader;
+
         /**
          * (package-private)<br>
          * Sets the LID.
@@ -62,10 +73,7 @@ public:
          * @param recordsNumber the number of records (should be {@code >=} 1)
          * @return the builder instance
          */
-        FileHeaderBuilder& recordsNumber(const int recordsNumber) {
-            this.recordsNumber = recordsNumber;
-            return this;
-        }
+        FileHeaderBuilder& recordsNumber(const int recordsNumber);
 
         /**
          * (package-private)<br>
@@ -136,53 +144,53 @@ public:
         /**
          *
          */
-        const uint16_t mLid;
+        uint16_t mLid;
 
         /**
          *
          */
-        const int mRecordsNumber;
+        int mRecordsNumber;
 
         /**
          *
          */
-        const int mRecordSize;
+        int mRecordSize;
 
         /**
          *
          */
-        const FileType mType;
+        FileType mType;
 
         /**
          *
          */
-        const std::vector<uint8_t> mAccessConditions;
+        std::vector<uint8_t> mAccessConditions;
 
         /**
          *
          */
-        const std::vector<uint8_t> mKeyIndexes;
+        std::vector<uint8_t> mKeyIndexes;
 
         /**
          *
          */
-        const uint8_t mDfStatus;
+        uint8_t mDfStatus;
 
         /**
          *
          */
-        const uint16_t mSharedReference;
+        uint16_t mSharedReference;
 
         /**
          * C++ vs. Java: add boolean to avoid shared_ptr on mSharedReference
          */
-    const bool mShared;
+        bool mShared;
 
         /**
          * Private constructor
          */
         FileHeaderBuilder();
-    }
+    };
 
     /**
      * Gets the associated LID.
@@ -190,7 +198,7 @@ public:
      * @return the LID
      * @since 0.9
      */
-    const uint16_t getLid() const;
+    uint16_t getLid() const;
 
     /**
      * Gets the number of records :
@@ -204,7 +212,7 @@ public:
      * @return the number of records
      * @since 0.9
      */
-    const int getRecordsNumber() const;
+    int getRecordsNumber() const;
 
     /**
      * Gets the size of a record :
@@ -220,7 +228,7 @@ public:
      * @return the size of a record
      * @since 0.9
      */
-    const int getRecordSize() const;
+    int getRecordSize() const;
 
     /**
      * Gets the file type.
@@ -228,7 +236,7 @@ public:
      * @return a not null file type
      * @since 0.9
      */
-    const FileType getType() const;
+    FileType getType() const;
 
     /**
      * Gets a reference to the access conditions.
@@ -252,7 +260,7 @@ public:
      * @return the DF status byte
      * @since 0.9
      */
-    const uint8_t getDfStatus() const;
+    uint8_t getDfStatus() const;
 
     /**
      * Returns true if EF is a shared file.
@@ -260,7 +268,7 @@ public:
      * @return true if the EF is a shared file
      * @since 0.9
      */
-    const bool isShared() const;
+    bool isShared() const;
 
     /**
      * Gets the shared reference of a shared file.
@@ -268,7 +276,7 @@ public:
      * @return null if file is not shared
      * @since 0.9
      */
-    const uint16_t getSharedReference() const;
+    uint16_t getSharedReference() const;
 
     /**
      * (package-private)<br>
@@ -276,7 +284,7 @@ public:
      *
      * @return a new builder instance
      */
-    static FileHeaderBuilder builder();
+    static std::unique_ptr<FileHeaderBuilder> builder();
 
 
     /**
@@ -292,7 +300,7 @@ public:
      *
      */
     friend KEYPLECALYPSO_API std::ostream& operator<<(
-        std::ostream& os, const FileHeader& fh) const;
+        std::ostream& os, const FileHeader& fh);
 
 private:
     /**
@@ -344,7 +352,7 @@ private:
      * Private constructor
      */
     FileHeader(FileHeaderBuilder* builder);
-}
+};
 
 }
 }

@@ -16,6 +16,7 @@
 
 #include <map>
 #include <memory>
+#include <typeinfo>
 
 /* Core */
 #include "AbstractApduResponseParser.h"
@@ -39,8 +40,9 @@ public:
      * @param response response to parse
      * @param builder the reference of the builder that created the parser
      */
-    AbstractSamResponseParser(const std::shared_ptr<ApduResponse> response,
-                              AbstractSamCommandBuilder* builder);
+    AbstractSamResponseParser(
+        const std::shared_ptr<ApduResponse> response,
+        AbstractSamCommandBuilder<AbstractSamResponseParser>* builder);
 
     /**
      *
@@ -49,8 +51,12 @@ public:
 
     /**
      * {@inheritDoc}
+     *
+     * Return type should be
+     *   AbstractSamCommandBuilder<AbstractSamResponseParser>*
      */
-    std::shared_ptr<bstractSamCommandBuilder> getBuilder() override;
+    AbstractApduCommandBuilder* getBuilder() const
+        override;
 
     /**
      * {@inheritDoc}
@@ -72,10 +78,11 @@ protected:
     /**
      * {@inheritDoc}
      */
-    KeypleSeCommandException buildCommandException(
-        const type_info& exceptionClass,
-        const std::string& message, SeCommand commandRef, int statusCode)
-        override;
+    const KeypleSeCommandException buildCommandException(
+        const std::type_info& exceptionClass,
+        const std::string& message,
+        const std::shared_ptr<SeCommand> commandRef,
+        const int statusCode) const override;
 
 };
 

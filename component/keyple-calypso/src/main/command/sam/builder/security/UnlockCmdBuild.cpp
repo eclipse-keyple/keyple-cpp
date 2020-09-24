@@ -12,11 +12,13 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "UnlockCmdBuild.h"
+
 /* Common */
-#include "exceptionhelper.h"
+#include "IllegalArgumentException.h"
 
 /* Calypso */
-#include "UnlockCmdBuild.h"
+#include "UnlockRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -26,35 +28,35 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
-
-const CalypsoSamCommand& UnlockCmdBuild::mCommand = CalypsoSamCommand::UNLOCK;
+using namespace keyple::calypso::command::sam::parser::security;
+using namespace keyple::common;
 
 UnlockCmdBuild::UnlockCmdBuild(
   const SamRevision& revision, const std::vector<uint8_t>& unlockData)
-: AbstractSamCommandBuilder(CalypsoSamCommands::UNLOCK, nullptr)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::UNLOCK), nullptr)
 {
     mDefaultRevision = revision;
 
-    const  uint8_t cla = mDefaultRevision.getClassByte();
+    const uint8_t cla = mDefaultRevision.getClassByte();
     const uint8_t p1  = 0x00;
     const uint8_t p2  = 0x00;
 
-    if (unlockData.empty()) {
+    if (unlockData.empty())
         throw IllegalArgumentException("Unlock data null!");
-    }
 
-    if (unlockData.size() != 8 && unlockData.size() != 16) {
-        throw IllegalArgumentException("Unlock data should be 8 ou 16 "
+    if (unlockData.size() != 8 && unlockData.size() != 16)
+        throw IllegalArgumentException("Unlock data should be 8 ou 16 " \
                                        "bytes long!");
-    }
 
-    mRequest = setApduRequest(cla, command, p1, p2, unlockData);
+    mRequest = setApduRequest(cla, mCommand, p1, p2, unlockData);
 }
 
-std::shared_ptr<UnlockRespPars> UnlockCmdBuild::createResponseParser
+std::unique_ptr<UnlockRespPars> UnlockCmdBuild::createResponseParser(
     const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<UnlockRespPars>(apduResponse, this);
+    return std::unique_ptr<UnlockRespPars>(
+               new UnlockRespPars(apduResponse, this));
 }
 
 }

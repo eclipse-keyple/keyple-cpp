@@ -32,6 +32,7 @@ const KeypleAssert& KeypleAssert::getInstance()
 }
 
 const KeypleAssert& KeypleAssert::notNull(void* obj, const std::string& name)
+    const
 {
     if (obj == nullptr)
         throw IllegalArgumentException("Argument [" + name + "] is null.");
@@ -40,7 +41,7 @@ const KeypleAssert& KeypleAssert::notNull(void* obj, const std::string& name)
 }
 
 const KeypleAssert& KeypleAssert::notEmpty(const std::string& obj,
-                                           const std::string& name)
+                                           const std::string& name) const
 {
     if (obj.empty())
         throw IllegalArgumentException("Argument [" + name + "] is empty.");
@@ -49,7 +50,7 @@ const KeypleAssert& KeypleAssert::notEmpty(const std::string& obj,
 }
 
 const KeypleAssert& KeypleAssert::notEmpty(const std::vector<uint8_t> obj,
-                                           const std::string& name)
+                                           const std::string& name) const
 {
     if (obj.empty())
         throw IllegalArgumentException("Argument [" + name + "] is empty.");
@@ -58,7 +59,7 @@ const KeypleAssert& KeypleAssert::notEmpty(const std::vector<uint8_t> obj,
 }
 
 const KeypleAssert& KeypleAssert::isTrue(const bool condition,
-                                         const std::string& name)
+                                         const std::string& name) const
 {
     if (!condition)
         throw IllegalArgumentException("Condition [" + name + "] is false.");
@@ -68,7 +69,7 @@ const KeypleAssert& KeypleAssert::isTrue(const bool condition,
 
 const KeypleAssert& KeypleAssert::greaterOrEqual(const int number,
                                                  const int minValue,
-                                                 const std::string& name)
+                                                 const std::string& name) const
 {
     if (number < minValue)
         throw IllegalArgumentException(
@@ -83,7 +84,7 @@ const KeypleAssert& KeypleAssert::greaterOrEqual(const int number,
 
 const KeypleAssert& KeypleAssert::isEqual(const int number,
                                           const int value,
-                                          const std::string& name)
+                                          const std::string& name) const
 {
     if (number != value)
         throw IllegalArgumentException(
@@ -99,7 +100,7 @@ const KeypleAssert& KeypleAssert::isEqual(const int number,
 const KeypleAssert& KeypleAssert::isInRange(const int number,
                                             const int minValue,
                                             const int maxValue,
-                                            const std::string& name)
+                                            const std::string& name) const
 {
     if (number < minValue)
         throw IllegalArgumentException(

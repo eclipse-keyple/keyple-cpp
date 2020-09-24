@@ -21,28 +21,30 @@ namespace transaction {
 ElementaryFile::ElementaryFile(const uint8_t sfi)
 : mSfi(sfi) {}
 
-ElementaryFile::ElementaryFile(const uint8_t sfi, const FileData& data)
+ElementaryFile::ElementaryFile(
+  const uint8_t sfi, std::shared_ptr<FileData> data)
 : mSfi(sfi), mData(data) {}
 
-const uint8_t ElementaryFile::getSfi() const
+uint8_t ElementaryFile::getSfi() const
 {
     return mSfi;
 }
 
 const FileHeader& ElementaryFile::getHeader() const
 {
-    return mHeader;
+    return *mHeader.get();
 }
 
-ElementaryFile& ElementaryFile::setHeader(const FileHeader& header)
+ElementaryFile& ElementaryFile::setHeader(
+    const std::shared_ptr<FileHeader> header)
 {
     mHeader = header;
     return *this;
 }
 
-const FileData& ElementaryFile::getData() const
+FileData& ElementaryFile::getData() const
 {
-    return mData;
+    return *mData.get();
 }
 
 bool ElementaryFile::operator==(const ElementaryFile& o) const
@@ -50,14 +52,13 @@ bool ElementaryFile::operator==(const ElementaryFile& o) const
     return mSfi == o.mSfi;
 }
 
-friend KEYPLECALYPSO_API std::ostream& ElementaryFile::operator<<(
-        std::ostream& os, const ElementaryFile& ef) const
+std::ostream& operator<<(std::ostream& os, const ElementaryFile& ef)
 {
     os << "ELEMENTARYFILE: {"
        << "SFI = " << ef.mSfi << ", "
        << ef.mHeader << ", "
        << ef.mData
-       << "}"
+       << "}";
 
     return os;
 }

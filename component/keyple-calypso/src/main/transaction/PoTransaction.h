@@ -22,24 +22,26 @@
 
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
-#include "CalypsoBuilderParser.h"
-#include "CalypsoPo.h"
 #include "ChannelControl.h"
 #include "KeypleCalypsoExport.h"
-#include "PoBuilderParser.h"
-#include "PoModificationCommand.h"
-#include "PoResource.h"
-#include "SamResource.h"
+#include "PoCommandManager.h"
 #include "SamRevision.h"
-#include "SecuritySettings.h"
 #include "SelectFileCmdBuild.h"
 
 /* Core */
 #include "ProxyReader.h"
-#include "ReadDataStructure.h"
 #include "SeProtocol.h"
 #include "SeRequest.h"
+#include "SeResource.h"
 #include "TransmissionMode.h"
+
+/* Forward declarations */
+namespace keyple { namespace calypso { namespace transaction {
+    class PoSecuritySettings; } } }
+namespace keyple { namespace calypso { namespace transaction {
+    class CalypsoPo; } } }
+namespace keyple { namespace calypso { namespace transaction {
+    class SamCommandProcessor; } } }
 
 namespace keyple {
 namespace calypso {
@@ -50,12 +52,12 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::builder;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::transaction;
 using namespace keyple::common;
+using namespace keyple::core::selection;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::protocol;
-using namespace keyple::core::util;
-using namespace keyple::calypso::transaction::exception;
 
 /**
  * Portable Object Secure Session.
@@ -68,7 +70,23 @@ using namespace keyple::calypso::transaction::exception;
  */
 class KEYPLECALYPSO_API PoTransaction final {
 public:
-    static class SessionSetting {
+    /**
+     * The PO Transaction State defined with the elements: ‘IOError’,
+     * ‘SEInserted’ and ‘SERemoval’.
+     */
+    enum class SessionState {
+        /**
+         * Initial state of a PO transaction. The PO must have been previously
+         * selected.
+         */
+        SESSION_UNINITIALIZED,
+        /** The secure session is active. */
+        SESSION_OPEN,
+        /** The secure session is closed. */
+        SESSION_CLOSED
+    };
+
+    class SessionSetting {
     public:
         /**
          * The modification mode indicates whether the secure session can be
@@ -94,6 +112,11 @@ public:
         class KEYPLECALYPSO_API AccessLevel final {
         public:
             /**
+             * Default value (uninitialized)
+             */
+            static AccessLevel SESSION_LVL_NONE;
+
+            /**
              * Session Access Level used for personalization purposes.
              */
             static AccessLevel SESSION_LVL_PERSO;
@@ -116,7 +139,7 @@ public:
             /**
              *
              */
-            const uint8_t getSessionKey() const;
+            uint8_t getSessionKey() const;
 
             /**
              *
@@ -128,6 +151,18 @@ public:
              */
             bool operator!=(const AccessLevel& other) const;
 
+            /**
+             *
+             */
+            friend std::ostream& operator<<(std::ostream& os,
+                                            const AccessLevel& al);
+
+            /**
+             *
+             */
+            friend bool operator<(const AccessLevel& lhs,
+                                  const AccessLevel& rhs);
+
         private:
             /**
              *
@@ -138,6 +173,11 @@ public:
              *
              */
             const uint8_t mSessionKey;
+
+            /**
+             *
+             */
+            AccessLevel(const std::string& name, const uint8_t sessionKey);
         };
 
         /**
@@ -163,7 +203,7 @@ public:
      * @param poSecuritySettings a list of security settings ({@link
      *        PoSecuritySettings}) used in
      */
-    PoTransaction(std::shared_ptr<SeResource<CalypsoPo> poResource,
+    PoTransaction(std::shared_ptr<SeResource<CalypsoPo>> poResource,
                   std::shared_ptr<PoSecuritySettings> poSecuritySettings);
 
     /**
@@ -175,7 +215,7 @@ public:
      * @param poResource the PO resource (combination of {@link SeReader} and
      *        {@link CalypsoPo})
      */
-    PoTransaction(std::shared_ptr<SeResource<CalypsoPo> poResource);
+    PoTransaction(std::shared_ptr<SeResource<CalypsoPo>> poResource);
 
     /**
      * Open a Secure Session.
@@ -220,7 +260,7 @@ public:
      * @throw CalypsoSamCommandException if a response from the SAM was
      *        unexpected
      */
-    void processOpening(const AccessLevel accessLevel);
+    void processOpening(const SessionSetting::AccessLevel& accessLevel);
 
     /**
      * Process all prepared PO commands (outside a Secure Session).
@@ -310,7 +350,7 @@ public:
      *
      * @param lid the LID of the EF to select
      */
-    void prepareSelectFile(const std::vector<uint8_>& lid);
+    void prepareSelectFile(const std::vector<uint8_t>& lid);
 
     /**
      * Prepare a select file ApduRequest to be executed following the selection.
@@ -444,21 +484,11 @@ public:
                                 const int decValue);
 
 private:
+
     /**
-     * The PO Transaction State defined with the elements: ‘IOError’,
-     * ‘SEInserted’ and ‘SERemoval’.
+     *
      */
-    enum class SessionState {
-        /**
-         * Initial state of a PO transaction. The PO must have been previously
-         * selected.
-         */
-        SESSION_UNINITIALIZED,
-        /** The secure session is active. */
-        SESSION_OPEN,
-        /** The secure session is closed. */
-        SESSION_CLOSED
-    };
+    friend std::ostream& operator<<(std::ostream& os, const SessionState& ss);
 
     /**
      * Commands that modify the content of the PO in session have a cost on the
@@ -501,7 +531,7 @@ private:
     /**
      * The current secure session access level: PERSO, RELOAD, DEBIT
      */
-    AccessLevel mCurrentAccessLevel;
+    SessionSetting::AccessLevel mCurrentAccessLevel;
 
     /**
      * Modifications counter management
@@ -558,7 +588,7 @@ private:
      *        unexpected
      */
     void processAtomicOpening(
-        const std::shared_ptr<AccessLevel>,
+        const SessionSetting::AccessLevel& accessLevel,
         std::vector<std::shared_ptr<AbstractPoCommandBuilder<
             AbstractPoResponseParser>>>& poCommands);
 
@@ -587,13 +617,13 @@ private:
      * @param poBuilderParsers the po commands inside session
      * @param channelControl indicated if the SE channel of the PO reader must
      *        be closed after the last command
-     * @return SeResponse all responses to the provided commands
-     *
-     * @throw KeypleReaderException IO Reader exception
+     * @throw CalypsoPoTransactionException if a functional error occurs
+     *        (including PO and SAM IO errors)
+     * @throw CalypsoPoCommandException if a response from the PO was unexpected
      */
     void processAtomicPoCommands(
         const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-            AbstractPoCommandBuilder<AbstractPoResponseParser>>>& poCommands,
+            AbstractPoResponseParser>>>& poCommands,
         const ChannelControl channelControl);
 
 
@@ -680,8 +710,8 @@ private:
      */
     void processAtomicClosing(
         const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>& poCommands,
-        const RatificationMode ratificationMode,
+            AbstractPoResponseParser>>>& poCommands,
+        const SessionSetting::RatificationMode ratificationMode,
         const ChannelControl channelControl);
 
     /**
@@ -692,7 +722,7 @@ private:
      * @return the value of the counter
      * @{@link CalypsoPo}
      */
-    const int getCounterValue(const uint8_t sfi, const int counter) const;
+    int getCounterValue(const uint8_t sfi, const int counter) const;
 
     /**
      * Create an anticipated response to an Increase/Decrease command
@@ -767,7 +797,7 @@ private:
      *        the buffer in ATOMIC modification mode
      */
     bool checkModifyingCommand(
-        std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>
+        std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
             builder,
         std::atomic<bool> overflow,
         std::atomic<int> neededSessionBufferSpace);

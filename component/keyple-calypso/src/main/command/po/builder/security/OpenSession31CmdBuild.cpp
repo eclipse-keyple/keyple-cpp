@@ -32,35 +32,44 @@ using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::core::seproxy::message;
 
 OpenSession31CmdBuild::OpenSession31CmdBuild(
-  uint8_t keyIndex, const std::vector<uint8_t>& samChallenge,
-  uint8_t sfi, uint8_t recordNumber)
-: AbstractOpenSessionCmdBuild<OpenSession31RespPars>(PoRevision::REV3_1),
-  mSfi(sfi), mRecordNumber(recordNumber)
+  const uint8_t keyIndex,
+  const std::vector<uint8_t>& samChallenge,
+  const uint8_t sfi,
+  const uint8_t recordNumber)
+: AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>(PoRevision::REV3_1),
+  mSfi(sfi),
+  mRecordNumber(recordNumber)
 {
-    uint8_t p1 = (recordNumber * 8) + keyIndex;
-    uint8_t p2 = (sfi * 8) + 1;
+    const uint8_t p1 = (recordNumber * 8) + keyIndex;
+    const uint8_t p2 = (sfi * 8) + 1;
 
     /*
      * case 4: this command contains incoming and outgoing data. We define
      * le = 0, the actual length will be processed by the lower layers.
      */
-    uint8_t le = 0;
+    const uint8_t le = 0;
 
-    this->request = setApduRequest(
-        PoClass::ISO.getValue(),
-        CalypsoPoCommands::getOpenSessionForRev(PoRevision::REV3_1), p1, p2,
-        samChallenge, le);
+    mRequest = setApduRequest(
+                     PoClass::ISO.getValue(),
+                     CalypsoPoCommand::getOpenSessionForRev(PoRevision::REV3_1),
+                     p1,
+                     p2,
+                     samChallenge,
+                     le);
 
-    const std::string extraInfo = StringHelper::formatSimple(
-        "KEYINDEX=%d, SFI=%02X, REC=%d", keyIndex, sfi, recordNumber);
+    const std::string extraInfo =
+        StringHelper::formatSimple(
+            "KEYINDEX=%d, SFI=%02X, REC=%d", keyIndex, sfi, recordNumber);
+
     addSubName(extraInfo);
 }
 
-std::shared_ptr<OpenSession31RespPars>
-OpenSession31CmdBuild::createResponseParser(
-    std::shared_ptr<ApduResponse> apduResponse)
+std::unique_ptr<AbstractOpenSessionRespPars>
+    OpenSession31CmdBuild::createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<OpenSession31RespPars>(apduResponse, this);
+    return std::unique_ptr<OpenSession31RespPars>(
+               new OpenSession31RespPars(apduResponse, this));
 }
 
 bool OpenSession31CmdBuild::isSessionBufferUsed() const
@@ -68,12 +77,12 @@ bool OpenSession31CmdBuild::isSessionBufferUsed() const
     return false;
 }
 
-const uint8_t OpenSession31CmdBuild::getSfi() const
+uint8_t OpenSession31CmdBuild::getSfi() const
 {
     return mSfi;
 }
 
-const uint8_t OpenSession31CmdBuild::getRecordNumber() const
+uint8_t OpenSession31CmdBuild::getRecordNumber() const
 {
     return mRecordNumber;
 }

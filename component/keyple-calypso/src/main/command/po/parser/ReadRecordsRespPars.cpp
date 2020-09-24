@@ -12,16 +12,25 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "ReadRecordsRespPars.h"
+
 #include <algorithm>
 #include <functional>
 #include <iterator>
 
-#include "ReadRecordsRespPars.h"
+/* Core */
 #include "ByteArrayUtil.h"
 
 /* Common */
-#include "stringhelper.h"
 #include "Arrays.h"
+#include "IllegalStateException.h"
+#include "stringhelper.h"
+
+/* Calypso */
+#include "CalypsoPoDataAccessException.h"
+#include "CalypsoPoSecurityContextException.h"
+#include "CalypsoPoAccessForbiddenException.h"
+#include "CalypsoPoIllegalParameterException.h"
 
 namespace keyple {
 namespace calypso {
@@ -30,6 +39,8 @@ namespace po {
 namespace parser {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
+using namespace keyple::calypso::command::po::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
@@ -79,8 +90,11 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 };
 
 ReadRecordsRespPars::ReadRecordsRespPars(
-  std::shared_ptr<ApduResponse> apduResponse, ReadRecordCmdBuilder* builder)
-: AbstractPoResponseParser(apduResponse, builder) {}
+  std::shared_ptr<ApduResponse> apduResponse, ReadRecordsCmdBuild* builder)
+: AbstractPoResponseParser(
+    apduResponse,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+{}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     ReadRecordsRespPars::getStatusTable() const
@@ -88,15 +102,16 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
     return STATUS_TABLE;
 }
 
-std::shared_ptr<std::map<int, std::vector<uint8_t>>>
-    ReadRecordsRespPars::getRecords()
+std::map<int, std::vector<uint8_t>> ReadRecordsRespPars::getRecords() const
 {
-    std::shared_ptr<std::map<int, std::vector<uint8_t>>> records =
-        std::make_shared<std::map<int, std::vector<uint8_t>>>();
+    std::map<int, std::vector<uint8_t>> records;
 
-    if (builder->getReadMode() == ReadRecordsCmdBuild::ReadMode::ONE_RECORD) {
-        records.insert({builder->getFirstRecordNumber(),
-                        mResponse->getDataOut()});
+    if ((dynamic_cast<ReadRecordsCmdBuild*>(mBuilder))->getReadMode() ==
+             ReadRecordsCmdBuild::ReadMode::ONE_RECORD) {
+        records.insert({
+            (dynamic_cast<ReadRecordsCmdBuild*>(mBuilder))
+                ->getFirstRecordNumber(),
+            mResponse->getDataOut()});
     } else {
         std::vector<uint8_t> apdu = mResponse->getDataOut();
         int apduLen               = apdu.size();
@@ -104,14 +119,13 @@ std::shared_ptr<std::map<int, std::vector<uint8_t>>>
         while (apduLen > 0) {
             char recordNb = apdu[index++];
             char len      = apdu[index++];
-            records->insert(std::pair<int, std::vector<uint8_t>>(
+            records.insert(std::pair<int, std::vector<uint8_t>>(
                 recordNb, Arrays::copyOfRange(apdu, index, index + len)));
             index   = index + len;
             apduLen = apduLen - 2 - len;
         }
-    } else {
-        throw IllegalStateException("The file is a counter file.");
     }
+
     return records;
 }
 

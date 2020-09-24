@@ -20,8 +20,12 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
-#include "DigestUpdateRespPars.h"
 #include "SamRevision.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class DigestUpdateRespPars; } } } }
+    } }
 
 namespace keyple {
 namespace calypso {
@@ -31,6 +35,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Digest Update APDU command. This command have to be sent
@@ -50,31 +55,21 @@ public:
      * @throw IllegalArgumentException - if the digest data is null or has a
      *        length &gt; 255
      */
-    DigestUpdateCmdBuild(const SamRevision revision,
+    DigestUpdateCmdBuild(const SamRevision& revision,
                          const bool encryptedSession,
                          const std::vector<uint8_t>& digestData);
 
     /**
      *
      */
-    std::shared_ptr<DigestUpdateRespPars> createResponseParser(
+    std::unique_ptr<DigestUpdateRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<DigestUpdateCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<DigestUpdateCmdBuild>(
-            AbstractSamCommandBuilder::shared_from_this());
-    }
 
 private:
     /**
      * The command reference
      */
-    static const CalypsoSamCommand& mCommand;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::DIGEST_UPDATE;
 };
 
 }

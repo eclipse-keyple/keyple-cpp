@@ -39,7 +39,7 @@ public:
     CalypsoPoSecurityDataException(
       const std::string& message,
       const std::shared_ptr<CalypsoPoCommand> command,
-      const std::shared_ptr<int> statusCode)
+      const int statusCode)
     : CalypsoPoCommandException(message, command, statusCode) {}
 };
 

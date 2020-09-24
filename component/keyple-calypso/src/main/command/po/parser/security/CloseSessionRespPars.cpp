@@ -23,6 +23,7 @@
 
 /* Common */
 #include "Arrays.h"
+#include "IllegalArgumentException.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -32,13 +33,14 @@ namespace po {
 namespace parser {
 namespace security {
 
+using namespace keyple::common;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::calypso::command::po::exception;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-std::unordered_map<int, std::shared_ptr<StatusProperties>>
+const std::map<int, std::shared_ptr<StatusProperties>>
     CloseSessionRespPars::STATUS_TABLE = {
     {
         0x6700,
@@ -64,16 +66,17 @@ std::unordered_map<int, std::shared_ptr<StatusProperties>>
     }
 };
 
-std::unordered_map<
-    int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-CloseSessionRespPars::getStatusTable() const
+const std::map<int, std::shared_ptr<StatusProperties>>&
+    CloseSessionRespPars::getStatusTable() const
 {
     return STATUS_TABLE;
 }
 
 CloseSessionRespPars::CloseSessionRespPars(
   std::shared_ptr<ApduResponse> response, CloseSessionCmdBuild* builder)
-: AbstractPoResponseParser(response, builder)
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
 {
     parse(response->getDataOut());
 }
@@ -81,13 +84,13 @@ CloseSessionRespPars::CloseSessionRespPars(
 void CloseSessionRespPars::parse(const std::vector<uint8_t>& response)
 {
     if (response.size() == 8) {
-        signatureLo   = Arrays::copyOfRange(response, 4, 8);
-        postponedData = Arrays::copyOfRange(response, 0, 4);
+        mSignatureLo   = Arrays::copyOfRange(response, 4, 8);
+        mPostponedData = Arrays::copyOfRange(response, 0, 4);
     } else if (response.size() == 4) {
-        signatureLo = Arrays::copyOfRange(response, 0, 4);
+        mSignatureLo = Arrays::copyOfRange(response, 0, 4);
     } else {
         if (response.size() != 0) {
-            throw std::invalid_argument(
+            throw IllegalArgumentException(
                       "Unexpected length in response to CloseSecureSession " \
                       "command: " + StringHelper::to_string(response.size()));
         }
@@ -96,12 +99,12 @@ void CloseSessionRespPars::parse(const std::vector<uint8_t>& response)
 
 const std::vector<uint8_t>& CloseSessionRespPars::getSignatureLo() const
 {
-    return signatureLo;
+    return mSignatureLo;
 }
 
 const std::vector<uint8_t>& CloseSessionRespPars::getPostponedData() const
 {
-    return postponedData;
+    return mPostponedData;
 }
 
 }

@@ -33,6 +33,7 @@ namespace po {
 namespace parser {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
 using namespace keyple::core::seproxy::message;
 
 /**
@@ -78,9 +79,7 @@ private:
     /**
      *
      */
-    static std::map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

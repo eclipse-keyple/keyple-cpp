@@ -18,13 +18,19 @@
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommand.h"
 #include "KeypleCalypsoExport.h"
-#include "GetDataTraceRespPars.h"
+#include "PoClass.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class GetDataTraceRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace po {
 namespace builder {
+
+using namespace keyple::calypso::command::po::parser;
 
 /**
  * This class provides the dedicated constructor to build the Get data APDU
@@ -42,12 +48,12 @@ public:
      *
      * @param poClass indicates which CLA byte should be used for the Apdu
      */
-     GetDataTraceCmdBuild(PoClass poClass);
+     GetDataTraceCmdBuild(const PoClass poClass);
 
     /**
      *
      */
-    std::shared_ptr<GetDataTraceRespPars> createResponseParser(
+    std::unique_ptr<GetDataTraceRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -62,10 +68,9 @@ private:
     /**
      *
      */
-    static const CalypsoPoCommand& command = CalypsoPoCommand::GET_DATA_TRACE;
+    const CalypsoPoCommand& command = CalypsoPoCommand::GET_DATA_TRACE;
 };
 
-}
 }
 }
 }

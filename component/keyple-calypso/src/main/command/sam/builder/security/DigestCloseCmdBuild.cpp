@@ -17,6 +17,9 @@
 /* Common */
 #include "IllegalArgumentException.h"
 
+/* Calypso */
+#include "DigestCloseRespPars.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -25,13 +28,13 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
-
-const CalypsoSamCommand& DigestCloseCmdBuild::mCommand =
-    CalypsoSamCommand::DIGEST_CLOSE;
+using namespace keyple::calypso::command::sam::parser::security;
 
 DigestCloseCmdBuild::DigestCloseCmdBuild(
   const SamRevision& revision, const uint8_t expectedResponseLength)
-: AbstractSamCommandBuilder(CalypsoSamCommands::DIGEST_CLOSE, nullptr)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::DIGEST_CLOSE),
+    nullptr)
 {
     mDefaultRevision = revision;
 
@@ -46,13 +49,14 @@ DigestCloseCmdBuild::DigestCloseCmdBuild(
     const uint8_t p1 = 0x00;
     const uint8_t p2 = 0x00;
 
-    mRequest = setApduRequest(cla, command, p1, p2, expectedResponseLength);
+    mRequest = setApduRequest(cla, mCommand, p1, p2, expectedResponseLength);
 }
 
-std::shared_ptr<DigestCloseRespPars> DigestCloseCmdBuild::createResponseParser(
+std::unique_ptr<DigestCloseRespPars> DigestCloseCmdBuild::createResponseParser(
     const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<DigestCloseRespPars>(apduResponse, this);
+    return std::unique_ptr<DigestCloseRespPars>(
+               new DigestCloseRespPars(apduResponse, this));
 }
 
 }

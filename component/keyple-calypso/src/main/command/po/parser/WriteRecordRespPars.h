@@ -32,6 +32,7 @@ namespace parser {
 
 using namespace keyple::core::command;
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
 using namespace keyple::core::seproxy::message;
 
 /**

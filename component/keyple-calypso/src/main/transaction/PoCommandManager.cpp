@@ -15,6 +15,7 @@
 #include "PoCommandManager.h"
 
 /* Common */
+#include "IllegalArgumentException.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -48,7 +49,7 @@ void PoCommandManager::notifyCommandsProcessed()
 }
 
 const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-    AbstractPoResponseParser>> PoCommandManager::getPoCommandBuilders()
+    AbstractPoResponseParser>>> PoCommandManager::getPoCommandBuilders()
 {
     /*
      * Clear the list if no command has been added since the last call to a
@@ -66,12 +67,12 @@ std::shared_ptr<AbstractApduResponseParser> PoCommandManager::getResponseParser(
     const int commandIndex) const
 {
     if (commandIndex < 0 ||
-        commandIndex >= static_cast<int>(poCommands.size())) {
+        commandIndex >= static_cast<int>(mPoCommands.size())) {
         throw IllegalArgumentException(
                   StringHelper::formatSimple(
                       "Bad command index: index = %d, number of commands = %d",
                       commandIndex,
-                      poCommands.size()));
+                      mPoCommands.size()));
     }
 
     return nullptr;

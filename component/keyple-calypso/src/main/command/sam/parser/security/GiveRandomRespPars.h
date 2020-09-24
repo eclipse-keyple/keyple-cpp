@@ -38,7 +38,7 @@ using namespace keyple::core::seproxy::message;
  * <p>
  * No output data except status word
  */
-class KEYPLECALYPSO_APIGiveRandomRespPars final
+class KEYPLECALYPSO_API GiveRandomRespPars final
 : public AbstractSamResponseParser {
 public:
     /**

@@ -21,12 +21,28 @@
 #include <type_traits>
 
 /* Calypso */
-#include "AbstractOpenSessionRespPars.h"
 #include "AbstractPoCommandBuilder.h"
 #include "AbstractPoResponseParser.h"
 #include "CalypsoPoCommand.h"
 #include "KeypleCalypsoExport.h"
 #include "PoRevision.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace builder { namespace security { class OpenSession10CmdBuild; } } }
+    } } }
+
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace builder { namespace security { class OpenSession24CmdBuild; } } }
+    } } }
+
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace builder { namespace security { class OpenSession31CmdBuild; } } }
+    } } }
+
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace builder { namespace security { class OpenSession32CmdBuild; } } }
+    } } }
 
 namespace keyple {
 namespace calypso {
@@ -36,6 +52,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::core::command;
 
 /**
@@ -54,11 +71,12 @@ public:
      * @throw IllegalArgumentException - if the key index is 0 and rev is 2.4
      * @throw IllegalArgumentException - if the request is inconsistent
      */
-    AbstractOpenSessionCmdBuild(PoRevision revision);
+    AbstractOpenSessionCmdBuild(PoRevision revision)
     : AbstractPoCommandBuilder<T>(
-          CalypsoPoCommand::getOpenSessionForRev(revision), nullptr) {}
+          std::make_shared<CalypsoPoCommand>(
+              CalypsoPoCommand::getOpenSessionForRev(revision)),
+          nullptr) {}
 
-    template <typename T>
     static  std::shared_ptr<AbstractOpenSessionCmdBuild<T>> create(
         PoRevision revision, uint8_t debitKeyIndex,
         const std::vector<uint8_t>& sessionTerminalChallenge, uint8_t sfi,
@@ -107,12 +125,12 @@ public:
     /**
      * @return the SFI of the file read while opening the secure session
      */
-    virtual const uint8_t getSfi() const = 0;
+    virtual uint8_t getSfi() const = 0;
 
     /**
      * @return the record number to read
      */
-    virtual const uint8_t getRecordNumber() const  = 0;
+    virtual uint8_t getRecordNumber() const  = 0;
 };
 
 }

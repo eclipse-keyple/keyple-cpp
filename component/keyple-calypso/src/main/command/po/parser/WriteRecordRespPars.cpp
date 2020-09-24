@@ -31,7 +31,7 @@ using namespace keyple::core::command;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-std::unordered_map<int, std::shared_ptr<StatusProperties>>
+const std::map<int, std::shared_ptr<StatusProperties>>
     WriteRecordRespPars::STATUS_TABLE = {
     {
         0x6400,
@@ -68,7 +68,7 @@ std::unordered_map<int, std::shared_ptr<StatusProperties>>
     }, {
         0x6A82,
         std::make_shared<StatusProperties>(
-            "File not found";
+            "File not found",
             typeid(CalypsoPoDataAccessException))
     }, {
         0x6A83,
@@ -91,7 +91,10 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
 
 WriteRecordRespPars::WriteRecordRespPars(
   std::shared_ptr<ApduResponse> response, WriteRecordCmdBuild* builder)
-: AbstractPoResponseParser(response, builder) {}
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+{}
 
 }
 }

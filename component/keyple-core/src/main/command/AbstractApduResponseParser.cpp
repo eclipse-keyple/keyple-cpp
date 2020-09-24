@@ -52,7 +52,7 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
 
 AbstractApduResponseParser::AbstractApduResponseParser(
   const std::shared_ptr<ApduResponse> response,
-  const std::shared_ptr<AbstractApduCommandBuilder> builder)
+  AbstractApduCommandBuilder* builder)
 : mResponse(response), mBuilder(builder)
 {
 }
@@ -125,8 +125,8 @@ void AbstractApduResponseParser::checkStatus() const
     int statusCode = mResponse->getStatusCode();
 
     /* Throw the exception */
-    throw *buildCommandException(exceptionClass, message, commandRef,
-                                 std::make_shared<int>(statusCode)).get();
+    throw buildCommandException(exceptionClass, message, commandRef,
+                                 statusCode);
 }
 
 const std::shared_ptr<SeCommand> AbstractApduResponseParser::getCommandRef()
@@ -135,23 +135,23 @@ const std::shared_ptr<SeCommand> AbstractApduResponseParser::getCommandRef()
     return mBuilder != nullptr ? mBuilder->getCommandRef() : nullptr;
 }
 
-const std::shared_ptr<AbstractApduCommandBuilder>
-    AbstractApduResponseParser::getBuilder() const
+AbstractApduCommandBuilder* AbstractApduResponseParser::getBuilder() const
 {
     return mBuilder;
 }
 
-const std::shared_ptr<KeypleSeCommandException>
+const KeypleSeCommandException
     AbstractApduResponseParser::buildCommandException(
         const std::type_info& exceptionClass,
         const std::string& message,
         const std::shared_ptr<SeCommand> commandRef,
-        const std::shared_ptr<int> statusCode) const
+        const int statusCode) const
 {
     (void)exceptionClass;
 
-    return std::make_shared<KeypleSeCommandUnknownStatusException>(
-               message, commandRef, statusCode);
+    return std::move(
+               KeypleSeCommandUnknownStatusException(
+                   message, commandRef, statusCode));
 }
 
 /* STATUS PROPERTIES -------------------------------------------------------- */

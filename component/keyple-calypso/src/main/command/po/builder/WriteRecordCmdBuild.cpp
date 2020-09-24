@@ -34,26 +34,52 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
 WriteRecordCmdBuild::WriteRecordCmdBuild(
-  const PoClass poClass, const uint8_t sfi, const uint8_t recordNumber,
+  const PoClass poClass,
+  const uint8_t sfi,
+  const uint8_t recordNumber,
   const std::vector<uint8_t>& newRecordData)
 : AbstractPoCommandBuilder<WriteRecordRespPars>(
-    CalypsoPoCommand::WRITE_RECORD, nullptr),
-  mSfi(sfi), mRecordNumber(recordNumber), mData(newRecordData)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::WRITE_RECORD),
+      nullptr),
+  mSfi(sfi),
+  mRecordNumber(recordNumber),
+  mData(newRecordData)
 {
     const uint8_t cla = poClass.getValue();
     const uint8_t p2 = (sfi == 0) ? 0x04 : (sfi * 8) + 4;
 
-    request = setApduRequest(cla, command, recordNumber, p2, newRecordData);
+    mRequest = setApduRequest(cla, command, recordNumber, p2, newRecordData);
 
     const std::string extraInfo =
         StringHelper::formatSimple("SFI=%02X, REC=%d", sfi, recordNumber);
     addSubName(extraInfo);
 }
 
-std::shared_ptr<WriteRecordRespPars> WriteRecordCmdBuild::createResponseParser(
+std::unique_ptr<WriteRecordRespPars> WriteRecordCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<WriteRecordRespPars>(apduResponse, this);
+    return std::unique_ptr<WriteRecordRespPars>(
+               new WriteRecordRespPars(apduResponse, this));
+}
+
+bool WriteRecordCmdBuild::isSessionBufferUsed() const
+{
+    return true;
+}
+
+int WriteRecordCmdBuild::getSfi() const
+{
+    return mSfi;
+}
+
+int WriteRecordCmdBuild::getRecordNumber() const
+{
+    return mRecordNumber;
+}
+
+const std::vector<uint8_t>& WriteRecordCmdBuild::getData() const
+{
+    return mData;
 }
 
 }

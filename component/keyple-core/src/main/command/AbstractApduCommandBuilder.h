@@ -77,18 +77,18 @@ public:
     /**
      * @return the current command identification
      */
-    virtual std::shared_ptr<SeCommand> getCommandRef();
+    virtual const std::shared_ptr<SeCommand> getCommandRef() const;
 
     /**
      * @return the name of the APDU command from the CalypsoCommands
      *         information.
      */
-    virtual std::string getName() const;
+    virtual const std::string& getName() const;
 
     /**
      * @return the request
      */
-    virtual std::shared_ptr<ApduRequest> getApduRequest() const;
+    virtual const std::shared_ptr<ApduRequest> getApduRequest() const;
 
 protected:
     /**
