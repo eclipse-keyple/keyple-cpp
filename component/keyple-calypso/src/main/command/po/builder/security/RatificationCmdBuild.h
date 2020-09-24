@@ -51,9 +51,10 @@ private:
      */
     RatificationCmdBuild() {}
 };
+
 }
 }
 }
 }
 }
-=
+}

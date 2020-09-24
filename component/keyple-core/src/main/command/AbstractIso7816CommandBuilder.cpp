@@ -32,19 +32,18 @@ using namespace keyple::core::seproxy::message;
 AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(
   const std::shared_ptr<SeCommand> commandReference,
   std::shared_ptr<ApduRequest> request)
-: AbstractApduCommandBuilder(commandReference, request)
-{
-}
+: AbstractApduCommandBuilder(commandReference, request) {}
 
 AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(
     const std::string& name, std::shared_ptr<ApduRequest> request)
-: AbstractApduCommandBuilder(name, request)
-{
-}
+: AbstractApduCommandBuilder(name, request) {}
 
 std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
-    const uint8_t cla, const std::shared_ptr<SeCommand> command,
-    const uint8_t p1, const uint8_t p2, const std::vector<uint8_t>& dataIn)
+    const uint8_t cla,
+    const SeCommand& command,
+    const uint8_t p1,
+    const uint8_t p2,
+    const std::vector<uint8_t>& dataIn)
 {
     bool case4;
 
@@ -67,7 +66,7 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
 
     /* Build APDU buffer from provided arguments */
     apdu[0] = cla;
-    apdu[1] = command->getInstructionByte();
+    apdu[1] = command.getInstructionByte();
     apdu[2] = p1;
     apdu[3] = p2;
 
@@ -83,12 +82,15 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
      */
     case4 = false;
 
-    return std::make_shared<ApduRequest>(command->getName(), apdu, case4);
+    return std::make_shared<ApduRequest>(command.getName(), apdu, case4);
 }
 
 std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
-    const uint8_t cla, const std::shared_ptr<SeCommand> command,
-    const uint8_t p1, const uint8_t p2, const uint8_t le)
+    const uint8_t cla,
+    const SeCommand& command,
+    const uint8_t p1,
+    const uint8_t p2,
+    const uint8_t le)
 {
     bool case4;
 
@@ -108,7 +110,7 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
 
     /* Build APDU buffer from provided arguments */
     apdu[0] = cla;
-    apdu[1] = command->getInstructionByte();
+    apdu[1] = command.getInstructionByte();
     apdu[2] = p1;
     apdu[3] = p2;
 
@@ -121,27 +123,28 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
     apdu[4] = le;
     case4   = false;
 
-    return std::make_shared<ApduRequest>(command->getName(), apdu, case4);
+    return std::make_shared<ApduRequest>(command.getName(), apdu, case4);
 }
 
 std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
-    const uint8_t cla, const std::shared_ptr<SeCommand> command,
-    const uint8_t p1, const uint8_t p2, const std::vector<uint8_t>& dataIn,
+    const uint8_t cla,
+    const SeCommand& command,
+    const uint8_t p1,
+    const uint8_t p2,
+    const std::vector<uint8_t>& dataIn,
     const uint8_t le)
 {
     bool case4;
 
     /* sanity check */
-    if (dataIn.size() == 0 || le != 0) {
+    if (dataIn.size() == 0 || le != 0)
         throw std::invalid_argument("Le must be equal to 0 when not null and "
                                     "ingoing data are present.");
-    }
 
     /* Buffer allocation */
     int length = 4; // header
-    if (dataIn.size() > 0) {
+    if (dataIn.size() > 0)
         length += dataIn.size() + 1; // Lc + data
-    }
 
     length += 1; // Le
 
@@ -149,7 +152,7 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
 
     /* Build APDU buffer from provided arguments */
     apdu[0] = cla;
-    apdu[1] = command->getInstructionByte();
+    apdu[1] = command.getInstructionByte();
     apdu[2] = p1;
     apdu[3] = p2;
 
@@ -171,7 +174,7 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
         case4   = false;
     }
 
-    return std::make_shared<ApduRequest>(command->getName(), apdu, case4);
+    return std::make_shared<ApduRequest>(command.getName(), apdu, case4);
 }
 
 }

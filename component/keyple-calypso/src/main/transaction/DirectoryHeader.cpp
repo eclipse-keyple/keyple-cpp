@@ -12,16 +12,24 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "DirectorHeader.h"
+#include "DirectoryHeader.h"
 
 /* Core */
 #include "KeypleAssert.h"
+
+/* Common */
+#include "NoSuchElementException.h"
 
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
+using namespace keyple::common;
 using namespace keyple::core::util;
+
+using DirectoryHeaderBuilder = DirectoryHeader::DirectoryHeaderBuilder;
+
+/* DIRECTORY HEADER BUILDER ------------------------------------------------- */
 
 DirectoryHeaderBuilder::DirectoryHeaderBuilder() {}
 
@@ -51,14 +59,14 @@ DirectoryHeaderBuilder& DirectoryHeaderBuilder::dfStatus(const uint8_t dfStatus)
     return *this;
 }
 
-DirectoryHeaderBuilder& DirectoryHeaderBuilder::kif(const AccessLevel level,
+DirectoryHeaderBuilder& DirectoryHeaderBuilder::kif(const AccessLevel& level,
                                                     const uint8_t kif)
 {
     mKif.insert({level, kif});
     return *this;
 }
 
-DirectoryHeaderBuilder& DirectoryHeaderBuilder::kvc(const AccessLevel level,
+DirectoryHeaderBuilder& DirectoryHeaderBuilder::kvc(const AccessLevel& level,
                                                     const uint8_t kvc)
 {
     mKvc.insert({level, kvc});
@@ -70,7 +78,17 @@ std::unique_ptr<DirectoryHeader> DirectoryHeaderBuilder::build()
     return std::unique_ptr<DirectoryHeader>(new DirectoryHeader(this));
 }
 
-const uint8_t DirectoryHeader::getLid() const
+/* DIRECTORY HEADER --------------------------------------------------------- */
+
+DirectoryHeader::DirectoryHeader(const DirectoryHeaderBuilder* builder)
+: mLid(builder->mLid),
+  mAccessConditions(builder->mAccessConditions),
+  mKeyIndexes(builder->mKeyIndexes),
+  mDfStatus(builder->mDfStatus),
+  mKif(builder->mKif),
+  mKvc(builder->mKvc) {}
+
+uint8_t DirectoryHeader::getLid() const
 {
     return mLid;
 }
@@ -85,33 +103,33 @@ const std::vector<uint8_t>& DirectoryHeader::getKeyIndexes() const
     return mKeyIndexes;
 }
 
-const uint8_t DirectoryHeader::getDfStatus() const
+uint8_t DirectoryHeader::getDfStatus() const
 {
     return mDfStatus;
 }
 
-const uint8_t DirectoryHeader::getKif(const AccessLevel level) const
+uint8_t DirectoryHeader::getKif(const AccessLevel& level) const
 {
     std::map<AccessLevel, uint8_t>::const_iterator it;
 
     if ((it = mKif.find(level)) == mKif.end())
         throw NoSuchElementException(
                   StringHelper::formatSimple(
-                      "KIF not found for session access level [%d].", level));
+                      "KIF not found for session access level [%s].", level));
 
-    return *it;
+    return it->second;
 }
 
-const uint8_t DirectoryHeader::getKvc(const AccessLevel level) const
+uint8_t DirectoryHeader::getKvc(const AccessLevel& level) const
 {
     std::map<AccessLevel, uint8_t>::const_iterator it;
 
     if ((it = mKvc.find(level)) == mKvc.end())
         throw NoSuchElementException(
                   StringHelper::formatSimple(
-                      "KVC not found for session access level [%d].", level);
+                      "KVC not found for session access level [%s].", level));
 
-    return *it;
+    return it->second;
 }
 
 std::unique_ptr<DirectoryHeaderBuilder> DirectoryHeader::builder() {
@@ -124,15 +142,15 @@ bool DirectoryHeader::operator==(const DirectoryHeader& o) const
     return mLid == o.mLid;
 }
 
-std::ostream& DirectoryHeader::operator<<(
-    std::ostream& os, const DirectoryHeader& dh) const override
+std::ostream& operator<<(std::ostream& os, const DirectoryHeader& dh)
 {
     os << "OSTREAM: {"
-       << "LID = 0x" << std::hex << setfill('0') << setw(2) << dh.mLid << ", "
+       << "LID = 0x" << std::hex << std::setfill('0') << std::setw(2) << dh.mLid
+                     << ", "
        << "ACCESSCONDITIONS = " << dh.mAccessConditions << ", "
        << "KEYINDEXES = " << dh.mKeyIndexes << ", "
-       << "DFSTATUS = 0x" << std::hex << setfill('0') << setw(2)
-           << oh.mDfStatus << ", "
+       << "DFSTATUS = 0x" << std::hex << std::setfill('0') << std::setw(2)
+                          << dh.mDfStatus << ", "
        << "KIF (todo)" << ", "
        << "KVC (todo)"
        << "}";
@@ -140,10 +158,6 @@ std::ostream& DirectoryHeader::operator<<(
     return os;
 }
 
-DirectoryHeader::DirectoryHeader(const DirectoryHeaderBuilder* builder)
-: mLid(builder->mLid), mAccessConditions(builder->accessConditions),
-  mKeyIndexes(builder->mKeyIndexes), mDfStatus(builder->dfStatus),
-  mKif(builder->kif), mKvc(builder->kvc) {}
-
+}
 }
 }

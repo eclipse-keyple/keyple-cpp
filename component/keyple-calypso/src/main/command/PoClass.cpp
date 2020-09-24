@@ -16,100 +16,63 @@
 
 #include <iomanip>
 
+/* Common */
+#include "IllegalArgumentException.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
 
-PoClass PoClass::LEGACY("LEGACY", InnerEnum::LEGACY, static_cast<char>(0x94));
-PoClass PoClass::ISO("ISO", InnerEnum::ISO, static_cast<char>(0x00));
+using namespace keyple::common;
 
-std::vector<PoClass> PoClass::valueList;
+const PoClass PoClass::LEGACY("LEGACY", static_cast<char>(0x94));
+const PoClass PoClass::ISO("ISO", static_cast<char>(0x00));
 
-PoClass::StaticConstructor::StaticConstructor()
+uint8_t PoClass::getValue() const
 {
-    valueList.push_back(LEGACY);
-    valueList.push_back(ISO);
+    return mCla;
 }
 
-PoClass::StaticConstructor PoClass::staticConstructor;
-int PoClass::nextOrdinal = 0;
+PoClass::PoClass(const std::string& name, const uint8_t cla)
+: mName(name), mCla(cla) {}
 
-char PoClass::getValue()
+PoClass& PoClass::operator=(const PoClass& o)
 {
-    return cla;
-}
-
-PoClass::PoClass(const std::string& name, InnerEnum innerEnum, char cla)
-: innerEnumValue(innerEnum), nameValue(name), ordinalValue(nextOrdinal++),
-  cla(cla)
-{
-}
-
-PoClass::PoClass(const PoClass& o)
-: innerEnumValue(o.innerEnumValue), nameValue(o.nameValue),
-  ordinalValue(o.ordinalValue), cla(o.cla)
-{
-}
-
-bool PoClass::operator==(const PoClass& o) const
-{
-    return this->ordinalValue == o.ordinalValue;
-}
-
-bool PoClass::operator!=(const PoClass& o) const
-{
-    return this->ordinalValue != o.ordinalValue;
-}
-
-PoClass& PoClass::operator=(const PoClass o)
-{
-    this->innerEnumValue = o.innerEnumValue;
-    this->nameValue      = o.nameValue;
-    this->ordinalValue   = o.ordinalValue;
-    this->cla            = o.cla;
+    mCla = o.mCla;
+    mName = o.mName;
 
     return *this;
 }
 
-std::vector<PoClass> PoClass::values()
+bool PoClass::operator==(const PoClass& o) const
 {
-    return valueList;
+    return mCla == o.mCla &&
+           mName == o.mName;
 }
 
-int PoClass::ordinal()
+bool PoClass::operator!=(const PoClass& o) const
 {
-    return ordinalValue;
+    return !(*this == o);
 }
 
-PoClass PoClass::valueOf(const std::string& name)
+const PoClass& PoClass::valueOf(const std::string& name)
 {
-    for (auto enumInstance : PoClass::valueList) {
-        if (enumInstance.nameValue == name) {
-            return enumInstance;
-        }
-    }
-
-    /* Compiler fix */
-    return PoClass("Dummy", InnerEnum::ISO, 0);
+    if (name == LEGACY.mName)
+        return LEGACY;
+    else if (name == ISO.mName)
+        return ISO;
+    else
+        throw IllegalArgumentException("PoClass " + name + "doesn't exist");
 }
 
 std::ostream& operator<<(std::ostream& os, const PoClass& pc)
 {
-	std::string value;
-	if (pc == PoClass::LEGACY)
-		value = "LEGACY";
-    else if (pc == PoClass::ISO)
-		value = "ISO";
+    os << "POCLASS: {"
+       << "NAME = "  << pc.mName << ", "
+       << "CLASS = " << std::hex << std::setfill('0') << std::setw(2) << pc.mCla
+       << "}";
 
-	os << "POCLASS: {"
-	   << "VALUE = " << value << ", "
-	   << "NAME = " << pc.nameValue << ", "
-	   << "ORDINAL = " << pc.ordinalValue << ", "
-	   << "CLASS = " << std::hex << std::setfill('0') << std::setw(2)
-		             << static_cast<int>(pc.cla)
-	   << "}";
-
-	return os;
+    return os;
 }
 
 }

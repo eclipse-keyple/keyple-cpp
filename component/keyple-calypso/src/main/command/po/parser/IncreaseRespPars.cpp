@@ -12,14 +12,16 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "AbstractApduResponseParser.h"
-#include "ApduResponse.h"
 #include "IncreaseRespPars.h"
+
 
 /* Common */
 #include "ClassNotFoundException.h"
+#include "IllegalStateException.h"
 
 /* Core */
+#include "AbstractApduResponseParser.h"
+#include "ApduResponse.h"
 #include "ByteArrayUtil.h"
 
 /* Calypso */
@@ -43,7 +45,9 @@ using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
 
-std::map<int, std::shared_ptr<StatusProperties>>
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
+
+const std::map<int, std::shared_ptr<StatusProperties>>
     IncreaseRespPars::STATUS_TABLE = {
     {
         0x6400,
@@ -99,7 +103,10 @@ std::map<int, std::shared_ptr<StatusProperties>>
 
 IncreaseRespPars::IncreaseRespPars(
   std::shared_ptr<ApduResponse> response, IncreaseCmdBuild* builder)
-: AbstractPoResponseParser(response, builder) {}
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+{}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     IncreaseRespPars::getStatusTable() const

@@ -120,7 +120,6 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/PoGetChallengeRespPars.cpp
 
 	# calypso - command - sam
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/AbstractSamCommandBuilder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/AbstractSamResponseParser.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/CalypsoSamCommand.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/SamRevision.cpp

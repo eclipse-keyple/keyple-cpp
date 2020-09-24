@@ -21,7 +21,10 @@
 #include "CalypsoPoCommand.h"
 #include "PoClass.h"
 #include "SelectFileControl.h"
-#include "SelectFileRespPars.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class SelectFileRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -50,7 +53,7 @@ public:
      * @param selectFileControl the selection mode control: FIRST, NEXT or
      *        CURRENT
      */
-    SelectFileCmdBuild(PoClass poClass, SelectFileControl selectFileControl);
+    SelectFileCmdBuild(const PoClass& poClass, SelectFileControl selectFileControl);
 
     /**
      * Instantiates a new SelectFileCmdBuild to select the first, next or
@@ -59,13 +62,13 @@ public:
      * @param poClass indicates which CLA byte should be used for the Apdu
      * @param selectionPath the file identifier path
      */
-    SelectFileCmdBuild(PoClass poClass,
+    SelectFileCmdBuild(const PoClass& poClass,
                        const std::vector<uint8_t>& selectionPath);
 
     /**
      *
      */
-    std::shared_ptr<SelectFileRespPars> createResponseParser(
+    std::unique_ptr<SelectFileRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -96,7 +99,7 @@ private:
     /**
      *
      */
-    CalypsoPoCommand& command = CalypsoPoCommand::SELECT_FILE;
+    const CalypsoPoCommand& command = CalypsoPoCommand::SELECT_FILE;
 
     /**
      * Construction arguments
@@ -104,12 +107,6 @@ private:
     const std::vector<uint8_t> mPath;
     const SelectFileControl mSelectFileControl;
 };
-
-/**
- *
- */
-std::ostream& operator<<(std::ostream& os,
-                         const SelectFileCmdBuild::SelectControl& sc);
 
 }
 }

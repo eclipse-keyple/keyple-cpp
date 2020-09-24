@@ -17,8 +17,12 @@
 /* Calypso */
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
-#include "SamReadCeilingsRespPars.h"
 #include "SamRevision.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class SamReadCeilingsRespPars; } } }
+    } } }
 
 namespace keyple {
 namespace calypso {
@@ -28,6 +32,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Read Ceilings APDU command.
@@ -61,20 +66,20 @@ public:
      * @param index the counter index
      */
     SamReadCeilingsCmdBuild(const SamRevision& revision,
-                            cosnt CeilingsOperationType operationType,
+                            const CeilingsOperationType operationType,
                             const uint8_t index);
 
     /**
      *
      */
-    std::shared_ptr<SamReadCeilingsRespPars> createResponseParser(
-        const std::shared_ptr<ApduResponse> apduResponse) override;
+    std::unique_ptr<SamReadCeilingsRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command reference
      */
-    static const CalypsoSamCommand& mCommand;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::READ_CEILINGS;
 };
 
 }

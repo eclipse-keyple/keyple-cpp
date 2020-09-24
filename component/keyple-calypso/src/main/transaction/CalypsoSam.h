@@ -57,7 +57,7 @@ public:
      *
      */
     virtual ~CalypsoSam() = default;
-d
+
     /**
      *
      */
@@ -71,32 +71,32 @@ d
     /**
      *
      */
-    virtual const uint8_t getPlatform() const;
+    virtual uint8_t getPlatform() const;
 
     /**
      *
      */
-    virtual const uint8_t getApplicationType() const;
+    virtual uint8_t getApplicationType() const;
 
     /**
      *
      */
-    virtual const uint8_t getApplicationSubType() const;
+    virtual uint8_t getApplicationSubType() const;
 
     /**
      *
      */
-    virtual const uint8_t getSoftwareIssuer() const;
+    virtual uint8_t getSoftwareIssuer() const;
 
     /**
      *
      */
-    virtual const uint8_t getSoftwareVersion() const;
+    virtual uint8_t getSoftwareVersion() const;
 
     /**
      *
      */
-    virtual const uint8_t getSoftwareRevision() const;
+    virtual uint8_t getSoftwareRevision() const;
 
 private:
     /**

@@ -18,12 +18,16 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
-#include "DigestCloseRespPars.h"
+#include "CalypsoSamCommand.h"
 #include "SamRevision.h"
 
 /* Common */
 #include "stringhelper.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class DigestCloseRespPars; } } } }
+    } }
 
 namespace keyple {
 namespace calypso {
@@ -33,6 +37,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Digest Close APDU command.
@@ -45,33 +50,23 @@ public:
      *
      * @param revision of the SAM
      * @param expectedResponseLength the expected response length
-     * @throws IllegalArgumentException - if the expected response length is
+     * @throw IllegalArgumentException - if the expected response length is
      *         wrong.
      */
-    DigestCloseCmdBuild(const SamRevision revision,
+    DigestCloseCmdBuild(const SamRevision& revision,
                         const uint8_t expectedResponseLength);
 
     /**
      *
      */
-    std::shared_ptr<DigestCloseRespPars> createResponseParser(
+    std::unique_ptr<DigestCloseRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<DigestCloseCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<DigestCloseCmdBuild>(
-            AbstractSamCommandBuilder::shared_from_this());
-    }
 
 private:
     /**
      * The command
      */
-    static const CalypsoSamCommand& mCommand;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::DIGEST_CLOSE;
 };
 
 }

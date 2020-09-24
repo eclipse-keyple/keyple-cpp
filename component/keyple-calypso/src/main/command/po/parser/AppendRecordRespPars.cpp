@@ -38,7 +38,7 @@ using namespace keyple::core::seproxy::message;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-std::map<int, std::shared_ptr<StatusProperties>>
+const std::map<int, std::shared_ptr<StatusProperties>>
     AppendRecordRespPars::STATUS_TABLE = {
     {
         0x6B00,
@@ -84,7 +84,10 @@ std::map<int, std::shared_ptr<StatusProperties>>
 
 AppendRecordRespPars::AppendRecordRespPars(
   std::shared_ptr<ApduResponse> response, AppendRecordCmdBuild* builder)
-: AbstractPoResponseParser(response, builder) {}
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+{}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     AppendRecordRespPars::getStatusTable() const

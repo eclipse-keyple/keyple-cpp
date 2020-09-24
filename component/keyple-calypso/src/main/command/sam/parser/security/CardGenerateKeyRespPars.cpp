@@ -33,8 +33,11 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 using namespace keyple::calypso::command::sam::exception;
+using namespace keyple::calypso::command::sam::builder::exception;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::command;
+
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 const std::map<int, std::shared_ptr<StatusProperties>>
     CardGenerateKeyRespPars::STATUS_TABLE = {
@@ -69,7 +72,10 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 CardGenerateKeyRespPars::CardGenerateKeyRespPars(
   const std::shared_ptr<ApduResponse> response,
   CardGenerateKeyCmdBuild* builder)
-: AbstractSamResponseParser(response, builder) {}
+: AbstractSamResponseParser(
+   response,
+   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
+{}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     CardGenerateKeyRespPars::getStatusTable() const

@@ -18,12 +18,16 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
-#include "SamGetChallengeRespPars.h"
+#include "CalypsoSamCommand.h"
 #include "SamRevision.h"
 
 /* Common */
 #include "stringhelper.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class SamGetChallengeRespPars; } } }
+    } } }
 
 namespace keyple {
 namespace calypso {
@@ -33,6 +37,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Get Challenge APDU command.
@@ -54,24 +59,14 @@ public:
     /**
      *
      */
-    std::shared_ptr<SamGetChallengeRespPars> createResponseParser(
+    std::unique_ptr<SamGetChallengeRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<SamGetChallengeCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<SamGetChallengeCmdBuild>(
-            AbstractSamCommandBuilder::shared_from_this());
-    }
 
 private:
     /**
      * The command reference
      */
-    static const CalypsoSamCommand& mCommand;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::GET_CHALLENGE;
 };
 
 }

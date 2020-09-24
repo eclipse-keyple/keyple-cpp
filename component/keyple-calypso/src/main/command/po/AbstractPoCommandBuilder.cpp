@@ -12,26 +12,21 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "AbstractSamCommandBuilder.h"
-#include "ApduRequest.h"
+#include "AbstractPoCommandBuilder.h"
 
 namespace keyple {
 namespace calypso {
 namespace command {
-namespace sam {
+namespace po {
 
-using namespace keyple::core::command;
-using namespace keyple::core::seproxy::message;
+AbstractPoCommandBuilder::AbstractPoCommandBuilder(
+  CalypsoPoCommands& commandRef, std::shared_ptr<ApduRequest> request)
+:  {}
 
-AbstractSamCommandBuilder::AbstractSamCommandBuilder(
-  const CalypsoSamCommands& reference,
-  const std::shared_ptr<ApduRequest> request)
-: AbstractIso7816CommandBuilder(reference, request) {}
-
-const std::shared_ptr<CalypsoSamCommand>
-    AbstractSamCommandBuilder::getCommandRef() const
+std::shared_ptr<CalypsoPoCommand> AbstractPoCommandBuilder::getCommandRef()
+    const
 {
-    return mCommandRef;
+
 }
 
 }

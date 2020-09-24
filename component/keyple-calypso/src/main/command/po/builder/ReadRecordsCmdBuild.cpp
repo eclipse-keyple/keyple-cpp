@@ -12,9 +12,16 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "AbstractPoCommandBuilder.h"
-#include "ApduResponse.h"
 #include "ReadRecordsCmdBuild.h"
+
+/* Common */
+#include "stringhelper.h"
+
+/* Core */
+#include "ApduResponse.h"
+
+/* Calypso */
+#include "AbstractPoCommandBuilder.h"
 #include "ReadRecordsRespPars.h"
 
 namespace keyple {
@@ -26,35 +33,45 @@ namespace builder {
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
 
 ReadRecordsCmdBuild::ReadRecordsCmdBuild(
-  const PoClass poClass, const uint8_t sfi, const uint8_t firstRecordNumber,
-  const ReadMode readMode, const int expectedLength)
+  const PoClass& poClass,
+  const uint8_t sfi,
+  const uint8_t firstRecordNumber,
+  const ReadMode readMode,
+  const int expectedLength)
 : AbstractPoCommandBuilder<ReadRecordsRespPars>(
-      CalypsoPoCommand::READ_RECORDS, nullptr),
-  mSfi(sfi), mFirstRecordNumber(firstRecordNumber), mReadMode(readMode)
-
-  readDataStructure(readDataStructure)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::READ_RECORDS),
+      nullptr),
+  mSfi(sfi),
+  mFirstRecordNumber(firstRecordNumber),
+  mReadMode(readMode)
 {
     const uint8_t p1 = firstRecordNumber;
-    const uint8_t p2 = sfi == 0x00 ? 0x05 : (sfi * 8) + 5;
+    uint8_t p2 = sfi == 0x00 ? 0x05 : (sfi * 8) + 5;
     if (readMode == ReadMode::ONE_RECORD)
         p2 -= 0x01;
     const uint8_t le = expectedLength;
 
-    request = setApduRequest(poClass.getValue(), command, p1, p2, le);
+    mRequest = setApduRequest(poClass.getValue(), command, p1, p2, le);
 
-    const std::string extraInfo = StringHelper::formatSimple(
-        "SFI=%02X, REC=%d, READMODE=%s, EXPECTEDLENGTH=%d",
-         sfi, firstRecordNumber, readMode, expectedLength);
+    const std::string extraInfo =
+        StringHelper::formatSimple(
+            "SFI=%02x, REC=%d, READMODE=%s, EXPECTEDLENGTH=%d",
+            sfi,
+            firstRecordNumber,
+            readMode,
+            expectedLength);
     addSubName(extraInfo);
 }
 
-std::shared_ptr<ReadRecordsRespPars> ReadRecordsCmdBuild::createResponseParser(
+std::unique_ptr<ReadRecordsRespPars> ReadRecordsCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<ReadRecordsRespPars>(apduResponse, this);
+    return std::unique_ptr<ReadRecordsRespPars>(
+               new ReadRecordsRespPars(apduResponse, this));
 }
 
 bool ReadRecordsCmdBuild::isSessionBufferUsed() const
@@ -72,9 +89,27 @@ uint8_t ReadRecordsCmdBuild::getFirstRecordNumber() const
     return mFirstRecordNumber;
 }
 
-ReadMode ReadRecordsCmdBuild::getReadMode() const
+ReadRecordsCmdBuild::ReadMode ReadRecordsCmdBuild::getReadMode() const
 {
     return mReadMode;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const ReadRecordsCmdBuild::ReadMode& rm)
+{
+    switch (rm) {
+    case ReadRecordsCmdBuild::ReadMode::ONE_RECORD:
+        os << "ONE RECORD";
+        break;
+    case ReadRecordsCmdBuild::ReadMode::MULTIPLE_RECORD:
+        os << "MULTIPLE RECORD";
+        break;
+    default:
+        os << "UNKNOWN READ MODE";
+        break;
+    }
+
+    return os;
 }
 
 }

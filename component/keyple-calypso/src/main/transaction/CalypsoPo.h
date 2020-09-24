@@ -19,6 +19,8 @@
 
 /* Calypso */
 #include "AbstractMatchingSe.h"
+#include "DirectoryHeader.h"
+#include "ElementaryFile.h"
 #include "PoRevision.h"
 #include "PoClass.h"
 
@@ -26,6 +28,7 @@
 #include "TransmissionMode.h"
 
 /* Common */
+#include "Byte.h"
 #include "KeypleCalypsoExport.h"
 #include "LoggerFactory.h"
 
@@ -80,7 +83,7 @@ public:
      *
      * @return an enum giving the identified PO revision
      */
-    const PoRevision getRevision();
+    PoRevision getRevision() const;
 
     /**
      * The DF name is the name of the application DF as defined in ISO/IEC
@@ -132,7 +135,7 @@ public:
      *
      * @return the platform identification byte
      */
-    const uint8_t getPlatform() const;
+    uint8_t getPlatform() const;
 
     /**
      * The Application Type byte determines the Calypso Revision and various
@@ -140,7 +143,7 @@ public:
      *
      * @return the Application Type byte
      */
-    const uint8_t getApplicationType() const;
+    uint8_t getApplicationType() const;
 
     /**
      * Indicates whether the Confidential Session Mode is supported or not
@@ -150,7 +153,7 @@ public:
      *
      * @return true if the Confidential Session Mode is supported
      */
-    const bool isConfidentialSessionModeSupported() const;
+    bool isConfidentialSessionModeSupported() const;
 
     /**
      * Indicates if the ratification is done on deselect (ratification command
@@ -160,7 +163,7 @@ public:
      *
      * @return true if the ratification command is required
      */
-    const bool isDeselectRatificationSupported() const;
+    bool isDeselectRatificationSupported() const;
 
     /**
      * Indicates whether the PO has the Calypso Stored Value feature.
@@ -169,7 +172,7 @@ public:
      *
      * @return true if the PO has the Stored Value feature
      */
-    const bool isSvFeatureAvailable() const;
+    bool isSvFeatureAvailable() const;
 
     /**
      * Indicates whether the PO has the Calypso PIN feature.
@@ -178,7 +181,7 @@ public:
      *
      * @return true if the PO has the PIN feature
      */
-    const bool isPinFeatureAvailable() const;
+    bool isPinFeatureAvailable() const;
 
     /**
      * Indicates whether the Public Authentication is supported or not (since
@@ -188,7 +191,7 @@ public:
      *
      * @return true if the Public Authentication is supported
      */
-    const bool isPublicAuthenticationSupported() const;
+    bool isPublicAuthenticationSupported() const;
 
     /**
      * The Application Subtype indicates to the terminal a reference to the file
@@ -196,7 +199,7 @@ public:
      *
      * @return the Application Subtype byte
      */
-    const uint8_t getApplicationSubtype() const;
+    uint8_t getApplicationSubtype() const;
 
     /**
      * The Software Issuer byte indicates the entity responsible for the
@@ -204,7 +207,7 @@ public:
      *
      * @return the Software Issuer byte
      */
-    const uint8_t getSoftwareIssuer() const;
+    uint8_t getSoftwareIssuer() const;
 
     /**
      * The Software Version field may be set to any fixed value by the Software
@@ -212,7 +215,7 @@ public:
      *
      * @return the Software Version byte
      */
-    const uint8_t getSoftwareVersion() const;
+    uint8_t getSoftwareVersion() const;
 
     /**
      * The Software Revision field may be set to any fixed value by the Software
@@ -220,7 +223,7 @@ public:
      *
      * @return the Software Revision byte
      */
-    const uint8_t getSoftwareRevision() const;
+    uint8_t getSoftwareRevision() const;
 
     /**
      * Depending on the type of PO, the session modification byte indicates the
@@ -229,7 +232,7 @@ public:
      *
      * @return the Session Modifications byte
      */
-    const uint8_t getSessionModification() const;
+    uint8_t getSessionModification() const;
 
     /**
      * Indicated whether the PO has been invalidated or not.
@@ -239,7 +242,7 @@ public:
      *
      * @return true if the PO has been invalidated.
      */
-    const bool isDfInvalidated() const;
+    bool isDfInvalidated() const;
 
     /**
      * Indicated whether the last session with this PO has been ratified or not.
@@ -249,7 +252,7 @@ public:
      * @throw IllegalStateException if these methods is call when no session has
      *        been opened
      */
-    const bool isDfRatified() const;
+    bool isDfRatified() const;
 
     /**
      * (package-private)<br>
@@ -288,7 +291,8 @@ public:
      * @param directoryHeader the DF metadata (should be not null)
      * @return the current instance.
      */
-    CalypsoPo* setDirectoryHeader(const DirectoryHeader& directoryHeader);
+    CalypsoPo* setDirectoryHeader(
+        const std::shared_ptr<DirectoryHeader> directoryHeader);
 
     /**
      * Gets a reference to the {@link ElementaryFile} that has the provided SFI
@@ -328,8 +332,8 @@ public:
      * @return a not null reference (may be empty if no one EF is set).
      * @since 0.9
      */
-    const std::map<std::shared_ptr<Byte>, std::shared_ptr<ElementaryFile>>&
-        getAllFiles() const;
+    const std::map<uint8_t, std::shared_ptr<ElementaryFile>>& getAllFiles()
+        const;
 
     /**
      * (package-private)<br>
@@ -340,7 +344,8 @@ public:
      * @param sfi the SFI
      * @param header the file header (should be not null)
      */
-    void setFileHeader(const uint8_t sfi, const FileHeader& header);
+    void setFileHeader(const uint8_t sfi,
+                       const std::shared_ptr<FileHeader> header);
 
     /**
      * (package-private)<br>
@@ -401,7 +406,7 @@ public:
      */
     void fillContent(const uint8_t sfi,
                      const int numRecord,
-                     const std::vector<uint8_t>& content);
+                     std::vector<uint8_t>& content);
 
     /**
      * (package-private)<br>
@@ -434,7 +439,16 @@ public:
      */
     void restoreFiles();
 
-protected:
+    /**
+     * Indicates the maximum number of changes allowed in session.
+     * <p>
+     * This number can be a number of operations or a number of commands (see
+     * isModificationsCounterInBytes)
+     *
+     * @return the maximum number of modifications allowed
+     */
+    int getModificationsCounter() const;
+
     /**
      * The PO class is the ISO7816 class to be used with the current PO.
      * <p>
@@ -444,8 +458,9 @@ protected:
      *
      * @return the PO class determined from the PO revision
      */
-    const PoClass getPoClass() const;
+    const PoClass& getPoClass() const;
 
+protected:
     /**
      * The serial number to be used as diversifier for key derivation.<br>
      * This is the complete number returned by the PO in its response to the
@@ -458,7 +473,7 @@ protected:
     /**
      *
      */
-    const bool isSerialNumberExpiring() const;
+    bool isSerialNumberExpiring() const;
 
     /**
      *
@@ -469,7 +484,7 @@ protected:
      * @return the maximum length of data that an APDU in this PO can carry
      * @since 0.9
      */
-    const int getPayloadCapacity() const;
+    int getPayloadCapacity() const;
 
     /**
      * Specifies whether the change counter allowed in session is established in
@@ -479,17 +494,7 @@ protected:
      *
      * @return true if the counter is number of bytes
      */
-    const bool isModificationsCounterInBytes() const;
-
-    /**
-     * Indicates the maximum number of changes allowed in session.
-     * <p>
-     * This number can be a number of operations or a number of commands (see
-     * isModificationsCounterInBytes)
-     *
-     * @return the maximum number of modifications allowed
-     */
-    const int getModificationsCounter() const;
+    bool isModificationsCounterInBytes() const;
 
 private:
     /**
@@ -525,7 +530,7 @@ private:
     /**
      *
      */
-    PoClass mPoClass;
+    std::shared_ptr<PoClass> mPoClass;
 
     /**
      *
@@ -563,11 +568,6 @@ private:
      */
     static const int
         REV2_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
-
-    /**
-     *
-     */
-    const std::vector<uint8_t>& poAtr;
 
     /**
      *
@@ -648,7 +648,7 @@ private:
      * @param applicationType the application type (field of startup info)
      * @return the {@link PoRevision}
      */
-    const PoRevision& determineRevision(const uint8_t applicationType) const;
+    PoRevision determineRevision(const uint8_t applicationType) const;
 
     /**
      * (private)<br>
@@ -669,7 +669,7 @@ private:
      */
     static void copyMapFiles(
         const std::map<uint8_t, std::shared_ptr<ElementaryFile>>& src,
-        std::map<uint8_t, std::shared_ptr<ElementaryFile>> dest);
+        std::map<uint8_t, std::shared_ptr<ElementaryFile>>& dest);
 
     /**
      * (private)<br>
@@ -678,8 +678,8 @@ private:
      * @param src the source (should be not null)
      * @param dest the destination (should be not null)
      */
-    static void copyMapSfi(const std::map<<uint16_t, uint8_t> src,
-                           std::map<<uint16_t, uint8_t> dest);
+    static void copyMapSfi(const std::map<uint16_t, uint8_t>& src,
+                           std::map<uint16_t, uint8_t>& dest);
 };
 
 }

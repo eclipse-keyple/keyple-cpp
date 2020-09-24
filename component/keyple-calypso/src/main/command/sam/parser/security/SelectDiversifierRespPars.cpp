@@ -29,8 +29,11 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::exception;
 using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::core::seproxy::message;
+
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 const std::map<int, std::shared_ptr<StatusProperties>>
     SelectDiversifierRespPars::STATUS_TABLE = {
@@ -50,7 +53,10 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 SelectDiversifierRespPars::SelectDiversifierRespPars(
   const std::shared_ptr<ApduResponse> response,
   SelectDiversifierCmdBuild* builder)
-: AbstractSamResponseParser(response, builder) {}
+: AbstractSamResponseParser(
+   response,
+   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
+{}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     SelectDiversifierRespPars::getStatusTable() const

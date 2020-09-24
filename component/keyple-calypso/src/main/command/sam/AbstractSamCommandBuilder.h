@@ -18,17 +18,25 @@
 
 /* Core */
 #include "AbstractIso7816CommandBuilder.h"
+#include "ApduResponse.h"
 
 /* Calypso */
-#include "AbstractSamResponseParser.h"
 #include "SamRevision.h"
 #include "CalypsoSamCommand.h"
+
+/* Common */
+#include "InstantiationException.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    class AbstractSamResponseParser; } } } }
 
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace sam {
 
+using namespace keyple::common;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
@@ -38,17 +46,20 @@ using namespace keyple::core::seproxy::message;
  * Used directly, this class can serve as low level command builder.
  */
 template<class T>
-class AbstractSamCommandBuilder<T> : public AbstractIso7816CommandBuilder {
+class AbstractSamCommandBuilder : public AbstractIso7816CommandBuilder {
 public:
+    /*
     static_assert(std::is_base_of<AbstractSamResponseParser, T>::value,
                   "T must inherit from keyple::core::command" \
                   "::AbstractApduResponseParser");
+    */
 
     /**
      *
      */
-    AbstractSamCommandBuilder(const CalypsoSamCommand& reference,
-                              const std::shared_ptr<ApduRequest> request);
+    AbstractSamCommandBuilder(const std::shared_ptr<SeCommand> reference,
+                              const std::shared_ptr<ApduRequest> request)
+    : AbstractIso7816CommandBuilder(reference, request) {}
 
     /**
      *
@@ -65,9 +76,21 @@ public:
         const std::shared_ptr<ApduResponse> apduResponse) = 0;
 
     /**
-     *
+     * Return type should be
+     *   const std::shared_ptr<CalypsoSamCommand>
+     * ... but considered invalid covariant
      */
-    const std::shared_ptr<CalypsoSamCommand> getCommandRef() const override;
+    const std::shared_ptr<SeCommand> getCommandRef() const override
+    {
+        const std::shared_ptr<CalypsoSamCommand> cmd =
+            std::dynamic_pointer_cast<CalypsoSamCommand>(mCommandRef);
+
+        if (cmd == nullptr)
+            throw InstantiationException(
+                      "mCommandRef conversion to CalypsoSamCommand failed");
+
+        return cmd;
+    }
 
 protected:
     /**

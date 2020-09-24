@@ -11,6 +11,7 @@
  *                                                                            *
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
+
 #include "SamReadKeyParametersRespPars.h"
 
 /* Common */
@@ -32,11 +33,14 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::exception;
 using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::core::seproxy::message;
 
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
+
 const std::map<int, std::shared_ptr<StatusProperties>>
-    SamReadEventCounterRespPars::STATUS_TABLE = {
+    SamReadKeyParametersRespPars::STATUS_TABLE = {
     {
         0x6700,
         std::make_shared<StatusProperties>(
@@ -61,14 +65,17 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         0x6200,
         std::make_shared<StatusProperties>(
             "Correct execution with warning: data not signed.",
-            typeid(ClassNotFouncException))
+            typeid(ClassNotFoundException))
     }
 };
 
 SamReadKeyParametersRespPars::SamReadKeyParametersRespPars(
   const std::shared_ptr<ApduResponse> response,
   SamReadKeyParametersCmdBuild* builder)
-: AbstractSamResponseParser(response, builder) {}
+: AbstractSamResponseParser(
+   response,
+   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
+{}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     SamReadKeyParametersRespPars::getStatusTable() const

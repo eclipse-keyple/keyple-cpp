@@ -34,8 +34,9 @@ public:
      * @param statusCode the status code
      */
     KeypleSeCommandUnknownStatusException(
-      const std::string& message, const std::shared_ptr<SeCommand> command,
-      const std::shared_ptr<int> statusCode)
+      const std::string& message,
+      const std::shared_ptr<SeCommand> command,
+      const int statusCode)
     : KeypleSeCommandException(message, command, statusCode) {}
 };
 

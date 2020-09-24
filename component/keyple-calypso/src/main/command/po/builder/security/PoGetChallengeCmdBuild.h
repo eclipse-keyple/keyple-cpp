@@ -18,7 +18,11 @@
 
 #include "AbstractPoCommandBuilder.h"
 #include "PoClass.h"
-#include "PoGetChallengeRespPars.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { namespace security { class PoGetChallengeRespPars; } } }
+    } } }
 
 namespace keyple {
 namespace calypso {
@@ -38,12 +42,6 @@ using namespace keyple::core::seproxy::message;
  */
 class KEYPLECALYPSO_API PoGetChallengeCmdBuild final
 : public AbstractPoCommandBuilder<PoGetChallengeRespPars> {
-private:
-    /**
-     *
-     */
-    CalypsoPoCommand& command = CalypsoPoCommand::GET_CHALLENGE;
-
 public:
     /**
      * Instantiates a new PoGetChallengeCmdBuild.
@@ -55,7 +53,7 @@ public:
     /**
      *
      */
-    std::shared_ptr<PoGetChallengeRespPars> createResponseParser(
+    std::unique_ptr<PoGetChallengeRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -67,16 +65,11 @@ public:
      */
     virtual bool isSessionBufferUsed() const override;
 
-protected:
+private:
     /**
      *
      */
-    std::shared_ptr<PoGetChallengeCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<PoGetChallengeCmdBuild>(
-            AbstractPoCommandBuilder<
-                PoGetChallengeRespPars>::shared_from_this());
-    }
+    const CalypsoPoCommand& command = CalypsoPoCommand::GET_CHALLENGE;
 };
 
 }

@@ -110,7 +110,7 @@ public:
      *
      * @return the value of INS byte
      */
-    const uint8_t getInstructionByte() const;
+    uint8_t getInstructionByte() const;
 
     /**
      * Gets the command builder class.

@@ -33,7 +33,7 @@ protected:
      * @param message the message to identify the exception context
      */
      CalypsoPoTransactionException(const std::string& message)
-    : CalypsoPoTransactionException(message) {}
+    : KeypleException(message) {}
 
     /**
      * Encapsulates a lower level PO transaction exception
@@ -43,7 +43,7 @@ protected:
      */
     CalypsoPoTransactionException(
       const std::string& message, const std::exception& cause)
-    : CalypsoPoTransactionException(message, cause) {}
+    : KeypleException(message, cause) {}
 };
 
 }

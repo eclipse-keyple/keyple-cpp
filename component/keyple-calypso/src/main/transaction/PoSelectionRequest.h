@@ -24,7 +24,6 @@
 #include "AbstractMatchingSe.h"
 #include "AbstractSeSelectionRequest.h"
 #include "PoClass.h"
-#include "ReadDataStructure.h"
 
 /* Common */
 #include "KeypleCalypsoExport.h"
@@ -116,21 +115,25 @@ protected:
      * @throw CalypsoDesynchronizedExchangesException if the number of responses
      *        is different from the number of requests
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
+     *
+     * Return type should be
+     *   std::shared_ptr<CalypdoPo>
+     * ... but invalid covariant return type
      */
-    std::shared_ptr<CalypsoPo> parse(std::shared_ptr<SeResponse> seResponse)
-        override;
+    const std::shared_ptr<AbstractMatchingSe> parse(
+        std::shared_ptr<SeResponse> seResponse) override;
 
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(PoSelectionRequest));
 
     /**
      *
      */
-    PoClass poClass;
+    const PoClass& mPoClass;
 };
 
 }

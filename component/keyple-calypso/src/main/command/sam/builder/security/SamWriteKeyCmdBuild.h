@@ -17,7 +17,11 @@
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
 #include "SamRevision.h"
-#include "SamWriteKeyRespPars.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class SamWriteKeyRespPars; } } }
+    } } }
 
 namespace keyple {
 namespace calypso {
@@ -27,6 +31,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Write Key APDU command.
@@ -49,14 +54,14 @@ public:
     /**
      *
      */
-    std::shared_ptr<SamWriteKeyRespPars> createResponseParser(
-        const std::shared_ptr<ApduResponse> apduResponse) override;
+    std::unique_ptr<SamWriteKeyRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command reference
      */
-    static const CalypsoSamCommands& mCommand;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::WRITE_KEY;
 };
 
 }

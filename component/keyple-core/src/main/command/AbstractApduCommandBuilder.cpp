@@ -30,9 +30,8 @@ AbstractApduCommandBuilder::AbstractApduCommandBuilder(
 : mCommandRef(commandRef), mRequest(request), mName(commandRef->getName())
 {
     /* Set APDU name for non null request */
-    if (request != nullptr) {
+    if (request != nullptr)
         mRequest->setName(commandRef->getName());
-    }
 }
 
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
@@ -40,9 +39,8 @@ AbstractApduCommandBuilder::AbstractApduCommandBuilder(
 : mCommandRef(nullptr), mRequest(request), mName(name)
 {
     /* Set APDU name for non null request */
-    if (request != nullptr) {
+    if (request != nullptr)
         mRequest->setName(name);
-    }
 }
 
 void AbstractApduCommandBuilder::addSubName(const std::string& subName)
@@ -54,17 +52,19 @@ void AbstractApduCommandBuilder::addSubName(const std::string& subName)
     }
 }
 
-std::shared_ptr<SeCommand> AbstractApduCommandBuilder::getCommandRef()
+const std::shared_ptr<SeCommand> AbstractApduCommandBuilder::getCommandRef()
+    const
 {
     return mCommandRef;
 }
 
-std::string AbstractApduCommandBuilder::getName() const
+const std::string& AbstractApduCommandBuilder::getName() const
 {
     return mName;
 }
 
-std::shared_ptr<ApduRequest> AbstractApduCommandBuilder::getApduRequest() const
+const std::shared_ptr<ApduRequest> AbstractApduCommandBuilder::getApduRequest()
+    const
 {
     return mRequest;
 }

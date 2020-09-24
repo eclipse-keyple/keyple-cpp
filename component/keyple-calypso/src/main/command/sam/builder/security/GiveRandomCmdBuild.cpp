@@ -17,6 +17,9 @@
 /* Common */
 #include "IllegalArgumentException.h"
 
+/* Calypso */
+#include "GiveRandomRespPars.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -28,8 +31,11 @@ using namespace keyple::calypso::command::sam;
 using namespace keyple::common;
 
 GiveRandomCmdBuild::GiveRandomCmdBuild(
-  const SamRevision& revision, const std::vector<uint8_t>& random)
-: AbstractSamCommandBuilder(CalypsoSamCommands::GIVE_RANDOM, nullptr)
+  const SamRevision& revision,
+  const std::vector<uint8_t>& random)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::GIVE_RANDOM),
+    nullptr)
 {
     //if (revision != nullptr) {
     mDefaultRevision = revision;
@@ -44,13 +50,14 @@ GiveRandomCmdBuild::GiveRandomCmdBuild(
         throw IllegalArgumentException(
                   "Random value should be an 8 bytes long");
 
-    mRequest = setApduRequest(cla, command, p1, p2, random);
+    mRequest = setApduRequest(cla, mCommand, p1, p2, random);
 }
 
-std::shared_ptr<GiveRandomRespPars> GiveRandomCmdBuild::createResponseParser(
+std::unique_ptr<GiveRandomRespPars> GiveRandomCmdBuild::createResponseParser(
     const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<GiveRandomRespPars>(apduResponse, this);
+    return std::unique_ptr<GiveRandomRespPars>(
+               new GiveRandomRespPars(apduResponse, this));
 }
 
 }

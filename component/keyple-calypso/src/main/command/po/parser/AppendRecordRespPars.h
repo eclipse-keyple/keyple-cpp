@@ -17,6 +17,7 @@
 #include <map>
 #include <memory>
 
+/* Calypso */
 #include "AbstractPoResponseParser.h"
 #include "AppendRecordCmdBuild.h"
 #include "KeypleCalypsoExport.h"
@@ -28,6 +29,7 @@ namespace po {
 namespace parser {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
 using namespace keyple::core::seproxy::message;
 
 /**

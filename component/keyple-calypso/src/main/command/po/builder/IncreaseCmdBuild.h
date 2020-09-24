@@ -21,10 +21,11 @@
 
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommand.h"
-#include "IncreaseRespPars.h"
-#include "PoModificationCommand.h"
-#include "PoSendableInSession.h"
 #include "PoClass.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class IncreaseRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -33,6 +34,7 @@ namespace po {
 namespace builder {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::parser;
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
@@ -57,13 +59,15 @@ public:
      * @throw IllegalArgumentException - if the decrement value is out of range
      * @throw IllegalArgumentException - if the command is inconsistent
      */
-    IncreaseCmdBuild(PoClass poClass, uint8_t sfi, uint8_t counterNumber,
-                     int incValue);
+    IncreaseCmdBuild(const PoClass poClass,
+                     const uint8_t sfi,
+                     const uint8_t counterNumber,
+                     const int incValue);
 
     /**
      *
      */
-    std::shared_ptr<IncreaseRespPars> createResponseParser(
+    std::unique_ptr<IncreaseRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -89,21 +93,11 @@ public:
      */
     int getIncValue() const;
 
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<IncreaseCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<IncreaseCmdBuild>(
-            AbstractPoCommandBuilder<IncreaseRespPars>::shared_from_this());
-    }
-
 private:
     /**
      * The command
      */
-    CalypsoPoCommands& command = CalypsoPoCommands::INCREASE;
+    const CalypsoPoCommand& command = CalypsoPoCommand::INCREASE;
 
     /**
      * Construction arguments

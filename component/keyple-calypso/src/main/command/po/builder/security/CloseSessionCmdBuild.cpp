@@ -38,10 +38,12 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
 
 CloseSessionCmdBuild::CloseSessionCmdBuild(
-    PoClass poClass, bool ratificationAsked,
-    std::vector<uint8_t>& terminalSessionSignature)
+  const PoClass poClass,
+  const bool ratificationAsked,
+  const std::vector<uint8_t>& terminalSessionSignature)
 : AbstractPoCommandBuilder<CloseSessionRespPars>(
-      CalypsoPoCommands::CLOSE_SESSION, nullptr)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::CLOSE_SESSION),
+      nullptr)
 {
     /*
      * The optional parameter terminalSessionSignature could contain 4 or 8
@@ -63,25 +65,31 @@ CloseSessionCmdBuild::CloseSessionCmdBuild(
      */
     uint8_t le = 0;
 
-    request = setApduRequest(poClass.getValue(), command, p1, 0x00,
-                             terminalSessionSignature, le);
+    mRequest = setApduRequest(poClass.getValue(),
+                              command,
+                              p1,
+                              0x00,
+                              terminalSessionSignature,
+                              le);
 }
 
 CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass)
 : AbstractPoCommandBuilder<CloseSessionRespPars>(
-      CalypsoPoCommands::CLOSE_SESSION, nullptr)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::CLOSE_SESSION),
+      nullptr)
 {
-    request = setApduRequest(poClass.getValue(), command, 0x00, 0x00, 0x00);
+    mRequest = setApduRequest(poClass.getValue(), command, 0x00, 0x00, 0x00);
 
     /* Add "Abort session" to command name for logging purposes */
     this->addSubName("Abort session");
 }
 
-std::shared_ptr<CloseSessionRespPars>
-CloseSessionCmdBuild::createResponseParser(
+std::unique_ptr<CloseSessionRespPars>
+    CloseSessionCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<CloseSessionRespPars>(apduResponse, this);
+    return std::unique_ptr<CloseSessionRespPars>(
+               new CloseSessionRespPars(apduResponse, this));
 }
 
 bool CloseSessionCmdBuild::isSessionBufferUsed() const

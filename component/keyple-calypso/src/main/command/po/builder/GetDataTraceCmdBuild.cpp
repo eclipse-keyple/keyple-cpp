@@ -12,9 +12,10 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#pragma once
+#include "GetDataTraceCmdBuild.h"
 
-#include "GetDataTraceCmdBuild.h
+/* Calypso */
+#include "GetDataTraceRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -22,18 +23,22 @@ namespace command {
 namespace po {
 namespace builder {
 
-GetDataTraceCmdBuild::GetDataTraceCmdBuild(PoClass poClass)
+using namespace keyple::calypso::command::po::parser;
+
+GetDataTraceCmdBuild::GetDataTraceCmdBuild(const PoClass poClass)
 : AbstractPoCommandBuilder<GetDataTraceRespPars>(
-      CalypsoPoCommand::GET_DATA_TRACE, nullptr)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::GET_DATA_TRACE),
+      nullptr)
 {
-    request = setApduRequest(poClass.getValue(), command, 0x01, 0x85, 0x00);
+    mRequest = setApduRequest(poClass.getValue(), command, 0x01, 0x85, 0x00);
 }
 
-std::shared_ptr<GetDataTraceRespPars>
+std::unique_ptr<GetDataTraceRespPars>
     GetDataTraceCmdBuild::createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<GetDataTraceRespPars>(apduResponse, this);
+    return std::unique_ptr<GetDataTraceRespPars>(
+               new GetDataTraceRespPars(apduResponse, this));
 }
 
 bool GetDataTraceCmdBuild::isSessionBufferUsed() const
@@ -41,7 +46,6 @@ bool GetDataTraceCmdBuild::isSessionBufferUsed() const
     return false;
 }
 
-}
 }
 }
 }

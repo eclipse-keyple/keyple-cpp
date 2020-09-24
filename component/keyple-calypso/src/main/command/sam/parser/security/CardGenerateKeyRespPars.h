@@ -29,7 +29,10 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::security;
 using namespace keyple::core::seproxy::message;
+
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 class CardGenerateKeyRespPars : public AbstractSamResponseParser {
 public:

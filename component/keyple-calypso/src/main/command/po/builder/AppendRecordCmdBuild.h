@@ -20,11 +20,12 @@
 
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
-#include "AppendRecordRespPars.h"
 #include "CalypsoPoCommand.h"
-#include "PoModificationCommand.h"
-#include "PoSendableInSession.h"
 #include "PoClass.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class AppendRecordRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -51,13 +52,14 @@ public:
      * @param newRecordData the new record data to write
      * @throw IllegalArgumentException - if the command is inconsistent
      */
-    AppendRecordCmdBuild(PoClass poClass, uint8_t sfi,
+    AppendRecordCmdBuild(const PoClass poClass,
+                         const uint8_t sfi,
                          const std::vector<uint8_t>& newRecordData);
 
     /**
      *
      */
-    std::shared_ptr<AppendRecordRespPars> createResponseParser(
+    std::unique_ptr<AppendRecordRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -79,21 +81,11 @@ public:
      */
     const std::vector<uint8_t>& getData() const;
 
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<AppendRecordCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<AppendRecordCmdBuild>(
-            AbstractPoCommandBuilder<AppendRecordRespPars>::shared_from_this());
-    }
-
 private:
     /**
      * The command
      */
-    CalypsoPoCommands& command = CalypsoPoCommands::APPEND_RECORD;
+    const CalypsoPoCommand& command = CalypsoPoCommand::APPEND_RECORD;
 
     /**
      * Construction arguments

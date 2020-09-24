@@ -23,6 +23,7 @@
 
 /* Common */
 #include "Arrays.h"
+#include "IllegalStateException.h"
 #include "LoggerFactory.h"
 #include "Matcher.h"
 #include "Pattern.h"
@@ -34,6 +35,7 @@ namespace calypso {
 namespace transaction {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::selection;
 using namespace keyple::core::util;
@@ -41,7 +43,7 @@ using namespace keyple::core::util;
 CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
                        const TransmissionMode& transmissionMode)
 : AbstractMatchingSe(selectionResponse, transmissionMode),
-  samRevision(SamRevision::C1) /* Default value to please compiler */
+  mSamRevision(SamRevision::C1) /* Default value to please compiler */
 {
     std::string atrString = ByteArrayUtil::toHex(
         selectionResponse->getSelectionStatus()->getAtr()->getBytes());
@@ -56,41 +58,45 @@ CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
     if (matcher->find(0)) {
         std::vector<uint8_t> atrSubElements =
             ByteArrayUtil::fromHex(matcher->group(2));
-        platform           = atrSubElements[0];
-        applicationType    = atrSubElements[1];
-        applicationSubType = atrSubElements[2];
+        mPlatform           = atrSubElements[0];
+        mApplicationType    = atrSubElements[1];
+        mApplicationSubType = atrSubElements[2];
 
         // determine SAM revision from Application Subtype
-        switch (applicationSubType) {
+        switch (mApplicationSubType) {
         case 0xC1:
-            samRevision = SamRevision(SamRevision::C1);
+            mSamRevision = SamRevision(SamRevision::C1);
             break;
         case 0xD0:
         case 0xD1:
         case 0xD2:
-            samRevision = SamRevision(SamRevision::S1D);
+            mSamRevision = SamRevision(SamRevision::S1D);
             break;
         case 0xE1:
-            samRevision = SamRevision(SamRevision::S1E);
+            mSamRevision = SamRevision(SamRevision::S1E);
             break;
         default:
             throw IllegalStateException(StringHelper::formatSimple(
                 "Unknown SAM revision (unrecognized application "
                 "subtype 0x%02X)",
-                applicationSubType));
+                mApplicationSubType));
         }
 
-        softwareIssuer   = atrSubElements[3];
-        softwareVersion  = atrSubElements[4];
-        softwareRevision = atrSubElements[5];
-        System::arraycopy(atrSubElements, 6, serialNumber, 0, 4);
-        logger->trace("SAM % PLATFORM = %, APPTYPE = %, APPSUBTYPE = %, " \
+        mSoftwareIssuer   = atrSubElements[3];
+        mSoftwareVersion  = atrSubElements[4];
+        mSoftwareRevision = atrSubElements[5];
+        System::arraycopy(atrSubElements, 6, mSerialNumber, 0, 4);
+        mLogger->trace("SAM % PLATFORM = %, APPTYPE = %, APPSUBTYPE = %, " \
                       "SWISSUER = %, SWVERSION = %, SWREVISION = %\n",
-                      samRevision.getName(), platform, applicationType,
-                      applicationSubType, softwareIssuer, softwareVersion,
-                      softwareRevision);
+                      mSamRevision.getName(),
+                      mPlatform,
+                      mApplicationType,
+                      mApplicationSubType,
+                      mSoftwareIssuer,
+                      mSoftwareVersion,
+                      mSoftwareRevision);
 
-        logger->trace("SAM SERIALNUMBER = %\n", serialNumber);
+        mLogger->trace("SAM SERIALNUMBER = %\n", mSerialNumber);
     } else {
         throw IllegalStateException(StringHelper::formatSimple(
             "Unrecognized ATR structure: %s", atrString));
@@ -107,32 +113,32 @@ const std::vector<uint8_t>& CalypsoSam::getSerialNumber() const
     return mSerialNumber;
 }
 
-const uint8_t CalypsoSam::getPlatform() const
+uint8_t CalypsoSam::getPlatform() const
 {
     return mPlatform;
 }
 
-const uint8_t CalypsoSam::getApplicationType() const
+uint8_t CalypsoSam::getApplicationType() const
 {
     return mApplicationType;
 }
 
-const uint8_t CalypsoSam::getApplicationSubType() const
+uint8_t CalypsoSam::getApplicationSubType() const
 {
     return mApplicationSubType;
 }
 
-const uint8_t CalypsoSam::getSoftwareIssuer() const
+uint8_t CalypsoSam::getSoftwareIssuer() const
 {
     return mSoftwareIssuer;
 }
 
-const uint8_t CalypsoSam::getSoftwareVersion() const
+uint8_t CalypsoSam::getSoftwareVersion() const
 {
     return mSoftwareVersion;
 }
 
-const uint8_t CalypsoSam::getSoftwareRevision() const
+uint8_t CalypsoSam::getSoftwareRevision() const
 {
     return mSoftwareRevision;
 }

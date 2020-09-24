@@ -37,7 +37,7 @@ using namespace keyple::calypso::command::po::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
-std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+const std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
     ChangeKeyRespPars::STATUS_TABLE = {
     {
         0x6700,
@@ -85,12 +85,13 @@ std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
 };
 
 ChangeKeyRespPars::ChangeKeyRespPars(
-  std::shared_ptr<ApduResponse> response, ChangeKeyCmdBuild *builder
-: AbstractPoResponseParser(response, builder)
-{
-}
+  std::shared_ptr<ApduResponse> response, ChangeKeyCmdBuild *builder)
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+{}
 
-std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
+const std::map<int, std::shared_ptr<StatusProperties>>&
     ChangeKeyRespPars::getStatusTable() const
 {
     return STATUS_TABLE;

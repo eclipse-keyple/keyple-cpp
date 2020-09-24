@@ -22,6 +22,11 @@
 #include "AbstractOpenSessionCmdBuild.h"
 #include "AbstractOpenSessionRespPars.h"
 
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { namespace security { class OpenSession10RespPars; } } }
+    } } }
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -46,14 +51,19 @@ public:
      * @throw IllegalArgumentException - if key index is 0 (rev 1.0)
      * @throw IllegalArgumentException - if the request is inconsistent
      */
-    OpenSession10CmdBuild(uint8_t keyIndex,
+    OpenSession10CmdBuild(const uint8_t keyIndex,
                           const std::vector<uint8_t>& samChallenge,
-                          uint8_t sfi, uint8_t recordNumber);
+                          const uint8_t sfi,
+                          const uint8_t recordNumber);
 
     /**
-     *
+     * Return type should be
+     *   std::shared_ptr<OpenSession10RespPars>
+     * ... but moved to
+     *   std::shared_ptr<AbstractOpenSessionRespPars>
+     * ... because of invalid covariant return type error
      */
-    std::shared_ptr<OpenSession10RespPars> createResponseParser(
+    std::unique_ptr<AbstractOpenSessionRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -68,20 +78,12 @@ public:
     /**
      *
      */
-    virtual const uint8_t getSfi() const;
+    virtual uint8_t getSfi() const;
 
     /**
      *
      */
-    virtual const uint8_t getRecordNumber() const;
-
-protected:
-    std::shared_ptr<OpenSession10CmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<OpenSession10CmdBuild>(
-            AbstractOpenSessionCmdBuild<
-                OpenSession10RespPars>::shared_from_this());
-    }
+    virtual uint8_t getRecordNumber() const;
 
 private:
     /**

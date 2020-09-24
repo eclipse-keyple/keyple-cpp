@@ -22,6 +22,7 @@
 #include "ByteArrayUtil.h"
 
 /* Common */
+#include "IllegalStateException.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -33,14 +34,17 @@ namespace builder {
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po::parser;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
 
 SelectFileCmdBuild::SelectFileCmdBuild(
-  PoClass poClass, SelectFileControl selectFileControl)
+  const PoClass& poClass, const SelectFileControl selectFileControl)
 : AbstractPoCommandBuilder<SelectFileRespPars>(
-      CalypsoPoCommand::SELECT_FILE, nullptr),
-  mPath(path), mSelectFileControl(selectFileControl)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::SELECT_FILE),
+      nullptr),
+  mPath({}),
+  mSelectFileControl(selectFileControl)
 {
     const uint8_t cla = poClass.getValue();
     uint8_t p1;
@@ -61,12 +65,13 @@ SelectFileCmdBuild::SelectFileCmdBuild(
         p2 = 0x00;
         break;
     default:
-        throw IllegalStateException(StringHelper::formatSimple(
-                  "Unsupported selectFileControl parameter %d",
-                  selectFileControl));
+        throw IllegalStateException(
+                  StringHelper::formatSimple(
+                      "Unsupported selectFileControl parameter %d",
+                      selectFileControl));
     }
 
-    request = setApduRequest(cla command, p1, p2, selectData, 0x00);
+    mRequest = setApduRequest(cla, command, p1, p2, selectData, 0x00);
 
     const std::string extraInfo =
         StringHelper::formatSimple("SELECTIONCONTROL=%s", selectFileControl);
@@ -74,15 +79,17 @@ SelectFileCmdBuild::SelectFileCmdBuild(
 }
 
 SelectFileCmdBuild::SelectFileCmdBuild(
-  PoClass poClass, const std::vector<uint8_t>& selectionPath)
+  const PoClass& poClass, const std::vector<uint8_t>& selectionPath)
 : AbstractPoCommandBuilder<SelectFileRespPars>(
-      CalypsoPoCommands::SELECT_FILE, nullptr),
-  mPath(selectionPath), mSelectFileControl(SelectFileControl::NONE)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::SELECT_FILE),
+      nullptr),
+  mPath(selectionPath),
+  mSelectFileControl(SelectFileControl::NONE)
 {
     /* Handle the REV1 case */
     const uint8_t p1 = poClass == PoClass::LEGACY ? 0x08 : 0x09;
 
-    request = setApduRequest(poClass.getValue(), command, p1, 0x00,
+    mRequest = setApduRequest(poClass.getValue(), command, p1, 0x00,
                              selectionPath, 0x00);
 
     const std::string extraInfo =
@@ -91,10 +98,11 @@ SelectFileCmdBuild::SelectFileCmdBuild(
     addSubName(extraInfo);
 }
 
-std::shared_ptr<SelectFileRespPars> SelectFileCmdBuild::createResponseParser(
+std::unique_ptr<SelectFileRespPars> SelectFileCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<SelectFileRespPars>(apduResponse, this);
+    return std::unique_ptr<SelectFileRespPars>(
+               new SelectFileRespPars(apduResponse, this));
 }
 
 bool SelectFileCmdBuild::isSessionBufferUsed() const
@@ -110,19 +118,6 @@ const std::vector<uint8_t>& SelectFileCmdBuild::getPath() const
 SelectFileControl SelectFileCmdBuild::getSelectFileControl() const
 {
     return mSelectFileControl;
-}
-
-std::ostream& operator<<(std::ostream& os,
-                         const SelectFileCmdBuild::SelectControl& sc)
-{
-    if (sc == SelectFileCmdBuild::SelectControl::FIRST)
-        os << "FIRST";
-    else if (sc == SelectFileCmdBuild::SelectControl::NEXT)
-        os << "NEXT";
-    else if (sc == SelectFileCmdBuild::SelectControl::CURRENT_DF)
-        os << "CURRENT_DF";
-
-    return os;
 }
 
 }

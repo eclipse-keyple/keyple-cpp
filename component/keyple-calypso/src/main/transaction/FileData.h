@@ -19,6 +19,9 @@
 #include <ostream>
 #include <vector>
 
+/* Calypso */
+#include "KeypleCalypsoExport.h"
+
 namespace keyple {
 namespace calypso {
 namespace transaction {
@@ -42,8 +45,7 @@ public:
      * @return a not null map eventually empty if there's no content.
      * @since 0.9
      */
-    const std::map<int, const std::vector<uint8_t>>& getAllRecordsContent()
-        const;
+    const std::map<int, std::vector<uint8_t>>& getAllRecordsContent() const;
 
     /**
      * Gets a reference to the known content of record #1.<br>
@@ -100,7 +102,7 @@ public:
      *        (when size of record #1 modulo 3 != 0).
      * @since 0.9
      */
-    const int getContentAsCounterValue(const int numCounter) const;
+    int getContentAsCounterValue(const int numCounter) const;
 
     /**
      * Gets all known counters value.<br>
@@ -174,14 +176,14 @@ public:
     /**
      *
      */
-    friend KEYPLECALYPSO_API std::ostream& operator<<(
-        std::ostream& os, const FileData& fd) const;
+    friend KEYPLECALYPSO_API std::ostream& operator<<(std::ostream& os,
+                                                      const FileData& fd);
 
 private:
     /**
      *
      */
-    std::map<int, const std::vector<uint8_t>> mRecords;
+    std::map<int, std::vector<uint8_t>> mRecords;
 };
 
 }

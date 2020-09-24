@@ -22,10 +22,11 @@
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommand.h"
 #include "KeypleCalypsoExport.h"
-#include "ReadDataStructure.h"
-#include "ReadRecordsRespPars.h"
 #include "PoClass.h"
-#include "PoSendableInSession.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class ReadRecordsRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -45,7 +46,10 @@ using namespace keyple::core::seproxy::message;
 class KEYPLECALYPSO_API ReadRecordsCmdBuild final
 : public AbstractPoCommandBuilder<ReadRecordsRespPars> {
 public:
-    enum class ReaderMode {
+    /**
+     *
+     */
+    enum class ReadMode {
         ONE_RECORD,
         MULTIPLE_RECORD
     };
@@ -62,14 +66,16 @@ public:
      * @throw IllegalArgumentException - if record number &lt; 1
      * @throw IllegalArgumentException - if the request is inconsistent
      */
-    ReadRecordsCmdBuild(const PoClass poClass, const uint8_t sfi,
+    ReadRecordsCmdBuild(const PoClass& poClass,
+                        const uint8_t sfi,
                         const uint8_t firstRecordNumber,
-                        const ReadMode readMode, const int expectedLength);
+                        const ReadMode readMode,
+                        const int expectedLength);
 
     /**
      *
      */
-    std::shared_ptr<ReadRecordsRespPars> createResponseParser(
+    std::unique_ptr<ReadRecordsRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -91,21 +97,16 @@ public:
      */
     ReadMode getReadMode() const;
 
-protected:
     /**
      *
      */
-    std::shared_ptr<ReadRecordsCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<ReadRecordsCmdBuild>(
-            AbstractPoCommandBuilder<ReadRecordsRespPars>::shared_from_this());
-    }
+    friend std::ostream& operator<<(std::ostream& os, const ReadMode& rm);
 
 private:
     /**
      * The command
      */
-    CalypsoPoCommand& command = CalypsoPoCommand::READ_RECORDS;
+    const CalypsoPoCommand& command = CalypsoPoCommand::READ_RECORDS;
 
     /**
      * Construction arguments used for parsing

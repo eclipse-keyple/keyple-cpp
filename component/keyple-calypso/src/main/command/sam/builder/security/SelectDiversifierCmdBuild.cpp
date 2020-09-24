@@ -17,6 +17,9 @@
 /* Common */
 #include "IllegalArgumentException.h"
 
+/* Calypso */
+#include "SelectDiversifierRespPars.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -25,14 +28,15 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 using namespace keyple::common;
 
-const CalypsoSamCommands& SelectDiversifierCmdBuild::mCommand =
-    CalypsoSamCommands::SELECT_DIVERSIFIER;
-
 SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(
-    SamRevision revision, std::vector<uint8_t>& diversifier)
-: AbstractSamCommandBuilder(CalypsoSamCommands::SELECT_DIVERSIFIER, nullptr)
+  const SamRevision& revision,
+  const std::vector<uint8_t>& diversifier)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::SELECT_DIVERSIFIER),
+    nullptr)
 {
     mDefaultRevision = revision;
 
@@ -44,14 +48,15 @@ SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(
     const uint8_t p1 = 0x00;
     const uint8_t p2 = 0x00;
 
-    mRequest = setApduRequest(cla, command, p1, p2, diversifier);
+    mRequest = setApduRequest(cla, mCommand, p1, p2, diversifier);
 }
 
-std::shared_ptr<SelectDiversifierRespPars>
+std::unique_ptr<SelectDiversifierRespPars>
     SelectDiversifierCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<SelectDiversifierRespPars>(apduResponse, this);
+    return std::unique_ptr<SelectDiversifierRespPars>(
+               new SelectDiversifierRespPars(apduResponse, this));
 }
 
 }

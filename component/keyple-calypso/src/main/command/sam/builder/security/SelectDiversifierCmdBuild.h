@@ -17,7 +17,11 @@
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
 #include "SamRevision.h"
-#include "SelectDiversifierRespPars.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class SelectDiversifierRespPars; } } } }
+    } }
 
 namespace keyple {
 namespace calypso {
@@ -27,6 +31,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * This class provides the dedicated constructor to build the SAM Select
@@ -49,14 +54,14 @@ public:
     /**
      *
      */
-    std::shared_ptr<SelectDiversifierRespPars> createResponseParser(
+    std::unique_ptr<SelectDiversifierRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command
      */
-    static const CalypsoSamCommands& mCommand;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::SELECT_DIVERSIFIER;
 };
 
 }
