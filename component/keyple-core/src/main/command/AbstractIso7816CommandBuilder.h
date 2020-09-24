@@ -106,8 +106,11 @@ protected:
      * @return an ApduRequest
      */
     virtual std::shared_ptr<ApduRequest> setApduRequest(
-        const uint8_t cla, const std::shared_ptr<SeCommand> command,
-        const uint8_t p1, const uint8_t p2, const std::vector<uint8_t>& dataIn);
+        const uint8_t cla,
+        const SeCommand& command,
+        const uint8_t p1,
+        const uint8_t p2,
+        const std::vector<uint8_t>& dataIn);
 
     /**
      * Helper method to create an ApduRequest from separated elements.
@@ -140,8 +143,11 @@ protected:
      * @return an ApduRequest
      */
     virtual std::shared_ptr<ApduRequest> setApduRequest(
-        const uint8_t cla, const std::shared_ptr<SeCommand> command,
-        const uint8_t p1, const uint8_t p2, const uint8_t le);
+        const uint8_t cla,
+        const SeCommand& command,
+        const uint8_t p1,
+        const uint8_t p2,
+        const uint8_t le);
 
     /**
      * Helper method to create an ApduRequest from separated elements.
@@ -177,8 +183,11 @@ protected:
      * @return an ApduRequest
      */
     virtual std::shared_ptr<ApduRequest> setApduRequest(
-        const uint8_t cla, const std::shared_ptr<SeCommand> command,
-        const uint8_t p1, const uint8_t p2, const std::vector<uint8_t>& dataIn,
+        const uint8_t cla,
+        const SeCommand& command,
+        const uint8_t p1,
+        const uint8_t p2,
+        const std::vector<uint8_t>& dataIn,
         const uint8_t le);
 };
 

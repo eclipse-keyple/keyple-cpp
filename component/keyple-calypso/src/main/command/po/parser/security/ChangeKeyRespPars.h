@@ -29,17 +29,12 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::core::seproxy::message;
 
-class KEYPLECALYPSO_API ChangeKeyRespPars : public AbstractPoResponseParser {
-private:
-    /**
-     *
-     */
-    static
-    std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
+class KEYPLECALYPSO_API ChangeKeyRespPars : public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new ChangeKeyRespPars
@@ -59,18 +54,14 @@ protected:
     /**
      *
      */
-    std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        getStatusTable() const override;
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
+        const override;
 
-protected:
+private:
     /**
      *
      */
-    std::shared_ptr<ChangeKeyRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<ChangeKeyRespPars>(
-            AbstractPoResponseParser::shared_from_this());
-    }
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

@@ -19,11 +19,14 @@
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommand.h"
-#include "GetDataFciRespPars.h"
 #include "PoClass.h"
 
 /* Calypso */
 #include "KeypleCalypsoExport.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class GetDataFciRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -57,7 +60,7 @@ public:
     /**
      *
      */
-    std::shared_ptr<GetDataFciRespPars> createResponseParser(
+    std::unique_ptr<GetDataFciRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -82,7 +85,7 @@ private:
     /**
      *
      */
-    CalypsoPoCommand& command = CalypsoPoCommand::GET_DATA_FCI;
+    const CalypsoPoCommand& command = CalypsoPoCommand::GET_DATA_FCI;
 };
 
 }

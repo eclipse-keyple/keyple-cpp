@@ -18,6 +18,7 @@
 
 /* Common */
 #include "Arrays.h"
+#include "IllegalStateException.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -27,23 +28,23 @@ namespace po {
 namespace parser {
 namespace security {
 
-using namespace keyple::common;
 using namespace keyple::calypso::command::po;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
+
+using SecureSession = AbstractOpenSessionRespPars::SecureSession;
 
 OpenSession24RespPars::OpenSession24RespPars(
   std::shared_ptr<ApduResponse> response, OpenSession24CmdBuild* builder)
-: AbstractOpenSessionRespPars(response, PoRevision::REV2_4) {}
+: AbstractOpenSessionRespPars(response, builder, PoRevision::REV2_4) {}
 
-std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-OpenSession24RespPars::toSecureSession(
+std::shared_ptr<SecureSession> OpenSession24RespPars::toSecureSession(
     const std::vector<uint8_t>& apduResponseData)
 {
     return createSecureSession(apduResponseData);
 }
 
-std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-OpenSession24RespPars::createSecureSession(
+std::shared_ptr<SecureSession> OpenSession24RespPars::createSecureSession(
     const std::vector<uint8_t>& apduResponseData)
 {
     bool previousSessionRatified;

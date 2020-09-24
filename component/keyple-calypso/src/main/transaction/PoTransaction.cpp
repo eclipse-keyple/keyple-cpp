@@ -14,14 +14,24 @@
 
 #include "PoTransaction.h"
 
+#include <atomic>
+
 /* Calypso */
 #include "AbstractOpenSessionCmdBuild.h"
 #include "AbstractOpenSessionRespPars.h"
 #include "AppendRecordCmdBuild.h"
 #include "AppendRecordRespPars.h"
-#include "CalypsoBuilderParser.h"
+#include "CalypsoAuthenticationNotVerifiedException.h"
 #include "CalypsoPo.h"
+#include "CalypsoPoCommandException.h"
+#include "CalypsoPoIOException.h"
+#include "CalypsoPoCloseSecureSessionException.h"
 #include "CalypsoPoTransactionIllegalStateException.h"
+#include "CalypsoPoUtils.h"
+#include "CalypsoSamCommandException.h"
+#include "CalypsoSamIOException.h"
+#include "CalypsoSessionAuthenticationException.h"
+#include "CalypsoUnauthorizedKvcException.h"
 #include "CloseSessionCmdBuild.h"
 #include "CloseSessionRespPars.h"
 #include "DecreaseCmdBuild.h"
@@ -31,20 +41,19 @@
 #include "DigestCloseRespPars.h"
 #include "DigestInitCmdBuild.h"
 #include "DigestUpdateCmdBuild.h"
-#include "KeypleReaderException.h"
-#include "KeypleCalypsoSecureSessionException.h"
-#include "KeypleCalypsoSecureSessionUnauthorizedKvcException.h"
 #include "IncreaseCmdBuild.h"
-#include "PoBuilderParser.h"
-#include "PoCustomReadCommandBuilder.h"
-#include "PoResource.h"
-#include "ReadDataStructure.h"
+#include "KeypleAssert.h"
+#include "KeypleReaderException.h"
+#include "KeypleReaderIOException.h"
+#include "NoSuchElementException.h"
+#include "PoClass.h"
+#include "PoSecuritySettings.h"
+#include "RatificationCmdBuild.h"
 #include "ReadRecordsCmdBuild.h"
+#include "SamCommandProcessor.h"
 #include "SamGetChallengeCmdBuild.h"
-#include "SamSendableInSession.h"
 #include "SamGetChallengeRespPars.h"
 #include "SelectDiversifierCmdBuild.h"
-#include "SendableInSession.h"
 #include "UpdateRecordCmdBuild.h"
 #include "UpdateRecordRespPars.h"
 #include "WriteRecordCmdBuild.h"
@@ -75,45 +84,47 @@ using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::builder;
 using namespace keyple::calypso::command::po::builder::security;
+using namespace keyple::calypso::command::po::exception;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::calypso::command::sam;
 using namespace keyple::calypso::command::sam::builder;
+using namespace keyple::calypso::command::sam::builder::exception;
 using namespace keyple::calypso::command::sam::builder::security;
 using namespace keyple::calypso::command::sam;
 using namespace keyple::calypso::command::sam::parser;
 using namespace keyple::calypso::command::sam::parser::security;
+using namespace keyple::calypso::transaction;
 using namespace keyple::calypso::transaction::exception;
 
-using SessionAccessLevel = PoTransaction::SessionAccessLevel;
-using DefaultKeyInfo     = SecuritySettings::DefaultKeyInfo;
+using AccessLevel = PoTransaction::SessionSetting::AccessLevel;
+using ReadMode = ReadRecordsCmdBuild::ReadMode;
+using SessionState = PoTransaction::SessionState;
 
-const int PoTransaction::SESSION_BUFFER_CMD_ADDITIONAL_COST = 6;
-const int PoTransaction::APDU_HEADER_LENGTH = 5;
-
-std::vector<uint8_t> PoTransaction::ratificationCmdApduLegacy =
-    {0x94, 0xB2, 0x00, 0x00, 0x00};
-std::vector<uint8_t> PoTransaction::ratificationCmdApdu =
-    {0x00, 0xB2, 0x00, 0x00, 0x00};
+/* PO TRANSACTION ----------------------------------------------------------- */
 
 PoTransaction::PoTransaction(
-  std::shared_ptr<SeResource<CalypsoPo> poResource,
+  std::shared_ptr<SeResource<CalypsoPo>> poResource,
   std::shared_ptr<PoSecuritySettings> poSecuritySettings)
-: PoTransaction(poResource),
+: mPoReader(
+      std::dynamic_pointer_cast<ProxyReader>(poResource->getSeReader())),
   mPoSecuritySettings(poSecuritySettings),
-  mSamCommandProcessor(
-      std::make_shared<SamCommandProcessor>(poResource, poSecuritySettings)) {}
-
-PoTransaction::PoTransaction(std::shared_ptr<SeResource<CalypsoPo> poResource)
-: mPoReader(poResource->getSeReader()),
   mCalypsoPo(poResource->getMatchingSe()),
   mSessionState(SessionState::SESSION_UNINITIALIZED),
+  mCurrentAccessLevel(AccessLevel::SESSION_LVL_NONE),
+  mModificationsCounter(mCalypsoPo->getModificationsCounter())
 {
-    mModificationCounter = mCalypsoPo->getModificationCounter();
+    if (poSecuritySettings != nullptr)
+        mSamCommandProcessor =
+            std::make_shared<SamCommandProcessor>(poResource,
+                                                  poSecuritySettings);
 }
 
+PoTransaction::PoTransaction(std::shared_ptr<SeResource<CalypsoPo>> poResource)
+: PoTransaction(poResource, nullptr) {}
+
 void PoTransaction::processAtomicOpening(
-    const std::shared_ptr<AccessLevel> accessLevel,
+    const AccessLevel& accessLevel,
     std::vector<std::shared_ptr<AbstractPoCommandBuilder<
         AbstractPoResponseParser>>>& poCommands)
 {
@@ -149,14 +160,18 @@ void PoTransaction::processAtomicOpening(
      * If so, then the command is withdrawn in favour of its equivalent executed
      * at the same time as the open secure session command.
      */
-    if (poCommands != nullptr && !poCommands.empty()) {
+    if (!poCommands.empty()) {
         std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
             poCommand = poCommands[0];
 
         std::shared_ptr<ReadRecordsCmdBuild> readRecCmdBuild =
             std::dynamic_pointer_cast<ReadRecordsCmdBuild>(poCommand);
 
-        if (poCommand->getCommandRef() == CalypsoPoCommand::READ_RECORDS &&
+        std::shared_ptr<CalypsoPoCommand> commandRef =
+            std::dynamic_pointer_cast<CalypsoPoCommand>(
+                poCommand->getCommandRef());
+
+        if (*commandRef.get() == CalypsoPoCommand::READ_RECORDS &&
             readRecCmdBuild->getReadMode() ==
                 ReadRecordsCmdBuild::ReadMode::ONE_RECORD) {
             sfi = readRecCmdBuild->getSfi();
@@ -168,11 +183,12 @@ void PoTransaction::processAtomicOpening(
     /* Build the PO Open Secure Session command */
     std::shared_ptr<AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>>
         openSessionCmdBuild =
-            AbstractOpenSessionCmdBuild::create(mCalypsoPo->getRevision(),
-                                                accessLevel->getSessionKey(),
-                                                sessionTerminalChallenge,
-                                                sfi,
-                                                recordNumber);
+            AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>::create(
+                mCalypsoPo->getRevision(),
+                accessLevel.getSessionKey(),
+                sessionTerminalChallenge,
+                sfi,
+                recordNumber);
 
     /* Add the resulting ApduRequest to the PO ApduRequest list */
     poApduRequests.push_back(openSessionCmdBuild->getApduRequest());
@@ -196,7 +212,7 @@ void PoTransaction::processAtomicOpening(
 
 
     /* Retrieve and check the ApduResponses */
-    const std::vector<std::shared_ptr<ApduResponse>>& poApduResponses =
+    std::vector<std::shared_ptr<ApduResponse>>& poApduResponses =
         poSeResponse->getApduResponses();
 
     /* Do some basic checks */
@@ -211,9 +227,11 @@ void PoTransaction::processAtomicOpening(
      */
     std::shared_ptr<AbstractOpenSessionRespPars> poOpenSessionPars =
         std::dynamic_pointer_cast<AbstractOpenSessionRespPars>(
-            CalypsoPoUtils::updateCalypsoPo(mCalypsoPo,
-                                            openSessionCmdBuild,
-                                            poApduResponses[0]);
+            CalypsoPoUtils::updateCalypsoPo(
+                mCalypsoPo,
+                std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+                    AbstractPoResponseParser>>(openSessionCmdBuild),
+                poApduResponses[0]));
 
     /*
      * Build the Digest Init command from PO Open Session
@@ -232,9 +250,10 @@ void PoTransaction::processAtomicOpening(
                   "= %, POKVC = %",
                   ByteArrayUtil::toHex(sessionCardChallenge),
                   StringHelper::formatSimple("%02X", poKif),
-                  StringHelper::formatSimple("%02X", poKvc);
+                  StringHelper::formatSimple("%02X", poKvc));
 
-    if (!mPoSecuritySettings->isSessionKvcAuthorized(poKvc))
+    if (!poKvc ||
+        !mPoSecuritySettings->isSessionKvcAuthorized(poKvc->byteValue()))
         throw CalypsoUnauthorizedKvcException(
                   StringHelper::formatSimple("PO KVC = %02X", poKvc));
 
@@ -247,7 +266,7 @@ void PoTransaction::processAtomicOpening(
                                              false,
                                              false,
                                              poKif,
-                                             poKvc,
+                                             poKvc->byteValue(),
                                              poApduResponses[0]->getDataOut());
 
     /*
@@ -255,17 +274,17 @@ void PoTransaction::processAtomicOpening(
      * list is the open secure session command. This command is not included in
      * the digest computation, so we skip it and start the loop at index 1.
      */
-    if ((poCommands != nullptr) && !poCommands->empty())
+    if (!poCommands.empty())
         /* Add requests and responses to the digest processor */
         mSamCommandProcessor->pushPoExchangeDataList(poApduRequests,
                                                      poApduResponses,
                                                      1);
 
     /* Remove Open Secure Session response and create a new SeResponse */
-    poApduResponses.erase(0);
+    poApduResponses.erase(poApduResponses.begin());
 
     /* Update CalypsoPo with the received data */
-    CalypsoPoUtils::updateCalypsoPo(calypsoPo, poCommands, poApduResponses);
+    CalypsoPoUtils::updateCalypsoPo(mCalypsoPo, poCommands, poApduResponses);
 
     mSessionState = SessionState::SESSION_OPEN;
 }
@@ -284,9 +303,9 @@ std::vector<std::shared_ptr<ApduRequest>> PoTransaction::getApduRequests(
     return apduRequests;
 }
 
-std::shared_ptr<SeResponse> PoTransaction::processAtomicPoCommands(
+void PoTransaction::processAtomicPoCommands(
     const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-        AbstractPoCommandBuilder<AbstractPoResponseParser>>>& poCommands,
+        AbstractPoResponseParser>>>& poCommands,
     const ChannelControl channelControl)
 {
     /* Get the PO ApduRequest List */
@@ -317,11 +336,11 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicPoCommands(
      * within a Secure Session.
      */
     if (mSessionState == SessionState::SESSION_OPEN)
-        samCommandProcessor->pushPoExchangeDataList(poApduRequests,
-                                                    poApduResponses,
-                                                    0);
+        mSamCommandProcessor->pushPoExchangeDataList(poApduRequests,
+                                                     poApduResponses,
+                                                     0);
 
-    CalypsoPoUtils::updateCalypsoPo(calypsoPo,
+    CalypsoPoUtils::updateCalypsoPo(mCalypsoPo,
                                     poCommands,
                                     poSeResponse->getApduResponses());
 }
@@ -337,7 +356,7 @@ void PoTransaction::processAtomicClosing(
     checkSessionIsOpen();
 
     /* Get the PO ApduRequest List - for the first PO exchange */
-    const std::vector<std::shared_ptr<ApduRequest>>& poApduRequests =
+    std::vector<std::shared_ptr<ApduRequest>> poApduRequests =
         getApduRequests(poModificationCommands);
 
     /*
@@ -379,10 +398,10 @@ void PoTransaction::processAtomicClosing(
     /* Add the PO Ratification command if any */
     bool ratificationCommandAdded;
 
-    if (ratificationMode == RatificationMode::CLOSE_RATIFIED) &&
+    if (ratificationMode == RatificationMode::CLOSE_RATIFIED &&
         mCalypsoPo->getTransmissionMode() == TransmissionMode::CONTACTLESS) {
         poApduRequests.push_back(
-            RatificationCmdBuild::getApduRequest(mCalypsoPo.getPoClass()));
+            RatificationCmdBuild::getApduRequest(mCalypsoPo->getPoClass()));
         ratificationCommandAdded = true;
     } else {
         ratificationCommandAdded = false;
@@ -395,7 +414,7 @@ void PoTransaction::processAtomicClosing(
     std::shared_ptr<SeResponse> poSeResponse;
 
     try {
-        poSeResponse = poReader->transmitSeRequest(poSeRequest, channelControl);
+        poSeResponse = mPoReader->transmitSeRequest(poSeRequest, channelControl);
 
         /*
          * If the ratification command was added and no error occured then the
@@ -427,7 +446,7 @@ void PoTransaction::processAtomicClosing(
         ratificationCommandResponseReceived = false;
     }
 
-    const std::vector<std::shared_ptr<ApduResponse>>& poApduResponses =
+    std::vector<std::shared_ptr<ApduResponse>> poApduResponses =
         poSeResponse->getApduResponses();
 
     /* before last if ratification, otherwise last one */
@@ -455,10 +474,10 @@ void PoTransaction::processAtomicClosing(
 
     if (ratificationCommandResponseReceived)
         /* Remove the ratification response */
-        poApduResponses.erase(poApduResponses.size() - 1);
+        poApduResponses.pop_back();
 
     /* Remove Close Secure Session response and create a new SeResponse */
-    poApduResponses.erase(poApduResponses.size() - 1);
+    poApduResponses.pop_back();
 
     CalypsoPoUtils::updateCalypsoPo(mCalypsoPo,
                                     poModificationCommands,
@@ -467,7 +486,7 @@ void PoTransaction::processAtomicClosing(
 
 void PoTransaction::processAtomicClosing(
     const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-        AbstractPoResponseParser>>& poCommands,
+        AbstractPoResponseParser>>>& poCommands,
     const RatificationMode ratificationMode,
     const ChannelControl channelControl)
 {
@@ -480,8 +499,7 @@ void PoTransaction::processAtomicClosing(
                          channelControl);
 }
 
-const int PoTransaction::getCounterValue(const uint8_t sfi, const int counter)
-    const
+int PoTransaction::getCounterValue(const uint8_t sfi, const int counter) const
 {
     try {
         std::shared_ptr<ElementaryFile> ef = mCalypsoPo->getFileBySfi(sfi);
@@ -501,9 +519,9 @@ std::unique_ptr<ApduResponse> PoTransaction::createIncreaseDecreaseResponse(
 {
     /* response = NNNNNN9000 */
     const std::vector<uint8_t> response = {
-        (newCounterValue & 0x00FF0000) >> 16,
-        (newCounterValue & 0x0000FF00) >> 8,
-        (newCounterValue & 0x000000FF),
+        static_cast<uint8_t>((newCounterValue & 0x00FF0000) >> 16),
+        static_cast<uint8_t>((newCounterValue & 0x0000FF00) >> 8),
+        static_cast<uint8_t>((newCounterValue & 0x000000FF)),
         0x90,
         0x00
     };
@@ -519,9 +537,12 @@ std::vector<std::shared_ptr<ApduResponse>>
     std::vector<std::shared_ptr<ApduResponse>> apduResponses;
 
     for (const auto& commandBuilder : poCommands) {
-        if (commandBuilder->getCommandRef() == DECREASE) {
+        std::shared_ptr<SeCommand> cmd = commandBuilder->getCommandRef();
+        std::shared_ptr<CalypsoPoCommand> calypsoCmd =
+            std::dynamic_pointer_cast<CalypsoPoCommand>(cmd);
+        if (*calypsoCmd.get() == CalypsoPoCommand::DECREASE) {
             std::shared_ptr<DecreaseCmdBuild> builder =
-                std::dynamic_ptr_cast<DecreaseCmdBuild>(commandBuilder);
+                std::dynamic_pointer_cast<DecreaseCmdBuild>(commandBuilder);
             const int sfi = builder->getSfi();
             const int counter = builder->getCounterNumber();
             const int newCounterValue = getCounterValue(sfi, counter) -
@@ -529,9 +550,9 @@ std::vector<std::shared_ptr<ApduResponse>>
             apduResponses.push_back(
                 createIncreaseDecreaseResponse(newCounterValue));
 
-        } else if (commandBuilder->getCommandRef() == INCREASE) {
+        } else if (*calypsoCmd.get() == CalypsoPoCommand::INCREASE) {
             std::shared_ptr<IncreaseCmdBuild> builder =
-                std::dynamic_ptr_cast<IncreaseCmdBuild>(commandBuilder);
+                std::dynamic_pointer_cast<IncreaseCmdBuild>(commandBuilder);
             const int sfi = builder->getSfi();
             const int counter = builder->getCounterNumber();
             const int newCounterValue = getCounterValue(sfi, counter) +
@@ -549,7 +570,7 @@ std::vector<std::shared_ptr<ApduResponse>>
     return apduResponses;
 }
 
-void PoTransaction::processOpening(const AccessLevel accessLevel)
+void PoTransaction::processOpening(const AccessLevel& accessLevel)
 {
     mCurrentAccessLevel = accessLevel;
 
@@ -560,7 +581,7 @@ void PoTransaction::processOpening(const AccessLevel accessLevel)
     std::atomic<int> neededSessionBufferSpace;
     std::atomic<bool> overflow;
 
-    for (const auto& commandBuilder : mPoCommandManager->getPoCommandBuilders())
+    for (const auto& commandBuilder : mPoCommandManager.getPoCommandBuilders())
     {
         /*
          * Check if the command is a modifying one and get it status (overflow
@@ -573,7 +594,7 @@ void PoTransaction::processOpening(const AccessLevel accessLevel)
                                   neededSessionBufferSpace)) {
             if (overflow) {
                 /* Open the session with the current commands */
-                processAtomicOpening(currentAccessLevel, poAtomicCommands);
+                processAtomicOpening(mCurrentAccessLevel, poAtomicCommands);
 
                 /*
                  * Closes the session, resets the modifications buffer counters
@@ -611,10 +632,10 @@ void PoTransaction::processOpening(const AccessLevel accessLevel)
         }
     }
 
-    processAtomicOpening(currentAccessLevel, poAtomicCommands);
+    processAtomicOpening(mCurrentAccessLevel, poAtomicCommands);
 
     /* sets the flag indicating that the commands have been executed */
-    mPoCommandManager->notifyCommandsProcessed();
+    mPoCommandManager.notifyCommandsProcessed();
 }
 
 void PoTransaction::processPoCommands(const ChannelControl channelControl)
@@ -626,11 +647,11 @@ void PoTransaction::processPoCommands(const ChannelControl channelControl)
      * PO commands sent outside a Secure Session. No modifications buffer
      * limitation.
      */
-    processAtomicPoCommands(mPoCommandManager->getPoCommandBuilders(),
+    processAtomicPoCommands(mPoCommandManager.getPoCommandBuilders(),
                             channelControl);
 
     /* Sets the flag indicating that the commands have been executed */
-    mPoCommandManager->notifyCommandsProcessed();
+    mPoCommandManager.notifyCommandsProcessed();
 }
 
 void PoTransaction::processPoCommandsInSession()
@@ -645,7 +666,7 @@ void PoTransaction::processPoCommandsInSession()
     std::atomic<int> neededSessionBufferSpace;
     std::atomic<bool> overflow;
 
-    for (const auto& commandBuilder : mPoCommandManager->getPoCommandBuilders())
+    for (const auto& commandBuilder : mPoCommandManager.getPoCommandBuilders())
     {
         /*
          * Check if the command is a modifying one and get it status (overflow
@@ -710,7 +731,7 @@ void PoTransaction::processPoCommandsInSession()
         processAtomicPoCommands(poAtomicBuilders, ChannelControl::KEEP_OPEN);
 
     /* Sets the flag indicating that the commands have been executed */
-    mPoCommandManager->notifyCommandsProcessed();
+    mPoCommandManager.notifyCommandsProcessed();
 }
 
 void PoTransaction::processClosing(const ChannelControl channelControl)
@@ -726,7 +747,7 @@ void PoTransaction::processClosing(const ChannelControl channelControl)
     std::vector<std::shared_ptr<AbstractPoCommandBuilder<
         AbstractPoResponseParser>>> poAtomicCommands;
 
-    for (const auto& commandBuilder : mPoCommandManager->getPoCommandBuilders())
+    for (const auto& commandBuilder : mPoCommandManager.getPoCommandBuilders())
     {
         /*
          * Check if the command is a modifying one and get it status (overflow
@@ -813,7 +834,7 @@ void PoTransaction::processClosing(const ChannelControl channelControl)
                          channelControl);
 
     /* Sets the flag indicating that the commands have been executed */
-    mPoCommandManager->notifyCommandsProcessed();
+    mPoCommandManager.notifyCommandsProcessed();
 }
 
 void PoTransaction::processCancel(const ChannelControl channelControl)
@@ -840,7 +861,7 @@ void PoTransaction::processCancel(const ChannelControl channelControl)
         poSeResponse->getApduResponses()[0])->checkStatus();
 
     /* sets the flag indicating that the commands have been executed */
-    mPoCommandManager->notifyCommandsProcessed();
+    mPoCommandManager.notifyCommandsProcessed();
 
     /*
      * Session is now considered closed regardless the previous state or the
@@ -873,8 +894,9 @@ void PoTransaction::checkSessionIsOpen() const
 void PoTransaction::checkSessionIsNotOpen() const
 {
     if (mSessionState == SessionState::SESSION_OPEN) {
-        std::stringstream ss << "Bad session state. Current: " << mSessionState
-                             << ", expected: not open";
+        std::stringstream ss;
+        ss << "Bad session state. Current: " << mSessionState
+           << ", expected: not open";
         throw CalypsoPoTransactionIllegalStateException(ss.str());
     }
 }
@@ -883,21 +905,21 @@ void PoTransaction::checkCommandsResponsesSynchronization(
     const int commandsNumber, const int responsesNumber) const
 {
     if (commandsNumber != responsesNumber) {
-        std::stringstream ss << "The number of commands/responses does not "
-                             << "match: " << commandsNumber << ", resp="
-                             << responsesNumber;
+        std::stringstream ss;
+        ss << "The number of commands/responses does not "
+           << "match: " << commandsNumber << ", resp=" << responsesNumber;
         throw CalypsoDesynchronizedExchangesException(ss.str());
     }
 }
 
 bool PoTransaction::checkModifyingCommand(
-    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser> builder,
+    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>> builder,
     std::atomic<bool>& overflow,
     std::atomic<int>& neededSessionBufferSpace)
 {
     if (builder->isSessionBufferUsed()) {
         /* This command affects the PO modifications buffer */
-        neededSessionBufferSpace = builder->getApduRequest().getBytes().size() +
+        neededSessionBufferSpace = builder->getApduRequest()->getBytes().size() +
                                    SESSION_BUFFER_CMD_ADDITIONAL_COST -
                                    APDU_HEADER_LENGTH);
 
@@ -962,17 +984,17 @@ void PoTransaction::resetModificationsBufferCounter()
     mModificationsCounter = mCalypsoPo->getModificationsCounter();
 }
 
-void PoTransaction::prepareSelectFile(const std::vector<uint8_>& lid)
+void PoTransaction::prepareSelectFile(const std::vector<uint8_t>& lid)
 {
     /* Create the builder and add it to the list of commands */
-    mPoCommandManager->addRegularCommand(
+    mPoCommandManager.addRegularCommand(
         CalypsoPoUtils::prepareSelectFile(mCalypsoPo->getPoClass(), lid));
 }
 
 void PoTransaction::prepareSelectFile(const SelectFileControl control)
 {
     /* Create the builder and add it to the list of commands */
-    mPoCommandManager->addRegularCommand(
+    mPoCommandManager.addRegularCommand(
         CalypsoPoUtils::prepareSelectFile(mCalypsoPo->getPoClass(), control));
 }
 
@@ -980,8 +1002,8 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
                                           const int recordNumber)
 {
     /* Create the builder and add it to the list of commands */
-    mPoCommandManager->addRegularCommand(
-        CalypsoPoUtils::prepareReadRecordFile(mCalypsoPo.getPoClass(),
+    mPoCommandManager.addRegularCommand(
+        CalypsoPoUtils::prepareReadRecordFile(mCalypsoPo->getPoClass(),
                                               sfi,
                                               recordNumber));
 }
@@ -1004,12 +1026,15 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
 
     if (numberOfRecords == 1) {
         /* Create the builder and add it to the list of commands */
-        mPoCommandManager->addRegularCommand(
-            std::make_shared<ReadRecordsCmdBuild>(mCalypsoPo.getPoClass(),
-                                                  sfi,
-                                                  firstRecordNumber,
-                                                  ReadMode::ONE_RECORD,
-                                                  recordSize));
+        mPoCommandManager.addRegularCommand(
+            std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+                AbstractPoResponseParser>>(
+                    std::make_shared<ReadRecordsCmdBuild>(
+                        mCalypsoPo->getPoClass(),
+                        sfi,
+                        firstRecordNumber,
+                        ReadMode::ONE_RECORD,
+                        recordSize)));
     } else {
         /*
          * Manages the reading of multiple records taking into account the
@@ -1036,12 +1061,15 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
             }
 
             /* Create the builder and add it to the list of commands */
-            mPoCommandManager->addRegularCommand(
-                std::make_shared<ReadRecordsCmdBuild>(mCalypsoPo->getPoClass(),
-                                                      sfi,
-                                                      startRecordNumber,
-                                                      ReadMode::MULTIPLE_RECORD,
-                                                      expectedLength));
+            mPoCommandManager.addRegularCommand(
+                std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+                    AbstractPoResponseParser>>(
+                        std::make_shared<ReadRecordsCmdBuild>(
+                            mCalypsoPo->getPoClass(),
+                            sfi,
+                            startRecordNumber,
+                            ReadMode::MULTIPLE_RECORD,
+                            expectedLength)));
         }
     }
 }
@@ -1063,10 +1091,12 @@ void PoTransaction::prepareAppendRecord(const uint8_t sfi,
                    "sfi");
 
     /* Create the builder and add it to the list of commands */
-    mPoCommandManager->addRegularCommand(
-        std::make_shared<AppendRecordCmdBuild>(mCalypsoPo->getPoClass(),
-                                               sfi,
-                                               recordData));
+    mPoCommandManager.addRegularCommand(
+        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+            AbstractPoResponseParser>>(
+                std::make_shared<AppendRecordCmdBuild>(mCalypsoPo->getPoClass(),
+                                                       sfi,
+                                                       recordData)));
 }
 
 void PoTransaction::prepareUpdateRecord(const uint8_t sfi,
@@ -1076,16 +1106,18 @@ void PoTransaction::prepareUpdateRecord(const uint8_t sfi,
     KeypleAssert::getInstance()
         .isInRange(sfi, CalypsoPoUtils::SFI_MIN, CalypsoPoUtils::SFI_MAX, "sfi")
         .isInRange(recordNumber,
-                   CalypsoPoUtil::NB_REC_MIN,
+                   CalypsoPoUtils::NB_REC_MIN,
                    CalypsoPoUtils::NB_REC_MAX,
                    "recordNumber");
 
     /* cReate the builder and add it to the list of commands */
-    MpoCommandManager->addRegularCommand(
-        std::make_shared<UpdateRecordCmdBuild>(mCalypsoPo->getPoClass(),
-                                               sfi,
-                                               recordNumber,
-                                               recordData));
+    mPoCommandManager.addRegularCommand(
+        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+            AbstractPoResponseParser>>(
+                std::make_shared<UpdateRecordCmdBuild>(mCalypsoPo->getPoClass(),
+                                                       sfi,
+                                                       recordNumber,
+                                                       recordData)));
 }
 
 void PoTransaction::prepareWriteRecord(const uint8_t sfi,
@@ -1100,11 +1132,13 @@ void PoTransaction::prepareWriteRecord(const uint8_t sfi,
                    "recordNumber");
 
     /* Create the builder and add it to the list of commands */
-    mPoCommandManager->addRegularCommand(
-        std::make_shared<WriteRecordCmdBuild>(mCalypsoPo->getPoClass(),
-                                              sfi,
-                                              recordNumber,
-                                              recordData));
+    mPoCommandManager.addRegularCommand(
+        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+            AbstractPoResponseParser>>(
+                std::make_shared<WriteRecordCmdBuild>(mCalypsoPo->getPoClass(),
+                                                      sfi,
+                                                      recordNumber,
+                                                      recordData)));
 }
 
 void PoTransaction::prepareIncreaseCounter(const uint8_t sfi,
@@ -1124,10 +1158,12 @@ void PoTransaction::prepareIncreaseCounter(const uint8_t sfi,
 
     /* Create the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        std::make_shared<WriteRecordCmdBuild>(mCalypsoPo->getPoClass(),
-                                              sfi,
-                                              counterNumber,
-                                              incValue));
+        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+            AbstractPoResponseParser>>(
+                std::make_shared<WriteRecordCmdBuild>(mCalypsoPo->getPoClass(),
+                                                      sfi,
+                                                      counterNumber,
+                                                      incValue)));
 }
 
 void PoTransaction::prepareDecreaseCounter(const uint8_t sfi,
@@ -1147,27 +1183,31 @@ void PoTransaction::prepareDecreaseCounter(const uint8_t sfi,
 
     /* Create the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        std::make_shared<WriteRecordCmdBuild>(mCalypsoPo->getPoClass(),
-                                              sfi,
-                                              counterNumber,
-                                              decValue));
+        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+            AbstractPoResponseParser>>(
+                std::make_shared<WriteRecordCmdBuild>(mCalypsoPo->getPoClass(),
+                                                      sfi,
+                                                      counterNumber,
+                                                      decValue)));
 }
 
 /* ACCESS LEVEL ------------------------------------------------------------- */
 
+
+AccessLevel AccessLevel::SESSION_LVL_NONE("none", 0x00);
 AccessLevel AccessLevel::SESSION_LVL_PERSO("perso", 0x01);
 AccessLevel AccessLevel::SESSION_LVL_LOAD("load", 0x02);
 AccessLevel AccessLevel::SESSION_LVL_DEBIT("debit", 0x03);
 
 AccessLevel::AccessLevel(const std::string& name, const uint8_t sessionKey)
-: mNname(name), mSessionKey(sessionKey) {}
+: mName(name), mSessionKey(sessionKey) {}
 
 const std::string& AccessLevel::getName() const
 {
     return mName;
 }
 
-const uint8_t AccessLevel::getSessionKey() const
+uint8_t AccessLevel::getSessionKey() const
 {
     return mSessionKey;
 }
@@ -1181,6 +1221,47 @@ bool AccessLevel::operator==(const AccessLevel& other) const
 bool AccessLevel::operator!=(const AccessLevel& other) const
 {
     return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, const AccessLevel& al)
+{
+    if (al == AccessLevel::SESSION_LVL_PERSO)
+        os << "SESSION LVL PERSO";
+    else if (al == AccessLevel::SESSION_LVL_LOAD)
+        os << "SESSION LVL LOAD";
+    else if (al == AccessLevel::SESSION_LVL_DEBIT)
+        os << "SESSION LVL DEBIT";
+    else
+        os << "UNKNOWN";
+
+    return os;
+}
+
+bool operator<(const AccessLevel& lhs, const AccessLevel& rhs)
+{
+    return lhs.mSessionKey < rhs.mSessionKey;
+}
+
+/* SESSION STATE ------------------------------------------------------------ */
+
+std::ostream& operator<<(std::ostream& os, const SessionState& ss)
+{
+    switch (ss) {
+    case SessionState::SESSION_CLOSED:
+        os << "SESSION CLOSE";
+        break;
+    case SessionState::SESSION_OPEN:
+        os << "SESSION OPEN";
+        break;
+    case SessionState::SESSION_UNINITIALIZED:
+        os << "SESSION UNINITIALIZED";
+        break;
+    default:
+        os << "UNKNOWN";
+        break;
+    }
+
+    return os;
 }
 
 }

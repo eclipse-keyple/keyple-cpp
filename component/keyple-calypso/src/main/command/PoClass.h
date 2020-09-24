@@ -34,37 +34,22 @@ public:
     /**
      *
      */
-    static PoClass LEGACY;
+    static const PoClass LEGACY;
 
     /**
      *
      */
-    static PoClass ISO;
+    static const PoClass ISO;
 
     /**
      *
      */
-    enum class InnerEnum { LEGACY, ISO };
+    virtual uint8_t getValue() const;
 
     /**
      *
      */
-    InnerEnum innerEnumValue;
-
-    /**
-     *
-     */
-    virtual char getValue();
-
-    /**
-     *
-     */
-    PoClass(const std::string& name, InnerEnum innerEnum, char cla);
-
-    /**
-     *
-     */
-    PoClass(const PoClass& o);
+    PoClass(const std::string& name, const uint8_t cla);
 
     /**
      *
@@ -74,32 +59,22 @@ public:
     /**
      *
      */
-    bool operator==(const PoClass& other) const;
+    PoClass& operator=(const PoClass& o);
 
     /**
      *
      */
-    bool operator!=(const PoClass& other) const;
+    bool operator==(const PoClass& o) const;
 
     /**
      *
      */
-    PoClass& operator=(const PoClass o);
+    bool operator!=(const PoClass& o) const;
 
     /**
      *
      */
-    static std::vector<PoClass> values();
-
-    /**
-     *
-     */
-    int ordinal();
-
-    /**
-     *
-     */
-    static PoClass valueOf(const std::string& name);
+    static const PoClass& valueOf(const std::string& name);
 
 	/**
 	 *
@@ -110,40 +85,12 @@ private:
     /**
      *
      */
-    std::string nameValue;
+    std::string mName;
 
     /**
      *
      */
-    int ordinalValue;
-
-    /**
-     *
-     */
-    static int nextOrdinal;
-
-    /**
-     *
-     */
-    char cla;
-
-    /**
-     *
-     */
-    static std::vector<PoClass> valueList;
-
-    /**
-     *
-     */
-    class StaticConstructor {
-    public:
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static StaticConstructor staticConstructor;
+    uint8_t mCla;
 };
 
 }

@@ -32,9 +32,12 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::exception;
 using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
+
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 const std::map<int, std::shared_ptr<StatusProperties>>
     SamReadCeilingsRespPars::STATUS_TABLE = {
@@ -52,14 +55,17 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         0x6200,
         std::make_shared<StatusProperties>(
             "Correct execution with warning: data not signed.",
-            typeid(ClassNotFouncException))
+            typeid(ClassNotFoundException))
     }
 };
 
 SamReadCeilingsRespPars::SamReadCeilingsRespPars(
   const std::shared_ptr<ApduResponse> response,
   SamReadCeilingsCmdBuild* builder)
-: AbstractSamResponseParser(response, builder) {}
+: AbstractSamResponseParser(
+   response,
+   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
+{}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     SamReadCeilingsRespPars::getStatusTable() const

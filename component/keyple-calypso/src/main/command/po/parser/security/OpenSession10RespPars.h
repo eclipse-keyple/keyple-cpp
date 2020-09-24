@@ -38,14 +38,14 @@ public:
      * @param response from OpenSession10RespPars
      * @param builder the reference to the builder that created this parser
      */
-    OpenSession10RespPars(std::shared_ptr<ApduResponse> response);
+    OpenSession10RespPars(std::shared_ptr<ApduResponse> response,
+                          OpenSession10CmdBuild* builder);
 
     /**
      *
      */
     std::shared_ptr<SecureSession> toSecureSession(
-        const std::vector<uint8_t>& apduResponseData,
-        OpenSession10CmdBuild* builder);
+        const std::vector<uint8_t>& apduResponseData) override;
 
     /**
      *

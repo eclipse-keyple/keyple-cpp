@@ -22,6 +22,11 @@
 #include "AbstractOpenSessionCmdBuild.h"
 #include "AbstractOpenSessionRespPars.h"
 
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { namespace security { class OpenSession24RespPars; } } } }
+    } }
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -52,9 +57,13 @@ public:
                           uint8_t sfi, uint8_t recordNumber);
 
     /**
-     *
+     * Return type should be
+     *   std::shared_ptr<OpenSession24RespPars>
+     * ... but moved to
+     *   std::shared_ptr<AbstractOpenSessionRespPars>
+     * ... because of invalid covariant return type error
      */
-    std::shared_ptr<OpenSession24RespPars> createResponseParser(
+    std::unique_ptr<AbstractOpenSessionRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -69,23 +78,12 @@ public:
     /**
      *
      */
-    virtual const uint8_t getSfi() const;
+    virtual uint8_t getSfi() const;
 
     /**
      *
      */
-    virtual const uint8_t getRecordNumber() const;
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<OpenSession24CmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<OpenSession24CmdBuild>(
-            AbstractOpenSessionCmdBuild<
-                OpenSession24RespPars>::shared_from_this());
-    }
+    virtual uint8_t getRecordNumber() const;
 
 private:
     /**

@@ -18,7 +18,8 @@
 #include "IllegalArgumentException.h"
 
 /* Calypso */
-#include "CalypsoSamCommands.h"
+#include "CardGenerateKeyRespPars.h"
+#include "CalypsoSamCommand.h"
 #include "KeyReference.h"
 
 namespace keyple {
@@ -30,15 +31,16 @@ namespace security {
 
 using namespace keyple::calypso;
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::security;
 using namespace keyple::common;
 
-const CalypsoSamCommand& CardGenerateKeyCmdBuild::mCommand =
-    CalypsoSamCommand::CARD_GENERATE_KEY;
-
 CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
-  const SamRevision& revision, const std::shared_ptr<KeyReference> cipheringKey,
+  const SamRevision& revision,
+  const std::shared_ptr<KeyReference> cipheringKey,
   const std::shared_ptr<KeyReference> sourceKey)
-: AbstractSamCommandBuilder(CalypsoSamCommands::CARD_GENERATE_KEY, nullptr)
+: AbstractSamCommandBuilder(
+      std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::CARD_GENERATE_KEY),
+      nullptr)
 {
     //if (revision != nullptr) {
     mDefaultRevision = revision;
@@ -74,13 +76,15 @@ CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
         data[4] = 0x90;
     }
 
-    mRequest = setApduRequest(cla, command, p1, p2, data);
+    mRequest = setApduRequest(cla, mCommand, p1, p2, data);
 }
 
-std::shared_ptr<CardGenerateKeyRespPars> createResponseParser(
-    std::shared_ptr<ApduResponse> apduResponse) override
+std::unique_ptr<CardGenerateKeyRespPars>
+    CardGenerateKeyCmdBuild::createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<CardGenerateKeyRespPars>(apduResponse, this);
+    return std::unique_ptr<CardGenerateKeyRespPars>(
+               new CardGenerateKeyRespPars(apduResponse, this));
 }
 
 }

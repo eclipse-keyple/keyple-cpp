@@ -12,12 +12,15 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "SamReadEventCounterCmdBuild.h"
+
 /* Common */
-#include "exceptionhelper.h"
+#include "IllegalArgumentException.h"
+#include "IllegalStateException.h"
 #include "stringhelper.h"
 
 /* Calypso */
-#include "SamReadEventCounterCmdBuild.h"
+#include "SamReadEventCounterRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -27,16 +30,15 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
-
-const CalypsoSamCommand& SamReadEventCounterCmdBuild::mCommand =
-    CalypsoSamCommand::READ_EVENT_COUNTER;
-const int SamReadEventCounterCmdBuild::MAX_COUNTER_NUMB     = 26;
-const int SamReadEventCounterCmdBuild::MAX_COUNTER_REC_NUMB = 3;
+using namespace keyple::common;
 
 SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
-  cosnt SamRevision& revision, const SamEventCounterOperationType operationType,
+  const SamRevision& revision,
+  const SamEventCounterOperationType operationType,
   const uint8_t index)
-: AbstractSamCommandBuilder(command, nullptr)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_EVENT_COUNTER),
+    nullptr)
 {
     mDefaultRevision = revision;
 
@@ -55,25 +57,25 @@ SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
     /* SINGLE_COUNTER */
     } else {
         if (index > MAX_COUNTER_NUMB) {
-            throw IllegalArgumentException(StringHelper::formatSimple(
-                "Counter Number must be between 0 and %d", MAX_COUNTER_NUMB));
+            throw IllegalArgumentException(
+                      StringHelper::formatSimple(
+                          "Counter Number must be between 0 and %d",
+
+                          MAX_COUNTER_NUMB));
         }
 
         p2 = 0x80 + index;
-        break;
-    default:
-        throw IllegalStateException(StringHelper::formatSimple(
-            "Unsupported OperationType parameter %d", operationType));
     }
 
-    mRequest = setApduRequest(cla, command, 0x00, p2, 0x00);
+    mRequest = setApduRequest(cla, mCommand, 0x00, p2, 0x00);
 }
 
-std::shared_ptr<SamReadEventCounterRespPars>
+std::unique_ptr<SamReadEventCounterRespPars>
     SamReadEventCounterCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<SamReadEventCounterRespPars>(apduResponse, this);
+    return std::unique_ptr<SamReadEventCounterRespPars>(
+               new SamReadEventCounterRespPars(apduResponse, this));
 }
 
 }

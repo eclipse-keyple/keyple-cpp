@@ -58,9 +58,11 @@ const CalypsoPoCommand CalypsoPoCommand::SELECT_FILE(
     "Select File", 0xA4);
 const CalypsoPoCommand CalypsoPoCommand::CHANGE_KEY(
     "Change Key", 0xD8);
+const CalypsoPoCommand CalypsoPoCommand::GET_DATA_TRACE(
+    "Get Data 'Trace'", 0xD8);
 
-CalypsoPoCommand::CalypsoPoCommand(
-  const std::string& name, uint8_t instructionByte)
+CalypsoPoCommand::CalypsoPoCommand(const std::string& name,
+                                   const uint8_t instructionByte)
 : mName(name), mInstructionbyte(instructionByte) {}
 
 const std::string& CalypsoPoCommand::getName() const
@@ -91,13 +93,13 @@ const CalypsoPoCommand& CalypsoPoCommand::getOpenSessionForRev(PoRevision rev)
     }
 }
 
-bool CalypsoPoCommand::operator==(const CalypsoPoCommand& other)
+bool CalypsoPoCommand::operator==(const CalypsoPoCommand& other) const
 {
     return this->mInstructionbyte == other.mInstructionbyte &&
            this->mName == other.mName;
 }
 
-bool CalypsoPoCommand::operator!=(const CalypsoPoCommand& other)
+bool CalypsoPoCommand::operator!=(const CalypsoPoCommand& other) const
 {
     return !(*this == other);
 }

@@ -35,20 +35,21 @@ using namespace keyple::core::seproxy::message;
 
 PoGetChallengeCmdBuild::PoGetChallengeCmdBuild(PoClass poClass)
 : AbstractPoCommandBuilder<PoGetChallengeRespPars>(
-      CalypsoPoCommands::GET_CHALLENGE, nullptr)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::GET_CHALLENGE),
+      nullptr)
 {
-    this->request =
-        setApduRequest(poClass.getValue(), command, 0x01, 0x10, 0x08);
+    mRequest = setApduRequest(poClass.getValue(), command, 0x01, 0x10, 0x08);
 }
 
-std::shared_ptr<PoGetChallengeRespPars>
-PoGetChallengeCmdBuild::createResponseParser(
-    std::shared_ptr<ApduResponse> apduResponse)
+std::unique_ptr<PoGetChallengeRespPars>
+    PoGetChallengeCmdBuild::createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<PoGetChallengeRespPars>(apduResponse, this);
+    return std::unique_ptr<PoGetChallengeRespPars>(
+               new PoGetChallengeRespPars(apduResponse, this));
 }
 
-bool OpenSession10CmdBuild::isSessionBufferUsed() const
+bool PoGetChallengeCmdBuild::isSessionBufferUsed() const
 {
     return false;
 }

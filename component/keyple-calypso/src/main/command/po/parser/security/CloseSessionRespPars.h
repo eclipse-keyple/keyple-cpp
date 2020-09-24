@@ -30,9 +30,11 @@ namespace po {
 namespace parser {
 namespace security {
 
+using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 /**
  * Close Secure Session (008E) response parser. See specs: Calypso / page 104 /
  * 9.5.2 - Close Secure Session
@@ -63,35 +65,24 @@ protected:
     /**
      *
      */
-    std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        getStatusTable() const override;
-
-    /**
-     *
-     */
-    std::shared_ptr<CloseSessionRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<CloseSessionRespPars>(
-            AbstractApduResponseParser::shared_from_this());
-    }
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
+        const override;
 
 private:
     /**
      * The signatureLo
      */
-    std::vector<uint8_t> signatureLo;
+    std::vector<uint8_t> mSignatureLo;
 
     /**
      * The postponed data
      */
-    std::vector<uint8_t> postponedData;
+    std::vector<uint8_t> mPostponedData;
 
     /**
      *
      */
-    static std::map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
+    static const  std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 
     /**
      *

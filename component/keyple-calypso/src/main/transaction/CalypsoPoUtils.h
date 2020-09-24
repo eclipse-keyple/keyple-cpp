@@ -16,11 +16,16 @@
 
 #include "AbstractOpenSessionCmdBuild.h"
 #include "AbstractOpenSessionRespPars.h"
+#include "AppendRecordRespPars.h"
 #include "CalypsoPo.h"
+#include "DecreaseRespPars.h"
+#include "FileHeader.h"
+#include "IncreaseRespPars.h"
 #include "ReadRecordsCmdBuild.h"
-#include "ReadRecordRespPars.h"
 #include "SelectFileCmdBuild.h"
 #include "SelectFileControl.h"
+#include "UpdateRecordRespPars.h"
+#include "WriteRecordRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -30,6 +35,8 @@ using namespace keyple::calypso::command::po::builder;
 using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::calypso::command::po::parser::security;
+
+using FileType = FileHeader::FileType;
 
 /**
  * Utility class used to check Calypso specific data.
@@ -153,7 +160,7 @@ public:
      * @return a {@link ReadRecordsCmdBuild} object
      */
     static std::unique_ptr<ReadRecordsCmdBuild> prepareReadRecordFile(
-        const PoClass poClass, const uint8_t sfi, const uint8_t recordNumber);
+        const PoClass& poClass, const uint8_t sfi, const uint8_t recordNumber);
 
     /**
      * Create a Select File command builder for the provided LID
@@ -163,7 +170,7 @@ public:
      * @return a {@link SelectFileCmdBuild} object
      */
     static std::unique_ptr<SelectFileCmdBuild> prepareSelectFile(
-        const PoClass poClass, const std::vector<uint8_t>& lid);
+        const PoClass& poClass, const std::vector<uint8_t>& lid);
 
     /**
      * Create a Select File command builder for the provided select control
@@ -173,7 +180,7 @@ public:
      * @return a {@link SelectFileCmdBuild} object
      */
     static std::unique_ptr<SelectFileCmdBuild> prepareSelectFile(
-        const PoClass poClass, const SelectFileControl selectControl);
+        const PoClass& poClass, const SelectFileControl selectControl);
 
 private:
     /**

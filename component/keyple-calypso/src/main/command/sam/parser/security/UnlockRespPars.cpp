@@ -31,8 +31,11 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::exception;
 using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::core::seproxy::message;
+
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 const std::map<int, std::shared_ptr<StatusProperties>>
     UnlockRespPars::STATUS_TABLE = {
@@ -55,8 +58,10 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 };
 
 UnlockRespPars::UnlockRespPars(
- const std::shared_ptr<ApduResponse> response, UnlockCmdBuild* buidlder)
-: AbstractApduResponseParser(response, builder) {}
+ const std::shared_ptr<ApduResponse> response, UnlockCmdBuild* builder)
+: AbstractApduResponseParser(
+    response,
+    builder) {}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     UnlockRespPars::getStatusTable() const

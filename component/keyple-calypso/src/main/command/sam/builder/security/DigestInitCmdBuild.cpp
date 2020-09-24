@@ -18,6 +18,9 @@
 #include "IllegalArgumentException.h"
 #include "System.h"
 
+/* Calypso */
+#include "DigestInitRespPars.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
@@ -27,28 +30,28 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 
-const CalypsoSamCommand& DigestInitCmdBuild::mCommand =
-    CalypsoSamCommand::DIGEST_INIT;
-
 DigestInitCmdBuild::DigestInitCmdBuild(
-  const SamRevision revision, const bool verificationMode,
-  const bool confidentialSessionMode, const uint8_t workKeyRecordNumber,
-  const uint8_t workKeyKif, const uint8_t workKeyKVC,
+  const SamRevision& revision,
+  const bool verificationMode,
+  const bool confidentialSessionMode,
+  const uint8_t workKeyRecordNumber,
+  const uint8_t workKeyKif,
+  const uint8_t workKeyKVC,
   const std::vector<uint8_t>& digestData)
-: AbstractSamCommandBuilder(CalypsoSamCommand::DIGEST_INIT, nullptr)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::DIGEST_INIT),
+    nullptr)
 {
     mDefaultRevision = revision;
 
     if (workKeyRecordNumber == 0x00 &&
-        (workKeyKif == 0x00 || workKeyKVC == 0x00)) {
+        (workKeyKif == 0x00 || workKeyKVC == 0x00))
         throw IllegalArgumentException("Bad key record number, kif or kvc!");
-    }
 
-    if (digestData.empty()) {
+    if (digestData.empty())
         throw IllegalArgumentException("Digest data is null!");
-    }
 
-    uint8_t cla = SamRevision::S1D == (this->defaultRevision) ? 0x94 : 0x80;
+    const uint8_t cla = SamRevision::S1D == (mDefaultRevision) ? 0x94 : 0x80;
     uint8_t p1  = 0x00;
 
     if (verificationMode)
@@ -73,13 +76,14 @@ DigestInitCmdBuild::DigestInitCmdBuild(
         dataIn = digestData;
     }
 
-    mRequest = setApduRequest(cla, command, p1, p2, dataIn);
+    mRequest = setApduRequest(cla, mCommand, p1, p2, dataIn);
 }
 
-std::shared_ptr<DigestInitRespPars> DigestInitCmdBuild:createResponseParser(
+std::unique_ptr<DigestInitRespPars> DigestInitCmdBuild::createResponseParser(
     const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<DigestInitRespPars>(apduResponse, this);
+    return std::unique_ptr<DigestInitRespPars>(
+               new DigestInitRespPars(apduResponse, this));
 }
 
 }

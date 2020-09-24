@@ -23,6 +23,7 @@ namespace calypso {
  * specification)
  */
 enum class SelectFileControl {
+    NONE,
     /** The first EF of the current Calypso DF */
     FIRST_EF,
     /** The next EF of the current Calypso DF */
@@ -30,6 +31,29 @@ enum class SelectFileControl {
     /** The Calypso DF */
     CURRENT_DF
 };
+
+std::ostream& operator<<(std::ostream& os, const SelectFileControl& sfc)
+{
+    switch (sfc) {
+    case SelectFileControl::NONE:
+        os << "NONE";
+        break;
+    case SelectFileControl::FIRST_EF:
+        os << "FIRST EF";
+        break;
+    case SelectFileControl::NEXT_EF:
+        os << "NEXT EF";
+        break;
+    case SelectFileControl::CURRENT_DF:
+        os << "CURRENT EF";
+        break;
+    default:
+        os << "UNKNOWN (" << static_cast<int>(sfc) << ")";
+        break;
+    }
+
+    return os;
+}
 
 }
 }

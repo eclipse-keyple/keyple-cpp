@@ -20,8 +20,12 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
-#include "GiveRandomRespPars.h"
 #include "SamRevision.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class GiveRandomRespPars; } } } } }
+    }
 
 namespace keyple {
 namespace calypso {
@@ -31,6 +35,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Give Random APDU command.
@@ -53,24 +58,14 @@ public:
     /**
      *
      */
-    std::shared_ptr<GiveRandomRespPars> createResponseParser(
+    std::unique_ptr<GiveRandomRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<GiveRandomCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<GiveRandomCmdBuild>(
-            AbstractSamCommandBuilder::shared_from_this());
-    }
 
 private:
     /**
      * The command reference
      */
-    static const CalypsoSamCommand& mCommand;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::GIVE_RANDOM;
 };
 
 }

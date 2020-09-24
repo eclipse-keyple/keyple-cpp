@@ -20,8 +20,12 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
-#include "DigestInitRespPars.h"
 #include "SamRevision.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class DigestInitRespPars; } } } }
+    } }
 
 namespace keyple {
 namespace calypso {
@@ -31,6 +35,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Digest Init APDU command.
@@ -53,33 +58,25 @@ public:
      * @throw IllegalArgumentException - if the digest data is null
      * @throw IllegalArgumentException - if the request is inconsistent
      */
-    DigestInitCmdBuild(const SamRevision& revision, const bool verificationMode,
+    DigestInitCmdBuild(const SamRevision& revision,
+                       const bool verificationMode,
                        const bool confidentialSessionMode,
                        const uint8_t workKeyRecordNumber,
-                       const uint8_t workKeyKif, const uint8_t workKeyKVC,
+                       const uint8_t workKeyKif,
+                       const uint8_t workKeyKVC,
                        const std::vector<uint8_t>& digestData);
 
     /**
      *
      */
-    std::shared_ptr<DigestInitRespPars> createResponseParser(
+    std::unique_ptr<DigestInitRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<DigestInitCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<DigestInitCmdBuild>(
-            AbstractSamCommandBuilder::shared_from_this());
-    }
 
 private:
     /**
      * The command.
      */
-    static const CalypsoSamCommand& mCommand;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::DIGEST_INIT;
 };
 
 }

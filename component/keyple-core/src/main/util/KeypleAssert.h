@@ -44,7 +44,7 @@ public:
      * @throw IllegalArgumentException if object is null
      * @since 0.9
      */
-    const KeypleAssert& notNull(void* obj, const std::string& name);
+    const KeypleAssert& notNull(void* obj, const std::string& name) const;
 
     /**
      * Assert that the input string is not null and not empty.
@@ -56,7 +56,7 @@ public:
      * @since 0.9
      */
     const KeypleAssert& notEmpty(const std::string& obj,
-                                 const std::string& name);
+                                 const std::string& name) const;
 
     /**
      * Assert that a list of objects is not null and not empty.
@@ -87,7 +87,7 @@ public:
      * @since 0.9
      */
     const KeypleAssert& notEmpty(const std::vector<uint8_t> obj,
-                                 const std::string& name);
+                                 const std::string& name) const;
 
     /**
      * Assert that a condition is true.
@@ -98,7 +98,8 @@ public:
      * @throw IllegalArgumentException if condition is null or false
      * @since 0.9
      */
-    const KeypleAssert& isTrue(const bool condition, const std::string& name);
+    const KeypleAssert& isTrue(const bool condition, const std::string& name)
+        const;
 
     /**
      * Assert that an integer is not null and is greater than or equal to minValue.
@@ -113,7 +114,7 @@ public:
      */
     const KeypleAssert& greaterOrEqual(const int number,
                                        const int minValue,
-                                       const std::string& name);
+                                       const std::string& name) const;
 
     /**
      * Assert that an integer is equal to value.
@@ -128,7 +129,7 @@ public:
      */
     const KeypleAssert& isEqual(const int number,
                                 const int value,
-                                const std::string& name);
+                                const std::string& name) const;
 
     /**
      * Assert that an integer is not null and is in the range minValue, maxValue.
@@ -144,7 +145,7 @@ public:
     const KeypleAssert& isInRange(const int number,
                                   const int minValue,
                                   const int maxValue,
-                                  const std::string& name);
+                                  const std::string& name) const;
 
 private:
     /**

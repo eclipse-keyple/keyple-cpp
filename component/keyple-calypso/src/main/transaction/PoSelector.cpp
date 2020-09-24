@@ -12,9 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-
 #include "PoSelector.h"
+
+/* Core */
 #include "SeProtocol.h"
+#include "SeSelector.h"
 
 namespace keyple {
 namespace calypso {
@@ -23,9 +25,9 @@ namespace transaction {
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
 
+using PoSelectorBuilder = PoSelector::PoSelectorBuilder;
+using SeSelectorBuilder = SeSelector::SeSelectorBuilder;
 /* PO SELECTOR -------------------------------------------------------------- */
-
-const int PoSelector::SW_PO_INVALIDATED = 0x6283;
 
 PoSelector::PoSelector(PoSelectorBuilder* builder)
 : SeSelector(builder)
@@ -52,26 +54,29 @@ PoSelectorBuilder& PoSelectorBuilder::invalidatedPo(
 }
 
 PoSelectorBuilder& PoSelectorBuilder::seProtocol(
-    const std::shared_ptr<SeProtocol> seProtocol) override
+    const std::shared_ptr<SeProtocol> seProtocol)
 {
-    return SeSelector::SeSelectorBuilder::seProtocol(seProtocol);
+    return dynamic_cast<PoSelectorBuilder&>(
+               SeSelectorBuilder::seProtocol(seProtocol));
 }
 
 PoSelectorBuilder& PoSelectorBuilder::atrFilter(
-    const std::shared_ptr<AtrFilter> atrFilter) override
+    const std::shared_ptr<AtrFilter> atrFilter)
 {
-    return SeSelector::SeSelectorBuilder::atrFilter(atrFilter);
+    return dynamic_cast<PoSelectorBuilder&>(
+               SeSelectorBuilder::atrFilter(atrFilter));
 }
 
 PoSelectorBuilder& PoSelectorBuilder::aidSelector(
-    const std::shared_ptr<AidSelector> aidSelector) override
+    const std::shared_ptr<AidSelector> aidSelector)
 {
-    return SeSelector::SeSelectorBuilder::aidSelector(aidSelector);
+    return dynamic_cast<PoSelectorBuilder&>(
+               SeSelectorBuilder::aidSelector(aidSelector));
 }
 
-std::unique_ptr<PoSelector> PoSelectorBuilder::build() override
+std::unique_ptr<SeSelector> PoSelectorBuilder::build()
 {
-    return std::unique_ptr<PoSelectorBuilder>(new PoSelector(this));
+    return std::unique_ptr<PoSelector>(new PoSelector(this));
 }
 
 }

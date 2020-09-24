@@ -15,22 +15,27 @@
 #include "PoSecuritySettings.h"
 
 /* Common */
+#include "IllegalStateException.h"
+#include "NoSuchElementException.h"
+
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-const PoSecuritySettings::ModificationMode mDefaultSessionModificationMode =
-    ModificationMode::ATOMIC;
-const PoSecuritySettings::RatificationMode mDefaultRatificationMode =
-    RatificationMode::CLOSE_RATIFIED;
+using namespace keyple::common;
+
+using PoSecuritySettingsBuilder = PoSecuritySettings::PoSecuritySettingsBuilder;
+
+/* PO SECURITY SETTINGS ----------------------------------------------------- */
 
 PoSecuritySettings::PoSecuritySettings(PoSecuritySettingsBuilder* builder)
-: mSamResource(builder->samResource),
-  mAuthorizedKvcList(builder->authorizedKvcList),
-  mDefaultKif(builder->defaultKif), mDefaultKvc(builder->defaultKvc),
-  mDefaultKeyRecordNumber(builder->defaultKeyRecordNumber),
-  mSessionModificationMode(builder->sessionModificationMode),
-  mRatificationMode(builder->ratificationMode) {}
+: mSamResource(builder->mSamResource),
+  mAuthorizedKvcList(builder->mAuthorizedKvcList),
+  mDefaultKif(builder->mDefaultKif),
+  mDefaultKvc(builder->mDefaultKvc),
+  mDefaultKeyRecordNumber(builder->mDefaultKeyRecordNumber),
+  mSessionModificationMode(builder->mSessionModificationMode),
+  mRatificationMode(builder->mRatificationMode) {}
 
 const std::shared_ptr<SeResource<CalypsoSam>>
     PoSecuritySettings::getSamResource() const
@@ -38,55 +43,57 @@ const std::shared_ptr<SeResource<CalypsoSam>>
     return mSamResource;
 }
 
-const ModificationMode& PoSecuritySettings::getSessionModificationMode() const
+ModificationMode PoSecuritySettings::getSessionModificationMode() const
 {
     return mSessionModificationMode;
 }
 
-const RatificationMode& PoSecuritySettings::getRatificationMode() const
+RatificationMode PoSecuritySettings::getRatificationMode() const
 {
     return mRatificationMode;
 }
 
-const uint8_t PoSecuritySettings::getSessionDefaultKif(
+uint8_t PoSecuritySettings::getSessionDefaultKif(
     const AccessLevel sessionAccessLevel) const
 {
     /* C++ vs. Java: throw error when not found */
-    std::map<AccessLevel, uint8_t>::const_iterator it;
-    if ((it = mDefaultKif.find(sessionAccessLevel) == mDefaultKif.end()))
+    const auto it = mDefaultKif.find(sessionAccessLevel);
+    if (it == mDefaultKif.end())
         throw NoSuchElementException("AccessLevel not found in default KIF");
 
-    return *it;
+    return it->second;
 }
 
-const uint8_t PoSecuritySettings::getSessionDefaultKvc(
+uint8_t PoSecuritySettings::getSessionDefaultKvc(
     const AccessLevel sessionAccessLevel) const
 {
     /* C++ vs. Java: throw error when not found */
-    std::map<AccessLevel, uint8_t>::const_iterator it;
-    if ((it = mDefaultKvc.find(sessionAccessLevel) == mDefaultKvc.end()))
+    const auto it = mDefaultKvc.find(sessionAccessLevel);
+    if (it == mDefaultKvc.end())
         throw NoSuchElementException("AccessLevel not found in default KVC");
 
-    return *it;
+    return it->second;
 }
 
-const uint8_t PoSecuritySettings::getSessionDefaultKeyRecordNumber(
+uint8_t PoSecuritySettings::getSessionDefaultKeyRecordNumber(
     const AccessLevel sessionAccessLevel) const
 {
     /* C++ vs. Java: throw error when not found */
-    std::map<AccessLevel, uint8_t>::const_iterator it;
-    if ((it = mDefaultKeyRecordNumber.find(sessionAccessLevel) ==
-        mDefaultKeyRecordNumber.end()))
+    const auto it = mDefaultKeyRecordNumber.find(sessionAccessLevel);
+    if (it == mDefaultKeyRecordNumber.end())
         throw NoSuchElementException("AccessLevel not found in default KRN");
 
-    return *it;
+    return it->second;
 }
 
-const bool PoSecuritySettings::isSessionKvcAuthorized(const uint8_t kvc) const
+bool PoSecuritySettings::isSessionKvcAuthorized(const uint8_t kvc) const
 {
     return mAuthorizedKvcList.empty() ||
-           (mAuthorizedKvcList.find(kvc) != mAuthorizedKvcList.end());
+           (std::find(mAuthorizedKvcList.begin(), mAuthorizedKvcList.end(), kvc)
+               != mAuthorizedKvcList.end());
 }
+
+/* PO SECURITY SETTINGS BUILDER --------------------------------------------- */
 
 PoSecuritySettingsBuilder::PoSecuritySettingsBuilder(
     std::shared_ptr<SeResource<CalypsoSam>> samResource)

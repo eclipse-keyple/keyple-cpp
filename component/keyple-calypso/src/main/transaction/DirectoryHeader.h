@@ -37,8 +37,13 @@ public:
      * (package-private)<br>
      * Builder pattern
      */
-    static class DirectoryHeaderBuilder final {
+    class DirectoryHeaderBuilder final {
     public:
+        /**
+         * Friend declaration to give access to private members
+         */
+        friend DirectoryHeader;
+
         /**
          * (package-private)<br>
          * Sets the LID.
@@ -87,7 +92,8 @@ public:
          * @param kif the KIF value
          * @return the builder instance
          */
-        DirectoryHeaderBuilder& kif(const AccessLevel level, const uint8_t kif);
+        DirectoryHeaderBuilder& kif(const AccessLevel& level,
+                                    const uint8_t kif);
 
         /**
          * (package-private)<br>
@@ -97,7 +103,8 @@ public:
          * @param kvc the KVC value
          * @return the builder instance
          */
-        DirectoryHeaderBuilder& kvc(const AccessLevel level, const uint8_t kvc);
+        DirectoryHeaderBuilder& kvc(const AccessLevel& level,
+                                    const uint8_t kvc);
 
         /**
          * (package-private)<br>
@@ -106,6 +113,12 @@ public:
          * @return a new instance
          */
         std::unique_ptr<DirectoryHeader> build();
+
+    protected:
+        /**
+         * Private constructor
+         */
+        DirectoryHeaderBuilder();
 
     private:
         /**
@@ -116,7 +129,7 @@ public:
         /**
          *
          */
-        std:vector<uint8_t> mAccessConditions;
+        std::vector<uint8_t> mAccessConditions;
 
         /**
          *
@@ -137,12 +150,7 @@ public:
          *
          */
         std::map<AccessLevel, uint8_t> mKvc;
-
-        /**
-         * Private constructor
-         */
-        DirectoryHeaderBuilder();
-    }
+    };
 
     /**
      * Gets the associated LID.
@@ -150,7 +158,7 @@ public:
      * @return the LID
      * @since 0.9
      */
-    const uint8_t getLid() const;
+    uint8_t getLid() const;
 
     /**
      * Gets a reference to access conditions.
@@ -174,7 +182,7 @@ public:
      * @return the DF status byte
      * @since 0.9
      */
-    const uint8_t getDfStatus() const;
+    uint8_t getDfStatus() const;
 
     /**
      * Gets the KIF associated to the provided session access level.
@@ -185,7 +193,7 @@ public:
      * @throw NoSuchElementException if KIF is not found.
      * @since 0.9
      */
-    const uint8_t getKif(const AccessLevel level) const;
+    uint8_t getKif(const AccessLevel& level) const;
 
     /**
      * Gets the KVC associated to the provided session access level.
@@ -196,7 +204,7 @@ public:
      * @throw NoSuchElementException if KVC is not found.
      * @since 0.9
      */
-    const uint8_t getKvc(const AccessLevel level) const;
+    uint8_t getKvc(const AccessLevel& level) const;
 
     /**
      * (package-private)<br>
@@ -213,7 +221,7 @@ public:
      * @return the comparison evaluation
      * @since 0.9
      */
-    bool operator==(const DirectoryHeader& o) const override;
+    bool operator==(const DirectoryHeader& o) const;
 
     /**
      *

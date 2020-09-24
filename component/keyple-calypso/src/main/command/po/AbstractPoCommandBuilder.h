@@ -50,9 +50,11 @@ template<typename T>
 class KEYPLECALYPSO_API AbstractPoCommandBuilder
 : public AbstractIso7816CommandBuilder {
 public:
+    /*
     static_assert(std::is_base_of<AbstractPoResponseParser, T>::value,
                   "T must inherit from keyple::core::command" \
                   "::AbstractApduResponseParser");
+    */
 
     /**
      * Constructor dedicated for the building of referenced Calypso commands
@@ -60,8 +62,8 @@ public:
      * @param commandRef a command reference from the Calypso command table
      * @param request the ApduRequest (the instruction byte will be overwritten)
      */
-    AbstractPoCommandBuilder(
-      CalypsoPoCommand& commandRef, std::shared_ptr<ApduRequest> request)
+    AbstractPoCommandBuilder(std::shared_ptr<CalypsoPoCommand> commandRef,
+                             std::shared_ptr<ApduRequest> request)
     : AbstractIso7816CommandBuilder(commandRef, request) {}
 
     /**
@@ -75,15 +77,17 @@ public:
      * @param apduResponse the response data from the SE
      * @return an {@link AbstractApduResponseParser}
      */
-    virtual std::shared_ptr<T> createResponseParser(
+    virtual std::unique_ptr<T> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) = 0;
 
     /**
-     *
+     * Return type should be
+     *   std::shared_ptr<CalypsoPoCommand>
+     * ... but compiler complains about an invalid covariant return type
      */
-    virtual std::shared_ptr<CalypsoPoCommand> getCommandRef() const override
+    virtual const std::shared_ptr<SeCommand> getCommandRef() const override
     {
-        return std::dynamic_pointer_cast<CalypsoPoCommand>(mCommandRef);
+        return std::dynamic_pointer_cast<SeCommand>(mCommandRef);
     }
 
     /**

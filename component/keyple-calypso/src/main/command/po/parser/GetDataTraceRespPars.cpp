@@ -27,7 +27,11 @@ namespace command {
 namespace po {
 namespace parser {
 
-std::map<int, std::shared_ptr<StatusProperties>>
+using namespace keyple::calypso::command::po::exception;
+
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
+
+const std::map<int, std::shared_ptr<StatusProperties>>
     GetDataTraceRespPars::STATUS_TABLE = {
     {
         0x6A88,
@@ -50,7 +54,10 @@ std::map<int, std::shared_ptr<StatusProperties>>
 
 GetDataTraceRespPars::GetDataTraceRespPars(
   std::shared_ptr<ApduResponse> response, GetDataTraceCmdBuild* builder)
-: AbstractPoResponseParser(response, builder) {}
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+{}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     GetDataTraceRespPars::getStatusTable() const

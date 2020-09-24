@@ -19,8 +19,11 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
-#include "ChangeKeyRespPars.h"
 #include "PoClass.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { namespace security { class ChangeKeyRespPars; } } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -44,13 +47,14 @@ public:
      * @param keyIndex index of the key of the current DF to change
      * @param cryptogram key encrypted with Issuer key (key #1)
      */
-    ChangeKeyCmdBuild(PoClass poClass, uint8_t keyIndex,
-                      std::vector<uint8_t>& cryptogram);
+    ChangeKeyCmdBuild(const PoClass poClass,
+                      const uint8_t keyIndex,
+                      const std::vector<uint8_t>& cryptogram);
 
     /**
      *
      */
-    std::shared_ptr<ChangeKeyRespPars> createResponseParser(
+    std::unique_ptr<ChangeKeyRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -62,21 +66,11 @@ public:
      */
     virtual bool isSessionBufferUsed() const override;
 
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<ChangeKeyCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<ChangeKeyCmdBuild>(
-            AbstractPoCommandBuilder<ChangeKeyRespPars>::shared_from_this());
-    }
-
 private:
     /**
      *
      */
-    CalypsoPoCommand& command = CalypsoPoCommand::CHANGE_KEY;
+    const CalypsoPoCommand& command = CalypsoPoCommand::CHANGE_KEY;
 };
 
 }

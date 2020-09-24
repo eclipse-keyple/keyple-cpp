@@ -21,10 +21,11 @@
 
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommand.h"
-#include "DecreaseRespPars.h"
-#include "PoModificationCommand.h"
-#include "PoSendableInSession.h"
 #include "PoClass.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class DecreaseRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -57,13 +58,15 @@ public:
      * @throw IllegalArgumentException - if the decrement value is out of range
      * @throw IllegalArgumentException - if the command is inconsistent
      */
-    DecreaseCmdBuild(PoClass poClass, uint8_t sfi, uint8_t counterNumber,
-                     int decValue);
+    DecreaseCmdBuild(const PoClass poClass,
+                     const uint8_t sfi,
+                     const uint8_t counterNumber,
+                     const int decValue);
 
     /**
      *
      */
-    std::shared_ptr<DecreaseRespPars> createResponseParser(
+    std::unique_ptr<DecreaseRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -89,21 +92,11 @@ public:
      */
     int getDecValue() const;
 
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<DecreaseCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<DecreaseCmdBuild>(
-            AbstractPoCommandBuilder<DecreaseRespPars>::shared_from_this());
-    }
-
 private:
     /**
      * The command
      */
-    CalypsoPoCommand& command = CalypsoPoCommand::DECREASE;
+    const CalypsoPoCommand& command = CalypsoPoCommand::DECREASE;
 
     /**
      * Construction arguments

@@ -29,6 +29,7 @@ namespace po {
 namespace parser {
 namespace security {
 
+using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
@@ -52,16 +53,6 @@ public:
      *
      */
     std::vector<uint8_t> getPoChallenge() const;
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<PoGetChallengeRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<PoGetChallengeRespPars>(
-            AbstractApduResponseParser::shared_from_this());
-    }
 };
 
 }

@@ -33,6 +33,7 @@ namespace po {
 namespace parser {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
@@ -40,7 +41,7 @@ using namespace keyple::core::util::bertlv;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-std::map<int, std::shared_ptr<StatusProperties>>
+const std::map<int, std::shared_ptr<StatusProperties>>
     GetDataFciRespPars::STATUS_TABLE = {
     {
         0x6A88,
@@ -89,7 +90,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
 
 GetDataFciRespPars::GetDataFciRespPars(
   std::shared_ptr<ApduResponse> response, GetDataFciCmdBuild* builder)
-: AbstractPoResponseParser(response, builder
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
 {
     std::shared_ptr<TLV> tlv = nullptr;
 
@@ -164,7 +167,7 @@ GetDataFciRespPars::GetDataFciRespPars(
     }
 }
 
-bool GetDataFciRespPars::isValidCalypsoFCI() const;
+bool GetDataFciRespPars::isValidCalypsoFCI() const
 {
     return mIsValidCalypsoFCI;
 }
@@ -180,7 +183,7 @@ const std::vector<uint8_t>& GetDataFciRespPars::getApplicationSerialNumber()
     return mApplicationSN;
 }
 
-const std::vector<uint8_t>& getDiscretionaryData() const
+const std::vector<uint8_t>& GetDataFciRespPars::getDiscretionaryData() const
 {
     return mDiscretionaryData;
 }

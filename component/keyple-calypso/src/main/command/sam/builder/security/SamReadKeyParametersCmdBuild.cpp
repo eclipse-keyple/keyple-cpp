@@ -12,12 +12,15 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "SamReadKeyParametersCmdBuild.h"
+
 /* Common */
-#include "exceptionhelper.h"
+#include "IllegalArgumentException.h"
+#include "IllegalStateException.h"
 #include "stringhelper.h"
 
 /* Calypso */
-#include "SamReadKeyParametersCmdBuild.h"
+#include "SamReadKeyParametersRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -27,69 +30,77 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
-
-const CalypsoSamCommands& SamReadKeyParametersCmdBuild::mCommand =
-    CalypsoSamCommands::READ_KEY_PARAMETERS;
-const int SamReadKeyParametersCmdBuild::MAX_WORK_KEY_REC_NUMB = 126;
+using namespace keyple::calypso::command::sam::parser::security;
 
 SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
   const SamRevision& revision)
-: AbstractSamCommandBuilder(CalypsoSamCommands::READ_KEY_PARAMETERS, nullptr)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_KEY_PARAMETERS),
+    nullptr)
 {
     mDefaultRevision = revision;
 
-    const uint8_t cla = this->defaultRevision.getClassByte();
+    const uint8_t cla = mDefaultRevision.getClassByte();
     const uint8_t p2  = 0xE0;
     const std::vector<uint8_t> sourceKeyId(0x00, 0x00);
 
-    mRequest = setApduRequest(cla, command, 0x00, p2, sourceKeyId, 0x00);
+    mRequest = setApduRequest(cla, mCommand, 0x00, p2, sourceKeyId, 0x00);
 }
 
 SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
   const SamRevision& revision, const uint8_t kif)
-: AbstractSamCommandBuilder(CalypsoSamCommands::READ_KEY_PARAMETERS, nullptr)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_KEY_PARAMETERS),
+    nullptr)
 {
     mDefaultRevision = revision;
 
-    const uint8_t cla = this->defaultRevision.getClassByte();
+    const uint8_t cla = mDefaultRevision.getClassByte();
     const uint8_t p2  = 0xC0;
 
     std::vector<uint8_t> sourceKeyId(0x00, 0x00);
     sourceKeyId[0] = kif;
 
-    mRequest = setApduRequest(cla, command, 0x00, p2, sourceKeyId, 0x00);
+    mRequest = setApduRequest(cla, mCommand, 0x00, p2, sourceKeyId, 0x00);
 }
 
 SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
   const SamRevision& revision, const uint8_t kif, const uint8_t kvc)
-: AbstractSamCommandBuilder(CalypsoSamCommands::READ_KEY_PARAMETERS, nullptr)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_KEY_PARAMETERS),
+    nullptr)
 {
     mDefaultRevision = revision;
 
-    const uint8_t cla = this->defaultRevision.getClassByte();
+    const uint8_t cla = mDefaultRevision.getClassByte();
     const uint8_t p2  = 0xF0;
 
     std::vector<uint8_t> sourceKeyId(0x00, 0x00);
     sourceKeyId[0] = kif;
     sourceKeyId[1] = kvc;
 
-    mRequest = setApduRequest(cla, command, 0x00, p2, sourceKeyId, 0x00);
+    mRequest = setApduRequest(cla, mCommand, 0x00, p2, sourceKeyId, 0x00);
 }
 
 SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
-  const SamRevision& revision, const SourceRef& sourceKeyRef,
+  const SamRevision& revision,
+  const SourceRef& sourceKeyRef,
   const uint8_t recordNumber)
-: AbstractSamCommandBuilder(CalypsoSamCommands::READ_KEY_PARAMETERS, nullptr)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_KEY_PARAMETERS),
+    nullptr)
 {
 
     mDefaultRevision = revision;
 
     if (recordNumber < 1 || recordNumber > MAX_WORK_KEY_REC_NUMB)
-        throw IllegalArgumentException(StringHelper::formatSimple(
-            "Record Number must be between 1 and %d", MAX_WORK_KEY_REC_NUMB));
+        throw IllegalArgumentException(
+                  StringHelper::formatSimple(
+                      "Record Number must be between 1 and %d",
+                      MAX_WORK_KEY_REC_NUMB));
 
 
-    const uint8_t cla = this->defaultRevision.getClassByte();
+    const uint8_t cla = mDefaultRevision.getClassByte();
     uint8_t p2 = 0x00;
     const std::vector<uint8_t> sourceKeyId(0x00, 0x00);
 
@@ -101,21 +112,23 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
         p2 = 0xC0 + recordNumber;
         break;
     default:
-        throw IllegalStateException(StringHelper::formatSimple(
-            "Unsupported SourceRef parameter %d", sourceKeyRef));
+        throw IllegalStateException(
+                  StringHelper::formatSimple(
+                      "Unsupported SourceRef parameter %d", sourceKeyRef));
     }
 
-    mRequest = setApduRequest(cla, command, 0x00, p2, sourceKeyId, 0x00);
+    mRequest = setApduRequest(cla, mCommand, 0x00, p2, sourceKeyId, 0x00);
 }
 
 SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
-  cosnt SamRevision& revision, const uint8_t kif, const NavControl& navControl)
-: AbstractSamCommandBuilder(CalypsoSamCommands::READ_KEY_PARAMETERS, nullptr)
+  const SamRevision& revision, const uint8_t kif, const NavControl& navControl)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_KEY_PARAMETERS),
+    nullptr)
 {
-
     mDefaultRevision = revision;
 
-    const uint8_t cla = this->defaultRevision.getClassByte();
+    const uint8_t cla = mDefaultRevision.getClassByte();
     uint8_t p2  = 0x00;
     std::vector<uint8_t> sourceKeyId(0x00, 0x00);
 
@@ -133,14 +146,15 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
 
     sourceKeyId[0] = kif;
 
-    mRequest = setApduRequest(cla, command, 0x00, p2, sourceKeyId, 0x00);
+    mRequest = setApduRequest(cla, mCommand, 0x00, p2, sourceKeyId, 0x00);
 }
 
-std::shared_ptr<SamReadKeyParametersRespPars>
+std::unique_ptr<SamReadKeyParametersRespPars>
     SamReadKeyParametersCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<SamReadKeyParametersRespPars>(apduResponse, this);
+    return std::unique_ptr<SamReadKeyParametersRespPars>(
+               new SamReadKeyParametersRespPars(apduResponse, this));
 }
 
 }

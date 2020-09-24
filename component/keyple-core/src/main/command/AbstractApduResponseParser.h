@@ -111,7 +111,7 @@ public:
      */
     AbstractApduResponseParser(
         const std::shared_ptr<ApduResponse> response,
-        const std::shared_ptr<AbstractApduCommandBuilder> builder);
+        AbstractApduCommandBuilder* builder);
 
     /**
      *
@@ -135,7 +135,7 @@ public:
     /**
      * @return the associated builder reference
      */
-    const std::shared_ptr<AbstractApduCommandBuilder> getBuilder() const;
+    virtual AbstractApduCommandBuilder* getBuilder() const;
 
     /**
      * @return true if the status is successful from the statusTable according
@@ -169,7 +169,7 @@ protected:
      * allow the parser to access the builder parameters that were used to
      * create the command (e.g. SFI, registration number, etc.).
      */
-    const std::shared_ptr<AbstractApduCommandBuilder> mBuilder;
+    AbstractApduCommandBuilder* mBuilder;
 
     /**
      *
@@ -187,11 +187,11 @@ protected:
      * @param statusCode the status code
      * @return a new instance not null
      */
-    const std::shared_ptr<KeypleSeCommandException> buildCommandException(
+    virtual const KeypleSeCommandException buildCommandException(
             const std::type_info& exceptionClass,
             const std::string& message,
             const std::shared_ptr<SeCommand> commandRef,
-            const std::shared_ptr<int> statusCode) const;
+            const int statusCode) const;
 
     /**
      * @return the internal status table

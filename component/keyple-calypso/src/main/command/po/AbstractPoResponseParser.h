@@ -51,8 +51,8 @@ public:
     /**
      *
      */
-    const std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
-        getBuilder() const override;
+    virtual AbstractPoCommandBuilder<AbstractPoResponseParser>* getBuilder()
+        const override;
 
     /**
      *
@@ -63,11 +63,11 @@ protected:
     /**
      *
      */
-    KeypleSeCommandException buildCommandException(
+    const KeypleSeCommandException buildCommandException(
         const std::type_info& exceptionClass,
         const std::string& message,
         const std::shared_ptr<SeCommand> commandRef,
-        const int statusCode) override;
+        const int statusCode) const override;
 };
 
 }

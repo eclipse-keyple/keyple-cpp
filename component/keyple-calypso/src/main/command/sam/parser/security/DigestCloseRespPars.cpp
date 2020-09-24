@@ -28,8 +28,11 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::exception;
 using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::core::seproxy::message;
+
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 const std::map<int, std::shared_ptr<StatusProperties>>
     DigestCloseRespPars::STATUS_TABLE = {
@@ -43,7 +46,10 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 
 DigestCloseRespPars::DigestCloseRespPars(
   const std::shared_ptr<ApduResponse> response, DigestCloseCmdBuild* builder)
-: AbstractSamResponseParser(response, builder) {}
+: AbstractSamResponseParser(
+   response,
+   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
+{}
 
 const std::vector<uint8_t> DigestCloseRespPars::getSignature() const
 {

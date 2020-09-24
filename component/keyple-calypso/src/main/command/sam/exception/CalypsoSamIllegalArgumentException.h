@@ -39,8 +39,7 @@ public:
     CalypsoSamIllegalArgumentException(
       const std::string& message,
       const std::shared_ptr<CalypsoSamCommand> command)
-    : CalypsoSamCommandException(message, command, nullptr) {}
-    }
+    : CalypsoSamCommandException(message, command, 0) {}
 };
 
 }

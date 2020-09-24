@@ -16,10 +16,14 @@
 
 /* Calypso */
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
 #include "KeypleCalypsoExport.h"
-#include "SamReadEventCounterRespPars.h"
 #include "SamRevision.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class SamReadEventCounterRespPars; }
+    } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -29,6 +33,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Unlock APDU command.
@@ -39,12 +44,12 @@ public:
     /**
      *
      */
-    static const int MAX_COUNTER_NUMB;
+    static const int MAX_COUNTER_NUMB = 26;
 
     /**
      *
      */
-    static const int MAX_COUNTER_REC_NUMB;
+    static const int MAX_COUNTER_REC_NUMB = 3;
 
     /**
      *
@@ -65,14 +70,14 @@ public:
     /**
      *
      */
-    std::shared_ptr<SamReadEventCounterRespPars> createResponseParser(
+    std::unique_ptr<SamReadEventCounterRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command reference
      */
-    static const CalypsoSamCommand& mCommand;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::READ_EVENT_COUNTER;
 };
 
 }

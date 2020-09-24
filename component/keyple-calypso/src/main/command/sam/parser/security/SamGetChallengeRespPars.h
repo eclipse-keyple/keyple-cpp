@@ -49,6 +49,13 @@ public:
     SamGetChallengeRespPars(const std::shared_ptr<ApduResponse> response,
                             SamGetChallengeCmdBuild* builder);
 
+    /**
+     * Gets the challenge.
+     *
+     * @return the challenge
+     */
+    const std::vector<uint8_t> getChallenge() const;
+
 protected:
     /**
      *

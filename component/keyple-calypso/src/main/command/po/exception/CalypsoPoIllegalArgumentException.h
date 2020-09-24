@@ -37,7 +37,7 @@ public:
     CalypsoPoIllegalArgumentException(const std::string& message,
                                       const std::shared_ptr<SeCommand> command)
     : CalypsoPoCommandException(
-        message, std::dynamic_pointer_cast<CalypsoPoCommand>(command), nullptr)
+        message, std::dynamic_pointer_cast<CalypsoPoCommand>(command), 0)
     {}
 };
 

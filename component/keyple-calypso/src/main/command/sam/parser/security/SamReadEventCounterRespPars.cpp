@@ -32,8 +32,11 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::exception;
 using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::core::seproxy::message;
+
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 const std::map<int, std::shared_ptr<StatusProperties>>
     SamReadEventCounterRespPars::STATUS_TABLE = {
@@ -51,14 +54,17 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         0x6200,
         std::make_shared<StatusProperties>(
             "Correct execution with warning: data not signed.",
-            typeid(ClassNotFouncException))
+            typeid(ClassNotFoundException))
     }
 };
 
 SamReadEventCounterRespPars::SamReadEventCounterRespPars(
   const std::shared_ptr<ApduResponse> response,
   SamReadEventCounterCmdBuild* builder)
-: AbstractSamResponseParser(response) {}
+: AbstractSamResponseParser(
+   response,
+   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
+{}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     SamReadEventCounterRespPars::getStatusTable() const
@@ -66,7 +72,7 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
     return STATUS_TABLE;
 }
 
-std::vector<uint8_t> SamReadEventCounterRespPars::getCounterData() const
+const std::vector<uint8_t> SamReadEventCounterRespPars::getCounterData() const
 {
     return isSuccessful() ? mResponse->getDataOut() : std::vector<uint8_t>();
 }

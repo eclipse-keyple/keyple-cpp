@@ -20,8 +20,12 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
-#include "DigestUpdateMultipleRespPars.h"
 #include "SamRevision.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class DigestUpdateMultipleRespPars;
+    } } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -31,6 +35,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * This class provides the dedicated constructor to build the SAM Digest Update
@@ -53,24 +58,15 @@ public:
     /**
      *
      */
-    std::shared_ptr<DigestUpdateMultipleRespPars> createResponseParser(
+    std::unique_ptr<DigestUpdateMultipleRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<DigestUpdateMultipleCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<DigestUpdateMultipleCmdBuild>(
-            AbstractSamCommandBuilder::shared_from_this());
-    }
 
 private:
     /**
      * The command
      */
-    static const CalypsoSamCommand& mCommand;
+    const CalypsoSamCommand& mCommand =
+        CalypsoSamCommand::DIGEST_UPDATE_MULTIPLE;
 };
 
 }

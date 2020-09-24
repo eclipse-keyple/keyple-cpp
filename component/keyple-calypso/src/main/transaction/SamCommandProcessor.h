@@ -17,9 +17,26 @@
 #include <cstdint>
 #include <vector>
 
+/* Core */
+#include "SeResource.h"
+
+/* Calypso */
+#include "CalypsoSam.h"
+#include "PoTransaction.h"
+
+/* Forward declarations */
+namespace keyple { namespace calypso { namespace transaction {
+    class PoSecuritySettings; } } }
+namespace keyple { namespace calypso { namespace transaction {
+    class CalypsoPo; } } }
+
 namespace keyple {
 namespace calypso {
 namespace transaction {
+
+using namespace keyple::core::selection;
+
+using AccessLevel = PoTransaction::SessionSetting::AccessLevel;
 
 /**
  * The SamCommandProcessor class is dedicated to the management of commands sent
@@ -236,8 +253,8 @@ private:
      * @param accessLevel the session access level
      * @return the work KIF value byte
      */
-    const uint8_t determineWorkKif(const uint8_t poKif,
-                                   const AccessLevel accessLevel) const;
+    uint8_t determineWorkKif(const uint8_t poKif,
+                             const AccessLevel accessLevel) const;
 
      /**
      * Appends a full PO exchange (request and response) to the digest data

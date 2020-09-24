@@ -23,9 +23,11 @@
 #include "CalypsoPoDataAccessException.h"
 #include "CalypsoPoDataOutOfBoundsException.h"
 #include "CalypsoPoIllegalArgumentException.h"
+#include "CalypsoPoIllegalParameterException.h"
 #include "CalypsoPoPinException.h"
 #include "CalypsoPoSecurityContextException.h"
 #include "CalypsoPoSecurityDataException.h"
+#include "CalypsoPoSessionBufferOverflowException.h"
 #include "CalypsoPoTerminatedException.h"
 #include "CalypsoPoUnknownStatusException.h"
 
@@ -40,51 +42,74 @@ using namespace keyple::core::seproxy::message;
 
 AbstractPoResponseParser::AbstractPoResponseParser(
   std::shared_ptr<ApduResponse> response,
-  AbstractPoCommandBuilder<AbstractPoResponseParser>* builder);
+  AbstractPoCommandBuilder<AbstractPoResponseParser>* builder)
 : AbstractApduResponseParser(response, builder) {}
 
-const std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>
+AbstractPoCommandBuilder<AbstractPoResponseParser>*
     AbstractPoResponseParser::getBuilder() const
 {
-    return AbstractApduResponseParser::getBuilder();
+    return dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(
+                AbstractApduResponseParser::getBuilder());
 }
 
-KeypleSeCommandException AbstractPoResponseParser::buildCommandException(
+const KeypleSeCommandException AbstractPoResponseParser::buildCommandException(
     const std::type_info& exceptionClass,
     const std::string& message,
     const std::shared_ptr<SeCommand> commandRef,
-    const int statusCode)
+    const int statusCode) const
 {
-    KeypleSeCommandException e;
-
     std::shared_ptr<CalypsoPoCommand> command =
         std::dynamic_pointer_cast<CalypsoPoCommand>(commandRef);
 
     if (exceptionClass == typeid(CalypsoPoAccessForbiddenException)) {
-        e = CalypsoPoAccessForbiddenException(message, command, statusCode);
+        return std::move(
+                   CalypsoPoAccessForbiddenException(message,
+                                                     command,
+                                                     statusCode));
     } else if (exceptionClass == typeid(CalypsoPoDataAccessException)) {
-        e = CalypsoPoDataAccessException(message, command, statusCode);
+        return std::move(
+                   CalypsoPoDataAccessException(message, command, statusCode));
     } else if (exceptionClass == typeid(CalypsoPoDataOutOfBoundsException)) {
-        e = CalypsoPoDataOutOfBoundsException(message, command, statusCode);
+        return std::move(
+                   CalypsoPoDataOutOfBoundsException(message,
+                                                     command,
+                                                     statusCode));
     } else if (exceptionClass == typeid(CalypsoPoIllegalArgumentException)) {
-        e = CalypsoPoIllegalArgumentException(message, command);
+        return std::move(
+                   CalypsoPoIllegalArgumentException(message, command));
     } else if (exceptionClass == typeid(CalypsoPoIllegalParameterException)) {
-        e = CalypsoPoIllegalParameterException(message, command, statusCode);
+        return std::move(
+                   CalypsoPoIllegalParameterException(message,
+                                                      command,
+                                                      statusCode));
     } else if (exceptionClass == typeid(CalypsoPoPinException)) {
-        e = CalypsoPoPinException(message, command, statusCode);
+        return std::move(
+                   CalypsoPoPinException(message, command, statusCode));
     } else if (exceptionClass == typeid(CalypsoPoSecurityContextException)) {
-        e = CalypsoPoSecurityContextException(message, command, statusCode);
+        return std::move(
+                   CalypsoPoSecurityContextException(message,
+                                                     command,
+                                                     statusCode));
     } else if (exceptionClass == typeid(CalypsoPoSecurityDataException)) {
-        e = CalypsoPoSecurityDataException(message, command, statusCode);
-    } else if (exceptionClass == typeid(CalypsoPoSessionBufferOverflowException)) {
-        e = CalypsoPoSessionBufferOverflowException(message, command, statusCode);
+        return std::move(
+                   CalypsoPoSecurityDataException(message,
+                                                  command,
+                                                  statusCode));
+    } else if (exceptionClass ==
+                   typeid(CalypsoPoSessionBufferOverflowException)) {
+        return std::move(
+                   CalypsoPoSessionBufferOverflowException(message,
+                                                           command,
+                                                           statusCode));
     } else if (exceptionClass == typeid(CalypsoPoTerminatedException)) {
-        e = CalypsoPoTerminatedException(message, command, statusCode);
+        return std::move(
+                   CalypsoPoTerminatedException(message, command, statusCode));
     } else {
-        e = CalypsoPoUnknownStatusException(message, command, statusCode);
+        return std::move(
+                   CalypsoPoUnknownStatusException(message,
+                                                   command,
+                                                   statusCode));
     }
-
-    return std::move(e);
 }
 
 void AbstractPoResponseParser::checkStatus() const
@@ -92,7 +117,7 @@ void AbstractPoResponseParser::checkStatus() const
     try {
         AbstractApduResponseParser::checkStatus();
     } catch (const KeypleSeCommandException& e) {
-        throw CalypsoPoCommandException(e.getMessage(), e.getCause());
+        throw e;
     }
 }
 

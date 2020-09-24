@@ -27,9 +27,10 @@ using namespace keyple::core::seproxy::message;
 
 PoGetChallengeRespPars::PoGetChallengeRespPars(
   std::shared_ptr<ApduResponse> response, PoGetChallengeCmdBuild* builder)
-: AbstractPoResponseParser(response, builder)
-{
-}
+: AbstractPoResponseParser(
+    response,
+    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+{}
 
 std::vector<uint8_t> PoGetChallengeRespPars::getPoChallenge() const
 {

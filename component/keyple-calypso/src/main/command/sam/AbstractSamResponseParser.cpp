@@ -18,16 +18,28 @@
 #include "ApduResponse.h"
 
 /* Calypso */
+#include "CalypsoPoCommand.h"
+#include "CalypsoSamAccessForbiddenException.h"
+#include "CalypsoSamCounterOverflowException.h"
+#include "CalypsoSamDataAccessException.h"
+#include "CalypsoSamIllegalArgumentException.h"
 #include "CalypsoSamIllegalParameterException.h"
+#include "CalypsoSamIncorrectInputDataException.h"
+#include "CalypsoSamSecurityDataException.h"
+#include "CalypsoSamUnknownStatusException.h"
 
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace sam {
 
+using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::sam::exception;
+using namespace keyple::calypso::command::sam::builder::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
+
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 const std::map<int, std::shared_ptr<StatusProperties>>
     AbstractSamResponseParser::STATUS_TABLE = {
@@ -45,10 +57,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 };
 
 AbstractSamResponseParser::AbstractSamResponseParser(
-  const std::shared_ptr<ApduResponse> response)
-: AbstractApduResponseParser(response)
-{
-}
+  const std::shared_ptr<ApduResponse> response,
+  AbstractSamCommandBuilder<AbstractSamResponseParser>* builder)
+: AbstractApduResponseParser(response, builder) {}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     AbstractSamResponseParser::getStatusTable() const
@@ -56,39 +67,68 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
     return STATUS_TABLE;
 }
 
-std::shared_ptr<bstractSamCommandBuilder> AbstractPoResponseParser::getBuilder()
+AbstractApduCommandBuilder* AbstractSamResponseParser::getBuilder() const
 {
     return AbstractApduResponseParser::getBuilder();
 }
 
-KeypleSeCommandException AbstractSamResponseParser::buildCommandException(
-    const type_info& exceptionClass,
-    const std::string& message, SeCommand commandRef, int statusCode)
+const KeypleSeCommandException AbstractSamResponseParser::buildCommandException(
+    const std::type_info& exceptionClass,
+    const std::string& message,
+    const std::shared_ptr<SeCommand> commandRef,
+    const int statusCode) const
 {
-    KeypleSeCommandException e;
-
     std::shared_ptr<CalypsoPoCommand> command =
-        std::dynamic_pointer_cast<CalypsoPoCommand>(mCommandRef);
+        std::dynamic_pointer_cast<CalypsoPoCommand>(commandRef);
 
     if (exceptionClass == typeid(CalypsoSamAccessForbiddenException)) {
-        e = CalypsoSamAccessForbiddenException(message, command, statusCode);
+        return std::move(
+                   CalypsoSamAccessForbiddenException(
+                       message,
+                       std::dynamic_pointer_cast<CalypsoSamCommand>(command),
+                       statusCode));
     } else if (exceptionClass == typeid(CalypsoSamCounterOverflowException)) {
-        e = CalypsoSamCounterOverflowException(message, command, statusCode);
+        return std::move(
+                   CalypsoSamCounterOverflowException(
+                       message,
+                       std::dynamic_pointer_cast<CalypsoSamCommand>(command),
+                       statusCode));
     } else if (exceptionClass == typeid(CalypsoSamDataAccessException)) {
-        e = CalypsoSamDataAccessException(message, command, statusCode);
+        return std::move(
+                   CalypsoSamDataAccessException(
+                       message,
+                       std::dynamic_pointer_cast<CalypsoSamCommand>(command),
+                       statusCode));
     } else if (exceptionClass == typeid(CalypsoSamIllegalArgumentException)) {
-        e = CalypsoSamIllegalArgumentException(message, command);
+        return std::move(
+                   CalypsoSamIllegalArgumentException(
+                       message,
+                       std::dynamic_pointer_cast<CalypsoSamCommand>(command)));
     } else if (exceptionClass == typeid(CalypsoSamIllegalParameterException)) {
-        e = CalypsoSamIllegalParameterException(message, command, statusCode);
+        return std::move(
+                   CalypsoSamIllegalParameterException(
+                       message,
+                       std::dynamic_pointer_cast<CalypsoSamCommand>(command),
+                       statusCode));
     } else if (exceptionClass == typeid(CalypsoSamIncorrectInputDataException)) {
-        e = CalypsoSamIncorrectInputDataException(message, command, statusCode);
+        return std::move(
+                   CalypsoSamIncorrectInputDataException(
+                       message,
+                       std::dynamic_pointer_cast<CalypsoSamCommand>(command),
+                       statusCode));
     } else if (exceptionClass == typeid(CalypsoSamSecurityDataException)) {
-        e = CalypsoSamSecurityDataException(message, command, statusCode);
+        return std::move(
+                   CalypsoSamSecurityDataException(
+                       message,
+                       std::dynamic_pointer_cast<CalypsoSamCommand>(command),
+                       statusCode));
     } else {
-        e = CalypsoSamUnknownStatusException(message, command, statusCode);
+        return std::move(
+                   CalypsoSamUnknownStatusException(
+                       message,
+                       std::dynamic_pointer_cast<CalypsoSamCommand>(command),
+                       statusCode));
     }
-
-    return std::move(e);
 }
 
 void AbstractSamResponseParser::checkStatus() const
@@ -96,7 +136,7 @@ void AbstractSamResponseParser::checkStatus() const
     try {
         AbstractApduResponseParser::checkStatus();
     } catch (const KeypleSeCommandException& e) {
-        throw CalypsoSamCommandException(e.message, e.cause);
+        throw e;
     }
 }
 

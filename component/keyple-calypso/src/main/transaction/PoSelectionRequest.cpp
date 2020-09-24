@@ -25,8 +25,8 @@
 /* Calypso */
 #include "CalypsoDesynchronizedExchangesException.h"
 #include "CalypsoPo.h"
-#include "PoCustomReadCommandBuilder.h"
-#include "PoCustomModificationCommandBuilder.h"
+#include "CalypsoPoUtils.h"
+#include "PoClass.h"
 #include "ReadRecordsRespPars.h"
 #include "ReadRecordsCmdBuild.h"
 #include "SelectFileRespPars.h"
@@ -48,55 +48,69 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
 
 PoSelectionRequest::PoSelectionRequest(std::shared_ptr<PoSelector> poSelector)
-: AbstractSeSelectionRequest(poSelector), poClass(PoClass::LEGACY)
-{
-    /* No AID selector for a legacy Calypso PO */
-    if (seSelector->getAidSelector() == nullptr) {
-        poClass = PoClass::LEGACY;
-    } else {
-        poClass = PoClass::ISO;
-    }
-
-    logger->trace("Calypso % selector\n", poClass);
-}
+: AbstractSeSelectionRequest(poSelector),
+  /* No AID selector for a legacy Calypso PO */
+  mPoClass(mSeSelector->getAidSelector() ? PoClass::ISO : PoClass::LEGACY) {}
 
 void PoSelectionRequest::prepareReadRecordFile(const uint8_t sfi,
                                                const int recordNumber)
 {
-    addCommandBuilder(
-        CalypsoPoUtils::prepareReadRecordFile(mPoClass, sfi, recordNumber));
+    std::shared_ptr<ReadRecordsCmdBuild> _rr =
+        CalypsoPoUtils::prepareReadRecordFile(mPoClass, sfi, recordNumber);
+
+    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>> rr =
+        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+            AbstractPoResponseParser>>(_rr);
+
+    addCommandBuilder(rr);
 }
 
 void PoSelectionRequest::prepareSelectFile(const std::vector<uint8_t> lid)
 {
-    addCommandBuilder(CalypsoPoUtils::prepareSelectFile(mPoClass, lid));
+    std::shared_ptr<SelectFileCmdBuild> _sf =
+        CalypsoPoUtils::prepareSelectFile(mPoClass, lid);
+
+    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>> sf =
+        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+            AbstractPoResponseParser>>(_sf);
+
+    addCommandBuilder(sf);
 }
 
 void PoSelectionRequest::prepareSelectFile(const uint16_t lid)
 {
-    const std::vector<uint8_t> bLid = {((lid >> 8) & 0xff), (lid & 0xff)};
+    const std::vector<uint8_t> bLid = {
+        static_cast<uint8_t>(((lid >> 8) & 0xff)),
+        static_cast<uint8_t>((lid & 0xff))
+    };
+
     prepareSelectFile(bLid);
 }
 
-void PoSelectionRequest::prepareSelectFile(const SelectFileControl selectControl)
+void PoSelectionRequest::prepareSelectFile(
+    const SelectFileControl selectControl)
 {
-    addCommandBuilder(
-        CalypsoPoUtils::prepareSelectFile(mPoClass, selectControl));
+    std::shared_ptr<SelectFileCmdBuild> _sf =
+        CalypsoPoUtils::prepareSelectFile(mPoClass, selectControl);
+
+    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>> sf =
+        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
+            AbstractPoResponseParser>>(_sf);
+
+    addCommandBuilder(sf);
 }
 
-std::shared_ptr<CalypsoPo> PoSelectionRequest::parse(
-    std::shared_ptr<SeResponse> seResponse) override
+const std::shared_ptr<AbstractMatchingSe> PoSelectionRequest::parse(
+    std::shared_ptr<SeResponse> seResponse)
 {
     const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
         AbstractPoResponseParser>>> commandBuilders = getCommandBuilders();
     const std::vector<std::shared_ptr<ApduResponse>>& apduResponses =
         seResponse->getApduResponses();
 
-    if (static_cast<int>(commandBuilders.size()) !=
-        static_cast<int>(apduResponses.size()))
+    if (commandBuilders.size() != apduResponses.size())
         throw CalypsoDesynchronizedExchangesException(
                 "Mismatch in the number of requests/responses");
-    }
 
     std::shared_ptr<CalypsoPo> calypsoPo =
         std::make_shared<CalypsoPo>(

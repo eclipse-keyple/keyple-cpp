@@ -40,7 +40,7 @@ public:
     CalypsoSamUnknownStatusException(
       const std::string& message,
       const std::shared_ptr<CalypsoSamCommand> command,
-      const std::shared_ptr<int> statusCode)
+      const int statusCode)
     : CalypsoSamCommandException(message, command, statusCode) {}
 };
 

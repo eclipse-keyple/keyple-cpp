@@ -13,7 +13,11 @@
  ******************************************************************************/
 
 #include "IncreaseCmdBuild.h"
+
+/* Calypso */
 #include "IncreaseRespPars.h"
+
+/* Core */
 #include "ApduResponse.h"
 
 namespace keyple {
@@ -28,10 +32,15 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
 IncreaseCmdBuild::IncreaseCmdBuild(
-  PoClass poClass, char sfi, char counterNumber, int incValue)
+  const PoClass poClass,
+  const uint8_t sfi,
+  const uint8_t counterNumber,
+  const int incValue)
 : AbstractPoCommandBuilder<IncreaseRespPars>(
-    CalypsoPoCommand::INCREASE, nullptr),
-  mSfi(sfi), mCounterNumber(counterNumber), mIncValue(incValue)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::INCREASE), nullptr),
+  mSfi(sfi),
+  mCounterNumber(counterNumber),
+  mIncValue(incValue)
 {
     const uint8_t cla = poClass.getValue();
 
@@ -44,19 +53,26 @@ IncreaseCmdBuild::IncreaseCmdBuild(
     const uint8_t p2 = sfi * 8;
 
     /* this is a case4 command, we set Le = 0 */
-    request = setApduRequest(cla, command, counterNumber, p2, incValueBuffer,
-                             0x00);
+    mRequest = setApduRequest(cla,
+                              command,
+                              counterNumber,
+                              p2,
+                              incValueBuffer,
+                              0x00);
 
     const std::string extraInfo =
-        StringHelper::formatSimple("SFI=%02X, COUNTER=%d, INCREMENT=%d", sfi,
-                                   counterNumber, incValue);
+        StringHelper::formatSimple("SFI=%02X, COUNTER=%d, INCREMENT=%d",
+                                   sfi,
+                                   counterNumber,
+                                   incValue);
     addSubName(extraInfo);
 }
 
-std::shared_ptr<IncreaseRespPars> IncreaseCmdBuild::createResponseParser(
+std::unique_ptr<IncreaseRespPars> IncreaseCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<IncreaseRespPars>(apduResponse, this);
+    return std::unique_ptr<IncreaseRespPars>(
+               new IncreaseRespPars(apduResponse, this));
 }
 
 bool IncreaseCmdBuild::isSessionBufferUsed() const
@@ -64,12 +80,12 @@ bool IncreaseCmdBuild::isSessionBufferUsed() const
     return true;
 }
 
-int IncreaseCmdBuild::getSfi() const
+uint8_t IncreaseCmdBuild::getSfi() const
 {
     return mSfi;
 }
 
-int IncreaseCmdBuild::getCounterNumber() const
+uint8_t IncreaseCmdBuild::getCounterNumber() const
 {
     return mCounterNumber;
 }

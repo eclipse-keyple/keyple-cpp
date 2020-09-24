@@ -16,8 +16,12 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
-#include "SamReadKeyParametersRespPars.h"
 #include "SamRevision.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class SamReadKeyParametersRespPars; } } }
+    } } }
 
 namespace keyple {
 namespace calypso {
@@ -27,6 +31,7 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Read Key Parameters APDU command.
@@ -37,7 +42,7 @@ public:
     /**
      *
      */
-    static const int MAX_WORK_KEY_REC_NUMB;
+    static const int MAX_WORK_KEY_REC_NUMB = 126;
 
     /**
      *
@@ -82,14 +87,14 @@ public:
     /**
      *
      */
-    std::shared_ptr<SamReadKeyParametersRespPars> createResponseParser(
-        const std::shared_ptr<ApduResponse> apduResponse) override;
+    std::unique_ptr<SamReadKeyParametersRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command reference
      */
-    static const CalypsoSamCommands& mCommand;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::READ_KEY_PARAMETERS;
 };
 
 }

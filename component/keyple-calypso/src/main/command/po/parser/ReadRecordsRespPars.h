@@ -26,7 +26,6 @@
 /* Calypso */
 #include "AbstractPoResponseParser.h"
 #include "ReadRecordsCmdBuild.h"
-#include "ReadDataStructure.h"
 
 /* Common */
 #include "KeypleCalypsoExport.h"
@@ -39,6 +38,7 @@ namespace parser {
 
 using namespace keyple::core::command;
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
 
 /**
  * Read Records (00B2) response parser. See specs: Calypso / page 89 / 9.4.7
@@ -57,7 +57,7 @@ public:
      * @param builder the reference to the builder that created this parser
      */
     ReadRecordsRespPars(std::shared_ptr<ApduResponse> apduResponse,
-                        ReadRecordCmdBuilder* builder);
+                        ReadRecordsCmdBuild* builder);
 
     /**
      * Parses the Apdu response as a data record (single or multiple), retrieves
@@ -70,7 +70,7 @@ public:
      *
      * @return a map of records
      */
-    std::shared_ptr<std::map<int, std::vector<uint8_t>>> getRecords();
+    std::map<int, std::vector<uint8_t>> getRecords() const;
 
 protected:
     /**
@@ -78,15 +78,6 @@ protected:
      */
     const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
         const override;
-
-    /**
-     *
-     */
-    std::shared_ptr<ReadRecordsRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<ReadRecordsRespPars>(
-            AbstractPoResponseParser::shared_from_this());
-    }
 
 private:
     /**

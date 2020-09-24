@@ -53,6 +53,11 @@ public:
     class PoSelectorBuilder final : public SeSelector::SeSelectorBuilder {
     public:
         /**
+         *
+         */
+        friend PoSelector;
+
+        /**
          * Sets the desired behaviour in case of invalidated POs
          *
          * @param invalidatedPo the {@link InvalidatedPo} wanted behaviour
@@ -82,8 +87,12 @@ public:
          * Build a new {@code PoSelector}.
          *
          * @return a new instance
+         *
+         * Return type should be
+         *   std::unique_ptr<PoSelector>
+         * ... but invalid covariant return type
          */
-        std::unique_ptr<PoSelector> build() override;
+        std::unique_ptr<SeSelector> build() override;
 
     private:
         /**
@@ -108,7 +117,7 @@ private:
     /**
      *
      */
-    static const int SW_PO_INVALIDATED;
+    static const int SW_PO_INVALIDATED = 0x6283;
 
     /**
      * Private constructor

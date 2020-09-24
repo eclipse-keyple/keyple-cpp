@@ -14,15 +14,19 @@
 
 #pragma once
 
+/* Calypso */
 #include "AbstractPoCommandBuilder.h"
 #include "AbstractPoResponseParser.h"
+#include "CalypsoSam.h"
 #include "PoTransaction.h"
 
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using ModificationMode = PoTransaction::ModificationMode;
+using AccessLevel = PoTransaction::SessionSetting::AccessLevel;
+using ModificationMode = PoTransaction::SessionSetting::ModificationMode;
+using RatificationMode = PoTransaction::SessionSetting::RatificationMode;
 
 /**
  * A class dedicated to managing the security settings involved in managing
@@ -44,8 +48,16 @@ public:
     /**
      * Builder pattern
      */
-    static class PoSecuritySettingsBuilder final {
+    class PoSecuritySettingsBuilder final {
     public:
+        /**
+         *
+         */
+        friend PoSecuritySettings;
+
+        /**
+         *
+         */
         ModificationMode mSessionModificationMode =
             PoSecuritySettings::mDefaultSessionModificationMode;
         RatificationMode mRatificationMode =
@@ -152,7 +164,7 @@ public:
         std::map<AccessLevel, uint8_t> mDefaultKif;
         std::map<AccessLevel, uint8_t> mDefaultKvc;
         std::map<AccessLevel, uint8_t> mDefaultKeyRecordNumber;
-    }
+    };
 
     /**
      * (package-private)<br>
@@ -160,9 +172,7 @@ public:
      * @return the Sam resource
      * @since 0.9
      */
-    const std::shared_ptr<SeResource<CalypsoSam>> getSamResource() const {
-        return samResource;
-    }
+    const std::shared_ptr<SeResource<CalypsoSam>> getSamResource() const;
 
     /**
      * (package-private)<br>
@@ -170,7 +180,7 @@ public:
      * @return the Session Modification Mode
      * @since 0.9
      */
-    const ModificationMode& getSessionModificationMode() const;
+    ModificationMode getSessionModificationMode() const;
 
     /**
      * (package-private)<br>
@@ -178,7 +188,7 @@ public:
      * @return the Ratification Mode
      * @since 0.9
      */
-    const RatificationMode& getRatificationMode() const;
+    RatificationMode getRatificationMode() const;
 
     /**
      * (package-private)<br>
@@ -186,8 +196,7 @@ public:
      * @return the default session KIF
      * @since 0.9
      */
-    const uint8_t getSessionDefaultKif(const AccessLevel sessionAccessLevel)
-        const;
+    uint8_t getSessionDefaultKif(const AccessLevel sessionAccessLevel) const;
 
     /**
      * (package-private)<br>
@@ -195,8 +204,7 @@ public:
      * @return the default session KVC
      * @since 0.9
      */
-    const uint8_t getSessionDefaultKvc(const AccessLevel sessionAccessLevel)
-        const;
+    uint8_t getSessionDefaultKvc(const AccessLevel sessionAccessLevel) const;
 
     /**
      * (package-private)<br>
@@ -204,9 +212,8 @@ public:
      * @return the default session key record number
      * @since 0.9
      */
-    const uint8_t getSessionDefaultKeyRecordNumber(
-        const AccessLevel sessionAccessLevel) const {
-        return defaultKeyRecordNumber.get(sessionAccessLevel);
+    uint8_t getSessionDefaultKeyRecordNumber(
+        const AccessLevel sessionAccessLevel) const;
 
     /**
      * (package-private)<br>
@@ -218,7 +225,7 @@ public:
      * @param kvc to be tested
      * @return true if the kvc is authorized
      */
-    const bool isSessionKvcAuthorized(const uint8_t kvc) const;
+    bool isSessionKvcAuthorized(const uint8_t kvc) const;
 
 private:
     /**
@@ -238,8 +245,8 @@ private:
     const std::map<AccessLevel, uint8_t> mDefaultKvc;
     const std::map<AccessLevel, uint8_t> mDefaultKeyRecordNumber;
 
-    const ModificationMode mSessionModificationMode;
-    const RatificationMode mRatificationMode;
+    const ModificationMode mSessionModificationMode = ModificationMode::ATOMIC;
+    const RatificationMode mRatificationMode = RatificationMode::CLOSE_RATIFIED;
 
 
     /**

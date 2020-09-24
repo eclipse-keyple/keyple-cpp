@@ -16,17 +16,25 @@
 
 /* Common */
 #include "Arrays.h"
+#include "IllegalStateException.h"
 #include "System.h"
 
 /* Core */
 #include "KeypleAssert.h"
 
+/* Calypso */
+#include "CalypsoPoCommand.h"
+#include "PoClass.h"
+#include "ReadRecordsRespPars.h"
+
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using keyple::common;
-using keyple::core::util;
+using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::common;
+using namespace keyple::core::util;
 
 const int CalypsoPoUtils::MASK_3_BITS = 0x7;
 const int CalypsoPoUtils::MASK_4_BITS = 0xF;
@@ -106,9 +114,10 @@ std::shared_ptr<ReadRecordsRespPars> CalypsoPoUtils::updateCalypsoPoReadRecords(
     readRecordsRespPars->checkStatus();
 
     /* Iterate over read records to fill the CalypsoPo */
-    for (const auto& entry : readRecordsRespPars->getRecords()))
-        calypsoPo->setContent(readRecordsCmdBuild->getSfi(), entry.first,
-                              entry.second;
+    for (const auto& entry : readRecordsRespPars->getRecords())
+        calypsoPo->setContent(readRecordsCmdBuild->getSfi(),
+                              entry.first,
+                              entry.second);
 
     return readRecordsRespPars;
 }
@@ -132,15 +141,19 @@ std::shared_ptr<SelectFileRespPars> CalypsoPoUtils::updateCalypsoPoSelectFile(
     switch (fileType) {
     case FILE_TYPE_MF:
     case FILE_TYPE_DF:
-        std::unique_ptr<DirectoryHeader> directoryHeader =
+        {
+        std::shared_ptr<DirectoryHeader> directoryHeader =
             createDirectoryHeader(proprietaryInformation);
         calypsoPo->setDirectoryHeader(directoryHeader);
         break;
+        }
     case FILE_TYPE_EF:
-        std::unique_ptr<FileHeader> fileHeader =
+        {
+        std::shared_ptr<FileHeader> fileHeader =
             createFileHeader(proprietaryInformation);
         calypsoPo->setFileHeader(sfi, fileHeader);
         break;
+        }
     default:
         throw IllegalStateException(
                   StringHelper::formatSimple(
@@ -347,9 +360,8 @@ std::unique_ptr<FileHeader> CalypsoPoUtils::createFileHeader(
                .recordsNumber(recordsNumber)
                .recordSize(recordSize)
                .type(fileType)
-               .accessConditions(Arrays::copyOf(accessConditions,
-                                                accessConditions.size()))
-               .keyIndexes(Arrays::copyOf(keyIndexes, keyIndexes.length))
+               .accessConditions(accessConditions)
+               .keyIndexes(keyIndexes)
                .dfStatus(dfStatus)
                .sharedReference(sharedReference)
                .build();
@@ -361,45 +373,60 @@ std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoPo(
         commandBuilder,
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    switch (commandBuilder.getCommandRef()) {
-    case READ_RECORDS:
-        return updateCalypsoPoReadRecords(calypsoPo,
-                                          commandBuilder,
-                                          apduResponse);
-    case SELECT_FILE:
-        return updateCalypsoPoSelectFile(calypsoPo,
-                                         commandBuilder,
-                                         apduResponse);
-    case UPDATE_RECORD:
-        return updateCalypsoPoUpdateRecord(calypsoPo,
-                                           commandBuilder,
-                                           apduResponse);
-    case WRITE_RECORD:
-        return updateCalypsoPoWriteRecord(calypsoPo,
-                                          commandBuilder,
-                                          apduResponse);
-    case APPEND_RECORD:
-        return updateCalypsoPoAppendRecord(calypsoPo,
-                                           commandBuilder,
-                                           apduResponse);
-    case DECREASE:
-        return updateCalypsoPoDecrease(calypsoPo, commandBuilder, apduResponse);
-    case INCREASE:
-        return updateCalypsoPoIncrease(calypsoPo, commandBuilder, apduResponse);
-    case OPEN_SESSION_10:
-    case OPEN_SESSION_24:
-    case OPEN_SESSION_31:
-    case OPEN_SESSION_32:
-        return updateCalypsoPoOpenSession(calypsoPo,
-                                          commandBuilder,
-                                          apduResponse);
-    case CHANGE_KEY:
-    case GET_DATA_FCI:
-    case GET_DATA_TRACE:
+    const uint8_t ins =
+        commandBuilder->getCommandRef()->getInstructionByte();
+
+    if (ins == CalypsoPoCommand::READ_RECORDS.getInstructionByte())
+        return updateCalypsoPoReadRecords(
+                 calypsoPo,
+                 std::dynamic_pointer_cast<ReadRecordsCmdBuild>(commandBuilder),
+                 apduResponse);
+    else if (ins == CalypsoPoCommand::SELECT_FILE.getInstructionByte())
+        return updateCalypsoPoSelectFile(
+                 calypsoPo,
+                 std::dynamic_pointer_cast<SelectFileCmdBuild>(commandBuilder),
+                 apduResponse);
+    else if (ins == CalypsoPoCommand::UPDATE_RECORD.getInstructionByte())
+        return updateCalypsoPoUpdateRecord(
+                 calypsoPo,
+                 std::dynamic_pointer_cast<UpdateRecordCmdBuild>(commandBuilder),
+                 apduResponse);
+    else if (ins == CalypsoPoCommand::WRITE_RECORD.getInstructionByte())
+        return updateCalypsoPoWriteRecord(
+                 calypsoPo,
+                 std::dynamic_pointer_cast<WriteRecordCmdBuild>(commandBuilder),
+                 apduResponse);
+    else if (ins == CalypsoPoCommand::APPEND_RECORD.getInstructionByte())
+        return updateCalypsoPoAppendRecord(
+                 calypsoPo,
+                 std::dynamic_pointer_cast<AppendRecordCmdBuild>(commandBuilder),
+                 apduResponse);
+    else if (ins == CalypsoPoCommand::DECREASE.getInstructionByte())
+        return updateCalypsoPoDecrease(
+                 calypsoPo,
+                 std::dynamic_pointer_cast<DecreaseCmdBuild>(commandBuilder),
+                 apduResponse);
+    else if (ins ==  CalypsoPoCommand::INCREASE.getInstructionByte())
+        return updateCalypsoPoIncrease(
+                 calypsoPo,
+                 std::dynamic_pointer_cast<IncreaseCmdBuild>(commandBuilder),
+                 apduResponse);
+    else if (ins == CalypsoPoCommand::OPEN_SESSION_10.getInstructionByte() ||
+             ins == CalypsoPoCommand::OPEN_SESSION_24.getInstructionByte() ||
+             ins == CalypsoPoCommand::OPEN_SESSION_31.getInstructionByte() ||
+             ins == CalypsoPoCommand::OPEN_SESSION_32.getInstructionByte())
+        return updateCalypsoPoOpenSession(
+                 calypsoPo,
+                 std::dynamic_pointer_cast<
+                     AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>>(
+                         commandBuilder),
+                 apduResponse);
+    else if (ins == CalypsoPoCommand::CHANGE_KEY.getInstructionByte() ||
+             ins == CalypsoPoCommand::GET_DATA_FCI.getInstructionByte() ||
+             ins == CalypsoPoCommand::GET_DATA_TRACE.getInstructionByte())
         throw IllegalStateException("Shouldn't happen for now!");
-    default:
+    else
         throw IllegalStateException("Unknown command reference.");
-    }
 }
 
 void CalypsoPoUtils::updateCalypsoPo(
@@ -408,8 +435,8 @@ void CalypsoPoUtils::updateCalypsoPo(
         AbstractPoResponseParser>>>& commandBuilders,
     const std::vector<std::shared_ptr<ApduResponse>>& apduResponses)
 {
-    std::vector<std::shared_ptr<ApduResponse>>::iterator responseIterator =
-        apduResponses.begin();
+    std::vector<std::shared_ptr<ApduResponse>>::const_iterator responseIterator
+        = apduResponses.begin();
 
     if (!commandBuilders.empty()) {
         for (const auto& commandBuilder : commandBuilders) {
@@ -421,7 +448,7 @@ void CalypsoPoUtils::updateCalypsoPo(
 }
 
 std::unique_ptr<ReadRecordsCmdBuild> CalypsoPoUtils::prepareReadRecordFile(
-    const PoClass poClass, const uint8_t sfi, const uint8_t recordNumber)
+    const PoClass& poClass, const uint8_t sfi, const uint8_t recordNumber)
 {
     KeypleAssert::getInstance()
         .isInRange(sfi, CalypsoPoUtils::SFI_MIN, CalypsoPoUtils::SFI_MAX, "sfi")
@@ -439,10 +466,10 @@ std::unique_ptr<ReadRecordsCmdBuild> CalypsoPoUtils::prepareReadRecordFile(
 }
 
 std::unique_ptr<SelectFileCmdBuild> CalypsoPoUtils::prepareSelectFile(
-    const PoClass poClass, const std::vector<uint8_t>& lid)
+    const PoClass& poClass, const std::vector<uint8_t>& lid)
 {
     KeypleAssert::getInstance()
-        .notNull(lid, "lid")
+        //.notNull(lid, "lid") /* Can't be null, it's a reference */
         .isEqual(lid.size(), 2, "lid");
 
     return std::unique_ptr<SelectFileCmdBuild>(
@@ -450,7 +477,7 @@ std::unique_ptr<SelectFileCmdBuild> CalypsoPoUtils::prepareSelectFile(
 }
 
 std::unique_ptr<SelectFileCmdBuild> CalypsoPoUtils::prepareSelectFile(
-    const PoClass poClass, const SelectFileControl selectControl)
+    const PoClass& poClass, const SelectFileControl selectControl)
 {
     return std::unique_ptr<SelectFileCmdBuild>(
                new SelectFileCmdBuild(poClass, selectControl));

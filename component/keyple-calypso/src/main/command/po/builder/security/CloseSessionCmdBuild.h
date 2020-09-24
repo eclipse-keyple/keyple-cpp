@@ -19,8 +19,12 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
-#include "CloseSessionRespPars.h"
 #include "PoClass.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { namespace security { class CloseSessionRespPars; } } } }
+    } }
 
 namespace keyple {
 namespace calypso {
@@ -48,12 +52,13 @@ public:
      * @param poClass indicates which CLA byte should be used for the Apdu
      * @param ratificationAsked the ratification asked
      * @param terminalSessionSignature the sam half session signature
-     * @throws IllegalArgumentException - if the signature is null or has a
+     * @throw IllegalArgumentException - if the signature is null or has a
      *         wrong length
-     * @throws IllegalArgumentException - if the command is inconsistent
+     * @throw IllegalArgumentException - if the command is inconsistent
      */
-    CloseSessionCmdBuild(PoClass poClass, bool ratificationAsked,
-                         std::vector<uint8_t>& terminalSessionSignature);
+    CloseSessionCmdBuild(const PoClass poClass,
+                         const bool ratificationAsked,
+                         const std::vector<uint8_t>& terminalSessionSignature);
 
     /**
      * Instantiates a new CloseSessionCmdBuild based on the revision of the PO
@@ -67,7 +72,7 @@ public:
     /**
      *
      */
-    std::shared_ptr<CloseSessionRespPars> createResponseParser(
+    std::unique_ptr<CloseSessionRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -79,21 +84,11 @@ public:
      */
     virtual bool isSessionBufferUsed() const override;
 
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<CloseSessionCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<CloseSessionCmdBuild>(
-            AbstractPoCommandBuilder<CloseSessionRespPars>::shared_from_this());
-    }
-
 private:
     /**
      * The command
      */
-    CalypsoPoCommand& command = CalypsoPoCommand::CLOSE_SESSION;
+    const CalypsoPoCommand& command = CalypsoPoCommand::CLOSE_SESSION;
 };
 
 }

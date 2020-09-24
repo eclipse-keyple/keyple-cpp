@@ -13,8 +13,12 @@
  ******************************************************************************/
 
 #include "DecreaseCmdBuild.h"
-#include "DecreaseRespPars.h"
+
+/* Core */
 #include "ApduResponse.h"
+
+/* Calypso */
+#include "DecreaseRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -27,10 +31,15 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
 DecreaseCmdBuild::DecreaseCmdBuild(
-  PoClass poClass, uint8_t sfi, uint8_t counterNumber, int decValue)
+  const PoClass poClass,
+  const uint8_t sfi,
+  const uint8_t counterNumber,
+  const int decValue)
 : AbstractPoCommandBuilder<DecreaseRespPars>(
-    CalypsoPoCommand::DECREASE, nullptr),
-  mSfi(sfi), mCounterNumber(counterNumber), mDecValue(decValue)
+    std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::DECREASE), nullptr),
+  mSfi(sfi),
+  mCounterNumber(counterNumber),
+  mDecValue(decValue)
 {
     const uint8_t cla = poClass.getValue();
 
@@ -43,7 +52,7 @@ DecreaseCmdBuild::DecreaseCmdBuild(
     const uint8_t p2 = sfi * 8;
 
     /* this is a case4 command, we set Le = 0 */
-    request = setApduRequest(cla, command, counterNumber, p2, decValueBuffer,0);
+    mRequest = setApduRequest(cla, command, counterNumber, p2, decValueBuffer,0);
 
     const std::string extraInfo =
         StringHelper::formatSimple("SFI=%02X, COUNTER=%d, DECREMENT=%d", sfi,
@@ -51,10 +60,11 @@ DecreaseCmdBuild::DecreaseCmdBuild(
     addSubName(extraInfo);
 }
 
-std::shared_ptr<DecreaseRespPars> DecreaseCmdBuild::createResponseParser(
+std::unique_ptr<DecreaseRespPars> DecreaseCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<DecreaseRespPars>(apduResponse, this);
+    return std::unique_ptr<DecreaseRespPars>(
+               new DecreaseRespPars(apduResponse, this));
 }
 
 bool DecreaseCmdBuild::isSessionBufferUsed() const

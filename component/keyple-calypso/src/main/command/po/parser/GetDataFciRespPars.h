@@ -38,6 +38,7 @@ namespace po {
 namespace parser {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util::bertlv;
 using namespace keyple::common;
@@ -132,7 +133,7 @@ private:
     /**
      *
      */
-    static std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 
     /**
      * Buffer indicator to buffer size lookup table

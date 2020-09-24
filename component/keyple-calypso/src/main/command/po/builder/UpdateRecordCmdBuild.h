@@ -21,11 +21,12 @@
 
 #include "AbstractPoCommandBuilder.h"
 #include "CalypsoPoCommand.h"
-#include "PoModificationCommand.h"
-#include "PoSendableInSession.h"
 #include "PoClass.h"
 #include "SelectFileRespPars.h"
-#include "UpdateRecordRespPars.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class UpdateRecordRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -61,7 +62,7 @@ public:
     /**
      *
      */
-    std::shared_ptr<UpdateRecordRespPars> createResponseParser(
+    std::unique_ptr<UpdateRecordRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
@@ -101,14 +102,14 @@ private:
     /**
      * The command
      */
-    CalypsoPoCommand& command = CalypsoPoCommand::UPDATE_RECORD;
+    const CalypsoPoCommand& command = CalypsoPoCommand::UPDATE_RECORD;
 
     /**
      * Construction arguments
      */
     const uint8_t mSfi;
     const uint8_t mRecordNumber;
-    const std::vector<uint8_t< mData;
+    const std::vector<uint8_t> mData;
 };
 
 }
