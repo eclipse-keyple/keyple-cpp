@@ -70,12 +70,11 @@ SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
     mRequest = setApduRequest(cla, mCommand, 0x00, p2, 0x00);
 }
 
-std::unique_ptr<SamReadEventCounterRespPars>
+std::shared_ptr<SamReadEventCounterRespPars>
     SamReadEventCounterCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<SamReadEventCounterRespPars>(
-               new SamReadEventCounterRespPars(apduResponse, this));
+    return std::make_shared<SamReadEventCounterRespPars>(apduResponse, this);
 }
 
 }

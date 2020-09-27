@@ -59,7 +59,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<SamGetChallengeRespPars> createResponseParser(
+    std::shared_ptr<SamGetChallengeRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

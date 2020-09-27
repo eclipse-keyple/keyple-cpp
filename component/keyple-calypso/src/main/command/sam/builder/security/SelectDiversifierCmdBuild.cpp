@@ -51,12 +51,11 @@ SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, diversifier);
 }
 
-std::unique_ptr<SelectDiversifierRespPars>
+std::shared_ptr<SelectDiversifierRespPars>
     SelectDiversifierCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<SelectDiversifierRespPars>(
-               new SelectDiversifierRespPars(apduResponse, this));
+    return std::make_shared<SelectDiversifierRespPars>(apduResponse, this);
 }
 
 }

@@ -21,6 +21,7 @@
 #include "SeResource.h"
 
 /* Calypso */
+#include "AbstractSamCommandBuilder.h"
 #include "CalypsoSam.h"
 #include "PoTransaction.h"
 
@@ -102,7 +103,7 @@ public:
      * @param poKVC the PO KVC
      * @param digestData a first packet of data to digest.
      */
-    void initializeDigester(const AccessLevel accessLevel,
+    void initializeDigester(const AccessLevel& accessLevel,
                             const bool sessionEncryption,
                             const bool verificationMode,
                             const uint8_t poKif,
@@ -166,15 +167,15 @@ private:
     /**
      *
      */
-    static const uint8_t KIF_UNDEFINED;
+    static const uint8_t KIF_UNDEFINED = 0xff;
 
     /**
      *
      */
-    static const uint8_t CHALLENGE_LENGTH_REV_INF_32;
-    static const uint8_t CHALLENGE_LENGTH_REV32;
-    static const uint8_t SIGNATURE_LENGTH_REV_INF_32;
-    static const uint8_t SIGNATURE_LENGTH_REV32;
+    static const uint8_t CHALLENGE_LENGTH_REV_INF_32 = 0x04;
+    static const uint8_t CHALLENGE_LENGTH_REV32 = 0x08;
+    static const uint8_t SIGNATURE_LENGTH_REV_INF_32 = 0x04;
+    static const uint8_t SIGNATURE_LENGTH_REV32 = 0x08;
 
     /**
      * The SAM resource
@@ -254,7 +255,7 @@ private:
      * @return the work KIF value byte
      */
     uint8_t determineWorkKif(const uint8_t poKif,
-                             const AccessLevel accessLevel) const;
+                             const AccessLevel& accessLevel) const;
 
      /**
      * Appends a full PO exchange (request and response) to the digest data

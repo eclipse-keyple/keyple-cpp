@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,113 +14,84 @@
 
 #include "SamRevision.h"
 
+/* Common */
+#include "IllegalArgumentException.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
 namespace sam {
 
-SamRevision SamRevision::C1("C1", InnerEnum::C1, "C1", "C1",
-                            static_cast<char>(0x80));
-SamRevision SamRevision::S1E("S1E", InnerEnum::S1E, "S1E", "E1",
-                             static_cast<char>(0x80));
-SamRevision SamRevision::S1D("S1D", InnerEnum::S1D, "S1D", "D?",
-                             static_cast<char>(0x94));
-SamRevision SamRevision::AUTO("AUTO", InnerEnum::AUTO, "AUTO", "??",
-                              static_cast<char>(0x00));
-SamRevision SamRevision::NO_REV("NO_REV", InnerEnum::NO_REV, "NO_REV", "??",
-                                static_cast<char>(0x00));
+using namespace keyple::common;
 
-std::vector<SamRevision> SamRevision::valueList;
+const SamRevision SamRevision::C1("C1", "C1", 0x80);
+const SamRevision SamRevision::S1E("S1E", "E1", 0x80);
+const SamRevision SamRevision::S1D("S1D", "D?", 0x94);
+const SamRevision SamRevision::AUTO("AUTO", "??", 0x00);
+const SamRevision SamRevision::NO_REV("NO_REV", "??", 0x00);
 
-SamRevision::StaticConstructor::StaticConstructor()
-{
-    valueList.push_back(NO_REV);
-    valueList.push_back(C1);
-    valueList.push_back(S1E);
-    valueList.push_back(S1D);
-    valueList.push_back(AUTO);
-}
-
-SamRevision::StaticConstructor SamRevision::staticConstructor;
-int SamRevision::nextOrdinal = 0;
-
-SamRevision::SamRevision(const std::string& nameValue, InnerEnum innerEnum,
-                         const std::string& name,
-                         const std::string& applicationTypeMask, char classByte)
-: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++),
-  name(name), applicationTypeMask(applicationTypeMask), classByte(classByte)
-{
-}
+SamRevision::SamRevision(
+  const std::string& name,
+  const std::string& applicationTypeMask,
+  const uint8_t classByte)
+: mName(name), mApplicationTypeMask(applicationTypeMask), mClassByte(classByte)
+{}
 
 SamRevision::SamRevision(const SamRevision& o)
-: innerEnumValue(o.innerEnumValue), nameValue(o.nameValue),
-  ordinalValue(o.ordinalValue), name(o.name),
-  applicationTypeMask(o.applicationTypeMask), classByte(o.classByte)
-{
-}
+: mName(o.mName),
+ mApplicationTypeMask(o.mApplicationTypeMask),
+ mClassByte(o.mClassByte) {}
 
-std::string SamRevision::getName()
+const std::string& SamRevision::getName() const
 {
-    return name;
+    return mName;
 }
 
 const std::string& SamRevision::getApplicationTypeMask() const
 {
-    return applicationTypeMask;
+    return mApplicationTypeMask;
 }
 
-char SamRevision::getClassByte()
+uint8_t SamRevision::getClassByte() const
 {
-    return classByte;
+    return mClassByte;
 }
 
-bool SamRevision::operator==(const SamRevision& other) const
+bool SamRevision::operator==(const SamRevision& o) const
 {
-    return this->ordinalValue == other.ordinalValue;
+    return this->mName == o.mName &&
+           this->mApplicationTypeMask == o.mApplicationTypeMask &&
+           this->mClassByte == o.mClassByte;
 }
 
-bool SamRevision::operator!=(const SamRevision& other) const
+bool SamRevision::operator!=(const SamRevision& o) const
 {
-    return this->ordinalValue != other.ordinalValue;
+    return !(*this == o);
 }
 
-SamRevision& SamRevision::operator=(SamRevision o)
+SamRevision& SamRevision::operator=(const SamRevision& o)
 {
-    this->innerEnumValue      = o.innerEnumValue;
-    this->nameValue           = o.nameValue;
-    this->name                = o.name;
-    this->ordinalValue        = o.ordinalValue;
-    this->applicationTypeMask = o.applicationTypeMask;
-    this->classByte           = o.classByte;
+    this->mName = o.mName;
+    this->mApplicationTypeMask = o.mApplicationTypeMask;
+    this->mClassByte = o.mClassByte;
 
     return *this;
 }
 
-std::vector<SamRevision> SamRevision::values()
+const SamRevision& SamRevision::valueOf(const std::string& name)
 {
-    return valueList;
-}
-
-int SamRevision::ordinal()
-{
-    return ordinalValue;
-}
-
-std::string SamRevision::toString()
-{
-    return nameValue;
-}
-
-SamRevision SamRevision::valueOf(const std::string& name)
-{
-    for (auto enumInstance : SamRevision::valueList) {
-        if (enumInstance.nameValue == name) {
-            return enumInstance;
-        }
-    }
-
-    /* Compiler fix */
-    return SamRevision("Dummy", InnerEnum::AUTO, "Dummy", "Dummy", 0);
+    if (name == C1.mName)
+        return C1;
+    else if (name == S1E.mName)
+        return S1E;
+    else if (name == S1D.mName)
+        return S1D;
+    else if (name == AUTO.mName)
+        return AUTO;
+    else
+        /* C++ vs. Java: throw for an invalid name */
+        throw IllegalArgumentException(
+                  "Name " + name + " is not valid a Sam Rev");
 }
 
 std::ostream& operator<<(std::ostream& os, const SamRevision& sr)

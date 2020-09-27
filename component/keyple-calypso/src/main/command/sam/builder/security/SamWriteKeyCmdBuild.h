@@ -54,7 +54,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<SamWriteKeyRespPars> createResponseParser(
+    std::shared_ptr<SamWriteKeyRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

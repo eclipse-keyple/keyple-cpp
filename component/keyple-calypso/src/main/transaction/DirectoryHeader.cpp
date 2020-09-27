@@ -132,7 +132,8 @@ uint8_t DirectoryHeader::getKvc(const AccessLevel& level) const
     return it->second;
 }
 
-std::unique_ptr<DirectoryHeaderBuilder> DirectoryHeader::builder() {
+std::unique_ptr<DirectoryHeaderBuilder> DirectoryHeader::builder()
+{
     return std::unique_ptr<DirectoryHeaderBuilder>(
                new DirectoryHeaderBuilder());
 }

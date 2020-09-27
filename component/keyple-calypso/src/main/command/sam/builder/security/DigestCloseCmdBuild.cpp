@@ -52,11 +52,10 @@ DigestCloseCmdBuild::DigestCloseCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, expectedResponseLength);
 }
 
-std::unique_ptr<DigestCloseRespPars> DigestCloseCmdBuild::createResponseParser(
+std::shared_ptr<DigestCloseRespPars> DigestCloseCmdBuild::createResponseParser(
     const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<DigestCloseRespPars>(
-               new DigestCloseRespPars(apduResponse, this));
+    return std::make_shared<DigestCloseRespPars>(apduResponse, this);
 }
 
 }

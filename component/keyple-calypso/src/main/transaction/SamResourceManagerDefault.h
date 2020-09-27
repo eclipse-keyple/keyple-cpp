@@ -17,17 +17,25 @@
 #include <mutex>
 #include <typeinfo>
 
-/* Common */
-#include "LoggerFactory.h"
-
 /* Calypso */
 #include "SamResourceManager.h"
+
+/* Common */
+#include "LoggerFactory.h"
+#include "Pattern.h"
+
+/* Core */
+#include "ObservablePlugin.h"
+#include "ObservableReader.h"
+#include "PluginEvent.h"
+#include "ReaderEvent.h"
 
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
 using namespace keyple::common;
+using namespace keyple::core::seproxy::event;
 
 /**
  * Implementation of Sam Resource Manager working a {@link ReaderPlugin} (either
@@ -37,22 +45,36 @@ using namespace keyple::common;
 class SamResourceManagerDefault : public SamResourceManager {
 public:
     /**
-     * Only used with observable readers
+     * Reader observer to handle SAM insertion/withdraw
      */
-    std::shared_ptr<SamResourceManagerDefault::ReaderObserver> mReaderObserver;
+    class ReaderObserver final : public ObservableReader::ReaderObserver {
+    public:
+        /**
+         *
+         */
+        ReaderObserver(SamResourceManagerDefault& parent);
 
-    /**
-     *
-     */
-    std::shared_ptr<SeResource<CalypsoSam>> allocateSamResource(
-        const AllocationMode allocationMode,
-        const SamIdentifier& samIdentifier) override;
+        /**
+         * Handle {@link ReaderEvent}
+         * <p>
+         * Create {@link SeResource<CalypsoSam>}
+         *
+         * @param event the reader event
+         */
+        void update(const std::shared_ptr<ReaderEvent> event) override;
 
-    /**
-     *
-     */
-    void freeSamResource(
-        const std::shared_ptr<SeResource<CalypsoSam>> samResource) override;
+    private:
+        /**
+         *
+         */
+        const std::shared_ptr<Logger> mLogger =
+            LoggerFactory::getLogger(typeid(ReaderObserver));
+
+        /**
+         *
+         */
+        SamResourceManagerDefault& mParent;
+    };
 
     /**
      * Plugin observer to handle SAM reader connection/disconnection.
@@ -82,126 +104,53 @@ public:
          *
          */
         PluginObserver(const std::shared_ptr<ReaderObserver> readerObserver,
-                       const std::string& samReaderFilter);
+                       const std::string& samReaderFilter,
+                       SamResourceManagerDefault& parent);
         /**
          * Handle {@link PluginEvent}
          *
          * @param event the plugin event
          */
-        void update(const PluginEvent& event) override;
-    };
-
-    /**
-     * Reader observer to handle SAM insertion/withdraw
-     */
-    class ReaderObserver final : public ObservableReader::ReaderObserver {
-    public:
-        /**
-         *
-         */
-        ReaderObserver();
-
-        /**
-         * Handle {@link ReaderEvent}
-         * <p>
-         * Create {@link SeResource<CalypsoSam>}
-         *
-         * @param event the reader event
-         */
-        void update(const ReaderEvent& event) override;
-    };
-
-    /**
-     * (package-private)<br>
-     * Inner class to handle specific attributes associated with an {@code
-     * SeResource<CalypsoSam>} in the {@link SamResourceManager} context.
-     *
-     * @since 0.9
-     */
-    static class ManagedSamResource final : public SeResource<CalypsoSam> {
-    public:
-        /**
-         * The free/busy enum status
-         */
-        enum class SamResourceStatus {
-            FREE,
-            BUSY;
-        };
-
-        /**
-         * Constructor
-         *
-         * @param seReader the {@link SeReader} with which the SE is
-         *        communicating
-         * @param calypsoSam the {@link CalypsoSam} information structure
-         */
-        ManagedSamResource(std::shared_ptr<SeReader> seReader,
-                           std::shared_ptr<CalypsoSam> calypsoSam);
-
-        /**
-         * Indicates whether the ManagedSamResource is FREE or BUSY
-         *
-         * @return the busy status
-         */
-        const bool isSamResourceFree() const;
-
-        /**
-         * Defines the {@link SamIdentifier} of the current {@link
-         * ManagedSamResource}
-         *
-         * @param samIdentifier the SAM identifier
-         */
-        void setSamIdentifier(std::shared_ptr<SamIdentifier> samIdentifier);
-
-        /**
-         * Indicates whether the ManagedSamResource matches the provided SAM
-         * identifier.
-         * <p>
-         * The test includes the {@link SamRevision}, serial number and group
-         * reference provided by the {@link SamIdentifier}.
-         * <p>
-         * The SAM serial number can be null or empty, in this case all serial
-         * numbers are accepted. It can also be a regular expression target one
-         * or more specific serial numbers.
-         * <p>
-         * The groupe reference can be null or empty to let all group references
-         * match but not empty the group reference must match the {@link
-         * SamIdentifier} to have the method returning true.
-         *
-         * @param samIdentifier the SAM identifier
-         * @return true or false according to the result of the correspondence
-         *         test
-         */
-        const bool isSamMatching(
-            const std::shared_ptr<SamIdentifier> samIdentifier) const;
-
-        /**
-         * Sets the free/busy status of the ManagedSamResource
-         *
-         * @param samResourceStatus FREE/BUSY enum value
-         */
-        void setSamResourceStatus(const SamResourceStatus& samResourceStatus);
+        void update(const std::shared_ptr<PluginEvent> event) override;
 
     private:
         /**
-         * The free/busy status of the resource
+         *
          */
-        SamResourceStatus mSamResourceStatus;
+        const std::shared_ptr<Logger> mLogger =
+            LoggerFactory::getLogger(typeid(PluginObserver));
 
         /**
-         * The sam identifier
+         *
          */
-        std::shared_ptr<SamIdentifier> mSamIdentifier;
-    }
+        SamResourceManagerDefault& mParent;
+    };
 
-protected:
+    /**
+     * Only used with observable readers
+     */
+    std::shared_ptr<SamResourceManagerDefault::ReaderObserver> mReaderObserver;
+
+    /**
+     * {@inheritDoc}
+     */
+    std::shared_ptr<SeResource<CalypsoSam>> allocateSamResource(
+        const AllocationMode allocationMode,
+        const std::shared_ptr<SamIdentifier> samIdentifier) override;
+
     /**
      *
      */
-    std::shared_ptr<ReaderPlugin> mSamReaderPlugin;
+    void freeSamResource(
+        const std::shared_ptr<SeResource<CalypsoSam>> samResource) override;
 
     /**
      * Protected constructor, use the {@link SamResourceManagerFactory}
+     *
+     * C++ vs. Java: Should be private but would forbid usage of make_shared
+     *               from SamResourceManagerFactory class. Setting it
+     *               public for now. Could use an intermediate derived class
+     *               otherwise if need be.
      *
      * @param readerPlugin the plugin through which SAM readers are accessible
      * @param samReaderFilter the regular expression defining how to identify
@@ -217,6 +166,12 @@ protected:
                               const std::string& samReaderFilter,
                               const int maxBlockingTime,
                               const int sleepTime);
+
+protected:
+    /**
+     *
+     */
+    std::shared_ptr<ReaderPlugin> mSamReaderPlugin;
 
     /**
      * Remove a {@link SeResource} from the current

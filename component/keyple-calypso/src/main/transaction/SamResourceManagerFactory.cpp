@@ -18,51 +18,44 @@ namespace keyple {
 namespace calypso {
 namespace transaction {
 
-const int SamResourceManagerFactory::MAX_BLOCKING_TIME = 1000;
-const int SamResourceManagerFactory::DEFAULT_SLEEP_TIME = 10;
-
-std::unique_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
+std::shared_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
     const std::shared_ptr<ReaderPlugin> readerPlugin,
     const std::string& samReaderFilter,
     const int maxBlockingTime,
     const int sleepTime)
 {
-    return std::unique_ptr<SamResourceManagerDefault>(
-               new SamResourceManagerDefault(readerPlugin,
-                                             samReaderFilter,
-                                             maxBlockingTime,
-                                             sleepTime));
+    return std::make_shared<SamResourceManagerDefault>(readerPlugin,
+                                                       samReaderFilter,
+                                                       maxBlockingTime,
+                                                       sleepTime);
 }
 
-std::unique_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
+std::shared_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
     const std::shared_ptr<ReaderPlugin> readerPlugin,
     const std::string& samReaderFilter)
 {
-    return std::unique_ptr<SamResourceManagerDefault>(
-               new SamResourceManagerDefault(readerPlugin,
-                                             samReaderFilter,
-                                             MAX_BLOCKING_TIME,
-                                             DEFAULT_SLEEP_TIME));
+    return std::make_shared<SamResourceManagerDefault>(readerPlugin,
+                                                       samReaderFilter,
+                                                       MAX_BLOCKING_TIME,
+                                                       DEFAULT_SLEEP_TIME);
 }
 
-std::unique_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
+std::shared_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
     const ReaderPoolPlugin& samReaderPoolPlugin,
     const int maxBlockingTime,
     const int sleepTime)
 {
-        return std::unique_ptr<SamResourceManagerPool>(
-                   new SamResourceManagerPool(samReaderPoolPlugin,
-                                              maxBlockingTime,
-                                              sleepTime));
+        return std::make_shared<SamResourceManagerPool>(samReaderPoolPlugin,
+                                                        maxBlockingTime,
+                                                        sleepTime);
 }
 
-std::unique_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
+std::shared_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
         const ReaderPoolPlugin& samReaderPoolPlugin)
 {
-    return std::unique_ptr<SamResourceManagerPool>(
-                   new SamResourceManagerPool(samReaderPoolPlugin,
-                                              MAX_BLOCKING_TIME,
-                                              DEFAULT_SLEEP_TIME));
+    return std::make_shared<SamResourceManagerPool>(samReaderPoolPlugin,
+                                                    MAX_BLOCKING_TIME,
+                                                    DEFAULT_SLEEP_TIME);
 }
 
 }

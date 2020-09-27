@@ -52,11 +52,10 @@ UnlockCmdBuild::UnlockCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, unlockData);
 }
 
-std::unique_ptr<UnlockRespPars> UnlockCmdBuild::createResponseParser(
+std::shared_ptr<UnlockRespPars> UnlockCmdBuild::createResponseParser(
     const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<UnlockRespPars>(
-               new UnlockRespPars(apduResponse, this));
+    return std::make_shared<UnlockRespPars>(apduResponse, this);
 }
 
 }

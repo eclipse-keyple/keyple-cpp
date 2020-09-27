@@ -53,12 +53,11 @@ AppendRecordCmdBuild::AppendRecordCmdBuild(
     addSubName(extraInfo);
 }
 
-std::unique_ptr<AppendRecordRespPars>
+std::shared_ptr<AppendRecordRespPars>
     AppendRecordCmdBuild::createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<AppendRecordRespPars>(
-               new AppendRecordRespPars(apduResponse, this));
+    return std::make_shared<AppendRecordRespPars>(apduResponse, this);
 }
 
 bool AppendRecordCmdBuild::isSessionBufferUsed() const

@@ -67,7 +67,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<CardGenerateKeyRespPars> createResponseParser(
+    std::shared_ptr<CardGenerateKeyRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

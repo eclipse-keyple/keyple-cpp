@@ -49,8 +49,7 @@ const std::shared_ptr<SelectionStatus> SeResponse::getSelectionStatus() const
     return mSelectionStatus;
 }
 
-const std::vector<std::shared_ptr<ApduResponse>>& SeResponse::getApduResponses()
-    const
+std::vector<std::shared_ptr<ApduResponse>>& SeResponse::getApduResponses()
 {
     return mApduResponses;
 }

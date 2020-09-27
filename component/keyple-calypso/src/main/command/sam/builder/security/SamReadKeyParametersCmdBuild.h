@@ -87,7 +87,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<SamReadKeyParametersRespPars> createResponseParser(
+    std::shared_ptr<SamReadKeyParametersRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

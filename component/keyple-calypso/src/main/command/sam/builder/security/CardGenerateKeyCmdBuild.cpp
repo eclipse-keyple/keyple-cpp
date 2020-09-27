@@ -79,12 +79,11 @@ CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, data);
 }
 
-std::unique_ptr<CardGenerateKeyRespPars>
+std::shared_ptr<CardGenerateKeyRespPars>
     CardGenerateKeyCmdBuild::createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<CardGenerateKeyRespPars>(
-               new CardGenerateKeyRespPars(apduResponse, this));
+    return std::make_shared<CardGenerateKeyRespPars>(apduResponse, this);
 }
 
 }

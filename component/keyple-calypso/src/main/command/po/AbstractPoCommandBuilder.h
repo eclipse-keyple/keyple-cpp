@@ -50,12 +50,6 @@ template<typename T>
 class KEYPLECALYPSO_API AbstractPoCommandBuilder
 : public AbstractIso7816CommandBuilder {
 public:
-    /*
-    static_assert(std::is_base_of<AbstractPoResponseParser, T>::value,
-                  "T must inherit from keyple::core::command" \
-                  "::AbstractApduResponseParser");
-    */
-
     /**
      * Constructor dedicated for the building of referenced Calypso commands
      *
@@ -64,7 +58,12 @@ public:
      */
     AbstractPoCommandBuilder(std::shared_ptr<CalypsoPoCommand> commandRef,
                              std::shared_ptr<ApduRequest> request)
-    : AbstractIso7816CommandBuilder(commandRef, request) {}
+    : AbstractIso7816CommandBuilder(commandRef, request)
+    {
+        static_assert(std::is_base_of<AbstractPoResponseParser, T>::value,
+                      "T must inherit from keyple::core::command" \
+                      "::AbstractPoResponseParser");
+    }
 
     /**
      *
@@ -77,7 +76,7 @@ public:
      * @param apduResponse the response data from the SE
      * @return an {@link AbstractApduResponseParser}
      */
-    virtual std::unique_ptr<T> createResponseParser(
+    virtual std::shared_ptr<T> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) = 0;
 
     /**

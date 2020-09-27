@@ -34,9 +34,7 @@ using namespace keyple::core::seproxy;
  * class in Keyple-Calypso.
  */
 template <typename T>
-class SeResource : public std::enable_shared_from_this<SeResource<T>> {
-    static_assert(std::is_base_of<AbstractMatchingSe, T>::value,
-                  "T must inherit from AbstractMatchingSe");
+class SeResource {
 public:
     /**
      * Constructor
@@ -46,7 +44,11 @@ public:
      */
     SeResource(std::shared_ptr<SeReader> seReader,
                std::shared_ptr<T> matchingSe)
-    : seReader(seReader), matchingSe(matchingSe) {}
+    : seReader(seReader), matchingSe(matchingSe)
+    {
+        static_assert(std::is_base_of<AbstractMatchingSe, T>::value,
+                      "T must inherit from AbstractMatchingSe");
+    }
 
     /**
      *

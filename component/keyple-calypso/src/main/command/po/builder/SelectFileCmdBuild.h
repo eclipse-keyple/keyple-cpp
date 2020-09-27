@@ -68,7 +68,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<SelectFileRespPars> createResponseParser(
+    std::shared_ptr<SelectFileRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**

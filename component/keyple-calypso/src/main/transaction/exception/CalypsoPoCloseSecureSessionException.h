@@ -51,8 +51,10 @@ public:
     /**
      * @return the cause {@link CalypsoPoCommandException}
      */
-    const CalypsoPoCommandException& getCause() override {
-        return CalypsoPoTransactionException::getCause();
+    const CalypsoPoCommandException& getCause() //override
+    {
+        std::exception e = CalypsoPoTransactionException::getCause();
+        return std::move(dynamic_cast<CalypsoPoCommandException&>(e));
     }
 };
 

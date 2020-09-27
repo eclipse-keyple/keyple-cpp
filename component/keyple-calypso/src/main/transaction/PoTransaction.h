@@ -114,22 +114,22 @@ public:
             /**
              * Default value (uninitialized)
              */
-            static AccessLevel SESSION_LVL_NONE;
+            static const AccessLevel SESSION_LVL_NONE;
 
             /**
              * Session Access Level used for personalization purposes.
              */
-            static AccessLevel SESSION_LVL_PERSO;
+            static const AccessLevel SESSION_LVL_PERSO;
 
             /**
              * Session Access Level used for reloading purposes
              */
-            static AccessLevel SESSION_LVL_LOAD;
+            static const AccessLevel SESSION_LVL_LOAD;
 
             /**
              * Session Access Level used for validating and debiting purposes
              */
-            static AccessLevel SESSION_LVL_DEBIT;
+            static const AccessLevel SESSION_LVL_DEBIT;
 
             /**
              *
@@ -144,12 +144,17 @@ public:
             /**
              *
              */
-            bool operator==(const AccessLevel& other) const;
+            bool operator==(const AccessLevel& o) const;
 
             /**
              *
              */
-            bool operator!=(const AccessLevel& other) const;
+            bool operator!=(const AccessLevel& o) const;
+
+            /**
+             *
+             */
+            //AccessLevel& operator=(const AccessLevel& o);
 
             /**
              *
@@ -167,12 +172,12 @@ public:
             /**
              *
              */
-            const std::string mName;
+            std::string mName;
 
             /**
              *
              */
-            const uint8_t mSessionKey;
+            uint8_t mSessionKey;
 
             /**
              *
@@ -593,6 +598,13 @@ private:
             AbstractPoResponseParser>>>& poCommands);
 
     /**
+     * c++ vs. Java: Function overload to avoid declaring empty vectors here and
+     *               there in the code. Better encapsulated that hask into a
+     *               function.
+     */
+    void processAtomicOpening(const SessionSetting::AccessLevel& accessLevel);
+
+    /**
      * Create an ApduRequest List from a AbstractPoCommandBuilder List.
      *
      * @param poCommands a list of PO commands
@@ -715,6 +727,28 @@ private:
         const ChannelControl channelControl);
 
     /**
+     * C++ vs. Java: Added constructor with no poCommands (null in Java) to
+     *               avoid declaring dummy empty vectors here and there in the
+     *               code. The hack is encapsulated in the function.
+     *
+     * Advanced variant of processAtomicClosing in which the list of expected
+     * responses is determined from previous reading operations.
+     *
+     * @param ratificationMode the ratification mode tells if the session is
+     *        closed ratified or not
+     * @param channelControl indicates if the SE channel of the PO reader must
+     *        be closed after the last command
+     * @throw CalypsoPoTransactionException if a functional error occurs
+     *        (including PO and SAM IO errors)
+     * @throw CalypsoPoCommandException if a response from the PO was unexpected
+     * @throw CalypsoSamCommandException if a response from the SAM was
+     *        unexpected
+     */
+    void processAtomicClosing(
+        const SessionSetting::RatificationMode ratificationMode,
+        const ChannelControl channelControl);
+
+    /**
      * Gets the value of the designated counter
      *
      * @param sfi the SFI of the EF containing the counter
@@ -799,8 +833,8 @@ private:
     bool checkModifyingCommand(
         std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
             builder,
-        std::atomic<bool> overflow,
-        std::atomic<int> neededSessionBufferSpace);
+        std::atomic<bool>& overflow,
+        std::atomic<int>& neededSessionBufferSpace);
 
     /**
      * Checks whether the requirement for the modifications buffer of the
@@ -818,7 +852,7 @@ private:
 
     /**
      * Initialized the modifications buffer counter to its maximum value for the
-     *  current PO
+     * current PO
      */
     void resetModificationsBufferCounter();
 };

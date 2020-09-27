@@ -37,11 +37,10 @@ GetDataFciCmdBuild::GetDataFciCmdBuild(const PoClass poClass)
     mRequest = setApduRequest(poClass.getValue(), command, 0x00, 0x6F, 0x00);
 }
 
-std::unique_ptr<GetDataFciRespPars> GetDataFciCmdBuild::createResponseParser(
+std::shared_ptr<GetDataFciRespPars> GetDataFciCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<GetDataFciRespPars>(
-               new GetDataFciRespPars(apduResponse, this));
+    return std::make_shared<GetDataFciRespPars>(apduResponse, this);
 }
 
 bool GetDataFciCmdBuild::isSessionBufferUsed() const

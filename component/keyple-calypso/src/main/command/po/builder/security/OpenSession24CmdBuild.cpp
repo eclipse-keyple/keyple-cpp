@@ -76,12 +76,11 @@ OpenSession24CmdBuild::OpenSession24CmdBuild(
     addSubName(extraInfo);
 }
 
-std::unique_ptr<AbstractOpenSessionRespPars>
+std::shared_ptr<AbstractOpenSessionRespPars>
     OpenSession24CmdBuild::createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<OpenSession24RespPars>(
-               new OpenSession24RespPars(apduResponse, this));
+    return std::make_shared<OpenSession24RespPars>(apduResponse, this);
 }
 
 bool OpenSession24CmdBuild::isSessionBufferUsed() const
