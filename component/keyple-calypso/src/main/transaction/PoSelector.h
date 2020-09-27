@@ -89,21 +89,26 @@ public:
          * @return a new instance
          *
          * Return type should be
-         *   std::unique_ptr<PoSelector>
+         *   std::shared_ptr<PoSelector>
          * ... but invalid covariant return type
          */
-        std::unique_ptr<SeSelector> build() override;
+        std::shared_ptr<SeSelector> build() override;
+
+        /**
+         * Private constructor
+         *
+         * C++ vs. Java: Should be private but would forbid usage of make_shared
+         *               from PoSelectorBuilder class. Setting it public for
+         *               now. Could use an intermediate derived class otherwise
+         *               if need be.
+         */
+        PoSelectorBuilder();
 
     private:
         /**
          *
          */
         InvalidatedPo mInvalidatedPo;
-
-        /**
-         *
-         */
-        PoSelectorBuilder();
     };
 
     /**
@@ -111,18 +116,23 @@ public:
      *
      * @return a new builder instance
      */
-    static std::unique_ptr<PoSelectorBuilder> builder();
+    static std::shared_ptr<PoSelectorBuilder> builder();
+
+    /**
+     * Private constructor
+     *
+     * C++ vs. Java: Should be private but would forbid usage of make_shared
+     *               from PoSelectorBuilder class. Setting it public for now.
+     *               Could use an intermediate derived class otherwise if need
+     *               be.
+     */
+    PoSelector(PoSelectorBuilder* builder);
 
 private:
     /**
      *
      */
     static const int SW_PO_INVALIDATED = 0x6283;
-
-    /**
-     * Private constructor
-     */
-    PoSelector(PoSelectorBuilder* builder);
 };
 
 }

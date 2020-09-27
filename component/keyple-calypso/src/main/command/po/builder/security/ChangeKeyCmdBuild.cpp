@@ -60,11 +60,10 @@ ChangeKeyCmdBuild::ChangeKeyCmdBuild(
     addSubName("Change Key");
 }
 
-std::unique_ptr<ChangeKeyRespPars> ChangeKeyCmdBuild::createResponseParser(
+std::shared_ptr<ChangeKeyRespPars> ChangeKeyCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<ChangeKeyRespPars>(
-               new ChangeKeyRespPars(apduResponse, this));
+    return std::make_shared<ChangeKeyRespPars>(apduResponse, this);
 }
 
 bool ChangeKeyCmdBuild::isSessionBufferUsed() const

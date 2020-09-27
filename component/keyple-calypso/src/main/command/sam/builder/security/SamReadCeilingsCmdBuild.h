@@ -72,7 +72,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<SamReadCeilingsRespPars> createResponseParser(
+    std::shared_ptr<SamReadCeilingsRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

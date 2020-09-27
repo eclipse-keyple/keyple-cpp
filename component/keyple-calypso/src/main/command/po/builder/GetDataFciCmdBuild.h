@@ -60,7 +60,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<GetDataFciRespPars> createResponseParser(
+    std::shared_ptr<GetDataFciRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**

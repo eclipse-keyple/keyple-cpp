@@ -67,9 +67,14 @@ OpenSession32RespPars::createSecureSession(
         Arrays::copyOfRange(apduResponse, 3, 8);
 
     return std::make_shared<SecureSession>(
-        challengeTransactionCounter, challengeRandomNumber,
-        previousSessionRatified, manageSecureSessionAuthorized, kif,
-        std::make_shared<Byte>(apduResponse[10]), data, apduResponse);
+               challengeTransactionCounter,
+               challengeRandomNumber,
+               previousSessionRatified,
+               manageSecureSessionAuthorized,
+               kif,
+               apduResponse[10],
+               data,
+               apduResponse);
 }
 
 }

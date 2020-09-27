@@ -207,7 +207,7 @@ uint8_t AbstractOpenSessionRespPars::getSelectedKif() const
     return mSecureSession->getKIF();
 }
 
-std::shared_ptr<Byte> AbstractOpenSessionRespPars::getSelectedKvc() const
+std::uint8_t AbstractOpenSessionRespPars::getSelectedKvc() const
 {
     return mSecureSession->getKVC();
 }
@@ -226,7 +226,7 @@ SecureSession::SecureSession(
   const bool previousSessionRatified,
   const bool manageSecureSessionAuthorized,
   const uint8_t kif,
-  std::shared_ptr<Byte> kvc,
+  const uint8_t kvc,
   const std::vector<uint8_t>& originalData,
   const std::vector<uint8_t>& secureSessionData)
 : mChallengeTransactionCounter(challengeTransactionCounter),
@@ -243,17 +243,33 @@ SecureSession::SecureSession(
   const std::vector<uint8_t>& challengeRandomNumber,
   const bool previousSessionRatified,
   const bool manageSecureSessionAuthorized,
-  std::shared_ptr<Byte> kvc,
+  const uint8_t kvc,
   const std::vector<uint8_t>& originalData,
   const std::vector<uint8_t>& secureSessionData)
-: mChallengeTransactionCounter(challengeTransactionCounter),
-  mChallengeRandomNumber(challengeRandomNumber),
-  mPreviousSessionRatified(previousSessionRatified),
-  mManageSecureSessionAuthorized(manageSecureSessionAuthorized),
-  mKif(0xff),
-  mKvc(kvc != nullptr ? kvc : std::make_shared<Byte>(0xff)),
-  mOriginalData(originalData),
-  mSecureSessionData(secureSessionData) {}
+: SecureSession(challengeTransactionCounter,
+                challengeRandomNumber,
+                previousSessionRatified,
+                manageSecureSessionAuthorized,
+                0xff,
+                kvc,
+                originalData,
+                secureSessionData) {}
+
+SecureSession::SecureSession(
+  const std::vector<uint8_t>& challengeTransactionCounter,
+  const std::vector<uint8_t>& challengeRandomNumber,
+  const bool previousSessionRatified,
+  const bool manageSecureSessionAuthorized,
+  const std::vector<uint8_t>& originalData,
+  const std::vector<uint8_t>& secureSessionData)
+: SecureSession(challengeTransactionCounter,
+                challengeRandomNumber,
+                previousSessionRatified,
+                manageSecureSessionAuthorized,
+                0xff,
+                0xff,
+                originalData,
+                secureSessionData) {}
 
 const std::vector<uint8_t>& SecureSession::getChallengeTransactionCounter()
     const
@@ -281,8 +297,7 @@ uint8_t SecureSession::getKIF() const
 {
     return mKif;
 }
-
-std::shared_ptr<Byte> SecureSession::getKVC() const
+uint8_t SecureSession::getKVC() const
 {
     return mKvc;
 }

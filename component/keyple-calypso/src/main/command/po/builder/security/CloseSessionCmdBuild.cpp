@@ -38,7 +38,7 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
 
 CloseSessionCmdBuild::CloseSessionCmdBuild(
-  const PoClass poClass,
+  const PoClass& poClass,
   const bool ratificationAsked,
   const std::vector<uint8_t>& terminalSessionSignature)
 : AbstractPoCommandBuilder<CloseSessionRespPars>(
@@ -84,12 +84,11 @@ CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass)
     this->addSubName("Abort session");
 }
 
-std::unique_ptr<CloseSessionRespPars>
+std::shared_ptr<CloseSessionRespPars>
     CloseSessionCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<CloseSessionRespPars>(
-               new CloseSessionRespPars(apduResponse, this));
+    return std::make_shared<CloseSessionRespPars>(apduResponse, this);
 }
 
 bool CloseSessionCmdBuild::isSessionBufferUsed() const

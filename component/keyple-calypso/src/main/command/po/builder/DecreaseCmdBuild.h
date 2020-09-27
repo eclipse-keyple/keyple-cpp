@@ -66,7 +66,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<DecreaseRespPars> createResponseParser(
+    std::shared_ptr<DecreaseRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**

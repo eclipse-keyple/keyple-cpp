@@ -84,7 +84,7 @@ public:
      * @return the group of APDUs responses returned by the SE application for
      *         this instance of SEResponse.
      */
-    const std::vector<std::shared_ptr<ApduResponse>>& getApduResponses() const;
+    std::vector<std::shared_ptr<ApduResponse>>& getApduResponses();
 
     /**
      *

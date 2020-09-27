@@ -40,75 +40,41 @@ using SeSelectorBuilder      = SeSelector::SeSelectorBuilder;
 
 /* FILE OCCURRENCE ----------------------------------------------------------- */
 
-FileOccurrence FileOccurrence::FIRST("FIRST", InnerEnum::FIRST,
-                                     static_cast<char>(0x00));
-FileOccurrence FileOccurrence::LAST("LAST", InnerEnum::LAST,
-                                    static_cast<char>(0x01));
-FileOccurrence FileOccurrence::NEXT("NEXT", InnerEnum::NEXT,
-                                    static_cast<char>(0x02));
-FileOccurrence FileOccurrence::PREVIOUS("PREVIOUS", InnerEnum::PREVIOUS,
-                                        static_cast<char>(0x03));
+const FileOccurrence FileOccurrence::FIRST(0x00);
+const FileOccurrence FileOccurrence::LAST(0x01);
+const FileOccurrence FileOccurrence::NEXT(0x02);
+const FileOccurrence FileOccurrence::PREVIOUS(0x03);
 
-std::vector<FileOccurrence> FileOccurrence::mValueList;
+FileOccurrence::FileOccurrence(const uint8_t isoBitMask)
+: mIsoBitMask(isoBitMask) {}
 
-FileOccurrence::StaticConstructor::StaticConstructor()
-{
-    mValueList.push_back(FIRST);
-    mValueList.push_back(LAST);
-    mValueList.push_back(NEXT);
-    mValueList.push_back(PREVIOUS);
-}
+FileOccurrence::FileOccurrence(const FileOccurrence& o)
+: mIsoBitMask(o.mIsoBitMask) {}
 
-FileOccurrence::StaticConstructor FileOccurrence::mStaticConstructor;
-int FileOccurrence::mNextOrdinal = 0;
-
-FileOccurrence::FileOccurrence(const std::string& name, InnerEnum innerEnum,
-                               char isoBitMask)
-: mInnerEnumValue(innerEnum), mNameValue(name), mOrdinalValue(mNextOrdinal++),
-  mIsoBitMask(isoBitMask) {}
-
-char FileOccurrence::getIsoBitMask()
+uint8_t FileOccurrence::getIsoBitMask() const
 {
     return mIsoBitMask;
 }
 
-std::vector<FileOccurrence> FileOccurrence::values()
+bool FileOccurrence::operator==(const FileOccurrence& o) const
 {
-    return mValueList;
+    return mIsoBitMask == o.mIsoBitMask;
 }
 
-int FileOccurrence::ordinal()
+bool FileOccurrence::operator!=(const FileOccurrence& o) const
 {
-    return mOrdinalValue;
+    return !(*this == o);
 }
 
-FileOccurrence FileOccurrence::valueOf(const std::string& name)
+FileOccurrence& FileOccurrence::operator=(const FileOccurrence& o)
 {
-    for (auto enumInstance : FileOccurrence::mValueList) {
-        if (enumInstance.mNameValue == name) {
-            return enumInstance;
-        }
-    }
-
-    /* Make compiler happy */
-    return FileOccurrence::mValueList.front();
-}
-
-bool FileOccurrence::operator==(const FileOccurrence& other) const
-{
-    return mOrdinalValue == other.mOrdinalValue;
-}
-
-bool FileOccurrence::operator!=(const FileOccurrence& other) const
-{
-    return this->mOrdinalValue != other.mOrdinalValue;
+    mIsoBitMask = o.mIsoBitMask;
+    return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const FileOccurrence& fc)
 {
     os << "FILEOCCURRENCE: {"
-       << "NAMEVALUE = " << fc.mNameValue << ", "
-       << "ORDINALVALUE = " << fc.mOrdinalValue << ", "
        << "ISOBITMASK = " << fc.mIsoBitMask
        << "}";
 
@@ -117,81 +83,45 @@ std::ostream& operator<<(std::ostream& os, const FileOccurrence& fc)
 
 /* FILE CONTROL INFORMATION ------------------------------------------------- */
 
-FileControlInformation FileControlInformation::FCI("FCI", InnerEnum::FCI, 0x00);
-FileControlInformation FileControlInformation::FCP("FCP", InnerEnum::FCP, 0x04);
-FileControlInformation FileControlInformation::FMD("FMD", InnerEnum::FMD, 0x08);
-FileControlInformation
-    FileControlInformation::NO_RESPONSE("NO_RESPONSE", InnerEnum::NO_RESPONSE,
-                                        0x0C);
+const FileControlInformation FileControlInformation::FCI(0x00);
+const FileControlInformation FileControlInformation::FCP(0x04);
+const FileControlInformation FileControlInformation::FMD(0x08);
+const FileControlInformation FileControlInformation::NO_RESPONSE(0x0C);
 
-std::vector<FileControlInformation> FileControlInformation::mValueList;
+FileControlInformation::FileControlInformation(const uint8_t isoBitMask)
+: mIsoBitMask(isoBitMask) {}
 
-FileControlInformation::StaticConstructor::StaticConstructor()
-{
-    mValueList.push_back(FCI);
-    mValueList.push_back(FCP);
-    mValueList.push_back(FMD);
-    mValueList.push_back(NO_RESPONSE);
-}
 
-FileControlInformation::StaticConstructor
-    FileControlInformation::mStaticConstructor;
-int FileControlInformation::mNextOrdinal = 0;
+FileControlInformation::FileControlInformation(const FileControlInformation& o)
+: mIsoBitMask(o.mIsoBitMask) {}
 
-FileControlInformation::FileControlInformation(const std::string& name,
-                                               InnerEnum innerEnum,
-                                               char isoBitMask)
-: //mInnerEnumValue(innerEnum),
-  mNameValue(name), mOrdinalValue(mNextOrdinal++),
-  mIsoBitMask(isoBitMask)
-{
-    (void)innerEnum;
-}
-
-char FileControlInformation::getIsoBitMask()
+uint8_t FileControlInformation::getIsoBitMask() const
 {
     return mIsoBitMask;
 }
 
-bool FileControlInformation::operator==(const FileControlInformation& other)
+bool FileControlInformation::operator==(const FileControlInformation& o)
     const
 {
-    return mOrdinalValue == other.mOrdinalValue;
+    return mIsoBitMask == o.mIsoBitMask;
 }
 
-bool FileControlInformation::operator!=(const FileControlInformation& other)
+bool FileControlInformation::operator!=(const FileControlInformation& o)
     const
 {
-    return mOrdinalValue != other.mOrdinalValue;
+    return !(*this == o);
 }
 
-std::vector<FileControlInformation> FileControlInformation::values()
+FileControlInformation& FileControlInformation::operator=(
+    const FileControlInformation& o)
 {
-    return mValueList;
-}
-
-int FileControlInformation::ordinal()
-{
-    return mOrdinalValue;
-}
-
-FileControlInformation FileControlInformation::valueOf(const std::string& name)
-{
-    for (auto enumInstance : FileControlInformation::mValueList) {
-        if (enumInstance.mNameValue == name) {
-            return enumInstance;
-        }
-    }
-
-    /* Make compiler happy */
-    return FileControlInformation::mValueList.front();
+    mIsoBitMask = o.mIsoBitMask;
+    return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const FileControlInformation& fci)
 {
     os << "FILECONTROLINFORMATION: {"
-       << "NAMEVALUE = " << fci.mNameValue << ", "
-       << "ORDINALVALUE = " << fci.mOrdinalValue << ", "
        << "ISOBITMASK = " << fci.mIsoBitMask
        << "}";
 
@@ -204,9 +134,7 @@ AidSelector::AidSelector(AidSelectorBuilder* builder)
 : mFileOccurrence(builder->mFileOccurrence),
   mFileControlInformation(builder->mFileControlInformation),
   mAidToSelect(builder->mAidToSelect),
-  mSuccessfulSelectionStatusCodes(nullptr)
-  {
-  }
+  mSuccessfulSelectionStatusCodes(nullptr) {}
 
 const std::vector<uint8_t>& AidSelector::getAidToSelect() const
 {
@@ -329,9 +257,9 @@ AidSelectorBuilder& AidSelectorBuilder::fileControlInformation(
     return *this;
 }
 
-std::unique_ptr<AidSelector> AidSelectorBuilder::build()
+std::shared_ptr<AidSelector> AidSelectorBuilder::build()
 {
-    return std::unique_ptr<AidSelector>(new AidSelector(this));
+    return std::make_shared<AidSelector>(this);
 }
 
 
@@ -366,24 +294,26 @@ SeSelectorBuilder& SeSelectorBuilder::aidSelector(
     return *this;
 }
 
-std::unique_ptr<SeSelector> SeSelectorBuilder::build()
+std::shared_ptr<SeSelector> SeSelectorBuilder::build()
 {
-    return std::unique_ptr<SeSelector>(new SeSelector(this));
+    return std::make_shared<SeSelector>(this);
 }
 
 /* SE SELECTOR ---------------------------------------------------------------*/
 
-std::unique_ptr<SeSelectorBuilder> SeSelector::builder()
+std::shared_ptr<SeSelectorBuilder> SeSelector::builder()
 {
-    return std::unique_ptr<SeSelectorBuilder>(new SeSelectorBuilder());
+    SeSelectorBuilder S();
+
+    return std::make_shared<SeSelectorBuilder>();
 }
 
 SeSelector::SeSelector(SeSelectorBuilder* builder)
-: mSeProtocol(builder->mSeProtocol), mAidSelector(builder->mAidSelector),
+: mSeProtocol(builder->mSeProtocol),
+  mAidSelector(builder->mAidSelector),
   mAtrFilter(builder->mAtrFilter)
 {
-    if (logger)
-        logger->trace("%", *this);
+    mLogger->trace("%", *this);
 }
 
 const std::shared_ptr<SeProtocol> SeSelector::getSeProtocol() const

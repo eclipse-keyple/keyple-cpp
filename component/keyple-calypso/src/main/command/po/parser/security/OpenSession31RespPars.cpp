@@ -50,9 +50,14 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
         Arrays::copyOfRange(apduResponseData, 3, 4);
 
     return std::make_shared<SecureSession>(
-        challengeTransactionCounter, challengeRandomNumber,
-        previousSessionRatified, manageSecureSessionAuthorized, kif,
-        std::make_shared<Byte>(apduResponseData[6]), data, apduResponseData);
+               challengeTransactionCounter,
+               challengeRandomNumber,
+               previousSessionRatified,
+               manageSecureSessionAuthorized,
+               kif,
+               apduResponseData[6],
+               data,
+               apduResponseData);
 }
 
 }

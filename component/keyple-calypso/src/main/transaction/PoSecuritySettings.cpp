@@ -54,7 +54,7 @@ RatificationMode PoSecuritySettings::getRatificationMode() const
 }
 
 uint8_t PoSecuritySettings::getSessionDefaultKif(
-    const AccessLevel sessionAccessLevel) const
+    const AccessLevel& sessionAccessLevel) const
 {
     /* C++ vs. Java: throw error when not found */
     const auto it = mDefaultKif.find(sessionAccessLevel);
@@ -65,7 +65,7 @@ uint8_t PoSecuritySettings::getSessionDefaultKif(
 }
 
 uint8_t PoSecuritySettings::getSessionDefaultKvc(
-    const AccessLevel sessionAccessLevel) const
+    const AccessLevel& sessionAccessLevel) const
 {
     /* C++ vs. Java: throw error when not found */
     const auto it = mDefaultKvc.find(sessionAccessLevel);
@@ -76,7 +76,7 @@ uint8_t PoSecuritySettings::getSessionDefaultKvc(
 }
 
 uint8_t PoSecuritySettings::getSessionDefaultKeyRecordNumber(
-    const AccessLevel sessionAccessLevel) const
+    const AccessLevel& sessionAccessLevel) const
 {
     /* C++ vs. Java: throw error when not found */
     const auto it = mDefaultKeyRecordNumber.find(sessionAccessLevel);
@@ -119,14 +119,14 @@ PoSecuritySettingsBuilder& PoSecuritySettingsBuilder::ratificationMode(
 }
 
 PoSecuritySettingsBuilder& PoSecuritySettingsBuilder::sessionDefaultKif(
-    const AccessLevel sessionAccessLevel, const uint8_t kif)
+    const AccessLevel& sessionAccessLevel, const uint8_t kif)
 {
     mDefaultKif.insert({sessionAccessLevel, kif});
     return *this;
 }
 
 PoSecuritySettingsBuilder& PoSecuritySettingsBuilder::sessionDefaultKvc(
-    const AccessLevel sessionAccessLevel, const uint8_t kvc)
+    const AccessLevel& sessionAccessLevel, const uint8_t kvc)
 {
     mDefaultKvc.insert({sessionAccessLevel, kvc});
     return *this;
@@ -134,7 +134,7 @@ PoSecuritySettingsBuilder& PoSecuritySettingsBuilder::sessionDefaultKvc(
 
 PoSecuritySettingsBuilder&
     PoSecuritySettingsBuilder::sessionDefaultKeyRecordNumber(
-        const AccessLevel sessionAccessLevel,
+        const AccessLevel& sessionAccessLevel,
         const uint8_t keyRecordNumber)
 {
     mDefaultKeyRecordNumber.insert({sessionAccessLevel, keyRecordNumber});

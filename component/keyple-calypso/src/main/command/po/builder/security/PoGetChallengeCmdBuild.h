@@ -53,7 +53,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<PoGetChallengeRespPars> createResponseParser(
+    std::shared_ptr<PoGetChallengeRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**

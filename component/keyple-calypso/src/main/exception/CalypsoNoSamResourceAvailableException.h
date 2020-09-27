@@ -20,9 +20,10 @@
 #include "KeypleException.h"
 
 namespace keyple {
-namespace core {
-namespace seproxy {
+namespace calypso {
 namespace exception {
+
+using namespace keyple::core::seproxy::exception;
 
 /**
  * The exception {@code CalypsoNoSamResourceAvailableException} indicates that
@@ -37,7 +38,6 @@ public:
     : KeypleException(message) {}
 };
 
-}
 }
 }
 }

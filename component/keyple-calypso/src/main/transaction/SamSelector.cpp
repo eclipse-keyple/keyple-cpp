@@ -73,9 +73,9 @@ SamSelector::SamSelector(SamSelectorBuilder* builder)
     getAtrFilter()->setAtrRegex(atrRegex);
 }
 
-std::unique_ptr<SamSelectorBuilder> SamSelector::builder()
+std::shared_ptr<SamSelectorBuilder> SamSelector::builder()
 {
-    return std::unique_ptr<SamSelectorBuilder>(new SamSelectorBuilder());
+    return std::shared_ptr<SamSelectorBuilder>(new SamSelectorBuilder());
 }
 
 /* SAM SELECTOR BUILDER ----------------------------------------------------- */

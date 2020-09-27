@@ -54,6 +54,11 @@ public:
     /**
      *
      */
+    PoClass(const PoClass& o);
+
+    /**
+     *
+     */
     virtual ~PoClass() = default;
 
     /**

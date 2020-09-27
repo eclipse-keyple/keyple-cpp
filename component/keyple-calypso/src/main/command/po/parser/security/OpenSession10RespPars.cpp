@@ -106,8 +106,12 @@ std::shared_ptr<SecureSession> OpenSession10RespPars::createSecureSession(
         Arrays::copyOfRange(apduResponseData, 3, 4);
 
     return std::make_shared<SecureSession>(
-        challengeTransactionCounter, challengeRandomNumber,
-        previousSessionRatified, false, nullptr, data, apduResponseData);
+               challengeTransactionCounter,
+               challengeRandomNumber,
+               previousSessionRatified,
+               false,
+               data,
+               apduResponseData);
 }
 
 }

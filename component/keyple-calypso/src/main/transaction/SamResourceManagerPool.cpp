@@ -16,6 +16,7 @@
 
 /* Common */
 #include "IllegalArgumentException.h"
+#include "System.h"
 #include "Thread.h"
 
 /* Core */
@@ -26,15 +27,16 @@ namespace keyple {
 namespace calypso {
 namespace transaction {
 
+using namespace keyple::common;
 using namespace keyple::core::seproxy::exception;
 
 SamResourceManagerPool::SamResourceManagerPool(
-  std::shared_ptr<ReaderPoolPlugin> samReaderPoolPlugin,
+  const ReaderPoolPlugin& samReaderPoolPlugin,
   const int maxBlockingTime,
   const int sleepTime)
-: mSleepTime(sleepTime),
+: mSamReaderPlugin(samReaderPoolPlugin),
   mMaxBlockingTime(maxBlockingTime),
-  mSamReaderPlugin(samReaderPoolPlugin)
+  mSleepTime(sleepTime)
 {
     if (sleepTime < 1)
         throw IllegalArgumentException("Sleep time must be greater than 0");
@@ -44,15 +46,15 @@ SamResourceManagerPool::SamResourceManagerPool(
                   "Max Blocking Time must be greater than 0");
 
     mLogger->info("Create SAM resource manager from reader pool plugin: %\n",
-                  samReaderPlugin->getName());
+                  mSamReaderPlugin.getName());
 
     /* HSM reader plugin type */
 }
 
-std::unique_ptr<SeResource<CalypsoSam>>
+std::shared_ptr<SeResource<CalypsoSam>>
     SamResourceManagerPool::allocateSamResource(
         const AllocationMode allocationMode,
-        const SamIdentifier& samIdentifier) override
+        const std::shared_ptr<SamIdentifier> samIdentifier)
 {
     const long maxBlockingDate = System::currentTimeMillis() + mMaxBlockingTime;
     bool noSamResourceLogged = false;
@@ -63,8 +65,8 @@ std::unique_ptr<SeResource<CalypsoSam>>
         try {
             /* virtually infinite number of readers */
             std::shared_ptr<SeReader> samReader =
-                std::dynamic_pointer_cast<ReaderPoolPlugin>(samReaderPlugin)
-                    ->allocateReader(samIdentifier.getGroupReference());
+                mSamReaderPlugin.allocateReader(
+                    samIdentifier->getGroupReference());
 
             if (samReader != nullptr) {
                 std::unique_ptr<ManagedSamResource> managedSamResource =

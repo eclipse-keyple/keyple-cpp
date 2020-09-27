@@ -22,9 +22,6 @@
 /* Common */
 #include "KeypleCoreExport.h"
 
-/* Core */
-#include "ReaderEvent.h"
-
 namespace keyple {
 namespace core {
 namespace seproxy {
@@ -45,16 +42,13 @@ namespace event {
  * <p>
  * However, only one type of event is notified at a time.
  */
-class KEYPLECORE_API PluginEvent final
-: public std::enable_shared_from_this<PluginEvent> {
+class KEYPLECORE_API PluginEvent final {
 public:
+    /**
+     *
+     */
     class KEYPLECORE_API EventType final {
     public:
-        /**
-         *
-         */
-        enum class InnerEnum { READER_CONNECTED, READER_DISCONNECTED };
-
         /**
          * A reader has been connected.
          */
@@ -68,38 +62,17 @@ public:
         /**
          *
          */
-        const InnerEnum innerEnumValue;
-
-        /**
-         *
-         */
-        EventType(const std::string& nameValue, InnerEnum innerEnum,
-                  const std::string& name);
-
-        /**
-         *
-         */
         virtual const std::string& getName() const;
 
         /**
          *
          */
-        bool operator==(const EventType& other) const;
+        bool operator==(const EventType& o) const;
 
         /**
          *
          */
-        bool operator!=(const EventType& other) const;
-
-        /**
-         *
-         */
-        static std::vector<EventType> values();
-
-        /**
-         *
-         */
-        int ordinal();
+        bool operator!=(const EventType& o) const;
 
         /**
          *
@@ -110,46 +83,17 @@ public:
         /**
          *
          */
-        static EventType valueOf(const std::string& name);
+        static const EventType& valueOf(const std::string& name);
 
     private:
         /**
          *
          */
-        static std::vector<EventType> valueList;
-
-        /**
-         *
-         */
-        class StaticConstructor {
-        public:
-            StaticConstructor();
-        };
-
-        /**
-         *
-         */
-        static StaticConstructor staticConstructor;
-
-        /**
-         *
-         */
-        const std::string nameValue;
-
-        /**
-         *
-         */
-        const int ordinalValue;
-
-        /**
-         *
-         */
-        static int nextOrdinal;
-
+        EventType(const std::string& name);
         /**
          * The event name
          */
-        std::string name;
+        const std::string mName;
     };
 
     /**
@@ -159,8 +103,9 @@ public:
      * @param readerName name of the reader
      * @param eventType type of the event, connection or disconnection
      */
-    PluginEvent(const std::string& pluginName, const std::string& readerName,
-                EventType eventType);
+    PluginEvent(const std::string& pluginName,
+                const std::string& readerName,
+                const EventType& eventType);
 
     /**
      * Create a PluginEvent for multiple readers
@@ -171,7 +116,7 @@ public:
      */
     PluginEvent(const std::string& pluginName,
                 std::shared_ptr<std::set<std::string>> readerNames,
-                EventType eventType);
+                const EventType& eventType);
 
     /**
      *
@@ -198,22 +143,22 @@ private:
     /**
      * The name of the reader involved
      */
-    const std::string readerName;
+    const std::string mReaderName;
 
     /**
      * The type of event
      */
-    const EventType eventType;
+    const EventType& mEventType;
 
     /**
     * The name of the plugin handling the reader that produced the event
     */
-    const std::string pluginName;
+    const std::string mPluginName;
 
     /**
     * The name of the readers involved
     */
-    std::set<std::string> readerNames;
+    std::set<std::string> mReaderNames;
 };
 
 }

@@ -62,7 +62,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<DigestUpdateRespPars> createResponseParser(
+    std::shared_ptr<DigestUpdateRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

@@ -52,12 +52,11 @@ SamGetChallengeCmdBuild::SamGetChallengeCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, expectedResponseLength);
 }
 
-std::unique_ptr<SamGetChallengeRespPars>
+std::shared_ptr<SamGetChallengeRespPars>
     SamGetChallengeCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<SamGetChallengeRespPars>(
-               new SamGetChallengeRespPars(apduResponse, this));
+    return std::make_shared<SamGetChallengeRespPars>(apduResponse, this);
 }
 
 }

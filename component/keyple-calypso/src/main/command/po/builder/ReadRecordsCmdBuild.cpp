@@ -67,11 +67,10 @@ ReadRecordsCmdBuild::ReadRecordsCmdBuild(
     addSubName(extraInfo);
 }
 
-std::unique_ptr<ReadRecordsRespPars> ReadRecordsCmdBuild::createResponseParser(
+std::shared_ptr<ReadRecordsRespPars> ReadRecordsCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<ReadRecordsRespPars>(
-               new ReadRecordsRespPars(apduResponse, this));
+    return std::make_shared<ReadRecordsRespPars>(apduResponse, this);
 }
 
 bool ReadRecordsCmdBuild::isSessionBufferUsed() const

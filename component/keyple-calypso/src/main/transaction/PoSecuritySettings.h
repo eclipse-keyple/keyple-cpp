@@ -103,7 +103,7 @@ public:
          * @since 0.9
          */
         PoSecuritySettingsBuilder& sessionDefaultKif(
-            const AccessLevel sessionAccessLevel, const uint8_t kif);
+            const AccessLevel& sessionAccessLevel, const uint8_t kif);
 
         /**
          * Set the default KVC<br>
@@ -114,7 +114,7 @@ public:
          * @since 0.9
          */
         PoSecuritySettingsBuilder& sessionDefaultKvc(
-            const AccessLevel sessionAccessLevel, const uint8_t kvc);
+            const AccessLevel& sessionAccessLevel, const uint8_t kvc);
 
         /**
          * Set the default key record number<br>
@@ -125,7 +125,7 @@ public:
          * @since 0.9
          */
         PoSecuritySettingsBuilder& sessionDefaultKeyRecordNumber(
-            const AccessLevel sessionAccessLevel,
+            const AccessLevel& sessionAccessLevel,
             const uint8_t keyRecordNumber);
 
         /**
@@ -196,7 +196,7 @@ public:
      * @return the default session KIF
      * @since 0.9
      */
-    uint8_t getSessionDefaultKif(const AccessLevel sessionAccessLevel) const;
+    uint8_t getSessionDefaultKif(const AccessLevel& sessionAccessLevel) const;
 
     /**
      * (package-private)<br>
@@ -204,7 +204,7 @@ public:
      * @return the default session KVC
      * @since 0.9
      */
-    uint8_t getSessionDefaultKvc(const AccessLevel sessionAccessLevel) const;
+    uint8_t getSessionDefaultKvc(const AccessLevel& sessionAccessLevel) const;
 
     /**
      * (package-private)<br>
@@ -213,7 +213,7 @@ public:
      * @since 0.9
      */
     uint8_t getSessionDefaultKeyRecordNumber(
-        const AccessLevel sessionAccessLevel) const;
+        const AccessLevel& sessionAccessLevel) const;
 
     /**
      * (package-private)<br>

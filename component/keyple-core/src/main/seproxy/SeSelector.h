@@ -59,8 +59,7 @@ public:
      * missing in SeSelector when operating SE which don’t support the Select
      * Application command (as it is the case for SAM).
      */
-    class KEYPLECORE_API AidSelector final
-    : public std::enable_shared_from_this<AidSelector> {
+    class KEYPLECORE_API AidSelector final {
     public:
         /**
          * FileOccurrence indicates how to carry out the file occurrence in
@@ -71,56 +70,43 @@ public:
          */
         class KEYPLECORE_API FileOccurrence final {
         public:
-            static FileOccurrence FIRST;
-            static FileOccurrence LAST;
-            static FileOccurrence NEXT;
-            static FileOccurrence PREVIOUS;
+            /**
+             *
+             */
+            static const FileOccurrence FIRST;
+            static const FileOccurrence LAST;
+            static const FileOccurrence NEXT;
+            static const FileOccurrence PREVIOUS;
 
             /**
              *
              */
-            enum class InnerEnum { FIRST, LAST, NEXT, PREVIOUS };
+            FileOccurrence(const uint8_t isoBitMask);
 
             /**
              *
              */
-            InnerEnum mInnerEnumValue;
+            FileOccurrence(const FileOccurrence& o);
 
             /**
              *
              */
-            FileOccurrence(const std::string& name, InnerEnum innerEnum,
-                           char isoBitMask);
+            uint8_t getIsoBitMask() const;
 
             /**
              *
              */
-            char getIsoBitMask();
+            bool operator==(const FileOccurrence& o) const;
 
             /**
              *
              */
-            bool operator==(const FileOccurrence& other) const;
+            bool operator!=(const FileOccurrence& o) const;
 
             /**
              *
              */
-            bool operator!=(const FileOccurrence& other) const;
-
-            /**
-             *
-             */
-            static std::vector<FileOccurrence> values();
-
-            /**
-             *
-             */
-            int ordinal();
-
-            /**
-             *
-             */
-            static FileOccurrence valueOf(const std::string& name);
+            FileOccurrence& operator=(const FileOccurrence& o);
 
             /**
              *
@@ -132,40 +118,7 @@ public:
             /**
              *
              */
-            static std::vector<FileOccurrence> mValueList;
-
-            /**
-             *
-             */
-            class StaticConstructor {
-            public:
-                StaticConstructor();
-            };
-
-            /**
-             *
-             */
-            static StaticConstructor mStaticConstructor;
-
-            /**
-             *
-             */
-            std::string mNameValue;
-
-            /**
-             *
-             */
-            int mOrdinalValue;
-
-            /**
-             *
-             */
-            static int mNextOrdinal;
-
-            /**
-             *
-             */
-            char mIsoBitMask;
+            uint8_t mIsoBitMask;
         };
 
         /**
@@ -177,51 +130,44 @@ public:
          */
         class KEYPLECORE_API FileControlInformation final {
         public:
-            static FileControlInformation FCI;
-            static FileControlInformation FCP;
-            static FileControlInformation FMD;
-            static FileControlInformation NO_RESPONSE;
-
             /**
              *
              */
-            enum class InnerEnum { FCI, FCP, FMD, NO_RESPONSE };
+            static const FileControlInformation FCI;
+            static const FileControlInformation FCP;
+            static const FileControlInformation FMD;
+            static const FileControlInformation NO_RESPONSE;
+
         public:
             /**
              *
              */
-            FileControlInformation(const std::string& name, InnerEnum innerEnum,
-                                   char isoBitMask);
+            FileControlInformation(const uint8_t isoBitMask);
 
             /**
              *
              */
-            char getIsoBitMask();
+            FileControlInformation(const FileControlInformation& o);
 
             /**
              *
              */
-            bool operator==(const FileControlInformation& other) const;
+            uint8_t getIsoBitMask() const;
 
             /**
              *
              */
-            bool operator!=(const FileControlInformation& other) const;
+            bool operator==(const FileControlInformation& o) const;
 
             /**
              *
              */
-            static std::vector<FileControlInformation> values();
+            bool operator!=(const FileControlInformation& o) const;
 
             /**
              *
              */
-            int ordinal();
-
-            /**
-             *
-             */
-            static FileControlInformation valueOf(const std::string& name);
+            FileControlInformation& operator=(const FileControlInformation& o);
 
             /**
              *
@@ -230,48 +176,11 @@ public:
                 std::ostream& os, const FileControlInformation& fci);
 
         private:
-            /**
-             *
-             */
-            static std::vector<FileControlInformation> mValueList;
 
             /**
              *
              */
-            class StaticConstructor {
-            public:
-                StaticConstructor();
-            };
-
-            /**
-             *
-             */
-            static StaticConstructor mStaticConstructor;
-
-            /**
-             *
-             */
-            //InnerEnum mInnerEnumValue; // not used
-
-            /**
-             *
-             */
-            std::string mNameValue;
-
-            /**
-             *
-             */
-            int mOrdinalValue;
-
-            /**
-             *
-             */
-            static int mNextOrdinal;
-
-            /**
-             *
-             */
-            char mIsoBitMask;
+            uint8_t mIsoBitMask;
         };
 
         /**
@@ -326,7 +235,7 @@ public:
              *
              * @return a new instance
              */
-            std::unique_ptr<AidSelector> build();
+            std::shared_ptr<AidSelector> build();
 
             /**
              * /!\ C++ vs. Java: variable is private in JAva
@@ -350,6 +259,11 @@ public:
              */
             AidSelectorBuilder() {}
         };
+
+        /**
+         *
+         */
+        friend AidSelectorBuilder;
 
         /**
          *
@@ -407,6 +321,15 @@ public:
          */
         void addSuccessfulStatusCode(int statusCode);
 
+        /**
+         * Private constructor
+         *
+         * C++ vs. Java: Should be private but would forbid usage of make_shared
+         *               from SeSelector class. Setting it public for now. Could
+         *               use an intermediate derived class otherwise if need be.
+         */
+        AidSelector(AidSelectorBuilder* builder);
+
     private:
         /**
          *
@@ -429,11 +352,6 @@ public:
          * 9000
          */
         std::shared_ptr<std::set<int>> mSuccessfulSelectionStatusCodes;
-
-        /**
-         * Private constructor
-         */
-        AidSelector(AidSelectorBuilder* builder);
     };
 
     /**
@@ -504,12 +422,12 @@ public:
         /**
          *
          */
-        virtual ~SeSelectorBuilder() = default;
+        friend SeSelector;
 
         /**
-         * Friend declaration to give access to private members
+         *
          */
-        friend SeSelector;
+        virtual ~SeSelectorBuilder() = default;
 
         /**
          * Sets the SE protocol
@@ -543,11 +461,14 @@ public:
          *
          * @return a new instance
          */
-        virtual std::unique_ptr<SeSelector> build();
+        virtual std::shared_ptr<SeSelector> build();
 
-    protected :
         /**
          * Private constructor
+         *
+         * C++ vs. Java: Should be private but would forbid usage of make_shared
+         *               from SeSelector class. Setting it public for now. Could
+         *               use an intermediate derived class otherwise if need be.
          */
         SeSelectorBuilder() {}
 
@@ -573,7 +494,7 @@ public:
      *
      * @return a new builder instance
      */
-    static std::unique_ptr<SeSelectorBuilder> builder();
+    static std::shared_ptr<SeSelectorBuilder> builder();
 
     /**
      *
@@ -625,9 +546,8 @@ public:
      friend KEYPLECORE_API std::ostream& operator<<(
         std::ostream& os, const std::shared_ptr<SeSelector>& ss);
 
-protected:
     /**
-     * Private constructor
+     * (Private) constructor
      *
      * @param builder the SeSelector builder
      */
@@ -637,7 +557,7 @@ private:
     /**
      * Logger
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(SeSelector));
 
     /**

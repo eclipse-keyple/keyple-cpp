@@ -60,11 +60,10 @@ DecreaseCmdBuild::DecreaseCmdBuild(
     addSubName(extraInfo);
 }
 
-std::unique_ptr<DecreaseRespPars> DecreaseCmdBuild::createResponseParser(
+std::shared_ptr<DecreaseRespPars> DecreaseCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<DecreaseRespPars>(
-               new DecreaseRespPars(apduResponse, this));
+    return std::make_shared<DecreaseRespPars>(apduResponse, this);
 }
 
 bool DecreaseCmdBuild::isSessionBufferUsed() const

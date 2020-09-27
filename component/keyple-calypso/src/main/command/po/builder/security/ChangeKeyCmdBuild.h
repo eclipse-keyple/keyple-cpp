@@ -54,7 +54,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<ChangeKeyRespPars> createResponseParser(
+    std::shared_ptr<ChangeKeyRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**

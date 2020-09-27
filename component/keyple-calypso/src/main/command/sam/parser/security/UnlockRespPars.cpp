@@ -59,9 +59,10 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 
 UnlockRespPars::UnlockRespPars(
  const std::shared_ptr<ApduResponse> response, UnlockCmdBuild* builder)
-: AbstractApduResponseParser(
-    response,
-    builder) {}
+: AbstractSamResponseParser(
+  response,
+  dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
+{}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     UnlockRespPars::getStatusTable() const

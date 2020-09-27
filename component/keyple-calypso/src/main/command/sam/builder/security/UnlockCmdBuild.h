@@ -54,7 +54,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<UnlockRespPars> createResponseParser(
+    std::shared_ptr<UnlockRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

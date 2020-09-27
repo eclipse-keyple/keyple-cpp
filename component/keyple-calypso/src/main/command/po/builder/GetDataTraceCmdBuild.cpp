@@ -33,12 +33,11 @@ GetDataTraceCmdBuild::GetDataTraceCmdBuild(const PoClass poClass)
     mRequest = setApduRequest(poClass.getValue(), command, 0x01, 0x85, 0x00);
 }
 
-std::unique_ptr<GetDataTraceRespPars>
+std::shared_ptr<GetDataTraceRespPars>
     GetDataTraceCmdBuild::createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<GetDataTraceRespPars>(
-               new GetDataTraceRespPars(apduResponse, this));
+    return std::make_shared<GetDataTraceRespPars>(apduResponse, this);
 }
 
 bool GetDataTraceCmdBuild::isSessionBufferUsed() const

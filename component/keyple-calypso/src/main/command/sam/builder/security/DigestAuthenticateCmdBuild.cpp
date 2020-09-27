@@ -61,12 +61,11 @@ DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, signature);
 }
 
-std::unique_ptr<DigestAuthenticateRespPars>
+std::shared_ptr<DigestAuthenticateRespPars>
     DigestAuthenticateCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<DigestAuthenticateRespPars>(
-               new DigestAuthenticateRespPars(apduResponse, this));
+    return std::make_shared<DigestAuthenticateRespPars>(apduResponse, this);
 }
 
 }

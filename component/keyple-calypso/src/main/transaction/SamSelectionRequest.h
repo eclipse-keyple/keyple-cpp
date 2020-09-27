@@ -60,8 +60,12 @@ protected:
      *
      * @param seResponse the SE response received
      * @return a {@link CalypsoSam}
+     *
+     * Return type should be
+     *     std::shared_ptr<CalypsoSam>
+     * ... but invalid covariant return type
      */
-    const std::shared_ptr<CalypsoSam> parse(
+    const std::shared_ptr<AbstractMatchingSe> parse(
         std::shared_ptr<SeResponse> seResponse) override;
 };
 

@@ -74,12 +74,11 @@ SamReadCeilingsCmdBuild::SamReadCeilingsCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, 0x00);
 }
 
-std::unique_ptr<SamReadCeilingsRespPars>
+std::shared_ptr<SamReadCeilingsRespPars>
     SamReadCeilingsCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<SamReadCeilingsRespPars>(
-               new SamReadCeilingsRespPars(apduResponse, this));
+    return std::make_shared<SamReadCeilingsRespPars>(apduResponse, this);
 }
 
 }

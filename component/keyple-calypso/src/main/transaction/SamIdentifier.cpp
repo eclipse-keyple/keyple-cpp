@@ -23,6 +23,8 @@ namespace transaction {
 
 using namespace keyple::common;
 
+using SamIdentifierBuilder = SamIdentifier::SamIdentifierBuilder;
+
 /* SAM IDENTIFIER ----------------------------------------------------------- */
 
 SamIdentifier::SamIdentifier(const SamIdentifierBuilder* builder)
@@ -53,9 +55,8 @@ const std::string& SamIdentifier::getGroupReference() const
 bool SamIdentifier::matches(const std::shared_ptr<SamIdentifier> samIdentifier)
     const
 {
-    if (samIdentifier == nullptr) {
+    if (samIdentifier == nullptr)
         return true;
-    }
 
     if (samIdentifier->getSamRevision() != SamRevision::AUTO &&
         samIdentifier->getSamRevision() != mSamRevision) {
@@ -79,7 +80,7 @@ bool SamIdentifier::matches(const std::shared_ptr<SamIdentifier> samIdentifier)
 /* SAM IDENTIFIER BUILDER --------------------------------------------------- */
 
 SamIdentifierBuilder& SamIdentifierBuilder::samRevision(
-    const SamRevision samRevision)
+    const SamRevision& samRevision)
 {
     mSamRevision = samRevision;
     return *this;
@@ -101,7 +102,7 @@ SamIdentifierBuilder& SamIdentifierBuilder::groupReference(
 
 std::unique_ptr<SamIdentifier> SamIdentifierBuilder::build()
 {
-    return std::unique_ptr<SamIndentifier>(new SamIdentifier(this));
+    return std::unique_ptr<SamIdentifier>(new SamIdentifier(this));
 }
 
 }

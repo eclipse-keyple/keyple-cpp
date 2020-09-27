@@ -79,7 +79,7 @@ public:
                       const bool previousSessionRatified,
                       const bool manageSecureSessionAuthorized,
                       const uint8_t kif,
-                      std::shared_ptr<Byte> kvc,
+                      const uint8_t kvc,
                       const std::vector<uint8_t>& originalData,
                       const std::vector<uint8_t>& secureSessionData);
 
@@ -103,7 +103,28 @@ public:
                       const std::vector<uint8_t>& challengeRandomNumber,
                       const bool previousSessionRatified,
                       const bool manageSecureSessionAuthorized,
-                      const std::shared_ptr<Byte> kvc,
+                      const uint8_t kvc,
+                      const std::vector<uint8_t>& originalData,
+                      const std::vector<uint8_t>& secureSessionData);
+
+        /**
+         * Instantiates a new SecureSession for a Calypso application revision
+         * 1.0
+         *
+         * @param challengeTransactionCounter Challenge transaction counter
+         * @param challengeRandomNumber Challenge random number
+         * @param previousSessionRatified the previous session ratified
+         * @param manageSecureSessionAuthorized the manage secure session
+         *        authorized
+         * @param originalData the original data from the response of the open
+         *        secure session APDU command
+         * @param secureSessionData the secure session data from the response of
+         *        open secure session APDU command
+         */
+        SecureSession(const std::vector<uint8_t>& challengeTransactionCounter,
+                      const std::vector<uint8_t>& challengeRandomNumber,
+                      const bool previousSessionRatified,
+                      const bool manageSecureSessionAuthorized,
                       const std::vector<uint8_t>& originalData,
                       const std::vector<uint8_t>& secureSessionData);
 
@@ -149,7 +170,7 @@ public:
          *
          * @return the kvc
          */
-        virtual std::shared_ptr<Byte> getKVC() const;
+        virtual uint8_t getKVC() const;
 
         /**
          * Gets the original data.
@@ -192,10 +213,9 @@ public:
         const uint8_t mKif;
 
         /**
-         * The kvc (may be null if it doesn't exist in the considered PO [rev
-         * 1.0])
+         *
          */
-        const std::shared_ptr<Byte> mKvc;
+        const uint8_t mKvc;
 
         /**
          * The original data
@@ -271,7 +291,7 @@ public:
     /**
      *
      */
-    virtual std::shared_ptr<Byte> getSelectedKvc() const;
+    virtual uint8_t getSelectedKvc() const;
 
     /**
      *
