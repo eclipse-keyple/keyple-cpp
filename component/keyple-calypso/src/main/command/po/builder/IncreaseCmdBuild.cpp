@@ -68,11 +68,10 @@ IncreaseCmdBuild::IncreaseCmdBuild(
     addSubName(extraInfo);
 }
 
-std::unique_ptr<IncreaseRespPars> IncreaseCmdBuild::createResponseParser(
+std::shared_ptr<IncreaseRespPars> IncreaseCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<IncreaseRespPars>(
-               new IncreaseRespPars(apduResponse, this));
+    return std::make_shared<IncreaseRespPars>(apduResponse, this);
 }
 
 bool IncreaseCmdBuild::isSessionBufferUsed() const

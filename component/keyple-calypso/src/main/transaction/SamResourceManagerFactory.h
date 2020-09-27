@@ -52,7 +52,7 @@ public:
      *        readers list.
      * @return SamResourceManager working with a default plugin
      */
-    virtual static std::unique_ptr<SamResourceManager> instantiate(
+    static std::shared_ptr<SamResourceManager> instantiate(
         const std::shared_ptr<ReaderPlugin> readerPlugin,
         const std::string& samReaderFilter,
         const int maxBlockingTime,
@@ -61,7 +61,7 @@ public:
     /**
      *
      */
-    virtual static std::unique_ptr<SamResourceManager> instantiate(
+    static std::shared_ptr<SamResourceManager> instantiate(
         const std::shared_ptr<ReaderPlugin> readerPlugin,
         const std::string& samReaderFilter);
 
@@ -81,7 +81,7 @@ public:
      * @param sleepTime the duration to wait between two retries
      * @return SamResourceManager working with a pool plugin
      */
-    virtual static std::unique_ptr<SamResourceManager> instantiate(
+    static std::shared_ptr<SamResourceManager> instantiate(
         const ReaderPoolPlugin& samReaderPoolPlugin,
         const int maxBlockingTime,
         const int sleepTime);
@@ -89,7 +89,7 @@ public:
     /**
      *
      */
-    virtual static std::unique_ptr<SamResourceManager> instantiate(
+    static std::shared_ptr<SamResourceManager> instantiate(
         const ReaderPoolPlugin& samReaderPoolPlugin);
 
 private:

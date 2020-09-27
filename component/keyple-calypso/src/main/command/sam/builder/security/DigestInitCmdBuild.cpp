@@ -79,11 +79,10 @@ DigestInitCmdBuild::DigestInitCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, dataIn);
 }
 
-std::unique_ptr<DigestInitRespPars> DigestInitCmdBuild::createResponseParser(
+std::shared_ptr<DigestInitRespPars> DigestInitCmdBuild::createResponseParser(
     const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<DigestInitRespPars>(
-               new DigestInitRespPars(apduResponse, this));
+    return std::make_shared<DigestInitRespPars>(apduResponse, this);
 }
 
 }

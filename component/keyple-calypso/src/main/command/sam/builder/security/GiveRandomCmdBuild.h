@@ -58,7 +58,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<GiveRandomRespPars> createResponseParser(
+    std::shared_ptr<GiveRandomRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

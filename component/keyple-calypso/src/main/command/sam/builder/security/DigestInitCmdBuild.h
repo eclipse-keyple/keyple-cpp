@@ -69,7 +69,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<DigestInitRespPars> createResponseParser(
+    std::shared_ptr<DigestInitRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

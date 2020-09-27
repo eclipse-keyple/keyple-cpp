@@ -57,7 +57,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<DigestAuthenticateRespPars> createResponseParser(
+    std::shared_ptr<DigestAuthenticateRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

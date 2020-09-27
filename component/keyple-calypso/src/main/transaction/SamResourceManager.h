@@ -20,7 +20,6 @@
 
 /* Calypso */
 #include "CalypsoSam.h"
-#include "ManagedSamResource.h"
 #include "SamIdentifier.h"
 
 namespace keyple {
@@ -44,6 +43,89 @@ public:
     enum class AllocationMode {
         BLOCKING,
         NON_BLOCKING
+    };
+
+       /**
+     * (package-private)<br>
+     * Inner class to handle specific attributes associated with an {@code
+     * SeResource<CalypsoSam>} in the {@link SamResourceManager} context.
+     *
+     * @since 0.9
+     */
+    class ManagedSamResource final : public SeResource<CalypsoSam> {
+    public:
+        /**
+         * The free/busy enum status
+         */
+        enum class SamResourceStatus {
+            FREE,
+            BUSY
+        };
+
+        /**
+         * Constructor
+         *
+         * @param seReader the {@link SeReader} with which the SE is
+         *        communicating
+         * @param calypsoSam the {@link CalypsoSam} information structure
+         */
+        ManagedSamResource(std::shared_ptr<SeReader> seReader,
+                           std::shared_ptr<CalypsoSam> calypsoSam);
+
+        /**
+         * Indicates whether the ManagedSamResource is FREE or BUSY
+         *
+         * @return the busy status
+         */
+        bool isSamResourceFree() const;
+
+        /**
+         * Defines the {@link SamIdentifier} of the current {@link
+         * ManagedSamResource}
+         *
+         * @param samIdentifier the SAM identifier
+         */
+        void setSamIdentifier(std::shared_ptr<SamIdentifier> samIdentifier);
+
+        /**
+         * Indicates whether the ManagedSamResource matches the provided SAM
+         * identifier.
+         * <p>
+         * The test includes the {@link SamRevision}, serial number and group
+         * reference provided by the {@link SamIdentifier}.
+         * <p>
+         * The SAM serial number can be null or empty, in this case all serial
+         * numbers are accepted. It can also be a regular expression target one
+         * or more specific serial numbers.
+         * <p>
+         * The groupe reference can be null or empty to let all group references
+         * match but not empty the group reference must match the {@link
+         * SamIdentifier} to have the method returning true.
+         *
+         * @param samIdentifier the SAM identifier
+         * @return true or false according to the result of the correspondence
+         *         test
+         */
+        bool isSamMatching(const std::shared_ptr<SamIdentifier> samIdentifier)
+            const;
+
+        /**
+         * Sets the free/busy status of the ManagedSamResource
+         *
+         * @param samResourceStatus FREE/BUSY enum value
+         */
+        void setSamResourceStatus(const SamResourceStatus& samResourceStatus);
+
+    private:
+        /**
+         * The free/busy status of the resource
+         */
+        SamResourceStatus mSamResourceStatus;
+
+        /**
+         * The sam identifier
+         */
+        std::shared_ptr<SamIdentifier> mSamIdentifier;
     };
 
     /**
@@ -71,8 +153,8 @@ public:
      * @throw KeypleAllocationReaderException if reader allocation fails
      */
     virtual std::shared_ptr<SeResource<CalypsoSam>> allocateSamResource(
-        const AllocationMode allocationMode, const SamIdentifier& samIdentifier)
-        = 0;
+        const AllocationMode allocationMode,
+        const std::shared_ptr<SamIdentifier> samIdentifier) = 0;
 
     /**
      * Free a previously allocated SAM resource.

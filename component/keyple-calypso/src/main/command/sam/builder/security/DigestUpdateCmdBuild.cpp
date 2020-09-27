@@ -51,12 +51,11 @@ DigestUpdateCmdBuild::DigestUpdateCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, digestData);
 }
 
-std::unique_ptr<DigestUpdateRespPars>
+std::shared_ptr<DigestUpdateRespPars>
     DigestUpdateCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<DigestUpdateRespPars>(
-               new DigestUpdateRespPars(apduResponse, this));
+    return std::make_shared<DigestUpdateRespPars>(apduResponse, this);
 }
 
 }

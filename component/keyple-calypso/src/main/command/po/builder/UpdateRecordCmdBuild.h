@@ -62,7 +62,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<UpdateRecordRespPars> createResponseParser(
+    std::shared_ptr<UpdateRecordRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**

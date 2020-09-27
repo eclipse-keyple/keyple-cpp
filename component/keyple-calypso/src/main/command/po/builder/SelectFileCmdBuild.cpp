@@ -98,11 +98,10 @@ SelectFileCmdBuild::SelectFileCmdBuild(
     addSubName(extraInfo);
 }
 
-std::unique_ptr<SelectFileRespPars> SelectFileCmdBuild::createResponseParser(
+std::shared_ptr<SelectFileRespPars> SelectFileCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<SelectFileRespPars>(
-               new SelectFileRespPars(apduResponse, this));
+    return std::make_shared<SelectFileRespPars>(apduResponse, this);
 }
 
 bool SelectFileCmdBuild::isSessionBufferUsed() const

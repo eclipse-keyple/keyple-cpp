@@ -51,12 +51,11 @@ DigestUpdateMultipleCmdBuild::DigestUpdateMultipleCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, digestData);
 }
 
-std::unique_ptr<DigestUpdateMultipleRespPars>
+std::shared_ptr<DigestUpdateMultipleRespPars>
     DigestUpdateMultipleCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<DigestUpdateMultipleRespPars>(
-               new DigestUpdateMultipleRespPars(apduResponse, this));
+    return std::make_shared<DigestUpdateMultipleRespPars>(apduResponse, this);
 }
 
 }

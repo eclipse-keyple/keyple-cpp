@@ -31,30 +31,30 @@ public:
     /**
      *
      */
-    Exception(const std::string& message) : message(message) {}
+    Exception(const std::string& message) : mMessage(message) {}
 
     /**
      *
      */
     Exception(const std::string& message, const std::exception cause)
-    : message(message), cause(cause)
+    : mMessage(message), mCause(cause)
     {
     }
 
     /**
 	 * Returns the detail message string of this exception.
 	 */
-    std::string getMessage() const
+    const std::string& getMessage() const
     {
-        return message;
+        return mMessage;
     }
 
     /**
 	 * Returns the cause of the exception.
 	 */
-    const std::exception getCause() const
+    const std::exception& getCause() const
     {
-        return cause;
+        return mCause;
     }
 
     /**
@@ -63,8 +63,8 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Exception& e)
     {
 		os << "EXCEPTION: {"
-           << "MESSAGE = " << e.message << ", "
-           << "CAUSE = " << e.cause.what()
+           << "MESSAGE = " << e.mMessage << ", "
+           << "CAUSE = " << e.mCause.what()
 		   << "}";
 
         return os;
@@ -74,12 +74,12 @@ private:
     /**
 	 *
 	 */
-    const std::string message;
+    const std::string mMessage;
 
     /**
 	 *
 	 */
-    const std::exception cause;
+    const std::exception mCause;
 };
 
 }

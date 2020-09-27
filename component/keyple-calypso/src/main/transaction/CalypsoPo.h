@@ -460,6 +460,22 @@ public:
      */
     const PoClass& getPoClass() const;
 
+    /**
+     * Specifies whether the change counter allowed in session is established in
+     * number of operations or number of bytes modified.
+     * <p>
+     * This varies depending on the revision of the PO.
+     *
+     * @return true if the counter is number of bytes
+     */
+    bool isModificationsCounterInBytes() const;
+
+    /**
+     * @return the maximum length of data that an APDU in this PO can carry
+     * @since 0.9
+     */
+    int getPayloadCapacity() const;
+
 protected:
     /**
      * The serial number to be used as diversifier for key derivation.<br>
@@ -479,22 +495,6 @@ protected:
      *
      */
     const std::vector<uint8_t>& getSerialNumberExpirationBytes() const;
-
-    /**
-     * @return the maximum length of data that an APDU in this PO can carry
-     * @since 0.9
-     */
-    int getPayloadCapacity() const;
-
-    /**
-     * Specifies whether the change counter allowed in session is established in
-     * number of operations or number of bytes modified.
-     * <p>
-     * This varies depending on the revision of the PO.
-     *
-     * @return true if the counter is number of bytes
-     */
-    bool isModificationsCounterInBytes() const;
 
 private:
     /**

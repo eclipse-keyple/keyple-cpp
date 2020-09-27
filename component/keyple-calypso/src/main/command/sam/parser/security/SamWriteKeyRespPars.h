@@ -35,7 +35,7 @@ using namespace keyple::calypso::command::sam::builder::security;
  * SAM Write Key response parser.
  */
 class KEYPLECALYPSO_API SamWriteKeyRespPars final
-: public AbstractApduResponseParser {
+: public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new {@link UnlockRespPars}.

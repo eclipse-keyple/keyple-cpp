@@ -62,7 +62,7 @@ public:
      *   std::shared_ptr<AbstractOpenSessionRespPars>
      * ... because of invalid covariant return type error
      */
-    std::unique_ptr<AbstractOpenSessionRespPars> createResponseParser(
+    std::shared_ptr<AbstractOpenSessionRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**

@@ -53,7 +53,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<GetDataTraceRespPars> createResponseParser(
+    std::shared_ptr<GetDataTraceRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**

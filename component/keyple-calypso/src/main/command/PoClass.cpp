@@ -28,13 +28,13 @@ using namespace keyple::common;
 const PoClass PoClass::LEGACY("LEGACY", static_cast<char>(0x94));
 const PoClass PoClass::ISO("ISO", static_cast<char>(0x00));
 
-uint8_t PoClass::getValue() const
-{
-    return mCla;
-}
+
 
 PoClass::PoClass(const std::string& name, const uint8_t cla)
 : mName(name), mCla(cla) {}
+
+PoClass::PoClass(const PoClass& o)
+: mName(o.mName), mCla(o.mCla) {}
 
 PoClass& PoClass::operator=(const PoClass& o)
 {
@@ -42,6 +42,10 @@ PoClass& PoClass::operator=(const PoClass& o)
     mName = o.mName;
 
     return *this;
+}
+uint8_t PoClass::getValue() const
+{
+    return mCla;
 }
 
 bool PoClass::operator==(const PoClass& o) const

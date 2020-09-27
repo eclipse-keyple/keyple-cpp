@@ -149,12 +149,11 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
     mRequest = setApduRequest(cla, mCommand, 0x00, p2, sourceKeyId, 0x00);
 }
 
-std::unique_ptr<SamReadKeyParametersRespPars>
+std::shared_ptr<SamReadKeyParametersRespPars>
     SamReadKeyParametersCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<SamReadKeyParametersRespPars>(
-               new SamReadKeyParametersRespPars(apduResponse, this));
+    return std::make_shared<SamReadKeyParametersRespPars>(apduResponse, this);
 }
 
 }

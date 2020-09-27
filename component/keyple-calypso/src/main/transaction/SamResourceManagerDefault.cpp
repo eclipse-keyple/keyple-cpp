@@ -14,9 +14,40 @@
 
 #include "SamResourceManagerDefault.h"
 
+/* Calypso */
+#include "CalypsoNoSamResourceAvailableException.h"
+#include "CalypsoSam.h"
+
+/* Common */
+#include "ConcurrentMap.h"
+#include "IllegalArgumentException.h"
+#include "InterruptedException.h"
+#include "System.h"
+#include "Thread.h"
+
+/* Core */
+#include "KeyplePluginNotFoundException.h"
+#include "ObservableReader.h"
+#include "SeCommonProtocols.h"
+#include "SeProxyService.h"
+#include "SeResource.h"
+
 namespace keyple {
 namespace calypso {
 namespace transaction {
+
+using namespace keyple::calypso::exception;
+using namespace keyple::common;
+using namespace keyple::core::selection;
+using namespace keyple::core::seproxy;
+using namespace keyple::core::seproxy::event;
+using namespace keyple::core::seproxy::exception;
+
+using PluginObserver = SamResourceManagerDefault::PluginObserver;
+using PollingMode = ObservableReader::PollingMode;
+using ReaderObserver = SamResourceManagerDefault::ReaderObserver;
+using SamResourceStatus =
+    SamResourceManager::ManagedSamResource::SamResourceStatus;
 
 /* SAM RESOURCE MANAGER DEFAULT --------------------------------------------- */
 
@@ -25,9 +56,9 @@ SamResourceManagerDefault::SamResourceManagerDefault(
   const std::string& samReaderFilter,
   const int maxBlockingTime,
   const int sleepTime)
-: mSleepTime(sleepTime),
+: mSamReaderPlugin(readerPlugin),
   mMaxBlockingTime(maxBlockingTime),
-  mSamReaderPlugin(readerPlugin)
+  mSleepTime(sleepTime)
 {
     /* Assign parameters */
     if (sleepTime < 1)
@@ -37,8 +68,7 @@ SamResourceManagerDefault::SamResourceManagerDefault(
         throw IllegalArgumentException(
                   "Max Blocking Time must be greater than 0");
 
-    readerObserver =
-        std::make_shared<SamResourceManagerDefault::ReaderObserver>();
+    mReaderObserver = std::make_shared<ReaderObserver>(*this);
 
     mLogger->info("PLUGINNAME = % initialize the localManagedSamResources " \
                   "with the % connected readers filtered by %\n",
@@ -56,14 +86,14 @@ SamResourceManagerDefault::SamResourceManagerDefault(
             mLogger->trace("Add reader: %\n", samReader.first);
             try {
                 initSamReader(mSamReaderPlugin->getReader(samReader.first),
-                              readerObserver);
+                              mReaderObserver);
             } catch (const KeypleReaderException& e) {
                 mLogger->error("could not init samReader %\n",
-                               samReaderName,
+                               samReader.second,
                                e);
             }
         } else {
-            mLogger->trace("Reader not matching: %\n", samReaderName);
+            mLogger->trace("Reader not matching: %\n", samReader.second);
         }
     }
 
@@ -71,41 +101,40 @@ SamResourceManagerDefault::SamResourceManagerDefault(
         /* Add an observer to monitor reader and SAM insertions */
         std::shared_ptr<SamResourceManagerDefault::PluginObserver>
             pluginObserver =
-                std::make_shared<SamResourceManagerDefault::PluginObserver>(
-                    readerObserver, samReaderFilter);
+                std::make_shared<PluginObserver>(mReaderObserver,
+                                                 samReaderFilter,
+                                                 *this);
 
         mLogger->trace("Add observer PLUGINNAME = %\n",
                        mSamReaderPlugin->getName());
 
-        mSamReaderPlugin->addObserver(pluginObserver);
+        std::dynamic_pointer_cast<ObservablePlugin>(mSamReaderPlugin)
+            ->addObserver(pluginObserver);
     }
 }
 
 void SamResourceManagerDefault::removeResource(
     const std::shared_ptr<SeReader> samReader)
 {
-    ConcurrentMap<const std::string, std::shared_ptr<ManagedSamResource>>
-        ::const_iterator it;
+    const auto it = mLocalManagedSamResources.find(samReader->getName());
 
-    if ((it = mLocalManagedSamResources.find(samReader->getName()) !=
-        mLocalManagedSamResources.end()) {
-        mLocalManagedSamResources.erase(samReader.getName());
+    if (it != mLocalManagedSamResources.end()) {
+        mLocalManagedSamResources.erase(samReader->getName());
 
         mLogger->trace("Freed SAM resource: READER = %, SAM_REVISION = %, " \
                        "SAM_SERIAL_NUMBER = %\n",
                        samReader->getName(),
-                       *it->getMatchingSe()->getSamRevision(),
-                       *it->getMatchingSe()->getSerialNumber()));
-        }
+                       it->second->getMatchingSe()->getSamRevision(),
+                       it->second->getMatchingSe()->getSerialNumber());
     }
 }
 
 std::shared_ptr<SeResource<CalypsoSam>>
     SamResourceManagerDefault::allocateSamResource(
         const AllocationMode allocationMode,
-        const SamIdentifier& samIdentifier)
+        const std::shared_ptr<SamIdentifier> samIdentifier)
 {
-    const long maxBlockingDate = System::currentTimeMillis() + maxBlockingTime;
+    const long maxBlockingDate = System::currentTimeMillis() + mMaxBlockingTime;
     bool noSamResourceLogged = false;
 
     mLogger->trace("Allocating SAM reader channel...\n");
@@ -136,7 +165,7 @@ std::shared_ptr<SeResource<CalypsoSam>>
             mLogger->trace("No SAM resources available at the moment\n");
             throw CalypsoNoSamResourceAvailableException(
                       "No Sam resource could be allocated for samIdentifier " +
-                      samIdentifier.getGroupReference());
+                      samIdentifier->getGroupReference());
         } else {
             if (!noSamResourceLogged) {
                 /* Log once the first time */
@@ -145,22 +174,29 @@ std::shared_ptr<SeResource<CalypsoSam>>
             }
 
             try {
-                Thread::sleep(sleepTime);
+                Thread::sleep(mSleepTime);
             } catch (const InterruptedException& e) {
-                /* Cet interrupt flag */
-                Thread::currentThread()->interrupt();
+                /* Set interrupt flag */
+                /*
+                 * C++ vs. Java: cannot interrupt thread as easily as in Java,
+                 *               as this scenario is quite unlikely to happen,
+                 *               will throw instead for now.
+                 */
+                //Thread::currentThread()->interrupt();
                 mLogger->error("Interrupt exception in Thread::sleep\n");
+                throw e;
             }
 
-            if (System::currentTimeMillis() >= maxBlockingDate) {
+            if (System::currentTimeMillis() >=
+                    static_cast<unsigned long long>(maxBlockingDate)) {
                 mLogger->error(
                     "The allocation process failed. Timeout % sec exceeded\n",
-                    (maxBlockingTime / 1000.0));
+                    (mMaxBlockingTime / 1000.0));
 
-                std::stringstream << "No Sam resource could be allocated within"
-                                  << "timeout of " << maxBlockingTime << "ms "
-                                  << "for samIdentifier";
-                                  << samIdentifier.getGroupReference());
+                std::stringstream ss;
+                ss << "No Sam resource could be allocated within"
+                   << "timeout of " << mMaxBlockingTime << "ms "
+                   << "for samIdentifier "<< samIdentifier->getGroupReference();
 
                 throw CalypsoNoSamResourceAvailableException(ss.str());
             }
@@ -173,14 +209,12 @@ void SamResourceManagerDefault::freeSamResource(
 {
     const std::lock_guard<std::mutex> lock(mMutex);
 
-    ConcurrentMap<const std::string, std::shared_ptr<ManagedSamResource>>
-        ::const_iterator it;
+    const auto it = mLocalManagedSamResources.find(
+                        samResource->getSeReader()->getName());
 
-    if ((it = mLocalManagedSamResources.find(
-            samResource->getSeReader()->getName()) !=
-            mLocalManagedSamResources.end()) {
+    if (it != mLocalManagedSamResources.end()) {
         mLogger->trace("Freeing local SAM resource\n");
-        *it->setSamResourceStatus(SamResourceStatus::FREE);
+        it->second->setSamResourceStatus(SamResourceStatus::FREE);
     } else {
         mLogger->error("SAM resource not found while freeing\n");
     }
@@ -232,37 +266,40 @@ void SamResourceManagerDefault::initSamReader(
 
 PluginObserver::PluginObserver(
   const std::shared_ptr<ReaderObserver> readerObserver,
-  const std::string& samReaderFilter) {
-: mReaderObserver(readerObserver), mSamReaderFilter(samReaderFilter) {}
+  const std::string& samReaderFilter,
+  SamResourceManagerDefault& parent)
+: mReaderObserver(readerObserver),
+  mSamReaderFilter(samReaderFilter),
+  mParent(parent) {}
 
-void PluginObserver::update(const PluginEvent& event)
+void PluginObserver::update(const std::shared_ptr<PluginEvent> event)
 {
-    for (const auto& readerName : event.getReaderNames()) {
-        std::shared_ptr<SeReader> samReader = null;
+    for (const auto& readerName : event->getReaderNames()) {
+        std::shared_ptr<SeReader> samReader = nullptr;
 
         mLogger->info("PluginEvent: PLUGINNAME = %, READERNAME = %, EVENTTYPE" \
                       " = %\n",
-                      event.getPluginName(),
+                      event->getPluginName(),
                       readerName,
-                      event.getEventType());
+                      event->getEventType());
 
         /* We retrieve the reader object from its name. */
         try {
             samReader = SeProxyService::getInstance()
-                           .getPlugin(event.getPluginName())
-                           .getReader(readerName);
+                           .getPlugin(event->getPluginName())
+                           ->getReader(readerName);
         } catch (const KeyplePluginNotFoundException& e) {
-            mLogger->error("Plugin not found %\n", event.getPluginName());
+            mLogger->error("Plugin not found %\n", event->getPluginName());
             return;
         } catch (const KeypleReaderNotFoundException& e) {
-            logger.error("Reader not found %\n", readerName);
+            mLogger->error("Reader not found %\n", readerName);
             return;
         }
 
-        switch (event.getEventType()) {
-        case READER_CONNECTED:
-            if (mLocalManagedSamResources.find(readerName) !=
-                    mLocalManagedSamResources.end()) {
+        const PluginEvent::EventType& type = event->getEventType();
+        if (type == PluginEvent::EventType::READER_CONNECTED) {
+            if (mParent.mLocalManagedSamResources.find(readerName) !=
+                    mParent.mLocalManagedSamResources.end()) {
                 mLogger->trace("Reader is already present in the local " \
                                "samResources -  READERNAME = %\n",
                                readerName);
@@ -271,28 +308,28 @@ void PluginObserver::update(const PluginEvent& event)
                 return;
             }
 
-            mLogger->trace("New reader! READERNAME = %\n", samReader.getName());
+            mLogger->trace("New reader! READERNAME = %\n", samReader->getName());
 
             /*
              * We are informed here of a connection of a reader.
              *
              * We add an observer to this reader if possible.
              */
-            p = Pattern::compile(samReaderFilter);
+            p = Pattern::compile(mSamReaderFilter);
             if (p->matcher(readerName)->matches()) {
                 /* Enable logging */
                 try {
-                    initSamReader(samReader, readerObserver);
+                    mParent.initSamReader(samReader, mReaderObserver);
                 } catch (const KeypleReaderException& e) {
                     mLogger->error("Unable to init Sam reader %\n",
                                    samReader->getName(),
-                                   e.getCause());
+                                   e.getCause().what());
                 }
             } else {
                 mLogger->trace("Reader not matching: %\n", readerName);
             }
-            break;
-        case READER_DISCONNECTED:
+
+        } else if (type == PluginEvent::EventType::READER_DISCONNECTED) {
             /*
              * We are informed here of a disconnection of a reader.
              *
@@ -300,21 +337,21 @@ void PluginObserver::update(const PluginEvent& event)
              * reader list right after. Thus, we can properly remove the
              * observer attached to this reader before the list update.
              */
-            p = Pattern::compile(samReaderFilter);
+            p = Pattern::compile(mSamReaderFilter);
             if (p->matcher(readerName)->matches()) {
                 mLogger->trace("Reader removed. READERNAME = %\n", readerName);
 
                 std::shared_ptr<ObservableReader> obsReader =
                     std::dynamic_pointer_cast<ObservableReader>(samReader);
                 if (obsReader) {
-                    if (readerObserver != nullptr) {
+                    if (mReaderObserver != nullptr) {
                         mLogger->trace("Remove observer and stop detection " \
                                        "READERNAME = %\n",
                                        readerName);
-                        obsReader->removeObserver(readerObserver);
+                        obsReader->removeObserver(mReaderObserver);
                         obsReader->stopSeDetection();
                     } else {
-                        removeResource(samReader);
+                        mParent.removeResource(samReader);
                         mLogger->trace("Unplugged reader READERNAME = % " \
                                        "wasn't observed. Resource removed\n",
                                        readerName);
@@ -323,38 +360,37 @@ void PluginObserver::update(const PluginEvent& event)
             } else {
                 mLogger->trace("Reader not matching: %\n", readerName);
             }
-            break;
-        default:
-            mLogger->warn("Unexpected reader event. EVENT = %\n",
-                          event.getEventType().getName());
-            break;
+
+        } else {
+            mLogger->warn("Unexpected reader event-> EVENT = %\n",
+                          event->getEventType().getName());
         }
     }
 }
 
 /* READER OBSERVER ---------------------------------------------------------- */
 
-ReaderObserver::ReaderObserver()
-: ObservableReader::ReaderObserver() {}
+ReaderObserver::ReaderObserver(SamResourceManagerDefault& parent)
+: ObservableReader::ReaderObserver(), mParent(parent) {}
 
-void update(const ReaderEvent& event) const
+void ReaderObserver::update(const std::shared_ptr<ReaderEvent> event)
 {
     /* TODO revise exception management */
     std::shared_ptr<SeReader> samReader = nullptr;
 
     try {
-        samReader = mSamReaderPlugin->getReader(event.getReaderName());
+        samReader = mParent.mSamReaderPlugin->getReader(event->getReaderName());
     } catch (const KeypleReaderNotFoundException& e) {
         mLogger->error("KeypleReaderNotFoundException raised, %\n", e);
     }
 
-    const std::lock_guard<std::mutex> lock(mMutex);
+    const std::lock_guard<std::mutex> lock(mParent.mMutex);
 
-    switch (event.getEventType()) {
-    case SE_MATCHED:
-    case SE_INSERTED:
-        if (mLocalManagedSamResources.find(samReader->getName()) !=
-                mLocalManagedSamResources.end()) {
+    const ReaderEvent::EventType& type = event->getEventType();
+    if (type == ReaderEvent::EventType::SE_MATCHED ||
+        type == ReaderEvent::EventType::SE_INSERTED) {
+        if (mParent.mLocalManagedSamResources.find(samReader->getName()) !=
+                mParent.mLocalManagedSamResources.end()) {
             mLogger->trace("Reader is already present in the local " \
                            "samResources -  READERNAME = %\n",
                            samReader->getName());
@@ -370,7 +406,7 @@ void update(const ReaderEvent& event) const
              * Although the reader allocation is dynamic, the SAM resource type
              * is STATIC
              */
-            newSamResource = createSamResource(samReader);
+            newSamResource = mParent.createSamResource(samReader);
         } catch (const CalypsoNoSamResourceAvailableException& e) {
             mLogger->error("Failed to create a SeResource<CalypsoSam> from %\n",
                            samReader->getName());
@@ -380,51 +416,18 @@ void update(const ReaderEvent& event) const
         if (newSamResource != nullptr) {
             mLogger->trace("Created SAM resource: READER = %, SAM_REVISION = " \
                            "%, SAM_SERIAL_NUMBER = %\n",
-                           event.getReaderName(),
+                           event->getReaderName(),
                            newSamResource->getMatchingSe()->getSamRevision(),
-                           newSamResource->getMatchingSe()->getSerialNumber()));
+                           newSamResource->getMatchingSe()->getSerialNumber());
 
-            mLocalManagedSamResources.insert({samReader->getName(),
-                                              newSamResource});
+            mParent.mLocalManagedSamResources.insert({samReader->getName(),
+                                                      newSamResource});
         }
-        break;
-    case SE_REMOVED:
-    case TIMEOUT_ERROR:
-        removeResource(samReader);
-        break;
+
+    } else if (type == ReaderEvent::EventType::SE_REMOVED ||
+               type == ReaderEvent::EventType::TIMEOUT_ERROR) {
+        mParent.removeResource(samReader);
     }
-}
-
-/* MANAGED SAM RESOURCE ----------------------------------------------------- */
-
-ManagedSamResource::ManagedSamResource(
-  std::shared_ptr<SeReader> seReader,
-  std::shared_ptr<CalypsoSam> calypsoSam)
-: SeResource<CalypsoSam>(seReader, calypsoSam),
-  mSamResourceStatus(SamResourceStatus::FREE),
-  mSamIdentifier(nullptr) {}
-
-const bool ManagedSamResource::isSamResourceFree() const
-{
-    return mSamResourceStatus == SamResourceStatus::FREE;
-}
-
-void ManagedSamResource::setSamIdentifier(
-    std::shared_ptr<SamIdentifier> samIdentifier)
-{
-    mSamIdentifier = samIdentifier;
-}
-
-const bool ManagedSamResource::isSamMatching(
-    const std::shared_ptr<SamIdentifier> samIdentifier) const
-{
-    return samIdentifier->matches(mSamIdentifier);
-}
-
-void ManagedSamResource::setSamResourceStatus(
-    const SamResourceStatus& samResourceStatus)
-{
-    mSamResourceStatus = samResourceStatus;
 }
 
 }

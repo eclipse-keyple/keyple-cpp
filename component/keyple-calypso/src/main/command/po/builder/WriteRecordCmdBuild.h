@@ -53,7 +53,7 @@ public:
      * @throw IllegalArgumentException - if record number is &lt; 1
      * @throw IllegalArgumentException - if the request is inconsistent
      */
-    WriteRecordCmdBuild(const PoClass poClass,
+    WriteRecordCmdBuild(const PoClass& poClass,
                         const uint8_t sfi,
                         const uint8_t recordNumber,
                         const std::vector<uint8_t>& newRecordData);
@@ -61,7 +61,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<WriteRecordRespPars> createResponseParser(
+    std::shared_ptr<WriteRecordRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**

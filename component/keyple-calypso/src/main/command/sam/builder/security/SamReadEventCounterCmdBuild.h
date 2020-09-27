@@ -70,7 +70,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<SamReadEventCounterRespPars> createResponseParser(
+    std::shared_ptr<SamReadEventCounterRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

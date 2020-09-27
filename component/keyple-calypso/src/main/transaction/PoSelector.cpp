@@ -36,9 +36,9 @@ PoSelector::PoSelector(PoSelectorBuilder* builder)
         getAidSelector()->addSuccessfulStatusCode(SW_PO_INVALIDATED);
 }
 
-std::unique_ptr<PoSelectorBuilder> PoSelector::builder()
+std::shared_ptr<PoSelectorBuilder> PoSelector::builder()
 {
-    return std::unique_ptr<PoSelectorBuilder>(new PoSelectorBuilder());
+    return std::make_shared<PoSelectorBuilder>();
 }
 
 /* PO SELECTOR BUILDER ------------------------------------------------------ */
@@ -74,9 +74,9 @@ PoSelectorBuilder& PoSelectorBuilder::aidSelector(
                SeSelectorBuilder::aidSelector(aidSelector));
 }
 
-std::unique_ptr<SeSelector> PoSelectorBuilder::build()
+std::shared_ptr<SeSelector> PoSelectorBuilder::build()
 {
-    return std::unique_ptr<PoSelector>(new PoSelector(this));
+    return std::make_shared<PoSelector>(this);
 }
 
 }

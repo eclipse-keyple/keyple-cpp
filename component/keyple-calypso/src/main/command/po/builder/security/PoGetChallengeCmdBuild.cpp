@@ -41,12 +41,11 @@ PoGetChallengeCmdBuild::PoGetChallengeCmdBuild(PoClass poClass)
     mRequest = setApduRequest(poClass.getValue(), command, 0x01, 0x10, 0x08);
 }
 
-std::unique_ptr<PoGetChallengeRespPars>
+std::shared_ptr<PoGetChallengeRespPars>
     PoGetChallengeCmdBuild::createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<PoGetChallengeRespPars>(
-               new PoGetChallengeRespPars(apduResponse, this));
+    return std::make_shared<PoGetChallengeRespPars>(apduResponse, this);
 }
 
 bool PoGetChallengeCmdBuild::isSessionBufferUsed() const

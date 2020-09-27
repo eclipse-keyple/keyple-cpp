@@ -19,6 +19,7 @@
 
 /* Core */
 #include "ReaderPlugin.h"
+#include "ReaderPoolPlugin.h"
 
 /* Calypso */
 #include "SamResourceManager.h"
@@ -38,23 +39,23 @@ public:
     /**
      * {@inheritDoc}
      */
-    std::unique_ptr<SeResource<CalypsoSam>> allocateSamResource(
+    std::shared_ptr<SeResource<CalypsoSam>> allocateSamResource(
         const AllocationMode allocationMode,
-        const SamIdentifier& samIdentifier) override;
+        const std::shared_ptr<SamIdentifier> samIdentifier) override;
 
     /**
      *
      */
-    void freeSamResource(SeResource<CalypsoSam>& samResource) override;
-
-protected:
-    /**
-     *
-     */
-    const std::shared_ptr<ReaderPlugin> mSamReaderPlugin;
+    void freeSamResource(
+        const std::shared_ptr<SeResource<CalypsoSam>> samResource) override;
 
     /**
      * Protected constructor, use the {@link SamResourceManagerFactory}
+     *
+     * C++ vs. Java: Should be private but would forbid usage of make_shared
+     *               from SamResourceManagerFactory class. Setting it
+     *               public for now. Could use an intermediate derived class
+     *               otherwise if need be.
      *
      * @param samReaderPoolPlugin the reader pool plugin
      * @param maxBlockingTime the maximum duration for which the
@@ -63,9 +64,15 @@ protected:
      * @param sleepTime the duration to wait between two retries
      */
     SamResourceManagerPool(
-        std::shared_ptr<ReaderPoolPlugin> samReaderPoolPlugin,
+        const ReaderPoolPlugin& samReaderPoolPlugin,
         const int maxBlockingTime,
         const int sleepTime);
+
+protected:
+    /**
+     *
+     */
+    ReaderPoolPlugin& mSamReaderPlugin;
 
 private:
     /**

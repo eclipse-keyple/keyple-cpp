@@ -34,7 +34,7 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
 WriteRecordCmdBuild::WriteRecordCmdBuild(
-  const PoClass poClass,
+  const PoClass& poClass,
   const uint8_t sfi,
   const uint8_t recordNumber,
   const std::vector<uint8_t>& newRecordData)
@@ -55,11 +55,10 @@ WriteRecordCmdBuild::WriteRecordCmdBuild(
     addSubName(extraInfo);
 }
 
-std::unique_ptr<WriteRecordRespPars> WriteRecordCmdBuild::createResponseParser(
+std::shared_ptr<WriteRecordRespPars> WriteRecordCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<WriteRecordRespPars>(
-               new WriteRecordRespPars(apduResponse, this));
+    return std::make_shared<WriteRecordRespPars>(apduResponse, this);
 }
 
 bool WriteRecordCmdBuild::isSessionBufferUsed() const

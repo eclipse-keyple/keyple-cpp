@@ -56,7 +56,7 @@ public:
      *         wrong length
      * @throw IllegalArgumentException - if the command is inconsistent
      */
-    CloseSessionCmdBuild(const PoClass poClass,
+    CloseSessionCmdBuild(const PoClass& poClass,
                          const bool ratificationAsked,
                          const std::vector<uint8_t>& terminalSessionSignature);
 
@@ -72,7 +72,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<CloseSessionRespPars> createResponseParser(
+    std::shared_ptr<CloseSessionRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**

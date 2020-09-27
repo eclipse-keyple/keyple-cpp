@@ -53,11 +53,10 @@ GiveRandomCmdBuild::GiveRandomCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, random);
 }
 
-std::unique_ptr<GiveRandomRespPars> GiveRandomCmdBuild::createResponseParser(
+std::shared_ptr<GiveRandomRespPars> GiveRandomCmdBuild::createResponseParser(
     const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<GiveRandomRespPars>(
-               new GiveRandomRespPars(apduResponse, this));
+    return std::make_shared<GiveRandomRespPars>(apduResponse, this);
 }
 
 }

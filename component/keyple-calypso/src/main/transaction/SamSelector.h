@@ -46,7 +46,7 @@ public:
      *
      * @since 0.9
      */
-    static class SamSelectorBuilder : public SeSelector::SeSelectorBuilder {
+    class SamSelectorBuilder : public SeSelector::SeSelectorBuilder {
     public:
         /**
          *
@@ -99,8 +99,12 @@ public:
          * Build a new {@code SamSelector}.
          *
          * @return a new instance
+         *
+         * Return type should be
+         *     std::shared_ptr<SamSelector>
+         * ... but invalid covariant
          */
-        std::unique_ptr<SamSelector> build() override;
+        std::shared_ptr<SeSelector> build() override;
 
     private:
         /**

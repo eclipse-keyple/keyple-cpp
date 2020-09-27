@@ -59,7 +59,7 @@ public:
     /**
      *
      */
-    std::unique_ptr<DigestCloseRespPars> createResponseParser(
+    std::shared_ptr<DigestCloseRespPars> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:

@@ -54,11 +54,10 @@ SamWriteKeyCmdBuild::SamWriteKeyCmdBuild(
     mRequest = setApduRequest(cla, mCommand, writingMode, keyReference, keyData);
 }
 
-std::unique_ptr<SamWriteKeyRespPars> SamWriteKeyCmdBuild::createResponseParser(
+std::shared_ptr<SamWriteKeyRespPars> SamWriteKeyCmdBuild::createResponseParser(
     const std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::unique_ptr<SamWriteKeyRespPars>(
-               new SamWriteKeyRespPars(apduResponse, this));
+    return std::make_shared<SamWriteKeyRespPars>(apduResponse, this);
 }
 
 }

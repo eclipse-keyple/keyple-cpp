@@ -45,21 +45,20 @@ using namespace keyple::core::seproxy::message;
  * <p>
  * Used directly, this class can serve as low level command builder.
  */
-template<class T>
+template<typename T>
 class AbstractSamCommandBuilder : public AbstractIso7816CommandBuilder {
 public:
-    /*
-    static_assert(std::is_base_of<AbstractSamResponseParser, T>::value,
-                  "T must inherit from keyple::core::command" \
-                  "::AbstractApduResponseParser");
-    */
-
     /**
      *
      */
     AbstractSamCommandBuilder(const std::shared_ptr<SeCommand> reference,
                               const std::shared_ptr<ApduRequest> request)
-    : AbstractIso7816CommandBuilder(reference, request) {}
+    : AbstractIso7816CommandBuilder(reference, request)
+    {
+        static_assert(std::is_base_of<AbstractSamResponseParser, T>::value,
+                      "T must inherit from keyple::core::command" \
+                      "::AbstractSamResponseParser");
+    }
 
     /**
      *
@@ -72,7 +71,7 @@ public:
      * @param apduResponse the response data from the SE
      * @return an {@link AbstractApduResponseParser}
      */
-    virtual std::unique_ptr<T> createResponseParser(
+    virtual std::shared_ptr<T> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) = 0;
 
     /**
@@ -96,7 +95,7 @@ protected:
     /**
      *
      */
-    SamRevision& mDefaultRevision = SamRevision::C1;
+    SamRevision mDefaultRevision = SamRevision::C1;
 };
 
 }

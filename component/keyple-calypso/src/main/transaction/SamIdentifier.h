@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <memory>
+
 /* Calypso */
 #include "KeypleCalypsoExport.h"
 #include "SamRevision.h"
@@ -40,7 +42,12 @@ public:
      *
      * @since 0.9
      */
-    static class SamIdentifierBuilder final {
+    class SamIdentifierBuilder final {
+    public:
+        /**
+         * Allow access to private members
+         */
+        friend SamIdentifier;
 
         /**
          * Sets the targeted SAM revision
@@ -48,7 +55,7 @@ public:
          * @param samRevision the {@link SamRevision} of the targeted SAM
          * @return the builder instance
          */
-        SamIdentifierBuilder& samRevision(const SamRevision samRevision);
+        SamIdentifierBuilder& samRevision(const SamRevision& samRevision);
 
         /**
          * Sets the targeted SAM serial number
@@ -78,12 +85,12 @@ public:
         /**
          *
          */
-        SamRevision& mSamRevision;
+        SamRevision mSamRevision = SamRevision::NO_REV;
 
         /**
          *
          */
-        std::string mSerialNumber = "":
+        std::string mSerialNumber = "";
 
         /**
          *
