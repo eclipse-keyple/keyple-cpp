@@ -14,8 +14,12 @@
 
 #include "SamResourceManagerPool.h"
 
+/* Calypso */
+#include "CalypsoNoSamResourceAvailableException.h"
+
 /* Common */
 #include "IllegalArgumentException.h"
+#include "InterruptedException.h"
 #include "System.h"
 #include "Thread.h"
 
@@ -27,11 +31,12 @@ namespace keyple {
 namespace calypso {
 namespace transaction {
 
+using namespace keyple::calypso::exception;
 using namespace keyple::common;
 using namespace keyple::core::seproxy::exception;
 
 SamResourceManagerPool::SamResourceManagerPool(
-  const ReaderPoolPlugin& samReaderPoolPlugin,
+  ReaderPoolPlugin& samReaderPoolPlugin,
   const int maxBlockingTime,
   const int sleepTime)
 : mSamReaderPlugin(samReaderPoolPlugin),
@@ -84,7 +89,7 @@ std::shared_ptr<SeResource<CalypsoSam>>
                 throw CalypsoNoSamResourceAvailableException(
                           "No Sam resource could be allocated for " \
                           "samIdentifier " +
-                          samIdentifier.getGroupReference());
+                          samIdentifier->getGroupReference());
             } else {
                 if (!noSamResourceLogged) {
                     /* log once the first time */
@@ -93,20 +98,28 @@ std::shared_ptr<SeResource<CalypsoSam>>
                 }
 
                 try {
-                    Thread::sleep(sleepTime);
+                    Thread::sleep(mSleepTime);
                 } catch (const InterruptedException& e) {
-                    Thread::currentThread()->interrupt();
+                    /*
+                     * C++ vs. Java: Cannot interrupt thread easily. This
+                     *               scenario is unlikely to happen so throw
+                     *               for now.
+                     */
+                    //Thread::currentThread()->interrupt();
                     mLogger->error("Interrupt exception in Thread::sleep\n");
+                    throw e;
                 }
 
-                if (System::currentTimeMillis() >= maxBlockingDate) {
+                if (System::currentTimeMillis() >=
+                        static_cast<unsigned long long>(maxBlockingDate)) {
                     mLogger->error("The allocation process failed. Timeout % " \
                                    "sec exceeded\n",
                                    (mMaxBlockingTime / 1000.0));
-                    std::stringstream ss << "No Sam resource could be allocated"
-                                         << "within " << mMaxBlockingTime
-                                         << "ms for samIdentifier "
-                                         << samIdentifier.getGroupReference();
+                    std::stringstream ss;
+                    ss << "No Sam resource could be allocated"
+                       << "within " << mMaxBlockingTime
+                       << "ms for samIdentifier "
+                       << samIdentifier->getGroupReference();
                     throw CalypsoNoSamResourceAvailableException(ss.str());
                 }
             }
@@ -121,12 +134,12 @@ std::shared_ptr<SeResource<CalypsoSam>>
 }
 
 void SamResourceManagerPool::freeSamResource(
-    SeResource<CalypsoSam>& samResource) override
+    const SeResource<CalypsoSam>& samResource)
 {
     /* Virtually infinite number of readers */
     mLogger->debug("Freeing HSM SAM resource\n");
-    std::dynamic_pointer_cast<ReaderPoolPlugin>(samReaderPlugin)->releaseReader(
-        samResource.getSeReader());
+    dynamic_cast<ReaderPoolPlugin&>(mSamReaderPlugin)
+        .releaseReader(samResource.getSeReader());
 
 }
 

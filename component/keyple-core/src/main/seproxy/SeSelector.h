@@ -472,16 +472,17 @@ public:
          */
         SeSelectorBuilder() {}
 
+    protected:
+        /**
+         *
+         */
+        std::shared_ptr<AtrFilter> mAtrFilter;
+
     private:
         /**
          *
          */
         std::shared_ptr<SeProtocol> mSeProtocol;
-
-        /**
-         *
-         */
-        std::shared_ptr<AtrFilter> mAtrFilter;
 
         /**
          *
