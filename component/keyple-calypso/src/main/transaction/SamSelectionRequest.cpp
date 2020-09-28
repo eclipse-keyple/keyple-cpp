@@ -27,7 +27,7 @@ SamSelectionRequest::SamSelectionRequest(
   std::shared_ptr<SamSelector> samSelector)
 : AbstractSeSelectionRequest<AbstractApduCommandBuilder>(samSelector) {}
 
-const std::shared_ptr<CalypsoSam> SamSelectionRequest::parse(
+const std::shared_ptr<AbstractMatchingSe> SamSelectionRequest::parse(
     std::shared_ptr<SeResponse> seResponse)
 {
     return std::make_shared<CalypsoSam>(

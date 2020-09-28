@@ -32,7 +32,7 @@ enum class SelectFileControl {
     CURRENT_DF
 };
 
-std::ostream& operator<<(std::ostream& os, const SelectFileControl& sfc)
+inline std::ostream& operator<<(std::ostream& os, const SelectFileControl& sfc)
 {
     switch (sfc) {
     case SelectFileControl::NONE:

@@ -14,6 +14,9 @@
 
 #include "SamSelector.h"
 
+/* Calypso */
+#include "SamRevision.h"
+
 /* Common */
 #include "IllegalArgumentException.h"
 
@@ -29,6 +32,8 @@ using namespace keyple::common;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
 
+using SamSelectorBuilder = SamSelector::SamSelectorBuilder;
+
 /* SAM SELECTOR ------------------------------------------------------------- */
 
 SamSelector::SamSelector(SamSelectorBuilder* builder)
@@ -38,12 +43,12 @@ SamSelector::SamSelector(SamSelectorBuilder* builder)
     std::string snRegex;
 
     /* Check if serialNumber is defined */
-    if (builder->serialNumber == "")
+    if (builder->mSerialNumber == "")
         /* Match all serial numbers */
         snRegex = ".{8}";
     else
         /* Match the provided serial number (could be a regex substring) */
-        snRegex = builder->serialNumber;
+        snRegex = builder->mSerialNumber;
 
     /*
      * Build the final Atr regex according to the SAM subtype and serial number
@@ -52,23 +57,19 @@ SamSelector::SamSelector(SamSelectorBuilder* builder)
      * The header is starting with 3B, its total length is 4 or 6 bytes (8 or
      * 10 hex digits)
      */
-    switch (builder->samRevision) {
-    case SamRevision::C1:
-    case SamRevision::S1D:
-    case SamRevision::S1E:
+    if (builder->mSamRevision == SamRevision::C1 ||
+        builder->mSamRevision ==  SamRevision::S1D ||
+        builder->mSamRevision ==  SamRevision::S1E)
         atrRegex = "3B(.{6}|.{10})805A..80" +
-                   builder->samRevision.getApplicationTypeMask() +
+                   builder->mSamRevision.getApplicationTypeMask() +
                    "20.{4}" +
                    snRegex +
                    "829000";
-        break;
-    case SamRevision::AUTO:
+    else if (builder->mSamRevision == SamRevision::AUTO)
         /* Match any ATR */
         atrRegex = ".*";
-        break;
-    default:
+    else
         throw IllegalArgumentException("Unknown SAM subtype.");
-    }
 
     getAtrFilter()->setAtrRegex(atrRegex);
 }
@@ -81,7 +82,10 @@ std::shared_ptr<SamSelectorBuilder> SamSelector::builder()
 /* SAM SELECTOR BUILDER ----------------------------------------------------- */
 
  SamSelectorBuilder::SamSelectorBuilder()
- : SeSelector::SeSelectorBuilder(), mAtrFiler(std::make_shared<AtrFilter>("")){}
+ : SeSelector::SeSelectorBuilder()
+{
+    mAtrFilter = std::make_shared<AtrFilter>("");
+}
 
 SamSelectorBuilder& SamSelectorBuilder::samRevision(
     const SamRevision samRevision)
@@ -100,15 +104,16 @@ SamSelectorBuilder& SamSelectorBuilder::serialNumber(
 SamSelectorBuilder& SamSelectorBuilder::samIdentifier(
     const SamIdentifier& samIdentifier)
 {
-    mSamRevision = samIdentifier->getSamRevision();
-    mSerialNumber = samIdentifier->getSerialNumber();
-    return this;
+    mSamRevision = samIdentifier.getSamRevision();
+    mSerialNumber = samIdentifier.getSerialNumber();
+    return *this;
 }
 
 SamSelectorBuilder& SamSelectorBuilder::seProtocol(
     const std::shared_ptr<SeProtocol> seProtocol)
 {
-    return SeSelector::SeSelectorBuilder::seProtocol(seProtocol);
+    return dynamic_cast<SamSelectorBuilder&>(
+               SeSelector::SeSelectorBuilder::seProtocol(seProtocol));
 }
 
 /**
@@ -117,7 +122,8 @@ SamSelectorBuilder& SamSelectorBuilder::seProtocol(
 SamSelectorBuilder& SamSelectorBuilder::atrFilter(
     const std::shared_ptr<AtrFilter> atrFilter)
 {
-    return SeSelector::SeSelectorBuilder::atrFilter(atrFilter);
+    return dynamic_cast<SamSelectorBuilder&>(
+               SeSelector::SeSelectorBuilder::atrFilter(atrFilter));
 }
 
 /**
@@ -126,12 +132,13 @@ SamSelectorBuilder& SamSelectorBuilder::atrFilter(
 SamSelectorBuilder& SamSelectorBuilder::aidSelector(
     const std::shared_ptr<AidSelector> aidSelector)
 {
-    return SeSelector::SeSelectorBuilder::.aidSelector(aidSelector);
+    return dynamic_cast<SamSelectorBuilder&>(
+               SeSelector::SeSelectorBuilder::aidSelector(aidSelector));
 }
 
-std::unique_ptr<SamSelector> SamSelectorBuilder::build()
+std::shared_ptr<SeSelector> SamSelectorBuilder::build()
 {
-    return std::unique_ptr<SamSelector>(new SamSelector(this));
+    return std::make_shared<SamSelector>(this);
 }
 
 }

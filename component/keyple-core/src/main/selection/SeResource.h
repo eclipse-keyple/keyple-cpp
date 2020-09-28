@@ -58,7 +58,7 @@ public:
     /**
      * @return the current {@link SeReader} for this SE
      */
-    virtual std::shared_ptr<SeReader> getSeReader()
+    virtual const std::shared_ptr<SeReader> getSeReader() const
     {
         return seReader;
     }
@@ -66,7 +66,7 @@ public:
     /**
      * @return the {@link AbstractMatchingSe}
      */
-    virtual std::shared_ptr<T> getMatchingSe()
+    virtual const std::shared_ptr<T> getMatchingSe() const
     {
         return matchingSe;
     }

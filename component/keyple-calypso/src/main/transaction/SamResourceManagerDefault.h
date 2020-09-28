@@ -141,8 +141,7 @@ public:
     /**
      *
      */
-    void freeSamResource(
-        const std::shared_ptr<SeResource<CalypsoSam>> samResource) override;
+    void freeSamResource(const SeResource<CalypsoSam>& samResource) override;
 
     /**
      * Protected constructor, use the {@link SamResourceManagerFactory}

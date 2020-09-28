@@ -51,6 +51,11 @@ public:
         /**
          *
          */
+        friend SamSelector;
+
+        /**
+         *
+         */
         SamSelectorBuilder();
 
         /**
@@ -110,7 +115,7 @@ public:
         /**
          *
          */
-        SamRevision mSamRevision;
+        SamRevision mSamRevision = SamRevision::NO_REV;
 
         /**
          *
@@ -123,11 +128,15 @@ public:
      *
      * @return a new builder instance
      */
-    static std::unique_ptr<SamSelectorBuilder> builder();
+    static std::shared_ptr<SamSelectorBuilder> builder();
 
-private:
     /**
      * Private constructor
+     *
+     * C++ vs. Java: Should be private but would forbid usage of make_shared
+     *               from SamSelectorBuilder class. Setting it
+     *               public for now. Could use an intermediate derived class
+     *               otherwise if need be.
      */
     SamSelector(SamSelectorBuilder* builder);
 };
