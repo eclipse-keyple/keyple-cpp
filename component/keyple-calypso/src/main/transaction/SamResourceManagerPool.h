@@ -46,8 +46,7 @@ public:
     /**
      *
      */
-    void freeSamResource(
-        const std::shared_ptr<SeResource<CalypsoSam>> samResource) override;
+    void freeSamResource(const SeResource<CalypsoSam>& samResource) override;
 
     /**
      * Protected constructor, use the {@link SamResourceManagerFactory}
@@ -64,7 +63,7 @@ public:
      * @param sleepTime the duration to wait between two retries
      */
     SamResourceManagerPool(
-        const ReaderPoolPlugin& samReaderPoolPlugin,
+        ReaderPoolPlugin& samReaderPoolPlugin,
         const int maxBlockingTime,
         const int sleepTime);
 

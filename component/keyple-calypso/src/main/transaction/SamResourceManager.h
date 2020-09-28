@@ -161,8 +161,7 @@ public:
      *
      * @param samResource the SAM resource reference to free
      */
-    virtual void freeSamResource(
-        std::shared_ptr<SeResource<CalypsoSam>> samResource) = 0;
+    virtual void freeSamResource(const SeResource<CalypsoSam>& samResource) = 0;
 
 protected:
     /**

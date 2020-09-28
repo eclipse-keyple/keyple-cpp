@@ -41,7 +41,7 @@ std::shared_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
 }
 
 std::shared_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
-    const ReaderPoolPlugin& samReaderPoolPlugin,
+    ReaderPoolPlugin& samReaderPoolPlugin,
     const int maxBlockingTime,
     const int sleepTime)
 {
@@ -51,7 +51,7 @@ std::shared_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
 }
 
 std::shared_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
-        const ReaderPoolPlugin& samReaderPoolPlugin)
+    ReaderPoolPlugin& samReaderPoolPlugin)
 {
     return std::make_shared<SamResourceManagerPool>(samReaderPoolPlugin,
                                                     MAX_BLOCKING_TIME,

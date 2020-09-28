@@ -205,12 +205,12 @@ std::shared_ptr<SeResource<CalypsoSam>>
 }
 
 void SamResourceManagerDefault::freeSamResource(
-    const std::shared_ptr<SeResource<CalypsoSam>> samResource)
+    const SeResource<CalypsoSam>& samResource)
 {
     const std::lock_guard<std::mutex> lock(mMutex);
 
     const auto it = mLocalManagedSamResources.find(
-                        samResource->getSeReader()->getName());
+                        samResource.getSeReader()->getName());
 
     if (it != mLocalManagedSamResources.end()) {
         mLogger->trace("Freeing local SAM resource\n");

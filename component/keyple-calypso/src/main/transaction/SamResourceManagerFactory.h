@@ -82,7 +82,7 @@ public:
      * @return SamResourceManager working with a pool plugin
      */
     static std::shared_ptr<SamResourceManager> instantiate(
-        const ReaderPoolPlugin& samReaderPoolPlugin,
+        ReaderPoolPlugin& samReaderPoolPlugin,
         const int maxBlockingTime,
         const int sleepTime);
 
@@ -90,7 +90,7 @@ public:
      *
      */
     static std::shared_ptr<SamResourceManager> instantiate(
-        const ReaderPoolPlugin& samReaderPoolPlugin);
+        ReaderPoolPlugin& samReaderPoolPlugin);
 
 private:
     /**
