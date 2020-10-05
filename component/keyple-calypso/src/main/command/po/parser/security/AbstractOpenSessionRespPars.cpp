@@ -119,6 +119,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         std::make_shared<StatusProperties>(
             "Correct execution (ISO7816 T=0).",
             typeid(ClassNotFoundException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 
@@ -139,9 +142,15 @@ AbstractOpenSessionRespPars::AbstractOpenSessionRespPars(
 {
     (void)revision;
 
-    const std::vector<uint8_t> dataOut = response->getDataOut();
-    if (dataOut.size())
-        mSecureSession = toSecureSession(dataOut);
+    /**
+     * C++ vs. Java: C++ cannot call a derived class member function from a
+     *               base class constructor. This below code should be copied
+     *               into all of the derived classes...
+     *
+     * const std::vector<uint8_t> dataOut = response->getDataOut();
+     * if (dataOut.size())
+     *    mSecureSession = toSecureSession(dataOut);
+     */
 }
 
 std::shared_ptr<SecureSession> AbstractOpenSessionRespPars::toSecureSession(

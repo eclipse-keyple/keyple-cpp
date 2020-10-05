@@ -167,15 +167,15 @@ private:
     /**
      *
      */
-    static const uint8_t KIF_UNDEFINED = 0xff;
+    static const uint8_t KIF_UNDEFINED;
 
     /**
      *
      */
-    static const uint8_t CHALLENGE_LENGTH_REV_INF_32 = 0x04;
-    static const uint8_t CHALLENGE_LENGTH_REV32 = 0x08;
-    static const uint8_t SIGNATURE_LENGTH_REV_INF_32 = 0x04;
-    static const uint8_t SIGNATURE_LENGTH_REV32 = 0x08;
+    static const uint8_t CHALLENGE_LENGTH_REV_INF_32;
+    static const uint8_t CHALLENGE_LENGTH_REV32;
+    static const uint8_t SIGNATURE_LENGTH_REV_INF_32;
+    static const uint8_t SIGNATURE_LENGTH_REV32;
 
     /**
      * The SAM resource
@@ -202,7 +202,7 @@ private:
      * Secure Session. The 1st buffer is the data buffer to be provided with
      * Digest Init. The following buffers are PO command/response pairs
      */
-    static std::vector<std::vector<uint8_t>> mPoDigestDataCache;
+    std::vector<std::vector<uint8_t>> mPoDigestDataCache;
 
     /**
      *

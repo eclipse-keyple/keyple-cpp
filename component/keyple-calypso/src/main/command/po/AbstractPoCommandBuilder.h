@@ -96,7 +96,7 @@ public:
      *
      * @return true if this command uses the session buffer
      */
-    virtual bool isSessionBufferUsed() const;
+    virtual bool isSessionBufferUsed() const = 0;
 
 protected:
     /**

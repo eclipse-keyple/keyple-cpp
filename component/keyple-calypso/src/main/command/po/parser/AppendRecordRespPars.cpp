@@ -79,6 +79,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         0x6A82,
         std::make_shared<StatusProperties>(
             "File not found.", typeid(CalypsoPoDataAccessException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 

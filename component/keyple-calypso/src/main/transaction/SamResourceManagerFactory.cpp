@@ -18,6 +18,9 @@ namespace keyple {
 namespace calypso {
 namespace transaction {
 
+const int SamResourceManagerFactory::MAX_BLOCKING_TIME = 1000;
+const int SamResourceManagerFactory::DEFAULT_SLEEP_TIME = 10;
+
 std::shared_ptr<SamResourceManager> SamResourceManagerFactory::instantiate(
     const std::shared_ptr<ReaderPlugin> readerPlugin,
     const std::string& samReaderFilter,

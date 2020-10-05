@@ -43,7 +43,8 @@ public:
      * @return the ApduRequest ratification command according to the PO class
      *         provided
      */
-    static std::shared_ptr<ApduRequest> getApduRequest(PoClass poClass);
+    static std::shared_ptr<ApduRequest> getApduRequest(
+        const PoClass& poClass);
 
 private:
     /**
