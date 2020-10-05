@@ -45,6 +45,12 @@ using namespace keyple::calypso::command::sam::parser::security;
 using namespace keyple::calypso::transaction::exception;
 using namespace keyple::core::seproxy::exception;
 
+const uint8_t SamCommandProcessor::KIF_UNDEFINED = 0xff;
+const uint8_t SamCommandProcessor::CHALLENGE_LENGTH_REV_INF_32 = 0x04;
+const uint8_t SamCommandProcessor::CHALLENGE_LENGTH_REV32 = 0x08;
+const uint8_t SamCommandProcessor::SIGNATURE_LENGTH_REV_INF_32 = 0x04;
+const uint8_t SamCommandProcessor::SIGNATURE_LENGTH_REV32 = 0x08;
+
 SamCommandProcessor::SamCommandProcessor(
   const std::shared_ptr<SeResource<CalypsoPo>> poResource,
   const std::shared_ptr<PoSecuritySettings> poSecuritySettings)

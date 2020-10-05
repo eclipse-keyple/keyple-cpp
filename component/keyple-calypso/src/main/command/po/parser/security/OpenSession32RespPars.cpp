@@ -30,7 +30,16 @@ using namespace keyple::core::seproxy::message;
 
 OpenSession32RespPars::OpenSession32RespPars(
   std::shared_ptr<ApduResponse> response, OpenSession32CmdBuild* builder)
-: AbstractOpenSessionRespPars(response, builder, PoRevision::REV3_2) {}
+: AbstractOpenSessionRespPars(response, builder, PoRevision::REV3_2)
+{
+    /**
+     * C++ vs. Java: Do not remove. This code is required as the base class
+     *               constructor cannot call a derived class member function.
+     */
+    const std::vector<uint8_t> dataOut = response->getDataOut();
+    if (dataOut.size())
+       mSecureSession = toSecureSession(dataOut);
+}
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
 OpenSession32RespPars::toSecureSession(

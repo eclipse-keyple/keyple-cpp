@@ -81,6 +81,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         std::make_shared<StatusProperties>(
             "P2 value not supported",
             typeid(CalypsoPoIllegalParameterException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 

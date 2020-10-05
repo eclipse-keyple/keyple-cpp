@@ -566,6 +566,16 @@ public:
         ss >> s;
         return s;
     }
+
+    /**
+     *
+     */
+    static std::string to_hex_string(const char *format, int number)
+    {
+        char buf[64];
+        sprintf(buf, format, number);
+        return std::string(buf);
+    }
 };
 
 }

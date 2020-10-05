@@ -81,6 +81,9 @@ const std::map<int, std::shared_ptr<AbstractApduResponseParser::StatusProperties
         std::make_shared<AbstractApduResponseParser::StatusProperties>(
             "Incorrect P1, P2.",
             typeid(CalypsoPoIllegalParameterException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 

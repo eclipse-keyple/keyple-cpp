@@ -24,6 +24,8 @@ namespace util {
 
 using namespace keyple::common;
 
+const KeypleAssert KeypleAssert::INSTANCE;
+
 KeypleAssert::KeypleAssert() {}
 
 const KeypleAssert& KeypleAssert::getInstance()

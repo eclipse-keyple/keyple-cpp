@@ -82,6 +82,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         std::make_shared<StatusProperties>(
             "Lc inconsistent with P1 or P2.",
             typeid(CalypsoSamIncorrectInputDataException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 

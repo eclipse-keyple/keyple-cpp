@@ -41,6 +41,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         std::make_shared<StatusProperties>(
             "Preconditions not satisfied",
             typeid(CalypsoSamAccessForbiddenException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 
@@ -54,6 +57,12 @@ DigestCloseRespPars::DigestCloseRespPars(
 const std::vector<uint8_t> DigestCloseRespPars::getSignature() const
 {
     return isSuccessful() ? mResponse->getDataOut() : std::vector<uint8_t>();
+}
+
+const std::map<int, std::shared_ptr<StatusProperties>>&
+    DigestCloseRespPars::getStatusTable() const
+{
+    return STATUS_TABLE;
 }
 
 }

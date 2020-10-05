@@ -94,6 +94,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         0x6103,
         std::make_shared<StatusProperties>(
             "Successful execution.", typeid(ClassNotFoundException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 

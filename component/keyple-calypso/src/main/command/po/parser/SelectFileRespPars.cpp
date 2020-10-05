@@ -42,7 +42,7 @@ using namespace keyple::core::util;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
- const Tag TAG_PROPRIETARY_INFORMATION(
+const Tag SelectFileRespPars::TAG_PROPRIETARY_INFORMATION(
      0x05, Tag::TagClass::CONTEXT, Tag::TagType::PRIMITIVE, 1);
 
 const std::map<int, std::shared_ptr<StatusProperties>>
@@ -62,6 +62,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         std::make_shared<StatusProperties>(
             "Correct execution (ISO7816 T=0).",
             typeid(ClassNotFoundException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 

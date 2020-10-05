@@ -63,6 +63,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         std::make_shared<StatusProperties>(
             "No security was opened.",
             typeid(CalypsoPoAccessForbiddenException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 

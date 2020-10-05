@@ -49,6 +49,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         std::make_shared<StatusProperties>(
             "Successful execution, FCI request and DF is invalidated.",
             typeid(ClassNotFoundException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 

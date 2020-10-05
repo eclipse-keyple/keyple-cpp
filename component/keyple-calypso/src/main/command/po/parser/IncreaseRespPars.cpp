@@ -98,6 +98,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         std::make_shared<StatusProperties>(
             "Successful execution (possible only in ISO7816 T=0).",
             typeid(ClassNotFoundException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 

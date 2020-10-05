@@ -36,7 +36,16 @@ using SecureSession = AbstractOpenSessionRespPars::SecureSession;
 
 OpenSession24RespPars::OpenSession24RespPars(
   std::shared_ptr<ApduResponse> response, OpenSession24CmdBuild* builder)
-: AbstractOpenSessionRespPars(response, builder, PoRevision::REV2_4) {}
+: AbstractOpenSessionRespPars(response, builder, PoRevision::REV2_4)
+{
+    /**
+     * C++ vs. Java: Do not remove. This code is required as the base class
+     *               constructor cannot call a derived class member function.
+     */
+    const std::vector<uint8_t> dataOut = response->getDataOut();
+    if (dataOut.size())
+       mSecureSession = toSecureSession(dataOut);
+}
 
 std::shared_ptr<SecureSession> OpenSession24RespPars::toSecureSession(
     const std::vector<uint8_t>& apduResponseData)
