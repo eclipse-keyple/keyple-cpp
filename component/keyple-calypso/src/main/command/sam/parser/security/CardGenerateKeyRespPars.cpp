@@ -66,6 +66,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
         std::make_shared<StatusProperties>(
             "Record not found: ciphering key or key to cipher not found",
             typeid(CalypsoSamDataAccessException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
     }
 };
 

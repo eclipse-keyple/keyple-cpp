@@ -30,17 +30,27 @@ using namespace keyple::core::seproxy::message;
 
 OpenSession31RespPars::OpenSession31RespPars(
   std::shared_ptr<ApduResponse> response, OpenSession31CmdBuild* builder)
-: AbstractOpenSessionRespPars(response, builder, PoRevision::REV3_1) {}
+: AbstractOpenSessionRespPars(response, builder, PoRevision::REV3_1)
+{
+    /**
+     * C++ vs. Java: Do not remove. This code is required as the base class
+     *               constructor cannot call a derived class member function.
+     */
+    const std::vector<uint8_t> dataOut = response->getDataOut();
+    if (dataOut.size())
+       mSecureSession = toSecureSession(dataOut);
+}
 
 std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
     OpenSession31RespPars::toSecureSession(
         const std::vector<uint8_t>& apduResponseData)
 {
-    bool previousSessionRatified       = (apduResponseData[4] == 0x00);
-    bool manageSecureSessionAuthorized = false;
+    const bool previousSessionRatified       = (apduResponseData[4] == 0x00);
+    const bool manageSecureSessionAuthorized = false;
 
-    uint8_t kif    = apduResponseData[5];
-    int dataLength = apduResponseData[7];
+    const uint8_t kif = apduResponseData[5];
+    const uint8_t kvc = apduResponseData[6];
+    const int dataLength = apduResponseData[7];
     std::vector<uint8_t> data =
         Arrays::copyOfRange(apduResponseData, 8, 8 + dataLength);
 
@@ -55,7 +65,7 @@ std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
                previousSessionRatified,
                manageSecureSessionAuthorized,
                kif,
-               apduResponseData[6],
+               kvc,
                data,
                apduResponseData);
 }

@@ -39,7 +39,7 @@
 #include "SamReadCeilingsCmdBuild.h"
 #include "SamReadCeilingsRespPars.h"
 #include "SelectDiversifierCmdBuild.h"
-#include "SelectDiversifierCmdBuild.h"
+#include "SelectDiversifierRespPars.h"
 #include "UnlockCmdBuild.h"
 #include "UnlockRespPars.h"
 
@@ -49,12 +49,13 @@ namespace command {
 namespace sam {
 
 using namespace keyple::calypso::command::sam::builder::security;
+using namespace keyple::calypso::command::sam::parser::security;
 
 const CalypsoSamCommand CalypsoSamCommand::SELECT_DIVERSIFIER(
     "Select Diversifier",
     0x14,
     typeid(SelectDiversifierCmdBuild),
-    typeid(SelectDiversifierCmdBuild));
+    typeid(SelectDiversifierRespPars));
 
 const CalypsoSamCommand CalypsoSamCommand::GET_CHALLENGE(
     "Get Challenge",

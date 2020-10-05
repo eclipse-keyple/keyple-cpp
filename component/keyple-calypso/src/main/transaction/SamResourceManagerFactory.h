@@ -96,8 +96,8 @@ private:
     /**
      *
      */
-    static const int MAX_BLOCKING_TIME = 1000;
-    static const int DEFAULT_SLEEP_TIME = 10;
+    static const int MAX_BLOCKING_TIME;
+    static const int DEFAULT_SLEEP_TIME;
 };
 
 }

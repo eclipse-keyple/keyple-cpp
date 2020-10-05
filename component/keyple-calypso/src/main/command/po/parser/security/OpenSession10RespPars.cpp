@@ -37,7 +37,16 @@ using SecureSession = AbstractOpenSessionRespPars::SecureSession;
 
 OpenSession10RespPars::OpenSession10RespPars(
   std::shared_ptr<ApduResponse> response, OpenSession10CmdBuild* builder)
-: AbstractOpenSessionRespPars(response, builder, PoRevision::REV1_0) {}
+: AbstractOpenSessionRespPars(response, builder, PoRevision::REV1_0)
+{
+    /**
+     * C++ vs. Java: Do not remove. This code is required as the base class
+     *               constructor cannot call a derived class member function.
+     */
+    const std::vector<uint8_t> dataOut = response->getDataOut();
+    if (dataOut.size())
+       mSecureSession = toSecureSession(dataOut);
+}
 
 std::shared_ptr<SecureSession> OpenSession10RespPars::toSecureSession(
     const std::vector<uint8_t>& apduResponseData)
@@ -80,18 +89,14 @@ std::shared_ptr<SecureSession> OpenSession10RespPars::createSecureSession(
         break;
     case 33:
         previousSessionRatified = true;
-        std::copy(apduResponseData.begin() + 4,
-                  apduResponseData.begin() + 33,
-                  data.begin());
+        data = Arrays::copyOfRange(apduResponseData, 4, 33);
         break;
     case 6:
         previousSessionRatified = false;
         break;
     case 35:
         previousSessionRatified = false;
-        std::copy(apduResponseData.begin() + 6,
-                  apduResponseData.begin() + 35,
-                  data.begin());
+        data = Arrays::copyOfRange(apduResponseData, 6, 35);
         break;
     default:
         throw IllegalStateException(

@@ -21,6 +21,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/builder
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/builder/security
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/parser
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/parser/security
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/sam
@@ -43,29 +44,33 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/command
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/command/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-core/src/main/selection
-	
+
 	/* Helpers */
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/exception
 
 	# google test and mock
 	${GOOGLETEST_DIRECTORY}/googletest-src
 	${GOOGLETEST_DIRECTORY}/googletest-src/googlemock/include
-	${GOOGLETEST_DIRECTORY}/googletest-src/googletest/include    
+	${GOOGLETEST_DIRECTORY}/googletest-src/googletest/include
 )
 
-ADD_EXECUTABLE(TU_keyple_calypso_test
-	# TU keyple calypso
-	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/../main/KeyReference.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/KeyReferenceTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/PoClassTest.cpp
+ADD_EXECUTABLE(keyplecalypso_ut
 
-	${CMAKE_CURRENT_SOURCE_DIR}/command/SendableInSessionTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/CalypsoBuilderParserTest.cpp
+	# TU keyple calypso
+	#${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/../main/KeyReference.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/KeyReferenceTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/PoClassTest.cpp
+
+	# calypso - command
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/SendableInSessionTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/CalypsoBuilderParserTest.cpp
 
 	# calypso - command - po
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/AbstractPoCommandBuilderTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/AbstractPoCommandBuilderTest.cpp
 
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/AbstractPoResponseParser.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/CalypsoPoCommands.cpp
@@ -79,38 +84,39 @@ ADD_EXECUTABLE(TU_keyple_calypso_test
 	# calypso - command - po - builder
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/AppendRecordCmdBuild.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/DecreaseCmdBuild.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/GetDataCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/GetDataFciCmdBuildTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/IncreaseCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/ReadRecordsCmdBuildTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/SelectFileCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/UpdateRecordCmdBuildTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/WriteRecordCmdBuildTest.cpp
 
-	# calypso - command - po - builder - session
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/session/AbstractOpenSessionCmdBuild.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/session/ChangeKeyCmdBuild.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/session/CloseSessionCmdBuildTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/session/OpenSessionCmdBuildTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/session/PoGetChallengeCmdBuildTest.cpp
+	# calypso - command - po - builder - security
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/ChangeKeyCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/CloseSessionCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/OpenSessionCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/PoGetChallengeCmdBuildTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/RatificationCmdBuildTest.cpp
 
 	# calypso - command - po - parser
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/AppendRecordRespParsTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/DecreaseRespPars.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/GetDataRespParsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/DecreaseRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/GetDataFciRespParsTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/IncreaseRespPars.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/ReadDataStructure.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/ReadRecordsRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/ReadRecordsRespParsTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/SelectFileRespPars.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/UpdateRecordRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/UpdateRecordRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/WriteRecordRespParsTest.cpp
 
 	# calypso - command - po - parser - security
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/AbstractOpenSessionRespPars.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/AbstractOpenSessionRespParsTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/ChangeKeyRespPars.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/session/CloseSessionRespParsTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/session/OpenSessionRespParsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/CloseSessionRespParsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSessionRespParsTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSession24RespPars.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSession31RespPars.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSession32RespPars.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/session/PoGetChallengeRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/PoGetChallengeRespParsTest.cpp
 
 	# calypso - command - sam
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/AbstractSamCommandBuilder.cpp
@@ -122,36 +128,36 @@ ADD_EXECUTABLE(TU_keyple_calypso_test
 
 	# calypso - command - sam - builder
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/CardGenerateKeyCmdBuild.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/DigestAuthenticateCmdBuildTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/DigestCloseCmdBuildTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/DigestInitCmdBuildTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/DigestUpdateCmdBuildTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/DigestAuthenticateCmdBuildTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/DigestCloseCmdBuildTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/DigestInitCmdBuildTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/DigestUpdateCmdBuildTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/DigestUpdateMultipleCmdBuild.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/GiveRandomCmdBuild.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/SamGetChallengeCmdBuildTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/SamGetChallengeCmdBuildTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/SelectDiversifierCmdBuild.cpp
 
 	# calypso - command - sam - parser
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/CardGenerateKeyRespPars.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/DigestAuthenticateRespParsTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/DigestCloseRespParsTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/DigestInitRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/DigestAuthenticateRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/DigestCloseRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/DigestInitRespParsTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/DigestUpdateMultipleRespPars.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/DigestUpdateRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/DigestUpdateRespParsTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/GiveRandomRespPars.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/SamGetChallengeRespParsTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/SelectDiversifierRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/SamGetChallengeRespParsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/SelectDiversifierRespParsTest.cpp
 
 	# calypso - transaction
-	${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoPoTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoSamTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoPoTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoSamTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoResource.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelectionRequest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelector.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoTransaction.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResource.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectionRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectorTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectorTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SecuritySettings.cpp
 
 	# calypso - transaction - exception
@@ -159,11 +165,13 @@ ADD_EXECUTABLE(TU_keyple_calypso_test
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/exception/KeypleCalypsoSecureSessionUnauthorizedKvcException.cpp
 
 	# calypso - test - util
-	${CMAKE_CURRENT_SOURCE_DIR}/util/ResponseUtilsTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/TestsUtilsResponseTabByteGenerator.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/util/TestsUtilsStatusCodeGenerator.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/util/ResponseUtilsTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/util/TestsUtilsResponseTabByteGenerator.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/util/TestsUtilsStatusCodeGenerator.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
 )
 
 SET(LINK_LIBS gtest gmock keyplecalypso keyplecore ${WINSCARD} )
 
-TARGET_LINK_LIBRARIES(TU_keyple_calypso_test ${LINK_LIBS})
+TARGET_LINK_LIBRARIES(keyplecalypso_ut ${LINK_LIBS})

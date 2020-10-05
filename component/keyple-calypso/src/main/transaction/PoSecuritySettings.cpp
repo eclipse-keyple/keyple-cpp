@@ -28,6 +28,11 @@ using PoSecuritySettingsBuilder = PoSecuritySettings::PoSecuritySettingsBuilder;
 
 /* PO SECURITY SETTINGS ----------------------------------------------------- */
 
+const ModificationMode PoSecuritySettings::mDefaultSessionModificationMode =
+    ModificationMode::ATOMIC;
+const RatificationMode PoSecuritySettings::mDefaultRatificationMode =
+    RatificationMode::CLOSE_RATIFIED;
+
 PoSecuritySettings::PoSecuritySettings(PoSecuritySettingsBuilder* builder)
 : mSamResource(builder->mSamResource),
   mAuthorizedKvcList(builder->mAuthorizedKvcList),

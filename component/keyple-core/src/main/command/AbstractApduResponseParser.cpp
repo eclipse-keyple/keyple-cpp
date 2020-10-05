@@ -31,18 +31,16 @@ using namespace keyple::core::seproxy::message;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-std::map<int, std::shared_ptr<StatusProperties>>
-    AbstractApduResponseParser::STATUS_TABLE;
+const std::map<int, std::shared_ptr<StatusProperties>>
+    AbstractApduResponseParser::STATUS_TABLE = {
+    {
+        0x9000,
+        std::make_shared<StatusProperties>(
+            "Success")
+    }
+};
 
 /* ABSTRACT APDU RESPONSE PARSER ---------------------------------------------*/
-
-AbstractApduResponseParser::StaticConstructor::StaticConstructor()
-{
-    STATUS_TABLE.emplace(0x9000, std::make_shared<StatusProperties>("Success"));
-}
-
-AbstractApduResponseParser::StaticConstructor
-    AbstractApduResponseParser::staticConstructor;
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     AbstractApduResponseParser::getStatusTable() const
@@ -53,9 +51,7 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
 AbstractApduResponseParser::AbstractApduResponseParser(
   const std::shared_ptr<ApduResponse> response,
   AbstractApduCommandBuilder* builder)
-: mResponse(response), mBuilder(builder)
-{
-}
+: mResponse(response), mBuilder(builder) {}
 
 void AbstractApduResponseParser::setApduResponse(
   const std::shared_ptr<ApduResponse>& response)

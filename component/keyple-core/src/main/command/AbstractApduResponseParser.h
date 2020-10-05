@@ -174,7 +174,7 @@ protected:
     /**
      *
      */
-    static std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 
     /**
      * Build a command exception.<br>
@@ -208,19 +208,6 @@ protected:
     virtual const std::shared_ptr<SeCommand> getCommandRef() const;
 
 private:
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static AbstractApduResponseParser::StaticConstructor staticConstructor;
 
     /**
      * @return the properties associated to the response status code

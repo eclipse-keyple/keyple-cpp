@@ -21,7 +21,8 @@ namespace po {
 namespace builder {
 namespace security {
 
-std::shared_ptr<ApduRequest> getApduRequest(PoClass poClass)
+std::shared_ptr<ApduRequest>
+    RatificationCmdBuild::getApduRequest(const PoClass& poClass)
 {
     const std::vector<uint8_t> ratificationApdu = {
         static_cast<uint8_t>(poClass.getValue()), 0xB2, 0x00, 0x00, 0x00};
