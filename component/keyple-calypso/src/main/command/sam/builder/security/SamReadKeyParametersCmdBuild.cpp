@@ -17,7 +17,6 @@
 /* Common */
 #include "IllegalArgumentException.h"
 #include "IllegalStateException.h"
-#include "stringhelper.h"
 
 /* Calypso */
 #include "SamReadKeyParametersRespPars.h"
@@ -91,13 +90,13 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
     nullptr)
 {
 
-    mDefaultRevision = revision;
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
     if (recordNumber < 1 || recordNumber > MAX_WORK_KEY_REC_NUMB)
         throw IllegalArgumentException(
-                  StringHelper::formatSimple(
-                      "Record Number must be between 1 and %d",
-                      MAX_WORK_KEY_REC_NUMB));
+                  "Record Number must be between 1 and " +
+                  std::to_string(MAX_WORK_KEY_REC_NUMB));
 
 
     const uint8_t cla = mDefaultRevision.getClassByte();
@@ -113,8 +112,8 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
         break;
     default:
         throw IllegalStateException(
-                  StringHelper::formatSimple(
-                      "Unsupported SourceRef parameter %d", sourceKeyRef));
+                  "Unsupported SourceRef parameter " +
+                  std::to_string(sourceKeyRef));
     }
 
     mRequest = setApduRequest(cla, mCommand, 0x00, p2, sourceKeyId, 0x00);
@@ -140,8 +139,9 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
         p2 = 0xFA;
         break;
     default:
-        throw IllegalStateException(StringHelper::formatSimple(
-            "Unsupported NavControl parameter %d", navControl));
+        throw IllegalStateException(
+                  "Unsupported NavControl parameter " +
+                  std::to_string(navControl));
     }
 
     sourceKeyId[0] = kif;

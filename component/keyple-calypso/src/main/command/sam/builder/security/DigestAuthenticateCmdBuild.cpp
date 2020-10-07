@@ -41,17 +41,17 @@ DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::DIGEST_AUTHENTICATE),
     nullptr)
 {
-    mDefaultRevision = revision;
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
-    if (signature.empty()) {
+    if (signature.empty())
         throw IllegalArgumentException("Signature can't be null");
-    }
 
     if (signature.size() != 4 && signature.size() != 8 &&
         signature.size() != 16) {
         throw IllegalArgumentException(
                   "Signature is not the right length : length is " +
-                  StringHelper::to_string(signature.size()));
+                  std::to_string(signature.size()));
     }
 
     const uint8_t cla = SamRevision::S1D == (mDefaultRevision) ? 0x94 : 0x80;

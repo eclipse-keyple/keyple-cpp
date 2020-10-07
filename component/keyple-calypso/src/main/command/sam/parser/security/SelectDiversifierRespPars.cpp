@@ -57,9 +57,9 @@ SelectDiversifierRespPars::SelectDiversifierRespPars(
   const std::shared_ptr<ApduResponse> response,
   SelectDiversifierCmdBuild* builder)
 : AbstractSamResponseParser(
-   response,
-   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
-{}
+    response,
+    reinterpret_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(
+        builder)) {}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     SelectDiversifierRespPars::getStatusTable() const

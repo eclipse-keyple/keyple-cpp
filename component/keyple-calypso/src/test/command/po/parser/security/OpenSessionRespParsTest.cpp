@@ -64,7 +64,7 @@ static const std::string KVC_FF = "FF";
 static const std::string DATA =
     "0011223344556677889900112233445566778899001122334455667788";
 static const std::string DATA_LENGTH =
-    StringHelper::to_hex_string("%02X", DATA.length() / 2);
+    StringHelper::uint8ToHexString(DATA.length() / 2);
 static const std::string DATA_EMPTY = "";
 static const std::string DATA_LENGTH_0 = "00";
 

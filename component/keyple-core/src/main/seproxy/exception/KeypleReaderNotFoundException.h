@@ -17,7 +17,6 @@
 
 /* Common */
 #include "KeypleCoreExport.h"
-#include "stringhelper.h"
 
 namespace keyple {
 namespace core {
@@ -35,8 +34,7 @@ public:
      * @param readerName the name of the reader that has not been found
      */
     KeypleReaderNotFoundException(const std::string& readerName)
-    : KeypleReaderException(StringHelper::formatSimple(
-          "Reader with name %s was not found", readerName))
+    : KeypleReaderException("Reader with name " + readerName + " was not found")
     {
     }
 };

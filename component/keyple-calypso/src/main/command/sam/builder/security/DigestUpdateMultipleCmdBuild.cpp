@@ -38,7 +38,8 @@ DigestUpdateMultipleCmdBuild::DigestUpdateMultipleCmdBuild(
        (CalypsoSamCommand::DIGEST_UPDATE_MULTIPLE),
     nullptr)
 {
-    mDefaultRevision = revision;
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
     const uint8_t cla = mDefaultRevision.getClassByte();
     const uint8_t p1 = 0x00;

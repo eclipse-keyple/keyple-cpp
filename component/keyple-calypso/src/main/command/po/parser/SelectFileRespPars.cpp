@@ -71,8 +71,8 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 SelectFileRespPars::SelectFileRespPars(
   std::shared_ptr<ApduResponse> response, SelectFileCmdBuild* builder)
 : AbstractPoResponseParser(
-    response,
-    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+ response,
+ reinterpret_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
 {
     mProprietaryInformation.clear();
 }

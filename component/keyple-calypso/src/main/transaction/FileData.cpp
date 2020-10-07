@@ -19,7 +19,6 @@
 #include "IndexOutOfBoundException.h"
 #include "Logger.h"
 #include "NoSuchElementException.h"
-#include "stringhelper.h"
 #include "System.h"
 
 /* Core */
@@ -51,8 +50,7 @@ const std::vector<uint8_t>& FileData::getContent(const int numRecord) const
     const auto it = mRecords.find(numRecord);
     if (it == mRecords.end())
         throw NoSuchElementException(
-                  StringHelper::formatSimple(
-                      "Record #%d is not set.", numRecord));
+                  "Record #" + std::to_string(numRecord) + " is not set.");
 
     return it->second;
 }
@@ -68,26 +66,21 @@ const std::vector<uint8_t> FileData::getContent(const int numRecord,
     const auto it= mRecords.find(numRecord);
     if (it == mRecords.end())
         throw NoSuchElementException(
-                  StringHelper::formatSimple(
-                      "Record #%d is not set.", numRecord));
+                  "Record #" + std::to_string(numRecord) + " is not set.");
 
     const std::vector<uint8_t>& content = it->second;
     if (dataOffset >= static_cast<int>(content.size()))
         throw IndexOutOfBoundException(
-                  StringHelper::formatSimple(
-                      "Offset [%d] >= content length [%d].",
-                      dataOffset,
-                      content.size()));
+                  "Offset [" + std::to_string(dataOffset) + "] >= " +
+                  "content length [" + std::to_string(content.size()) + "].");
 
     const int toIndex = dataOffset + dataLength;
     if (toIndex > static_cast<int>(content.size()))
         throw IndexOutOfBoundException(
-                  StringHelper::formatSimple(
-                      "Offset [%d] + Length [%d] = [%d] > content length [%s].",
-                      dataOffset,
-                      dataLength,
-                      toIndex,
-                      content.size()));
+                  "Offset [" + std::to_string(dataOffset) + "] + " +
+                  "Length [" + std::to_string(dataLength) + "] = " +
+                  "[" + std::to_string(toIndex) + "] > " +
+                  "content length [" + std::to_string(content.size()) + "].");
 
     return Arrays::copyOfRange(content, dataOffset, toIndex);
 }
@@ -105,18 +98,15 @@ int FileData::getContentAsCounterValue(const int numCounter) const
 
     if (counterIndex >= static_cast<int>(rec1.size()))
         throw NoSuchElementException(
-                  StringHelper::formatSimple(
-                      "Counter #%d is not set (nb of actual counters = %d).",
-                      numCounter,
-                      rec1.size() / 3));
+                  "Counter #" + std::to_string(numCounter) +
+                  " is not set (nb of actual counters = " +
+                  std::to_string(rec1.size() / 3) + ").");
 
     if (counterIndex + 3 > static_cast<int>(rec1.size()))
         throw IndexOutOfBoundException(
-                  StringHelper::formatSimple(
-                      "Counter #%d has a truncated value (nb of actual " \
-                      "counters = %d).",
-                      numCounter,
-                      rec1.size() / 3));
+                  "Counter #" + std::to_string(numCounter) +
+                  "has a truncated value (nb of actual counters = " +
+                  std::to_string(rec1.size() / 3) + ").");
 
     return ByteArrayUtil::threeBytesToInt(rec1, counterIndex);
 }

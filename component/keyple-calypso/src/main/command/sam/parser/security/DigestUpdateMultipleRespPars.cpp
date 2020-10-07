@@ -69,8 +69,8 @@ DigestUpdateMultipleRespPars::DigestUpdateMultipleRespPars(
   DigestUpdateMultipleCmdBuild* builder)
 : AbstractSamResponseParser(
    response,
-   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
-{}
+   reinterpret_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(
+       builder)) {}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     DigestUpdateMultipleRespPars::getStatusTable() const

@@ -38,7 +38,7 @@ static const std::string SW1SW2_OK = "9000";
 static const std::string APDU_BAD_SW1SW2 = SW1SW2_KO;
 static const int NEW_VALUE = 0x123456;
 static const std::string APDU_DECREASE =
-    StringHelper::to_hex_string("%06X", NEW_VALUE) + SW1SW2_OK;
+    StringHelper::uint24ToHexString(NEW_VALUE) + SW1SW2_OK;
 
 TEST(DecreaseRespParsTest, decreaseRespPars_badStatus)
 {

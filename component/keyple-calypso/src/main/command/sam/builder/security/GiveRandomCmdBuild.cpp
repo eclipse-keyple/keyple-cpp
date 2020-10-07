@@ -37,9 +37,8 @@ GiveRandomCmdBuild::GiveRandomCmdBuild(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::GIVE_RANDOM),
     nullptr)
 {
-    //if (revision != nullptr) {
-    mDefaultRevision = revision;
-    //}
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
     const uint8_t cla = mDefaultRevision.getClassByte();
     const uint8_t p1 = 0x00;

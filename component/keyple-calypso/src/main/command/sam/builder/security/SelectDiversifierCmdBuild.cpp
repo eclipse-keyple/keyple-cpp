@@ -38,7 +38,8 @@ SelectDiversifierCmdBuild::SelectDiversifierCmdBuild(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::SELECT_DIVERSIFIER),
     nullptr)
 {
-    mDefaultRevision = revision;
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
     if (static_cast<int>(diversifier.size()) != 4 &&
         static_cast<int>(diversifier.size()) != 8)

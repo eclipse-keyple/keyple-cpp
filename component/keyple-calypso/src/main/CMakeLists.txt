@@ -177,6 +177,9 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResourceManagerPool.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelector.cpp
+
+	# calypso
+	${CMAKE_CURRENT_SOURCE_DIR}/KeyReference.cpp
 )
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} keyplecore)

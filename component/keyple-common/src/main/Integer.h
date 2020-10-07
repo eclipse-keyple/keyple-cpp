@@ -19,7 +19,6 @@
 /* Common */
 #include "Character.h"
 #include "NumberFormatException.h"
-#include "stringhelper.h"
 
 namespace keyple {
 namespace common {
@@ -64,7 +63,7 @@ public:
     static std::string toString(int i, int radix)
     {
         if (radix == 10)
-            return StringHelper::to_string(i);
+            return std::to_string(i);
         else
             return "radix != 10 not handled yet";
     }
@@ -179,14 +178,18 @@ public:
         int val = 0;
         while (index < len) {
             if (val < 0 || val > max)
-                throw NumberFormatException(StringHelper::formatSimple(
-                    "number overflow (pos= %d) : %s", index, str));
+                throw NumberFormatException("number overflow (pos= " +
+                                            std::to_string(index) +
+                                            ") : " +
+                                            str);
 
             ch  = Character::digit(str.at(index++), radix);
             val = val * radix + ch;
             if (ch < 0 || (val < 0 && (!isNeg || val != MIN_VALUE)))
-                throw NumberFormatException(StringHelper::formatSimple(
-                    "invalid character at position %d in %s", index, str));
+                throw NumberFormatException("invalid character at position " +
+                                            std::to_string(index) +
+                                            " in " +
+                                            str);
         }
 
         return isNeg ? -val : val;

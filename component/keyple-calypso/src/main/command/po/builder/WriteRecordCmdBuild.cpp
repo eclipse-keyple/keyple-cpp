@@ -51,7 +51,8 @@ WriteRecordCmdBuild::WriteRecordCmdBuild(
     mRequest = setApduRequest(cla, command, recordNumber, p2, newRecordData);
 
     const std::string extraInfo =
-        StringHelper::formatSimple("SFI=%02X, REC=%d", sfi, recordNumber);
+        "SFI=" + StringHelper::uint8ToHexString(sfi) + ", " +
+        "REC=" + std::to_string(recordNumber);
     addSubName(extraInfo);
 }
 

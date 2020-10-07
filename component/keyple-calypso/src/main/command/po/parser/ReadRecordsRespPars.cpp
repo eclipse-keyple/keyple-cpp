@@ -95,8 +95,8 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 ReadRecordsRespPars::ReadRecordsRespPars(
   std::shared_ptr<ApduResponse> apduResponse, ReadRecordsCmdBuild* builder)
 : AbstractPoResponseParser(
-    apduResponse,
-    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+ apduResponse,
+ reinterpret_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
 {}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&

@@ -90,8 +90,7 @@ bool Matcher::find(int start)
 std::string Matcher::group(int group)
 {
     if (group < 0 || group > (int)groups.size())
-        throw IndexOutOfBoundException(
-            StringHelper::formatSimple("No group %d", group));
+        throw IndexOutOfBoundException("No group" + std::to_string(group));
 
     return groups[group];
 }

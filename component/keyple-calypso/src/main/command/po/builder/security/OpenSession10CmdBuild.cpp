@@ -69,9 +69,9 @@ OpenSession10CmdBuild::OpenSession10CmdBuild(
                      le);
 
     const std::string extraInfo =
-        StringHelper::formatSimple(
-            "KEYINDEX=%d, SFI=%02X, REC=%d", keyIndex, sfi, recordNumber);
-
+        "KEYINDEX=" + std::to_string(keyIndex) + ", " +
+        "SFI=" + StringHelper::uint8ToHexString(sfi) + ", " +
+        "REC=" + std::to_string(recordNumber);
     addSubName(extraInfo);
 }
 

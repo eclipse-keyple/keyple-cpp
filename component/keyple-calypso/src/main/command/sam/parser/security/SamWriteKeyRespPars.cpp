@@ -91,9 +91,9 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 SamWriteKeyRespPars::SamWriteKeyRespPars(
   const std::shared_ptr<ApduResponse> response, SamWriteKeyCmdBuild* builder)
 : AbstractSamResponseParser(
-   response,
-   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
-{}
+    response,
+    reinterpret_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(
+        builder)) {}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     SamWriteKeyRespPars::getStatusTable() const

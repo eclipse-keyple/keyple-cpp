@@ -49,7 +49,7 @@ AppendRecordCmdBuild::AppendRecordCmdBuild(
 
     mRequest = setApduRequest(cla, command, p1, p2, newRecordData);
 
-    const std::string extraInfo = StringHelper::formatSimple("SFI=%02X", sfi);
+    const std::string extraInfo = "SFI= " + StringHelper::uint8ToHexString(sfi);
     addSubName(extraInfo);
 }
 

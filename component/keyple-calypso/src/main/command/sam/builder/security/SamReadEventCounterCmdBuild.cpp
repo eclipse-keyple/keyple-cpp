@@ -17,7 +17,6 @@
 /* Common */
 #include "IllegalArgumentException.h"
 #include "IllegalStateException.h"
-#include "stringhelper.h"
 
 /* Calypso */
 #include "SamReadEventCounterRespPars.h"
@@ -40,16 +39,17 @@ SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_EVENT_COUNTER),
     nullptr)
 {
-    mDefaultRevision = revision;
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
     const uint8_t cla = mDefaultRevision.getClassByte();
     uint8_t p2;
 
     if (operationType == SamEventCounterOperationType::COUNTER_RECORD) {
         if (index < 1 || index > MAX_COUNTER_REC_NUMB) {
-            throw IllegalArgumentException(StringHelper::formatSimple(
-                "Record Number must be between 1 and %d",
-                MAX_COUNTER_REC_NUMB));
+            throw IllegalArgumentException(
+                      "Record Number must be between 1 and " +
+                      std::to_string(MAX_COUNTER_REC_NUMB));
         }
 
         p2 = 0xE0 + index;
@@ -58,10 +58,8 @@ SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
     } else {
         if (index > MAX_COUNTER_NUMB) {
             throw IllegalArgumentException(
-                      StringHelper::formatSimple(
-                          "Counter Number must be between 0 and %d",
-
-                          MAX_COUNTER_NUMB));
+                     "Counter Number must be between 0 and " +
+                     std::to_string(MAX_COUNTER_NUMB));
         }
 
         p2 = 0x80 + index;
