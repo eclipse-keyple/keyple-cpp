@@ -14,6 +14,9 @@
 
 #include "DecreaseCmdBuild.h"
 
+/* Common */
+#include "stringhelper.h"
+
 /* Core */
 #include "ApduResponse.h"
 
@@ -28,6 +31,7 @@ namespace builder {
 
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po::parser;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
 
 DecreaseCmdBuild::DecreaseCmdBuild(
@@ -51,12 +55,18 @@ DecreaseCmdBuild::DecreaseCmdBuild(
 
     const uint8_t p2 = sfi * 8;
 
-    /* this is a case4 command, we set Le = 0 */
-    mRequest = setApduRequest(cla, command, counterNumber, p2, decValueBuffer,0);
+    /* This is a case4 command, we set Le = 0 */
+    mRequest = setApduRequest(cla,
+                              command,
+                              counterNumber,
+                              p2,
+                              decValueBuffer,
+                              0);
 
     const std::string extraInfo =
-        StringHelper::formatSimple("SFI=%02X, COUNTER=%d, DECREMENT=%d", sfi,
-                                   counterNumber, decValue);
+        "SFI=" + StringHelper::uint8ToHexString(sfi) + ", " +
+        "COUNTER=" + std::to_string(counterNumber) + ", " +
+        "DECREMENT=" + std::to_string(decValue);
     addSubName(extraInfo);
 }
 

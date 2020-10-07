@@ -47,7 +47,8 @@ public:
      * @param keyReference the key reference (P2)
      * @param keyData the key data
      */
-    SamWriteKeyCmdBuild(const SamRevision& revision, const uint8_t writingMode,
+    SamWriteKeyCmdBuild(const SamRevision& revision,
+                        const uint8_t writingMode,
                         const uint8_t keyReference,
                         const std::vector<uint8_t>& keyData);
 

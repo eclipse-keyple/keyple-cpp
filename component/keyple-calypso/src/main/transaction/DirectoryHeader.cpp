@@ -19,6 +19,7 @@
 
 /* Common */
 #include "NoSuchElementException.h"
+#include "stringhelper.h"
 
 namespace keyple {
 namespace calypso {
@@ -114,8 +115,9 @@ uint8_t DirectoryHeader::getKif(const AccessLevel& level) const
 
     if ((it = mKif.find(level)) == mKif.end())
         throw NoSuchElementException(
-                  StringHelper::formatSimple(
-                      "KIF not found for session access level [%s].", level));
+                  "KIF not found for session access level [" +
+                  StringHelper::toString(level) +
+                  "].");
 
     return it->second;
 }
@@ -126,8 +128,9 @@ uint8_t DirectoryHeader::getKvc(const AccessLevel& level) const
 
     if ((it = mKvc.find(level)) == mKvc.end())
         throw NoSuchElementException(
-                  StringHelper::formatSimple(
-                      "KVC not found for session access level [%s].", level));
+                  "KVC not found for session access level [" +
+                  StringHelper::toString(level) +
+                  "].");
 
     return it->second;
 }

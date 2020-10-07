@@ -36,14 +36,13 @@ DigestCloseCmdBuild::DigestCloseCmdBuild(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::DIGEST_CLOSE),
     nullptr)
 {
-    mDefaultRevision = revision;
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
-    if (expectedResponseLength != 0x04 && expectedResponseLength != 0x08) {
+    if (expectedResponseLength != 0x04 && expectedResponseLength != 0x08)
         throw IllegalArgumentException(
-                  StringHelper::formatSimple(
-                      "Bad digest length! Expected 4 or 8, got %d",
-                      expectedResponseLength));
-    }
+                  "Bad digest length! Expected 4 or 8, got " +
+                  std::to_string(expectedResponseLength));
 
     const uint8_t cla = mDefaultRevision.getClassByte();
     const uint8_t p1 = 0x00;

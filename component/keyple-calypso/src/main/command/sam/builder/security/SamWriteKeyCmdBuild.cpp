@@ -39,7 +39,8 @@ SamWriteKeyCmdBuild::SamWriteKeyCmdBuild(
 : AbstractSamCommandBuilder(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::WRITE_KEY), nullptr)
 {
-    mDefaultRevision = revision;
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
     const uint8_t cla = mDefaultRevision.getClassByte();
 

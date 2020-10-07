@@ -100,8 +100,8 @@ std::shared_ptr<SecureSession> OpenSession10RespPars::createSecureSession(
         break;
     default:
         throw IllegalStateException(
-            "Bad response length to Open Secure Session: " +
-            StringHelper::to_string(apduResponseData.size()));
+                  "Bad response length to Open Secure Session: " +
+                  std::to_string(apduResponseData.size()));
     }
 
     /* KVC doesn't exist and is set to null for this type of PO */
@@ -110,13 +110,12 @@ std::shared_ptr<SecureSession> OpenSession10RespPars::createSecureSession(
     std::vector<uint8_t> challengeRandomNumber =
         Arrays::copyOfRange(apduResponseData, 3, 4);
 
-    return std::make_shared<SecureSession>(
-               challengeTransactionCounter,
-               challengeRandomNumber,
-               previousSessionRatified,
-               false,
-               data,
-               apduResponseData);
+    return std::make_shared<SecureSession>(challengeTransactionCounter,
+                                           challengeRandomNumber,
+                                           previousSessionRatified,
+                                           false,
+                                           data,
+                                           apduResponseData);
 }
 
 }

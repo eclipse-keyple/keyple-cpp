@@ -65,16 +65,14 @@ SelectFileCmdBuild::SelectFileCmdBuild(
         p2 = 0x00;
         break;
     default:
-        throw IllegalStateException(
-                  StringHelper::formatSimple(
-                      "Unsupported selectFileControl parameter %d",
-                      selectFileControl));
+        throw IllegalStateException("Unsupported selectFileControl parameter " +
+                                    StringHelper::toString(selectFileControl));
     }
 
     mRequest = setApduRequest(cla, command, p1, p2, selectData, 0x00);
 
-    const std::string extraInfo =
-        StringHelper::formatSimple("SELECTIONCONTROL=%s", selectFileControl);
+    const std::string extraInfo = "SELECTIONCONTROL=" +
+                                  StringHelper::toString(selectFileControl);
     addSubName(extraInfo);
 }
 
@@ -92,9 +90,8 @@ SelectFileCmdBuild::SelectFileCmdBuild(
     mRequest = setApduRequest(poClass.getValue(), command, p1, 0x00,
                              selectionPath, 0x00);
 
-    const std::string extraInfo =
-        StringHelper::formatSimple("SELECTIONPATH=%s",
-                                   ByteArrayUtil::toHex(selectionPath));
+    const std::string extraInfo = "SELECTIONPATH=" +
+                                   ByteArrayUtil::toHex(selectionPath);
     addSubName(extraInfo);
 }
 

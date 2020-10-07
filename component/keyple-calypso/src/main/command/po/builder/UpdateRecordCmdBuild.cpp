@@ -13,7 +13,14 @@
  ******************************************************************************/
 
 #include "UpdateRecordCmdBuild.h"
+
+/* Common */
+#include "stringhelper.h"
+
+/* Calypso */
 #include "UpdateRecordRespPars.h"
+
+/* Core */
 #include "ApduResponse.h"
 
 namespace keyple {
@@ -24,6 +31,7 @@ namespace builder {
 
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po::parser;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
 
 UpdateRecordCmdBuild::UpdateRecordCmdBuild(
@@ -44,7 +52,8 @@ UpdateRecordCmdBuild::UpdateRecordCmdBuild(
     mRequest = setApduRequest(cla, command, recordNumber, p2, newRecordData);
 
     const std::string extraInfo =
-        StringHelper::formatSimple("SFI=%02X, REC=%d", sfi, recordNumber);
+        "SFI=" + StringHelper::uint8ToHexString(sfi) + ", " +
+        "REC=" + std::to_string(recordNumber);
     addSubName(extraInfo);
 }
 

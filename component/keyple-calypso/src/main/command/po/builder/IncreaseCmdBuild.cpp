@@ -14,6 +14,9 @@
 
 #include "IncreaseCmdBuild.h"
 
+/* Common */
+#include "stringhelper.h"
+
 /* Calypso */
 #include "IncreaseRespPars.h"
 
@@ -29,6 +32,7 @@ namespace builder {
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
 
 IncreaseCmdBuild::IncreaseCmdBuild(
@@ -61,10 +65,9 @@ IncreaseCmdBuild::IncreaseCmdBuild(
                               0x00);
 
     const std::string extraInfo =
-        StringHelper::formatSimple("SFI=%02X, COUNTER=%d, INCREMENT=%d",
-                                   sfi,
-                                   counterNumber,
-                                   incValue);
+        "SFI=" + StringHelper::uint8ToHexString(sfi) + ", " +
+        "COUNTER=" + std::to_string(counterNumber) + ", " +
+        "INCREMENT=" + std::to_string(incValue);
     addSubName(extraInfo);
 }
 

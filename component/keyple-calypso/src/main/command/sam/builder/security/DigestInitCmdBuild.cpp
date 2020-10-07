@@ -42,7 +42,8 @@ DigestInitCmdBuild::DigestInitCmdBuild(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::DIGEST_INIT),
     nullptr)
 {
-    mDefaultRevision = revision;
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
     if (workKeyRecordNumber == 0x00 &&
         (workKeyKif == 0x00 || workKeyKVC == 0x00))

@@ -101,8 +101,8 @@ std::shared_ptr<SecureSession> OpenSession24RespPars::createSecureSession(
         break;
     default:
         throw IllegalStateException(
-            "Bad response length to Open Secure Session: " +
-            StringHelper::to_string(apduResponseData.size()));
+                  "Bad response length to Open Secure Session: " +
+                  std::to_string(apduResponseData.size()));
     }
 
     std::vector<uint8_t> challengeTransactionCounter =

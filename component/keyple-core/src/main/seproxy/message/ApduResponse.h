@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,16 +14,10 @@
 
 #pragma once
 
-#include <set>
-#include <string>
 #include <vector>
-#include <limits>
-#include <stdexcept>
 #include <memory>
 
 /* Common */
-#include "Object.h"
-#include "stringhelper.h"
 #include "LoggerFactory.h"
 
 /* Core */
@@ -115,18 +109,18 @@ private:
      * the success result of the processed APDU command to allow chaining
      * responses in a group of APDUs
      */
-    bool successful;
+    bool mSuccessful;
 
     /*
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(ApduResponse));
 
     /**
      * apdu response data buffer (including sw1sw2)
      */
-    const std::vector<uint8_t> bytes;
+    const std::vector<uint8_t> mBytes;
 };
 
 }
