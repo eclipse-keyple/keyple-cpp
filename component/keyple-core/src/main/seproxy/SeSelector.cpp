@@ -16,7 +16,6 @@
 
 /* Common */
 #include "IllegalArgumentException.h"
-#include "stringhelper.h"
 
 /* Core */
 #include "ApduRequest.h"
@@ -226,9 +225,8 @@ AidSelectorBuilder& AidSelectorBuilder::aidToSelect(
 {
     if (aid.size() < AID_MIN_LENGTH || aid.size() > AID_MAX_LENGTH) {
         throw IllegalArgumentException(
-            StringHelper::formatSimple(
-                "Bad AID length: %d. The AID length should be between 5 and 15",
-                 aid.size()));
+                "Bad AID length: " + std::to_string(aid.size()) + ". " +
+                "The AID length should be between 5 and 15");
     } else {
         mAidToSelect = aid;
     }

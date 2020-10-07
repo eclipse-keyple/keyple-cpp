@@ -16,7 +16,6 @@
 
 /* Common */
 #include "IllegalArgumentException.h"
-#include "stringhelper.h"
 
 namespace keyple {
 namespace calypso {
@@ -67,13 +66,11 @@ std::shared_ptr<AbstractApduResponseParser> PoCommandManager::getResponseParser(
     const int commandIndex) const
 {
     if (commandIndex < 0 ||
-        commandIndex >= static_cast<int>(mPoCommands.size())) {
+        commandIndex >= static_cast<int>(mPoCommands.size()))
         throw IllegalArgumentException(
-                  StringHelper::formatSimple(
-                      "Bad command index: index = %d, number of commands = %d",
-                      commandIndex,
-                      mPoCommands.size()));
-    }
+                  "Bad command index: " \
+                  "index = " + std::to_string(commandIndex) + ", " +
+                  "number of commands = " + std::to_string(mPoCommands.size()));
 
     return nullptr;
 }

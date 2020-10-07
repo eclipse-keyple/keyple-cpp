@@ -42,9 +42,8 @@ CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
       std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::CARD_GENERATE_KEY),
       nullptr)
 {
-    //if (revision != nullptr) {
-    mDefaultRevision = revision;
-    //}
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
     if (sourceKey == nullptr)
         throw IllegalArgumentException(

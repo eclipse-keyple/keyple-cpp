@@ -256,12 +256,12 @@ void PoTransaction::processAtomicOpening(
     logger->debug("processAtomicOpening => opening: CARDCHALLENGE = %, POKIF " \
                   "= %, POKVC = %",
                   ByteArrayUtil::toHex(sessionCardChallenge),
-                  StringHelper::formatSimple("%02X", poKif),
-                  StringHelper::formatSimple("%02X", poKvc));
+                  StringHelper::uint8ToHexString(poKif),
+                  StringHelper::uint8ToHexString(poKvc));
 
     if (!poKvc || !mPoSecuritySettings->isSessionKvcAuthorized(poKvc))
         throw CalypsoUnauthorizedKvcException(
-                  StringHelper::formatSimple("PO KVC = %02X", poKvc));
+                  "PO KVC = " + StringHelper::uint8ToHexString(poKvc));
 
     /*
      * Initialize the digest processor. It will store all digest operations
@@ -532,11 +532,10 @@ int PoTransaction::getCounterValue(const uint8_t sfi, const int counter) const
         return ef->getData().getContentAsCounterValue(counter);
     } catch (const NoSuchElementException& e) {
         throw CalypsoPoTransactionIllegalStateException(
-                  StringHelper::formatSimple(
-                      "Anticipated response. Unable to determine anticipated" \
-                      " value of counter %d in EF sfi %02x",
-                      counter,
-                      sfi));
+                  "Anticipated response. " \
+                  "Unable to determine anticipated value of counter "  +
+                  std::to_string(counter) +
+                  " in EF sfi " + StringHelper::uint8ToHexString(sfi));
     }
 }
 

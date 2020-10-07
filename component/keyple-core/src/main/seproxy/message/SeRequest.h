@@ -18,8 +18,6 @@
 #include <vector>
 #include <memory>
 
-#include "stringhelper.h"
-
 /* Core */
 #include "ChannelControl.h"
 #include "ApduRequest.h"

@@ -66,9 +66,9 @@ SamReadCeilingsRespPars::SamReadCeilingsRespPars(
   const std::shared_ptr<ApduResponse> response,
   SamReadCeilingsCmdBuild* builder)
 : AbstractSamResponseParser(
-   response,
-   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
-{}
+    response,
+    reinterpret_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(
+        builder)) {}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     SamReadCeilingsRespPars::getStatusTable() const

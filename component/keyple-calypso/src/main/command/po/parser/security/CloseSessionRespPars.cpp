@@ -24,7 +24,6 @@
 /* Common */
 #include "Arrays.h"
 #include "IllegalArgumentException.h"
-#include "stringhelper.h"
 
 namespace keyple {
 namespace calypso {
@@ -95,7 +94,8 @@ void CloseSessionRespPars::parse(const std::vector<uint8_t>& response)
         if (response.size() != 0) {
             throw IllegalArgumentException(
                       "Unexpected length in response to CloseSecureSession " \
-                      "command: " + StringHelper::to_string(response.size()));
+                      "command: " +
+                      std::to_string(response.size()));
         }
     }
 }

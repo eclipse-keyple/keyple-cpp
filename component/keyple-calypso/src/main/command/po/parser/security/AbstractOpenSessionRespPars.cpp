@@ -185,8 +185,8 @@ AbstractOpenSessionRespPars::create(std::shared_ptr<ApduResponse> response,
                    response,
                    dynamic_cast<OpenSession32CmdBuild*>(mBuilder));
     default:
-        throw std::invalid_argument(StringHelper::formatSimple(
-            "Unknow revision %d", static_cast<int>(revision)));
+        throw std::invalid_argument("Unknow revision " +
+                                    StringHelper::toString(revision));
     }
 }
 

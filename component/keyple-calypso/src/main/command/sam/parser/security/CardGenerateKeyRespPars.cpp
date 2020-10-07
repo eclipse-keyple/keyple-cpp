@@ -77,8 +77,8 @@ CardGenerateKeyRespPars::CardGenerateKeyRespPars(
   CardGenerateKeyCmdBuild* builder)
 : AbstractSamResponseParser(
    response,
-   dynamic_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder))
-{}
+   reinterpret_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(
+       builder)) {}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&
     CardGenerateKeyRespPars::getStatusTable() const

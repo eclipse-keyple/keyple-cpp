@@ -94,8 +94,8 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
 GetDataFciRespPars::GetDataFciRespPars(
   std::shared_ptr<ApduResponse> response, GetDataFciCmdBuild* builder)
 : AbstractPoResponseParser(
-    response,
-    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+ response,
+ reinterpret_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
 {
     std::shared_ptr<TLV> tlv = nullptr;
 

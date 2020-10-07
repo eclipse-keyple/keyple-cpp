@@ -76,10 +76,9 @@ CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
             mSamRevision = SamRevision(SamRevision::S1E);
             break;
         default:
-            throw IllegalStateException(StringHelper::formatSimple(
-                "Unknown SAM revision (unrecognized application "
-                "subtype 0x%02X)",
-                mApplicationSubType));
+            throw IllegalStateException(
+                    "Unknown SAM revision (unrecognized application subtype " +
+                    StringHelper::uint8ToHexString(mApplicationSubType));
         }
 
         mSoftwareIssuer   = atrSubElements[3];
@@ -98,8 +97,7 @@ CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
 
         mLogger->trace("SAM SERIALNUMBER = %\n", mSerialNumber);
     } else {
-        throw IllegalStateException(StringHelper::formatSimple(
-            "Unrecognized ATR structure: %s", atrString));
+        throw IllegalStateException("Unrecognized ATR structure: " + atrString);
     }
 }
 

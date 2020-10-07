@@ -16,7 +16,6 @@
 
 /* Common */
 #include "IllegalArgumentException.h"
-#include "stringhelper.h"
 
 namespace keyple {
 namespace core {
@@ -75,11 +74,9 @@ const KeypleAssert& KeypleAssert::greaterOrEqual(const int number,
 {
     if (number < minValue)
         throw IllegalArgumentException(
-                  StringHelper::formatSimple(
-                      "Argument [%s] has a value [%d] less than [%d].",
-                      name,
-                      number,
-                      minValue));
+                  "Argument [" + name + "] " +
+                  "has a value [" + std::to_string(number) + "] " +
+                  "less than [" + std::to_string(minValue) + "].");
 
     return INSTANCE;
 }
@@ -90,11 +87,9 @@ const KeypleAssert& KeypleAssert::isEqual(const int number,
 {
     if (number != value)
         throw IllegalArgumentException(
-                  StringHelper::formatSimple(
-                      "Argument [%s] has a value [%d] not equal to [%d].",
-                       name,
-                       number,
-                       value));
+                  "Argument [" + name + "] " +
+                  "has a value [" + std::to_string(number) + "] " +
+                  "not equal to [" + std::to_string(value) + "].");
 
     return INSTANCE;
 }
@@ -106,19 +101,15 @@ const KeypleAssert& KeypleAssert::isInRange(const int number,
 {
     if (number < minValue)
         throw IllegalArgumentException(
-                  StringHelper::formatSimple(
-                      "Argument [%s] has a value [%d] less than [%d].",
-                      name,
-                      number,
-                      minValue));
+                  "Argument [" + name + "] " +
+                  "has a value [" + std::to_string(number) + "] " +
+                  "less than [" + std::to_string(minValue) + "].");
 
     else if (number > maxValue)
         throw IllegalArgumentException(
-                  StringHelper::formatSimple(
-                      "Argument [%s] has a value [%d] more than [%d].",
-                      name,
-                      number,
-                      maxValue));
+                  "Argument [" + name + "] " +
+                  "has a value [" + std::to_string(number) + "] " +
+                  "more than [" + std::to_string(maxValue) + "].");
 
     return INSTANCE;
 }

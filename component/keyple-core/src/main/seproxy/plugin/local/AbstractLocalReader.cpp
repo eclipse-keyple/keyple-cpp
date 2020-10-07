@@ -522,11 +522,10 @@ std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(
          * Selector is null, we expect that the logical channel was previously
          * opened
          */
-        if (!isLogicalChannelOpen()) {
-            throw IllegalStateException(StringHelper::formatSimple(
-                "[%] processSeRequest => No logical channel opened!",
-                getName()));
-        }
+        if (!isLogicalChannelOpen())
+            throw IllegalStateException(
+                "[" + getName() + "]" +
+                "processSeRequest => No logical channel opened!");
     }
 
     /* process request if not empty */

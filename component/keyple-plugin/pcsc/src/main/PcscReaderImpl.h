@@ -16,7 +16,6 @@
 
 /* Common */
 #include "LoggerFactory.h"
-#include "stringhelper.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"

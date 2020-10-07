@@ -12,12 +12,10 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-/* Common */
-#include "stringhelper.h"
+#include "CloseSessionCmdBuild.h"
 
 /* Calypso */
 #include "CalypsoPoCommand.h"
-#include "CloseSessionCmdBuild.h"
 #include "CloseSessionRespPars.h"
 
 /* Core */
@@ -52,9 +50,9 @@ CloseSessionCmdBuild::CloseSessionCmdBuild(
     if (terminalSessionSignature.size() > 0 &&
         terminalSessionSignature.size() != 4 &&
         terminalSessionSignature.size() != 8) {
-        throw std::invalid_argument(StringHelper::formatSimple(
-            "Invalid terminal sessionSignature: %s",
-            ByteArrayUtil::toHex(terminalSessionSignature)));
+        throw std::invalid_argument(
+                  "Invalid terminal sessionSignature: " +
+                  ByteArrayUtil::toHex(terminalSessionSignature));
     }
 
     uint8_t p1 = ratificationAsked ? 0x80 : 0x00;

@@ -19,7 +19,6 @@
 #include <vector>
 
 /* Common */
-#include "stringhelper.h"
 #include "LoggerFactory.h"
 
 /* Plugin */

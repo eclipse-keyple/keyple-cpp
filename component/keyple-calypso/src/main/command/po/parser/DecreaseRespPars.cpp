@@ -109,8 +109,8 @@ const std::map<int, std::shared_ptr<StatusProperties>>&
 DecreaseRespPars::DecreaseRespPars(
   std::shared_ptr<ApduResponse> response, DecreaseCmdBuild* builder)
 : AbstractPoResponseParser(
-    response,
-    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+ response,
+ reinterpret_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
 {}
 
 int DecreaseRespPars::getNewValue()

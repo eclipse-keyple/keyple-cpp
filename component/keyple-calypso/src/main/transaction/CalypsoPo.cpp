@@ -24,6 +24,7 @@
 /* Common */
 #include "IllegalStateException.h"
 #include "NoSuchElementException.h"
+#include "stringhelper.h"
 #include "System.h"
 
 namespace keyple {
@@ -351,8 +352,8 @@ const std::shared_ptr<ElementaryFile> CalypsoPo::getFileBySfi(const uint8_t sfi)
 
     if ((it = mEfBySfi.find(sfi)) == mEfBySfi.end())
         throw NoSuchElementException(
-                  StringHelper::formatSimple(
-                      "EF with SFI [0x%02x] is not found.", sfi));
+                  "EF with SFI [" + StringHelper::uint8ToHexString(sfi) + "]" +
+                  " is not found.");
 
     return it->second;
 }
@@ -364,15 +365,15 @@ const std::shared_ptr<ElementaryFile> CalypsoPo::getFileByLid(
 
     if ((it = mSfiByLid.find(lid)) == mSfiByLid.end())
         throw NoSuchElementException(
-                  StringHelper::formatSimple(
-                      "EF with LID [%04x] is not found.", lid));
+                  "EF with LID [" + StringHelper::uint16ToHexString(lid) + "]" +
+                  " is not found.");
 
     std::map<uint8_t, std::shared_ptr<ElementaryFile>>::const_iterator it2;
 
     if ((it2 = mEfBySfi.find(it->second)) == mEfBySfi.end())
         throw NoSuchElementException(
-                  StringHelper::formatSimple(
-                      "EF with LID [%04x] is not found.", lid));
+                  "EF with LID [" + StringHelper::uint16ToHexString(lid) + "]" +
+                  " is not found.");
 
     return it2->second;
 }

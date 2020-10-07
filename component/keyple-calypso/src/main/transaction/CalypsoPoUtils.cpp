@@ -156,8 +156,8 @@ std::shared_ptr<SelectFileRespPars> CalypsoPoUtils::updateCalypsoPoSelectFile(
         }
     default:
         throw IllegalStateException(
-                  StringHelper::formatSimple(
-                      "Unknown file type: 0x%02x",fileType));
+                  "Unknown file type: " +
+                  StringHelper::uint8ToHexString(fileType));
     }
 
     return selectFileRespPars;
@@ -311,8 +311,8 @@ FileType CalypsoPoUtils::getEfTypeFromPoValue(const uint8_t efType)
         fileType = FileType::COUNTERS;
         break;
     default:
-        throw IllegalStateException(
-                  StringHelper::formatSimple("Unknown EF Type: %d", efType));
+        throw IllegalStateException("Unknown EF Type: " +
+                                    std::to_string(efType));
     }
 
     return fileType;

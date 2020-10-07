@@ -16,7 +16,6 @@
 
 /* Common */
 #include "IllegalArgumentException.h"
-#include "stringhelper.h"
 
 /* Calypso */
 #include "SamReadCeilingsRespPars.h"
@@ -41,7 +40,8 @@ SamReadCeilingsCmdBuild::SamReadCeilingsCmdBuild(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_CEILINGS),
     nullptr)
 {
-    mDefaultRevision = revision;
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
     const uint8_t cla = mDefaultRevision.getClassByte();
     uint8_t p1;
@@ -51,9 +51,8 @@ SamReadCeilingsCmdBuild::SamReadCeilingsCmdBuild(
         if (static_cast<int8_t>(index) < 0 ||
             static_cast<int8_t>(index) > MAX_CEILING_REC_NUMB)
             throw IllegalArgumentException(
-                      StringHelper::formatSimple(
-                          "Record Number must be between 1 and  %d",
-                          MAX_CEILING_REC_NUMB));
+                      "Record Number must be between 1 and " +
+                      std::to_string(MAX_CEILING_REC_NUMB));
 
         p1 = 0x00;
         p2 = 0xB0 + index;
@@ -62,9 +61,8 @@ SamReadCeilingsCmdBuild::SamReadCeilingsCmdBuild(
     } else {
         if (index > MAX_CEILING_NUMB) {
             throw IllegalArgumentException(
-                      StringHelper::formatSimple(
-                          "Counter Number must be between 0 and %d",
-                          MAX_CEILING_NUMB));
+                      "Counter Number must be between 0 and " +
+                      std::to_string(MAX_CEILING_NUMB));
         }
 
         p1 = index;

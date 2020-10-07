@@ -27,6 +27,9 @@
 #include "KeypleCalypsoExport.h"
 #include "PoRevision.h"
 
+/* Common */
+#include "stringhelper.h"
+
 /* Forward declaration */
 namespace keyple { namespace calypso { namespace command { namespace po {
     namespace builder { namespace security { class OpenSession10CmdBuild; } } }
@@ -53,6 +56,7 @@ namespace security {
 
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::builder::security;
+using namespace keyple::common;
 using namespace keyple::core::command;
 
 /**
@@ -109,8 +113,9 @@ public:
                        sfi,
                        recordNumber);
         default:
-            throw std::invalid_argument(StringHelper::formatSimple(
-                "Revision %d isn't supported", static_cast<int>(revision)));
+            throw std::invalid_argument("Revision " +
+                                        StringHelper::toString(revision) +
+                                        " isn't supported");
         }
     }
 

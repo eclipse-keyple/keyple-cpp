@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -12,62 +12,38 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "UpdateRecordRespParsTest.h"
-#include "ApduResponse.h"
-#include "SelectionStatus.h"
-#include "SeResponse.h"
-#include "ByteArrayUtil.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
 #include "UpdateRecordRespPars.h"
-#include "AbstractApduResponseParser.h"
+
+/* Core */
+#include "ByteArrayUtil.h"
+
+using namespace testing;
 
 using namespace keyple::calypso::command::po::parser;
+using namespace keyple::core::util;
 
-namespace keyple {
-namespace calypso {
-namespace command {
-namespace po {
-namespace parser {
-using AbstractApduResponseParser =
-    keyple::calypso::command::po::AbstractApduResponseParser;
-using ApduResponse    = keyple::core::seproxy::message::ApduResponse;
-using SeResponse      = keyple::core::seproxy::message::SeResponse;
-using SelectionStatus = keyple::core::seproxy::message::SelectionStatus;
-using ByteArrayUtils  = keyple::core::util::ByteArrayUtil;
+static const std::string SW1SW2_KO = "6A82";
+static const std::string SW1SW2_OK = "9000";
 
-void UpdateRecordRespParsTest::updateRecordRespPars()
+TEST(UpdateRecordRespParsTest, updateRecordRespPars_badStatus)
 {
-    std::vector<std::shared_ptr<ApduResponse>> responses;
-    std::vector<uint8_t> ApduRequest = {90, 0};
-    std::shared_ptr<ApduResponse> apduResponse =
-        std::make_shared<ApduResponse>(ApduRequest, nullptr);
-    responses.push_back(apduResponse);
-    std::vector<uint8_t> Apdu1 = ByteArrayUtils::fromHex("9000");
+    UpdateRecordRespPars updateRecordRespPars(
+        std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(SW1SW2_KO),
+                                       nullptr),
+        nullptr);
 
-    std::shared_ptr<SeResponse> seResponse =
-        std::make_shared<SeResponse>(
-            true, true,
-            std::make_shared<SelectionStatus>(
-                nullptr, std::make_shared<ApduResponse>(Apdu1, nullptr), true),
-            responses);
-
-    std::shared_ptr<AbstractApduResponseParser> apduResponseParser =
-        std::make_shared<UpdateRecordRespPars>(apduResponse);
-    apduResponseParser->setApduResponse(
-        seResponse->getApduResponses()[0]);
-
-    ASSERT_EQ(ByteArrayUtils::toHex(ApduRequest),
-              ByteArrayUtils::toHex(
-                  apduResponseParser->getApduResponse()->getBytes()));
-}
-}
-}
-}
-}
+    EXPECT_THROW(updateRecordRespPars.checkStatus(), KeypleSeCommandException);
 }
 
-TEST(UpdateRecordRespParsTest, testA)
+TEST(UpdateRecordRespParsTest, updateRecordRespPars_goodStatus)
 {
-    std::shared_ptr<UpdateRecordRespParsTest> LocalTest =
-        std::make_shared<UpdateRecordRespParsTest>();
-    LocalTest->updateRecordRespPars();
+    UpdateRecordRespPars updateRecordRespPars(
+        std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(SW1SW2_OK),
+                                       nullptr),
+        nullptr);
+
+    updateRecordRespPars.checkStatus();
 }

@@ -58,12 +58,10 @@ ReadRecordsCmdBuild::ReadRecordsCmdBuild(
     mRequest = setApduRequest(poClass.getValue(), command, p1, p2, le);
 
     const std::string extraInfo =
-        StringHelper::formatSimple(
-            "SFI=%02x, REC=%d, READMODE=%s, EXPECTEDLENGTH=%d",
-            sfi,
-            firstRecordNumber,
-            readMode,
-            expectedLength);
+        "SFI=" + StringHelper::uint8ToHexString(sfi) + ", " +
+        "REC=" + std::to_string(firstRecordNumber) + ", " +
+        "READMODE=" + StringHelper::toString(readMode) +
+        "EXPECTEDLENGTH=" + std::to_string(expectedLength);
     addSubName(extraInfo);
 }
 

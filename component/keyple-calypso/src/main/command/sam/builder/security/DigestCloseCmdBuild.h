@@ -21,9 +21,6 @@
 #include "CalypsoSamCommand.h"
 #include "SamRevision.h"
 
-/* Common */
-#include "stringhelper.h"
-
 /* Forward declaration */
 namespace keyple { namespace calypso { namespace command { namespace sam {
     namespace parser { namespace security { class DigestCloseRespPars; } } } }
