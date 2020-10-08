@@ -30,7 +30,6 @@ namespace sam {
 namespace parser {
 namespace security {
 
-using namespace keyple::calypso::command::sam::builder::exception;
 using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;

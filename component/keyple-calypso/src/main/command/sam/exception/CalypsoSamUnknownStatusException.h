@@ -20,7 +20,6 @@ namespace keyple {
 namespace calypso {
 namespace command {
 namespace sam {
-namespace builder {
 namespace exception {
 
 using namespace keyple::calypso::command::sam;
@@ -44,7 +43,6 @@ public:
     : CalypsoSamCommandException(message, command, statusCode) {}
 };
 
-}
 }
 }
 }
