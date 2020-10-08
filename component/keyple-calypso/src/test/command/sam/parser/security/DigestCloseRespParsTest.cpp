@@ -12,42 +12,46 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#pragma once
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
+#include "DigestCloseRespPars.h"
 
 /* Core */
+#include "ByteArrayUtil.h"
 #include "KeypleSeCommandException.h"
 
-/* Calypso */
-#include "CalypsoSamCommand.h"
+using namespace testing;
 
-namespace keyple {
-namespace calypso {
-namespace command {
-namespace sam {
-namespace exception {
-
-using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 using namespace keyple::core::command::exception;
+using namespace keyple::core::util;
 
-/**
- * The exception {@code CalypsoSamCommandException} is the parent abstract class
- * of all Keyple SAM APDU commands exceptions.
- */
-class CalypsoSamCommandException : public KeypleSeCommandException {
-protected:
-    /**
-     * @param message the message to identify the exception context
-     * @param command the Calypso SAM command
-     * @param statusCode the status code (optional)
-     */
-    CalypsoSamCommandException(const std::string& message,
-                               const std::shared_ptr<CalypsoSamCommand> command,
-                               const int statusCode)
-    : KeypleSeCommandException(message, command, statusCode) {}
-};
+static const std::string SW1SW2_KO = "6988";
+static const std::string SW1SW2_OK = "9000";
+static const std::string SAM_SIGNATURE = "11223344";
+static const std::string APDU_DIGEST_CLOSE = SAM_SIGNATURE + SW1SW2_OK;
 
+TEST(DigestCloseRespParsTest, badStatus)
+{
+    DigestCloseRespPars digestCloseRespPars(
+        std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(SW1SW2_KO),
+                                       nullptr),
+        nullptr);
+
+    EXPECT_THROW(digestCloseRespPars.checkStatus(),
+                 KeypleSeCommandException);
 }
-}
-}
-}
+
+TEST(DigestCloseRespParsTest, getSignature)
+{
+    DigestCloseRespPars digestCloseRespPars(
+        std::make_shared<ApduResponse>(
+            ByteArrayUtil::fromHex(APDU_DIGEST_CLOSE), nullptr),
+        nullptr);
+
+    digestCloseRespPars.checkStatus();
+
+    ASSERT_EQ(digestCloseRespPars.getSignature(),
+              ByteArrayUtil::fromHex(SAM_SIGNATURE));
 }

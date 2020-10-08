@@ -12,39 +12,41 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#pragma once
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
-#include "CalypsoSamCommandException.h"
+#include "SamWriteKeyRespPars.h"
 
-namespace keyple {
-namespace calypso {
-namespace command {
-namespace sam {
-namespace exception {
+/* Core */
+#include "ByteArrayUtil.h"
+#include "KeypleSeCommandException.h"
 
-using namespace keyple::calypso::command::sam;
+using namespace testing;
 
-/**
- * The exception {@code CalypsoSamIllegalParameterException} indicates that some
- * input parameter is not accepted by the SAM.
- */
-class CalypsoSamIllegalParameterException final
-: public CalypsoSamCommandException {
-public:
-    /**
-     * @param message the message to identify the exception context
-     * @param command the Calypso SAM command
-     * @param statusCode the status code
-     */
-    CalypsoSamIllegalParameterException(
-      const std::string& message,
-      const std::shared_ptr<CalypsoSamCommand> command,
-      const int statusCode)
-    : CalypsoSamCommandException(message, command, statusCode) {}
-};
+using namespace keyple::calypso::command::sam::parser::security;
+using namespace keyple::core::command::exception;
+using namespace keyple::core::util;
 
+static const std::string SW1SW2_KO = "6988";
+static const std::string SW1SW2_OK = "9000";
+
+TEST(SamWriteKeyRespParsTest, badStatus)
+{
+    SamWriteKeyRespPars samWriteKeyRespPars(
+        std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(SW1SW2_KO),
+                                       nullptr),
+        nullptr);
+
+    EXPECT_THROW(samWriteKeyRespPars.checkStatus(),
+                 KeypleSeCommandException);
 }
-}
-}
-}
+
+TEST(SamWriteKeyRespParsTest, goodStatus)
+{
+    SamWriteKeyRespPars samWriteKeyRespPars(
+        std::make_shared<ApduResponse>(
+            ByteArrayUtil::fromHex(SW1SW2_OK), nullptr),
+        nullptr);
+
+    samWriteKeyRespPars.checkStatus();
 }
