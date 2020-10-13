@@ -528,7 +528,7 @@ int PoTransaction::getCounterValue(const uint8_t sfi, const int counter) const
 {
     try {
         std::shared_ptr<ElementaryFile> ef = mCalypsoPo->getFileBySfi(sfi);
-        return ef->getData().getContentAsCounterValue(counter);
+        return ef->getData()->getContentAsCounterValue(counter);
     } catch (const NoSuchElementException& e) {
         throw CalypsoPoTransactionIllegalStateException(
                   "Anticipated response. " \

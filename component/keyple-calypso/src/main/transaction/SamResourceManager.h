@@ -129,6 +129,11 @@ public:
     };
 
     /**
+     *
+     */
+    virtual ~SamResourceManager() = default;
+
+    /**
      * Allocate a SAM resource from the specified SAM group.
      *
      * <p>

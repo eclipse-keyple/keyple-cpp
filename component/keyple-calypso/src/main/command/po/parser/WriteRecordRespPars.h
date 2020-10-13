@@ -58,15 +58,6 @@ protected:
     const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
         const override;
 
-    /**
-     *
-     */
-    std::shared_ptr<WriteRecordRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<WriteRecordRespPars>(
-            AbstractPoResponseParser::shared_from_this());
-    }
-
 private:
     /**
      *

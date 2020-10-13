@@ -16,7 +16,7 @@
 
 /* Common */
 #include "Arrays.h"
-#include "IndexOutOfBoundException.h"
+#include "IndexOutOfBoundsException.h"
 #include "Logger.h"
 #include "NoSuchElementException.h"
 #include "System.h"
@@ -33,6 +33,8 @@ using namespace keyple::common;
 using namespace keyple::core::util;
 
 FileData::FileData() {}
+
+FileData::FileData(const FileData& o) : mRecords(o.mRecords) {}
 
 const std::map<int, std::vector<uint8_t>>&
     FileData::getAllRecordsContent() const
@@ -70,13 +72,13 @@ const std::vector<uint8_t> FileData::getContent(const int numRecord,
 
     const std::vector<uint8_t>& content = it->second;
     if (dataOffset >= static_cast<int>(content.size()))
-        throw IndexOutOfBoundException(
+        throw IndexOutOfBoundsException(
                   "Offset [" + std::to_string(dataOffset) + "] >= " +
                   "content length [" + std::to_string(content.size()) + "].");
 
     const int toIndex = dataOffset + dataLength;
     if (toIndex > static_cast<int>(content.size()))
-        throw IndexOutOfBoundException(
+        throw IndexOutOfBoundsException(
                   "Offset [" + std::to_string(dataOffset) + "] + " +
                   "Length [" + std::to_string(dataLength) + "] = " +
                   "[" + std::to_string(toIndex) + "] > " +
@@ -103,7 +105,7 @@ int FileData::getContentAsCounterValue(const int numCounter) const
                   std::to_string(rec1.size() / 3) + ").");
 
     if (counterIndex + 3 > static_cast<int>(rec1.size()))
-        throw IndexOutOfBoundException(
+        throw IndexOutOfBoundsException(
                   "Counter #" + std::to_string(numCounter) +
                   "has a truncated value (nb of actual counters = " +
                   std::to_string(rec1.size() / 3) + ").");
@@ -131,7 +133,8 @@ const std::map<int, int> FileData::getAllCountersValue() const
 void FileData::setContent(const int numRecord,
                           const std::vector<uint8_t>& content)
 {
-    mRecords.insert({numRecord, content});
+    /* Using operator[] will update if exists, add if not */
+    mRecords[numRecord] = content;
 }
 
 void FileData::setCounter(const int numCounter,
@@ -152,16 +155,21 @@ void FileData::setContent(const int numRecord,
     if (it != mRecords.end())
         oldContent = it->second;
 
-    if (static_cast<int>(oldContent.size()) <= offset)
+    if (static_cast<int>(oldContent.size()) == 0) {
+        newContent = std::vector<uint8_t>(newLength);
+    } else if (static_cast<int>(oldContent.size()) <= offset) {
+        newContent = std::vector<uint8_t>(newLength);
         System::arraycopy(oldContent, 0, newContent, 0, oldContent.size());
-    else if (static_cast<int>(oldContent.size()) < newLength)
+    } else if (static_cast<int>(oldContent.size()) < newLength) {
+        newContent = std::vector<uint8_t>(newLength);
         System::arraycopy(oldContent, 0, newContent, 0, offset);
-    else
+    } else {
         newContent = oldContent;
+    }
 
     System::arraycopy(content, 0, newContent, offset, content.size());
 
-    mRecords.insert({numRecord, newContent});
+    mRecords[numRecord] = newContent;
 }
 
 void FileData::fillContent(const int numRecord,
@@ -180,7 +188,7 @@ void FileData::fillContent(const int numRecord,
             static_cast<int>(content.size())) {
             for (int i = 0; i < static_cast<int>(actualContent.size()); i++)
                 content[i] |= actualContent[i];
-            mRecords.insert({numRecord, content});
+            mRecords[numRecord] = content;
         } else {
             for (int i = 0; i < static_cast<int>(content.size()); i++)
                 actualContent[i] |= content[i];
@@ -197,9 +205,19 @@ void FileData::addCyclicContent(const std::vector<uint8_t>& content)
         descendingKeys.push_back(it->first);
 
     for (const auto& i : descendingKeys)
-        mRecords.insert({i + 1, mRecords[i]});
+        mRecords[i + 1] = mRecords[i];
 
-    mRecords.insert({1, content});
+    mRecords[1] = content;
+}
+
+bool FileData::operator==(const FileData& o) const
+{
+    return mRecords == o.mRecords;
+}
+
+bool FileData::operator!=(const FileData& o) const
+{
+    return !(*this == o);
 }
 
 std::ostream& operator<<(std::ostream& os, const FileData& fd)
