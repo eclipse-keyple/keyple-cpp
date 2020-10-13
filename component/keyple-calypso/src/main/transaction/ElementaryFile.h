@@ -43,6 +43,13 @@ public:
     ElementaryFile(const uint8_t sfi);
 
     /**
+     * Copy constructor
+     *
+     * C++ vs. Java:  Copy constructor is prefereable to .clone() method
+     */
+    ElementaryFile(const ElementaryFile& o);
+
+    /**
      * Gets the associated SFI.
      *
      * @return the SFI
@@ -56,7 +63,7 @@ public:
      * @return a header reference or null if header is not yet set.
      * @since 0.9
      */
-    const FileHeader& getHeader() const;
+    const std::shared_ptr<FileHeader> getHeader() const;
 
     /**
      * (package-private)<br>
@@ -72,7 +79,7 @@ public:
      * @return a not null data reference.
      * @since 0.9
      */
-    FileData& getData() const;
+    std::shared_ptr<FileData> getData() const;
 
     /**
      * Comparison is based on field "sfi".

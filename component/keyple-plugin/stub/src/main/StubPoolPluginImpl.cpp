@@ -100,10 +100,10 @@ void StubPoolPluginImpl::unplugStubPoolReader(const std::string& groupReference)
 
     } catch (KeypleReaderException& e) {
         (void)e;
-        throw IllegalStateException(StringHelper::formatSimple(
-            "Impossible to release reader, reader with "
-            "groupReference was not found in stubplugin : %s",
-            groupReference));
+        throw IllegalStateException(
+                  "Impossible to release reader, reader with " \
+                  "groupReference was not found in stubplugin : " +
+                  groupReference);
     }
 }
 

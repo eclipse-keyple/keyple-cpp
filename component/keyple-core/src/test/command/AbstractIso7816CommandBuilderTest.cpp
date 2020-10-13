@@ -29,10 +29,6 @@ class SeCommandMock : public SeCommand {
 public:
     MOCK_METHOD(const std::string&, getName, (), (const, override));
     MOCK_METHOD(uint8_t, getInstructionByte, (), (const, override));
-    MOCK_METHOD(const std::type_info&, getCommandBuilderClass, (),
-                (const, override));
-    MOCK_METHOD(const std::type_info&, getResponseParserClass, (),
-                (const, override));
 };
 
 class AbstractIso7816CommandBuilderMock
@@ -48,24 +44,34 @@ public:
     : AbstractIso7816CommandBuilder(name, request) {}
 
     std::shared_ptr<ApduRequest> setApduRequest(
-        uint8_t cla, const std::shared_ptr<SeCommand> command, uint8_t p1,
-        uint8_t p2, const std::vector<uint8_t>& dataIn) override
+        const uint8_t cla,
+        const SeCommand& command,
+        const uint8_t p1,
+        const uint8_t p2,
+        const std::vector<uint8_t>& dataIn) override
     {
         return AbstractIso7816CommandBuilder::setApduRequest(cla, command, p1,
                                                              p2, dataIn);
     }
 
     std::shared_ptr<ApduRequest> setApduRequest(
-        uint8_t cla, const std::shared_ptr<SeCommand> command, uint8_t p1,
-        uint8_t p2, const std::vector<uint8_t>& dataIn, uint8_t le) override
+        const uint8_t cla,
+        const SeCommand& command,
+        const uint8_t p1,
+        const uint8_t p2,
+        const std::vector<uint8_t>& dataIn,
+        const uint8_t le) override
     {
         return AbstractIso7816CommandBuilder::setApduRequest(cla, command, p1,
 	                                                     p2, dataIn, le);
     }
 
     std::shared_ptr<ApduRequest> setApduRequest(
-        uint8_t cla, const std::shared_ptr<SeCommand> command, uint8_t p1,
-        uint8_t p2, uint8_t le) override
+        const uint8_t cla,
+        const SeCommand& command,
+        const uint8_t p1,
+        const uint8_t p2,
+        const uint8_t le) override
     {
         return AbstractIso7816CommandBuilder::setApduRequest(cla, command, p1,
                                                              p2, le);
@@ -113,7 +119,7 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     /* case 2: dataIn = null, le != null */
     std::shared_ptr<ApduRequest> req =
-        builder.setApduRequest(0xcc, table, 0x0b1, 0x0b2, 0x06);
+        builder.setApduRequest(0xcc, *table.get(), 0x0b1, 0x0b2, 0x06);
 
     ASSERT_EQ(req->getBytes(), ref);
 }
@@ -144,7 +150,7 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     /* case 3: dataIn != null, le = null*/
     std::shared_ptr<ApduRequest> req =
-        builder.setApduRequest(0xcc, table, 0xb1, 0xb2, apdu);
+        builder.setApduRequest(0xcc, *table.get(), 0xb1, 0xb2, apdu);
 
     ASSERT_EQ(req->getBytes(), ref);
 }
@@ -175,7 +181,7 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     /* case 4: dataIn = null, le = 0 */
     std::shared_ptr<ApduRequest> req =
-        builder.setApduRequest(0xcc, table, 0xb1, 0xb2, apdu, 0x00);
+        builder.setApduRequest(0xcc, *table.get(), 0xb1, 0xb2, apdu, 0x00);
 
     ASSERT_EQ(req->getBytes(), ref);
 }
@@ -216,7 +222,7 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     /* case 2: dataIn = null, le != null */
     std::shared_ptr<ApduRequest> req =
-        builder.setApduRequest(0xcc, table, 0x0b1, 0x0b2, 0x06);
+        builder.setApduRequest(0xcc, *table.get(), 0x0b1, 0x0b2, 0x06);
 
     ASSERT_EQ(req->getBytes(), ref);
 }
@@ -247,7 +253,7 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     /* case 3: dataIn != null, le = null*/
     std::shared_ptr<ApduRequest> req =
-        builder.setApduRequest(0xcc, table, 0xb1, 0xb2, apdu);
+        builder.setApduRequest(0xcc, *table.get(), 0xb1, 0xb2, apdu);
 
     ASSERT_EQ(req->getBytes(), ref);
 }
@@ -278,7 +284,7 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     /* case 4: dataIn = null, le = 0 */
     std::shared_ptr<ApduRequest> req =
-        builder.setApduRequest(0xcc, table, 0xb1, 0xb2, apdu, 0x00);
+        builder.setApduRequest(0xcc, *table.get(), 0xb1, 0xb2, apdu, 0x00);
 
     ASSERT_EQ(req->getBytes(), ref);
 }

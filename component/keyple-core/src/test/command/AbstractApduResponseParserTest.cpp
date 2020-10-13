@@ -31,26 +31,32 @@ class AARP_AbstractApduResponseParserMock : public AbstractApduResponseParser {
 public:
     AARP_AbstractApduResponseParserMock(
         const std::shared_ptr<ApduResponse>& response)
-    : AbstractApduResponseParser(response, nullptr)
-    {
-        STATUS_TABLE.emplace(
-            0x9999,
-            std::make_shared<StatusProperties>("sw 9999"));
-        STATUS_TABLE.emplace(
-            0x6500,
-            std::make_shared<StatusProperties>(
-                "sw 6500", typeid(KeypleSeCommandException)));
-        STATUS_TABLE.emplace(
-            0x6400,
-            std::make_shared<StatusProperties>(
-                "sw 6400", typeid(KeypleSeCommandException)));
-    }
+    : AbstractApduResponseParser(response, nullptr) {}
 
     std::map<int, std::shared_ptr<StatusProperties>>
         getMockStatusTable()
     {
         return AbstractApduResponseParser::getStatusTable();
     }
+
+protected:
+    const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE = {
+        {
+            0x9999,
+            std::make_shared<StatusProperties>("sw 9999"),
+        }, {
+            0x6500,
+            std::make_shared<StatusProperties>(
+                "sw 6500", typeid(KeypleSeCommandException)),
+        }, {
+            0x6400,
+            std::make_shared<StatusProperties>(
+                "sw 6400", typeid(KeypleSeCommandException)),
+        }, {
+            0x9000,
+            std::make_shared<StatusProperties>("Success")
+        }
+    };
 };
 
 TEST(AbstractApduResponseParserTest, AbstractApduResponseParser)

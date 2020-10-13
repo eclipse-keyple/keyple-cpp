@@ -120,15 +120,6 @@ protected:
     const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
         const override;
 
-    /**
-     *
-     */
-    std::shared_ptr<GetDataFciRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<GetDataFciRespPars>(
-            AbstractPoResponseParser::shared_from_this());
-    }
-
 private:
     /**
      *

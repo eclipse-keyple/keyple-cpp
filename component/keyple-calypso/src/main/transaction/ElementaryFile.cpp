@@ -18,21 +18,26 @@ namespace keyple {
 namespace calypso {
 namespace transaction {
 
-ElementaryFile::ElementaryFile(const uint8_t sfi)
-: mSfi(sfi) {}
 
 ElementaryFile::ElementaryFile(
   const uint8_t sfi, std::shared_ptr<FileData> data)
 : mSfi(sfi), mData(data) {}
+
+ElementaryFile::ElementaryFile(const uint8_t sfi)
+: ElementaryFile(sfi, std::make_shared<FileData>()) {}
+
+
+ElementaryFile::ElementaryFile(const ElementaryFile& o)
+: ElementaryFile(o.getSfi(), std::make_shared<FileData>(*o.getData().get())) {}
 
 uint8_t ElementaryFile::getSfi() const
 {
     return mSfi;
 }
 
-const FileHeader& ElementaryFile::getHeader() const
+const std::shared_ptr<FileHeader> ElementaryFile::getHeader() const
 {
-    return *mHeader.get();
+    return mHeader;
 }
 
 ElementaryFile& ElementaryFile::setHeader(
@@ -42,9 +47,9 @@ ElementaryFile& ElementaryFile::setHeader(
     return *this;
 }
 
-FileData& ElementaryFile::getData() const
+std::shared_ptr<FileData> ElementaryFile::getData() const
 {
-    return *mData.get();
+    return mData;
 }
 
 bool ElementaryFile::operator==(const ElementaryFile& o) const

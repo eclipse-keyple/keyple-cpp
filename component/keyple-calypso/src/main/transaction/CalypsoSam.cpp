@@ -43,7 +43,8 @@ using namespace keyple::core::util;
 CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
                        const TransmissionMode& transmissionMode)
 : AbstractMatchingSe(selectionResponse, transmissionMode),
-  mSamRevision(SamRevision::C1) /* Default value to please compiler */
+  mSamRevision(SamRevision::C1), /* Default value to please compiler */
+  mSerialNumber(4)
 {
     std::string atrString = ByteArrayUtil::toHex(
         selectionResponse->getSelectionStatus()->getAtr()->getBytes());

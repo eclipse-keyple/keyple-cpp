@@ -120,8 +120,8 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
             (applicationType & APP_TYPE_WITH_PUBLIC_AUTHENTICATION) != 0;
     } else {
         /*
-         * FCI is not provided: we consider it is Calypso PO rev 1, it's serial number is
-         * provided in the ATR
+         * FCI is not provided: we consider it is Calypso PO rev 1, it's serial
+         * number is provided in the ATR
          */
         if (!hasAtr())
             throw IllegalStateException(
@@ -141,8 +141,10 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
 
         mRevision = PoRevision::REV1_0;
 
-        /* C++: those two lines below seem useless */
+        /* C++: this line below seems useless */
         //mDfName = null;
+        mCalypsoSerialNumber = std::vector<uint8_t>(8);
+
 
         /* Old cards have their modification counter in number of commands */
         mModificationCounterIsInBytes = false;
@@ -155,6 +157,7 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
         mModificationsCounterMax =
             REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
 
+        mStartupInfo = std::vector<uint8_t>(7);
         /* Create buffer size indicator */
         mStartupInfo[0] = mModificationsCounterMax;
 
@@ -332,9 +335,9 @@ const PoClass& CalypsoPo::getPoClass() const
     return *mPoClass.get();
 }
 
-const DirectoryHeader& CalypsoPo::getDirectoryHeader() const
+const std::shared_ptr<DirectoryHeader> CalypsoPo::getDirectoryHeader() const
 {
-    return *mDirectoryHeader.get();
+    return mDirectoryHeader;
 }
 
 CalypsoPo* CalypsoPo::setDirectoryHeader(
@@ -397,7 +400,7 @@ void CalypsoPo::setContent(const uint8_t sfi,
                            const std::vector<uint8_t>& content)
 {
     std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
-    ef->getData().setContent(numRecord, content);
+    ef->getData()->setContent(numRecord, content);
 }
 
 void CalypsoPo::setCounter(const uint8_t sfi,
@@ -405,7 +408,7 @@ void CalypsoPo::setCounter(const uint8_t sfi,
                            const std::vector<uint8_t>& content)
 {
     std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
-    ef->getData().setCounter(numCounter, content);
+    ef->getData()->setCounter(numCounter, content);
 }
 
 void CalypsoPo::setContent(const uint8_t sfi,
@@ -414,7 +417,7 @@ void CalypsoPo::setContent(const uint8_t sfi,
                            const int offset)
 {
     std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
-    ef->getData().setContent(numRecord, content, offset);
+    ef->getData()->setContent(numRecord, content, offset);
 }
 
 void CalypsoPo::fillContent(const uint8_t sfi,
@@ -422,14 +425,14 @@ void CalypsoPo::fillContent(const uint8_t sfi,
                             std::vector<uint8_t>& content)
 {
     std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
-    ef->getData().fillContent(numRecord, content);
+    ef->getData()->fillContent(numRecord, content);
 }
 
 void CalypsoPo::addCyclicContent(const uint8_t sfi,
                                  const std::vector<uint8_t>& content)
 {
     std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
-    ef->getData().addCyclicContent(content);
+    ef->getData()->addCyclicContent(content);
 }
 
 void CalypsoPo::backupFiles()
@@ -452,6 +455,8 @@ std::shared_ptr<ElementaryFile> CalypsoPo::getOrCreateFile(const uint8_t sfi)
     if ((it = mEfBySfi.find(sfi)) == mEfBySfi.end()) {
         ef = std::make_shared<ElementaryFile>(sfi);
         mEfBySfi.insert({sfi, ef});
+    } else {
+        ef = it->second;
     }
 
     return ef;
@@ -461,7 +466,12 @@ void CalypsoPo::copyMapFiles(
     const std::map<uint8_t, std::shared_ptr<ElementaryFile>>& src,
     std::map<uint8_t, std::shared_ptr<ElementaryFile>>& dest)
 {
-    dest = src;
+    dest.clear();
+
+    for (const auto& p : src)
+        /* Duplicate ElementaryFile and its FileData/FileHeader */
+        dest.insert({p.first,
+                     std::make_shared<ElementaryFile>(*p.second.get())});
 }
 
 void CalypsoPo::copyMapSfi(const std::map<uint16_t, uint8_t>& src,

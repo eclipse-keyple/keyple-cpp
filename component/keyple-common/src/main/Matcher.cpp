@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <sstream>
 
-#include "IndexOutOfBoundException.h"
+#include "IndexOutOfBoundsException.h"
 #include "Matcher.h"
 #include "Pattern.h"
 #include "stringhelper.h"
@@ -80,7 +80,7 @@ bool Matcher::find(int start)
     int limit = getTextLength();
 
     if (start < 0 || start > limit)
-        throw IndexOutOfBoundException("Illegal start index");
+        throw IndexOutOfBoundsException("Illegal start index");
 
     reset();
 
@@ -90,7 +90,7 @@ bool Matcher::find(int start)
 std::string Matcher::group(int group)
 {
     if (group < 0 || group > (int)groups.size())
-        throw IndexOutOfBoundException("No group" + std::to_string(group));
+        throw IndexOutOfBoundsException("No group" + std::to_string(group));
 
     return groups[group];
 }

@@ -59,16 +59,6 @@ public:
      */
     static std::shared_ptr<SecureSession> createSecureSession(
         const std::vector<uint8_t>& apduResponse);
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<OpenSession32RespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<OpenSession32RespPars>(
-            AbstractOpenSessionRespPars::shared_from_this());
-    }
 };
 
 }

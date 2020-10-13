@@ -83,12 +83,6 @@ public:
         return mName;
     }
 
-    MOCK_METHOD(const std::type_info&, getCommandBuilderClass, (),
-                (const, override));
-
-    MOCK_METHOD(const std::type_info&, getResponseParserClass, (),
-                (const, override));
-
 
 private:
     const std::string mName;

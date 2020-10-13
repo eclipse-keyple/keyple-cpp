@@ -27,10 +27,6 @@ class SeCommandMock : public SeCommand {
 public:
     MOCK_METHOD(const std::string&, getName, (), (const, override));
     MOCK_METHOD(uint8_t, getInstructionByte, (), (const, override));
-    MOCK_METHOD(const std::type_info&, getCommandBuilderClass, (),
-                (const, override));
-    MOCK_METHOD(const std::type_info&, getResponseParserClass, (),
-                (const, override));
 };
 
 TEST(AbstractApduCommandBuilderTest, AbstractApduCommandBuilder1)
