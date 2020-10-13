@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -43,24 +43,23 @@ public:
      *
      */
     SelectionStatus(std::shared_ptr<AnswerToReset> atr,
-                    std::shared_ptr<ApduResponse> fci, bool hasMatched);
+                    std::shared_ptr<ApduResponse> fci,
+                    const bool hasMatched);
 
     /**
      *
      */
-    virtual ~SelectionStatus()
-    {
-    }
+    virtual ~SelectionStatus() {}
 
     /**
      *
      */
-    virtual std::shared_ptr<AnswerToReset> getAtr();
+    virtual std::shared_ptr<AnswerToReset> getAtr() const;
 
     /**
      *
      */
-    virtual std::shared_ptr<ApduResponse> getFci();
+    virtual std::shared_ptr<ApduResponse> getFci() const;
 
     /**
      *
@@ -93,17 +92,17 @@ private:
     /**
      *
      */
-    const std::shared_ptr<AnswerToReset> atr;
+    const std::shared_ptr<AnswerToReset> mAtr;
 
     /**
      *
      */
-    const std::shared_ptr<ApduResponse> fci;
+    const std::shared_ptr<ApduResponse> mFci;
 
     /**
      *
      */
-    const bool isMatching;
+    const bool mIsMatching;
 };
 
 }

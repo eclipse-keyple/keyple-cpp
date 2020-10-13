@@ -282,7 +282,7 @@ public:
      * @return null if is not set.
      * @since 0.9
      */
-    const DirectoryHeader& getDirectoryHeader() const;
+    const std::shared_ptr<DirectoryHeader> getDirectoryHeader() const;
 
     /**
      * (package-private)<br>

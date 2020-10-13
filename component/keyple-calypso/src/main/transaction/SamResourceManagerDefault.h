@@ -132,6 +132,11 @@ public:
     std::shared_ptr<SamResourceManagerDefault::ReaderObserver> mReaderObserver;
 
     /**
+     *
+     */
+    virtual ~SamResourceManagerDefault() = default;
+
+    /**
      * {@inheritDoc}
      */
     std::shared_ptr<SeResource<CalypsoSam>> allocateSamResource(

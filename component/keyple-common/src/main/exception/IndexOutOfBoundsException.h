@@ -19,17 +19,18 @@
 namespace keyple {
 namespace common {
 
-class IndexOutOfBoundException : public Exception {
+class IndexOutOfBoundsException : public Exception {
 public:
     /**
      *
      */
-    IndexOutOfBoundException(const std::string& message) : Exception(message) {}
+    IndexOutOfBoundsException(const std::string& message) : Exception(message)
+    {}
 
     /**
      *
      */
-    IndexOutOfBoundException(
+    IndexOutOfBoundsException(
       const std::string& message, const std::exception cause)
     : Exception(message, cause) {}
 };

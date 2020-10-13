@@ -63,15 +63,6 @@ protected:
     const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
         const override;
 
-    /**
-     *
-     */
-    std::shared_ptr<DecreaseRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<DecreaseRespPars>(
-            AbstractApduResponseParser::shared_from_this());
-    }
-
 private:
     /**
      *

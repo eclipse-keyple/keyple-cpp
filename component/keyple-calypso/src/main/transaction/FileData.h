@@ -40,6 +40,13 @@ public:
     FileData();
 
     /**
+     * Copy constructor
+     *
+     * C++ vs. Java: Copy constructor is prefereable to .clone() method
+     */
+    FileData(const FileData& o);
+
+    /**
      * Gets a reference to all known records content.
      *
      * @return a not null map eventually empty if there's no content.
@@ -172,6 +179,16 @@ public:
      * @param content the content (should be not empty)
      */
     void addCyclicContent(const std::vector<uint8_t>& content);
+
+    /**
+     *
+     */
+    bool operator==(const FileData& o) const;
+
+    /**
+     *
+     */
+    bool operator!=(const FileData& o) const;
 
     /**
      *

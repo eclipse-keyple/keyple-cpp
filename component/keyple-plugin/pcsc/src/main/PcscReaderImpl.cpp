@@ -168,10 +168,9 @@ bool PcscReaderImpl::waitForCardPresent()
         return false;
 
     } catch (PcscTerminalException& e) {
-        throw KeypleReaderIOException(StringHelper::formatSimple(
-            "[%s] Exception occurred in waitForCardPresent. "
-            "Message: %s",
-            getName(), e.getMessage()));
+        throw KeypleReaderIOException(
+                  "[" + getName() + "] Exception occurred in " \
+                  "waitForCardPresent. Message: " + e.getMessage());
     }
 }
 
@@ -207,9 +206,9 @@ bool PcscReaderImpl::waitForCardAbsentNative()
         return false;
 
     } catch (PcscTerminalException& e) {
-        throw KeypleReaderIOException(StringHelper::formatSimple(
-            "[%s] Exception occurred in waitForCardAbsentNative. "
-            "Message: %s", getName(), e.getMessage()));
+        throw KeypleReaderIOException(
+                  "[" + getName() + "] Exception occurred in " \
+                  "waitForCardAbsentNative. Message: " + e.getMessage());
     }
 }
 

@@ -153,6 +153,14 @@ public:
     /**
      *
      */
+    void clear() noexcept
+    {
+        mMap.clear();
+    }
+
+    /**
+     *
+     */
     const_iterator find(const key_type& k)
     {
         const std::lock_guard<std::mutex> lock(mMutex);

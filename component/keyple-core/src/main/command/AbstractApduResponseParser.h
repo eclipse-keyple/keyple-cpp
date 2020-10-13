@@ -37,8 +37,7 @@ using namespace keyple::core::seproxy::message;
 /**
  * Base class for parsing APDU
  */
-class KEYPLECORE_API AbstractApduResponseParser
-: public std::enable_shared_from_this<AbstractApduResponseParser> {
+class KEYPLECORE_API AbstractApduResponseParser {
 public:
     /**
      * Status code properties

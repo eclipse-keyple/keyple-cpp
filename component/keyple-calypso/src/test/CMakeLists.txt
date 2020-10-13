@@ -30,6 +30,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/sam/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/sam/parser
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/sam/parser/security
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/transaction/exception
 
@@ -159,8 +160,10 @@ ADD_EXECUTABLE(keyplecalypso_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/UnlockRespParsTest.cpp
 
 	# calypso - transaction
-	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoPoTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoSamTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoPoTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoSamTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/FileDataTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/ManagedSamResourceManagerDefaultTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoResource.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelectionRequest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelector.cpp
