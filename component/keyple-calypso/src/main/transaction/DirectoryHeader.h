@@ -158,7 +158,7 @@ public:
      * @return the LID
      * @since 0.9
      */
-    uint8_t getLid() const;
+    uint16_t getLid() const;
 
     /**
      * Gets a reference to access conditions.
@@ -233,7 +233,7 @@ private:
     /**
      *
      */
-    const uint8_t mLid;
+    const uint16_t mLid;
 
     /**
      *

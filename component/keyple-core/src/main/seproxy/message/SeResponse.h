@@ -40,8 +40,7 @@ using namespace keyple::common;
  *
  * @see SeRequest
  */
-class KEYPLECORE_API SeResponse final
-: public std::enable_shared_from_this<SeResponse> {
+class KEYPLECORE_API SeResponse final {
 public:
     /**
      * the constructor called by a ProxyReader during the processing of the

@@ -76,6 +76,7 @@
 /* Common */
 #include "Arrays.h"
 #include "Cast.h"
+#include "KeypleStd.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -170,12 +171,11 @@ void PoTransaction::processAtomicOpening(
         std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
             poCommand = poCommands[0];
 
-        std::shared_ptr<ReadRecordsCmdBuild> readRecCmdBuild =
-            std::dynamic_pointer_cast<ReadRecordsCmdBuild>(poCommand);
+        auto readRecCmdBuild = reinterpret_pointer_cast<ReadRecordsCmdBuild>(
+                                   poCommand);
 
-        std::shared_ptr<CalypsoPoCommand> commandRef =
-            std::dynamic_pointer_cast<CalypsoPoCommand>(
-                poCommand->getCommandRef());
+        auto commandRef = std::dynamic_pointer_cast<CalypsoPoCommand>(
+                              poCommand->getCommandRef());
 
         if (*commandRef.get() == CalypsoPoCommand::READ_RECORDS &&
             readRecCmdBuild->getReadMode() ==
@@ -231,12 +231,13 @@ void PoTransaction::processAtomicOpening(
      * with the command data and return the parser used for an internal usage
      * here.
      */
-    std::shared_ptr<AbstractOpenSessionRespPars> poOpenSessionPars =
+    auto poOpenSessionPars =
         std::dynamic_pointer_cast<AbstractOpenSessionRespPars>(
             CalypsoPoUtils::updateCalypsoPo(
                 mCalypsoPo,
-                std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-                    AbstractPoResponseParser>>(openSessionCmdBuild),
+                reinterpret_pointer_cast<
+                    AbstractPoCommandBuilder<AbstractPoResponseParser>>(
+                        openSessionCmdBuild),
                 poApduResponses[0]));
 
     /*
@@ -562,11 +563,10 @@ std::vector<std::shared_ptr<ApduResponse>>
 
     for (const auto& commandBuilder : poCommands) {
         std::shared_ptr<SeCommand> cmd = commandBuilder->getCommandRef();
-        std::shared_ptr<CalypsoPoCommand> calypsoCmd =
-            std::dynamic_pointer_cast<CalypsoPoCommand>(cmd);
+        auto calypsoCmd = std::dynamic_pointer_cast<CalypsoPoCommand>(cmd);
         if (*calypsoCmd.get() == CalypsoPoCommand::DECREASE) {
-            std::shared_ptr<DecreaseCmdBuild> builder =
-                std::dynamic_pointer_cast<DecreaseCmdBuild>(commandBuilder);
+            auto builder =
+                reinterpret_pointer_cast<DecreaseCmdBuild>(commandBuilder);
             const int sfi = builder->getSfi();
             const int counter = builder->getCounterNumber();
             const int newCounterValue = getCounterValue(sfi, counter) -
@@ -575,8 +575,8 @@ std::vector<std::shared_ptr<ApduResponse>>
                 createIncreaseDecreaseResponse(newCounterValue));
 
         } else if (*calypsoCmd.get() == CalypsoPoCommand::INCREASE) {
-            std::shared_ptr<IncreaseCmdBuild> builder =
-                std::dynamic_pointer_cast<IncreaseCmdBuild>(commandBuilder);
+            auto builder =
+                reinterpret_pointer_cast<IncreaseCmdBuild>(commandBuilder);
             const int sfi = builder->getSfi();
             const int counter = builder->getCounterNumber();
             const int newCounterValue = getCounterValue(sfi, counter) +
@@ -1015,8 +1015,8 @@ void PoTransaction::prepareSelectFile(const std::vector<uint8_t>& lid)
         CalypsoPoUtils::prepareSelectFile(mCalypsoPo->getPoClass(), lid);
 
     mPoCommandManager.addRegularCommand(
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(cmd));
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(cmd));
 }
 
 void PoTransaction::prepareSelectFile(const SelectFileControl control)
@@ -1026,8 +1026,8 @@ void PoTransaction::prepareSelectFile(const SelectFileControl control)
         CalypsoPoUtils::prepareSelectFile(mCalypsoPo->getPoClass(), control);
 
     mPoCommandManager.addRegularCommand(
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(cmd));
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(cmd));
 }
 
 void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
@@ -1039,8 +1039,8 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
                                               sfi,
                                               recordNumber);
     mPoCommandManager.addRegularCommand(
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(cmd));
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(cmd));
 }
 
 void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
@@ -1062,8 +1062,8 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
     if (numberOfRecords == 1) {
         /* Create the builder and add it to the list of commands */
         mPoCommandManager.addRegularCommand(
-            std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-                AbstractPoResponseParser>>(
+            reinterpret_pointer_cast<
+                AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                     std::make_shared<ReadRecordsCmdBuild>(
                         mCalypsoPo->getPoClass(),
                         sfi,
@@ -1097,8 +1097,8 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
 
             /* Create the builder and add it to the list of commands */
             mPoCommandManager.addRegularCommand(
-                std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-                    AbstractPoResponseParser>>(
+                reinterpret_pointer_cast<
+                    AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                         std::make_shared<ReadRecordsCmdBuild>(
                             mCalypsoPo->getPoClass(),
                             sfi,
@@ -1127,8 +1127,8 @@ void PoTransaction::prepareAppendRecord(const uint8_t sfi,
 
     /* Create the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                 std::make_shared<AppendRecordCmdBuild>(mCalypsoPo->getPoClass(),
                                                        sfi,
                                                        recordData)));
@@ -1147,8 +1147,8 @@ void PoTransaction::prepareUpdateRecord(const uint8_t sfi,
 
     /* cReate the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                 std::make_shared<UpdateRecordCmdBuild>(mCalypsoPo->getPoClass(),
                                                        sfi,
                                                        recordNumber,
@@ -1168,8 +1168,8 @@ void PoTransaction::prepareWriteRecord(const uint8_t sfi,
 
     /* Create the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                 std::make_shared<WriteRecordCmdBuild>(mCalypsoPo->getPoClass(),
                                                       sfi,
                                                       recordNumber,
@@ -1193,8 +1193,8 @@ void PoTransaction::prepareIncreaseCounter(const uint8_t sfi,
 
     /* Create the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                 std::make_shared<IncreaseCmdBuild>(mCalypsoPo->getPoClass(),
                                                    sfi,
                                                    counterNumber,
@@ -1218,8 +1218,8 @@ void PoTransaction::prepareDecreaseCounter(const uint8_t sfi,
 
     /* Create the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                 std::make_shared<DecreaseCmdBuild>(mCalypsoPo->getPoClass(),
                                                    sfi,
                                                    counterNumber,

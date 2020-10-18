@@ -74,25 +74,22 @@ public:
 
     MOCK_METHOD(void,
                 setParameter,
-                (const std::string& key, const std::string& value),
+                (const std::string& key, const std::string&),
                 (override));
 
     MOCK_METHOD(void,
                 setParameters,
-                ((const std::map<const std::string,
-                                 const std::string>& parameters)),
+                ((const std::map<const std::string, const std::string>&)),
                 (override));
 
     MOCK_METHOD(void,
                 addSeProtocolSetting,
-                (std::shared_ptr<SeProtocol> seProtocol,
-                 const std::string& protocolRule),
+                (std::shared_ptr<SeProtocol>, const std::string&),
                 (override));
 
     MOCK_METHOD(void,
                 setSeProtocolSetting,
-                ((const std::map<std::shared_ptr<SeProtocol>,
-                                std::string>& protocolSetting)),
+                ((const std::map<std::shared_ptr<SeProtocol>, std::string>&)),
                 (override));
 
     MOCK_METHOD((const TransmissionMode&),
@@ -102,13 +99,14 @@ public:
 
     MOCK_METHOD((std::shared_ptr<SeResponse>),
                 transmitSeRequest,
-                (std::shared_ptr<SeRequest> seRequest,
-                 ChannelControl channelControl),
+                (std::shared_ptr<SeRequest>, ChannelControl),
                 (override));
 };
 
 class MSRMD_ReaderPluginMock : public ReaderPlugin {
 public:
+    ~MSRMD_ReaderPluginMock() = default;
+
     MOCK_METHOD((const std::set<std::string>),
                 getReaderNames,
                 (),
@@ -175,13 +173,20 @@ static std::shared_ptr<SamResourceManagerDefault> srmSpy(
 
     /* Create a mock reader */
     reader = std::make_shared<MSRMD_ProxyReaderMock>();
+    Mock::AllowLeak(reader.get());
 
-    EXPECT_CALL(*reader.get(), getName())
+    EXPECT_CALL(*reader, getName())
         .WillRepeatedly(ReturnRef(SAM_READER_NAME));
-    EXPECT_CALL(*reader.get(), isSePresent())
+    EXPECT_CALL(*reader, isSePresent())
         .WillRepeatedly(Return(true));
-    EXPECT_CALL(*reader.get(), transmitSeRequests(_,_,_))
+    EXPECT_CALL(*reader, transmitSeRequests(_,_,_))
         .WillRepeatedly(Return(selectionResponses));
+    if (samFilter == ".*") {
+        EXPECT_CALL(*reader, addSeProtocolSetting(_,_))
+            .WillRepeatedly(Return());
+        EXPECT_CALL(*reader, setParameter(_,_))
+            .WillRepeatedly(Return());
+    }
 
     /* Create a list of mock readers */
     readers.clear();
@@ -189,12 +194,13 @@ static std::shared_ptr<SamResourceManagerDefault> srmSpy(
 
     /* Create the mock plugin */
     plugin = std::make_shared<MSRMD_ReaderPluginMock>();
+    Mock::AllowLeak(plugin.get());
 
-    EXPECT_CALL(*plugin.get(), getReaders())
+    EXPECT_CALL(*plugin, getReaders())
         .WillRepeatedly(ReturnRef(readers));
-    EXPECT_CALL(*plugin.get(), getReader(SAM_READER_NAME))
+    EXPECT_CALL(*plugin, getReader(SAM_READER_NAME))
         .WillRepeatedly(Return(reader));
-    EXPECT_CALL(*plugin.get(), getName())
+    EXPECT_CALL(*plugin, getName())
         .WillRepeatedly(ReturnRef(SAM_PLUGIN_NAME));
 
     return std::make_shared<SamResourceManagerDefault>(
@@ -229,14 +235,10 @@ TEST(ManagedSamResourceManagerDefaultTest, waitResources)
     ASSERT_EQ(out, nullptr);
     ASSERT_TRUE(exceptionThrown);
     ASSERT_GT(stop - start, 1000);
-
-    Mock::VerifyAndClearExpectations(reader.get());
-    Mock::VerifyAndClearExpectations(plugin.get());
 }
 
 TEST(ManagedSamResourceManagerDefaultTest, getSamResource)
 {
-
     /* Init SamResourceManager with a mathching filter */
     std::shared_ptr<SamResourceManagerDefault> spy = srmSpy(".*");
 
@@ -255,16 +257,3 @@ TEST(ManagedSamResourceManagerDefaultTest, getSamResource)
     ASSERT_NE(out, nullptr);
     ASSERT_LT(stop - start, 1000);
 }
-
-// SamResourceManagerDefault.ManagedSamResource samResourceMock() {
-//     SamResourceManagerDefault.ManagedSamResource mock =
-//             Mockito.mock(SamResourceManagerDefault.ManagedSamResource.class);
-//     doReturn(true).when(mock).isSamMatching(any(SamIdentifier.class));
-//     doReturn(true).when(mock).isSamResourceFree();
-//     return mock;
-// }
-
-// SeReader seReaderMock() {
-//     SeReader mock = Mockito.mock(SeReader.class);
-//     return mock;
-// }
