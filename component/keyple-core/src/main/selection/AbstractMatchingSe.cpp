@@ -18,6 +18,7 @@
 
 /* Common */
 #include "IllegalStateException.h"
+#include "KeypleStd.h"
 
 /* Core*/
 #include "ApduResponse.h"

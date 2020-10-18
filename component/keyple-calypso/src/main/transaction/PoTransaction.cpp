@@ -171,8 +171,8 @@ void PoTransaction::processAtomicOpening(
         std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
             poCommand = poCommands[0];
 
-        auto readRecCmdBuild = reinterpret_pointer_cast<ReadRecordsCmdBuild>(
-                                   poCommand);
+        auto readRecCmdBuild =
+            std::reinterpret_pointer_cast<ReadRecordsCmdBuild>(poCommand);
 
         auto commandRef = std::dynamic_pointer_cast<CalypsoPoCommand>(
                               poCommand->getCommandRef());
@@ -235,7 +235,7 @@ void PoTransaction::processAtomicOpening(
         std::dynamic_pointer_cast<AbstractOpenSessionRespPars>(
             CalypsoPoUtils::updateCalypsoPo(
                 mCalypsoPo,
-                reinterpret_pointer_cast<
+                std::reinterpret_pointer_cast<
                     AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                         openSessionCmdBuild),
                 poApduResponses[0]));
@@ -254,7 +254,7 @@ void PoTransaction::processAtomicOpening(
     const uint8_t poKvc = poOpenSessionPars->getSelectedKvc();
 
     logger->debug("processAtomicOpening => opening: CARDCHALLENGE = %, POKIF " \
-                  "= %, POKVC = %",
+                  "= %, POKVC = %\n",
                   ByteArrayUtil::toHex(sessionCardChallenge),
                   StringHelper::uint8ToHexString(poKif),
                   StringHelper::uint8ToHexString(poKvc));
@@ -566,7 +566,7 @@ std::vector<std::shared_ptr<ApduResponse>>
         auto calypsoCmd = std::dynamic_pointer_cast<CalypsoPoCommand>(cmd);
         if (*calypsoCmd.get() == CalypsoPoCommand::DECREASE) {
             auto builder =
-                reinterpret_pointer_cast<DecreaseCmdBuild>(commandBuilder);
+                std::reinterpret_pointer_cast<DecreaseCmdBuild>(commandBuilder);
             const int sfi = builder->getSfi();
             const int counter = builder->getCounterNumber();
             const int newCounterValue = getCounterValue(sfi, counter) -
@@ -576,7 +576,7 @@ std::vector<std::shared_ptr<ApduResponse>>
 
         } else if (*calypsoCmd.get() == CalypsoPoCommand::INCREASE) {
             auto builder =
-                reinterpret_pointer_cast<IncreaseCmdBuild>(commandBuilder);
+                std::reinterpret_pointer_cast<IncreaseCmdBuild>(commandBuilder);
             const int sfi = builder->getSfi();
             const int counter = builder->getCounterNumber();
             const int newCounterValue = getCounterValue(sfi, counter) +
@@ -1015,7 +1015,7 @@ void PoTransaction::prepareSelectFile(const std::vector<uint8_t>& lid)
         CalypsoPoUtils::prepareSelectFile(mCalypsoPo->getPoClass(), lid);
 
     mPoCommandManager.addRegularCommand(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(cmd));
 }
 
@@ -1026,7 +1026,7 @@ void PoTransaction::prepareSelectFile(const SelectFileControl control)
         CalypsoPoUtils::prepareSelectFile(mCalypsoPo->getPoClass(), control);
 
     mPoCommandManager.addRegularCommand(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(cmd));
 }
 
@@ -1039,7 +1039,7 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
                                               sfi,
                                               recordNumber);
     mPoCommandManager.addRegularCommand(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(cmd));
 }
 
@@ -1062,7 +1062,7 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
     if (numberOfRecords == 1) {
         /* Create the builder and add it to the list of commands */
         mPoCommandManager.addRegularCommand(
-            reinterpret_pointer_cast<
+            std::reinterpret_pointer_cast<
                 AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                     std::make_shared<ReadRecordsCmdBuild>(
                         mCalypsoPo->getPoClass(),
@@ -1097,7 +1097,7 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
 
             /* Create the builder and add it to the list of commands */
             mPoCommandManager.addRegularCommand(
-                reinterpret_pointer_cast<
+                std::reinterpret_pointer_cast<
                     AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                         std::make_shared<ReadRecordsCmdBuild>(
                             mCalypsoPo->getPoClass(),
@@ -1127,7 +1127,7 @@ void PoTransaction::prepareAppendRecord(const uint8_t sfi,
 
     /* Create the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                 std::make_shared<AppendRecordCmdBuild>(mCalypsoPo->getPoClass(),
                                                        sfi,
@@ -1147,7 +1147,7 @@ void PoTransaction::prepareUpdateRecord(const uint8_t sfi,
 
     /* cReate the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                 std::make_shared<UpdateRecordCmdBuild>(mCalypsoPo->getPoClass(),
                                                        sfi,
@@ -1168,7 +1168,7 @@ void PoTransaction::prepareWriteRecord(const uint8_t sfi,
 
     /* Create the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                 std::make_shared<WriteRecordCmdBuild>(mCalypsoPo->getPoClass(),
                                                       sfi,
@@ -1193,7 +1193,7 @@ void PoTransaction::prepareIncreaseCounter(const uint8_t sfi,
 
     /* Create the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                 std::make_shared<IncreaseCmdBuild>(mCalypsoPo->getPoClass(),
                                                    sfi,
@@ -1218,7 +1218,7 @@ void PoTransaction::prepareDecreaseCounter(const uint8_t sfi,
 
     /* Create the builder and add it to the list of commands */
     mPoCommandManager.addRegularCommand(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(
                 std::make_shared<DecreaseCmdBuild>(mCalypsoPo->getPoClass(),
                                                    sfi,

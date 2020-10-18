@@ -18,6 +18,7 @@
 
 /* Common */
 #include "Arrays.h"
+#include "KeypleStd.h"
 #include "IllegalArgumentException.h"
 #include "IllegalStateException.h"
 
@@ -46,6 +47,7 @@ namespace seproxy {
 namespace plugin {
 namespace local {
 
+using namespace keyple::common;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
