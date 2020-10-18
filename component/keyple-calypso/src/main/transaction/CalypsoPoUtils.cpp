@@ -17,6 +17,7 @@
 /* Common */
 #include "Arrays.h"
 #include "IllegalStateException.h"
+#include "KeypleStd.h"
 #include "System.h"
 
 /* Core */
@@ -256,11 +257,11 @@ std::shared_ptr<IncreaseRespPars> CalypsoPoUtils::updateCalypsoPoIncrease(
 std::unique_ptr<DirectoryHeader> CalypsoPoUtils::createDirectoryHeader(
     const std::vector<uint8_t>& proprietaryInformation)
 {
-    std::vector<uint8_t> accessConditions;
+    std::vector<uint8_t> accessConditions(SEL_AC_LENGTH);
     System::arraycopy(proprietaryInformation, SEL_AC_OFFSET, accessConditions,
                       0, SEL_AC_LENGTH);
 
-    std::vector<uint8_t> keyIndexes;
+    std::vector<uint8_t> keyIndexes(SEL_NKEY_LENGTH);
     System::arraycopy(proprietaryInformation, SEL_NKEY_OFFSET, keyIndexes, 0,
                       SEL_NKEY_LENGTH);
 
@@ -337,11 +338,11 @@ std::unique_ptr<FileHeader> CalypsoPoUtils::createFileHeader(
         recordsNumber = proprietaryInformation[SEL_NUM_REC_OFFSET];
     }
 
-    std::vector<uint8_t> accessConditions;
+    std::vector<uint8_t> accessConditions(SEL_AC_LENGTH);
     System::arraycopy(proprietaryInformation, SEL_AC_OFFSET, accessConditions,
                       0, SEL_AC_LENGTH);
 
-    std::vector<uint8_t> keyIndexes;
+    std::vector<uint8_t> keyIndexes(SEL_NKEY_LENGTH);
     System::arraycopy(proprietaryInformation, SEL_NKEY_OFFSET, keyIndexes, 0,
                       SEL_NKEY_LENGTH);
 
@@ -379,37 +380,37 @@ std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoPo(
     if (ins == CalypsoPoCommand::READ_RECORDS.getInstructionByte())
         return updateCalypsoPoReadRecords(
                  calypsoPo,
-                 std::dynamic_pointer_cast<ReadRecordsCmdBuild>(commandBuilder),
+                 reinterpret_pointer_cast<ReadRecordsCmdBuild>(commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::SELECT_FILE.getInstructionByte())
         return updateCalypsoPoSelectFile(
                  calypsoPo,
-                 std::dynamic_pointer_cast<SelectFileCmdBuild>(commandBuilder),
+                 reinterpret_pointer_cast<SelectFileCmdBuild>(commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::UPDATE_RECORD.getInstructionByte())
         return updateCalypsoPoUpdateRecord(
                  calypsoPo,
-                 std::dynamic_pointer_cast<UpdateRecordCmdBuild>(commandBuilder),
+                 reinterpret_pointer_cast<UpdateRecordCmdBuild>(commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::WRITE_RECORD.getInstructionByte())
         return updateCalypsoPoWriteRecord(
                  calypsoPo,
-                 std::dynamic_pointer_cast<WriteRecordCmdBuild>(commandBuilder),
+                 reinterpret_pointer_cast<WriteRecordCmdBuild>(commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::APPEND_RECORD.getInstructionByte())
         return updateCalypsoPoAppendRecord(
                  calypsoPo,
-                 std::dynamic_pointer_cast<AppendRecordCmdBuild>(commandBuilder),
+                 reinterpret_pointer_cast<AppendRecordCmdBuild>(commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::DECREASE.getInstructionByte())
         return updateCalypsoPoDecrease(
                  calypsoPo,
-                 std::dynamic_pointer_cast<DecreaseCmdBuild>(commandBuilder),
+                 reinterpret_pointer_cast<DecreaseCmdBuild>(commandBuilder),
                  apduResponse);
     else if (ins ==  CalypsoPoCommand::INCREASE.getInstructionByte())
         return updateCalypsoPoIncrease(
                  calypsoPo,
-                 std::dynamic_pointer_cast<IncreaseCmdBuild>(commandBuilder),
+                 reinterpret_pointer_cast<IncreaseCmdBuild>(commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::OPEN_SESSION_10.getInstructionByte() ||
              ins == CalypsoPoCommand::OPEN_SESSION_24.getInstructionByte() ||
@@ -417,7 +418,7 @@ std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoPo(
              ins == CalypsoPoCommand::OPEN_SESSION_32.getInstructionByte())
         return updateCalypsoPoOpenSession(
                  calypsoPo,
-                 std::dynamic_pointer_cast<
+                 reinterpret_pointer_cast<
                      AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>>(
                          commandBuilder),
                  apduResponse);

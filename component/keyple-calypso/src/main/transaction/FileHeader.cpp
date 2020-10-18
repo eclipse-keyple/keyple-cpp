@@ -34,6 +34,7 @@ FileHeader::FileHeader(FileHeaderBuilder* builder)
   mRecordSize(builder->mRecordSize),
   mType(builder->mType),
   mAccessConditions(builder->mAccessConditions),
+  mKeyIndexes(builder->mKeyIndexes),
   mDfStatus(builder->mDfStatus),
   mSharedReference(builder->mSharedReference),
   mShared(builder->mShared) {}

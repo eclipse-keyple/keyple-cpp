@@ -32,6 +32,7 @@
 /* Common */
 #include "Arrays.h"
 #include "IllegalStateException.h"
+#include "KeypleStd.h"
 
 /* Core */
 #include "KeypleReaderIOException.h"
@@ -43,6 +44,7 @@ namespace transaction {
 using namespace keyple::calypso::command::sam::builder::security;
 using namespace keyple::calypso::command::sam::parser::security;
 using namespace keyple::calypso::transaction::exception;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::exception;
 
 const uint8_t SamCommandProcessor::KIF_UNDEFINED = 0xff;
@@ -88,8 +90,8 @@ const std::vector<uint8_t> SamCommandProcessor::getSessionTerminalChallenge()
 
     std::shared_ptr<AbstractSamCommandBuilder<AbstractSamResponseParser>>
         getChallengeCmdBuild =
-            std::dynamic_pointer_cast<AbstractSamCommandBuilder<
-                AbstractSamResponseParser>>(
+            reinterpret_pointer_cast<
+                AbstractSamCommandBuilder<AbstractSamResponseParser>>(
                     std::make_shared<SamGetChallengeCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),
                         challengeLength));
@@ -119,7 +121,7 @@ const std::vector<uint8_t> SamCommandProcessor::getSessionTerminalChallenge()
 
     const int numberOfSamCmd = apduRequests.size();
     if (static_cast<int>(samApduResponses.size()) == numberOfSamCmd) {
-        std::shared_ptr<SamGetChallengeRespPars> getChallengeRespPars =
+        auto getChallengeRespPars =
             std::dynamic_pointer_cast<SamGetChallengeRespPars>(
                 getChallengeCmdBuild->createResponseParser(
                     samApduResponses[numberOfSamCmd - 1]));
@@ -272,8 +274,8 @@ const std::vector<std::shared_ptr<AbstractSamCommandBuilder<
          * couples of PO request/response
          */
         samCommands.push_back(
-            std::dynamic_pointer_cast<AbstractSamCommandBuilder<
-                AbstractSamResponseParser>>(
+            reinterpret_pointer_cast<
+                AbstractSamCommandBuilder<AbstractSamResponseParser>>(
                     std::make_shared<DigestInitCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),
                         mVerificationMode,
@@ -293,8 +295,8 @@ const std::vector<std::shared_ptr<AbstractSamCommandBuilder<
     /* Build and append Digest Update commands */
     for (int i = 0; i < static_cast<int>(mPoDigestDataCache.size()); i++)
         samCommands.push_back(
-            std::dynamic_pointer_cast<AbstractSamCommandBuilder<
-                AbstractSamResponseParser>>(
+            reinterpret_pointer_cast<
+                AbstractSamCommandBuilder<AbstractSamResponseParser>>(
                     std::make_shared<DigestUpdateCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),
                         mSessionEncryption,
@@ -306,8 +308,8 @@ const std::vector<std::shared_ptr<AbstractSamCommandBuilder<
     if (addDigestClose)
         /* Build and append Digest Close command */
         samCommands.push_back(
-            std::dynamic_pointer_cast<AbstractSamCommandBuilder<
-                AbstractSamResponseParser>>(
+            reinterpret_pointer_cast<
+                AbstractSamCommandBuilder<AbstractSamResponseParser>>(
                     std::make_shared<DigestCloseCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),
                         mPoResource->getMatchingSe()->getRevision() ==

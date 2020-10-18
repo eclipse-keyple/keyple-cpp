@@ -164,10 +164,10 @@ ADD_EXECUTABLE(keyplecalypso_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/CalypsoSamTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/FileDataTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/ManagedSamResourceManagerDefaultTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoResource.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelectionRequest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelector.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoTransaction.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/ManagedSamResourceManagerPoolTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelectorTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelectionRequestTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoTransactionTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResource.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectionRequest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectorTest.cpp

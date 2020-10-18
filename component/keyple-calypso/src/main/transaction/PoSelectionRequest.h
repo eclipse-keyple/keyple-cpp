@@ -105,10 +105,11 @@ public:
      */
     void prepareSelectFile(const SelectFileControl selectControl);
 
-protected:
     /**
      * Create a CalypsoPo object containing the selection data received from the
      * plugin
+     *
+     * C++ vs. Java: function is protected in Java
      *
      * @param seResponse the SE response received
      * @return a {@link CalypsoPo}
