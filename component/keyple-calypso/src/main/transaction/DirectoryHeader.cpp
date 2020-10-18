@@ -18,6 +18,7 @@
 #include "KeypleAssert.h"
 
 /* Common */
+#include "KeypleStd.h"
 #include "NoSuchElementException.h"
 #include "stringhelper.h"
 

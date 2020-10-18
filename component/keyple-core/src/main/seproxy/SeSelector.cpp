@@ -16,6 +16,7 @@
 
 /* Common */
 #include "IllegalArgumentException.h"
+#include "KeypleStd.h"
 
 /* Core */
 #include "ApduRequest.h"
@@ -37,7 +38,7 @@ using AidSelector            = SeSelector::AidSelector;
 using AtrFilter              = SeSelector::AtrFilter;
 using SeSelectorBuilder      = SeSelector::SeSelectorBuilder;
 
-/* FILE OCCURRENCE ----------------------------------------------------------- */
+/* FILE OCCURRENCE ---------------------------------------------------------- */
 
 const FileOccurrence FileOccurrence::FIRST(0x00);
 const FileOccurrence FileOccurrence::LAST(0x01);

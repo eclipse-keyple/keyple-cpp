@@ -17,6 +17,7 @@
 /* Common */
 #include "Arrays.h"
 #include "IndexOutOfBoundsException.h"
+#include "KeypleStd.h"
 #include "Logger.h"
 #include "NoSuchElementException.h"
 #include "System.h"

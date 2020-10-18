@@ -15,9 +15,13 @@
 #pragma once
 
 #include <memory>
+#include <iomanip>
+#include <iostream>
+#include <ostream>
+#include <set>
+#include <vector>
 
-namespace keyple {
-namespace common {
+namespace std {
 
 template <typename To, typename From>
 inline std::shared_ptr<To> reinterpret_pointer_cast(
@@ -26,5 +30,37 @@ inline std::shared_ptr<To> reinterpret_pointer_cast(
     return std::shared_ptr<To>(ptr, reinterpret_cast<To *>(ptr.get()));
 }
 
+inline std::ostream& operator<<(std::ostream& os, const uint8_t v)
+{
+    os << static_cast<int>(v)
+       << "(0x" << std::hex << std::setfill('0') << std::setw(2)
+       << static_cast<int>(v) << ")";
+
+    return os;
 }
+
+inline std::ostream& operator<<(std::ostream& os, const std::vector<uint8_t>& v)
+{
+    for (int i = 0; i < static_cast<int>(v.size()); i++)
+        os << std::hex << std::setfill('0') << std::setw(2)
+           << static_cast<int>(v[i]);
+
+    return os;
+}
+
+inline std::ostream& operator<<(std::ostream& os,
+                                const std::set<std::string>& s)
+{
+    os << "{";
+    for (auto it = s.begin(); it != s.end(); ++it)
+    {
+        if (it != s.begin())
+            os << ", ";
+        os << *it;
+    }
+    os << "}";
+
+    return os;
+}
+
 }

@@ -380,37 +380,44 @@ std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoPo(
     if (ins == CalypsoPoCommand::READ_RECORDS.getInstructionByte())
         return updateCalypsoPoReadRecords(
                  calypsoPo,
-                 reinterpret_pointer_cast<ReadRecordsCmdBuild>(commandBuilder),
+                 std::reinterpret_pointer_cast<ReadRecordsCmdBuild>(
+                     commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::SELECT_FILE.getInstructionByte())
         return updateCalypsoPoSelectFile(
                  calypsoPo,
-                 reinterpret_pointer_cast<SelectFileCmdBuild>(commandBuilder),
+                 std::reinterpret_pointer_cast<SelectFileCmdBuild>(
+                     commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::UPDATE_RECORD.getInstructionByte())
         return updateCalypsoPoUpdateRecord(
                  calypsoPo,
-                 reinterpret_pointer_cast<UpdateRecordCmdBuild>(commandBuilder),
+                 std::reinterpret_pointer_cast<UpdateRecordCmdBuild>(
+                     commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::WRITE_RECORD.getInstructionByte())
         return updateCalypsoPoWriteRecord(
                  calypsoPo,
-                 reinterpret_pointer_cast<WriteRecordCmdBuild>(commandBuilder),
+                 std::reinterpret_pointer_cast<WriteRecordCmdBuild>(
+                     commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::APPEND_RECORD.getInstructionByte())
         return updateCalypsoPoAppendRecord(
                  calypsoPo,
-                 reinterpret_pointer_cast<AppendRecordCmdBuild>(commandBuilder),
+                 std::reinterpret_pointer_cast<AppendRecordCmdBuild>(
+                     commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::DECREASE.getInstructionByte())
         return updateCalypsoPoDecrease(
                  calypsoPo,
-                 reinterpret_pointer_cast<DecreaseCmdBuild>(commandBuilder),
+                 std::reinterpret_pointer_cast<DecreaseCmdBuild>(
+                     commandBuilder),
                  apduResponse);
     else if (ins ==  CalypsoPoCommand::INCREASE.getInstructionByte())
         return updateCalypsoPoIncrease(
                  calypsoPo,
-                 reinterpret_pointer_cast<IncreaseCmdBuild>(commandBuilder),
+                 std::reinterpret_pointer_cast<IncreaseCmdBuild>(
+                     commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::OPEN_SESSION_10.getInstructionByte() ||
              ins == CalypsoPoCommand::OPEN_SESSION_24.getInstructionByte() ||
@@ -418,7 +425,7 @@ std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoPo(
              ins == CalypsoPoCommand::OPEN_SESSION_32.getInstructionByte())
         return updateCalypsoPoOpenSession(
                  calypsoPo,
-                 reinterpret_pointer_cast<
+                 std::reinterpret_pointer_cast<
                      AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>>(
                          commandBuilder),
                  apduResponse);

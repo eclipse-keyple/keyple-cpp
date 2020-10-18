@@ -21,11 +21,13 @@
 #include "CalypsoAtomicTransactionException.h"
 #include "CalypsoAuthenticationNotVerifiedException.h"
 #include "CalypsoPo.h"
+#include "CalypsoPoIOException.h"
 #include "CalypsoPoTransactionIllegalStateException.h"
 #include "CalypsoSam.h"
 #include "CalypsoUnauthorizedKvcException.h"
 #include "CalypsoPoCloseSecureSessionException.h"
 #include "CalypsoSessionAuthenticationException.h"
+#include "KeypleSeCommandException.h"
 #include "PoSecuritySettings.h"
 
 /* Core */
@@ -518,7 +520,8 @@ TEST(PoTransactionTest, testProcessOpening_readReopen)
     std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -560,7 +563,8 @@ TEST(PoTransactionTest, testProcessOpening_dfNotRatified)
     std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -608,7 +612,8 @@ TEST(PoTransactionTest, testProcessOpening_readMultipleRecords)
     std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -648,7 +653,8 @@ TEST(PoTransactionTest, testProcessOpening_kvcNotAuthorized)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .sessionAuthorizedKvcList(authorizedKvc)
@@ -684,7 +690,8 @@ TEST(PoTransactionTest, testProcessOpening_sessionBuffer_limit)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -735,8 +742,8 @@ TEST(PoTransactionTest, testProcessOpening_sessionBuffer_limit)
 }
 
 /*
- * Buffer overflowed in atomic mode (counter in bytes): session buffer size = 430 b, consumed
- * size 431 b
+ * Buffer overflowed in atomic mode (counter in bytes): session buffer size =
+ * 430 b, consumed size 431 b
  */
 TEST(PoTransactionTest, testProcessOpening_sessionBuffer_overflowBytesCounter)
 {
@@ -746,7 +753,8 @@ TEST(PoTransactionTest, testProcessOpening_sessionBuffer_overflowBytesCounter)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -775,8 +783,8 @@ TEST(PoTransactionTest, testProcessOpening_sessionBuffer_overflowBytesCounter)
 }
 
 /*
- * Buffer overflow limit in atomic mode (counter in operations): session buffer size = 6 op,
- * consumed 6 op
+ * Buffer overflow limit in atomic mode (counter in operations): session buffer
+ * size = 6 op, consumed 6 op
  */
 TEST(PoTransactionTest, testProcessOpening_sessionBuffer_limitOperationsCounter)
 {
@@ -786,7 +794,8 @@ TEST(PoTransactionTest, testProcessOpening_sessionBuffer_limitOperationsCounter)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -828,7 +837,8 @@ TEST(PoTransactionTest,
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -867,7 +877,8 @@ TEST(PoTransactionTest,
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .sessionModificationMode(ModificationMode::MULTIPLE)
@@ -958,7 +969,8 @@ TEST(PoTransactionTest, testProcessPoCommands_sessionOpen)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .sessionModificationMode(ModificationMode::MULTIPLE)
@@ -1017,7 +1029,8 @@ TEST(PoTransactionTest, testProcessPoCommandsInSession_nominalCase)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -1077,7 +1090,8 @@ TEST(PoTransactionTest, testProcessClosing_nominalCase)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -1188,7 +1202,8 @@ TEST(PoTransactionTest, testProcessClosing_poCloseFail)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -1222,7 +1237,7 @@ TEST(PoTransactionTest, testProcessClosing_poCloseFail)
      * should raise a CalypsoPoCloseSecureSessionException
      */
     EXPECT_THROW(poTransaction->processClosing(ChannelControl::CLOSE_AFTER),
-                 CalypsoPoCloseSecureSessionException);
+                 KeypleSeCommandException);
 
     tearDown();
 }
@@ -1236,7 +1251,8 @@ TEST(PoTransactionTest, testProcessClosing_samAuthenticateFail)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -1276,7 +1292,7 @@ TEST(PoTransactionTest, testProcessClosing_samAuthenticateFail)
      * Should raise a CalypsoSessionAuthenticationException
      */
     EXPECT_THROW(poTransaction->processClosing(ChannelControl::CLOSE_AFTER),
-                 CalypsoSessionAuthenticationException);
+                 KeypleSeCommandException);
 
     tearDown();
 }
@@ -1291,7 +1307,8 @@ TEST(PoTransactionTest, testProcessClosing_samIoErrorAuthenticating)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -1331,8 +1348,8 @@ TEST(PoTransactionTest, testProcessClosing_samIoErrorAuthenticating)
 }
 
 /*
- * Buffer overflow limit in atomic mode (counter in bytes): session buffer size = 430 b,
- * consumed size 430 b
+ * Buffer overflow limit in atomic mode (counter in bytes): session buffer size
+ * = 430 b, consumed size 430 b
  */
 TEST(PoTransactionTest, testProcessClosing_sessionBuffer_limit)
 {
@@ -1342,7 +1359,8 @@ TEST(PoTransactionTest, testProcessClosing_sessionBuffer_limit)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .build();
@@ -1413,465 +1431,609 @@ TEST(PoTransactionTest, testProcessClosing_sessionBuffer_limit)
     tearDown();
 }
 
-// /*
-//     * Buffer overflowed in atomic mode (counter in bytes): session buffer size = 430 b, consumed
-//     * size 431 b
-//     */
-// @Test
-// public void testProcessClosing_sessionBuffer_overflowed() {
-//     CalypsoPo calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-//     PoSecuritySettings poSecuritySettings =
-//             new PoSecuritySettings.PoSecuritySettingsBuilder(samResource) //
-//                     .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT) //
-//                     .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
-//                             DEFAULT_KEY_RECORD_NUMBER_DEBIT)
-//                     .build();
+/*
+ * Buffer overflowed in atomic mode (counter in bytes): session buffer size =
+ * 430 b, consumed size 431 b
+ */
+TEST(PoTransactionTest, testProcessClosing_sessionBuffer_overflowed)
+{
+    setUp();
 
-//     poTransaction =
-//             new PoTransaction(new SeResource(poReader, calypsoPoRev31), poSecuritySettings);
+    std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
 
-//     samCommandsTestSet.insert(SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP);
+    std::shared_ptr<PoSecuritySettings> poSecuritySettings =
+        PoSecuritySettingsBuilder(samResource)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
+            .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
+                                           DEFAULT_KEY_RECORD_NUMBER_DEBIT)
+            .build();
 
-//     poCommandsTestSet.insert(PO_OPEN_SECURE_SESSION_CMD, PO_OPEN_SECURE_SESSION_RSP);
+    poTransaction = std::make_shared<PoTransaction>(
+                        std::make_shared<SeResource<CalypsoPo>>(poReader,
+                                                                calypsoPoRev31),
+                        poSecuritySettings);
 
-//     poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
+    samCommandsTestSet.insert({SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP});
 
-//     // add additional non modifying commands (should not affect the session buffer)
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareReadRecordFile(FILE7, 1);
-//     }
-//     // 12 x update (29 b) = 12 x (29 + 6) = 420 consumed in the session buffer
-//     for (int i = 0; i < 12; i++) {
-//         poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, ByteArrayUtil
-//                 .fromHex("8111111111111111111111111111111111111111111111111111111111"));
-//     }
-//     // insert additional non modifying commands (should not affect the session buffer)
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareReadRecordFile(FILE7, 1);
-//     }
-//     // 4 additional bytes (10 b consumed)
-//     poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_5B_BYTES);
+    poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_CMD,
+                              PO_OPEN_SECURE_SESSION_RSP});
 
-//     try {
-//         // PoTransaction after a session is open
-//         poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
-//     } catch (CalypsoAtomicTransactionException ex) {
-//         // expected exception: session buffer overflow
-//         return;
-//     }
-//     fail("Unexpected behaviour");
-// }
+    poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
 
-// /*
-//     * Buffer overflowed in multiple mode (counter in bytes): session buffer size = 430 b, consumed
-//     * size 431 b
-//     */
-// @Test
-// public void testProcessClosing_sessionBuffer_overflowMultipleMode() {
-//     CalypsoPo calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-//     PoSecuritySettings poSecuritySettings =
-//             new PoSecuritySettings.PoSecuritySettingsBuilder(samResource) //
-//                     .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT) //
-//                     .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
-//                             DEFAULT_KEY_RECORD_NUMBER_DEBIT)//
-//                     .sessionModificationMode(
-//                             ModificationMode::MULTIPLE)//
-//                     .build();
+    /*
+     * Add additional non modifying commands (should not affect the session
+     * buffer)
+     */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareReadRecordFile(FILE7, 1);
 
-//     poTransaction =
-//             new PoTransaction(new SeResource(poReader, calypsoPoRev31), poSecuritySettings);
+    /*
+     * 12 x update (29 b) = 12 x (29 + 6) = 420 consumed in the session buffer
+     */
+    for (int i = 0; i < 12; i++)
+        poTransaction->prepareUpdateRecord(
+            FILE8,
+            1,
+            ByteArrayUtil::fromHex("81111111111111111111111111111111111111111" \
+                                   "11111111111111111"));
 
-//     samCommandsTestSet.insert(SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_INIT_OPEN_SECURE_SESSION_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_READ_REC_SFI8_REC1_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_RSP_OK_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_29B_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_4B_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_RSP, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_UPDATE_REC_SFI7_REC1_4B_CMD, SW1SW2_OK_RSP);
+    /*
+     * Insert additional non modifying commands (should not affect the session
+     * buffer)
+     */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareReadRecordFile(FILE7, 1);
 
-//     samCommandsTestSet.insert(SAM_DIGEST_CLOSE_CMD, SAM_DIGEST_CLOSE_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_AUTHENTICATE, SW1SW2_OK_RSP);
+    /* 4 additional bytes (10 b consumed) */
+    poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_5B_BYTES);
 
-//     poCommandsTestSet.insert(PO_OPEN_SECURE_SESSION_CMD, PO_OPEN_SECURE_SESSION_RSP);
-//     poCommandsTestSet.insert(PO_READ_REC_SFI7_REC1_CMD, PO_READ_REC_SFI7_REC1_RSP);
-//     poCommandsTestSet.insert(PO_UPDATE_REC_SFI8_REC1_29B_CMD, SW1SW2_OK_RSP);
-//     poCommandsTestSet.insert(PO_UPDATE_REC_SFI8_REC1_4B_CMD, SW1SW2_OK_RSP);
-//     poCommandsTestSet.insert(PO_CLOSE_SECURE_SESSION_CMD, PO_CLOSE_SECURE_SESSION_RSP);
+    /* PoTransaction after a session is open */
+    EXPECT_THROW(poTransaction->processClosing(ChannelControl::CLOSE_AFTER),
+                 CalypsoAtomicTransactionException);
 
-//     poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
+    tearDown();
+}
 
-//     // add additional non modifying commands (should not affect the session buffer)
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareReadRecordFile(FILE7, 1);
-//     }
-//     // 12 x update (29 b) = 12 x (29 + 6) = 420 consumed in the session buffer
-//     for (int i = 0; i < 12; i++) {
-//         poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_29B_BYTES);
-//     }
-//     // insert additional non modifying commands (should not affect the session buffer)
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareReadRecordFile(FILE7, 1);
-//     }
-//     // 4 additional bytes (10 b consumed)
-//     poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_4B_BYTES);
+/*
+ * Buffer overflowed in multiple mode (counter in bytes): session buffer size =
+ * 430 b, consumed size 431 b
+ */
+TEST(PoTransactionTest, testProcessClosing_sessionBuffer_overflowMultipleMode)
+{
+    setUp();
 
-//     // PoTransaction after a session is open
-//     poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
+    std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
 
-//     assertThat(true).isTrue();
-// }
+    std::shared_ptr<PoSecuritySettings> poSecuritySettings =
+        PoSecuritySettingsBuilder(samResource)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
+            .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
+                                           DEFAULT_KEY_RECORD_NUMBER_DEBIT)
+            .sessionModificationMode(ModificationMode::MULTIPLE)
+            .build();
 
-// /* Standard processClosing - close not ratified */
-// @Test
-// public void testProcessClosing_nominalCase_closeNotRatified() {
-//     CalypsoPo calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-//     PoSecuritySettings poSecuritySettings =
-//             new PoSecuritySettings.PoSecuritySettingsBuilder(samResource) //
-//                     .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT) //
-//                     .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
-//                             DEFAULT_KEY_RECORD_NUMBER_DEBIT)//
-//                     .ratificationMode(
-//                             PoTransaction.SessionSetting.RatificationMode.CLOSE_NOT_RATIFIED)//
-//                     .build();
+    poTransaction = std::make_shared<PoTransaction>(
+                        std::make_shared<SeResource<CalypsoPo>>(poReader,
+                                                                calypsoPoRev31),
+                        poSecuritySettings);
 
-//     poTransaction =
-//             new PoTransaction(new SeResource(poReader, calypsoPoRev31), poSecuritySettings);
+    samCommandsTestSet.insert({SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_INIT_OPEN_SECURE_SESSION_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_READ_REC_SFI8_REC1_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_RSP_OK_CMD, SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_29B_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_4B_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_RSP,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_UPDATE_REC_SFI7_REC1_4B_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_CLOSE_CMD, SAM_DIGEST_CLOSE_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_AUTHENTICATE, SW1SW2_OK_RSP});
 
-//     samCommandsTestSet.insert(SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_INIT_OPEN_SECURE_SESSION_SFI7_REC1_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_CLOSE_CMD, SAM_DIGEST_CLOSE_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_AUTHENTICATE, SW1SW2_OK_RSP);
+    poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_CMD,
+                              PO_OPEN_SECURE_SESSION_RSP});
+    poCommandsTestSet.insert({PO_READ_REC_SFI7_REC1_CMD,
+                              PO_READ_REC_SFI7_REC1_RSP});
+    poCommandsTestSet.insert({PO_UPDATE_REC_SFI8_REC1_29B_CMD, SW1SW2_OK_RSP});
+    poCommandsTestSet.insert({PO_UPDATE_REC_SFI8_REC1_4B_CMD, SW1SW2_OK_RSP});
+    poCommandsTestSet.insert({PO_CLOSE_SECURE_SESSION_CMD,
+                              PO_CLOSE_SECURE_SESSION_RSP});
 
-//     poCommandsTestSet.insert(PO_OPEN_SECURE_SESSION_SFI7_REC1_CMD,
-//             PO_OPEN_SECURE_SESSION_SFI7_REC1_RSP);
-//     poCommandsTestSet.insert(PO_CLOSE_SECURE_SESSION_NOT_RATIFIED_CMD,
-//             PO_CLOSE_SECURE_SESSION_RSP);
+    poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
 
-//     poTransaction->prepareReadRecordFile(FILE7, 1);
-//     poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
+    /*
+     * Add additional non modifying commands (should not affect the session
+     * buffer)
+     */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareReadRecordFile(FILE7, 1);
 
-//     poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
+    /*
+     * 12 x update (29 b) = 12 x (29 + 6) = 420 consumed in the session buffer
+     */
+    for (int i = 0; i < 12; i++)
+        poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_29B_BYTES);
 
-//     assertThat(true).isTrue();
-// }
+    /*
+     * Insert additional non modifying commands (should not affect the session
+     *  buffer)
+     */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareReadRecordFile(FILE7, 1);
 
-// /* Session buffer overflow in atomic mode: the overflow happens at closing */
-// @Test
-// public void testTransaction_sessionBuffer_overflowAtomic() {
-//     CalypsoPo calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-//     PoSecuritySettings poSecuritySettings =
-//             new PoSecuritySettings.PoSecuritySettingsBuilder(samResource) //
-//                     .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT) //
-//                     .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
-//                             DEFAULT_KEY_RECORD_NUMBER_DEBIT)//
-//                     .build();
+    /* 4 additional bytes (10 b consumed) */
+    poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_4B_BYTES);
 
-//     poTransaction =
-//             new PoTransaction(new SeResource(poReader, calypsoPoRev31), poSecuritySettings);
+    /* PoTransaction after a session is open */
+    poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
 
-//     samCommandsTestSet.insert(SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP);
+    tearDown();
+}
 
-//     poCommandsTestSet.insert(PO_OPEN_SECURE_SESSION_CMD, PO_OPEN_SECURE_SESSION_RSP);
-//     poCommandsTestSet.insert(PO_READ_REC_SFI8_REC1_CMD, PO_READ_REC_SFI8_REC1_RSP);
-//     poCommandsTestSet.insert(PO_UPDATE_REC_SFI8_REC1_29B_CMD, SW1SW2_OK_RSP);
-//     poCommandsTestSet.insert(PO_CLOSE_SECURE_SESSION_CMD, PO_CLOSE_SECURE_SESSION_RSP);
+/* Standard processClosing - close not ratified */
+TEST(PoTransactionTest, testProcessClosing_nominalCase_closeNotRatified)
+{
+    setUp();
 
-//     // 4 x update (29 b) = 4 x (29 + 6) = 140 consumed in the session buffer
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_29B_BYTES);
-//     }
-//     poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
+    std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
 
-//     // add additional non modifying commands (should not affect the session buffer)
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareReadRecordFile(FILE8, 1);
-//     }
-//     // 4 x update (29 b) = 4 x (29 + 6) = 140 consumed in the session buffer
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_29B_BYTES);
-//     }
-//     // insert additional non modifying commands (should not affect the session buffer)
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareReadRecordFile(FILE8, 1);
-//     }
-//     poTransaction->processPoCommandsInSession();
+    std::shared_ptr<PoSecuritySettings> poSecuritySettings =
+        PoSecuritySettingsBuilder(samResource)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
+            .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
+                                           DEFAULT_KEY_RECORD_NUMBER_DEBIT)
+            .ratificationMode(RatificationMode::CLOSE_NOT_RATIFIED)
+            .build();
 
-//     // 5 x update (29 b) = 5 x (29 + 6) = 140 consumed in the session buffer
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_29B_BYTES);
-//     }
-//     // 4 additional bytes (10 b consumed)
-//     poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_5B_BYTES);
+    poTransaction = std::make_shared<PoTransaction>(
+                        std::make_shared<SeResource<CalypsoPo>>(poReader,
+                                                                calypsoPoRev31),
+                        poSecuritySettings);
 
-//     try {
-//         // PoTransaction after a session is open
-//         poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
-//     } catch (CalypsoAtomicTransactionException ex) {
-//         // expected exception: buffer overflow
-//         return;
-//     }
-//     fail("Unexpected behaviour");
-// }
+    samCommandsTestSet.insert({SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP});
+    samCommandsTestSet.insert({
+        SAM_DIGEST_INIT_OPEN_SECURE_SESSION_SFI7_REC1_CMD, SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_CLOSE_CMD, SAM_DIGEST_CLOSE_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_AUTHENTICATE, SW1SW2_OK_RSP});
 
-// /* Session buffer overflow in multiple mode: the overflow happens and is handled at closing */
-// @Test
-// public void testTransaction_sessionBuffer_overflowMultiple() {
-//     CalypsoPo calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-//     PoSecuritySettings poSecuritySettings =
-//             new PoSecuritySettings.PoSecuritySettingsBuilder(samResource) //
-//                     .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT) //
-//                     .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
-//                             DEFAULT_KEY_RECORD_NUMBER_DEBIT)//
-//                     .sessionModificationMode(
-//                             ModificationMode::MULTIPLE)//
-//                     .build();
+    poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_SFI7_REC1_CMD,
+                              PO_OPEN_SECURE_SESSION_SFI7_REC1_RSP});
+    poCommandsTestSet.insert({PO_CLOSE_SECURE_SESSION_NOT_RATIFIED_CMD,
+                              PO_CLOSE_SECURE_SESSION_RSP});
 
-//     poTransaction =
-//             new PoTransaction(new SeResource(poReader, calypsoPoRev31), poSecuritySettings);
+    poTransaction->prepareReadRecordFile(FILE7, 1);
+    poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
+    poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
 
-//     samCommandsTestSet.insert(SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_INIT_OPEN_SECURE_SESSION_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_READ_REC_SFI8_REC1_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_RSP_OK_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_29B_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_RSP_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_READ_REC_SFI8_REC1_RSP_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_5B_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_CLOSE_CMD, SAM_DIGEST_CLOSE_RSP);
-//     samCommandsTestSet.insert(SAM_DIGEST_AUTHENTICATE, SW1SW2_OK_RSP);
+    tearDown();
+}
 
-//     poCommandsTestSet.insert(PO_OPEN_SECURE_SESSION_CMD, PO_OPEN_SECURE_SESSION_RSP);
-//     poCommandsTestSet.insert(PO_READ_REC_SFI7_REC1_CMD, PO_READ_REC_SFI7_REC1_RSP);
-//     poCommandsTestSet.insert(PO_READ_REC_SFI8_REC1_CMD, PO_READ_REC_SFI8_REC1_RSP);
-//     poCommandsTestSet.insert(PO_UPDATE_REC_SFI8_REC1_29B_CMD, SW1SW2_OK_RSP);
-//     poCommandsTestSet.insert(PO_UPDATE_REC_SFI8_REC1_5B_CMD, SW1SW2_OK_RSP);
-//     poCommandsTestSet.insert(PO_CLOSE_SECURE_SESSION_CMD, PO_CLOSE_SECURE_SESSION_RSP);
+/* Session buffer overflow in atomic mode: the overflow happens at closing */
+TEST(PoTransactionTest, testTransaction_sessionBuffer_overflowAtomic)
+{
+    setUp();
 
-//     // 4 x update (29 b) = 4 x (29 + 6) = 140 consumed in the session buffer
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_29B_BYTES);
-//     }
-//     poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
+    std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
 
-//     // add additional non modifying commands (should not affect the session buffer)
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareReadRecordFile(FILE8, 1);
-//     }
-//     // 24 x update (29 b) = 24 x (29 + 6) = 840 consumed in the session buffer
-//     // force multiple cycles
-//     for (int i = 0; i < 24; i++) {
-//         poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_29B_BYTES);
-//     }
-//     // insert additional non modifying commands (should not affect the session buffer)
-//     for (int i = 0; i < 4; i++) {
-//         poTransaction->prepareReadRecordFile(FILE8, 1);
-//     }
-//     poTransaction->processPoCommandsInSession();
+    std::shared_ptr<PoSecuritySettings> poSecuritySettings =
+        PoSecuritySettingsBuilder(samResource)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
+            .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
+                                           DEFAULT_KEY_RECORD_NUMBER_DEBIT)
+            .build();
 
-//     // 24 x update (29 b) = 24 x (29 + 6) = 840 consumed in the session buffer
-//     // force multiple cycles
-//     for (int i = 0; i < 24; i++) {
-//         poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_29B_BYTES);
-//     }
-//     // 4 additional bytes (10 b consumed)
-//     poTransaction->prepareUpdateRecord(FILE8, static const uint8_t1, FILE8_REC1_5B_BYTES);
+    poTransaction = std::make_shared<PoTransaction>(
+                        std::make_shared<SeResource<CalypsoPo>>(poReader,
+                                                                calypsoPoRev31),
+                        poSecuritySettings);
 
-//     // PoTransaction after a session is open
-//     poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
+    samCommandsTestSet.insert({SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP});
 
-//     assertThat(true).isTrue();
-// }
+    poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_CMD,
+                              PO_OPEN_SECURE_SESSION_RSP});
+    poCommandsTestSet.insert({PO_READ_REC_SFI8_REC1_CMD,
+                              PO_READ_REC_SFI8_REC1_RSP});
+    poCommandsTestSet.insert({PO_UPDATE_REC_SFI8_REC1_29B_CMD, SW1SW2_OK_RSP});
+    poCommandsTestSet.insert({PO_CLOSE_SECURE_SESSION_CMD,
+                              PO_CLOSE_SECURE_SESSION_RSP});
 
-// /* open, cancel and reopen */
-// @Test
-// public void testProcessCancel_open_cancelOpen() {
-//     CalypsoPo calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-//     PoSecuritySettings poSecuritySettings =
-//             new PoSecuritySettings.PoSecuritySettingsBuilder(samResource)//
-//                     .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)//
-//                     .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
-//                             DEFAULT_KEY_RECORD_NUMBER_DEBIT)
-//                     .build();
+    /* 4 x update (29 b) = 4 x (29 + 6) = 140 consumed in the session buffer */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_29B_BYTES);
 
-//     poTransaction =
-//             new PoTransaction(new SeResource(poReader, calypsoPoRev31), poSecuritySettings);
-//     samCommandsTestSet.insert(SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP);
-//     samCommandsTestSet.insert(SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP);
+    poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
 
-//     poCommandsTestSet.insert(PO_OPEN_SECURE_SESSION_SFI7_REC1_CMD,
-//             PO_OPEN_SECURE_SESSION_SFI7_REC1_RSP);
-//     poCommandsTestSet.insert(PO_OPEN_SECURE_SESSION_CMD, PO_OPEN_SECURE_SESSION_RSP);
-//     poCommandsTestSet.insert(PO_READ_REC_SFI8_REC1_CMD, PO_READ_REC_SFI8_REC1_RSP);
-//     // Abort session
-//     poCommandsTestSet.insert(PO_ABORT_SECURE_SESSION_CMD, SW1SW2_OK_RSP);
+    /*
+     * Add additional non modifying commands (should not affect the session
+     * buffer)
+     */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareReadRecordFile(FILE8, 1);
 
-//     poTransaction->prepareReadRecordFile(FILE7, 1);
-//     poTransaction->prepareReadRecordFile(FILE8, 1);
-//     poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
-//     assertThat(calypsoPoRev31->getFileBySfi(FILE7)->getData()->getContent(),
-//             .isEqualTo(FILE7_REC1_29B_BYTES);
-//     assertThat(calypsoPoRev31->getFileBySfi(FILE8)->getData()->getContent(),
-//             .isEqualTo(FILE8_REC1_29B_BYTES);
-//     assertThat(calypsoPoRev31->isDfRatified()).isTrue();
-//     poTransaction->processCancel(ChannelControl::KEEP_OPEN);
-//     poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
-// }
+    /* 4 x update (29 b) = 4 x (29 + 6) = 140 consumed in the session buffer */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_29B_BYTES);
 
-// @Test
-// public void testPrepareSelectFile_selectControl() {
-//     CalypsoPo calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-//     poTransaction = new PoTransaction(new SeResource(poReader, calypsoPoRev31));
+    /*
+     * Insert additional non modifying commands (should not affect the session
+     * buffer)
+     */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareReadRecordFile(FILE8, 1);
 
-//     poCommandsTestSet.insert(PO_SELECT_FILE_CURRENT_CMD, PO_SELECT_FILE_3F00_RSP);
-//     poCommandsTestSet.insert(PO_SELECT_FILE_FIRST_CMD, PO_SELECT_FILE_0002_RSP);
-//     poCommandsTestSet.insert(PO_SELECT_FILE_NEXT_CMD, PO_SELECT_FILE_0003_RSP);
+    poTransaction->processPoCommandsInSession();
 
-//     poTransaction->prepareSelectFile(SelectFileControl.CURRENT_DF);
-//     poTransaction->prepareSelectFile(SelectFileControl.FIRST_EF);
-//     poTransaction->prepareSelectFile(SelectFileControl.NEXT_EF);
-//     poTransaction->processPoCommands(ChannelControl::KEEP_OPEN);
-//     DirectoryHeader directoryHeader = calypsoPoRev31->getDirectoryHeader();
-//     FileHeader fileHeader1 = calypsoPoRev31->getFileByLid((short) 0x02).getHeader();
-//     FileHeader fileHeader2 = calypsoPoRev31->getFileByLid((short) 0x03).getHeader();
-//     System.out.println(directoryHeader);
-//     System.out.println(fileHeader1);
-//     System.out.println(fileHeader2);
+    /* 5 x update (29 b) = 5 x (29 + 6) = 140 consumed in the session buffer */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_29B_BYTES);
 
-//     assertThat(directoryHeader.getLid()).isEqualTo(LID_3F00);
-//     assertThat(directoryHeader.getAccessConditions())
-//             .isEqualTo(ByteArrayUtil::fromHex(ACCESS_CONDITIONS_3F00));
-//     assertThat(directoryHeader.getKeyIndexes())
-//             .isEqualTo(ByteArrayUtil::fromHex(KEY_INDEXES_3F00));
-//     assertThat(directoryHeader.getDfStatus()).isEqualTo(0x00);
-//     assertThat(directoryHeader.getKif(AccessLevel::SESSION_LVL_PERSO)).isEqualTo(0x61);
-//     assertThat(directoryHeader.getKif(AccessLevel::SESSION_LVL_LOAD)).isEqualTo(0x67);
-//     assertThat(directoryHeader.getKif(AccessLevel::SESSION_LVL_DEBIT)).isEqualTo(0x70);
-//     assertThat(directoryHeader.getKvc(AccessLevel::SESSION_LVL_PERSO)).isEqualTo(0x77);
-//     assertThat(directoryHeader.getKvc(AccessLevel::SESSION_LVL_LOAD)).isEqualTo(0x78);
-//     assertThat(directoryHeader.getKvc(AccessLevel::SESSION_LVL_DEBIT)).isEqualTo(0x79);
+    /* 4 additional bytes (10 b consumed) */
+    poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_5B_BYTES);
 
-//     assertThat(fileHeader1.getLid()).isEqualTo(LID_0002);
-//     assertThat(fileHeader1.getRecordsNumber()).isEqualTo(1);
-//     assertThat(fileHeader1.getRecordSize()).isEqualTo(29);
-//     assertThat(fileHeader1.getType()).isEqualTo(FileHeader.FileType.LINEAR);
-//     assertThat(fileHeader1.getAccessConditions())
-//             .isEqualTo(ByteArrayUtil::fromHex(ACCESS_CONDITIONS_0002));
-//     assertThat(fileHeader1.getKeyIndexes()).isEqualTo(ByteArrayUtil::fromHex(KEY_INDEXES_0002));
-//     assertThat(fileHeader1.getDfStatus()).isEqualTo(0x00);
-//     assertThat(fileHeader1.getSharedReference()).isEqualTo(Short.valueOf((short) 0x3F02));
 
-//     assertThat(fileHeader2.getLid()).isEqualTo(LID_0003);
-//     assertThat(fileHeader2.getRecordsNumber()).isEqualTo(1);
-//     assertThat(fileHeader2.getRecordSize()).isEqualTo(29);
-//     assertThat(fileHeader2.getType()).isEqualTo(FileHeader.FileType.LINEAR);
-//     assertThat(fileHeader2.getAccessConditions())
-//             .isEqualTo(ByteArrayUtil::fromHex(ACCESS_CONDITIONS_0003));
-//     assertThat(fileHeader2.getKeyIndexes()).isEqualTo(ByteArrayUtil::fromHex(KEY_INDEXES_0003));
-//     assertThat(fileHeader2.getDfStatus()).isEqualTo(0x00);
-//     assertThat(fileHeader2.getSharedReference()).isEqualTo(Short.valueOf((short) 0x3F03));
-// }
+    /* PoTransaction after a session is open */
+    EXPECT_THROW(poTransaction->processClosing(ChannelControl::CLOSE_AFTER),
+                 CalypsoAtomicTransactionException);
 
-// @Test
-// public void testPrepareSelectFile_lid() {
-//     CalypsoPo calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-//     poTransaction = new PoTransaction(new SeResource(poReader, calypsoPoRev31));
+    tearDown();
+}
 
-//     poCommandsTestSet.insert(PO_SELECT_FILE_3F00_CMD, PO_SELECT_FILE_3F00_RSP);
-//     poCommandsTestSet.insert(PO_SELECT_FILE_0002_CMD, PO_SELECT_FILE_0002_RSP);
-//     poCommandsTestSet.insert(PO_SELECT_FILE_0003_CMD, PO_SELECT_FILE_0003_RSP);
+/*
+ * Session buffer overflow in multiple mode: the overflow happens and is handled
+ * at closing
+ */
+TEST(PoTransactionTest, testTransaction_sessionBuffer_overflowMultiple)
+{
+    setUp();
 
-//     poTransaction->prepareSelectFile(ByteArrayUtil::fromHex(LID_3F00_STR));
-//     poTransaction->prepareSelectFile(ByteArrayUtil::fromHex(LID_0002_STR));
-//     poTransaction->prepareSelectFile(ByteArrayUtil::fromHex(LID_0003_STR));
-//     poTransaction->processPoCommands(ChannelControl::KEEP_OPEN);
+    std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
 
-//     DirectoryHeader directoryHeader = calypsoPoRev31->getDirectoryHeader();
-//     ElementaryFile file1 = calypsoPoRev31->getFileByLid((short) 0x02);
-//     ElementaryFile file2 = calypsoPoRev31->getFileByLid((short) 0x03);
-//     byte sfi1 = file1.getSfi();
-//     byte sfi2 = file2.getSfi();
-//     System.out.println(directoryHeader);
-//     System.out.println(file1);
-//     System.out.println(file2);
+    std::shared_ptr<PoSecuritySettings> poSecuritySettings =
+        PoSecuritySettingsBuilder(samResource)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
+            .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
+                                           DEFAULT_KEY_RECORD_NUMBER_DEBIT)
+            .sessionModificationMode(ModificationMode::MULTIPLE)
+            .build();
 
-//     assertThat(calypsoPoRev31->getFileBySfi(sfi1)).isEqualTo(file1);
-//     assertThat(calypsoPoRev31->getFileBySfi(sfi2)).isEqualTo(file2);
+    poTransaction = std::make_shared<PoTransaction>(
+                        std::make_shared<SeResource<CalypsoPo>>(poReader,
+                                                                calypsoPoRev31),
+                        poSecuritySettings);
 
-//     assertThat(directoryHeader.getLid()).isEqualTo(LID_3F00);
-//     assertThat(directoryHeader.getAccessConditions())
-//             .isEqualTo(ByteArrayUtil::fromHex(ACCESS_CONDITIONS_3F00));
-//     assertThat(directoryHeader.getKeyIndexes())
-//             .isEqualTo(ByteArrayUtil::fromHex(KEY_INDEXES_3F00));
-//     assertThat(directoryHeader.getDfStatus()).isEqualTo(0x00);
-//     assertThat(directoryHeader.getKif(AccessLevel::SESSION_LVL_PERSO)).isEqualTo(0x61);
-//     assertThat(directoryHeader.getKif(AccessLevel::SESSION_LVL_LOAD)).isEqualTo(0x67);
-//     assertThat(directoryHeader.getKif(AccessLevel::SESSION_LVL_DEBIT)).isEqualTo(0x70);
-//     assertThat(directoryHeader.getKvc(AccessLevel::SESSION_LVL_PERSO)).isEqualTo(0x77);
-//     assertThat(directoryHeader.getKvc(AccessLevel::SESSION_LVL_LOAD)).isEqualTo(0x78);
-//     assertThat(directoryHeader.getKvc(AccessLevel::SESSION_LVL_DEBIT)).isEqualTo(0x79);
+    samCommandsTestSet.insert({SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_INIT_OPEN_SECURE_SESSION_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_READ_REC_SFI8_REC1_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_RSP_OK_CMD, SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_29B_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_RSP_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_READ_REC_SFI8_REC1_RSP_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_5B_CMD,
+                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_CLOSE_CMD, SAM_DIGEST_CLOSE_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_AUTHENTICATE, SW1SW2_OK_RSP});
 
-//     FileHeader fileHeader1 = file1.getHeader();
-//     assertThat(fileHeader1.getLid()).isEqualTo(LID_0002);
-//     assertThat(fileHeader1.getRecordsNumber()).isEqualTo(1);
-//     assertThat(fileHeader1.getRecordSize()).isEqualTo(29);
-//     assertThat(fileHeader1.getType()).isEqualTo(FileHeader.FileType.LINEAR);
-//     assertThat(fileHeader1.getAccessConditions())
-//             .isEqualTo(ByteArrayUtil::fromHex(ACCESS_CONDITIONS_0002));
-//     assertThat(fileHeader1.getKeyIndexes()).isEqualTo(ByteArrayUtil::fromHex(KEY_INDEXES_0002));
-//     assertThat(fileHeader1.getDfStatus()).isEqualTo(0x00);
-//     assertThat(fileHeader1.getSharedReference()).isEqualTo(Short.valueOf((short) 0x3F02));
+    poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_CMD,
+                              PO_OPEN_SECURE_SESSION_RSP});
+    poCommandsTestSet.insert({PO_READ_REC_SFI7_REC1_CMD,
+                              PO_READ_REC_SFI7_REC1_RSP});
+    poCommandsTestSet.insert({PO_READ_REC_SFI8_REC1_CMD,
+                              PO_READ_REC_SFI8_REC1_RSP});
+    poCommandsTestSet.insert({PO_UPDATE_REC_SFI8_REC1_29B_CMD, SW1SW2_OK_RSP});
+    poCommandsTestSet.insert({PO_UPDATE_REC_SFI8_REC1_5B_CMD, SW1SW2_OK_RSP});
+    poCommandsTestSet.insert({PO_CLOSE_SECURE_SESSION_CMD,
+                              PO_CLOSE_SECURE_SESSION_RSP});
 
-//     FileHeader fileHeader2 = file2.getHeader();
-//     assertThat(fileHeader2.getLid()).isEqualTo(LID_0003);
-//     assertThat(fileHeader2.getRecordsNumber()).isEqualTo(1);
-//     assertThat(fileHeader2.getRecordSize()).isEqualTo(29);
-//     assertThat(fileHeader2.getType()).isEqualTo(FileHeader.FileType.LINEAR);
-//     assertThat(fileHeader2.getAccessConditions())
-//             .isEqualTo(ByteArrayUtil::fromHex(ACCESS_CONDITIONS_0003));
-//     assertThat(fileHeader2.getKeyIndexes()).isEqualTo(ByteArrayUtil::fromHex(KEY_INDEXES_0003));
-//     assertThat(fileHeader2.getDfStatus()).isEqualTo(0x00);
-//     assertThat(fileHeader2.getSharedReference()).isEqualTo(Short.valueOf((short) 0x3F03));
-// }
+    /* 4 x update (29 b) = 4 x (29 + 6) = 140 consumed in the session buffer */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_29B_BYTES);
 
-// @Test
-// public void testPrepareReadCounterFile() {
-//     CalypsoPo calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-//     poTransaction = new PoTransaction(new SeResource(poReader, calypsoPoRev31));
+    poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
 
-//     poCommandsTestSet.insert(PO_READ_REC_SFI7_REC1_6B_COUNTER_CMD,
-//             PO_READ_REC_SFI7_REC1_6B_COUNTER_RSP);
+    /*
+     * Add additional non modifying commands (should not affect the session
+     * buffer)
+     */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareReadRecordFile(FILE8, 1);
 
-//     poTransaction->prepareReadCounterFile(FILE7, 2);
-//     poTransaction->processPoCommands(ChannelControl::KEEP_OPEN);
-//     assertThat(calypsoPoRev31->getFileBySfi(FILE7)->getData()->getContentAsCounterValue(1))
-//             .isEqualTo(ByteArrayUtil::threeBytesToInt(ByteArrayUtil::fromHex(FILE7_REC1_COUNTER1),
-//                     0));
-//     assertThat(calypsoPoRev31->getFileBySfi(FILE7)->getData()->getContentAsCounterValue(2))
-//             .isEqualTo(ByteArrayUtil::threeBytesToInt(ByteArrayUtil::fromHex(FILE7_REC1_COUNTER2),
-//                     0));
-// }
+    /*
+     * 24 x update (29 b) = 24 x (29 + 6) = 840 consumed in the session buffer
+     * force multiple cycles
+     */
+    for (int i = 0; i < 24; i++)
+        poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_29B_BYTES);
 
-// @Test(expected = CalypsoPoIOException.class)
-// public void testPoIoException() {
-//     CalypsoPo calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-//     poTransaction = new PoTransaction(new SeResource(poReader, calypsoPoRev31));
-//     poTransaction->prepareReadRecordFile(FILE7, 1);
-//     poTransaction->processPoCommands(ChannelControl::KEEP_OPEN);
-// }
+    /*
+     * Insert additional non modifying commands (should not affect the session
+     * buffer)
+     */
+    for (int i = 0; i < 4; i++)
+        poTransaction->prepareReadRecordFile(FILE8, 1);
 
-// @Test
-// public void testAccessLevel() {
-//     assertThat(AccessLevel::SESSION_LVL_PERSO.getName()).isEqualTo("perso");
-//     assertThat(AccessLevel::SESSION_LVL_LOAD.getName()).isEqualTo("load");
-//     assertThat(AccessLevel::SESSION_LVL_DEBIT.getName()).isEqualTo("debit");
-//     assertThat(AccessLevel::SESSION_LVL_PERSO.getSessionKey()).isEqualTo(0x01);
-//     assertThat(AccessLevel::SESSION_LVL_LOAD.getSessionKey()).isEqualTo(0x02);
-//     assertThat(AccessLevel::SESSION_LVL_DEBIT.getSessionKey()).isEqualTo(0x03);
-// }
+    poTransaction->processPoCommandsInSession();
+
+    /*
+     * 24 x update (29 b) = 24 x (29 + 6) = 840 consumed in the session buffer
+     * force multiple cycles
+     */
+    for (int i = 0; i < 24; i++)
+        poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_29B_BYTES);
+
+    /* 4 additional bytes (10 b consumed) */
+    poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_5B_BYTES);
+
+    /* PoTransaction after a session is open */
+    poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
+
+    tearDown();
+}
+
+/* open, cancel and reopen */
+TEST(PoTransactionTest, testProcessCancel_open_cancelOpen)
+{
+    setUp();
+
+    std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
+
+    std::shared_ptr<PoSecuritySettings> poSecuritySettings =
+        PoSecuritySettingsBuilder(samResource)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
+                               DEFAULT_KIF_DEBIT)
+            .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
+                                           DEFAULT_KEY_RECORD_NUMBER_DEBIT)
+            .build();
+
+    poTransaction = std::make_shared<PoTransaction>(
+                        std::make_shared<SeResource<CalypsoPo>>(poReader,
+                                                                calypsoPoRev31),
+                        poSecuritySettings);
+
+    samCommandsTestSet.insert({SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP});
+
+    poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_SFI7_REC1_CMD,
+                              PO_OPEN_SECURE_SESSION_SFI7_REC1_RSP});
+    poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_CMD,
+                              PO_OPEN_SECURE_SESSION_RSP});
+    poCommandsTestSet.insert({PO_READ_REC_SFI8_REC1_CMD,
+                              PO_READ_REC_SFI8_REC1_RSP});
+    /* Abort session */
+    poCommandsTestSet.insert({PO_ABORT_SECURE_SESSION_CMD, SW1SW2_OK_RSP});
+
+    poTransaction->prepareReadRecordFile(FILE7, 1);
+    poTransaction->prepareReadRecordFile(FILE8, 1);
+    poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
+
+    ASSERT_EQ(calypsoPoRev31->getFileBySfi(FILE7)->getData()->getContent(),
+              FILE7_REC1_29B_BYTES);
+    ASSERT_EQ(calypsoPoRev31->getFileBySfi(FILE8)->getData()->getContent(),
+              FILE8_REC1_29B_BYTES);
+    ASSERT_TRUE(calypsoPoRev31->isDfRatified());
+
+    poTransaction->processCancel(ChannelControl::KEEP_OPEN);
+    poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
+
+    tearDown();
+}
+
+TEST(PoTransactionTest, testPrepareSelectFile_selectControl)
+{
+    setUp();
+
+    std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
+
+    poTransaction = std::make_shared<PoTransaction>(
+                        std::make_shared<SeResource<CalypsoPo>>(
+                            poReader, calypsoPoRev31));
+
+    poCommandsTestSet.insert({PO_SELECT_FILE_CURRENT_CMD,
+                              PO_SELECT_FILE_3F00_RSP});
+    poCommandsTestSet.insert({PO_SELECT_FILE_FIRST_CMD,
+                              PO_SELECT_FILE_0002_RSP});
+    poCommandsTestSet.insert({PO_SELECT_FILE_NEXT_CMD,
+                              PO_SELECT_FILE_0003_RSP});
+
+    poTransaction->prepareSelectFile(SelectFileControl::CURRENT_DF);
+    poTransaction->prepareSelectFile(SelectFileControl::FIRST_EF);
+    poTransaction->prepareSelectFile(SelectFileControl::NEXT_EF);
+    poTransaction->processPoCommands(ChannelControl::KEEP_OPEN);
+
+    std::shared_ptr<DirectoryHeader> directoryHeader =
+        calypsoPoRev31->getDirectoryHeader();
+    std::shared_ptr<FileHeader> fileHeader1 =
+        calypsoPoRev31->getFileByLid(0x02)->getHeader();
+    std::shared_ptr<FileHeader> fileHeader2 =
+        calypsoPoRev31->getFileByLid(0x03)->getHeader();
+
+    ASSERT_EQ(directoryHeader->getLid(), LID_3F00);
+    ASSERT_EQ(directoryHeader->getAccessConditions(),
+              ByteArrayUtil::fromHex(ACCESS_CONDITIONS_3F00));
+    ASSERT_EQ(directoryHeader->getKeyIndexes(),
+              ByteArrayUtil::fromHex(KEY_INDEXES_3F00));
+    ASSERT_EQ(directoryHeader->getDfStatus(), 0x00);
+    ASSERT_EQ(directoryHeader->getKif(AccessLevel::SESSION_LVL_PERSO), 0x61);
+    ASSERT_EQ(directoryHeader->getKif(AccessLevel::SESSION_LVL_LOAD), 0x67);
+    ASSERT_EQ(directoryHeader->getKif(AccessLevel::SESSION_LVL_DEBIT), 0x70);
+    ASSERT_EQ(directoryHeader->getKvc(AccessLevel::SESSION_LVL_PERSO), 0x77);
+    ASSERT_EQ(directoryHeader->getKvc(AccessLevel::SESSION_LVL_LOAD), 0x78);
+    ASSERT_EQ(directoryHeader->getKvc(AccessLevel::SESSION_LVL_DEBIT), 0x79);
+
+    ASSERT_EQ(fileHeader1->getLid(), LID_0002);
+    ASSERT_EQ(fileHeader1->getRecordsNumber(), 1);
+    ASSERT_EQ(fileHeader1->getRecordSize(), 29);
+    ASSERT_EQ(fileHeader1->getType(), FileHeader::FileType::LINEAR);
+    ASSERT_EQ(fileHeader1->getAccessConditions(),
+              ByteArrayUtil::fromHex(ACCESS_CONDITIONS_0002));
+    ASSERT_EQ(fileHeader1->getKeyIndexes(),
+              ByteArrayUtil::fromHex(KEY_INDEXES_0002));
+    ASSERT_EQ(fileHeader1->getDfStatus(), 0x00);
+    ASSERT_EQ(fileHeader1->getSharedReference(), 0x3F02);
+
+    ASSERT_EQ(fileHeader2->getLid(), LID_0003);
+    ASSERT_EQ(fileHeader2->getRecordsNumber(), 1);
+    ASSERT_EQ(fileHeader2->getRecordSize(), 29);
+    ASSERT_EQ(fileHeader2->getType(), FileHeader::FileType::LINEAR);
+    ASSERT_EQ(fileHeader2->getAccessConditions(),
+              ByteArrayUtil::fromHex(ACCESS_CONDITIONS_0003));
+    ASSERT_EQ(fileHeader2->getKeyIndexes(),
+              ByteArrayUtil::fromHex(KEY_INDEXES_0003));
+    ASSERT_EQ(fileHeader2->getDfStatus(), 0x00);
+    ASSERT_EQ(fileHeader2->getSharedReference(), 0x3F03);
+
+    tearDown();
+}
+
+TEST(PoTransactionTest, testPrepareSelectFile_lid)
+{
+    setUp();
+
+    std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
+
+    poTransaction = std::make_shared<PoTransaction>(
+                        std::make_shared<SeResource<CalypsoPo>>(
+                            poReader, calypsoPoRev31));
+
+    poCommandsTestSet.insert({PO_SELECT_FILE_3F00_CMD,
+                              PO_SELECT_FILE_3F00_RSP});
+    poCommandsTestSet.insert({PO_SELECT_FILE_0002_CMD,
+                              PO_SELECT_FILE_0002_RSP});
+    poCommandsTestSet.insert({PO_SELECT_FILE_0003_CMD,
+                              PO_SELECT_FILE_0003_RSP});
+
+    poTransaction->prepareSelectFile(ByteArrayUtil::fromHex(LID_3F00_STR));
+    poTransaction->prepareSelectFile(ByteArrayUtil::fromHex(LID_0002_STR));
+    poTransaction->prepareSelectFile(ByteArrayUtil::fromHex(LID_0003_STR));
+    poTransaction->processPoCommands(ChannelControl::KEEP_OPEN);
+
+    std::shared_ptr<DirectoryHeader> directoryHeader =
+        calypsoPoRev31->getDirectoryHeader();
+    std::shared_ptr<ElementaryFile> file1 = calypsoPoRev31->getFileByLid(0x02);
+    std::shared_ptr<ElementaryFile> file2 = calypsoPoRev31->getFileByLid(0x03);
+
+    const uint8_t sfi1 = file1->getSfi();
+    const uint8_t sfi2 = file2->getSfi();
+
+    ASSERT_EQ(calypsoPoRev31->getFileBySfi(sfi1), file1);
+    ASSERT_EQ(calypsoPoRev31->getFileBySfi(sfi2), file2);
+
+    ASSERT_EQ(directoryHeader->getLid(), LID_3F00);
+    ASSERT_EQ(directoryHeader->getAccessConditions(),
+              ByteArrayUtil::fromHex(ACCESS_CONDITIONS_3F00));
+    ASSERT_EQ(directoryHeader->getKeyIndexes(),
+              ByteArrayUtil::fromHex(KEY_INDEXES_3F00));
+    ASSERT_EQ(directoryHeader->getDfStatus(), 0x00);
+    ASSERT_EQ(directoryHeader->getKif(AccessLevel::SESSION_LVL_PERSO), 0x61);
+    ASSERT_EQ(directoryHeader->getKif(AccessLevel::SESSION_LVL_LOAD), 0x67);
+    ASSERT_EQ(directoryHeader->getKif(AccessLevel::SESSION_LVL_DEBIT), 0x70);
+    ASSERT_EQ(directoryHeader->getKvc(AccessLevel::SESSION_LVL_PERSO), 0x77);
+    ASSERT_EQ(directoryHeader->getKvc(AccessLevel::SESSION_LVL_LOAD), 0x78);
+    ASSERT_EQ(directoryHeader->getKvc(AccessLevel::SESSION_LVL_DEBIT), 0x79);
+
+    std::shared_ptr<FileHeader> fileHeader1 = file1->getHeader();
+    ASSERT_EQ(fileHeader1->getLid(), LID_0002);
+    ASSERT_EQ(fileHeader1->getRecordsNumber(), 1);
+    ASSERT_EQ(fileHeader1->getRecordSize(), 29);
+    ASSERT_EQ(fileHeader1->getType(), FileHeader::FileType::LINEAR);
+    ASSERT_EQ(fileHeader1->getAccessConditions(),
+              ByteArrayUtil::fromHex(ACCESS_CONDITIONS_0002));
+    ASSERT_EQ(fileHeader1->getKeyIndexes(),
+              ByteArrayUtil::fromHex(KEY_INDEXES_0002));
+    ASSERT_EQ(fileHeader1->getDfStatus(), 0x00);
+    ASSERT_EQ(fileHeader1->getSharedReference(), 0x3F02);
+
+    std::shared_ptr<FileHeader> fileHeader2 = file2->getHeader();
+    ASSERT_EQ(fileHeader2->getLid(), LID_0003);
+    ASSERT_EQ(fileHeader2->getRecordsNumber(), 1);
+    ASSERT_EQ(fileHeader2->getRecordSize(), 29);
+    ASSERT_EQ(fileHeader2->getType(), FileHeader::FileType::LINEAR);
+    ASSERT_EQ(fileHeader2->getAccessConditions(),
+              ByteArrayUtil::fromHex(ACCESS_CONDITIONS_0003));
+    ASSERT_EQ(fileHeader2->getKeyIndexes(),
+              ByteArrayUtil::fromHex(KEY_INDEXES_0003));
+    ASSERT_EQ(fileHeader2->getDfStatus(), 0x00);
+    ASSERT_EQ(fileHeader2->getSharedReference(), 0x3F03);
+
+    tearDown();
+}
+
+TEST(PoTransactionTest, testPrepareReadCounterFile)
+{
+    setUp();
+
+    std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
+
+    poTransaction = std::make_shared<PoTransaction>(
+                        std::make_shared<SeResource<CalypsoPo>>(
+                            poReader, calypsoPoRev31));
+
+    poCommandsTestSet.insert({PO_READ_REC_SFI7_REC1_6B_COUNTER_CMD,
+                              PO_READ_REC_SFI7_REC1_6B_COUNTER_RSP});
+
+    poTransaction->prepareReadCounterFile(FILE7, 2);
+    poTransaction->processPoCommands(ChannelControl::KEEP_OPEN);
+
+    ASSERT_EQ(calypsoPoRev31->getFileBySfi(FILE7)->getData()
+                  ->getContentAsCounterValue(1),
+              ByteArrayUtil::threeBytesToInt(
+                  ByteArrayUtil::fromHex(FILE7_REC1_COUNTER1), 0));
+    ASSERT_EQ(calypsoPoRev31->getFileBySfi(FILE7)->getData()
+                  ->getContentAsCounterValue(2),
+              ByteArrayUtil::threeBytesToInt(
+                  ByteArrayUtil::fromHex(FILE7_REC1_COUNTER2), 0));
+
+    tearDown();
+}
+
+TEST(PoTransactionTest, testPoIoException)
+{
+    setUp();
+
+    std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
+
+    poTransaction = std::make_shared<PoTransaction>(
+                        std::make_shared<SeResource<CalypsoPo>>(
+                            poReader, calypsoPoRev31));
+
+    poTransaction->prepareReadRecordFile(FILE7, 1);
+
+    EXPECT_THROW(poTransaction->processPoCommands(ChannelControl::KEEP_OPEN),
+                 CalypsoPoIOException);
+
+    tearDown();
+}
+
+TEST(PoTransactionTest, testAccessLevel)
+{
+    setUp();
+
+    ASSERT_EQ(AccessLevel::SESSION_LVL_PERSO.getName(), "perso");
+    ASSERT_EQ(AccessLevel::SESSION_LVL_LOAD.getName(), "load");
+    ASSERT_EQ(AccessLevel::SESSION_LVL_DEBIT.getName(), "debit");
+    ASSERT_EQ(AccessLevel::SESSION_LVL_PERSO.getSessionKey(), 0x01);
+    ASSERT_EQ(AccessLevel::SESSION_LVL_LOAD.getSessionKey(), 0x02);
+    ASSERT_EQ(AccessLevel::SESSION_LVL_DEBIT.getSessionKey(), 0x03);
+
+    tearDown();
+}
