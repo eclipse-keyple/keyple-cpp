@@ -16,6 +16,7 @@
 
 /* Common */
 #include "ClassNotFoundException.h"
+#include "KeypleStd.h"
 
 /* Core */
 #include "ApduResponse.h"
@@ -148,6 +149,9 @@ GetDataFciRespPars::GetDataFciRespPars(
         }
 
         mApplicationSN = tlv->getValue();
+
+        logger->debug("Application Serial Number = %\n",
+                      ByteArrayUtil::toHex(mApplicationSN));
 
         /* Get the Discretionary Data */
         if (!tlv->parse(TAG_DISCRETIONARY_DATA, tlv->getPosition())) {

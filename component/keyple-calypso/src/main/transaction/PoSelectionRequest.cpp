@@ -63,7 +63,7 @@ void PoSelectionRequest::prepareReadRecordFile(const uint8_t sfi,
         CalypsoPoUtils::prepareReadRecordFile(mPoClass, sfi, recordNumber);
 
     addCommandBuilder(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(rr));
 }
 
@@ -73,7 +73,7 @@ void PoSelectionRequest::prepareSelectFile(const std::vector<uint8_t> lid)
         CalypsoPoUtils::prepareSelectFile(mPoClass, lid);
 
     addCommandBuilder(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(sf));
 }
 
@@ -94,7 +94,7 @@ void PoSelectionRequest::prepareSelectFile(
         CalypsoPoUtils::prepareSelectFile(mPoClass, selectControl);
 
     addCommandBuilder(
-        reinterpret_pointer_cast<
+        std::reinterpret_pointer_cast<
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(sf));
 }
 

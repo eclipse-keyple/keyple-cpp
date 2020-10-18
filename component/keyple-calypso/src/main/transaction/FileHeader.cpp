@@ -17,6 +17,7 @@
 #include <iomanip>
 
 /* Common */
+#include "KeypleStd.h"
 #include "Logger.h"
 
 namespace keyple {

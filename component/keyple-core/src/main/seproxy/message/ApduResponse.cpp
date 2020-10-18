@@ -13,7 +13,10 @@
  ******************************************************************************/
 
 #include "ApduResponse.h"
+
+/* Core */
 #include "ByteArrayUtil.h"
+#include "KeypleStd.h"
 
 /* Common */
 #include "Arrays.h"
@@ -23,6 +26,7 @@ namespace core {
 namespace seproxy {
 namespace message {
 
+using namespace keyple::common;
 using namespace keyple::core::util;
 
 ApduResponse::ApduResponse(

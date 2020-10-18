@@ -13,7 +13,12 @@
  ******************************************************************************/
 
 #include "ApduRequest.h"
+
+/* Core */
 #include "ByteArrayUtil.h"
+
+/* Common */
+#include "KeypleStd.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -21,6 +26,7 @@ namespace core {
 namespace seproxy {
 namespace message {
 
+using namespace keyple::common;
 using namespace keyple::core::util;
 
 

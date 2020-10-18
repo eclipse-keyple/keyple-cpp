@@ -231,15 +231,3 @@ private:
 
 }
 }
-
-
-namespace std {
-/**
- * Helper functions
- */
-KEYPLECOMMON_API std::ostream& operator<<(std::ostream& os,
-                                const std::vector<uint8_t>& v);
-
-KEYPLECOMMON_API std::ostream& operator<<(std::ostream& os,
-                                          const std::set<std::string>& s);
-}

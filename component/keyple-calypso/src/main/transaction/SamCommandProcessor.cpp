@@ -90,7 +90,7 @@ const std::vector<uint8_t> SamCommandProcessor::getSessionTerminalChallenge()
 
     std::shared_ptr<AbstractSamCommandBuilder<AbstractSamResponseParser>>
         getChallengeCmdBuild =
-            reinterpret_pointer_cast<
+            std::reinterpret_pointer_cast<
                 AbstractSamCommandBuilder<AbstractSamResponseParser>>(
                     std::make_shared<SamGetChallengeCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),
@@ -274,7 +274,7 @@ const std::vector<std::shared_ptr<AbstractSamCommandBuilder<
          * couples of PO request/response
          */
         samCommands.push_back(
-            reinterpret_pointer_cast<
+            std::reinterpret_pointer_cast<
                 AbstractSamCommandBuilder<AbstractSamResponseParser>>(
                     std::make_shared<DigestInitCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),
@@ -295,7 +295,7 @@ const std::vector<std::shared_ptr<AbstractSamCommandBuilder<
     /* Build and append Digest Update commands */
     for (int i = 0; i < static_cast<int>(mPoDigestDataCache.size()); i++)
         samCommands.push_back(
-            reinterpret_pointer_cast<
+            std::reinterpret_pointer_cast<
                 AbstractSamCommandBuilder<AbstractSamResponseParser>>(
                     std::make_shared<DigestUpdateCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),
@@ -308,7 +308,7 @@ const std::vector<std::shared_ptr<AbstractSamCommandBuilder<
     if (addDigestClose)
         /* Build and append Digest Close command */
         samCommands.push_back(
-            reinterpret_pointer_cast<
+            std::reinterpret_pointer_cast<
                 AbstractSamCommandBuilder<AbstractSamResponseParser>>(
                     std::make_shared<DigestCloseCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),

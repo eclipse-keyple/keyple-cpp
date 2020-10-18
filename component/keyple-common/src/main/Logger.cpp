@@ -62,28 +62,3 @@ const std::string Logger::getCurrentTimestamp()
 
 }
 }
-
-namespace std {
-std::ostream& operator<<(std::ostream& os, const std::vector<uint8_t>& v)
-{
-    for (int i = 0; i < static_cast<int>(v.size()); i++)
-        os << std::hex << setfill('0') << setw(2) << static_cast<int>(v[i]);
-
-    return os;
-}
-
-std::ostream& operator<<(std::ostream& os, const std::set<std::string>& s)
-{
-    os << "{";
-    for (auto it = s.begin(); it != s.end(); ++it)
-    {
-        if (it != s.begin())
-            os << ", ";
-        os << *it;
-    }
-    os << "}";
-
-    return os;
-}
-
-}
