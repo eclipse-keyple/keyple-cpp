@@ -144,10 +144,11 @@ std::shared_ptr<SelectionsResult> SeSelection::processExplicitSelection(
     }
 
     /* Communicate with the SE to do the selection */
+    auto proxyReader = std::dynamic_pointer_cast<ProxyReader>(seReader);
     std::vector<std::shared_ptr<SeResponse>> seResponses =
-        (std::dynamic_pointer_cast<ProxyReader>(seReader))
-            ->transmitSeRequests(selectionRequests, mMultiSeRequestProcessing,
-                                 mChannelControl);
+        proxyReader->transmitSeRequests(selectionRequests,
+                                        mMultiSeRequestProcessing,
+                                        mChannelControl);
 
     return processSelection(
         std::make_shared<DefaultSelectionsResponse>(seResponses));

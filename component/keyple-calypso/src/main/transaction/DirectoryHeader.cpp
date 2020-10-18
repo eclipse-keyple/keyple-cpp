@@ -89,7 +89,7 @@ DirectoryHeader::DirectoryHeader(const DirectoryHeaderBuilder* builder)
   mKif(builder->mKif),
   mKvc(builder->mKvc) {}
 
-uint8_t DirectoryHeader::getLid() const
+uint16_t DirectoryHeader::getLid() const
 {
     return mLid;
 }

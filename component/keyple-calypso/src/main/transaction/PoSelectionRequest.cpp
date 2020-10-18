@@ -32,6 +32,9 @@
 #include "SelectFileRespPars.h"
 #include "SelectFileCmdBuild.h"
 
+/* Common */
+#include "KeypleStd.h"
+
 namespace keyple {
 namespace calypso {
 namespace transaction {
@@ -41,6 +44,7 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::builder;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::calypso::transaction::exception;
+using namespace keyple::common;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
@@ -55,26 +59,22 @@ PoSelectionRequest::PoSelectionRequest(std::shared_ptr<PoSelector> poSelector)
 void PoSelectionRequest::prepareReadRecordFile(const uint8_t sfi,
                                                const int recordNumber)
 {
-    std::shared_ptr<ReadRecordsCmdBuild> _rr =
+    std::shared_ptr<ReadRecordsCmdBuild> rr =
         CalypsoPoUtils::prepareReadRecordFile(mPoClass, sfi, recordNumber);
 
-    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>> rr =
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(_rr);
-
-    addCommandBuilder(rr);
+    addCommandBuilder(
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(rr));
 }
 
 void PoSelectionRequest::prepareSelectFile(const std::vector<uint8_t> lid)
 {
-    std::shared_ptr<SelectFileCmdBuild> _sf =
+    std::shared_ptr<SelectFileCmdBuild> sf =
         CalypsoPoUtils::prepareSelectFile(mPoClass, lid);
 
-    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>> sf =
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(_sf);
-
-    addCommandBuilder(sf);
+    addCommandBuilder(
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(sf));
 }
 
 void PoSelectionRequest::prepareSelectFile(const uint16_t lid)
@@ -90,14 +90,12 @@ void PoSelectionRequest::prepareSelectFile(const uint16_t lid)
 void PoSelectionRequest::prepareSelectFile(
     const SelectFileControl selectControl)
 {
-    std::shared_ptr<SelectFileCmdBuild> _sf =
+    std::shared_ptr<SelectFileCmdBuild> sf =
         CalypsoPoUtils::prepareSelectFile(mPoClass, selectControl);
 
-    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>> sf =
-        std::dynamic_pointer_cast<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>(_sf);
-
-    addCommandBuilder(sf);
+    addCommandBuilder(
+        reinterpret_pointer_cast<
+            AbstractPoCommandBuilder<AbstractPoResponseParser>>(sf));
 }
 
 const std::shared_ptr<AbstractMatchingSe> PoSelectionRequest::parse(
