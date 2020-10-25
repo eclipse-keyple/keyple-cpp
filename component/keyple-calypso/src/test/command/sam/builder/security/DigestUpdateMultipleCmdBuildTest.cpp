@@ -40,7 +40,7 @@ static const bool ENCRYPTED_SESSION_TRUE = true;
 static const bool ENCRYPTED_SESSION_FALSE = false;
 static const std::string DIGEST_DATA = "112233445566778899AA";
 static const std::string SW1SW2_OK = "9000";
-static const uint8_t LENGTH_4 = 0x04;
+//static const uint8_t LENGTH_4 = 0x04;
 static const std::string APDU_CLA_80 = "808C00000A" + DIGEST_DATA;
 static const std::string APDU_CLA_80_ENCRYPTED_SESSION = "808C00800A" +
                                                          DIGEST_DATA;
@@ -62,8 +62,9 @@ TEST(DigestUpdateMultipleCmdBuildTest,
             std::make_shared<ApduResponse>(
                 ByteArrayUtil::fromHex(SW1SW2_OK), nullptr));
 
-    ASSERT_EQ(typeid(*digestUpdateMultipleRespPars.get()),
-              typeid(DigestUpdateMultipleRespPars));
+    auto& instance = *digestUpdateMultipleRespPars.get();
+
+    ASSERT_EQ(typeid(instance), typeid(DigestUpdateMultipleRespPars));
 }
 
 TEST(DigestUpdateMultipleCmdBuildTest, digestUpdateMultipleCmd_cla94)

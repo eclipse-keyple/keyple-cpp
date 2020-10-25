@@ -102,10 +102,10 @@ SamSelectorBuilder& SamSelectorBuilder::serialNumber(
 }
 
 SamSelectorBuilder& SamSelectorBuilder::samIdentifier(
-    const SamIdentifier& samIdentifier)
+    const std::shared_ptr<SamIdentifier> samIdentifier)
 {
-    mSamRevision = samIdentifier.getSamRevision();
-    mSerialNumber = samIdentifier.getSerialNumber();
+    mSamRevision = samIdentifier->getSamRevision();
+    mSerialNumber = samIdentifier->getSerialNumber();
     return *this;
 }
 

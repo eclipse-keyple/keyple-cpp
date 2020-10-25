@@ -56,7 +56,7 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::common;
 
-class KEYPLEPLUGINSTUB_API StubReaderImpl
+class KEYPLEPLUGINSTUB_API StubReaderImpl final
 : public AbstractObservableLocalReader, public StubReader,
   public SmartInsertionReader, public SmartRemovalReader {
 public:
@@ -77,6 +77,11 @@ public:
      */
     StubReaderImpl(const std::string& pluginName, const std::string& name,
                    TransmissionMode transmissionMode);
+
+    /**
+     *
+     */
+    ~StubReaderImpl();
 
     /**
      *

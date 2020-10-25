@@ -302,7 +302,7 @@ std::shared_ptr<SeSelector> SeSelectorBuilder::build()
 
 std::shared_ptr<SeSelectorBuilder> SeSelector::builder()
 {
-    SeSelectorBuilder S();
+    SeSelectorBuilder S;
 
     return std::make_shared<SeSelectorBuilder>();
 }

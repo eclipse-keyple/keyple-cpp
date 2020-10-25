@@ -100,9 +100,9 @@ SamIdentifierBuilder& SamIdentifierBuilder::groupReference(
     return *this;
 }
 
-std::unique_ptr<SamIdentifier> SamIdentifierBuilder::build()
+std::shared_ptr<SamIdentifier> SamIdentifierBuilder::build()
 {
-    return std::unique_ptr<SamIdentifier>(new SamIdentifier(this));
+    return std::make_shared<SamIdentifier>(this);
 }
 
 }

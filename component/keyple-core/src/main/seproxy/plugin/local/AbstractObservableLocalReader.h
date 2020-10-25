@@ -141,6 +141,11 @@ public:
                                   const std::string& readerName);
 
     /**
+     *
+     */
+    virtual ~AbstractObservableLocalReader() = default;
+
+    /**
      * Check the presence of a SE
      *
      * <p>

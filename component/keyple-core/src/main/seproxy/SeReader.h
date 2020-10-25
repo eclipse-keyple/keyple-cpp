@@ -16,9 +16,13 @@
 
 #include <memory>
 
+/* Core */
 #include "ProxyElement.h"
 #include "SeProtocol.h"
 #include "TransmissionMode.h"
+
+/* Common */
+#include "KeypleStd.h"
 
 namespace keyple {
 namespace core {
@@ -100,6 +104,19 @@ public:
     virtual bool operator==(const SeReader& o) const
     {
         return this->getName() ==  o.getName();
+    }
+
+    /**
+     *
+     */
+    friend std::ostream& operator<<(std::ostream& os, const std::shared_ptr<SeReader> sr)
+    {
+        os << "SEREADER: {"
+           << "NAME = " << sr->getName() << ", "
+           << "PARAMETERS: " << sr->getParameters()
+           << "}";
+
+        return  os;
     }
 };
 

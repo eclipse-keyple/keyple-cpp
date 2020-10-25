@@ -46,9 +46,9 @@ std::unique_ptr<ManagedSamResource> SamResourceManager::createSamResource(
             std::dynamic_pointer_cast<SamSelector> (
                 SamSelector::builder()
                     ->seProtocol(SeCommonProtocols::PROTOCOL_ISO7816_3)
-                    .samIdentifier(*SamIdentifier::builder()
-                                    ->samRevision(SamRevision::AUTO)
-                                    .build().get())
+                    .samIdentifier(SamIdentifier::builder()
+                                       ->samRevision(SamRevision::AUTO)
+                                       .build())
                     .build())));
 
     std::shared_ptr<SelectionsResult> selectionsResult = nullptr;

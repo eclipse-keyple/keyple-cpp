@@ -49,7 +49,7 @@ public:
 
     std::shared_ptr<SeResponse> transmitSeRequest(
         std::shared_ptr<SeRequest> seRequest,
-        ChannelControl channelControl)
+        ChannelControl channelControl) override
     {
         (void)seRequest;
         (void)channelControl;
@@ -60,7 +60,7 @@ public:
     std::vector<std::shared_ptr<SeResponse>> transmitSeRequests(
         const std::vector<std::shared_ptr<SeRequest>>& seRequests,
         const MultiSeRequestProcessing& multiSeRequestProcessing,
-        const ChannelControl& channelControl)
+        const ChannelControl& channelControl) override
     {
         (void)seRequests;
         (void)multiSeRequestProcessing;
@@ -119,19 +119,20 @@ private:
 
 class MSRMP_ReaderPoolPluginMock : public ReaderPoolPlugin {
 public:
-    std::set<std::string> getReaderGroupReferences()
+    std::set<std::string> getReaderGroupReferences() override
     {
         return std::set<std::string>{};
     }
 
     std::shared_ptr<SeReader> allocateReader(const std::string& groupReference)
+        override
     {
         (void)groupReference;
 
         return mSeReader;
     }
 
-    void releaseReader(std::shared_ptr<SeReader> seReader)
+    void releaseReader(std::shared_ptr<SeReader> seReader) override
     {
         (void)seReader;
     }

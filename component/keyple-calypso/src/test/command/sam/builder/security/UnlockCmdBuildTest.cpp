@@ -57,7 +57,9 @@ TEST(UnlockCmdBuildTest, unlockCmdBuild_defaultRevision_createParser)
             std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(SW1SW2_OK),
                                            nullptr));
 
-    ASSERT_EQ(typeid(*unlockRespPars.get()), typeid(UnlockRespPars));
+    auto& instance = *unlockRespPars.get();
+
+    ASSERT_EQ(typeid(instance), typeid(UnlockRespPars));
 }
 
 TEST(UnlockCmdBuildTest, unlockCmdBuild_cla94)

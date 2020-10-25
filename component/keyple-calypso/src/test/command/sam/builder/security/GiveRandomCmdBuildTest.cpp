@@ -57,8 +57,9 @@ TEST(GiveRandomCmdBuildTest,
             std::make_shared<ApduResponse>(
                 ByteArrayUtil::fromHex(SW1SW2_OK), nullptr));
 
-    ASSERT_EQ(typeid(*giveRandomRespPars.get()),
-              typeid(GiveRandomRespPars));
+    auto& instance = *giveRandomRespPars.get();
+
+    ASSERT_EQ(typeid(instance), typeid(GiveRandomRespPars));
 }
 
 TEST(GiveRandomCmdBuildTest, giveRandomCmdBuild_cla94)

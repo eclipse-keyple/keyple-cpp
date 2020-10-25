@@ -41,7 +41,7 @@ class SPS_AbstractThreadedObservablePluginMock
 public:
     SPS_AbstractThreadedObservablePluginMock(const std::string& name)
     : AbstractThreadedObservablePlugin(name) {}
-    
+
     MOCK_METHOD((const std::map<const std::string, const std::string>&),
                 getParameters,
                 (),
@@ -253,8 +253,8 @@ TEST(SeProxyServiceTest, testRegister_MultiThread)
         std::make_shared<SPS_PluginFactoryMock>();
 
     EXPECT_CALL(*factory.get(), getPluginName())
-        .Times(1)
-        .WillOnce(ReturnRef(PLUGIN_NAME_1));
+        .Times(AtLeast(1))
+        .WillRepeatedly(ReturnRef(PLUGIN_NAME_1));
 
     EXPECT_CALL(*factory.get(), getPlugin())
         .Times(1)

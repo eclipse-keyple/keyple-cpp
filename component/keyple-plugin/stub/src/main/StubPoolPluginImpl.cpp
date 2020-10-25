@@ -20,10 +20,11 @@
 /* Core */
 #include "IllegalArgumentException.h"
 #include "IllegalStateException.h"
+#include "KeypleAllocationNoReaderException.h"
 #include "KeypleAllocationReaderException.h"
 
 /* Stub plugin */
-#include "StubPoolPluginFactory.h"
+#include "StubPluginFactory.h"
 #include "StubReaderImpl.h"
 
 namespace keyple {
@@ -34,11 +35,12 @@ using namespace keyple::common;
 using namespace keyple::core::seproxy;
 
 StubPoolPluginImpl::StubPoolPluginImpl(const std::string& pluginName)
-: mStubPlugin(
-    std::dynamic_pointer_cast<StubPluginImpl>(
-        std::make_shared<StubPoolPluginFactory>(pluginName)->getPlugin()))
 {
     /* Create an embedded stubplugin to manage reader */
+    auto factory = std::make_shared<StubPluginFactory>(pluginName);
+    std::shared_ptr<ReaderPlugin> plugin = factory->getPlugin();
+    auto stubPlugin = std::dynamic_pointer_cast<StubPluginImpl>(plugin);
+    mStubPlugin = stubPlugin;
 }
 
 const std::string& StubPoolPluginImpl::getName() const
@@ -114,17 +116,23 @@ std::shared_ptr<SeReader> StubPoolPluginImpl::allocateReader(
     std::shared_ptr<StubReaderImpl> seReader =
         mReaderPool.find(groupReference)->second;
 
-    /* Check if the reader is available */
-    if (seReader == nullptr ||
-        mAllocatedReader.find(seReader->getName()) != mAllocatedReader.end()) {
+    /* Check if the reader is found */
+    if (seReader == nullptr)
         throw KeypleAllocationReaderException(
                  "Impossible to allocate a reader for groupReference : " +
-                 groupReference + ". Has the reader being plugged to this " +
-                 "referenceGroup?");
-    } else {
-        mAllocatedReader.insert({seReader->getName(), groupReference});
-        return seReader;
-    }
+                 groupReference +
+                 ". Has the reader being plugged to this referenceGroup?");
+
+    /* Check if reader is available */
+    if (mAllocatedReader.find(seReader->getName()) != mAllocatedReader.end())
+        throw KeypleAllocationNoReaderException(
+                  "Impossible to allocate a reader for groupReference : " +
+                  groupReference +
+                  ". No reader Available");
+
+    /* Allocate reader */
+    mAllocatedReader.insert({seReader->getName(), groupReference});
+    return seReader;
 }
 
 void StubPoolPluginImpl::releaseReader(std::shared_ptr<SeReader> seReader)

@@ -26,11 +26,6 @@ public:
     /**
      *
      */
-    virtual ~SeCommand() {}
-
-    /**
-     *
-     */
     virtual const std::string& getName() const = 0;
 
     /**

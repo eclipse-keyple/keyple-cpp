@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -36,15 +35,13 @@ using namespace keyple::core::seproxy::plugin::local;
 /**
  * Wait for Start SE Detection
  * <p>
- * The state during which the reader does not wait for a SE to be inserted but
- * for a signal from the application to do so (switch to the
- * WAIT_FOR_SE_INSERTION state).
+ * The state during which the reader does not wait for a SE to be inserted but for a signal from the
+ * application to do so (switch to the WAIT_FOR_SE_INSERTION state).
  * <ul>
- * <li>Upon START_DETECT event, the machine changes state for
- * WAIT_FOR_SE_INSERTION.
+ * <li>Upon START_DETECT event, the machine changes state for WAIT_FOR_SE_INSERTION.
  * </ul>
  */
-class KEYPLECORE_API WaitForStartDetect : public AbstractObservableState {
+class KEYPLECORE_API WaitForStartDetect final : public AbstractObservableState {
 public:
     /**
      *
@@ -61,19 +58,13 @@ public:
     /**
      *
      */
-    virtual ~WaitForStartDetect() = default;
-
-    /**
-     *
-     */
     void onEvent(const InternalEvent event) override;
 
 private:
     /**
      * Logger
      */
-    const std::shared_ptr<Logger> logger =
-        LoggerFactory::getLogger(typeid(WaitForStartDetect));
+    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(WaitForStartDetect));
 };
 
 }

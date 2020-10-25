@@ -23,10 +23,17 @@ using namespace keyple::core::command;
 
 using namespace testing;
 
-class SeCommandMock : public SeCommand {
+class SeCommandMock final : public SeCommand {
 public:
-    MOCK_METHOD(const std::string&, getName, (), (const, override));
-    MOCK_METHOD(uint8_t, getInstructionByte, (), (const, override));
+    MOCK_METHOD(const std::string&,
+                getName,
+                (),
+                (const, override));
+
+    MOCK_METHOD(uint8_t,
+                getInstructionByte,
+                (),
+                (const, override));
 };
 
 TEST(AbstractApduCommandBuilderTest, AbstractApduCommandBuilder1)

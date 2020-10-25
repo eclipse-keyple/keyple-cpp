@@ -18,7 +18,7 @@
 
 /* Common */
 #include "Arrays.h"
-#include "Logger.h" /* operator<< on std::vector<uint8_t> */
+#include "KeypleStd.h"
 #include "stringhelper.h"
 #include "System.h"
 
