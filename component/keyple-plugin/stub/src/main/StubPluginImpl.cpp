@@ -14,6 +14,9 @@
 
 #include "StubPluginImpl.h"
 
+/* Common */
+#include "KeypleStd.h"
+
 /* Core */
 #include "AbstractObservableState.h"
 

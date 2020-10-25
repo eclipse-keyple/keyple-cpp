@@ -31,14 +31,15 @@ using namespace keyple::core::util;
 
 using namespace testing;
 
-class SS_MatchingSeMock : public AbstractMatchingSe {
+class SS_MatchingSeMock final : public AbstractMatchingSe {
 public:
     SS_MatchingSeMock(const std::shared_ptr<SeResponse> selectionResponse,
                    const TransmissionMode& transmissionMode)
     : AbstractMatchingSe(selectionResponse, transmissionMode) {}
 };
 
-class SS_AbstractApduCommandBuilderMock : public AbstractApduCommandBuilder {
+class SS_AbstractApduCommandBuilderMock final
+: public AbstractApduCommandBuilder {
 public:
     SS_AbstractApduCommandBuilderMock(
       const std::shared_ptr<SeCommand> commandRef,
@@ -46,7 +47,7 @@ public:
     : AbstractApduCommandBuilder(commandRef, request) {}
 };
 
-class SS_SeCommandMock : public SeCommand {
+class SS_SeCommandMock final : public SeCommand {
 public:
 
     static const std::shared_ptr<SS_SeCommandMock> COMMAND_1;

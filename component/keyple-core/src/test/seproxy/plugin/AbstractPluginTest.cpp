@@ -153,9 +153,7 @@ static void removeReaderThread(
     for (int i = 0; i < n; i++) {
         try {
             if (readers.size() > 0) {
-                ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
-                    ::iterator it = readers.begin();
-                readers.erase(it);
+                readers.erase(readers.begin()->first);
                 logger->trace("readers: %, remove first reader\n",
                               readers.size());
             } else {

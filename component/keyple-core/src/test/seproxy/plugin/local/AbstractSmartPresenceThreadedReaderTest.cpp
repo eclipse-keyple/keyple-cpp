@@ -41,8 +41,9 @@ using namespace keyple::core::seproxy::plugin::local::state;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
 
-class ASPTR_SmartPresenceTheadedReaderMock
-: public AbstractObservableLocalReader, public SmartRemovalReader,
+class ASPTR_SmartPresenceTheadedReaderMock final
+: public AbstractObservableLocalReader,
+  public SmartRemovalReader,
   public SmartInsertionReader
 {
 public:
@@ -174,19 +175,10 @@ public:
                 (),
                 (override));
 
-    /*
-     * For some reasons mocking this functions doesn't work well. Whether I use
-     * .Times(AnyNumber()), .Times(AtMost(1)), the test fails with
-     * "Uninteresting mock function call".
-     */
-    //MOCK_METHOD(std::shared_ptr<ReaderEvent>,
-    //            processSeInserted,
-    //            (),
-    //            (override));
-    std::shared_ptr<ReaderEvent> processSeInserted() override
-    {
-        return nullptr;
-    }
+    MOCK_METHOD(std::shared_ptr<ReaderEvent>,
+                processSeInserted,
+                (),
+                (override));
 
 protected:
     std::shared_ptr<MonitoringPool> mExecutorService =
@@ -201,7 +193,7 @@ private:
     std::map<const std::string, const std::string> mParameters;
 };
 
-class ASPTR_ReaderObserverMock : public ObservableReader::ReaderObserver {
+class ASPTR_ReaderObserverMock final : public ObservableReader::ReaderObserver {
 public:
     void update(std::shared_ptr<ReaderEvent> event) override
     {
@@ -222,9 +214,9 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence)
     ASPTR_SmartPresenceTheadedReaderMock r(PLUGIN_NAME, READER_NAME, 1);
 
     /* SE matched */
-    // EXPECT_CALL(r, processSeInserted())
-    //     .Times(AtMost(1))
-    //     .WillOnce(Return(nullptr));
+    EXPECT_CALL(r, processSeInserted())
+        .Times(AtMost(1))
+        .WillOnce(Return(nullptr));
 
     r.addObserver(getObs());
     Thread::sleep(100);
@@ -242,9 +234,9 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_CONTINUE)
     ASPTR_SmartPresenceTheadedReaderMock r(PLUGIN_NAME, READER_NAME, 1);
 
     /* SE matched */
-    // EXPECT_CALL(r, processSeInserted())
-    //     .Times(AtMost(1))
-    //     .WillOnce(Return(nullptr));
+    EXPECT_CALL(r, processSeInserted())
+        .Times(AtMost(1))
+        .WillOnce(Return(nullptr));
 
     r.addObserver(getObs());
     r.startSeDetection(ObservableReader::PollingMode::REPEATING);
@@ -262,9 +254,9 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_noping_STOP)
     ASPTR_SmartPresenceTheadedReaderMock r(PLUGIN_NAME, READER_NAME, 1);
 
     /* SE matched */
-    // EXPECT_CALL(r, processSeInserted())
-    //     .Times(AtMost(1))
-    //     .WillOnce(Return(nullptr));
+    EXPECT_CALL(r, processSeInserted())
+        .Times(AtMost(1))
+        .WillOnce(Return(nullptr));
 
     //EXPECT_CALL(r, isSePresentPing())
     //    .Times(1)
@@ -286,9 +278,9 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_ping_STOP)
     ASPTR_SmartPresenceTheadedReaderMock r(PLUGIN_NAME, READER_NAME, 1);
 
     /* SE matched */
-    // EXPECT_CALL(r, processSeInserted())
-    //     .Times(AtMost(1))
-    //     .WillOnce(Return(nullptr));
+    EXPECT_CALL(r, processSeInserted())
+        .Times(AtMost(1))
+        .WillOnce(Return(nullptr));
 
     // Commented in Java
     //EXPECT_CALL(r, isSePresentPing())

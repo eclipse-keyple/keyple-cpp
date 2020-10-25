@@ -32,7 +32,7 @@ using namespace keyple::core::util;
 
 using namespace testing;
 
-class ASSR_MatchingSeMock : public AbstractMatchingSe {
+class ASSR_MatchingSeMock final : public AbstractMatchingSe {
 public:
     ASSR_MatchingSeMock(std::shared_ptr<SeResponse> selectionResponse,
                         TransmissionMode transmissionMode)
@@ -41,7 +41,7 @@ public:
     }
 };
 
-class ASSR_SeSelectionRequestMock
+class ASSR_SeSelectionRequestMock final
 : public AbstractSeSelectionRequest<AbstractApduCommandBuilder> {
 public:
     ASSR_SeSelectionRequestMock(std::shared_ptr<SeSelector> seSelector)
@@ -52,7 +52,7 @@ protected:
                 (std::shared_ptr<SeResponse> seResponse), (override));
 };
 
-class ASSR_CommandBuilderMock : public AbstractApduCommandBuilder {
+class ASSR_CommandBuilderMock final : public AbstractApduCommandBuilder {
 public:
     ASSR_CommandBuilderMock(const std::shared_ptr<SeCommand> commandRef,
                        const std::shared_ptr<ApduRequest> request)
@@ -60,7 +60,7 @@ public:
 
 };
 
-class ASSR_SeCommandMock : public SeCommand {
+class ASSR_SeCommandMock final : public SeCommand {
 public:
     enum class commands {
         COMMAND1,

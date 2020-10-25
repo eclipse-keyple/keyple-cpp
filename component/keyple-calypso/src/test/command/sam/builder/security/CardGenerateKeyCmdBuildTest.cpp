@@ -84,8 +84,9 @@ TEST(CardGenerateKeyCmdBuildTest,
             std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(SW1SW2_OK),
                                            nullptr));
 
-    ASSERT_EQ(typeid(*cardGenerateKeyRespPars.get()),
-              typeid(CardGenerateKeyRespPars));
+    auto& instance = *cardGenerateKeyRespPars.get();
+
+    ASSERT_EQ(typeid(instance), typeid(CardGenerateKeyRespPars));
 }
 
 TEST(CardGenerateKeyCmdBuildTest, cardGenerateKeyCmdBuild_cla94)

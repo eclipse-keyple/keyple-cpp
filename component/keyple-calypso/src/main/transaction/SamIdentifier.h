@@ -79,7 +79,7 @@ public:
          *
          * @return a new instance
          */
-        std::unique_ptr<SamIdentifier> build();
+        std::shared_ptr<SamIdentifier> build();
 
     private:
         /**
@@ -141,6 +141,14 @@ public:
      */
     bool matches(const std::shared_ptr<SamIdentifier> samIdentifier) const;
 
+    /**
+     * Private constructor
+     *
+     * C++ vs. Java: constructor is private in Java but prevents the use of
+     *               make_shared.
+     */
+    SamIdentifier(const SamIdentifierBuilder* builder);
+
 private:
     /**
      *
@@ -156,11 +164,6 @@ private:
      *
      */
     const std::string mGroupReference;
-
-    /**
-     * Private constructor
-     */
-    SamIdentifier(const SamIdentifierBuilder* builder);
 };
 
 }

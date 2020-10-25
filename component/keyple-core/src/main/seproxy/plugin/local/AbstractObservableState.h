@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -44,9 +43,13 @@ enum class MonitoringState {
 };
 
 /**
+ *
+ */
+KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const MonitoringState& ms);
+
+/**
  * Defines a state behaviour for a {@link AbstractObservableLocalReader} Handles
- * {@link AbstractObservableLocalReader.InternalEvent} that might results on a
- * switch of state.
+ * {@link AbstractObservableLocalReader.InternalEvent} that might results on a switch of state.
  */
 class KEYPLECORE_API AbstractObservableState {
 public:
@@ -58,8 +61,7 @@ public:
     const MonitoringState& getMonitoringState() const;
 
     /**
-     * Handle Internal Event Usually state is switched using method
-     * reader::switchState
+     * Handle Internal Event Usually state is switched using method reader::switchState
      *
      * @param event internal event received by reader
      */
@@ -111,8 +113,8 @@ protected:
      *
      * @param state the state identifier
      * @param reader the current reader
-     * @param monitoringJob the job to be executed in background (may be null if
-     *        no background job is required)
+     * @param monitoringJob the job to be executed in background (may be null if no background job
+     *                      is required)
      * @param executorService the executor service
      */
     AbstractObservableState(MonitoringState state,
@@ -126,8 +128,12 @@ protected:
      * @param reader : observable reader this currentState is attached to
      * @param state : name of the currentState
      */
-    AbstractObservableState(MonitoringState state,
-                            AbstractObservableLocalReader* reader);
+    AbstractObservableState(MonitoringState state, AbstractObservableLocalReader* reader);
+
+    /**
+     *
+     */
+    virtual ~AbstractObservableState() = default;
 
     /**
      * Switch state in the parent reader
@@ -140,12 +146,8 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
-        LoggerFactory::getLogger(typeid(AbstractObservableState));
+    const std::shared_ptr<Logger> logger= LoggerFactory::getLogger(typeid(AbstractObservableState));
 };
-
-KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
-                                        const MonitoringState& ms);
 
 }
 }

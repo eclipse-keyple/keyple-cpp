@@ -199,7 +199,7 @@ private:
         /**
          *
          */
-        AbstractThreadedObservablePlugin* mOuterInstance;
+        AbstractThreadedObservablePlugin* mParent;
 
         /**
          *

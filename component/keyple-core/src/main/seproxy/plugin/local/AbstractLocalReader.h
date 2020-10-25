@@ -65,13 +65,12 @@ public:
      * @param pluginName the name of the plugin that instantiated the reader
      * @param readerName the name of the reader
      */
-    AbstractLocalReader(const std::string& pluginName,
-                        const std::string& readerName);
+    AbstractLocalReader(const std::string& pluginName, const std::string& readerName);
 
     /**
      *
      */
-    virtual ~AbstractLocalReader() {}
+    virtual ~AbstractLocalReader() = default;
 
     /**
      * Check the presence of a SE
@@ -82,7 +81,7 @@ public:
      * be refreshed through a call to the cardRemoved method.
      *
      * @return true if the SE is present
-     * @throws KeypleReaderIOException if the communication with the reader or
+     * @throw KeypleReaderIOException if the communication with the reader or
      *         the SE has failed
      */
     bool isSePresent() override;

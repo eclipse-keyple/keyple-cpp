@@ -16,6 +16,7 @@
 
 /* Common */
 #include "IllegalArgumentException.h"
+#include "KeypleStd.h"
 #include "System.h"
 #include "Thread.h"
 
