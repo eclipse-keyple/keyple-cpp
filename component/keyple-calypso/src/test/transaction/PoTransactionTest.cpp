@@ -50,16 +50,16 @@ using ModificationMode = PoTransaction::SessionSetting::ModificationMode;
 using PoSecuritySettingsBuilder = PoSecuritySettings::PoSecuritySettingsBuilder;
 
 /* The default KIF values for personalization, loading and debiting */
-static const uint8_t DEFAULT_KIF_PERSO = 0x21;
-static const uint8_t DEFAULT_KIF_LOAD  = 0x27;
+//static const uint8_t DEFAULT_KIF_PERSO = 0x21;
+//static const uint8_t DEFAULT_KIF_LOAD  = 0x27;
 static const uint8_t DEFAULT_KIF_DEBIT = 0x30;
 
 /*
  * The default key record number values for personalization, loading and
  * debiting. The actual value should be adjusted.
  */
-static const uint8_t DEFAULT_KEY_RECORD_NUMBER_PERSO = 0x01;
-static const uint8_t DEFAULT_KEY_RECORD_NUMBER_LOAD  = 0x02;
+//static const uint8_t DEFAULT_KEY_RECORD_NUMBER_PERSO = 0x01;
+//static const uint8_t DEFAULT_KEY_RECORD_NUMBER_LOAD  = 0x02;
 static const uint8_t DEFAULT_KEY_RECORD_NUMBER_DEBIT = 0x03;
 
 static std::shared_ptr<SeReader> poReader;

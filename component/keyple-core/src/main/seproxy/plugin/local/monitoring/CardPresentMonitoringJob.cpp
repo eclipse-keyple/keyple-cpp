@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 /* Core */
 #include "CardPresentMonitoringJob.h"
@@ -27,83 +26,82 @@ namespace plugin {
 namespace local {
 namespace monitoring {
 
-CardPresentMonitoringJob::CardPresentMonitoringJob(SeReader* reader,
-                                                   long waitTimeout,
-                                                   bool monitorInsertion)
-: reader(reader), waitTimeout(waitTimeout), monitorInsertion(monitorInsertion)
+CardPresentMonitoringJob::CardPresentMonitoringJob(
+  SeReader* reader, long waitTimeout, bool monitorInsertion)
+: mReader(reader), mWaitTimeout(waitTimeout), mMonitorInsertion(monitorInsertion)
 {
 }
 
-void CardPresentMonitoringJob::monitoringJob(
-    AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
+void CardPresentMonitoringJob::monitoringJob(AbstractObservableState* state,
+                                             std::atomic<bool>& cancellationFlag)
 {
     long retries = 0;
 
-    logger->debug("[%] Polling from isSePresentPing\n", reader->getName());
+    mLogger->debug("[%] Polling from isSePresentPing\n", mReader->getName());
 
     /* Re-init loop value to true */
-    loop = true;
+    mLoop = true;
 
-    while (loop) {
+    while (mLoop) {
         if (cancellationFlag) {
-            logger->debug("[%] monitoring job cancelled\n", reader->getName());
+            mLogger->debug("[%] monitoring job cancelled\n", mReader->getName());
             return;
         }
 
         try {
             /* Polls for SE_INSERTED */
-            if (monitorInsertion && reader->isSePresent()) {
-                logger->debug("[%] The SE is present\n", reader->getName());
-                loop = false;
+            if (mMonitorInsertion && mReader->isSePresent()) {
+                mLogger->debug("[%] The SE is present\n", mReader->getName());
+                mLoop = false;
                 state->onEvent(InternalEvent::SE_INSERTED);
                 return;
             }
 
             /* Polls for SE_REMOVED */
-            if (!monitorInsertion && !reader->isSePresent()) {
-                logger->debug("[%] The SE is not present\n", reader->getName());
-                loop = false;
+            if (!mMonitorInsertion && !mReader->isSePresent()) {
+                mLogger->debug("[%] The SE is not present\n", mReader->getName());
+                mLoop = false;
                 state->onEvent(InternalEvent::SE_REMOVED);
                 return;
             }
 
         } catch (KeypleReaderIOException& e) {
             (void)e;
-            loop = false;
+            mLoop = false;
             /* What do do here */
         }
 
         retries++;
 
-        logger->trace("[%] isSePresent polling retries : %\n",
-                      reader->getName(), retries);
+        mLogger->trace("[%] isSePresent polling retries : %\n", mReader->getName(), retries);
 
         try {
             /* Wait a bit */
-            Thread::sleep(waitTimeout);
+            Thread::sleep(mWaitTimeout);
         } catch (InterruptedException& ignored) {
             (void)ignored;
             /* Restore interrupted state... */
             //Thread.currentThread().interrupt();
-            loop = false;
+            mLoop = false;
         }
     }
 
-    logger->trace("[%] Looping has been stopped\n", reader->getName());
+    mLogger->trace("[%] Looping has been stopped\n", mReader->getName());
 }
 
 void CardPresentMonitoringJob::stop()
 {
-    logger->debug("[%] Stop Polling\n", reader->getName());
-    loop = false;
+    mLogger->debug("[%] Stop Polling\n", mReader->getName());
+    mLoop = false;
 }
 
-std::future<void>
-CardPresentMonitoringJob::startMonitoring(AbstractObservableState* state,
-                                          std::atomic<bool>& cancellationFlag)
+std::future<void> CardPresentMonitoringJob::startMonitoring(AbstractObservableState* state,
+                                                            std::atomic<bool>& cancellationFlag)
 {
     return std::async(std::launch::async,
-                      &CardPresentMonitoringJob::monitoringJob, this, state,
+                      &CardPresentMonitoringJob::monitoringJob,
+                      this,
+                      state,
                       std::ref(cancellationFlag));
 }
 

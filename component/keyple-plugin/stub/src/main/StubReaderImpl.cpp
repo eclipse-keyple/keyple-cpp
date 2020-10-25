@@ -12,6 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
+#include "StubReaderImpl.h"
+
 /* Core */
 #include "ByteArrayUtil.h"
 #include "IllegalArgumentException.h"
@@ -27,7 +29,6 @@
 #include "WaitForSeRemoval.h"
 
 /* Plugin - Stub */
-#include "StubReaderImpl.h"
 #include "StubSecureElement.h"
 
 /* Common */
@@ -62,6 +63,14 @@ StubReaderImpl::StubReaderImpl(const std::string& pluginName,
 : StubReaderImpl(pluginName, name)
 {
     mTransmissionMode = transmissionMode;
+}
+
+StubReaderImpl::~StubReaderImpl()
+{
+    /* Force threads to stop */
+    stopWaitForCard();
+    stopWaitForCardRemoval();
+    stopSeDetection();
 }
 
 const std::vector<uint8_t>& StubReaderImpl::getATR()

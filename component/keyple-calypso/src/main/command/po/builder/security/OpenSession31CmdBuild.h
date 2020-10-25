@@ -77,12 +77,12 @@ public:
     /**
      *
      */
-    virtual uint8_t getSfi() const;
+    virtual uint8_t getSfi() const override;
 
     /**
      *
      */
-    virtual uint8_t getRecordNumber() const;
+    virtual uint8_t getRecordNumber() const override;
 
 private:
     /**

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -249,29 +248,26 @@ public:
     /**
      *
      */
-    virtual ~ObservableReader() {}
+    virtual ~ObservableReader() = default;
 
     /**
      * Add a reader observer.
      * <p>
-     * The observer will receive all the events produced by this reader (card
-     * insertion, removal, etc.)
+     * The observer will receive all the events produced by this reader (card insertion, removal,
+     * etc.)
      *
      * @param observer the observer object
      */
-    virtual void addObserver(const std::shared_ptr<ReaderObserver> observer)
-         = 0;
+    virtual void addObserver(const std::shared_ptr<ReaderObserver> observer) = 0;
 
     /**
      * Remove a reader observer.
      * <p>
-     * The observer will nolonger receive any of the events produced by this
-     * reader.
+     * The observer will nolonger receive any of the events produced by this reader.
      *
      * @param observer the observer object
      */
-    virtual void removeObserver(const std::shared_ptr<ReaderObserver> observer)
-        = 0;
+    virtual void removeObserver(const std::shared_ptr<ReaderObserver> observer) = 0;
 
     /**
      * Remove all observers at once
@@ -284,34 +280,32 @@ public:
     virtual int countObservers() const = 0;
 
     /**
-     * Starts the SE detection. Once activated, the application can be notified
-     * of the arrival of an SE.
+     * Starts the SE detection. Once activated, the application can be notified of the arrival of an
+     * SE.
      *
-     * @param pollingMode indicates the action to be followed after processing
-     *        the SE: if REPEATING, the SE detection is restarted, if
-     *        SINGLESHOT, the SE detection is stopped until a new call to
-     *        startSeDetection is made.
+     * @param pollingMode indicates the action to be followed after processing the SE: if REPEATING,
+     *        the SE detection is restarted, if SINGLESHOT, the SE detection is stopped until a new
+     *        call to startSeDetection is made.
      */
     virtual void startSeDetection(const PollingMode pollingMode) = 0;
 
     /**
      * Stops the SE detection.
      * <p>
-     * This method must be overloaded by readers depending on the particularity
-     * of their management of the start of SE detection.
+     * This method must be overloaded by readers depending on the particularity of their management
+     * of the start of SE detection.
      */
     virtual void stopSeDetection() = 0;
 
     /**
-     * Defines the selection request to be processed when an SE is inserted.
-     * Depending on the SE and the notificationMode parameter, a SE_INSERTED,
-     * SE_MATCHED or no event at all will be notified to the application
-     * observers.
+     * Defines the selection request to be processed when an SE is inserted. Depending on the SE and
+     * the notificationMode parameter, a SE_INSERTED, SE_MATCHED or no event at all will be notified
+     * to the application observers.
      *
      * @param defaultSelectionsRequest the selection request to be operated
-     * @param notificationMode indicates whether a SE_INSERTED event should be
-     *        notified even if the selection has failed (ALWAYS) or whether the
-     *        SE insertion should be ignored in this case (MATCHED_ONLY).
+     * @param notificationMode indicates whether a SE_INSERTED event should be notified even if the
+     *        selection has failed (ALWAYS) or whether the SE insertion should be ignored in this
+     *        case (MATCHED_ONLY).
      */
     virtual void setDefaultSelectionRequest(
         std::shared_ptr<AbstractDefaultSelectionsRequest>
@@ -319,47 +313,41 @@ public:
         const NotificationMode notificationMode) = 0;
 
     /**
-     * A combination of defining the default selection request and starting the
-     * SE detection.
+     * A combination of defining the default selection request and starting the SE detection.
      *
      * @param defaultSelectionsRequest the selection request to be operated
-     * @param notificationMode indicates whether a SE_INSERTED event should be
-     *        notified even if the selection has failed (ALWAYS) or whether the
-     *        SE insertion should be ignored in this case (MATCHED_ONLY).
-     * @param pollingMode indicates the action to be followed after processing
-     *        the SE: if CONTINUE, the SE detection is restarted, if STOP, the
-     *        SE detection is stopped until a new call to startSeDetection is
-     *        made.
+     * @param notificationMode indicates whether a SE_INSERTED event should be notified even if the
+     *        selection has failed (ALWAYS) or whether the SE insertion should be ignored in this
+     *        case (MATCHED_ONLY).
+     * @param pollingMode indicates the action to be followed after processing the SE: if CONTINUE,
+     *        the SE detection is restarted, if STOP, the SE detection is stopped until a new call
+     *        to startSeDetection is made.
      */
     virtual void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
+        std::shared_ptr<AbstractDefaultSelectionsRequest>defaultSelectionsRequest,
         const NotificationMode notificationMode,
         const PollingMode pollingMode) = 0;
 
     /**
-     * Signal sent by the application to the reader to indicate the end of the
-     * application processing.
+     * Signal sent by the application to the reader to indicate the end of the application
+     * processing.
      * <p>
-     * Depending on whether a request with the indication CLOSE_AFTER has been
-     * executed before or not, a closing message will be sent to the reader in
-     * order to proceed with the closing of the physical channel.
-     * <p>
-     * The action to be continued will be the one defined by the PollingMode
-     * used to start the SE detection.
-     * <p>
-     * The call of this method is mandatory only if the current transaction
-     * performed via an observed reader did not end with a call to an operation
-     * causing a physical channel closing (CLOSE_AFTER). The main objective here
-     * is to achieve the closing of the physical channel. A typical use of this
-     * method is in handling exceptions (catch) that may occur during a
-     * transaction that would prevent reaching the last operation closing the
+     * Depending on whether a request with the indication CLOSE_AFTER has been executed before or
+     * not, a closing message will be sent to the reader in order to proceed with the closing of the
      * physical channel.
      * <p>
-     * The channel closing here refers to the application's intention to no
-     * longer communicate with the SE. This may take the form of an immediate
-     * physical channel closing in the case of an unobserved reader or a delayed
-     * closing upon removal of the SE (removal sequence).
+     * The action to be continued will be the one defined by the PollingMode used to start the SE
+     * detection.
+     * <p>
+     * The call of this method is mandatory only if the current transaction performed via an
+     * observed reader did not end with a call to an operation causing a physical channel closing
+     * (CLOSE_AFTER). The main objective here is to achieve the closing of the physical channel. A
+     * typical use of this method is in handling exceptions (catch) that may occur during a
+     * transaction that would prevent reaching the last operation closing the physical channel.
+     * <p>
+     * The channel closing here refers to the application's intention to no longer communicate with
+     * the SE. This may take the form of an immediate physical channel closing in the case of an
+     * unobserved reader or a delayed closing upon removal of the SE (removal sequence).
      */
     virtual void notifySeProcessed() = 0;
 };
@@ -367,8 +355,7 @@ public:
 /**
  *
  */
-KEYPLECORE_API std::ostream& operator<<(
-    std::ostream& os, const ObservableReader::PollingMode& pm);
+KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const ObservableReader::PollingMode& pm);
 
 }
 }

@@ -97,7 +97,9 @@ TEST(DigestInitCmdBuildTest,
             std::make_shared<ApduResponse>(
                 ByteArrayUtil::fromHex(SW1SW2_OK), nullptr));
 
-    ASSERT_EQ(typeid(*digestInitRespPars.get()), typeid(DigestInitRespPars));
+    auto& instance = *digestInitRespPars.get();
+
+    ASSERT_EQ(typeid(instance), typeid(DigestInitRespPars));
 }
 
 TEST(DigestInitCmdBuildTest, digestInitCmdBuild_kifFF)

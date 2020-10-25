@@ -17,47 +17,59 @@
 
 #include "StubPlugin.h"
 
+/* Common */
 #include "CountDownLatch.h"
+#include "Thread.h"
+
+/* Plugin */
+#include "PluginEvent.h"
 #include "StubPluginImpl.h"
 #include "StubPluginFactory.h"
 #include "StubReader.h"
-#include "Thread.h"
 
 using namespace testing;
 
 using namespace keyple::common;
+using namespace keyple::core::seproxy::event;
 using namespace keyple::plugin::stub;
 
-class SP_PluginObserverMock : public ObservablePlugin::PluginObserver {
+class SP_PluginObserverMock final : public ObservablePlugin::PluginObserver {
 public:
-    SP_PluginObserverMock()
-    : mReaderConnected(1)
-    {
-    }
+    SP_PluginObserverMock(const std::string& readerName)
+    : mReaderConnected(1), mReaderName(readerName) {}
 
     void update(std::shared_ptr<PluginEvent> event) override
     {
-        ASSERT_EQ(event->getEventType(),
-                  PluginEvent::EventType::READER_CONNECTED);
+        ASSERT_EQ(event->getEventType(), PluginEvent::EventType::READER_CONNECTED);
         ASSERT_EQ(static_cast<int>(event->getReaderNames().size()), 1);
-        ASSERT_EQ(*event->getReaderNames().begin(), READER_NAME);
-
+        ASSERT_EQ(*event->getReaderNames().begin(), mReaderName);
         mReaderConnected.countDown();
     }
 
     CountDownLatch mReaderConnected;
 
 private:
-    const std::string READER_NAME = "plugOneReaderSync_sucess";
+    const std::string mReaderName;
 };
 
 static const std::string PLUGIN_NAME = "stub1";
+static std::shared_ptr<StubPluginImpl> stubPlugin;
 
+static void setUp()
+{
+    auto factory = std::make_shared<StubPluginFactory>(PLUGIN_NAME);
+    stubPlugin = std::dynamic_pointer_cast<StubPluginImpl>(factory->getPlugin());
+}
+
+static void tearDown()
+{
+    stubPlugin->unplugStubReaders(stubPlugin->getReaderNames(), true);
+    stubPlugin->clearObservers();
+}
 
 TEST(StubPluginTest, instantiatePlugin)
  {
     const std::string PLUGIN_NAME = "test1";
-
     StubPluginFactory factory(PLUGIN_NAME);
 
     std::shared_ptr<ReaderPlugin> plugin = factory.getPlugin();
@@ -68,9 +80,10 @@ TEST(StubPluginTest, instantiatePlugin)
 /* Plug one reader synchronously Check: Count if created */
 TEST(StubPluginTest, plugOneReaderSync_success)
 {
-    std::shared_ptr<StubPluginImpl> stubPlugin =
-        std::dynamic_pointer_cast<StubPluginImpl>(
-            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+    setUp();
+
+    /* Add a sleep to play with thread monitor timeout */
+    Thread::sleep(100);
 
     const std::string READER_NAME = "plugOneReaderSync_sucess";
 
@@ -86,36 +99,33 @@ TEST(StubPluginTest, plugOneReaderSync_success)
 
     ASSERT_EQ(stubReader->getName(), READER_NAME);
     ASSERT_EQ(stubReader->getTransmissionMode(), TransmissionMode::CONTACTLESS);
+
+    tearDown();
 }
 
 /* Plug one reader synchronously Check: Event thrown */
 TEST(StubPluginTest, plugOneReaderSyncEvent_success)
 {
-    std::shared_ptr<StubPluginImpl> stubPlugin =
-        std::dynamic_pointer_cast<StubPluginImpl>(
-            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+    setUp();
 
     const std::string READER_NAME = "testA_PlugReaders";
-
-    std::shared_ptr<SP_PluginObserverMock> plugin =
-        std::make_shared<SP_PluginObserverMock>();
+    auto plugin = std::make_shared<SP_PluginObserverMock>(READER_NAME);
 
     /* add READER_CONNECTED assert observer */
     stubPlugin->addObserver(plugin);
-
     stubPlugin->plugStubReader(READER_NAME, true);
     plugin->mReaderConnected.await(std::chrono::seconds(2));
 
     ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
     ASSERT_EQ(plugin->mReaderConnected.getCount(), 0);
+
+    tearDown();
 }
 
 /* Unplug one reader synchronously Check: Count if removed */
 TEST(StubPluginTest, unplugOneReader_success)
 {
-    std::shared_ptr<StubPluginImpl> stubPlugin =
-        std::dynamic_pointer_cast<StubPluginImpl>(
-            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+    setUp();
 
     const std::string READER_NAME = "unplugOneReader_success";
 
@@ -127,6 +137,8 @@ TEST(StubPluginTest, unplugOneReader_success)
     stubPlugin->unplugStubReader(READER_NAME, true);
 
     ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 0);
+
+    tearDown();
 }
 
 
@@ -134,9 +146,7 @@ TEST(StubPluginTest, unplugOneReader_success)
 /* Plug same reader twice Check : only one reader */
 TEST(StubPluginTest, plugSameReaderTwice_fail)
 {
-    std::shared_ptr<StubPluginImpl> stubPlugin =
-        std::dynamic_pointer_cast<StubPluginImpl>(
-            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+    setUp();
 
     const std::string READER_NAME = "testC_PlugSameReaderTwice";
 
@@ -144,16 +154,18 @@ TEST(StubPluginTest, plugSameReaderTwice_fail)
     stubPlugin->plugStubReader(READER_NAME, true);
 
     ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
+
+    tearDown();
 }
 
 /* Get name */
 TEST(StubPluginTest, getName_success)
 {
-    std::shared_ptr<StubPluginImpl> stubPlugin =
-        std::dynamic_pointer_cast<StubPluginImpl>(
-            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+    setUp();
 
     ASSERT_NE(stubPlugin->getName(), "");
+
+    tearDown();
 }
 
 /**
@@ -163,9 +175,7 @@ TEST(StubPluginTest, getName_success)
  */
 TEST(StubPluginTest, plugMultiReadersSync_success)
 {
-    std::shared_ptr<StubPluginImpl> stubPlugin =
-        std::dynamic_pointer_cast<StubPluginImpl>(
-            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+    setUp();
 
     const std::set<std::string> newReaders = {
         "EC_reader1", "EC_reader2", "EC_reader3"};
@@ -175,6 +185,8 @@ TEST(StubPluginTest, plugMultiReadersSync_success)
 
     ASSERT_EQ(stubPlugin->getReaderNames(), newReaders);
     ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 3);
+
+    tearDown();
 }
 
 
@@ -182,9 +194,7 @@ TEST(StubPluginTest, plugMultiReadersSync_success)
 /* Plug and unplug many readers at once synchronously Check : count */
 TEST(StubPluginTest, plugUnplugMultiReadersSync_success)
 {
-    std::shared_ptr<StubPluginImpl> stubPlugin =
-        std::dynamic_pointer_cast<StubPluginImpl>(
-            std::make_shared<StubPluginFactory>(PLUGIN_NAME)->getPlugin());
+    setUp();
 
     const std::set<std::string> READERS = {
         "FC_Reader1", "FC_Reader2", "FC_Reader3"};
@@ -197,4 +207,6 @@ TEST(StubPluginTest, plugUnplugMultiReadersSync_success)
     stubPlugin->unplugStubReaders(READERS, true);
 
     ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 0);
+
+    tearDown();
 }

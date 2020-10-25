@@ -169,8 +169,8 @@ ADD_EXECUTABLE(keyplecalypso_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoSelectionRequestTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/PoTransactionTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResource.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectionRequest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectorTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectionRequestTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectorTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SecuritySettings.cpp
 
 	# calypso - transaction - exception

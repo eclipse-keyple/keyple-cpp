@@ -30,6 +30,12 @@ using namespace keyple::core::seproxy::event;
  * observers of a {@link ObservableReader}
  */
 class ObservableReaderNotifier : public virtual ObservableReader {
+public:
+    /**
+     *
+     */
+    virtual ~ObservableReaderNotifier() = default;
+
     /**
      * Push a ReaderEvent of the {@link ObservableReaderNotifier} to its
      * registered observers.

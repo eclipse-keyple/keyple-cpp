@@ -14,6 +14,8 @@
 
 #include "AbstractObservablePlugin.h"
 
+#include <typeinfo>
+
 namespace keyple {
 namespace core {
 namespace seproxy {

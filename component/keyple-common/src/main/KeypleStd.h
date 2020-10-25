@@ -17,6 +17,7 @@
 #include <memory>
 #include <iomanip>
 #include <iostream>
+#include <map>
 #include <ostream>
 #include <set>
 #include <vector>
@@ -24,8 +25,7 @@
 namespace std {
 
 template <typename To, typename From>
-inline std::shared_ptr<To> reinterpret_pointer_cast(
-    std::shared_ptr<From> const & ptr) noexcept
+inline std::shared_ptr<To> reinterpret_pointer_cast(std::shared_ptr<From> const & ptr) noexcept
 {
     return std::shared_ptr<To>(ptr, reinterpret_cast<To *>(ptr.get()));
 }
@@ -48,8 +48,7 @@ inline std::ostream& operator<<(std::ostream& os, const std::vector<uint8_t>& v)
     return os;
 }
 
-inline std::ostream& operator<<(std::ostream& os,
-                                const std::set<std::string>& s)
+inline std::ostream& operator<<(std::ostream& os, const std::set<std::string>& s)
 {
     os << "{";
     for (auto it = s.begin(); it != s.end(); ++it)
@@ -57,6 +56,21 @@ inline std::ostream& operator<<(std::ostream& os,
         if (it != s.begin())
             os << ", ";
         os << *it;
+    }
+    os << "}";
+
+    return os;
+}
+
+inline
+std::ostream& operator<<(std::ostream& os, const std::map<const std::string, const std::string>& s)
+{
+    os << "MAP: {";
+    for (auto it = s.begin(); it != s.end(); ++it)
+    {
+        if (it != s.begin())
+            os << ", ";
+        os << "{" << it->first << ", " << it->second << "}";
     }
     os << "}";
 

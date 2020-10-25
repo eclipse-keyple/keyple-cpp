@@ -53,10 +53,11 @@ public:
      */
     SamSelectionRequest(std::shared_ptr<SamSelector> samSelector);
 
-protected:
     /**
      * Create a CalypsoSam object containing the selection data received from
      * the plugin
+     *
+     * C++ vs. Java: protected in Java
      *
      * @param seResponse the SE response received
      * @return a {@link CalypsoSam}

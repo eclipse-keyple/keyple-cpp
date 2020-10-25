@@ -80,7 +80,8 @@ public:
          * @param samIdentifier the {@link SamIdentifier} of the targeted SAM
          * @return the builder instance
          */
-        SamSelectorBuilder& samIdentifier(const SamIdentifier& samIdentifier);
+        SamSelectorBuilder& samIdentifier(
+            const std::shared_ptr<SamIdentifier> samIdentifier);
 
         /**
          * {@inheritDoc}

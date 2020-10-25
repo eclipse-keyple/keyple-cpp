@@ -33,10 +33,10 @@ public:
         const std::shared_ptr<ApduResponse>& response)
     : AbstractApduResponseParser(response, nullptr) {}
 
-    std::map<int, std::shared_ptr<StatusProperties>>
+    const std::map<int, std::shared_ptr<StatusProperties>>&
         getMockStatusTable()
     {
-        return AbstractApduResponseParser::getStatusTable();
+        return STATUS_TABLE;
     }
 
 protected:

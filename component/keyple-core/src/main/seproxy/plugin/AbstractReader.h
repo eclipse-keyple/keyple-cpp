@@ -154,6 +154,11 @@ protected:
     AbstractReader(const std::string& pluginName, const std::string& name);
 
     /**
+     *
+     */
+    virtual ~AbstractReader() = default;
+
+    /**
      * Abstract method implemented by the AbstractLocalReader and VirtualReader
      * classes.
      * <p>

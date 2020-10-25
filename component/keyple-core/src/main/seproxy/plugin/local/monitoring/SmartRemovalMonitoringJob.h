@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2018 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -33,24 +32,20 @@ namespace monitoring {
 using namespace keyple::common;
 
 /**
- * Detect the SE removal thanks to the method {@link
- * SmartRemovalReader#waitForCardAbsentNative()}. This method is invoked in
- * another thread
+ * Detect the SE removal thanks to the method {@link SmartRemovalReader#waitForCardAbsentNative()}.
+ * This method is invoked in another thread
  * <p>
- * This job should be used by readers who have the ability to natively detect
- * the disappearance of the SE during a communication session with an ES
- * (between two APDU exchanges).
+ * This job should be used by readers who have the ability to natively detect the disappearance of
+ * the SE during a communication session with an ES (between two APDU exchanges).
  * <p>
  * PC/SC readers have this capability.
  * <p>
- * If the SE is removed during processing, then an internal SE_REMOVED event is
- * triggered.
+ * If the SE is removed during processing, then an internal SE_REMOVED event is triggered.
  * <p>
- * If a communication problem with the reader occurs (KeypleReaderIOException)
- * an internal
+ * If a communication problem with the reader occurs (KeypleReaderIOException) an internal
  * STOP_DETECT event is fired.
  */
-class KEYPLECORE_API SmartRemovalMonitoringJob : public MonitoringJob {
+class KEYPLECORE_API SmartRemovalMonitoringJob final : public MonitoringJob {
 public:
     /**
      *
@@ -60,20 +55,13 @@ public:
     /**
      *
      */
-    virtual ~SmartRemovalMonitoringJob() = default;
+    std::future<void> startMonitoring(AbstractObservableState* state,
+                                      std::atomic<bool>& cancellationFlag) override;
 
     /**
      *
      */
-    std::future<void> startMonitoring(
-        AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
-        override;
-
-    /**
-     *
-     */
-    void monitoringJob(AbstractObservableState* state,
-                       std::atomic<bool>& cancellationFlag);
+    void monitoringJob(AbstractObservableState* state, std::atomic<bool>& cancellationFlag);
 
     /**
      *

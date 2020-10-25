@@ -17,6 +17,7 @@
 #include <iterator>
 #include <map>
 #include <mutex>
+#include <ostream>
 #include <type_traits>
 
 namespace keyple {
@@ -130,7 +131,7 @@ public:
     }
 
     /**
-     *
+     * /!\ This function is not thread safe. Use erase(const K& k) instead
      */
     iterator erase(const_iterator position)
     {
@@ -223,6 +224,22 @@ public:
         this->mMap = other.mMap;
 
         return *this;
+    }
+
+    /**
+     *
+     */
+    friend std::ostream& operator<<(std::ostream& os, const ConcurrentMap<K, V>& cm)
+    {
+        os << "CONCURRENTMAP: {";
+        for (auto it = cm.begin(); it != cm.end(); ++it) {
+            if (it != cm.end())
+                os << ", ";
+            os << "{" << it->first << ", " << it->second << "}";
+        }
+        os << "}";
+
+        return os;
     }
 
 private:

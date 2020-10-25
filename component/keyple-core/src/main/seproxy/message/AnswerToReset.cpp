@@ -15,6 +15,9 @@
 #include "Arrays.h"
 #include "AnswerToReset.h"
 
+/* Common */
+#include "KeypleStd.h"
+
 namespace keyple {
 namespace core {
 namespace seproxy {

@@ -63,8 +63,9 @@ TEST(SamReadCeilingsCmdBuildTest,
             std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(SW1SW2_OK),
                                            nullptr));
 
-    ASSERT_EQ(typeid(*samReadCeilingsRespPars.get()),
-              typeid(SamReadCeilingsRespPars));
+    auto& instance = *samReadCeilingsRespPars.get();
+
+    ASSERT_EQ(typeid(instance), typeid(SamReadCeilingsRespPars));
 }
 
 TEST(SamReadCeilingsCmdBuildTest, samReadCeilingsCmdBuild_cla94)
