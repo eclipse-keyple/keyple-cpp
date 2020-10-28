@@ -86,9 +86,10 @@ public:
     friend KEYPLECORE_API std::ostream& operator<<(
         std::ostream& os, const std::shared_ptr<AbstractMatchingSe>& ams);
 
-protected:
     /**
-     * Constructor.
+     * Constructor
+     *
+     * C++ vs. Java: constructor is protected in Java but prevents use of std::make_shared in C++.
      *
      * @param selectionResponse the response from the SE
      * @param transmissionMode the transmission mode, contact or contactless

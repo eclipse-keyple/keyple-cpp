@@ -49,15 +49,17 @@ INCLUDE_DIRECTORIES(
 ADD_EXECUTABLE(demo_seprotocoldetection_pcsc
 
 	# Example - Common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/AbstractReaderObserverEngine.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/CustomProtocols.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/GenericSeSelectionRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/SeProtocolDetectionEngine.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/ReaderUtilities.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/PcscReadersSettings.cpp
+
+	# Example - Common - Generic
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/AbstractReaderObserverEngine.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/CustomProtocols.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/GenericSeSelectionRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/SeProtocolDetectionEngine.cpp
 
 	# Example - PC
 	${CMAKE_CURRENT_SOURCE_DIR}/Demo_SeProtocolDetection_Pcsc.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/PcscReadersSettings.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/ReaderUtilities.cpp
 )
 
 IF(UNIX)

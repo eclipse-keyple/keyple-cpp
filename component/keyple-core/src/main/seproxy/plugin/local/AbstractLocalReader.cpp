@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <typeinfo>
 
@@ -48,6 +47,7 @@ namespace plugin {
 namespace local {
 
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
@@ -63,8 +63,8 @@ AbstractLocalReader::AbstractLocalReader(const std::string& pluginName,
 : AbstractReader(pluginName, readerName)
 {
     /*
-     * Provides an initial value for measuring the inter-exchange time. The
-     * first measurement gives the time elapsed since the plugin was loaded.
+     * Provides an initial value for measuring the inter-exchange time. The first measurement gives
+     * the time elapsed since the plugin was loaded.
      */
     mBefore = System::nanoTime();
 }
@@ -83,104 +83,93 @@ std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannel(
     std::shared_ptr<SeSelector> seSelector)
 {
     const std::vector<uint8_t>& atr = getATR();
-    bool selectionHasMatched        = true;
+    bool selectionHasMatched = true;
     std::shared_ptr<SelectionStatus> selectionStatus;
 
     /* Perform ATR filtering if requested */
     if (seSelector->getAtrFilter() != nullptr) {
-        if (atr.empty()) {
+        if (atr.empty())
             throw KeypleReaderIOException("Didn't get an ATR from the SE");
-        }
 
-        mLogger->trace("[%] openLogicalChannel => ATR = %\n",
-                      getName(), atr);
+        mLogger->trace("[%] openLogicalChannel => ATR = %\n", getName(), atr);
 
         if (!seSelector->getAtrFilter()->atrMatches(atr)) {
-            mLogger->info("[%] openLogicalChannel => ATR didn't match. "
-                         "SELECTOR = %, ATR = %\n", getName(), seSelector, atr);
+            mLogger->info("[%] openLogicalChannel => ATR didn't match. SELECTOR = %, ATR = %\n",
+                          getName(),
+                          seSelector,
+                          atr);
 
             selectionHasMatched = false;
         }
     }
 
     /*
-     * Perform application selection if requested and if ATR filtering matched
-     * or was not requested
+     * Perform application selection if requested and if ATR filtering matched or was not requested
      */
     if (selectionHasMatched && seSelector->getAidSelector() != nullptr) {
         std::shared_ptr<ApduResponse> fciResponse;
 
-        SmartSelectionReader* smartSelectionReader =
-            dynamic_cast<SmartSelectionReader *>(this);
+        auto smartSelectionReader = dynamic_cast<SmartSelectionReader *>(this);
 
         if (smartSelectionReader) {
             fciResponse = smartSelectionReader->openChannelForAid(
                 *(seSelector->getAidSelector().get()));
         } else {
-            fciResponse = processExplicitAidSelection(
-                *(seSelector->getAidSelector().get()));
+            fciResponse = processExplicitAidSelection(*(seSelector->getAidSelector().get()));
         }
 
-        if (fciResponse->isSuccessful() &&
-            fciResponse->getDataOut().size() == 0) {
+        if (fciResponse->isSuccessful() && fciResponse->getDataOut().size() == 0) {
             /*
-             * The selection didn't provide data (e.g. OMAPI), we get the FCI
-             * using a Get Data command.
+             * The selection didn't provide data (e.g. OMAPI), we get the FCI using a Get Data
+             * command.
              *
-             * The AID selector is provided to handle successful status word in
-             * the Get Data command.
+             * The AID selector is provided to handle successful status word in the Get Data
+             * command.
              */
-            fciResponse =
-                recoverSelectionFciData(*(seSelector->getAidSelector().get()));
+            fciResponse = recoverSelectionFciData(*(seSelector->getAidSelector().get()));
         }
 
         /*
-         * The ATR filtering matched or was not requested. The selection status
-         * is determined by the answer to the select application command.
+         * The ATR filtering matched or was not requested. The selection status is determined by the
+         * answer to the select application command.
          */
-        selectionStatus = std::make_shared<SelectionStatus>(
-            std::make_shared<AnswerToReset>(atr), fciResponse,
-            fciResponse->isSuccessful());
+        selectionStatus = std::make_shared<SelectionStatus>(std::make_shared<AnswerToReset>(atr),
+                                                            fciResponse,
+                                                            fciResponse->isSuccessful());
     } else {
         /*
-         * The ATR filtering didn't match or no AidSelector was provided. The
-         * selection status is determined by the ATR filtering.
+         * The ATR filtering didn't match or no AidSelector was provided. The selection status is
+         * determined by the ATR filtering.
          */
         std::vector<uint8_t> dummy;
         selectionStatus = std::make_shared<SelectionStatus>(
-            std::make_shared<AnswerToReset>(atr),
-            std::make_shared<ApduResponse>(dummy, nullptr),
-            selectionHasMatched);
+                              std::make_shared<AnswerToReset>(atr),
+                              std::make_shared<ApduResponse>(dummy, nullptr),
+                              selectionHasMatched);
     }
 
     return selectionStatus;
 }
 
-std::shared_ptr<SelectionStatus>
-AbstractLocalReader::openLogicalChannelAndSelect(
+std::shared_ptr<SelectionStatus> AbstractLocalReader::openLogicalChannelAndSelect(
     std::shared_ptr<SeSelector> seSelector)
 {
 
     std::shared_ptr<SelectionStatus> selectionStatus;
 
-    if (seSelector == nullptr) {
-        throw IllegalArgumentException(
-                  "Try to open logical channel without selector.");
-    }
+    if (seSelector == nullptr)
+        throw IllegalArgumentException("Try to open logical channel without selector.");
 
     if (!isLogicalChannelOpen()) {
         /*
-         * init of the physical SE channel: if not yet established, opening of a
-         * new physical channel
+         * init of the physical SE channel: if not yet established, opening of a new physical
+         * channel
          */
-        if (!isPhysicalChannelOpen()) {
+        if (!isPhysicalChannelOpen())
             openPhysicalChannel();
-        }
 
-        if (!isPhysicalChannelOpen()) {
-            throw KeypleReaderIOException(
-                "Fail to open physical channel.");
-        }
+        if (!isPhysicalChannelOpen())
+            throw KeypleReaderIOException("Fail to open physical channel.");
     }
 
     selectionStatus = openLogicalChannel(seSelector);
@@ -195,28 +184,28 @@ bool AbstractLocalReader::isLogicalChannelOpen() const
 
 void AbstractLocalReader::closeLogicalChannel()
 {
-    mLogger->trace("[%] closeLogicalChannel => Closing of the logical "
-                  "channel\n", getName());
+    mLogger->trace("[%] closeLogicalChannel => Closing of the logical channel\n", getName());
 
     mLogicalChannelIsOpen = false;
     mAidCurrentlySelected.clear();
     mCurrentSelectionStatus.reset();
 }
 
-void AbstractLocalReader::addSeProtocolSetting(
-    std::shared_ptr<SeProtocol> seProtocol, const std::string& protocolRule)
+void AbstractLocalReader::addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol,
+                                               const std::string& protocolRule)
 {
     mLogger->trace("setSeProcotolSetting - adding 1 protocol to map: % : %\n",
-                  seProtocol->getName(), protocolRule);
+                   seProtocol->getName(),
+                   protocolRule);
 
     mProtocolsMap.emplace(seProtocol, protocolRule);
 }
 
-void AbstractLocalReader::setSeProtocolSetting(
-    const std::map<std::shared_ptr<SeProtocol>, std::string>& protocolSetting)
+void AbstractLocalReader::setSeProtocolSetting(const std::map<std::shared_ptr<SeProtocol>,
+                                               std::string>& protocolSetting)
 {
     mLogger->trace("setSeProcotolSetting - adding % protocols to map\n",
-                  protocolSetting.size());
+                   protocolSetting.size());
 
     mProtocolsMap.insert(protocolSetting.begin(), protocolSetting.end());
 }
@@ -230,8 +219,7 @@ std::vector<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequests(
     int requestIndex = 0, lastRequestIndex;
 
     /* Determine which requests are matching the current ATR */
-    mLogger->trace("processSeRequestSet - determining which requests are "
-                  "matching the ATR\n");
+    mLogger->trace("processSeRequestSet - determining which requests are matching the ATR\n");
 
     for (auto request : seRequests) {
         std::shared_ptr<SeSelector> seSelector = request->getSeSelector();
@@ -246,11 +234,11 @@ std::vector<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequests(
     }
 
     /*
-     * we have now an array of booleans saying whether the corresponding request
-     * and the current SE match or not
+     * we have now an array of booleans saying whether the corresponding request and the current SE
+     * match or not
      */
     lastRequestIndex = requestIndex;
-    requestIndex     = 0;
+    requestIndex = 0;
 
     /*
      * The current request list is possibly made of several APDU command lists.
@@ -259,8 +247,7 @@ std::vector<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequests(
      *
      * If the requestMatchesProtocol is false we skip to the next SeRequest.
      *
-     * If keepChannelOpen is false, we close the physical channel for the last
-     * request.
+     * If keepChannelOpen is false, we close the physical channel for the last request.
      */
     mLogger->debug("processSeRequestSet - processing requests set\n");
 
@@ -270,8 +257,7 @@ std::vector<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequests(
     for (auto request : seRequests) {
         if (!stopProcess) {
             if (requestMatchesProtocol[requestIndex]) {
-                mLogger->debug("[%] processSeRequests => transmit %\n",
-                              this->getName(), request);
+                mLogger->debug("[%] processSeRequests => transmit %\n", getName(), request);
 
                 std::shared_ptr<SeResponse> response = nullptr;
 
@@ -279,80 +265,67 @@ std::vector<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequests(
                     response = processSeRequestLogical(request);
                 } catch (KeypleReaderIOException& ex) {
                     /*
-                     * The process has been interrupted. We launch a
-                     *  KeypleReaderException with
+                     * The process has been interrupted. We launch a KeypleReaderException with
                      * the responses collected so far.
                      */
-                    /*
-                     * Add the latest (and partial) SeResponse to the current
-                     * list.
-                     */
+
+                    /* Add the latest (and partial) SeResponse to the current list */
                     responses.push_back(ex.getSeResponse());
 
                     /* Build a SeResponseSet with the available data. */
                     ex.setSeResponses(responses);
-                    mLogger->debug("[%] processSeRequests => transmit : " \
-                                   "process interrupted, collect previous " \
-                                   "responses %\n", getName(), responses);
+                    mLogger->debug("[%] processSeRequests => transmit : process interrupted, " \
+                                   "collect previous responses %\n",
+                                   getName(),
+                                   responses);
                     throw ex;
                 }
 
                 responses.push_back(response);
-                mLogger->debug("[%] processSeRequests => receive %\n",
-                              this->getName(), response);
+                mLogger->debug("[%] processSeRequests => receive %\n", getName(), response);
             } else {
                 /*
-                 * in case the protocolFlag of a SeRequest doesn't match the
-                 * reader status, a null SeResponse is added to the
-                 * SeResponseSet.
+                 * In case the protocolFlag of a SeRequest doesn't match the reader status, a null
+                 * SeResponse is added to the SeResponseSet.
                  */
                 responses.push_back(nullptr);
             }
 
-            if (multiSeRequestProcessing ==
-                MultiSeRequestProcessing::PROCESS_ALL) {
+            if (multiSeRequestProcessing == MultiSeRequestProcessing::PROCESS_ALL) {
                 /*
-                 * Multi SeRequest case: just close the logical channel and go
-                 * on with the next selection.
+                 * Multi SeRequest case: just close the logical channel and go on with the next
+                 * selection.
                  */
                 closeLogicalChannel();
             } else {
                 if (mLogicalChannelIsOpen) {
-                    /*
-                     * The current PO matches the selection case, we stop here
-                     */
+                    /* The current PO matches the selection case, we stop here */
                     stopProcess = true;
                 }
             }
 
             requestIndex++;
-            if (lastRequestIndex == requestIndex &&
-                channelControl != ChannelControl::KEEP_OPEN) {
+            if (lastRequestIndex == requestIndex && channelControl != ChannelControl::KEEP_OPEN) {
                 /* Close logical channel unconditionally */
                 closeLogicalChannel();
 
-                ObservableReader* observableReader =
-                    dynamic_cast<ObservableReader *>(this);
+                auto observableReader = dynamic_cast<ObservableReader *>(this);
 
-                if (observableReader &&
-                    observableReader->countObservers() == 0) {
+                if (observableReader && observableReader->countObservers() == 0)
                     /*
                      * Not observable/observed: close immediately the
                      * physical channel if requested.
                      */
                     closePhysicalChannel();
-                }
 
-                AbstractObservableLocalReader* abstractReader =
-                    dynamic_cast<AbstractObservableLocalReader *>(this);
+                auto abstractReader = dynamic_cast<AbstractObservableLocalReader *>(this);
 
-                if (abstractReader) {
+                if (abstractReader)
                     /*
                      * Request the removal sequence when the reader is
                      * monitored by a thread.
                      */
                     abstractReader->startRemovalSequence();
-                }
             }
         }
     }
@@ -360,17 +333,13 @@ std::vector<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequests(
     return responses;
 }
 
-std::shared_ptr<SeResponse>
-AbstractLocalReader::processSeRequest(
+std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequest(
     const std::shared_ptr<SeRequest> seRequest,
     const ChannelControl& channelControl)
 {
     std::shared_ptr<SeResponse> seResponse = nullptr;
 
-    /*
-     * The SeRequest may be null when we just need to close the physical
-     * channel
-     */
+    /* The SeRequest may be null when we just need to close the physical channel */
     if (seRequest)
         seResponse = processSeRequestLogical(seRequest);
 
@@ -378,27 +347,20 @@ AbstractLocalReader::processSeRequest(
         /* Close logical channel unconditionally */
         closeLogicalChannel();
 
-        ObservableReader* observableReader =
-                    dynamic_cast<ObservableReader *>(this);
+        auto observableReader = dynamic_cast<ObservableReader *>(this);
 
-        if (observableReader && observableReader->countObservers() == 0) {
+        if (observableReader && observableReader->countObservers() == 0)
             /*
              * Not observable/observed: close immediately the physical channel
              * if requested.
              */
             closePhysicalChannel();
-        }
 
-        AbstractObservableLocalReader* abstractReader =
-                    dynamic_cast<AbstractObservableLocalReader *>(this);
+        auto abstractReader = dynamic_cast<AbstractObservableLocalReader *>(this);
 
-        if (abstractReader) {
-            /*
-             * Request the removal sequence when the reader is
-             * monitored by a thread.
-             */
+        if (abstractReader)
+            /* Request the removal sequence when the reader is monitored by a thread */
             abstractReader->startRemovalSequence();
-        }
     }
 
     return seResponse;
@@ -407,13 +369,14 @@ AbstractLocalReader::processSeRequest(
 std::shared_ptr<SeResponse> AbstractLocalReader::processSeRequestLogical(
     std::shared_ptr<SeRequest> seRequest)
 {
-    bool previouslyOpen                              = true;
+    bool previouslyOpen = true;
     std::shared_ptr<SelectionStatus> selectionStatus = nullptr;
 
     std::vector<std::shared_ptr<ApduResponse>> apduResponses;
 
     mLogger->debug("[%] processSeRequest => Logical channel open = %\n",
-                  getName(), isLogicalChannelOpen());
+                   getName(),
+                   isLogicalChannelOpen());
 
     /*
      * Unless the selector is null, we try to open a logical channel; if the

@@ -48,16 +48,16 @@ INCLUDE_DIRECTORIES(
 
 ADD_EXECUTABLE(demo_seprotocoldetection_stub
 
-	# Example - Common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/AbstractReaderObserverEngine.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/CustomProtocols.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/GenericSeSelectionRequest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/SeProtocolDetectionEngine.cpp
+	# Example - Common - Generic
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/AbstractReaderObserverEngine.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/CustomProtocols.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/GenericSeSelectionRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/SeProtocolDetectionEngine.cpp
 
-	# Example - PC - Stub
-	${CMAKE_CURRENT_SOURCE_DIR}/stub/se/StubMifareClassic.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/stub/se/StubMifareDesfire.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/stub/se/StubMifareUL.cpp
+	# Example - Common - Generic - Stub
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/stub/StubMifareClassic.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/stub/StubMifareDesfire.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/stub/StubMifareUL.cpp
 
 	# Example - PC
 	${CMAKE_CURRENT_SOURCE_DIR}/Demo_SeProtocolDetection_Stub.cpp

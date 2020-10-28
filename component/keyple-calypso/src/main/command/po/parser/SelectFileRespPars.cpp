@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "SelectFileRespPars.h"
 
@@ -37,6 +36,7 @@ namespace parser {
 
 using namespace keyple::calypso::command::po::exception;
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::util;
 
@@ -90,8 +90,7 @@ const std::vector<uint8_t>& SelectFileRespPars::getProprietaryInformation()
         TLV tlv(mResponse->getDataOut());
 
         if (!tlv.parse(std::make_shared<Tag>(TAG_PROPRIETARY_INFORMATION), 0))
-            throw IllegalStateException(
-                      "Proprietary information: tag not found.");
+            throw IllegalStateException("Proprietary information: tag not found.");
 
         mProprietaryInformation = tlv.getValue();
 
