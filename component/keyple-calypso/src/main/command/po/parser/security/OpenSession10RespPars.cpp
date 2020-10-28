@@ -31,6 +31,7 @@ namespace security {
 
 using namespace keyple::calypso::command::po;
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::message;
 
 using SecureSession = AbstractOpenSessionRespPars::SecureSession;
@@ -45,7 +46,7 @@ OpenSession10RespPars::OpenSession10RespPars(
      */
     const std::vector<uint8_t> dataOut = response->getDataOut();
     if (dataOut.size())
-       mSecureSession = toSecureSession(dataOut);
+        mSecureSession = toSecureSession(dataOut);
 }
 
 std::shared_ptr<SecureSession> OpenSession10RespPars::toSecureSession(
@@ -99,9 +100,8 @@ std::shared_ptr<SecureSession> OpenSession10RespPars::createSecureSession(
         data = Arrays::copyOfRange(apduResponseData, 6, 35);
         break;
     default:
-        throw IllegalStateException(
-                  "Bad response length to Open Secure Session: " +
-                  std::to_string(apduResponseData.size()));
+        throw IllegalStateException("Bad response length to Open Secure Session: " +
+                                    std::to_string(apduResponseData.size()));
     }
 
     /* KVC doesn't exist and is set to null for this type of PO */

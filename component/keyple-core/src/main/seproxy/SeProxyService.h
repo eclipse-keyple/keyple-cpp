@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -34,13 +33,10 @@ namespace seproxy {
 using namespace keyple::core::seproxy::exception;
 
 /**
- * The Class SeProxyService. This singleton is the entry point of the SE Proxy
- * Service, its instance has to be called by a ticketing application in order to
- * establish a link with a SE’s application.
- *
+ * The Class SeProxyService. This singleton is the entry point of the SE Proxy Service, its instance
+ * has to be called by a ticketing application in order to establish a link with a SE’s application.
  */
-class KEYPLECORE_API SeProxyService final
-: public std::enable_shared_from_this<SeProxyService> {
+class KEYPLECORE_API SeProxyService final {
 public:
     /**
      * Gets the single instance of SeProxyService.
@@ -54,15 +50,13 @@ public:
     }
 
     /**
-     * Register a new plugin to be available in the platform if not registered
-     * yet
+     * Register a new plugin to be available in the platform if not registered yet
      *
      * @param pluginFactory : plugin factory to instantiate plugin to be added
      * @throw KeyplePluginInstantiationException if instantiation failed
      * @return ReaderPlugin : registered reader plugin
      */
-    std::shared_ptr<ReaderPlugin> registerPlugin(
-        std::shared_ptr<PluginFactory> pluginFactory);
+    std::shared_ptr<ReaderPlugin> registerPlugin(std::shared_ptr<PluginFactory> pluginFactory);
 
     /**
      * Unregister plugin from platform
@@ -86,8 +80,7 @@ public:
      * @return the plugin names and plugin instances map of interfaced reader’s
      *         plugins.
      */
-    const std::map<const std::string, std::shared_ptr<ReaderPlugin>>&
-        getPlugins() const;
+    const std::map<const std::string, std::shared_ptr<ReaderPlugin>>& getPlugins() const;
 
     /**
      * Gets the plugin whose name is provided as an argument.

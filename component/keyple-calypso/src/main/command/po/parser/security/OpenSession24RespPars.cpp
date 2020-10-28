@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "OpenSession24RespPars.h"
 #include "ApduResponse.h"
@@ -30,6 +29,7 @@ namespace security {
 
 using namespace keyple::calypso::command::po;
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::message;
 
 using SecureSession = AbstractOpenSessionRespPars::SecureSession;
@@ -90,34 +90,30 @@ std::shared_ptr<SecureSession> OpenSession24RespPars::createSecureSession(
         break;
     case 34:
         previousSessionRatified = true;
-        data                    = Arrays::copyOfRange(apduResponseData, 5, 34);
+        data = Arrays::copyOfRange(apduResponseData, 5, 34);
         break;
     case 7:
         previousSessionRatified = false;
         break;
     case 36:
         previousSessionRatified = false;
-        data                    = Arrays::copyOfRange(apduResponseData, 7, 36);
+        data = Arrays::copyOfRange(apduResponseData, 7, 36);
         break;
     default:
-        throw IllegalStateException(
-                  "Bad response length to Open Secure Session: " +
-                  std::to_string(apduResponseData.size()));
+        throw IllegalStateException("Bad response length to Open Secure Session: " +
+                                    std::to_string(apduResponseData.size()));
     }
 
-    std::vector<uint8_t> challengeTransactionCounter =
-        Arrays::copyOfRange(apduResponseData, 1, 4);
-    std::vector<uint8_t> challengeRandomNumber =
-        Arrays::copyOfRange(apduResponseData, 4, 5);
+    std::vector<uint8_t> challengeTransactionCounter = Arrays::copyOfRange(apduResponseData, 1, 4);
+    std::vector<uint8_t> challengeRandomNumber = Arrays::copyOfRange(apduResponseData, 4, 5);
 
-    return std::make_shared<SecureSession>(
-               challengeTransactionCounter,
-               challengeRandomNumber,
-               previousSessionRatified,
-               false,
-               apduResponseData[0],
-               data,
-               apduResponseData);
+    return std::make_shared<SecureSession>(challengeTransactionCounter,
+                                           challengeRandomNumber,
+                                           previousSessionRatified,
+                                           false,
+                                           apduResponseData[0],
+                                           data,
+                                           apduResponseData);
 }
 
 }
