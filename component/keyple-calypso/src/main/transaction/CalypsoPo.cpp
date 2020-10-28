@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "ApduResponse.h"
 #include "CalypsoPo.h"
@@ -35,6 +34,7 @@ using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::selection;
 using namespace keyple::core::util;
@@ -54,10 +54,8 @@ const uint8_t CalypsoPo::APP_TYPE_CALYPSO_REV_32_MODE = 0x08;
 const uint8_t CalypsoPo::APP_TYPE_WITH_PUBLIC_AUTHENTICATION = 0x10;
 
 const int CalypsoPo::PO_REV1_ATR_LENGTH = 20;
-const int CalypsoPo
-    ::REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION = 3;
-const int CalypsoPo
-    ::REV2_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION = 6;
+const int CalypsoPo::REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION = 3;
+const int CalypsoPo::REV2_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION = 6;
 
 const std::vector<int> CalypsoPo::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE = {
     0, 0, 0, 0, 0, 0, 215, 256, 304, 362, 430, 512, 608, 724, 861, 1024, 1217,

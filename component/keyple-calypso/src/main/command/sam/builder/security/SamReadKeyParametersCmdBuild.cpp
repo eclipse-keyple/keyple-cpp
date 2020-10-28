@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "SamReadKeyParametersCmdBuild.h"
 
@@ -28,11 +27,11 @@ namespace sam {
 namespace builder {
 namespace security {
 
+using namespace keyple::common::exception;
 using namespace keyple::calypso::command::sam;
 using namespace keyple::calypso::command::sam::parser::security;
 
-SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
-  const SamRevision& revision)
+SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(const SamRevision& revision)
 : AbstractSamCommandBuilder(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_KEY_PARAMETERS),
     nullptr)
@@ -46,8 +45,8 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
     mRequest = setApduRequest(cla, mCommand, 0x00, p2, sourceKeyId, 0x00);
 }
 
-SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
-  const SamRevision& revision, const uint8_t kif)
+SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(const SamRevision& revision,
+                                                           const uint8_t kif)
 : AbstractSamCommandBuilder(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_KEY_PARAMETERS),
     nullptr)
@@ -82,9 +81,7 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
 }
 
 SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
-  const SamRevision& revision,
-  const SourceRef& sourceKeyRef,
-  const uint8_t recordNumber)
+  const SamRevision& revision, const SourceRef& sourceKeyRef, const uint8_t recordNumber)
 : AbstractSamCommandBuilder(
     std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_KEY_PARAMETERS),
     nullptr)
@@ -111,9 +108,8 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
         p2 = 0xC0 + recordNumber;
         break;
     default:
-        throw IllegalStateException(
-                  "Unsupported SourceRef parameter " +
-                  std::to_string(sourceKeyRef));
+        throw IllegalStateException("Unsupported SourceRef parameter " +
+                                    std::to_string(sourceKeyRef));
     }
 
     mRequest = setApduRequest(cla, mCommand, 0x00, p2, sourceKeyId, 0x00);
@@ -139,9 +135,8 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
         p2 = 0xFA;
         break;
     default:
-        throw IllegalStateException(
-                  "Unsupported NavControl parameter " +
-                  std::to_string(navControl));
+        throw IllegalStateException("Unsupported NavControl parameter " +
+                                    std::to_string(navControl));
     }
 
     sourceKeyId[0] = kif;
@@ -149,8 +144,7 @@ SamReadKeyParametersCmdBuild::SamReadKeyParametersCmdBuild(
     mRequest = setApduRequest(cla, mCommand, 0x00, p2, sourceKeyId, 0x00);
 }
 
-std::shared_ptr<SamReadKeyParametersRespPars>
-    SamReadKeyParametersCmdBuild::createResponseParser(
+std::shared_ptr<SamReadKeyParametersRespPars> SamReadKeyParametersCmdBuild::createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse)
 {
     return std::make_shared<SamReadKeyParametersRespPars>(apduResponse, this);

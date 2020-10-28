@@ -38,11 +38,11 @@ INCLUDE_DIRECTORIES(
 ADD_EXECUTABLE(demo_observablereadernotification_stub
 
 	# Example - Common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/ObservableReaderNotificationEngine.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/ObservableReaderNotificationEngine.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/stub/StubSe1.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/stub/StubSe2.cpp
 
 	# Example - PC
-	${CMAKE_CURRENT_SOURCE_DIR}/stub/se/StubSe1.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/stub/se/StubSe2.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Demo_ObservableReaderNotification_Stub.cpp
 )
 

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "SelectFileCmdBuild.h"
 
@@ -35,11 +34,12 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
 
-SelectFileCmdBuild::SelectFileCmdBuild(
-  const PoClass& poClass, const SelectFileControl selectFileControl)
+SelectFileCmdBuild::SelectFileCmdBuild(const PoClass& poClass,
+                                       const SelectFileControl selectFileControl)
 : AbstractPoCommandBuilder<SelectFileRespPars>(
       std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::SELECT_FILE),
       nullptr),
@@ -71,8 +71,7 @@ SelectFileCmdBuild::SelectFileCmdBuild(
 
     mRequest = setApduRequest(cla, command, p1, p2, selectData, 0x00);
 
-    const std::string extraInfo = "SELECTIONCONTROL=" +
-                                  StringHelper::toString(selectFileControl);
+    const std::string extraInfo = "SELECTIONCONTROL=" + StringHelper::toString(selectFileControl);
     addSubName(extraInfo);
 }
 
@@ -87,11 +86,9 @@ SelectFileCmdBuild::SelectFileCmdBuild(
     /* Handle the REV1 case */
     const uint8_t p1 = poClass == PoClass::LEGACY ? 0x08 : 0x09;
 
-    mRequest = setApduRequest(poClass.getValue(), command, p1, 0x00,
-                             selectionPath, 0x00);
+    mRequest = setApduRequest(poClass.getValue(), command, p1, 0x00, selectionPath, 0x00);
 
-    const std::string extraInfo = "SELECTIONPATH=" +
-                                   ByteArrayUtil::toHex(selectionPath);
+    const std::string extraInfo = "SELECTIONPATH=" + ByteArrayUtil::toHex(selectionPath);
     addSubName(extraInfo);
 }
 

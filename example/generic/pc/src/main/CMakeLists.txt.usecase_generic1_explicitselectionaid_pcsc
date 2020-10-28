@@ -47,12 +47,14 @@ INCLUDE_DIRECTORIES(
 ADD_EXECUTABLE(usecase_generic1_explicitselectionaid_pcsc
 
 	# Example - Common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/GenericSeSelectionRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/ReaderUtilities.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/PcscReadersSettings.cpp
+
+	# Example - Common - Generic
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/GenericSeSelectionRequest.cpp
 
 	# Example - PC
 	${CMAKE_CURRENT_SOURCE_DIR}/UseCase_Generic1_ExplicitSelectionAid_Pcsc.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/PcscReadersSettings.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/ReaderUtilities.cpp
 )
 
 IF(WIN32)

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -41,14 +40,13 @@ using namespace keyple::core::selection;
 using namespace keyple::common;
 using namespace keyple::core::seproxy::protocol;
 
-class KEYPLECALYPSO_API CalypsoSam : public AbstractMatchingSe {
+class KEYPLECALYPSO_API CalypsoSam final : public AbstractMatchingSe {
 public:
     /**
      * Constructor.
      *
      * @param selectionResponse the selection response from the SAM
-     * @param transmissionMode the current {@link TransmissionMode} (contacts or
-     *        contactless)
+     * @param transmissionMode the current {@link TransmissionMode} (contacts or contactless)
      */
     CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
                const TransmissionMode& transmissionMode);
@@ -56,47 +54,42 @@ public:
     /**
      *
      */
-    virtual ~CalypsoSam() = default;
+    const SamRevision& getSamRevision() const;
 
     /**
      *
      */
-    virtual const SamRevision& getSamRevision() const;
+    const std::vector<uint8_t>& getSerialNumber() const;
 
     /**
      *
      */
-    virtual const std::vector<uint8_t>& getSerialNumber() const;
+    uint8_t getPlatform() const;
 
     /**
      *
      */
-    virtual uint8_t getPlatform() const;
+    uint8_t getApplicationType() const;
 
     /**
      *
      */
-    virtual uint8_t getApplicationType() const;
+    uint8_t getApplicationSubType() const;
 
     /**
      *
      */
-    virtual uint8_t getApplicationSubType() const;
+    uint8_t getSoftwareIssuer() const;
 
     /**
      *
      */
-    virtual uint8_t getSoftwareIssuer() const;
+    uint8_t getSoftwareVersion() const;
 
     /**
      *
      */
-    virtual uint8_t getSoftwareVersion() const;
-
-    /**
-     *
-     */
-    virtual uint8_t getSoftwareRevision() const;
+    uint8_t getSoftwareRevision() const;
 
 private:
     /**

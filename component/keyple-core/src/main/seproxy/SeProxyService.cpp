@@ -79,8 +79,7 @@ bool SeProxyService::isRegistered(const std::string& pluginName)
     return mPlugins.count(pluginName) ? true : false;
 }
 
-const std::map<const std::string, std::shared_ptr<ReaderPlugin>>&
-    SeProxyService::getPlugins() const
+const std::map<const std::string, std::shared_ptr<ReaderPlugin>>& SeProxyService::getPlugins() const
 {
     return mPlugins;
 }

@@ -1,16 +1,16 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
+
 
 #pragma once
 
@@ -29,11 +29,10 @@ using ModificationMode = PoTransaction::SessionSetting::ModificationMode;
 using RatificationMode = PoTransaction::SessionSetting::RatificationMode;
 
 /**
- * A class dedicated to managing the security settings involved in managing
- * secure sessions.
+ * A class dedicated to managing the security settings involved in managing secure sessions.
  * <p>
- * The object provides default values when instantiated, they can be modified
- * with the putKeyInfo method.
+ * The object provides default values when instantiated, they can be modified with the putKeyInfo
+ * method.
  * <p>
  * The getKeyInfo method returns the specified setting value.
  */
@@ -60,8 +59,7 @@ public:
          */
         ModificationMode mSessionModificationMode =
             PoSecuritySettings::mDefaultSessionModificationMode;
-        RatificationMode mRatificationMode =
-            PoSecuritySettings::mDefaultRatificationMode;
+        RatificationMode mRatificationMode = PoSecuritySettings::mDefaultRatificationMode;
 
         /**
          * Constructor
@@ -69,8 +67,7 @@ public:
          * @param samResource the SAM resource we'll be working with<br>
          *        Needed in any cases.
          */
-        PoSecuritySettingsBuilder(
-            std::shared_ptr<SeResource<CalypsoSam>> samResource);
+        PoSecuritySettingsBuilder(std::shared_ptr<SeResource<CalypsoSam>> samResource);
 
         /**
          * Set the Session Modification Mode<br>
@@ -81,7 +78,7 @@ public:
          * @since 0.9
          */
         PoSecuritySettingsBuilder& sessionModificationMode(
-                ModificationMode sessionModificationMode);
+            ModificationMode sessionModificationMode);
 
         /**
          * Set the Ratification Mode<br>
@@ -91,8 +88,7 @@ public:
          * @return the builder instance
          * @since 0.9
          */
-        PoSecuritySettingsBuilder& ratificationMode(
-            const RatificationMode ratificationMode);
+        PoSecuritySettingsBuilder& ratificationMode(const RatificationMode ratificationMode);
 
         /**
          * Set the default KIF<br>
@@ -102,8 +98,8 @@ public:
          * @return the builder instance
          * @since 0.9
          */
-        PoSecuritySettingsBuilder& sessionDefaultKif(
-            const AccessLevel& sessionAccessLevel, const uint8_t kif);
+        PoSecuritySettingsBuilder& sessionDefaultKif(const AccessLevel& sessionAccessLevel,
+                                                     const uint8_t kif);
 
         /**
          * Set the default KVC<br>
@@ -113,8 +109,8 @@ public:
          * @return the builder instance
          * @since 0.9
          */
-        PoSecuritySettingsBuilder& sessionDefaultKvc(
-            const AccessLevel& sessionAccessLevel, const uint8_t kvc);
+        PoSecuritySettingsBuilder& sessionDefaultKvc(const AccessLevel& sessionAccessLevel,
+                                                     const uint8_t kvc);
 
         /**
          * Set the default key record number<br>
@@ -125,14 +121,12 @@ public:
          * @since 0.9
          */
         PoSecuritySettingsBuilder& sessionDefaultKeyRecordNumber(
-            const AccessLevel& sessionAccessLevel,
-            const uint8_t keyRecordNumber);
+            const AccessLevel& sessionAccessLevel, const uint8_t keyRecordNumber);
 
         /**
          * Provides a list of authorized KVC
          *
-         * If this method is not called, the list will remain empty and all KVCs
-         * will be accepted.
+         * If this method is not called, the list will remain empty and all KVCs will be accepted.
          *
          * @param authorizedKvcList the list of authorized KVCs
          * @return the builder instance
@@ -212,15 +206,13 @@ public:
      * @return the default session key record number
      * @since 0.9
      */
-    uint8_t getSessionDefaultKeyRecordNumber(
-        const AccessLevel& sessionAccessLevel) const;
+    uint8_t getSessionDefaultKeyRecordNumber(const AccessLevel& sessionAccessLevel) const;
 
     /**
      * (package-private)<br>
      * Check if the provided kvc value is authorized or not.
      * <p>
-     * If no list of authorized kvc is defined (authorizedKvcList null), all kvc
-     * are authorized.
+     * If no list of authorized kvc is defined (authorizedKvcList null), all kvc are authorized.
      *
      * @param kvc to be tested
      * @return true if the kvc is authorized

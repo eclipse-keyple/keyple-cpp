@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <iostream>
 
@@ -30,12 +29,12 @@ namespace core {
 namespace selection {
 
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::protocol;
 
-AbstractMatchingSe::AbstractMatchingSe(
-    const std::shared_ptr<SeResponse> selectionResponse,
-    const TransmissionMode& transmissionMode)
+AbstractMatchingSe::AbstractMatchingSe(const std::shared_ptr<SeResponse> selectionResponse,
+                                       const TransmissionMode& transmissionMode)
 : mTransmissionMode(transmissionMode)
 {
     /* /!\ C++ vs. Java: check getSelectionStatus() existence */
@@ -71,8 +70,7 @@ const std::vector<uint8_t>& AbstractMatchingSe::getFciBytes() const
     if (hasFci())
         return mFciBytes;
 
-    throw IllegalStateException(
-              "No FCI is available in this AbstractMatchingSe");
+    throw IllegalStateException("No FCI is available in this AbstractMatchingSe");
 }
 
  const std::vector<uint8_t>& AbstractMatchingSe::getAtrBytes() const
@@ -80,8 +78,7 @@ const std::vector<uint8_t>& AbstractMatchingSe::getFciBytes() const
     if (hasAtr())
         return mAtrBytes;
 
-    throw IllegalStateException(
-              "No ATR is available in this AbstractMatchingSe");
+    throw IllegalStateException("No ATR is available in this AbstractMatchingSe");
 }
 
 const TransmissionMode& AbstractMatchingSe::getTransmissionMode() const
@@ -100,8 +97,7 @@ std::ostream& operator<<(std::ostream& os, const AbstractMatchingSe& ams)
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os,
-                         const std::shared_ptr<AbstractMatchingSe>& ams)
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<AbstractMatchingSe>& ams)
 {
     if (ams)
         os << *ams.get();
