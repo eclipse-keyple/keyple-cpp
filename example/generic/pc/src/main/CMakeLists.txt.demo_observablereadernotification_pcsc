@@ -19,31 +19,6 @@ IF(WIN32)
 	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
 ENDIF(WIN32)
 
-INCLUDE_DIRECTORIES(
-	${CMAKE_CURRENT_SOURCE_DIR}
-
-	# Example generic common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main
-
-	# Core
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/event
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/exception
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin/local
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util
-
-	# Plugin - PC/SC
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/pcsc/src/main
-
-	# Smartcard I/O
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-smartcardio/src/main
-
-	# pcsc (Linux / macOS)
-	/usr/include/PCSC
-)
-
 IF(WIN32)
 	SET(CMAKE_FIND_LIBRARY_PREFIXES "")
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")

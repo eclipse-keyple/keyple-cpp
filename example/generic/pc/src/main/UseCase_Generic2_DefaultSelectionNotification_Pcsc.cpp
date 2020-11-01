@@ -1,21 +1,19 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "AbstractMatchingSe.h"
 #include "ByteArrayUtil.h"
 #include "GenericSeSelectionRequest.h"
-#include "MatchingSelection.h"
 #include "PcscPlugin.h"
 #include "PcscPluginFactory.h"
 #include "ReaderUtilities.h"
@@ -24,7 +22,11 @@
 #include "SeSelection.h"
 #include "StubReader.h"
 
+/* Common */
+#include "IllegalStateException.h"
+
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::selection;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
@@ -33,8 +35,10 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
 using namespace keyple::plugin::pcsc;
+using namespace keyple::example::common;
 using namespace keyple::example::generic::common;
-using namespace keyple::example::generic::pc;
+
+using AidSelector = SeSelector::AidSelector;
 
 /**
  * <h1>Use Case ‘generic 2’ – Default Selection Notification (PC/SC)</h1>
@@ -58,7 +62,7 @@ using namespace keyple::example::generic::pc;
  * </li>
  * </ul>
  */
-class UseCase_Generic2_DefaultSelectionNotification_Pcsc
+class UseCase_Generic2_DefaultSelectionNotification_Pcsc final
 : public std::enable_shared_from_this<
       UseCase_Generic2_DefaultSelectionNotification_Pcsc>,
   public ObservableReader::ReaderObserver {
@@ -96,21 +100,23 @@ public:
         SeProxyService& seProxyService = SeProxyService::getInstance();
 
         /* Assign PcscPlugin to the SeProxyService */
-        seProxyService.registerPlugin(new PcscPluginFactory());
+        auto pcscFactory = std::make_shared<PcscPluginFactory>();
+        auto factory = std::dynamic_pointer_cast<PluginFactory>(pcscFactory);
+        seProxyService.registerPlugin(factory);
 
         /*
-         * Get a SE reader ready to work with contactless SE. Use the getReader
-         * helper method from the ReaderUtilities class.
+         * Get a SE reader ready to work with contactless SE. Use the getReader helper method from
+         * the ReaderUtilities class.
          */
         seReader = ReaderUtilities::getDefaultContactLessSeReader();
 
         /* Check if the reader exists */
-        if (seReader == nullptr) {
+        if (seReader == nullptr)
             throw IllegalStateException("Bad SE reader setup");
-        }
 
-        logger->info("=============== UseCase Generic #2: AID based default "
-                     "selection ===================\n");
+        logger->info("=============== " \
+                     "UseCase Generic #2: AID based default selection " \
+                     "===================\n");
         logger->info("= SE Reader  NAME = %\n", seReader->getName());
 
         /*
@@ -130,38 +136,27 @@ public:
          * Generic selection: configures a SeSelector with all the desired
          * attributes to make the selection
          */
-        std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAid);
-        std::shared_ptr<SeSelector::AidSelector::IsoAid> isoAid =
-            std::make_shared<SeSelector::AidSelector::IsoAid>(aid);
-        std::shared_ptr<SeSelector::AidSelector> aidSelector =
-            std::make_shared<SeSelector::AidSelector>(isoAid, nullptr);
-        std::shared_ptr<SeSelector> seSelector =
-            std::make_shared<SeSelector>(SeCommonProtocols::PROTOCOL_ISO14443_4,
-                                         nullptr, aidSelector, "AID:" + seAid);
-        std::shared_ptr<GenericSeSelectionRequest> genericSeSelectionRequest =
-            std::make_shared<GenericSeSelectionRequest>(seSelector);
+        auto aidSelector = AidSelector::builder()->aidToSelect(seAid).build();
+        auto selector = SeSelector::builder()->seProtocol(SeCommonProtocols::PROTOCOL_ISO14443_4)
+                                              .aidSelector(aidSelector)
+                                              .build();
+        auto seSelector = std::make_shared<GenericSeSelectionRequest>(selector);
 
         /*
          * Add the selection case to the current selection (we could have added
          * other cases here)
          */
-        seSelection->prepareSelection(genericSeSelectionRequest);
+        seSelection->prepareSelection(seSelector);
 
         /*
-         * Provide the SeReader with the selection operation to be processed
-         * when a SE is inserted.
+         * Provide the SeReader with the selection operation to be processed when a SE is inserted
          */
-        (std::dynamic_pointer_cast<ObservableReader>(seReader))
-            ->setDefaultSelectionRequest(
+        (std::dynamic_pointer_cast<ObservableReader>(seReader))->setDefaultSelectionRequest(
                 seSelection->getSelectionOperation(),
                 ObservableReader::NotificationMode::MATCHED_ONLY,
                 ObservableReader::PollingMode::REPEATING);
 
         logger->debug("end of constructor\n");
-    }
-
-    virtual ~UseCase_Generic2_DefaultSelectionNotification_Pcsc()
-    {
     }
 
     void doSomething()
@@ -170,14 +165,8 @@ public:
         (std::dynamic_pointer_cast<ObservableReader>(seReader))
             ->addObserver(shared_from_this());
 
-        logger->info("======================================================="
-                     "===========================\n");
-        logger->info("= Wait for a SE. The default AID based selection to be "
-                     "processed as soon as the  =\n");
-        logger->info("= SE is detected.                                      "
-                     "                          =\n");
-        logger->info("======================================================="
-                     "===========================\n");
+        logger->info("= #### Wait for a SE. The default AID based selection to be processed as " \
+                     "soon as the SE is detected\n");
 
         /* Wait for ever (exit with CTRL-C) */
         while (1);
@@ -186,35 +175,27 @@ public:
     void update(const std::shared_ptr<ReaderEvent> event)
     {
         if (event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
-            /* the selection has one target, get the result at index 0 */
-            if (seSelection
-                    ->processDefaultSelection(
-                        event->getDefaultSelectionsResponse())
-                    ->getActiveSelection()
-                    ->getMatchingSe()) {
-
-                //std::shared_ptr<MatchingSe> selectedSe = seSelection->getSelectedSe(); Alex: unused?
-
-                logger->info("Observer notification: the selection of the SE "
-                             "has succeeded\n");
-
-                logger->info("==============================================="
-                             "===================================\n");
-                logger->info("= End of the SE processing.                    "
-                             "                                  =\n");
-                logger->info("==============================================="
-                             "===================================\n");
-            } else {
-                logger->error("The selection of the SE has failed. Should not"
-                              " have occurred due to the MATCHED_ONLY "
-                              "selection mode\n");
+            /* The selection has one target, get the result at index 0 */
+            std::shared_ptr<AbstractMatchingSe> selectedSe = nullptr;
+            try {
+                selectedSe =
+                    seSelection->processDefaultSelection(event->getDefaultSelectionsResponse())
+                               ->getActiveMatchingSe();
+            } catch (const KeypleException& e) {
+                logger->error("Exception: %\n", e.getMessage());
             }
-        } else if (event->getEventType() ==
-                       ReaderEvent::EventType::SE_INSERTED) {
-            logger->error("SE_INSERTED event: should not have occurred due to"
-                          " the MATCHED_ONLY selection mode\n");
-        } else if (event->getEventType() ==
-                       ReaderEvent::EventType::SE_REMOVED) {
+
+            if (selectedSe != nullptr) {
+                logger->info("Observer notification: the selection of the SE has succeeded\n");
+                logger->info("= #### End of the SE processing\n");
+            } else {
+                logger->error("The selection of the SE has failed. Should not have occurred due " \
+                              "to the MATCHED_ONLY selection mode.");
+            }
+        } else if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED) {
+            logger->error("SE_INSERTED event: should not have occurred due to the MATCHED_ONLY " \
+                          "selection mode\n");
+        } else if (event->getEventType() == ReaderEvent::EventType::SE_REMOVED) {
             logger->info("The SE has been removed\n");
         } else {
             logger->debug("Unhandled case\n");
@@ -229,14 +210,13 @@ public:
              */
             try {
                 std::dynamic_pointer_cast<ObservableReader>(
-                    SeProxyService::getInstance()
-                        .getPlugin(event->getPluginName())
-                        ->getReader(event->getReaderName()))
-                    ->notifySeProcessed();
-            } catch (KeypleReaderNotFoundException& e) {
-                logger->debug("update - KeypleReaderNotFoundException: %\n", e);
-            } catch (KeyplePluginNotFoundException& e) {
-                logger->debug("update - KeyplePluginNotFoundException: %\n", e);
+                    SeProxyService::getInstance().getPlugin(event->getPluginName())
+                                                ->getReader(event->getReaderName()))
+                                                ->notifySeProcessed();
+            } catch (const KeypleReaderNotFoundException& e) {
+                logger->error("Reader not found exception: %\n", e.getMessage());
+            } catch (const KeyplePluginNotFoundException& e) {
+                logger->error("Plugin not found exception: %\n", e.getMessage());
             }
         }
     }
@@ -248,7 +228,6 @@ int main(int argc, char** argv)
     (void)argv;
 
     /* Create the observable object to handle the SE processing */
-    std::shared_ptr<UseCase_Generic2_DefaultSelectionNotification_Pcsc> m =
-        std::make_shared<UseCase_Generic2_DefaultSelectionNotification_Pcsc>();
+    auto m = std::make_shared<UseCase_Generic2_DefaultSelectionNotification_Pcsc>();
     m->doSomething();
 }

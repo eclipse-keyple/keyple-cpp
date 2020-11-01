@@ -21,7 +21,7 @@
 
 namespace keyple {
 namespace example {
-namespace commono {
+namespace common {
 namespace calypso {
 namespace stub {
 

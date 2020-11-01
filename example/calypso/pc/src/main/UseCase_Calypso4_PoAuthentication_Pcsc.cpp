@@ -173,7 +173,7 @@ int main(int argc, char** argv)
 
         if (!calypsoPo->isDfRatified())
             logger->info("========= Previous Secure Session was not ratified. ===================" \
-                         "==");
+                         "==\n");
 
         /* Read the ContractList file inside the Secure Session */
         poTransaction.prepareReadRecordFile(CalypsoClassicInfo::SFI_ContractList,
