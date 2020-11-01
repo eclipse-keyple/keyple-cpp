@@ -1,16 +1,16 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
+
 
 #include "SeProxyService.h"
 
@@ -28,9 +28,7 @@ namespace seproxy {
 
 using namespace keyple::core::seproxy::exception;
 
-SeProxyService::SeProxyService()
-{
-}
+SeProxyService::SeProxyService() {}
 
 std::shared_ptr<ReaderPlugin> SeProxyService::registerPlugin(
     std::shared_ptr<PluginFactory> pluginFactory)
@@ -43,14 +41,11 @@ std::shared_ptr<ReaderPlugin> SeProxyService::registerPlugin(
     const std::string& pluginName = pluginFactory->getPluginName();
 
     if (mPlugins.count(pluginName)) {
-        mLogger->warn("Plugin has already been registered to the platform :" \
-                      " %\n", pluginName);
+        mLogger->warn("Plugin has already been registered to the platform : %\n", pluginName);
         return mPlugins.find(pluginName)->second;
     } else {
-        std::shared_ptr<ReaderPlugin> pluginInstance =
-            pluginFactory->getPlugin();
-        mLogger->info("Registering a new Plugin to the platform : %\n",
-                      pluginName);
+        std::shared_ptr<ReaderPlugin> pluginInstance = pluginFactory->getPlugin();
+        mLogger->info("Registering a new Plugin to the platform : %\n", pluginName);
         mPlugins.insert({pluginName, pluginInstance});
         return pluginInstance;
     }
@@ -62,12 +57,10 @@ bool SeProxyService::unregisterPlugin(const std::string& pluginName)
 
     if (mPlugins.count(pluginName)) {
         mPlugins.erase(pluginName);
-        mLogger->info("Unregistering a plugin from the platform : %\n",
-                      pluginName);
+        mLogger->info("Unregistering a plugin from the platform : %\n", pluginName);
         return true;
     } else {
-        mLogger->warn("Plugin is not registered to the platform : %\n",
-                      pluginName);
+        mLogger->warn("Plugin is not registered to the platform : %\n", pluginName);
         return false;
     }
 }

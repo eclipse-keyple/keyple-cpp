@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                                                *
+ * Copyright (c) 2020 Calypso Networks Association                                                *
  * https://www.calypsonet-asso.org/                                                               *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
@@ -21,14 +21,12 @@
 #include "ApduRequest.h"
 #include "ByteArrayUtil.h"
 #include "ChannelControl.h"
-#include "MatchingSelection.h"
 #include "SeCommonProtocols.h"
 #include "SeReader.h"
 #include "SeSelector.h"
 
 /* Calypso */
 #include "PoSelector.h"
-#include "ReadDataStructure.h"
 #include "PoSelectionRequest.h"
 
 namespace keyple {
@@ -45,6 +43,9 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
 
 using SeCommonProtocol = SeCommonProtocols::SeCommonProtocol;
+using InvalidatedPo = PoSelector::InvalidatedPo;
+using AidSelector = SeSelector::AidSelector;
+using AtrFilter = SeSelector::AtrFilter;
 
 SeProtocolDetectionEngine::SeProtocolDetectionEngine() : AbstractReaderObserverEngine() {}
 
@@ -55,7 +56,7 @@ void SeProtocolDetectionEngine::setReader(std::shared_ptr<SeReader> poReader)
 
 std::shared_ptr<AbstractDefaultSelectionsRequest> SeProtocolDetectionEngine::prepareSeSelection()
 {
-    seSelection = std::make_shared<SeSelection>();
+    mSeSelection = std::make_shared<SeSelection>();
 
     /* Process SDK defined protocols */
     for (const auto& protocol : SeCommonProtocols::values) {
@@ -65,18 +66,21 @@ std::shared_ptr<AbstractDefaultSelectionsRequest> SeProtocolDetectionEngine::pre
             //char SFI_T2Usage = static_cast<char>(0x1A);
             const uint8_t SFI_T2Environment = 0x14;
 
-            auto aidSelector = AidSelector.builder().aidToSelect(HoplinkAID).build();
+            auto aidSelector = AidSelector::builder()->aidToSelect(HoplinkAID).build();
             auto seSelector =
                 PoSelector::builder()->seProtocol(SeCommonProtocols::PROTOCOL_ISO14443_4)
                                       .aidSelector(aidSelector)
                                       .invalidatedPo(InvalidatedPo::REJECT)
-                                      .build());
+                                      .build();
             auto poSelector = std::dynamic_pointer_cast<PoSelector>(seSelector);
             auto poSelectionRequest = std::make_shared<PoSelectionRequest>(poSelector);
 
-            poSelectionRequest.prepareReadRecordFile(SFI_T2Environment, 1);
+            poSelectionRequest->prepareReadRecordFile(SFI_T2Environment, 1);
 
-            seSelection->prepareSelection(poSelectionRequest);
+            auto abstract = std::reinterpret_pointer_cast
+                            <AbstractSeSelectionRequest<AbstractApduCommandBuilder>>(
+                                poSelectionRequest);
+            mSeSelection->prepareSelection(abstract);
 
         } else if(protocol == SeCommonProtocols::PROTOCOL_ISO14443_3A ||
                   protocol == SeCommonProtocols::PROTOCOL_ISO14443_3B) {
@@ -94,22 +98,22 @@ std::shared_ptr<AbstractDefaultSelectionsRequest> SeProtocolDetectionEngine::pre
             auto seSelector =
                 SeSelector::builder()->seProtocol(SeCommonProtocols::PROTOCOL_ISO14443_4)
                                       .atrFilter(atrFilter)
-                                      .build())
+                                      .build();
             auto selection = std::make_shared<GenericSeSelectionRequest>(seSelector);
-            seSelection->prepareSelection(selection);
+            mSeSelection->prepareSelection(selection);
         }
     }
 
-    return seSelection->getSelectionOperation();
+    return mSeSelection->getSelectionOperation();
 }
 
 void SeProtocolDetectionEngine::processSeMatch(
     const std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
 {
     /* Get the SE that matches one of the two selection targets */
-    if (seSelection->processDefaultSelection(defaultSelectionsResponse)->hasActiveSelection()) {
+    if (mSeSelection->processDefaultSelection(defaultSelectionsResponse)->hasActiveSelection()) {
         std::shared_ptr<AbstractMatchingSe> selectedSe =
-            seSelection->processDefaultSelection(defaultSelectionsResponse).getActiveMatchingSe();
+            mSeSelection->processDefaultSelection(defaultSelectionsResponse)->getActiveMatchingSe();
     } else {
         /* TODO check this. Shouldn't an exception have been raised before? */
         std::cout << "No selection matched!" << std::endl;
