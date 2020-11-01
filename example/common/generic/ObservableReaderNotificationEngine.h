@@ -14,6 +14,7 @@
 #pragma once
 
 #include <memory>
+#include <typeinfo>
 
 /* Core - Event */
 #include "ObservableReader.h"
@@ -43,15 +44,14 @@ public:
     void setPluginObserver();
 
     /**
-     * This method is called whenever a Reader event occurs (SE
-     * insertion/removal)
+     * This method is called whenever a Reader event occurs (SE insertion/removal)
      */
     class SpecificReaderObserver final : public ObservableReader::ReaderObserver {
     public:
         /**
          * Constructor
          */
-        SpecificReaderObserver(ObservableReaderNotificationEngine* outerInstance);
+        SpecificReaderObserver();
 
         /**
          *
@@ -62,12 +62,12 @@ public:
         /**
          *
          */
-        ObservableReaderNotificationEngine* mOuterInstance;
+        const std::shared_ptr<Logger> mLogger =
+            LoggerFactory::getLogger(typeid(SpecificReaderObserver));
     };
 
     /**
-     * This method is called whenever a Plugin event occurs (reader
-     * insertion/removal)
+     * This method is called whenever a Plugin event occurs (reader insertion/removal)
      */
     class SpecificPluginObserver final : public ObservablePlugin::PluginObserver {
     public:
@@ -79,8 +79,7 @@ public:
         /**
          * Constructor
          */
-        SpecificPluginObserver(ObservableReaderNotificationEngine* outerInstance,
-                               std::shared_ptr<SpecificReaderObserver> readerObserver);
+        SpecificPluginObserver(std::shared_ptr<SpecificReaderObserver> readerObserver);
 
 
         /**
@@ -97,7 +96,8 @@ public:
         /**
          *
          */
-        ObservableReaderNotificationEngine* mOuterInstance;
+        const std::shared_ptr<Logger> mLogger =
+            LoggerFactory::getLogger(typeid(SpecificPluginObserver));
     };
 
 private:
