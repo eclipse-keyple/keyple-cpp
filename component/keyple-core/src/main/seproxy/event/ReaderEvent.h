@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -25,12 +24,14 @@
 /* Core */
 #include "AbstractDefaultSelectionsResponse.h"
 #include "DefaultSelectionsResponse.h"
+#include "ReaderPlugin.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace event {
 
+using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
 
 /**
@@ -97,9 +98,7 @@ public:
         /**
          *
          */
-        virtual ~EventType()
-        {
-        }
+        virtual ~EventType() = default;
 
         /**
          *
@@ -197,54 +196,62 @@ public:
                     defaultSelectionsResponse);
 
     /**
-     *
+     * @return the name of the plugin from which the reader that generated the event comes from
      */
     const std::string& getPluginName() const;
 
     /**
-     *
+     * @return the name of the reader that generated the event comes from
      */
     const std::string& getReaderName() const;
 
     /**
-     *
+     * @return the type of event
      */
     const EventType& getEventType() const;
 
-	/**
-	 *
-	 */
-    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
-                                                   const ReaderEvent& re);
+    /**
+     * @return the default selection response (when the event is SE_INSERTED or SE_MATCHED)
+     */
+    const std::shared_ptr<AbstractDefaultSelectionsResponse> getDefaultSelectionsResponse() const;
+
+    /**
+     * @return the plugin from which the reader that generated the event comes from
+     */
+    const std::shared_ptr<ReaderPlugin> getPlugin() const;
+
+    /**
+     * @return the reader that generated the event comes from
+     */
+    const std::shared_ptr<SeReader> getReader() const;
 
     /**
      *
      */
-    const std::shared_ptr<AbstractDefaultSelectionsResponse>
-        getDefaultSelectionsResponse() const;
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const ReaderEvent& re);
 
 private:
     /**
      * The type of event
      */
-    const EventType eventType;
+    const EventType mEventType;
 
     /**
      * The name of the plugin handling the reader that produced the event
      */
-    const std::string pluginName;
+    const std::string mPluginName;
 
     /**
      * The name of the reader that produced the event
      */
-    const std::string readerName;
+    const std::string mReaderName;
 
     /**
      * The response to the selection request Note: although the object is
      * instantiated externally, we use DefaultSelectionsResponse here to keep
      * ReaderEvent serializable
      */
-    const std::shared_ptr<DefaultSelectionsResponse> defaultResponses;
+    const std::shared_ptr<DefaultSelectionsResponse> mDefaultResponses;
 };
 
 }

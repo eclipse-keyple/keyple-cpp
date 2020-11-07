@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -55,8 +54,7 @@ public:
      *
      * @param observer the observer object
      */
-    void addObserver(
-        const std::shared_ptr<ObservablePlugin::PluginObserver> observer) final;
+    void addObserver(const std::shared_ptr<ObservablePlugin::PluginObserver> observer) final;
 
     /**
      * Remove a plugin observer.
@@ -66,16 +64,13 @@ public:
      *
      * @param observer the observer object
      */
-    void removeObserver(
-        const std::shared_ptr<ObservablePlugin::PluginObserver> observer) final;
+    void removeObserver(const std::shared_ptr<ObservablePlugin::PluginObserver> observer) final;
 
     /**
      * Remove all observers at once
      * <p>
      * Overrides the method defined in {@link AbstractObservablePlugin}, the
      * thread is ended.
-     *
-     * @deprecated will change in a later version
      */
     void clearObservers() final;
 
@@ -126,8 +121,7 @@ protected:
      * @throw KeypleReaderIOException if the communication with the reader or
      *        the SE has failed
      */
-    virtual std::shared_ptr<SeReader>
-        fetchNativeReader(const std::string& name) = 0;
+    virtual std::shared_ptr<SeReader> fetchNativeReader(const std::string& name) = 0;
 
     /**
      * Check weither the background job is monitoring for new readers
@@ -162,9 +156,7 @@ private:
          *
          * Uses a raw pointer to not mess with weak_ptr & outer instances
          */
-        EventThread(
-            AbstractThreadedObservablePlugin* outerInstance,
-            const std::string& pluginName);
+        EventThread(AbstractThreadedObservablePlugin* outerInstance, const std::string& pluginName);
 
         /**
          * Marks the thread as one that should end when the last cardWaitTimeout

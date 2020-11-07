@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -51,22 +50,22 @@ namespace stub {
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::plugin;
-using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::common;
 
 class KEYPLEPLUGINSTUB_API StubReaderImpl final
-: public AbstractObservableLocalReader, public StubReader,
-  public SmartInsertionReader, public SmartRemovalReader {
+: public AbstractObservableLocalReader,
+  public StubReader,
+  public SmartInsertionReader,
+  public SmartRemovalReader {
 public:
     /**
      * Do not use directly
      *
      * @param readerName
      */
-    StubReaderImpl(const std::string& pluginName,
-                   const std::string& readerName);
+    StubReaderImpl(const std::string& pluginName, const std::string& readerName);
 
     /**
      * Specify
@@ -75,7 +74,8 @@ public:
      * @param name
      * @param transmissionMode
      */
-    StubReaderImpl(const std::string& pluginName, const std::string& name,
+    StubReaderImpl(const std::string& pluginName,
+                   const std::string& name,
                    TransmissionMode transmissionMode);
 
     /**
@@ -91,20 +91,17 @@ public:
     /**
      *
      */
-    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn)
-        override;
+    std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn) override;
 
     /**
      *
      */
-    void setParameter(const std::string& name, const std::string& value)
-        override;
+    void setParameter(const std::string& name, const std::string& value) override;
 
     /**
      *
      */
-    const std::map<const std::string, const std::string>& getParameters() const
-        override;
+    const std::map<const std::string, const std::string>& getParameters() const override;
 
     /**
      * @return the current transmission mode
@@ -181,8 +178,7 @@ protected:
     /**
      *
      */
-    bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
-        override;
+    bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag) override;
 
     /**
      *

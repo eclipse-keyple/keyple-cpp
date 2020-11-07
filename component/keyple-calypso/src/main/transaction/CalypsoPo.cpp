@@ -11,14 +11,19 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#include "ApduResponse.h"
 #include "CalypsoPo.h"
-#include "PoSelectionRequest.h"
+
+/* Core */
+#include "ApduResponse.h"
 #include "SeResponse.h"
-#include "GetDataFciRespPars.h"
 #include "ByteArrayUtil.h"
 #include "SeResponse.h"
 #include "SelectionStatus.h"
+
+/* Calypso */
+#include "CalypsoPoUtils.h"
+#include "GetDataFciRespPars.h"
+#include "PoSelectionRequest.h"
 
 /* Common */
 #include "IllegalStateException.h"
@@ -33,6 +38,7 @@ namespace transaction {
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
+using namespace keyple::calypso::transaction;
 using namespace keyple::common;
 using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::message;
@@ -490,6 +496,94 @@ PoRevision CalypsoPo::determineRevision(const uint8_t applicationType) const
     } else {
         return PoRevision::REV2_4;
     }
+}
+
+void CalypsoPo::setSvData(const int svBalance,
+                          const int svLastTNum,
+                          const std::shared_ptr<SvLoadLogRecord> svLoadLogRecord,
+                          const std::shared_ptr<SvDebitLogRecord> svDebitLogRecord)
+{
+    *mSvBalance = svBalance;
+    mSvLastTNum = svLastTNum;
+
+    /* Update logs, do not overwrite existing values (case of double reading) */
+    if (!svLoadLogRecord)
+        mSvLoadLogRecord = svLoadLogRecord;
+
+    if (!svDebitLogRecord)
+        mSvDebitLogRecord = svDebitLogRecord;
+}
+
+int CalypsoPo::getSvBalance() const
+{
+    if (!mSvBalance)
+        throw IllegalStateException("No SV Get command has been executed.");
+
+    return *mSvBalance.get();
+}
+
+int CalypsoPo::getSvLastTNum() const
+{
+    if (!mSvBalance)
+        throw IllegalStateException("No SV Get command has been executed.");
+
+    return mSvLastTNum;
+}
+
+const std::shared_ptr<SvLoadLogRecord> CalypsoPo::getSvLoadLogRecord()
+{
+    if (!mSvLoadLogRecord) {
+        /* Try to get it from the file data */
+        std::vector<uint8_t> logRecord = getFileBySfi(CalypsoPoUtils::SV_RELOAD_LOG_FILE_SFI)
+                                            ->getData()
+                                            ->getContent();
+        mSvLoadLogRecord = std::make_shared<SvLoadLogRecord>(logRecord, 0);
+    }
+
+    return mSvLoadLogRecord;
+}
+
+const std::shared_ptr<SvDebitLogRecord> CalypsoPo::getSvDebitLogLastRecord()
+{
+    if (!mSvDebitLogRecord) {
+        /* Try to get it from the file data */
+        const std::vector<std::shared_ptr<SvDebitLogRecord>> svDebitLogRecords =
+            getSvDebitLogAllRecords();
+        mSvDebitLogRecord = svDebitLogRecords[0];
+    }
+
+    return mSvDebitLogRecord;
+}
+
+const std::vector<std::shared_ptr<SvDebitLogRecord>> CalypsoPo::getSvDebitLogAllRecords() const
+{
+    /* Get the logs from the file data */
+    std::map<int, std::vector<uint8_t>> logRecords = getFileBySfi(CalypsoPoUtils::SV_DEBIT_LOG_FILE_SFI)
+                                                         ->getData()
+                                                         ->getAllRecordsContent();
+    std::vector<std::shared_ptr<SvDebitLogRecord>> svDebitLogRecords;
+    for (const auto& entry : logRecords)
+        svDebitLogRecords.push_back(std::make_shared<SvDebitLogRecord>(entry.second, 0));
+
+    return svDebitLogRecords;
+}
+
+bool CalypsoPo::isPinBlocked() const
+{
+    return getPinAttemptRemaining() == 0;
+}
+
+int CalypsoPo::getPinAttemptRemaining() const
+{
+    if (!mPinAttemptCounter)
+        throw IllegalStateException("PIN status has not been checked.");
+
+    return *mPinAttemptCounter.get();
+}
+
+void CalypsoPo::setPinAttemptRemaining(const int pinAttemptCounter)
+{
+    *mPinAttemptCounter = pinAttemptCounter;
 }
 
 }

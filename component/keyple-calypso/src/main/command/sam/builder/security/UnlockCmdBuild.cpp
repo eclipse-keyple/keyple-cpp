@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "UnlockCmdBuild.h"
 
@@ -29,7 +28,7 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 using namespace keyple::calypso::command::sam::parser::security;
-using namespace keyple::common;
+using namespace keyple::common::exception;
 
 UnlockCmdBuild::UnlockCmdBuild(
   const SamRevision& revision, const std::vector<uint8_t>& unlockData)
@@ -47,8 +46,7 @@ UnlockCmdBuild::UnlockCmdBuild(
         throw IllegalArgumentException("Unlock data null!");
 
     if (unlockData.size() != 8 && unlockData.size() != 16)
-        throw IllegalArgumentException("Unlock data should be 8 ou 16 " \
-                                       "bytes long!");
+        throw IllegalArgumentException("Unlock data should be 8 ou 16 bytes long!");
 
     mRequest = setApduRequest(cla, mCommand, p1, p2, unlockData);
 }

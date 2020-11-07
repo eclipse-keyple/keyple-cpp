@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -48,34 +47,26 @@ using namespace keyple::common;
  * <li>Plugin naming management</li>
  * </ul>
  */
-class KEYPLECORE_API AbstractReader
-: public AbstractSeProxyComponent, public ProxyReader {
+class KEYPLECORE_API AbstractReader : public AbstractSeProxyComponent, public virtual ProxyReader {
 public:
     /**
-     * Compare the name of the current SeReader to the name of the SeReader
-     * provided in argument
      *
-     * @param seReader a SeReader object
-     * @return true if the names match (The method is needed for the SortedSet
-     *         lists)
      */
-    int compareTo(std::shared_ptr<SeReader> seReader);
+    using AbstractSeProxyComponent::getName;
 
     /**
-     * Execute the transmission of a list of {@link SeRequest} and returns a
-     * list of {@link SeResponse}
+     * Execute the transmission of a list of {@link SeRequest} and returns a list of
+     * {@link SeResponse}
      * <p>
-     * The {@link MultiSeRequestProcessing} parameter indicates whether all
-     * requests are to be sent regardless of their result (PROCESS_ALL) or
-     * whether the process should stop at the first request whose result is a
-     * success (FIRST_MATCH).
+     * The {@link MultiSeRequestProcessing} parameter indicates whether all requests are to be sent
+     * regardless of their result (PROCESS_ALL) or whether the process should stop at the first
+     * request whose result is a success (FIRST_MATCH).
      * <p>
-     * The {@link ChannelControl} parameter specifies whether the physical
-     * channel should be closed (CLOSE_AFTER) or not (KEEP_OPEN) after all
-     * requests have been transmitted.
+     * The {@link ChannelControl} parameter specifies whether the physical channel should be closed
+     * (CLOSE_AFTER) or not (KEEP_OPEN) after all requests have been transmitted.
      * <p>
-     * The global execution time (inter-exchange and communication) and the Set
-     * of SeRequest content is logged (DEBUG level).
+     * The global execution time (inter-exchange and communication) and the Set of SeRequest content
+     * is logged (DEBUG level).
      * <p>
      * As the method is final, it cannot be extended.
      *
@@ -83,8 +74,7 @@ public:
      * @param multiSeRequestProcessing the multi SE request processing mode
      * @param channelControl the channel control indicator
      * @return the response set
-     * @throws KeypleReaderIOException if the communication with the reader or
-     *         the SE has failed
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
      */
     std::vector<std::shared_ptr<SeResponse>> transmitSeRequests(
         const std::vector<std::shared_ptr<SeRequest>>& seRequests,
@@ -92,22 +82,20 @@ public:
         const ChannelControl& channelControl) override;
 
     /**
-     * Execute the transmission of a {@link SeRequest} and returns a
-     * {@link SeResponse}
+     * Execute the transmission of a {@link SeRequest} and returns a {@link SeResponse}
      * <p>
-     * The individual execution time (inter-exchange and communication) and the
-     * SeRequestSet content is logged (DEBUG level).
+     * The individual execution time (inter-exchange and communication) and the {@link SeRequest}
+     * content is logged (DEBUG level).
      * <p>
      * As the method is final, it cannot be extended.
      *
      * @param seRequest the request to be transmitted
+     * @param channelControl indicates if the channel has to be closed at the end of the processing
      * @return the received response
-     * @throws KeypleReaderIOException if the communication with the reader or
-     *         the SE has failed
+     * @throws KeypleReaderIOException if the communication with the reader or the SE has failed
      */
-    std::shared_ptr<SeResponse>transmitSeRequest(
-        std::shared_ptr<SeRequest> seRequest, ChannelControl channelControl)
-        override;
+    std::shared_ptr<SeResponse> transmitSeRequest(std::shared_ptr<SeRequest> seRequest,
+                                                  const ChannelControl& channelControl) override;
 
     /**
      * Gets the name of plugin provided in the constructor.
@@ -120,17 +108,6 @@ public:
     const std::string& getPluginName() const;
 
 protected:
-    /**
-     * This flag is used with transmit or transmitSet
-     * <p>
-     * It will be used by the notifySeProcessed method
-     * (AbstractObservableLocalReader) to determine if a request to close the
-     * physical channel has been already made and therefore to switch directly
-     * to the removal sequence for the observed readers.<br>
-     * TODO find a better way to manage this need
-     */
-    bool forceClosing = true;
-
     /**
      * The default DefaultSelectionsRequest to be executed upon SE insertion
      */

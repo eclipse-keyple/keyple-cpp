@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "DirectoryHeader.h"
 
@@ -27,11 +26,12 @@ namespace calypso {
 namespace transaction {
 
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::util;
 
 using DirectoryHeaderBuilder = DirectoryHeader::DirectoryHeaderBuilder;
 
-/* DIRECTORY HEADER BUILDER ------------------------------------------------- */
+/* DIRECTORY HEADER BUILDER --------------------------------------------------------------------- */
 
 DirectoryHeaderBuilder::DirectoryHeaderBuilder() {}
 
@@ -48,8 +48,7 @@ DirectoryHeaderBuilder& DirectoryHeaderBuilder::accessConditions(
     return *this;
 }
 
-DirectoryHeaderBuilder& DirectoryHeaderBuilder::keyIndexes(
-    const std::vector<uint8_t>& keyIndexes)
+DirectoryHeaderBuilder& DirectoryHeaderBuilder::keyIndexes(const std::vector<uint8_t>& keyIndexes)
 {
     mKeyIndexes = keyIndexes;
     return *this;
@@ -61,15 +60,13 @@ DirectoryHeaderBuilder& DirectoryHeaderBuilder::dfStatus(const uint8_t dfStatus)
     return *this;
 }
 
-DirectoryHeaderBuilder& DirectoryHeaderBuilder::kif(const AccessLevel& level,
-                                                    const uint8_t kif)
+DirectoryHeaderBuilder& DirectoryHeaderBuilder::kif(const AccessLevel& level, const uint8_t kif)
 {
     mKif.insert({level, kif});
     return *this;
 }
 
-DirectoryHeaderBuilder& DirectoryHeaderBuilder::kvc(const AccessLevel& level,
-                                                    const uint8_t kvc)
+DirectoryHeaderBuilder& DirectoryHeaderBuilder::kvc(const AccessLevel& level, const uint8_t kvc)
 {
     mKvc.insert({level, kvc});
     return *this;
@@ -80,7 +77,7 @@ std::unique_ptr<DirectoryHeader> DirectoryHeaderBuilder::build()
     return std::unique_ptr<DirectoryHeader>(new DirectoryHeader(this));
 }
 
-/* DIRECTORY HEADER --------------------------------------------------------- */
+/* DIRECTORY HEADER ----------------------------------------------------------------------------- */
 
 DirectoryHeader::DirectoryHeader(const DirectoryHeaderBuilder* builder)
 : mLid(builder->mLid),
@@ -115,10 +112,9 @@ uint8_t DirectoryHeader::getKif(const AccessLevel& level) const
     std::map<AccessLevel, uint8_t>::const_iterator it;
 
     if ((it = mKif.find(level)) == mKif.end())
-        throw NoSuchElementException(
-                  "KIF not found for session access level [" +
-                  StringHelper::toString(level) +
-                  "].");
+        throw NoSuchElementException("KIF not found for session access level [" +
+                                     StringHelper::toString(level) +
+                                     "].");
 
     return it->second;
 }
@@ -128,18 +124,16 @@ uint8_t DirectoryHeader::getKvc(const AccessLevel& level) const
     std::map<AccessLevel, uint8_t>::const_iterator it;
 
     if ((it = mKvc.find(level)) == mKvc.end())
-        throw NoSuchElementException(
-                  "KVC not found for session access level [" +
-                  StringHelper::toString(level) +
-                  "].");
+        throw NoSuchElementException("KVC not found for session access level [" +
+                                     StringHelper::toString(level) +
+                                     "].");
 
     return it->second;
 }
 
 std::unique_ptr<DirectoryHeaderBuilder> DirectoryHeader::builder()
 {
-    return std::unique_ptr<DirectoryHeaderBuilder>(
-               new DirectoryHeaderBuilder());
+    return std::unique_ptr<DirectoryHeaderBuilder>(new DirectoryHeaderBuilder());
 }
 
 bool DirectoryHeader::operator==(const DirectoryHeader& o) const

@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                                                *
+ * Copyright (c) 2020 Calypso Networks Association                                                *
  * https://www.calypsonet-asso.org/                                                               *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
@@ -21,6 +21,7 @@ namespace core {
 namespace seproxy {
 
 /**
+ * (package-private)<br>
  * Allow {@link ProxyReader}s and {@link ReaderPlugin}s to receive configuration parameters
  */
 class ProxyElement {
@@ -30,10 +31,16 @@ public:
      */
     virtual ~ProxyElement() = default;
 
+
     /**
+     * C++ vs. Java: hack to avoid linker issues. Should be removed in 1.0
+     *
      * @return the unique name of the item
      */
-    virtual const std::string& getName() const = 0;
+    virtual const std::string& getName() const
+    {
+        return mName;
+    }
 
     /**
      * Gets the parameters
@@ -61,7 +68,16 @@ public:
      * @throw IllegalArgumentException if the parameters or the values is not  supported
      * @throw KeypleException if the parameter fails to be set up
      */
-    virtual void setParameters(const std::map<const std::string, const std::string>& parameters)= 0;
+    virtual void setParameters(const std::map<const std::string, const std::string>& parameters)
+    {
+        (void)parameters;
+    }
+
+private:
+    /**
+     * C++ vs. Java: hack to avoid linker issues. Should be removed in 1.0
+     */
+    std::string mName = "";
 };
 
 }

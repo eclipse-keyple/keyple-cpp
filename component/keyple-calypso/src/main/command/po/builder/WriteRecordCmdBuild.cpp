@@ -77,7 +77,7 @@ int WriteRecordCmdBuild::getRecordNumber() const
     return mRecordNumber;
 }
 
-const std::vector<uint8_t>& WriteRecordCmdBuild::getData() const
+std::vector<uint8_t>& WriteRecordCmdBuild::getData()
 {
     return mData;
 }

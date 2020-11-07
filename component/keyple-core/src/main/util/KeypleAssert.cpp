@@ -21,7 +21,7 @@ namespace keyple {
 namespace core {
 namespace util {
 
-using namespace keyple::common;
+using namespace keyple::common::exception;
 
 const KeypleAssert KeypleAssert::INSTANCE;
 
@@ -73,10 +73,9 @@ const KeypleAssert& KeypleAssert::greaterOrEqual(const int number,
                                                  const std::string& name) const
 {
     if (number < minValue)
-        throw IllegalArgumentException(
-                  "Argument [" + name + "] " +
-                  "has a value [" + std::to_string(number) + "] " +
-                  "less than [" + std::to_string(minValue) + "].");
+        throw IllegalArgumentException("Argument [" + name + "] " +
+                                       "has a value [" + std::to_string(number) + "] " +
+                                       "less than [" + std::to_string(minValue) + "].");
 
     return INSTANCE;
 }
@@ -86,10 +85,9 @@ const KeypleAssert& KeypleAssert::isEqual(const int number,
                                           const std::string& name) const
 {
     if (number != value)
-        throw IllegalArgumentException(
-                  "Argument [" + name + "] " +
-                  "has a value [" + std::to_string(number) + "] " +
-                  "not equal to [" + std::to_string(value) + "].");
+        throw IllegalArgumentException("Argument [" + name + "] " +
+                                       "has a value [" + std::to_string(number) + "] " +
+                                       "not equal to [" + std::to_string(value) + "].");
 
     return INSTANCE;
 }
@@ -100,16 +98,14 @@ const KeypleAssert& KeypleAssert::isInRange(const int number,
                                             const std::string& name) const
 {
     if (number < minValue)
-        throw IllegalArgumentException(
-                  "Argument [" + name + "] " +
-                  "has a value [" + std::to_string(number) + "] " +
-                  "less than [" + std::to_string(minValue) + "].");
+        throw IllegalArgumentException("Argument [" + name + "] " +
+                                       "has a value [" + std::to_string(number) + "] " +
+                                       "less than [" + std::to_string(minValue) + "].");
 
     else if (number > maxValue)
-        throw IllegalArgumentException(
-                  "Argument [" + name + "] " +
-                  "has a value [" + std::to_string(number) + "] " +
-                  "more than [" + std::to_string(maxValue) + "].");
+        throw IllegalArgumentException("Argument [" + name + "] " +
+                                       "has a value [" + std::to_string(number) + "] " +
+                                       "more than [" + std::to_string(maxValue) + "].");
 
     return INSTANCE;
 }

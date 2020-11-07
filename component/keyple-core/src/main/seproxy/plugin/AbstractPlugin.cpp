@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "AbstractPlugin.h"
 
@@ -35,8 +34,7 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-AbstractPlugin::AbstractPlugin(const std::string& name)
-: AbstractSeProxyComponent(name)
+AbstractPlugin::AbstractPlugin(const std::string& name) : AbstractSeProxyComponent(name)
 {
     /*
      * /!\ C++ vs. Java: C++ cannot call a pure virtual function from a
@@ -47,8 +45,7 @@ AbstractPlugin::AbstractPlugin(const std::string& name)
      */
 }
 
-ConcurrentMap<const std::string, std::shared_ptr<SeReader>>&
-    AbstractPlugin::getReaders()
+ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& AbstractPlugin::getReaders()
 {
     return mReaders;
 }
@@ -63,16 +60,9 @@ const std::set<std::string> AbstractPlugin::getReaderNames() const
     return readerNames;
 }
 
-int AbstractPlugin::compareTo(std::shared_ptr<ReaderPlugin> plugin)
+const std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string& name)
 {
-    return getName().compare(plugin->getName());
-}
-
-const std::shared_ptr<SeReader> AbstractPlugin::getReader(
-    const std::string& name)
-{
-    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
-        ::const_iterator it;
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>> ::const_iterator it;
 
     if ((it = mReaders.find(name)) != mReaders.end())
         return it->second;

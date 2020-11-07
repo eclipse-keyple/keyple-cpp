@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "AbstractOpenSessionRespPars.h"
 
@@ -48,6 +47,7 @@ namespace security {
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::exception;
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util;
@@ -128,7 +128,6 @@ const std::map<int, std::shared_ptr<StatusProperties>>
 const std::map<int, std::shared_ptr<StatusProperties>>&
     AbstractOpenSessionRespPars::getStatusTable() const
 {
-    // At this stage, the status table is the same for everyone
     return STATUS_TABLE;
 }
 
@@ -138,7 +137,7 @@ AbstractOpenSessionRespPars::AbstractOpenSessionRespPars(
   PoRevision revision)
 : AbstractPoResponseParser(
     response,
-    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+    reinterpret_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
 {
     (void)revision;
 
@@ -158,8 +157,7 @@ std::shared_ptr<SecureSession> AbstractOpenSessionRespPars::toSecureSession(
 {
     (void)apduResponseData;
 
-    throw IllegalAccessException(
-              "This function should be overwritten by derived class");
+    throw IllegalAccessException("This function should be overwritten by derived class");
 }
 
 std::shared_ptr<AbstractOpenSessionRespPars>
@@ -197,8 +195,7 @@ const std::vector<uint8_t>& AbstractOpenSessionRespPars::getPoChallenge() const
 
 int AbstractOpenSessionRespPars::getTransactionCounterValue() const
 {
-    return ByteArrayUtil::threeBytesToInt(
-               mSecureSession->getChallengeTransactionCounter(), 0);
+    return ByteArrayUtil::threeBytesToInt(mSecureSession->getChallengeTransactionCounter(), 0);
 }
 
 bool AbstractOpenSessionRespPars::wasRatified() const
@@ -221,8 +218,7 @@ std::uint8_t AbstractOpenSessionRespPars::getSelectedKvc() const
     return mSecureSession->getKVC();
 }
 
-const std::vector<uint8_t>& AbstractOpenSessionRespPars::getRecordDataRead()
-   const
+const std::vector<uint8_t>& AbstractOpenSessionRespPars::getRecordDataRead() const
 {
     return mSecureSession->getOriginalData();
 }
@@ -280,8 +276,7 @@ SecureSession::SecureSession(
                 originalData,
                 secureSessionData) {}
 
-const std::vector<uint8_t>& SecureSession::getChallengeTransactionCounter()
-    const
+const std::vector<uint8_t>& SecureSession::getChallengeTransactionCounter() const
 {
     return mChallengeTransactionCounter;
 }

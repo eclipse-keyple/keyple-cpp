@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                                                *
+ * Copyright (c) 2020 Calypso Networks Association                                                *
  * https://www.calypsonet-asso.org/                                                               *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
@@ -553,7 +553,8 @@ TEST(StubReaderTest, testRemove)
                   ->mInsertLock.getCount(),
               0);
 
-    reader->notifySeProcessed();
+    auto proxy = std::dynamic_pointer_cast<ProxyReader>(reader);
+    proxy->transmitSeRequest({}, ChannelControl::CLOSE_AFTER);
     reader->removeSe();
 
     /* Lock thread for 2 seconds max to wait for the event SE_REMOVED */
@@ -663,7 +664,8 @@ TEST(StubReaderTest, A_testInsertRemoveTwice)
 
     // Thread.sleep(1000);
 
-    reader->notifySeProcessed();
+    auto proxy = std::dynamic_pointer_cast<ProxyReader>(reader);
+    proxy->transmitSeRequest({}, ChannelControl::CLOSE_AFTER);
     reader->removeSe();
 
     /* Lock thread for 2 seconds max to wait for the event SE_REMOVED */
@@ -695,7 +697,7 @@ TEST(StubReaderTest, A_testInsertRemoveTwice)
                   ->mSecondInsertLock.getCount(),
               0);
 
-    reader->notifySeProcessed();
+    proxy->transmitSeRequest({}, ChannelControl::CLOSE_AFTER);
 
     // Thread.sleep(1000);
 
@@ -746,7 +748,8 @@ TEST(StubReaderTest, A_testInsertRemoveTwiceFast)
                   ->mFirstRemoveLock.getCount(),
               0);
 
-    reader->notifySeProcessed();
+    auto proxy = std::dynamic_pointer_cast<ProxyReader>(reader);
+    proxy->transmitSeRequest({}, ChannelControl::CLOSE_AFTER);
     reader->removeSe();
 
     /* Lock thread for 2 seconds max to wait for the event SE_REMOVED */
@@ -776,7 +779,7 @@ TEST(StubReaderTest, A_testInsertRemoveTwiceFast)
                   ->mSecondRemoveLock.getCount(),
               0);
 
-    reader->notifySeProcessed();
+    proxy->transmitSeRequest({}, ChannelControl::CLOSE_AFTER);
     reader->removeSe();
 
     /* Lock thread for 2 seconds max to wait for the event SE_REMOVED */
@@ -833,7 +836,8 @@ public:
         std::vector<uint8_t> fci;
         try {
             fci = hoplinkSE()->processApdu(selectApplicationCommand);
-        } catch (KeypleReaderIOException e) {
+        } catch (const KeypleReaderIOException& e) {
+            (void)e;
         }
 
         ASSERT_EQ(event->getDefaultSelectionsResponse()
@@ -1076,7 +1080,7 @@ public:
     {
         ASSERT_EQ(ReaderEvent::EventType::SE_INSERTED, event->getEventType());
 
-        SeSelection seSelection(MultiSeRequestProcessing::FIRST_MATCH, ChannelControl::KEEP_OPEN);
+        SeSelection seSelection;
         auto atrFilter = std::make_shared<PoSelector::AtrFilter>("3B.*");
         auto seSelector = PoSelector::builder()->seProtocol(SeCommonProtocols::PROTOCOL_B_PRIME)
                                                 .atrFilter(atrFilter)
@@ -1163,7 +1167,8 @@ public:
     void update(std::shared_ptr<ReaderEvent> event) override
     {
         if (event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
-            mReader->notifySeProcessed();
+            auto proxy = std::dynamic_pointer_cast<ProxyReader>(mReader);
+            proxy->transmitSeRequest({}, ChannelControl::CLOSE_AFTER);
             mLock.countDown();
         }
      }
@@ -1175,7 +1180,7 @@ private:
     std::shared_ptr<StubPluginImpl> mPlugin;
 };
 
-TEST(StubReaderTest, testNotifySeProcessed)
+TEST(StubReaderTest, testReleaseSeChannel)
 {
     stubPlugin->plugStubReader("StubReaderTest", true);
 

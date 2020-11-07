@@ -188,13 +188,13 @@ int main(int argc, char** argv)
                 ByteArrayUtil::fromHex(CalypsoClassicInfo::eventLog_dataFill));
 
         /* Proceed with the sending of commands, don't close the channel */
-        poTransaction.processPoCommandsInSession();
+        poTransaction.processPoCommands();
 
         /* Close the Secure Session */
         logger->info("========= PO Calypso session ======= Closing ============================\n");
 
         /* A ratification command will be sent (CONTACTLESS_MODE) */
-        poTransaction.processClosing(ChannelControl::KEEP_OPEN);
+        poTransaction.processClosing();
 
         logger->info("= #### End of the Calypso PO processing\n");
     } else {

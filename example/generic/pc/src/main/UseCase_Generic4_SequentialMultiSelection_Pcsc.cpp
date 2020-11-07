@@ -103,8 +103,7 @@ int main(int argc, char** argv)
         const std::vector<uint8_t> aid = ByteArrayUtil::fromHex(seAidPrefix);
 
         /* First selection case */
-        auto seSelection = std::make_shared<SeSelection>(MultiSeRequestProcessing::FIRST_MATCH,
-                                                         ChannelControl::KEEP_OPEN);
+        auto seSelection = std::make_shared<SeSelection>();
         /*
          * AID based selection: get the first application occurrence matching the AID, keep the
          * physical channel open
@@ -127,8 +126,7 @@ int main(int argc, char** argv)
          * New selection: get the next application occurrence matching the same
          * AID, close the physical channel after
          */
-        seSelection = std::make_shared<SeSelection>(MultiSeRequestProcessing::FIRST_MATCH,
-                                                    ChannelControl::CLOSE_AFTER);
+        seSelection = std::make_shared<SeSelection>();
 
         aidSelector = AidSelector::builder()
                                ->aidToSelect(seAidPrefix)
@@ -139,6 +137,9 @@ int main(int argc, char** argv)
                                         .aidSelector(aidSelector)
                                         .build();
         seSelector = std::make_shared<GenericSeSelectionRequest>(selector);
+
+        /* Close the channel after the selection */
+        seSelection->prepareReleaseSeChannel();
 
         /* Do the selection and display the result */
         doAndAnalyseSelection(seReader, seSelection, 2);

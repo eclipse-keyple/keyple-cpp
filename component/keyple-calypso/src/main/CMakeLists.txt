@@ -32,9 +32,11 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/storedvalue
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/storedvalue
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security
@@ -90,12 +92,22 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	# calypso - command - po - builder - security
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/ChangeKeyCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/CloseSessionCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/InvalidateCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/OpenSession10CmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/OpenSession24CmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/OpenSession31CmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/OpenSession32CmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/PoGetChallengeCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/RatificationCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/RehabilitateCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/VerifyPinCmdBuild.cpp
+
+
+	# calypso - command - po - builder - storedvalue
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/storedvalue/SvDebitCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/storedvalue/SvGetCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/storedvalue/SvReloadCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/storedvalue/SvUndebitCmdBuild.cpp
 
 	# calypso - command - po - parser
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/AppendRecordRespPars.cpp
@@ -108,16 +120,24 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/UpdateRecordRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/WriteRecordRespPars.cpp
 
-
 	# calypso - command - po - parser - security
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/AbstractOpenSessionRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/ChangeKeyRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/CloseSessionRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/InvalidateRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSession10RespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSession24RespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSession31RespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSession32RespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/PoGetChallengeRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/RehabilitateRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/VerifyPinRespPars.cpp
+
+	# calypso - command - po - parser - storedvalue
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/storedvalue/SvDebitRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/storedvalue/SvGetRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/storedvalue/SvReloadRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/storedvalue/SvUndebitRespPars.cpp
 
 	# calypso - command - sam
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/AbstractSamResponseParser.cpp
@@ -125,6 +145,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/SamRevision.cpp
 
 	# calypso - command - sam - builder - security
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/CardCipherPinCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/CardGenerateKeyCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/DigestAuthenticateCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/DigestCloseCmdBuild.cpp
@@ -138,9 +159,14 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamReadKeyParametersCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamWriteKeyCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SelectDiversifierCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SvCheckCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SvPrepareDebitCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SvPrepareLoadCmdBuild.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SvPrepareUndebitCmdBuild.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/UnlockCmdBuild.cpp
 
 	# calypso - command - sam - parser - security
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/CardCipherPinRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/CardGenerateKeyRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/DigestAuthenticateRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/DigestCloseRespPars.cpp
@@ -154,6 +180,8 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SamReadKeyParametersRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SamWriteKeyRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SelectDiversifierRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SvCheckRespPars.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SvPrepareOperationRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/UnlockRespPars.cpp
 
 	# calypso - transaction
@@ -177,6 +205,8 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamResourceManagerPool.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectionRequest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelector.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SvDebitLogRecord.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SvLoadLogRecord.cpp
 
 	# calypso
 	${CMAKE_CURRENT_SOURCE_DIR}/KeyReference.cpp

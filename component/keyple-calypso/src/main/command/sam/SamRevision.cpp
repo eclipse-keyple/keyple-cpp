@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "SamRevision.h"
 
@@ -22,7 +21,7 @@ namespace calypso {
 namespace command {
 namespace sam {
 
-using namespace keyple::common;
+using namespace keyple::common::exception;
 
 const SamRevision SamRevision::C1("C1", "C1", 0x80);
 const SamRevision SamRevision::S1E("S1E", "E1", 0x80);
@@ -30,17 +29,14 @@ const SamRevision SamRevision::S1D("S1D", "D?", 0x94);
 const SamRevision SamRevision::AUTO("AUTO", "??", 0x00);
 const SamRevision SamRevision::NO_REV("NO_REV", "??", 0x00);
 
-SamRevision::SamRevision(
-  const std::string& name,
-  const std::string& applicationTypeMask,
-  const uint8_t classByte)
+SamRevision::SamRevision(const std::string& name,
+                         const std::string& applicationTypeMask,
+                         const uint8_t classByte)
 : mName(name), mApplicationTypeMask(applicationTypeMask), mClassByte(classByte)
 {}
 
 SamRevision::SamRevision(const SamRevision& o)
-: mName(o.mName),
- mApplicationTypeMask(o.mApplicationTypeMask),
- mClassByte(o.mClassByte) {}
+: mName(o.mName), mApplicationTypeMask(o.mApplicationTypeMask), mClassByte(o.mClassByte) {}
 
 const std::string& SamRevision::getName() const
 {
@@ -59,9 +55,9 @@ uint8_t SamRevision::getClassByte() const
 
 bool SamRevision::operator==(const SamRevision& o) const
 {
-    return this->mName == o.mName &&
-           this->mApplicationTypeMask == o.mApplicationTypeMask &&
-           this->mClassByte == o.mClassByte;
+    return mName == o.mName &&
+           mApplicationTypeMask == o.mApplicationTypeMask &&
+           mClassByte == o.mClassByte;
 }
 
 bool SamRevision::operator!=(const SamRevision& o) const
@@ -71,9 +67,9 @@ bool SamRevision::operator!=(const SamRevision& o) const
 
 SamRevision& SamRevision::operator=(const SamRevision& o)
 {
-    this->mName = o.mName;
-    this->mApplicationTypeMask = o.mApplicationTypeMask;
-    this->mClassByte = o.mClassByte;
+    mName = o.mName;
+    mApplicationTypeMask = o.mApplicationTypeMask;
+    mClassByte = o.mClassByte;
 
     return *this;
 }
@@ -90,8 +86,7 @@ const SamRevision& SamRevision::valueOf(const std::string& name)
         return AUTO;
     else
         /* C++ vs. Java: throw for an invalid name */
-        throw IllegalArgumentException(
-                  "Name " + name + " is not valid a Sam Rev");
+        throw IllegalArgumentException("Name " + name + " is not valid a Sam Rev");
 }
 
 std::ostream& operator<<(std::ostream& os, const SamRevision& sr)

@@ -183,6 +183,15 @@ public:
                                ->getActiveMatchingSe();
             } catch (const KeypleException& e) {
                 logger->error("Exception: %\n", e.getMessage());
+                try {
+                    std::shared_ptr<SeReader> reader = event->getReader();
+                    auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
+                    observable->finalizeSeProcessing();
+                } catch (const KeypleReaderNotFoundException& ex) {
+                    logger->error("Reader not found exception: {}", ex.getMessage());
+                } catch (const KeyplePluginNotFoundException& ex) {
+                    logger->error("Plugin not found exception: {}", ex.getMessage());
+                }
             }
 
             if (selectedSe != nullptr) {
@@ -204,15 +213,13 @@ public:
         if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED ||
             event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
             /*
-             * Informs the underlying layer of the end of the SE processing, in
-             * order to manage the removal sequence. <p>If closing has already
-             * been requested, this method will do nothing.
+             * Informs the underlying layer of the end of the SE processing, in order to manage the
+             * removal sequence.
              */
             try {
-                std::dynamic_pointer_cast<ObservableReader>(
-                    SeProxyService::getInstance().getPlugin(event->getPluginName())
-                                                ->getReader(event->getReaderName()))
-                                                ->notifySeProcessed();
+                std::shared_ptr<SeReader> reader = event->getReader();
+                auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
+                observable->finalizeSeProcessing();
             } catch (const KeypleReaderNotFoundException& e) {
                 logger->error("Reader not found exception: %\n", e.getMessage());
             } catch (const KeyplePluginNotFoundException& e) {

@@ -45,6 +45,8 @@ using namespace keyple::core::seproxy::plugin;
 class StubPluginImpl
 : public AbstractThreadedObservablePlugin, public StubPlugin {
 public:
+    using AbstractSeProxyComponent::setParameters;
+
     /**
      * Constructor
      *
@@ -64,20 +66,17 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string>&
-        getParameters() const override;
+    const std::map<const std::string, const std::string>& getParameters() const override;
 
     /**
      *
      */
-    void setParameter(const std::string& key, const std::string& value)
-        override;
+    void setParameter(const std::string& key, const std::string& value) override;
 
     /**
      *
      */
-    void plugStubReader(const std::string& readerName, bool synchronous)
-        override;
+    void plugStubReader(const std::string& readerName, bool synchronous) override;
 
     /**
      *
@@ -89,20 +88,17 @@ public:
     /**
      *
      */
-    void plugStubReaders(const std::set<std::string>& readerNames,
-                         bool synchronous) override;
+    void plugStubReaders(const std::set<std::string>& readerNames, bool synchronous) override;
 
     /**
      *
      */
-    void unplugStubReader(const std::string& readerName,
-                          bool synchronous) override;
+    void unplugStubReader(const std::string& readerName, bool synchronous) override;
 
     /**
      *
      */
-    void unplugStubReaders(const std::set<std::string>& readerNames,
-                           bool synchronous) override;
+    void unplugStubReaders(const std::set<std::string>& readerNames, bool synchronous) override;
 
     /**
      * Fetch the list of connected native reader (from a simulated list) and

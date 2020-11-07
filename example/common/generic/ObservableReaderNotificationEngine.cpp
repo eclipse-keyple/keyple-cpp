@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                                                *
+ * Copyright (c) 2020 Calypso Networks Association                                                *
  * https://www.calypsonet-asso.org/                                                               *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
@@ -76,11 +76,9 @@ void ObservableReaderNotificationEngine::SpecificReaderObserver::update(
          * removal sequence.
          */
         try {
-            const std::shared_ptr<SeReader> reader =
-                SeProxyService::getInstance().getPlugin(event->getPluginName())
-                                            ->getReader(event->getReaderName());
-            auto observableReader = std::dynamic_pointer_cast<ObservableReader>(reader);
-            observableReader->notifySeProcessed();
+            std::shared_ptr<SeReader> reader = event->getReader();
+            auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
+            observable->finalizeSeProcessing();
         } catch (KeypleReaderNotFoundException& e) {
             mLogger->debug("update - KeypleReaderNotFoundException: %\n", e);
         } catch (KeyplePluginNotFoundException& e) {

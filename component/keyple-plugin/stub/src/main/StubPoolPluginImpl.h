@@ -133,11 +133,6 @@ public:
     /**
      *
      */
-    int compareTo(std::shared_ptr<ReaderPlugin> plugin);
-
-    /**
-     *
-     */
     const std::map<const std::string, const std::string>& getParameters() const
         override;
 

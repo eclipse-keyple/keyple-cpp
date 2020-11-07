@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -79,8 +78,29 @@ public:
     /** The po change key */
     static const CalypsoPoCommand CHANGE_KEY;
 
-    /** The po get data for traceability */
+    /* The po verify PIN */
+    static const CalypsoPoCommand VERIFY_PIN;
+
+    /* The po get data for traceability */
     static const CalypsoPoCommand GET_DATA_TRACE;
+
+    /* The po SV Get */
+    static const CalypsoPoCommand SV_GET;
+
+    /* The po SV Debit */
+    static const CalypsoPoCommand SV_DEBIT;
+
+    /* The po SV Reload */
+    static const CalypsoPoCommand SV_RELOAD;
+
+    /* The po SV Undebit */
+    static const CalypsoPoCommand SV_UNDEBIT;
+
+    /* The po Invalidate */
+    static const CalypsoPoCommand INVALIDATE;
+
+    /* The po Rehabilitate */
+    static const CalypsoPoCommand REHABILITATE;
 
     /**
      * The generic constructor of CalypsoCommands.

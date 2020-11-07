@@ -1,16 +1,16 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
+
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -18,6 +18,7 @@
 #include "CalypsoPo.h"
 
 /* Calypso */
+#include "CalypsoPoUtils.h"
 #include "DirectoryHeader.h"
 #include "PoRevision.h"
 
@@ -38,6 +39,7 @@ using namespace testing;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::transaction;
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
@@ -92,8 +94,7 @@ static const std::string SERIAL_NUMBER = "0000000011223344";
  * @param fciStr the FCI data
  * @return a CalypsoPo object
  */
-static std::shared_ptr<CalypsoPo> getCalypsoPo(const std::string& atrStr,
-                                               const std::string& fciStr)
+static std::shared_ptr<CalypsoPo> getCalypsoPo(const std::string& atrStr, const std::string& fciStr)
 {
     std::shared_ptr<AnswerToReset> atr = nullptr;
 
@@ -105,21 +106,15 @@ static std::shared_ptr<CalypsoPo> getCalypsoPo(const std::string& atrStr,
     std::shared_ptr<ApduResponse> fci = nullptr;
 
     if (fciStr.size() == 0)
-        fci = std::make_shared<ApduResponse>(ByteArrayUtil::fromHex("6700"),
-                                             nullptr);
+        fci = std::make_shared<ApduResponse>(ByteArrayUtil::fromHex("6700"), nullptr);
     else
-        fci = std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(fciStr),
-                                             nullptr);
+        fci = std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(fciStr), nullptr);
 
-    std::shared_ptr<SeResponse> selectionData =
-        std::make_shared<SeResponse>(
-            true,
-            false,
-            std::make_shared<SelectionStatus>(atr, fci, true),
-            std::vector<std::shared_ptr<ApduResponse>>{});
+    auto status = std::make_shared<SelectionStatus>(atr, fci, true);
+    auto empty = std::vector<std::shared_ptr<ApduResponse>>{};
+    auto selectionData = std::make_shared<SeResponse>(true, false, status, empty);
 
-    return std::make_shared<CalypsoPo>(selectionData,
-                                       TransmissionMode::CONTACTLESS);
+    return std::make_shared<CalypsoPo>(selectionData, TransmissionMode::CONTACTLESS);
 }
 
 /* Building FCI data with the application byte as a variant and initialize PO */
@@ -308,13 +303,32 @@ TEST(CalypsoPoTest, testFlags_false)
 
 TEST(CalypsoPoTest, testDfInvalidated)
 {
-    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE,
-                                                        FCI_REV31_INVALIDATED);
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31_INVALIDATED);
     ASSERT_TRUE(calypsoPo->isDfInvalidated());
 
     calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
 
     ASSERT_FALSE(calypsoPo->isDfInvalidated());
+}
+
+TEST(CalypsoPoTest, testDfRatified_Unset)
+{
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
+
+    EXPECT_THROW(calypsoPo->isDfRatified(), IllegalStateException);
+}
+
+TEST(CalypsoPoTest, testDfRatified)
+{
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
+
+    calypsoPo->setDfRatified(true);
+
+    ASSERT_TRUE(calypsoPo->isDfRatified());
+
+    calypsoPo->setDfRatified(false);
+
+    ASSERT_FALSE(calypsoPo->isDfRatified());
 }
 
 TEST(CalypsoPoTest, otherAttributes)
@@ -534,4 +548,112 @@ TEST(CalypsoPoTest, backupFiles_and_restoreFiles)
     content = calypsoPo->getFileBySfi(1)->getData()->getContent(1);
 
     ASSERT_EQ(content, contentV1);
+}
+
+TEST(CalypsoPoTest, pin_NotPresented)
+{
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
+
+    EXPECT_THROW(calypsoPo->getPinAttemptRemaining(), IllegalStateException);
+}
+
+TEST(CalypsoPoTest, pin_1)
+{
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
+
+    calypsoPo->setPinAttemptRemaining(1);
+
+    ASSERT_FALSE(calypsoPo->isPinBlocked());
+    ASSERT_EQ(calypsoPo->getPinAttemptRemaining(), 1);
+}
+
+TEST(CalypsoPoTest, pin_0)
+{
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
+
+    calypsoPo->setPinAttemptRemaining(0);
+
+    ASSERT_EQ(calypsoPo->getPinAttemptRemaining(), 0);
+    ASSERT_TRUE(calypsoPo->isPinBlocked());
+}
+
+TEST(CalypsoPoTest, svData_NotAvailable_Balance)
+{
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
+
+    EXPECT_THROW(calypsoPo->getSvBalance(), IllegalStateException);
+}
+
+TEST(CalypsoPoTest, svData_NotAvailable_LastTNum)
+{
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
+
+    EXPECT_THROW(calypsoPo->getSvLastTNum(), IllegalStateException);
+}
+
+TEST(CalypsoPoTest, svData_REV3_1)
+{
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
+
+    const std::vector<uint8_t> svGetReloadData =
+        ByteArrayUtil::fromHex("79007013DE31022200001A000000780000001A0000020000AABBCCDD0000DB007" \
+                               "09000");
+    const std::vector<uint8_t> svGetDebitData =
+        ByteArrayUtil::fromHex("79007013DE31A75F00001AFFFE0000000079AABBCCDD0000DA000018006F");
+
+    auto load = std::make_shared<SvLoadLogRecord>(svGetReloadData, 11);
+    auto debit = std::make_shared<SvDebitLogRecord>(svGetDebitData, 11);
+    calypsoPo->setSvData(123, 456, load, debit);
+
+    ASSERT_EQ(calypsoPo->getSvBalance(), 123);
+    ASSERT_EQ(calypsoPo->getSvLastTNum(), 456);
+    ASSERT_NE(calypsoPo->getSvLoadLogRecord(), nullptr);
+    ASSERT_NE(calypsoPo->getSvDebitLogLastRecord(), nullptr);
+}
+
+TEST(CalypsoPoTest, svData_AllRecords_empty)
+{
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
+
+    const std::vector<uint8_t> svGetReloadData =
+        ByteArrayUtil::fromHex("79007013DE31022200001A000000780000001A0000020000AABBCCDD0000DB007" \
+                               "09000");
+    const std::vector<uint8_t> svGetDebitData =
+        ByteArrayUtil::fromHex("79007013DE31A75F00001AFFFE0000000079AABBCCDD0000DA000018006F");
+
+    auto load = std::make_shared<SvLoadLogRecord>(svGetReloadData, 11);
+    auto debit = std::make_shared<SvDebitLogRecord>(svGetDebitData, 11);
+    calypsoPo->setSvData(123, 456, load, debit);
+
+    EXPECT_THROW(calypsoPo->getSvDebitLogAllRecords(), NoSuchElementException);
+}
+
+TEST(CalypsoPoTest, svData_AllRecords)
+{
+    std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
+
+    const std::vector<uint8_t> svLoadRecordData =
+        ByteArrayUtil::fromHex("000000780000001A0000020000AABBCCDD0000DB007000000000000000");
+    const std::vector<uint8_t> svDebitRecordData1 =
+        ByteArrayUtil::fromHex("FFFE0000000079AABBCC010000DA000018006F00000000000000000000");
+    const std::vector<uint8_t> svDebitRecordData2 =
+        ByteArrayUtil::fromHex("FFFE0000000079AABBCC020000DA000018006F00000000000000000000");
+    const std::vector<uint8_t> svDebitRecordData3 =
+        ByteArrayUtil::fromHex("FFFE0000000079AABBCC030000DA000018006F00000000000000000000");
+
+    calypsoPo->setContent(CalypsoPoUtils::SV_RELOAD_LOG_FILE_SFI, 1, svLoadRecordData);
+    calypsoPo->setContent(CalypsoPoUtils::SV_DEBIT_LOG_FILE_SFI, 1, svDebitRecordData1);
+    calypsoPo->setContent(CalypsoPoUtils::SV_DEBIT_LOG_FILE_SFI, 2, svDebitRecordData2);
+    calypsoPo->setContent(CalypsoPoUtils::SV_DEBIT_LOG_FILE_SFI, 3, svDebitRecordData3);
+
+    ASSERT_NE(calypsoPo->getSvLoadLogRecord(), nullptr);
+    ASSERT_NE(calypsoPo->getSvDebitLogLastRecord(), nullptr);
+
+    std::vector<std::shared_ptr<SvDebitLogRecord>> allDebitLogs =
+        calypsoPo->getSvDebitLogAllRecords();
+
+    ASSERT_EQ(calypsoPo->getSvDebitLogAllRecords().size(), 3);
+    ASSERT_EQ(allDebitLogs[0]->getSamId(), 0xAABBCC01);
+    ASSERT_EQ(allDebitLogs[1]->getSamId(), 0xAABBCC02);
+    ASSERT_EQ(allDebitLogs[2]->getSamId(), 0xAABBCC03);
 }

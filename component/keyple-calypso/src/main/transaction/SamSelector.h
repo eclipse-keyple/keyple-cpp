@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -36,8 +35,8 @@ using namespace keyple::calypso::command::sam;
 using namespace keyple::core::seproxy;
 
 /**
- * The {@link SamSelector} class extends {@link SeSelector} to handle specific
- * Calypso SAM needs such as model identification.
+ * The {@link SamSelector} class extends {@link SeSelector} to handle specific Calypso SAM needs
+ * such as model identification.
  */
 class KEYPLECALYPSO_API SamSelector final : public SeSelector {
 public:
@@ -46,7 +45,7 @@ public:
      *
      * @since 0.9
      */
-    class SamSelectorBuilder : public SeSelector::SeSelectorBuilder {
+    class SamSelectorBuilder final : public SeSelector::SeSelectorBuilder {
     public:
         /**
          *
@@ -82,6 +81,15 @@ public:
          */
         SamSelectorBuilder& samIdentifier(
             const std::shared_ptr<SamIdentifier> samIdentifier);
+
+        /**
+         * Sets the unlock data
+         *
+         * @param unlockData a byte array containing the unlock data (8 or 16 bytes)
+         * @return the builder instance
+         * @throw IllegalArgumentException if the provided buffer size is not 8 or 16
+         */
+        SamSelectorBuilder& unlockData(const std::vector<uint8_t>& unlockData);
 
         /**
          * {@inheritDoc}
@@ -122,6 +130,11 @@ public:
          *
          */
         std::string mSerialNumber;
+
+        /**
+         *
+         */
+        std::vector<uint8_t> mUnlockData;
     };
 
     /**
@@ -132,6 +145,20 @@ public:
     static std::shared_ptr<SamSelectorBuilder> builder();
 
     /**
+     * Gets the targeted SAM revision
+     *
+     * @return the target SAM revision value
+     */
+    const SamRevision getTargetSamRevision() const;
+
+    /**
+     * Gets the SAM unlock data
+     *
+     * @return a byte array containing the unlock data or null if the unlock data is not set
+     */
+    const std::vector<uint8_t>& getUnlockData() const;
+
+    /**
      * Private constructor
      *
      * C++ vs. Java: Should be private but would forbid usage of make_shared
@@ -140,6 +167,17 @@ public:
      *               otherwise if need be.
      */
     SamSelector(SamSelectorBuilder* builder);
+
+private:
+    /**
+     *
+     */
+    const SamRevision mTargetSamRevision;
+
+    /**
+     *
+     */
+    const std::vector<uint8_t> mUnlockData;
 };
 
 }

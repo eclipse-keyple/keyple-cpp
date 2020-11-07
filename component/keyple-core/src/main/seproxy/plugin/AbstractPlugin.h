@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -39,9 +38,10 @@ using namespace keyple::common;
 /**
  * Observable plugin. These plugin can report when a reader is added or removed.
  */
-class KEYPLECORE_API AbstractPlugin
-: public AbstractSeProxyComponent, public virtual ReaderPlugin {
+class KEYPLECORE_API AbstractPlugin : public AbstractSeProxyComponent, public virtual ReaderPlugin {
 public:
+    using ReaderPlugin::getName;
+
     /**
      *
      */
@@ -67,16 +67,6 @@ public:
      * @return a list of String
      */
     virtual const std::set<std::string> getReaderNames() const override;
-
-    /**
-     * Compare the name of the current ReaderPlugin to the name of the
-     * ReaderPlugin provided in argument
-     *
-     * @param plugin a {@link ReaderPlugin} object
-     * @return true if the names match (The method is needed for the std::set
-     * lists)
-     */
-    virtual int compareTo(std::shared_ptr<ReaderPlugin> plugin);
 
     /**
      * Gets a specific reader designated by its name in the current readers list

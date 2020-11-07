@@ -32,6 +32,12 @@ const ModificationMode PoSecuritySettings::mDefaultSessionModificationMode =
     ModificationMode::ATOMIC;
 const RatificationMode PoSecuritySettings::mDefaultRatificationMode =
     RatificationMode::CLOSE_RATIFIED;
+const PinTransmissionMode PoSecuritySettings::mDefaultPinTransmissionMode =
+    PinTransmissionMode::ENCRYPTED;
+const std::shared_ptr<KeyReference> PoSecuritySettings::mDefaultPinCipheringKey =
+    std::make_shared<KeyReference>(0, 0);
+const LogRead PoSecuritySettings::mDefaultSvGetLogReadMode = LogRead::SINGLE;
+const NegativeBalance PoSecuritySettings::mDefaultSvNegativeBalance = NegativeBalance::FORBIDDEN;
 
 PoSecuritySettings::PoSecuritySettings(PoSecuritySettingsBuilder* builder)
 : mSamResource(builder->mSamResource),
@@ -40,7 +46,11 @@ PoSecuritySettings::PoSecuritySettings(PoSecuritySettingsBuilder* builder)
   mDefaultKvc(builder->mDefaultKvc),
   mDefaultKeyRecordNumber(builder->mDefaultKeyRecordNumber),
   mSessionModificationMode(builder->mSessionModificationMode),
-  mRatificationMode(builder->mRatificationMode) {}
+  mRatificationMode(builder->mRatificationMode),
+  mPinTransmissionMode(builder->mPinTransmissionMode),
+  mPinCipheringKey(builder->mPinCipheringKey),
+  mSvGetLogReadMode(builder->mSvGetLogReadMode),
+  mSvNegativeBalance(builder->mSvNegativeBalance) {}
 
 const std::shared_ptr<SeResource<CalypsoSam>>
     PoSecuritySettings::getSamResource() const
@@ -56,6 +66,11 @@ ModificationMode PoSecuritySettings::getSessionModificationMode() const
 RatificationMode PoSecuritySettings::getRatificationMode() const
 {
     return mRatificationMode;
+}
+
+PinTransmissionMode PoSecuritySettings::getPinTransmissionMode() const
+{
+    return mPinTransmissionMode;
 }
 
 uint8_t PoSecuritySettings::getSessionDefaultKif(
@@ -98,6 +113,21 @@ bool PoSecuritySettings::isSessionKvcAuthorized(const uint8_t kvc) const
                != mAuthorizedKvcList.end());
 }
 
+const std::shared_ptr<KeyReference> PoSecuritySettings::getDefaultPinCipheringKey() const
+{
+    return mPinCipheringKey;
+}
+
+LogRead PoSecuritySettings::getSvGetLogReadMode() const
+{
+    return mSvGetLogReadMode;
+}
+
+NegativeBalance PoSecuritySettings::getSvNegativeBalance() const
+{
+    return mSvNegativeBalance;
+}
+
 /* PO SECURITY SETTINGS BUILDER --------------------------------------------- */
 
 PoSecuritySettingsBuilder::PoSecuritySettingsBuilder(
@@ -120,6 +150,13 @@ PoSecuritySettingsBuilder& PoSecuritySettingsBuilder::ratificationMode(
     const RatificationMode ratificationMode)
 {
     mRatificationMode = ratificationMode;
+    return *this;
+}
+
+PoSecuritySettingsBuilder& PoSecuritySettingsBuilder::pinTransmissionMode(
+    const PinTransmissionMode pinTransmissionMode)
+{
+    mPinTransmissionMode = pinTransmissionMode;
     return *this;
 }
 
@@ -153,9 +190,30 @@ PoSecuritySettingsBuilder& PoSecuritySettingsBuilder::sessionAuthorizedKvcList(
     return *this;
 }
 
-std::unique_ptr<PoSecuritySettings> PoSecuritySettingsBuilder::build()
+PoSecuritySettingsBuilder& PoSecuritySettingsBuilder::pinCipheringKey(const uint8_t kif,
+                                                                      const uint8_t kvc)
 {
-    return std::unique_ptr<PoSecuritySettings>(new PoSecuritySettings(this));
+    mPinCipheringKey = std::make_shared<KeyReference>(kif, kvc);
+    return *this;
+}
+
+PoSecuritySettingsBuilder& PoSecuritySettingsBuilder::svGetLogReadMode(
+    const LogRead svGetLogReadMode)
+{
+    mSvGetLogReadMode = svGetLogReadMode;
+    return *this;
+}
+
+PoSecuritySettingsBuilder& PoSecuritySettingsBuilder::svNegativeBalance(
+    const NegativeBalance svNegativeBalance)
+{
+    mSvNegativeBalance = svNegativeBalance;
+    return *this;
+}
+
+std::shared_ptr<PoSecuritySettings> PoSecuritySettingsBuilder::build()
+{
+    return std::make_shared<PoSecuritySettings>(this);
 }
 
 }

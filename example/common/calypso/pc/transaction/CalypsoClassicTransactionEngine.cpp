@@ -134,7 +134,8 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
         /*
          * A ratification command will be sent (CONTACTLESS_MODE).
          */
-        poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
+        poTransaction->prepareReleasePoChannel();
+        poTransaction->processClosing();
 
     } else {
         /*
@@ -148,8 +149,8 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
          *
          * [------------------------------------]
          */
-        mLogger->info("========= PO Calypso session ======= Processing of PO commands ===========" \
-                      "============\n");
+        mLogger->info("========= PO Calypso session " \
+                      "======= Processing of PO commands =======================\n");
 
         /*
          * Read contract command (we assume we have determine Contract #1 to be
@@ -163,7 +164,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
                                              29);
 
         /* Proceed with the sending of commands, don't close the channel */
-        poTransaction->processPoCommandsInSession();
+        poTransaction->processPoCommands();
 
         std::shared_ptr<ElementaryFile> efContracts =
             calypsoPo->getFileBySfi(CalypsoClassicInfo::SFI_Contracts);
@@ -177,8 +178,8 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
                           ByteArrayUtil::toHex(entry_it.second));
         }
 
-        mLogger->info("========= PO Calypso session ======= Closing ============================" \
-                      "\n");
+        mLogger->info("========= PO Calypso session " \
+                      "======= Closing ============================\n");
 
         /*
          * [------------------------------------]
@@ -200,7 +201,8 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
         /*
          * A ratification command will be sent (CONTACTLESS_MODE).
          */
-        poTransaction->processClosing(ChannelControl::CLOSE_AFTER);
+        poTransaction->prepareReleasePoChannel();
+        poTransaction->processClosing();
     }
 
     mLogger->info("========= PO Calypso session ======= SUCCESS !!!!!!!!!!!!!!!!!!!!!!!!!!!!");

@@ -43,7 +43,14 @@ const CalypsoPoCommand CalypsoPoCommand::INCREASE("Increase", 0x32);
 const CalypsoPoCommand CalypsoPoCommand::DECREASE("Decrease", 0x30);
 const CalypsoPoCommand CalypsoPoCommand::SELECT_FILE("Select File", 0xA4);
 const CalypsoPoCommand CalypsoPoCommand::CHANGE_KEY("Change Key", 0xD8);
-const CalypsoPoCommand CalypsoPoCommand::GET_DATA_TRACE("Get Data 'Trace'", 0xD8);
+const CalypsoPoCommand CalypsoPoCommand::VERIFY_PIN("Verify PIN", 0x20);
+const CalypsoPoCommand CalypsoPoCommand::GET_DATA_TRACE("Get Data'Trace'", 0xCA);
+const CalypsoPoCommand CalypsoPoCommand::SV_GET("SV Get", 0x7C);
+const CalypsoPoCommand CalypsoPoCommand::SV_DEBIT("SV Debit", 0xBA);
+const CalypsoPoCommand CalypsoPoCommand::SV_RELOAD("SV Reload", 0xB8);
+const CalypsoPoCommand CalypsoPoCommand::SV_UNDEBIT("SV Undebit", 0xBC);
+const CalypsoPoCommand CalypsoPoCommand::INVALIDATE("Invalidate", 0x04);
+const CalypsoPoCommand CalypsoPoCommand::REHABILITATE("Invalidate", 0x44);
 
 CalypsoPoCommand::CalypsoPoCommand(const std::string& name, const uint8_t instructionByte)
 : mName(name), mInstructionbyte(instructionByte) {}

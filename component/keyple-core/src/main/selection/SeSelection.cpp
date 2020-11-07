@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "SeSelection.h"
 
@@ -38,30 +37,26 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-SeSelection::SeSelection(MultiSeRequestProcessing multiSeRequestProcessing,
-                         ChannelControl channelControl)
-: mMultiSeRequestProcessing(multiSeRequestProcessing),
-  mChannelControl(channelControl)
-{
-}
+SeSelection::SeSelection(MultiSeRequestProcessing multiSeRequestProcessing)
+: mMultiSeRequestProcessing(multiSeRequestProcessing) {}
 
-SeSelection::SeSelection()
-: SeSelection(MultiSeRequestProcessing::FIRST_MATCH, ChannelControl::KEEP_OPEN)
-{
-}
+SeSelection::SeSelection() : SeSelection(MultiSeRequestProcessing::FIRST_MATCH) {}
 
 int SeSelection::prepareSelection(
-    std::shared_ptr<AbstractSeSelectionRequest<AbstractApduCommandBuilder>>
-        seSelectionRequest)
+    std::shared_ptr<AbstractSeSelectionRequest<AbstractApduCommandBuilder>> seSelectionRequest)
 {
-    logger->trace("SELECTORREQUEST = %\n",
-                  seSelectionRequest->getSelectionRequest());
+    logger->trace("SELECTORREQUEST = %\n", seSelectionRequest->getSelectionRequest());
 
     /* keep the selection request */
     mSeSelectionRequests.push_back(seSelectionRequest);
 
     /* return and post increment the selection index (starting at 0) */
     return mSeSelectionRequests.size() - 1;
+}
+
+void SeSelection::prepareReleaseSeChannel()
+{
+    mChannelControl = ChannelControl::CLOSE_AFTER;
 }
 
 std::shared_ptr<SelectionsResult> SeSelection::processSelection(
