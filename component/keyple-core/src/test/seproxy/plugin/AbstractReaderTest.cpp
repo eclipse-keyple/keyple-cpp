@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <mutex>
 #include <thread>
@@ -34,6 +33,7 @@
 
 using namespace testing;
 
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
@@ -85,6 +85,18 @@ public:
                 setSeProtocolSetting,
                 ((const std::map<std::shared_ptr<SeProtocol>, std::string>&)),
                 (override));
+    MOCK_METHOD(void,
+                setParameters,
+                ((const std::map<const std::string, const std::string>&)),
+                (override));
+
+    const std::string& getName() const override
+    {
+        return mName;
+    }
+
+private:
+    const std::string mName = "AR_AbstractReaderMock";
 };
 
 static const std::string PLUGIN_NAME = "AbstractReaderTestP";
@@ -216,15 +228,6 @@ TEST(AbstractReaderTest, AbstractReader)
     ASSERT_EQ(r.getName(), READER_NAME);
 }
 
-TEST(AbstractReaderTest, compareTo)
-{
-    AR_AbstractReaderMock r1(PLUGIN_NAME, READER_NAME);
-    std::shared_ptr<AR_AbstractReaderMock> r2 =
-        std::make_shared<AR_AbstractReaderMock>(PLUGIN_NAME, READER_NAME);
-
-    ASSERT_EQ(r1.compareTo(r2), 0);
-}
-
 TEST(AbstractReaderTest, transmitSet)
 {
     AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
@@ -247,16 +250,18 @@ TEST(AbstractReaderTest, transmit_NullPtr1)
 {
     AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
 
-    EXPECT_THROW(r.transmitSeRequest(nullptr, ChannelControl::CLOSE_AFTER),
-                 IllegalArgumentException);
+    r.transmitSeRequests(std::vector<std::shared_ptr<SeRequest>>{},
+                         MultiSeRequestProcessing::FIRST_MATCH,
+                         ChannelControl::CLOSE_AFTER);
 }
 
 TEST(AbstractReaderTest, transmit_NullPtr2)
 {
     AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
 
-    EXPECT_THROW(r.transmitSeRequest(nullptr, ChannelControl::KEEP_OPEN),
-                 IllegalArgumentException);
+    r.transmitSeRequests(std::vector<std::shared_ptr<SeRequest>>{},
+                         MultiSeRequestProcessing::FIRST_MATCH,
+                         ChannelControl::KEEP_OPEN);
 }
 
 TEST(AbstractReaderTest, transmit)

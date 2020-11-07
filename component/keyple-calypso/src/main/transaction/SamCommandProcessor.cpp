@@ -17,21 +17,34 @@
 #include "CalypsoDesynchronizedExchangesException.h"
 #include "CalypsoPo.h"
 #include "CalypsoSamIOException.h"
+#include "CardCipherPinCmdBuild.h"
+#include "CardCipherPinRespPars.h"
 #include "DigestAuthenticateCmdBuild.h"
 #include "DigestAuthenticateRespPars.h"
 #include "DigestCloseCmdBuild.h"
 #include "DigestCloseRespPars.h"
 #include "DigestInitCmdBuild.h"
 #include "DigestUpdateCmdBuild.h"
+#include "GiveRandomCmdBuild.h"
+#include "KeyReference.h"
 #include "PoSecuritySettings.h"
 #include "SamGetChallengeCmdBuild.h"
 #include "SamGetChallengeRespPars.h"
+#include "SamReadKeyParametersRespPars.h"
 #include "SelectDiversifierCmdBuild.h"
+#include "SvCheckCmdBuild.h"
+#include "SvCheckRespPars.h"
+#include "SvDebitCmdBuild.h"
+#include "SvPrepareDebitCmdBuild.h"
+#include "SvPrepareLoadCmdBuild.h"
+#include "SvPrepareOperationRespPars.h"
+#include "SvPrepareUndebitCmdBuild.h"
 
 /* Common */
 #include "Arrays.h"
 #include "IllegalStateException.h"
 #include "KeypleStd.h"
+#include "System.h"
 
 /* Core */
 #include "KeypleReaderIOException.h"
@@ -40,12 +53,15 @@ namespace keyple {
 namespace calypso {
 namespace transaction {
 
+using namespace keyple::calypso;
 using namespace keyple::calypso::command::sam::builder::security;
 using namespace keyple::calypso::command::sam::parser::security;
 using namespace keyple::calypso::transaction::exception;
 using namespace keyple::common;
 using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::exception;
+
+using AbstractSamCommandResponse = AbstractSamCommandBuilder<AbstractSamResponseParser>;
 
 const uint8_t SamCommandProcessor::KIF_UNDEFINED = 0xff;
 const uint8_t SamCommandProcessor::CHALLENGE_LENGTH_REV_INF_32 = 0x04;
@@ -88,10 +104,10 @@ const std::vector<uint8_t> SamCommandProcessor::getSessionTerminalChallenge()
         mPoResource->getMatchingSe()->isConfidentialSessionModeSupported() ?
             CHALLENGE_LENGTH_REV32 : CHALLENGE_LENGTH_REV_INF_32;
 
-    std::shared_ptr<AbstractSamCommandBuilder<AbstractSamResponseParser>>
+    std::shared_ptr<AbstractSamCommandResponse>
         getChallengeCmdBuild =
             std::reinterpret_pointer_cast<
-                AbstractSamCommandBuilder<AbstractSamResponseParser>>(
+                AbstractSamCommandResponse>(
                     std::make_shared<SamGetChallengeCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),
                         challengeLength));
@@ -168,41 +184,34 @@ void SamCommandProcessor::initializeDigester(
 {
     mSessionEncryption = sessionEncryption;
     mVerificationMode = verificationMode;
-    mWorkKeyRecordNumber =
-        mPoSecuritySettings->getSessionDefaultKeyRecordNumber(accessLevel);
+    /* TODO check in which case this key number is needed */
+    // mWorkKeyRecordNumber = mPoSecuritySettings->getSessionDefaultKeyRecordNumber(accessLevel);
     mWorkKeyKif = determineWorkKif(poKif, accessLevel);
     /* TODO handle Rev 1.0 case where KVC is not available */
     mWorkKeyKVC = poKVC;
 
-    mLogger->debug("initialize: POREVISION = %, SAMREVISION = %, " \
-                   "SESSIONENCRYPTION = %, VERIFICATIONMODE = %\n",
+    mLogger->debug("initialize: POREVISION = %, SAMREVISION = %, SESSIONENCRYPTION = %, " \
+                   "VERIFICATIONMODE = %\n",
                    mPoResource->getMatchingSe()->getRevision(),
                    mSamResource->getMatchingSe()->getSamRevision(),
                    sessionEncryption,
                    verificationMode);
 
-    mLogger->debug("initialize: VERIFICATIONMODE = %, REV32MODE = % " \
-                   ", KEYRECNUMBER = %\n",
+    mLogger->debug("initialize: VERIFICATIONMODE = %, REV32MODE = %, KEYRECNUMBER = %\n",
                    verificationMode,
-                   mPoResource->getMatchingSe()
-                       ->isConfidentialSessionModeSupported(),
+                   mPoResource->getMatchingSe() ->isConfidentialSessionModeSupported(),
                    mWorkKeyRecordNumber);
 
-    mLogger->debug("initialize: KIF = %, KVC = %, DIGESTDATA = %\n",
-                   poKif,
-                   poKVC,
-                   digestData);
+    mLogger->debug("initialize: KIF = %, KVC = %, DIGESTDATA = %\n", poKif, poKVC, digestData);
 
     /* Clear data cache */
     mPoDigestDataCache.clear();
 
-    /*
-     * Build Digest Init command as first ApduRequest of the digest computation
-     * process
-     */
+    /* Build Digest Init command as first ApduRequest of the digest computation process */
     mPoDigestDataCache.push_back(digestData);
 
     mIsDigestInitDone = false;
+    mIsDigesterInitialized = true;
 }
 
 void SamCommandProcessor::pushPoExchangeData(
@@ -240,16 +249,11 @@ void SamCommandProcessor::pushPoExchangeDataList(
         pushPoExchangeData(requests[i], responses[i]);
 }
 
-const std::vector<std::shared_ptr<AbstractSamCommandBuilder<
-    AbstractSamResponseParser>>> SamCommandProcessor::getPendingSamCommands(
-        const bool addDigestClose)
+const std::vector<std::shared_ptr<AbstractSamCommandResponse>>
+    SamCommandProcessor::getPendingSamCommands(const bool addDigestClose)
 {
-    /*
-     * TODO optimization with the use of Digest Update Multiple whenever
-     * possible.
-     */
-    std::vector<std::shared_ptr<AbstractSamCommandBuilder<
-        AbstractSamResponseParser>>> samCommands;
+    /* TODO optimization with the use of Digest Update Multiple whenever possible */
+    std::vector<std::shared_ptr<AbstractSamCommandResponse>> samCommands;
 
     /* Sanity checks */
     if (mPoDigestDataCache.empty()) {
@@ -259,32 +263,28 @@ const std::vector<std::shared_ptr<AbstractSamCommandBuilder<
 
     if (!mIsDigestInitDone && mPoDigestDataCache.size() % 2 == 0) {
         /* The number of buffers should be 2*n + 1 */
-        mLogger->debug(
-            "getSamDigestRequest: wrong number of buffer in cache NBR = %\n.",
-            mPoDigestDataCache.size());
+        mLogger->debug("getSamDigestRequest: wrong number of buffer in cache NBR = %\n.",
+                       mPoDigestDataCache.size());
         throw IllegalStateException("Digest data cache is inconsistent.");
     }
 
     if (!mIsDigestInitDone) {
         /*
-         * Build and append Digest Init command as first ApduRequest of the
-         * digest computation process. The Digest Init command comes from the
-         * Open Secure Session response from the PO. Once added to the
-         * ApduRequest list, the data is remove from the cache to keep only
+         * Build and append Digest Init command as first ApduRequest of the digest computation
+         * process. The Digest Init command comes from the Open Secure Session response from the PO.
+         * Once added to the ApduRequest list, the data is remove from the cache to keep only
          * couples of PO request/response
          */
-        samCommands.push_back(
-            std::reinterpret_pointer_cast<
-                AbstractSamCommandBuilder<AbstractSamResponseParser>>(
-                    std::make_shared<DigestInitCmdBuild>(
+        auto init = std::make_shared<DigestInitCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),
                         mVerificationMode,
-                        mPoResource->getMatchingSe()
-                            ->isConfidentialSessionModeSupported(),
+                        mPoResource->getMatchingSe()->isConfidentialSessionModeSupported(),
                         mWorkKeyRecordNumber,
                         mWorkKeyKif,
                         mWorkKeyKVC,
-                        mPoDigestDataCache[0])));
+                        mPoDigestDataCache[0]);
+        auto cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(init);
+        samCommands.push_back(cmd);
 
         mPoDigestDataCache.erase(mPoDigestDataCache.begin());
 
@@ -293,30 +293,27 @@ const std::vector<std::shared_ptr<AbstractSamCommandBuilder<
     }
 
     /* Build and append Digest Update commands */
-    for (int i = 0; i < static_cast<int>(mPoDigestDataCache.size()); i++)
-        samCommands.push_back(
-            std::reinterpret_pointer_cast<
-                AbstractSamCommandBuilder<AbstractSamResponseParser>>(
-                    std::make_shared<DigestUpdateCmdBuild>(
-                        mSamResource->getMatchingSe()->getSamRevision(),
-                        mSessionEncryption,
-                        mPoDigestDataCache[i])));
+    for (int i = 0; i < static_cast<int>(mPoDigestDataCache.size()); i++) {
+        auto update = std::make_shared<DigestUpdateCmdBuild>(
+                          mSamResource->getMatchingSe()->getSamRevision(),
+                          mSessionEncryption,
+                          mPoDigestDataCache[i]);
+        auto cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(update);
+        samCommands.push_back(cmd);
+    }
 
     /* clears cached commands once they have been processed */
     mPoDigestDataCache.clear();
 
-    if (addDigestClose)
+    if (addDigestClose) {
         /* Build and append Digest Close command */
-        samCommands.push_back(
-            std::reinterpret_pointer_cast<
-                AbstractSamCommandBuilder<AbstractSamResponseParser>>(
-                    std::make_shared<DigestCloseCmdBuild>(
+        auto close = std::make_shared<DigestCloseCmdBuild>(
                         mSamResource->getMatchingSe()->getSamRevision(),
-                        mPoResource->getMatchingSe()->getRevision() ==
-                            PoRevision::REV3_2 ?
-                            SIGNATURE_LENGTH_REV32 :
-                            SIGNATURE_LENGTH_REV_INF_32)));
-
+                        mPoResource->getMatchingSe()->getRevision() == PoRevision::REV3_2 ?
+                            SIGNATURE_LENGTH_REV32 : SIGNATURE_LENGTH_REV_INF_32);
+        auto cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(close);
+        samCommands.push_back(cmd);
+    }
 
     return samCommands;
 }
@@ -327,21 +324,18 @@ const std::vector<uint8_t> SamCommandProcessor::getTerminalSignature()
      * All remaining SAM digest operations will now run at once.
      * Get the SAM Digest request including Digest Close from the cache manager
      */
-    std::vector<std::shared_ptr<AbstractSamCommandBuilder<
-        AbstractSamResponseParser>>> samCommands = getPendingSamCommands(true);
+    std::vector<std::shared_ptr<AbstractSamCommandResponse>> samCommands =
+        getPendingSamCommands(true);
 
-    std::shared_ptr<SeRequest> samSeRequest =
-        std::make_shared<SeRequest>(getApduRequests(samCommands));
+    auto samSeRequest = std::make_shared<SeRequest>(getApduRequests(samCommands));
 
     /* Transmit SeRequest and get SeResponse */
     std::shared_ptr<SeResponse> samSeResponse;
 
     try {
-        samSeResponse = mSamReader->transmitSeRequest(
-                            samSeRequest, ChannelControl::KEEP_OPEN);
+        samSeResponse = mSamReader->transmitSeRequest(samSeRequest, ChannelControl::KEEP_OPEN);
     } catch (const KeypleReaderIOException& e) {
-        throw CalypsoSamIOException(
-                  "SAM IO Exception while transmitting digest data.", e);
+        throw CalypsoSamIOException("SAM IO Exception while transmitting digest data.", e);
     }
 
     const std::vector<std::shared_ptr<ApduResponse>>& samApduResponses =
@@ -349,25 +343,23 @@ const std::vector<uint8_t> SamCommandProcessor::getTerminalSignature()
 
     if (samApduResponses.size() != samCommands.size()) {
         std::stringstream ss;
-        ss << "The number of commands/responses does not "
-           << "match: cmd=" << samCommands.size() << ", resp="
-           << samApduResponses.size();
+        ss << "The number of commands/responses does not match: cmd=" << samCommands.size()
+           << ", resp=" << samApduResponses.size();
         throw CalypsoDesynchronizedExchangesException(ss.str());
     }
 
     /* Check all responses status */
     for (int i = 0; i < static_cast<int>(samApduResponses.size()); i++)
-        samCommands[i]->createResponseParser(samApduResponses[i])
-            ->checkStatus();
+        samCommands[i]->createResponseParser(samApduResponses[i])->checkStatus();
 
     /* Get Terminal Signature from the latest response */
-    std::shared_ptr<DigestCloseRespPars> digestCloseRespPars =
-        std::dynamic_pointer_cast<DigestCloseRespPars>(
-            samCommands[samCommands.size() - 1]->createResponseParser(
-                samApduResponses[samCommands.size() - 1]));
+    std::shared_ptr<AbstractSamResponseParser> response =
+        samCommands[samCommands.size() - 1]->createResponseParser(
+            samApduResponses[samCommands.size() - 1]);
+    auto resp = std::reinterpret_pointer_cast<SamReadKeyParametersRespPars>(response);
 
-    const std::vector<uint8_t>& sessionTerminalSignature =
-        digestCloseRespPars->getSignature();
+    auto digestCloseRespPars = std::dynamic_pointer_cast<DigestCloseRespPars>(resp);
+    const std::vector<uint8_t>& sessionTerminalSignature = digestCloseRespPars->getSignature();
 
     mLogger->debug("SIGNATURE = %\n", sessionTerminalSignature);
 
@@ -381,23 +373,21 @@ void SamCommandProcessor::authenticatePoSignature(
      * Check the PO signature part with the SAM
      * Build and send SAM Digest Authenticate command
      */
-    std::shared_ptr<DigestAuthenticateCmdBuild> digestAuthenticateCmdBuild =
-        std::make_shared<DigestAuthenticateCmdBuild>(
-            mSamResource->getMatchingSe()->getSamRevision(), poSignatureLo);
+    auto digestAuthenticateCmdBuild =
+        std::make_shared<DigestAuthenticateCmdBuild>(mSamResource->getMatchingSe()->getSamRevision(),
+                                                     poSignatureLo);
 
     std::vector<std::shared_ptr<ApduRequest>> samApduRequests;
     samApduRequests.push_back(digestAuthenticateCmdBuild->getApduRequest());
 
-    std::shared_ptr<SeRequest> samSeRequest =
-        std::make_shared<SeRequest>(samApduRequests);
+    auto samSeRequest = std::make_shared<SeRequest>(samApduRequests);
     std::shared_ptr<SeResponse> samSeResponse;
 
     try {
-        samSeResponse = mSamReader->transmitSeRequest(
-                            samSeRequest, ChannelControl::KEEP_OPEN);
+        samSeResponse = mSamReader->transmitSeRequest(samSeRequest, ChannelControl::KEEP_OPEN);
     } catch (const KeypleReaderIOException& e) {
-        throw CalypsoSamIOException("SAM IO Exception while transmitting " \
-                                    "digest authentication data.",
+        throw CalypsoSamIOException("SAM IO Exception while transmitting digest authentication " \
+                                    "data.",
                                     e);
     }
 
@@ -406,8 +396,7 @@ void SamCommandProcessor::authenticatePoSignature(
         samSeResponse->getApduResponses();
 
     if (samApduResponses.empty())
-        throw CalypsoDesynchronizedExchangesException(
-                  "No response to Digest Authenticate command.");
+        throw CalypsoDesynchronizedExchangesException("No response to Digest Auth. command.");
 
     std::shared_ptr<DigestAuthenticateRespPars> digestAuthenticateRespPars =
         digestAuthenticateCmdBuild->createResponseParser(samApduResponses[0]);
@@ -415,10 +404,8 @@ void SamCommandProcessor::authenticatePoSignature(
     digestAuthenticateRespPars->checkStatus();
 }
 
-const std::vector<std::shared_ptr<ApduRequest>>
-    SamCommandProcessor::getApduRequests(
-        const std::vector<std::shared_ptr<AbstractSamCommandBuilder<
-            AbstractSamResponseParser>>>& samCommands)
+const std::vector<std::shared_ptr<ApduRequest>> SamCommandProcessor::getApduRequests(
+    const std::vector<std::shared_ptr<AbstractSamCommandResponse>>& samCommands)
 {
     std::vector<std::shared_ptr<ApduRequest>> apduRequests;
 
@@ -429,6 +416,213 @@ const std::vector<std::shared_ptr<ApduRequest>>
 
     return apduRequests;
 }
+
+const std::vector<uint8_t> SamCommandProcessor::getCipheredPinData(
+    const std::vector<uint8_t>& poChallenge,
+    const std::vector<uint8_t>& currentPin,
+    const std::vector<uint8_t> newPin)
+{
+    std::vector<std::shared_ptr<AbstractSamCommandResponse>> samCommands;
+    std::shared_ptr<KeyReference> pinCipheringKey;
+
+    if (mWorkKeyKif != 0) {
+        /* The current work key has been set (a secure session is open) */
+        pinCipheringKey = std::make_shared<KeyReference>(mWorkKeyKif, mWorkKeyKVC);
+    } else {
+        /* No current work key is available (outside secure session) */
+        pinCipheringKey = mPoSecuritySettings->getDefaultPinCipheringKey();
+    }
+
+    if (!mIsDiversificationDone) {
+        /* Build the SAM Select Diversifier command to provide the SAM with the PO S/N */
+        auto select = std::make_shared<SelectDiversifierCmdBuild>(
+                          mSamResource->getMatchingSe()->getSamRevision(),
+                          mPoResource->getMatchingSe()->getApplicationSerialNumberBytes());
+        auto cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(select);
+        samCommands.push_back(cmd);
+        mIsDiversificationDone = true;
+    }
+
+    if (mIsDigesterInitialized) {
+        /* Get the pending SAM ApduRequest and add it to the current ApduRequest list */
+        const std::vector<std::shared_ptr<AbstractSamCommandResponse>> pending =
+            getPendingSamCommands(false);
+        samCommands.insert(std::end(samCommands), std::begin(pending), std::end(pending));
+    }
+
+    auto random = std::make_shared<GiveRandomCmdBuild>(
+                      mSamResource->getMatchingSe()->getSamRevision(),
+                      poChallenge);
+    auto cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(random);
+    samCommands.push_back(cmd);
+
+
+    int cardCipherPinCmdIndex = samCommands.size();
+
+    auto cardCipherPinCmdBuild = std::make_shared<CardCipherPinCmdBuild>(
+                                     mSamResource->getMatchingSe()->getSamRevision(),
+                                     pinCipheringKey,
+                                     currentPin,
+                                     newPin);
+    auto cipher = std::make_shared<CardCipherPinCmdBuild>(
+                      mSamResource->getMatchingSe()->getSamRevision(),
+                      pinCipheringKey,
+                      currentPin,
+                      newPin);
+    cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(cipher);
+    samCommands.push_back(cmd);
+
+    /* Build a SAM SeRequest */
+    auto samSeRequest = std::make_shared<SeRequest>(getApduRequests(samCommands));
+
+    /* Execute the command */
+    std::shared_ptr<SeResponse> samSeResponse =
+        mSamReader->transmitSeRequest(samSeRequest, ChannelControl::KEEP_OPEN);
+
+    std::shared_ptr<ApduResponse> cardCipherPinResponse =
+        samSeResponse->getApduResponses()[cardCipherPinCmdIndex];
+
+    /* Create a parser */
+    std::shared_ptr<CardCipherPinRespPars> cardCipherPinRespPars =
+            cardCipherPinCmdBuild->createResponseParser(cardCipherPinResponse);
+
+    cardCipherPinRespPars->checkStatus();
+
+    return cardCipherPinRespPars->getCipheredData();
+}
+
+const std::vector<uint8_t> SamCommandProcessor::getSvComplementaryData(
+    std::shared_ptr<AbstractSamCommandResponse> svPrepareCmdBuild)
+{
+    std::vector<std::shared_ptr<AbstractSamCommandResponse>> samCommands;
+
+    if (!mIsDiversificationDone) {
+        /* Build the SAM Select Diversifier command to provide the SAM with the PO S/N */
+        auto select = std::make_shared<SelectDiversifierCmdBuild>(
+                          mSamResource->getMatchingSe()->getSamRevision(),
+                          mPoResource->getMatchingSe()->getApplicationSerialNumberBytes());
+        auto cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(select);
+        samCommands.push_back(cmd);
+        mIsDiversificationDone = true;
+    }
+
+    if (mIsDigesterInitialized) {
+        /* Get the pending SAM ApduRequest and add it to the current ApduRequest list */
+        const std::vector<std::shared_ptr<AbstractSamCommandResponse>> pending =
+            getPendingSamCommands(false);
+        samCommands.insert(std::end(samCommands), std::begin(pending), std::end(pending));
+    }
+
+    const int svPrepareOperationCmdIndex = samCommands.size();
+
+    samCommands.push_back(svPrepareCmdBuild);
+
+    /* Build a SAM SeRequest */
+    auto samSeRequest = std::make_shared<SeRequest>(getApduRequests(samCommands));
+
+    /* Execute the command */
+    std::shared_ptr<SeResponse> samSeResponse =
+        mSamReader->transmitSeRequest(samSeRequest, ChannelControl::KEEP_OPEN);
+
+    std::shared_ptr<ApduResponse> svPrepareResponse =
+        samSeResponse->getApduResponses()[svPrepareOperationCmdIndex];
+
+    /* Create a parser */
+    auto svPrepareOperationRespPars =
+        std::dynamic_pointer_cast<SvPrepareOperationRespPars>(
+            svPrepareCmdBuild->createResponseParser(svPrepareResponse));
+
+    svPrepareOperationRespPars->checkStatus();
+
+    const std::vector<uint8_t>& samId = mSamResource->getMatchingSe()->getSerialNumber();
+    const std::vector<uint8_t>& prepareOperationData =
+        svPrepareOperationRespPars->getApduResponse()->getDataOut();
+
+    std::vector<uint8_t> operationComplementaryData(samId.size() + prepareOperationData.size());
+    System::arraycopy(samId, 0, operationComplementaryData, 0, samId.size());
+    System::arraycopy(prepareOperationData,
+                      0,
+                      operationComplementaryData,
+                      samId.size(),
+                      prepareOperationData.size());
+
+    return operationComplementaryData;
+}
+
+const std::vector<uint8_t> SamCommandProcessor::getSvReloadComplementaryData(
+    std::shared_ptr<SvReloadCmdBuild> svReloadCmdBuild,
+    const std::vector<uint8_t>& svGetHeader,
+    const std::vector<uint8_t>& svGetData)
+{
+    /* Get the complementary data from the SAM */
+    auto svPrepareLoadCmdBuild = std::make_shared<SvPrepareLoadCmdBuild>(
+                                     mSamResource->getMatchingSe()->getSamRevision(),
+                                     svGetHeader,
+                                     svGetData,
+                                     svReloadCmdBuild->getSvReloadData());
+    auto cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(svPrepareLoadCmdBuild);
+
+    return getSvComplementaryData(cmd);
+}
+
+const std::vector<uint8_t> SamCommandProcessor::getSvDebitComplementaryData(
+    std::shared_ptr<SvDebitCmdBuild> svDebitCmdBuild,
+    const std::vector<uint8_t>& svGetHeader,
+    const std::vector<uint8_t>& svGetData)
+{
+    /* Get the complementary data from the SAM */
+    auto svPrepareDebitCmdBuild = std::make_shared<SvPrepareDebitCmdBuild>(
+                                      mSamResource->getMatchingSe()->getSamRevision(),
+                                      svGetHeader,
+                                      svGetData,
+                                      svDebitCmdBuild->getSvDebitData());
+    auto cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(svPrepareDebitCmdBuild);
+
+    return getSvComplementaryData(cmd);
+}
+
+const std::vector<uint8_t> SamCommandProcessor::getSvUndebitComplementaryData(
+    std::shared_ptr<SvUndebitCmdBuild> svUndebitCmdBuild,
+    const std::vector<uint8_t>& svGetHeader,
+    const std::vector<uint8_t>& svGetData)
+{
+    /* Get the complementary data from the SAM */
+    auto svPrepareUndebitCmdBuild = std::make_shared<SvPrepareUndebitCmdBuild>(
+                                        mSamResource->getMatchingSe()->getSamRevision(),
+                                        svGetHeader,
+                                        svGetData,
+                                        svUndebitCmdBuild->getSvUndebitData());
+    auto cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(svPrepareUndebitCmdBuild);
+
+    return getSvComplementaryData(cmd);
+}
+
+void SamCommandProcessor::checkSvStatus(const std::vector<uint8_t>& svOperationResponseData)
+{
+    std::vector<std::shared_ptr<AbstractSamCommandResponse>> samCommands;
+
+    auto svCheckCmdBuilder = std::make_shared<SvCheckCmdBuild>(
+                                 mSamResource->getMatchingSe()->getSamRevision(),
+                                 svOperationResponseData);
+    auto cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(svCheckCmdBuilder);
+    samCommands.push_back(cmd);
+
+    /* Build a SAM SeRequest */
+    auto samSeRequest = std::make_shared<SeRequest>(getApduRequests(samCommands));
+
+    /* Execute the command */
+    std::shared_ptr<SeResponse> samSeResponse =
+        mSamReader->transmitSeRequest(samSeRequest, ChannelControl::KEEP_OPEN);
+
+    std::shared_ptr<ApduResponse> svCheckResponse = samSeResponse->getApduResponses()[0];
+
+    /* Create a parser */
+    std::shared_ptr<SvCheckRespPars> svCheckRespPars =
+        svCheckCmdBuilder->createResponseParser(svCheckResponse);
+
+    svCheckRespPars->checkStatus();
+}
+
 
 }
 }

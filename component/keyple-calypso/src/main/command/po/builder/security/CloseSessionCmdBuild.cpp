@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "CloseSessionCmdBuild.h"
 
@@ -64,7 +63,7 @@ CloseSessionCmdBuild::CloseSessionCmdBuild(
     uint8_t le = 0;
 
     mRequest = setApduRequest(poClass.getValue(),
-                              command,
+                              mCommand,
                               p1,
                               0x00,
                               terminalSessionSignature,
@@ -76,7 +75,7 @@ CloseSessionCmdBuild::CloseSessionCmdBuild(PoClass poClass)
       std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::CLOSE_SESSION),
       nullptr)
 {
-    mRequest = setApduRequest(poClass.getValue(), command, 0x00, 0x00, 0x00);
+    mRequest = setApduRequest(poClass.getValue(), mCommand, 0x00, 0x00, 0x00);
 
     /* Add "Abort session" to command name for logging purposes */
     this->addSubName("Abort session");

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -24,7 +23,6 @@
 #include "AbstractPoCommandBuilder.h"
 #include "ChannelControl.h"
 #include "KeypleCalypsoExport.h"
-#include "PoCommandManager.h"
 #include "SamRevision.h"
 #include "SelectFileCmdBuild.h"
 
@@ -36,12 +34,10 @@
 #include "TransmissionMode.h"
 
 /* Forward declarations */
-namespace keyple { namespace calypso { namespace transaction {
-    class PoSecuritySettings; } } }
-namespace keyple { namespace calypso { namespace transaction {
-    class CalypsoPo; } } }
-namespace keyple { namespace calypso { namespace transaction {
-    class SamCommandProcessor; } } }
+namespace keyple { namespace calypso { namespace transaction { class PoSecuritySettings; } } }
+namespace keyple { namespace calypso { namespace transaction { class CalypsoPo; } } }
+namespace keyple { namespace calypso { namespace transaction { class SamCommandProcessor; } } }
+namespace keyple { namespace calypso { namespace transaction { class PoCommandManager; } } }
 
 namespace keyple {
 namespace calypso {
@@ -84,6 +80,79 @@ public:
         SESSION_OPEN,
         /** The secure session is closed. */
         SESSION_CLOSED
+    };
+
+    /**
+     * The {@link PinTransmissionMode} indicates whether the PIN transmission is encrypted or not.
+     */
+    enum class PinTransmissionMode {
+        PLAIN,
+        ENCRYPTED
+    };
+
+    /**
+     * A set of enumerations used to manage Stored Value transactions
+     */
+    class SvSettings {
+    public:
+        /**
+         * {@link Operation} specifies the type of operation intended to be carried out
+         */
+        enum class Operation {
+            NONE,
+            /**
+             * Increase the balance of the stored value
+             */
+            RELOAD,
+            /**
+             * Decrease the balance of the stored value
+             */
+            DEBIT
+        };
+
+        /**
+         * {@link Action} specifies the type of action:
+         * <ul>
+         * <li>Reload: DO loads a positive amount, UNDO loads a negative amount
+         * <li>Debit: DO debits a positive amount, UNDO cancels, totally or partially, a previous
+         * debit.
+         * </ul>
+         */
+        enum class Action {
+            DO,
+            UNDO
+        };
+
+        /**
+         * {@link LogRead} specifies whether only the log related to the current operation
+         * {@link} is requested or whether both logs are requested.
+         */
+        enum class LogRead {
+            /**
+             * Request the RELOAD or DEBIT log according to the currently specified operation
+             */
+            SINGLE,
+            /**
+             * Request both RELOAD and DEBIT logs
+             */
+            ALL
+        };
+
+        /**
+         * {@link NegativeBalance} indicates whether negative balances are allowed when debiting the
+         * SV
+         */
+        enum class NegativeBalance {
+            /**
+             * An SV exception will be raised if the attempted debit of the SV would result in a
+             * negative balance.
+             */
+            FORBIDDEN,
+            /**
+             * Negative balance is allowed
+             */
+            AUTHORIZED
+        };
     };
 
     class SessionSetting {
@@ -225,115 +294,82 @@ public:
     /**
      * Open a Secure Session.
      * <ul>
-     * <li>The PO must have been previously selected, so a logical channel with
-     * the PO application must be already active.</li>
+     * <li>The PO must have been previously selected, so a logical channel with the PO application
+     * must be already active.</li>
      * <li>The PO serial &amp; revision are identified from FCI data.</li>
      * <li>A first request is sent to the SAM session reader.
      * <ul>
-     * <li>In case not logical channel is active with the SAM, a channel is
-     * open.</li>
-     * <li>Then a Select Diversifier (with the PO serial) &amp; a Get Challenge
-     * are automatically operated. The SAM challenge is recovered.</li>
+     * <li>In case not logical channel is active with the SAM, a channel is open.</li>
+     * <li>Then a Select Diversifier (with the PO serial) &amp; a Get Challenge are automatically
+     * operated. The SAM challenge is recovered.</li>
      * </ul>
      * </li>
-     * <li>The PO Open Session command is built according to the PO revision,
-     * the SAM challenge, the keyIndex, and openingSfiToSelect /
-     * openingRecordNumberToRead.</li>
+     * <li>The PO Open Session command is built according to the PO revision, the SAM challenge, the
+     * keyIndex, and openingSfiToSelect / openingRecordNumberToRead.</li>
      * <li>Next the PO reader is requested:
      * <ul>
-     * <li>for the currently selected PO, with channelControl set to KEEP_OPEN,
-     * </li>
-     * <li>and some PO Apdu Requests including at least the Open Session command
-     * and all prepared PO command to operate inside the session.</li>
+     * <li>for the currently selected PO, with channelControl set to KEEP_OPEN,</li>
+     * <li>and some PO Apdu Requests including at least the Open Session command and all prepared PO
+     * command to operate inside the session.</li>
      * </ul>
      * </li>
-     * <li>The session PO keyset reference is identified from the PO Open
-     * Session response, the PO challenge is recovered too.</li>
-     * <li>According to the PO responses of Open Session and the PO commands
-     * sent inside the session, a "cache" of SAM commands is filled with the
-     * corresponding Digest Init &amp; Digest Update commands.</li>
-     * <li>All parsers keept by the prepare command methods are updated with the
-     * Apdu responses from the PO and made available with the getCommandParser
-     * method.</li>
+     * <li>The session PO keyset reference is identified from the PO Open Session response, the PO
+     * challenge is recovered too.</li>
+     * <li>According to the PO responses of Open Session and the PO commands sent inside the
+     * session, a "cache" of SAM commands is filled with the corresponding Digest Init &amp; Digest
+     * Update commands.</li>
+     * <li>The result of the commands is placed in CalypsoPo.</li>
+     * <li>Any call to prepareReleasePoChannel before this command will be ignored but will remain
+     * active for the next process command.</li>
      * </ul>
      *
-     * @param accessLevel access level of the session (personalization, load or
-     *        debit).
-     * @throw CalypsoPoTransactionException if a functional error occurs
-     *        (including PO and SAM IO errors)
+     * @param accessLevel access level of the session (personalization, load or debit).
+     * @throw CalypsoPoTransactionException if a functional error occurs (including PO and SAM IO
+     *         errors)
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
-     * @throw CalypsoSamCommandException if a response from the SAM was
-     *        unexpected
+     * @throw CalypsoSamCommandException if a response from the SAM was unexpected
      */
     void processOpening(const SessionSetting::AccessLevel& accessLevel);
 
     /**
-     * Process all prepared PO commands (outside a Secure Session).
-     * <ul>
-     * <li>On the PO reader, generates a SeRequest with channelControl set to the
-     * provided value and ApduRequests containing the PO commands.</li>
-     * <li>All parsers keept by the prepare command methods are updated with the
-     * Apdu responses from the PO and made available with the getCommandParser
-     * method.</li>
-     * </ul>
-     *
-     * @param channelControl indicates if the SE channel of the PO reader must be
-     *        closed after the last command
-     * @throw CalypsoPoTransactionException if a functional error occurs
-     *        (including PO and SAM IO errors)
-     * @throw CalypsoPoCommandException if a response from the PO was unexpected
-     */
-    void processPoCommands(const ChannelControl channelControl);
-
-    /**
-     * Process all prepared PO commands in a Secure Session.
-     * <ul>
-     * <li>On the PO reader, generates a SeRequest with channelControl set to
-     * KEEP_OPEN, and ApduRequests containing the PO commands.</li>
-     * <li>In case the secure session is active, the "cache" of SAM commands is
-     * completed with the corresponding Digest Update commands.</li>
-     * <li>All parsers keept by the prepare command methods are updated with the
-     * Apdu responses from the PO and made available with the getCommandParser
-     * method.</li>
-     * </ul>
-     *
-     * @throw CalypsoPoTransactionException if a functional error occurs
-     *        (including PO and SAM IO errors)
-     * @throw CalypsoPoCommandException if a response from the PO was unexpected
-     * @throw CalypsoSamCommandException if a response from the SAM was
-     *        unexpected
-     */
-    void processPoCommandsInSession();
-
-    /**
-     * Sends the currently prepared commands list (may be empty) and closes the
-     * Secure Session.
+     * Sends the currently prepared commands list (may be empty) and closes the Secure Session.
      * <ul>
      * <li>The ratification is handled according to the communication mode.</li>
      * <li>The logical channel can be left open or closed.</li>
-     * <li>All parsers keept by the prepare command methods are updated with the
-     * Apdu responses from the PO and made available with the getCommandParser
-     * method.</li>
+     * <li>The result of the commands is placed in CalypsoPo.</li>
      * </ul>
      *
      * <p>
-     * The communication mode is retrieved from CalypsoPO to manage the
-     * ratification process. If the communication mode is CONTACTLESS, a
-     * ratification command will be generated and sent to the PO after the Close
-     * Session command; the ratification will not be requested in the Close
-     * Session command. On the contrary, if the communication mode is CONTACTS,
-     * no ratification command will be sent to the PO and ratification will be
-     * requested in the Close Session command
+     * The communication mode is retrieved from CalypsoPO to manage the ratification process. If the
+     * communication mode is CONTACTLESS, a ratification command will be generated and sent to the
+     * PO after the Close Session command; the ratification will not be requested in the Close
+     * Session command. On the contrary, if the communication mode is CONTACTS, no ratification
+     * command will be sent to the PO and ratification will be requested in the Close Session
+     * command
      *
-     * @param channelControl indicates if the SE channel of the PO reader must be
-     *        closed after the last command
-     * @throw CalypsoPoTransactionException if a functional error occurs
-     *        (including PO and SAM IO errors)
+     * @throw CalypsoPoTransactionException if a functional error occurs (including PO and SAM IO
+     *         errors)
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
-     * @throw CalypsoSamCommandException if a response from the SAM was
-     *        unexpected
+     * @throw CalypsoSamCommandException if a response from the SAM was unexpected
      */
-    void processClosing(const ChannelControl channelControl);
+    void processClosing();
+
+    /**
+     * Process all prepared PO commands outside or in a Secure Session.
+     * <ul>
+     * <li>In case the secure session is active, the "cache" of SAM commands is completed with the
+     * corresponding Digest Update commands. Also, the PO channel is kept open.</li>
+     * <li>Outside of a secure session, the PO channel is closed depending on whether or not
+     * prepareReleasePoChannel has been called.</li>
+     * <li>The result of the commands is placed in CalypsoPo.</li>
+     * </ul>
+     *
+     * @throw CalypsoPoTransactionException if a functional error occurs (including PO and SAM IO
+     *         errors)
+     * @throw CalypsoPoCommandException if a response from the PO was unexpected
+     * @throw CalypsoSamCommandException if a response from the SAM was unexpected
+     */
+    void processPoCommands();
 
     /**
      * Abort a Secure Session.
@@ -342,13 +378,43 @@ public:
      * <p>
      * Clean up internal data and status.
      *
-     * @param channelControl indicates if the SE channel of the PO reader must be
-     *        closed after the abort session command
-     * @throw CalypsoPoTransactionException if a functional error occurs
-     *        (including PO and SAM IO errors)
+     * @throw CalypsoPoTransactionException if a functional error occurs (including PO and SAM IO
+     *         errors)
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
      */
-    void processCancel(const ChannelControl channelControl);
+    void processCancel();
+
+    /**
+     * Performs a PIN verification, in order to authenticate the cardholder and/or unlock access to
+     * certain PO files.<br>
+     * This command can be performed both in and out of a secure session.<br>
+     * The PIN code can be transmitted in plain text or encrypted according to the parameter set in
+     * PoSecuritySettings (by default the transmission is encrypted).<br>
+     * If the execution is done out of session but an encrypted transmission is requested, then
+     * PoTransaction must be constructed with {@link PoSecuritySettings}<br>
+     * If PoTransaction is constructed without {@link PoSecuritySettings} the transmission in done
+     * in plain.<br>
+     * The PO channel is closed if prepareReleasePoChannel is called before this command.
+     *
+     * @param pin the PIN code value (4-byte long byte array)
+     * @throw CalypsoPoTransactionException if a functional error occurs (including PO and SAM IO
+     *         errors)
+     * @throw CalypsoPoCommandException if a response from the PO was unexpected
+     * @throw CalypsoPoPinException if the PIN presentation failed (the remaining attempt counter
+     *         is update in Calypso). See {@link CalypsoPo#isPinBlocked} and
+     *         {@link CalypsoPo#getPinAttemptRemaining} methods
+     * @throw CalypsoPoTransactionIllegalStateException if the PIN feature is not available for
+     *         this PO or if commands have been prepared before calling this process method.
+     */
+    void processVerifyPin(const std::vector<uint8_t>& pin);
+
+    /**
+     * ProcessVerifyPin variant with the PIN supplied as an ASCII string.<br>
+     * E.g. "1234" will be transmited as { 0x31,032,0x33,0x34 }
+     *
+     * @param pin an ASCII string (4-character long)
+     */
+    void processVerifyPin(const std::string& pin);
 
     /**
      * Prepare a select file ApduRequest to be executed following the selection.
@@ -405,10 +471,9 @@ public:
     void prepareReadCounterFile(const uint8_t sfi, const int countersNumber);
 
     /**
-     * Builds an AppendRecord command and add it to the list of commands to be
-     * sent with the next process command.
+     * Builds an AppendRecord command and add it to the list of commands to be sent with the next
+     * process command.
      * <p>
-     * Returns the associated response parser.
      *
      * @param sfi the sfi to select
      * @param recordData the new record data to write
@@ -418,15 +483,14 @@ public:
                              const std::vector<uint8_t>& recordData);
 
     /**
-     * Builds an UpdateRecord command and add it to the list of commands to be
-     * sent with the next process command
+     * Builds an UpdateRecord command and add it to the list of commands to be sent with the next
+     * process command
      * <p>
-     * Returns the associated response parser index.
      *
      * @param sfi the sfi to select
      * @param recordNumber the record number to update
-     * @param recordData the new record data. If length &lt; RecSize, bytes
-     *        beyond length are left unchanged.
+     * @param recordData the new record data. If length &lt; RecSize, bytes beyond length are left
+     *        unchanged.
      * @throw IllegalArgumentException - if record number is &lt; 1
      * @throw IllegalArgumentException - if the request is inconsistent
      */
@@ -436,15 +500,14 @@ public:
 
 
     /**
-     * Builds an WriteRecord command and add it to the list of commands to be
-     * sent with the next process command
+     * Builds an WriteRecord command and add it to the list of commands to be sent with the next
+     * process command
      * <p>
-     * Returns the associated response parser index.
      *
      * @param sfi the sfi to select
      * @param recordNumber the record number to write
-     * @param recordData the data to overwrite in the record. If length &lt;
-     *        RecSize, bytes beyond length are left unchanged.
+     * @param recordData the data to overwrite in the record. If length &lt; RecSize, bytes beyond
+     *        length are left unchanged.
      * @throw IllegalArgumentException - if record number is &lt; 1
      * @throw IllegalArgumentException - if the request is inconsistent
      */
@@ -453,40 +516,164 @@ public:
                             const std::vector<uint8_t>& recordData);
 
     /**
-     * Builds a Increase command and add it to the list of commands to be sent
-     * with the next process command
+     * Builds a Increase command and add it to the list of commands to be sent with the next process
+     * command
      * <p>
-     * Returns the associated response parser index.
      *
-     * @param counterNumber &gt;= 01h: Counters file, number of the counter.
-     *        00h: Simulated Counter file.
+     * @param counterNumber &gt;= 01h: Counters file, number of the counter. 00h: Simulated Counter
+     *        file.
      * @param sfi SFI of the file to select or 00h for current EF
-     * @param incValue Value to add to the counter (defined as a positive int
-     *        &lt;= 16777215 [FFFFFFh])
+     * @param incValue Value to add to the counter (defined as a positive int &lt;= 16777215
+     *        [FFFFFFh])
      * @throw IllegalArgumentException - if the decrement value is out of range
      * @throw IllegalArgumentException - if the command is inconsistent
      */
-    void prepareIncreaseCounter(const uint8_t sfi,
-                                const int counterNumber,
-                                const int incValue);
+    void prepareIncreaseCounter(const uint8_t sfi, const int counterNumber, const int incValue);
 
     /**
-     * Builds a Decrease command and add it to the list of commands to be sent
-     * with the next process command
+     * Builds a Decrease command and add it to the list of commands to be sent with the next process
+     * command
      * <p>
-     * Returns the associated response parser index.
      *
-     * @param counterNumber &gt;= 01h: Counters file, number of the counter.
-     *        00h: Simulated Counter file.
+     * @param counterNumber &gt;= 01h: Counters file, number of the counter. 00h: Simulated Counter
+     *        file.
      * @param sfi SFI of the file to select or 00h for current EF
-     * @param decValue Value to subtract to the counter (defined as a positive
-     *        int &lt;= 16777215 [FFFFFFh])
+     * @param decValue Value to subtract to the counter (defined as a positive int &lt;= 16777215
+     *        [FFFFFFh])
      * @throw IllegalArgumentException - if the decrement value is out of range
      * @throw IllegalArgumentException - if the command is inconsistent
      */
-    void prepareDecreaseCounter(const uint8_t sfi,
-                                const int counterNumber,
-                                const int decValue);
+    void prepareDecreaseCounter(const uint8_t sfi, const int counterNumber, const int decValue);
+
+    /**
+     * Builds a VerifyPin command without PIN presentation in order to get the attempt counter.<br>
+     * The PIN status will made available in CalypsoPo after the execution of process command.<br>
+     * Adds it to the list of commands to be sent with the next process command.
+     *
+     * See {@link CalypsoPo#isPinBlocked} and {@link CalypsoPo#getPinAttemptRemaining} methods.
+     *
+     * @throw CalypsoPoTransactionIllegalStateException if the PIN feature is not available for
+     *         this PO.
+     */
+    void prepareCheckPinStatus();
+
+    /**
+     * Prepares an SV operation or simply retrieves the current SV status
+     *
+     * @param svOperation informs about the nature of the intended operation: debit or reload
+     * @param svAction the type of action: DO a debit or a positive reload, UNDO an undebit or a
+     *        negative reload
+     * @throws CalypsoPoTransactionIllegalStateException if the SV feature is not available for this
+     *         PO.
+     */
+    void prepareSvGet(const SvSettings::Operation& svOperation, const SvSettings::Action& svAction);
+
+    /**
+     * Prepares an SV reload (increasing the current SV balance)
+     * <p>
+     * Note: the key used is the reload key
+     *
+     * @param amount the value to be reloaded, positive or negative integer in the range
+     *        -8388608..8388607
+     * @param date 2-byte free value
+     * @param time 2-byte free value
+     * @param free 2-byte free value
+     * @throw CalypsoPoTransactionIllegalStateException if the SV feature is not available for this
+     *         PO.
+     */
+    void prepareSvReload(const int amount,
+                         const std::vector<uint8_t> date,
+                         const std::vector<uint8_t> time,
+                         const std::vector<uint8_t> free);
+
+    /**
+     * Prepares an SV reload (increasing the current SV balance)
+     * <p>
+     * Note: the key used is the reload key
+     *
+     * @param amount the value to be reloaded, positive integer in the range 0..8388607 for a DO
+     *        action, in the range 0..8388608 for an UNDO action.
+     * @throw CalypsoPoTransactionIllegalStateException if the SV feature is not available for this
+     *         PO.
+     */
+    void prepareSvReload(const int amount);
+
+    /**
+     * Prepares an SV debit or Undebit (partially or totally cancels the last SV debit command).
+     * <p>
+     * It consists in decreasing the current balance of the SV by a certain amount or canceling a
+     * previous debit. <br>
+     * Note: the key used is the debit key
+     *
+     * @param amount the amount to be subtracted or added, positive integer in the range 0..32767
+     *        when subtracted and 0..32768 when added.
+     * @param date 2-byte free value
+     * @param time 2-byte free value
+     */
+    void prepareSvDebit(const int amount,
+                        const std::vector<uint8_t> date,
+                        const std::vector<uint8_t> time);
+
+    /**
+     * Prepares an SV debit or Undebit (partially or totally cancels the last SV debit command).
+     * <p>
+     * It consists in decreasing the current balance of the SV by a certain amount or canceling a
+     * previous debit. <br>
+     * The information fields such as date and time are set to 0. The extraInfo field propagated in
+     * Logs are automatically generated with the type of transaction and amount. <br>
+     * Operations that would result in a negative balance are forbidden (SV Exception raised). <br>
+     * Note: the key used is the debit key
+     *
+     * @param amount the amount to be subtracted or added, positive integer in the range 0..32767
+     *        when subtracted and 0..32768 when added.
+     */
+    void prepareSvDebit(const int amount);
+
+    /**
+     * Prepare the reading of all SV log records
+     * <p>
+     * The SV transaction logs are contained in two files with fixed identifiers.<br>
+     * The file whose SFI is 0x14 contains 1 record containing the unique reload log.<br>
+     * The file whose SFI is 0x15 contains 3 records containing the last three debit logs.<br>
+     * At the end of this reading operation, the data will be accessible in CalypsoPo in raw format
+     * via the standard commands for accessing read files or in the form of dedicated objects (see
+     * {@link CalypsoPo#getSvLoadLogRecord()} and {@link CalypsoPo#getSvDebitLogAllRecords()})
+     */
+    void prepareSvReadAllLogs();
+
+    /**
+     * Prepare the invalidation of the PO<br>
+     * This command is usually executed within a secure session with the SESSION_LVL_DEBIT key
+     * (depends on the access rights given to this command in the file structure of the PO).
+     *
+     * @throws CalypsoPoTransactionIllegalStateException if the PO is already invalidated
+     */
+    void prepareInvalidate();
+
+    /**
+     * Prepare the rehabilitation of the PO<br>
+     * This command is usually executed within a secure session with the SESSION_LVL_PERSO key
+     * (depends on the access rights given to this command in the file structure of the PO).
+     *
+     * @throws CalypsoPoTransactionIllegalStateException if the PO is not invalidated
+     */
+    void prepareRehabilitate();
+
+
+
+    /**
+     * Prepare to close the PO channel.<br>
+     * If this command is called before a "process" command (except for processOpening) then the
+     * last transmission to the PO will be associated with the indication CLOSE_AFTER in order to
+     * close the PO channel.<br>
+     * Important: this command must imperatively be called at the end of any transaction, whether it
+     * ended normally or not.<br>
+     * In case the transaction was interrupted (exception), an additional call to processPoCommands
+     * must be made to effectively close the channel.
+     *
+     * C++ vs. Java: private in Java
+     */
+    void prepareReleasePoChannel();
 
 private:
 
@@ -544,9 +731,63 @@ private:
     int mModificationsCounter;
 
     /**
+     * The object for managing PO commands
+     */
+    std::shared_ptr<PoCommandManager> mPoCommandManager;
+
+    /**
+     * The current Store Value action
+     */
+    SvSettings::Action mSvAction;
+
+    /**
+     * The {@link ChannelControl} action
+     */
+    ChannelControl mChannelControl;
+
+    /**
      *
      */
-    PoCommandManager mPoCommandManager;
+    static const std::shared_ptr<ApduResponse> RESPONSE_OK;
+
+    /**
+     *
+     */
+    static const std::shared_ptr<ApduResponse> RESPONSE_OK_POSTPONED;
+
+    /**
+     * Process all prepared PO commands (outside a Secure Session).
+     * <ul>
+     * <li>On the PO reader, generates a SeRequest with channelControl set to the provided value and
+     * ApduRequests containing the PO commands.</li>
+     * <li>The result of the commands is placed in CalypsoPo.</li>
+     * </ul>
+     *
+     * @param channelControl indicates if the SE channel of the PO reader must be closed after the
+     *        last command
+     * @throws CalypsoPoTransactionException if a functional error occurs (including PO and SAM IO
+     *         errors)
+     * @throws CalypsoPoCommandException if a response from the PO was unexpected
+     */
+    void processPoCommandsOutOfSession(const ChannelControl channelControl);
+
+    /**
+     * Process all prepared PO commands in a Secure Session.
+     * <ul>
+     * <li>On the PO reader, generates a SeRequest with channelControl set to KEEP_OPEN, and
+     * ApduRequests containing the PO commands.</li>
+     * <li>In case the secure session is active, the "cache" of SAM commands is completed with the
+     * corresponding Digest Update commands.</li>
+     * <li>The result of the commands is placed in CalypsoPo.</li>
+     * </ul>
+     *
+     * @throws CalypsoPoTransactionException if a functional error occurs (including PO and SAM IO
+     *         errors)
+     * @throws CalypsoPoCommandException if a response from the PO was unexpected
+     * @throws CalypsoSamCommandException if a response from the SAM was unexpected
+     */
+    void processPoCommandsInSession();
+
 
     /**
      * Open a Secure Session.
@@ -594,8 +835,8 @@ private:
      */
     void processAtomicOpening(
         const SessionSetting::AccessLevel& accessLevel,
-        std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>>& poCommands);
+        std::vector<std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>>&
+            poCommands);
 
     /**
      * c++ vs. Java: Function overload to avoid declaring empty vectors here and
@@ -611,8 +852,8 @@ private:
      * @return the ApduRequest list
      */
     std::vector<std::shared_ptr<ApduRequest>> getApduRequests(
-        const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>>& poCommands) const;
+        const std::vector<std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>>&
+            poCommands) const;
 
     /**
      * Process PO commands in a Secure Session.
@@ -634,73 +875,64 @@ private:
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
      */
     void processAtomicPoCommands(
-        const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>>& poCommands,
+        const std::vector<std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>>&
+            poCommands,
         const ChannelControl channelControl);
-
 
     /**
      * Close the Secure Session.
      * <ul>
-     * <li>The SAM cache is completed with the Digest Update commands related to
-     * the new PO commands to be sent and their anticipated responses. A Digest
-     * Close command is also added to the SAM command cache.</li>
-     * <li>On the SAM session reader side, a SeRequest is transmitted with SAM
-     * commands from the command cache. The SAM command cache is emptied.</li>
-     * <li>The SAM certificate is retrieved from the Digest Close response. The
-     * terminal signature is identified.</li>
-     * <li>Then, on the PO reader, a SeRequest is transmitted with the provided
-     * channelControl, and apduRequests including the new PO commands to send in
-     * the session, a Close Session command (defined with the SAM certificate),
-     * and optionally a ratificationCommand.
+     * <li>The SAM cache is completed with the Digest Update commands related to the new PO commands
+     * to be sent and their anticipated responses. A Digest Close command is also added to the SAM
+     * command cache.</li>
+     * <li>On the SAM session reader side, a SeRequest is transmitted with SAM commands from the
+     * command cache. The SAM command cache is emptied.</li>
+     * <li>The SAM certificate is retrieved from the Digest Close response. The terminal signature
+     * is identified.</li>
+     * <li>Then, on the PO reader, a SeRequest is transmitted with a {@link ChannelControl} set to
+     * CLOSE_AFTER or KEEP_OPEN depending on whether or not prepareReleasePoChannel was called, and
+     * apduRequests including the new PO commands to send in the session, a Close Session command
+     * (defined with the SAM certificate), and optionally a ratificationCommand.
      * <ul>
-     * <li>The management of ratification is conditioned by the mode of
-     * communication.
+     * <li>The management of ratification is conditioned by the mode of communication.
      * <ul>
-     * <li>If the communication mode is CONTACTLESS, a specific ratification
-     * command is sent after the Close Session command. No ratification is
-     * requested in the Close Session command.</li>
-     * <li>If the communication mode is CONTACTS, no ratification command is
-     * sent after the Close Session command. Ratification is requested in the
-     * Close Session command.</li>
+     * <li>If the communication mode is CONTACTLESS, a specific ratification command is sent after
+     * the Close Session command. No ratification is requested in the Close Session command.</li>
+     * <li>If the communication mode is CONTACTS, no ratification command is sent after the Close
+     * Session command. Ratification is requested in the Close Session command.</li>
      * </ul>
      * </li>
-     * <li>Otherwise, the PO Close Secure Session command is defined to directly
-     * set the PO as ratified.</li>
+     * <li>Otherwise, the PO Close Secure Session command is defined to directly set the PO as
+     * ratified.</li>
      * </ul>
      * </li>
      * <li>The PO responses of the poModificationCommands are compared with the
-     * poAnticipatedResponses. The PO signature is identified from the PO Close
-     * Session response.</li>
-     * <li>The PO certificate is recovered from the Close Session response. The
-     * card signature is identified.</li>
-     * <li>Finally, on the SAM session reader, a Digest Authenticate is
-     * automatically operated in order to verify the PO signature.</li>
+     * poAnticipatedResponses. The PO signature is identified from the PO Close Session
+     * response.</li>
+     * <li>The PO certificate is recovered from the Close Session response. The card signature is
+     * identified.</li>
+     * <li>Finally, on the SAM session reader, a Digest Authenticate is automatically operated in
+     * order to verify the PO signature.</li>
      * <li>Returns the corresponding PO SeResponse.</li>
      * </ul>
      *
-     * The method is marked as deprecated because the advanced variant defined
-     * below must be used at the application level.
+     * The method is marked as deprecated because the advanced variant defined below must be used at
+     * the application level.
      *
-     * @param poModificationCommands a list of commands that can modify the PO
-     *        memory content
-     * @param poAnticipatedResponses a list of anticipated PO responses to the
-     *        modification commands
-     * @param ratificationMode the ratification mode tells if the session is
-     *        closed ratified or not
-     * @param channelControl indicates if the SE channel of the PO reader must
-     *        be closed after the last command
-     * @throw CalypsoPoTransactionException if a functional error occurs
-     *        (including PO and SAM IO errors)
+     * @param poModificationCommands a list of commands that can modify the PO memory content
+     * @param poAnticipatedResponses a list of anticipated PO responses to the modification commands
+     * @param ratificationMode the ratification mode tells if the session is closed ratified or not
+     * @param channelControl indicates if the SE channel of the PO reader must be closed after the
+     *        last command
+     * @throw CalypsoPoTransactionException if a functional error occurs (including PO and SAM IO
+     *         errors)
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
-     * @throw CalypsoSamCommandException if a response from the SAM was
-     *        unexpected
+     * @throw CalypsoSamCommandException if a response from the SAM was unexpected
      */
     void processAtomicClosing(
-        const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>>& poModificationCommands,
-        const std::vector<std::shared_ptr<ApduResponse>>&
-            poAnticipatedResponses,
+        const std::vector<std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>>&
+            poModificationCommands,
+        const std::vector<std::shared_ptr<ApduResponse>>& poAnticipatedResponses,
         const SessionSetting::RatificationMode ratificationMode,
         const ChannelControl channelControl);
 
@@ -744,9 +976,8 @@ private:
      * @throw CalypsoSamCommandException if a response from the SAM was
      *        unexpected
      */
-    void processAtomicClosing(
-        const SessionSetting::RatificationMode ratificationMode,
-        const ChannelControl channelControl);
+    void processAtomicClosing(const SessionSetting::RatificationMode ratificationMode,
+                              const ChannelControl channelControl);
 
     /**
      * Gets the value of the designated counter
@@ -754,7 +985,6 @@ private:
      * @param sfi the SFI of the EF containing the counter
      * @param counter the number of the counter
      * @return the value of the counter
-     * @{@link CalypsoPo}
      */
     int getCounterValue(const uint8_t sfi, const int counter) const;
 
@@ -764,8 +994,7 @@ private:
      * @param newCounterValue the anticipated counter value
      * @return an {@link ApduResponse} containing the expected bytes
      */
-    std::unique_ptr<ApduResponse> createIncreaseDecreaseResponse(
-        const int newCounterValue) const;
+    std::unique_ptr<ApduResponse> createIncreaseDecreaseResponse(const int newCounterValue) const;
 
     /**
      * Get the anticipated response to the command sent in processClosing.<br>
@@ -778,15 +1007,14 @@ private:
      *        process failed
      */
     std::vector<std::shared_ptr<ApduResponse>> getAnticipatedResponses(
-        const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-            AbstractPoResponseParser>>>& poCommands) const;
+        const std::vector<std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>>&
+            poCommands) const;
 
     /**
      *
      */
-    std::shared_ptr<SeResponse> safePoTransmit(
-        const std::shared_ptr<SeRequest> poSeRequest,
-        const ChannelControl channelControl);
+    std::shared_ptr<SeResponse> safePoTransmit(const std::shared_ptr<SeRequest> poSeRequest,
+                                               const ChannelControl channelControl);
 
     /**
      * Checks if a Secure Session is open, raises an exception if not
@@ -808,7 +1036,7 @@ private:
      *
      * @param commandsNumber the number of commands
      * @param responsesNumber the number of responses
-     * @throwsCalypsoDesynchronizedExchangesException if the test failed
+     * @throw CalypsoDesynchronizedExchangesException if the test failed
      */
     void checkCommandsResponsesSynchronization(const int commandsNumber,
                                                const int responsesNumber) const;
@@ -837,13 +1065,12 @@ private:
         std::atomic<int>& neededSessionBufferSpace);
 
     /**
-     * Checks whether the requirement for the modifications buffer of the
-     * command provided in argument is compatible with the current usage level
-     * of the buffer.
+     * Checks whether the requirement for the modifications buffer of the command provided in
+     * argument is compatible with the current usage level of the buffer.
      * <p>
-     * If it is compatible, the requirement is subtracted from the current level
-     * and the method returns false. If this is not the case, the method returns
-     * true and the current level is left unchanged.
+     * If it is compatible, the requirement is subtracted from the current level and the method
+     * returns false. If this is not the case, the method returns true and the current level is left
+     * unchanged.
      *
      * @param sessionBufferSizeConsumed session buffer requirement
      * @return true or false
@@ -851,11 +1078,42 @@ private:
     bool isSessionBufferOverflowed(const int sessionBufferSizeConsumed);
 
     /**
-     * Initialized the modifications buffer counter to its maximum value for the
-     * current PO
+     * Initialized the modifications buffer counter to its maximum value for the current PO
      */
     void resetModificationsBufferCounter();
+
+    /**
+     * Prepares an SV debit.
+     * <p>
+     * It consists in decreasing the current balance of the SV by a certain amount. <br>
+     * Note: the key used is the debit key
+     *
+     * @param amount the amount to be subtracted, positive integer in the range 0..32767
+     * @param date 2-byte free value
+     * @param time 2-byte free value
+     */
+    void prepareSvDebitPriv(const int amount,
+                            const std::vector<uint8_t> date,
+                            const std::vector<uint8_t> time);
+
+    /**
+     * Prepares an SV Undebit (partially or totally cancels the last SV debit command).
+     * <p>
+     * It consists in canceling a previous debit. <br>
+     * Note: the key used is the debit key
+     *
+     * @param amount the amount to be subtracted, positive integer in the range 0..32767
+     * @param date 2-byte free value
+     * @param time 2-byte free value
+     */
+    void prepareSvUndebitPriv(const int amount,
+                              const std::vector<uint8_t> date,
+                              const std::vector<uint8_t> time);
 };
+
+using Operation = PoTransaction::SvSettings::Operation;
+
+KEYPLECALYPSO_API std::ostream& operator<<(std::ostream& os, const Operation& o);
 
 }
 }

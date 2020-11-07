@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -39,8 +38,7 @@ using StatusProperties = AbstractApduResponseParser::StatusProperties;
  * Close Secure Session (008E) response parser. See specs: Calypso / page 104 /
  * 9.5.2 - Close Secure Session
  */
-class KEYPLECALYPSO_API CloseSessionRespPars final
-: public AbstractPoResponseParser {
+class KEYPLECALYPSO_API CloseSessionRespPars final : public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new CloseSessionRespPars from the response.
@@ -48,8 +46,7 @@ public:
      * @param response from CloseSessionCmdBuild
      * @param builder the reference to the builder that created this parser
      */
-    CloseSessionRespPars(std::shared_ptr<ApduResponse> response,
-                         CloseSessionCmdBuild* builder);
+    CloseSessionRespPars(std::shared_ptr<ApduResponse> response, CloseSessionCmdBuild* builder);
 
     /**
      *
@@ -65,8 +62,7 @@ protected:
     /**
      *
      */
-    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
-        const override;
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable() const override;
 
 private:
     /**

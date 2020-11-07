@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "SamSelector.h"
 
@@ -21,6 +20,7 @@
 #include "IllegalArgumentException.h"
 
 /* Core */
+#include "SeCommonProtocols.h"
 #include "SeProtocol.h"
 
 namespace keyple {
@@ -28,7 +28,7 @@ namespace calypso {
 namespace transaction {
 
 using namespace keyple::calypso::command::sam;
-using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
 
@@ -37,7 +37,7 @@ using SamSelectorBuilder = SamSelector::SamSelectorBuilder;
 /* SAM SELECTOR ------------------------------------------------------------- */
 
 SamSelector::SamSelector(SamSelectorBuilder* builder)
-: SeSelector(builder)
+: SeSelector(builder), mTargetSamRevision(builder->mSamRevision), mUnlockData(builder->mUnlockData)
 {
     std::string atrRegex;
     std::string snRegex;
@@ -51,27 +51,35 @@ SamSelector::SamSelector(SamSelectorBuilder* builder)
         snRegex = builder->mSerialNumber;
 
     /*
-     * Build the final Atr regex according to the SAM subtype and serial number
-     * if any.
+     * Build the final Atr regex according to the SAM subtype and serial number if any.
      *
-     * The header is starting with 3B, its total length is 4 or 6 bytes (8 or
-     * 10 hex digits)
+     * The header is starting with 3B, its total length is 4 or 6 bytes (8 or 10 hex digits)
      */
-    if (builder->mSamRevision == SamRevision::C1 ||
-        builder->mSamRevision ==  SamRevision::S1D ||
-        builder->mSamRevision ==  SamRevision::S1E)
+    if (mTargetSamRevision == SamRevision::C1  ||
+        mTargetSamRevision == SamRevision::S1D ||
+        mTargetSamRevision == SamRevision::S1E)
         atrRegex = "3B(.{6}|.{10})805A..80" +
-                   builder->mSamRevision.getApplicationTypeMask() +
+                   mTargetSamRevision.getApplicationTypeMask() +
                    "20.{4}" +
                    snRegex +
                    "829000";
-    else if (builder->mSamRevision == SamRevision::AUTO)
+    else if (mTargetSamRevision == SamRevision::AUTO)
         /* Match any ATR */
         atrRegex = ".*";
     else
         throw IllegalArgumentException("Unknown SAM subtype.");
 
     getAtrFilter()->setAtrRegex(atrRegex);
+}
+
+const SamRevision SamSelector::getTargetSamRevision() const
+{
+    return mTargetSamRevision;
+}
+
+const std::vector<uint8_t>& SamSelector::getUnlockData() const
+{
+    return mUnlockData;
 }
 
 std::shared_ptr<SamSelectorBuilder> SamSelector::builder()
@@ -81,21 +89,20 @@ std::shared_ptr<SamSelectorBuilder> SamSelector::builder()
 
 /* SAM SELECTOR BUILDER ----------------------------------------------------- */
 
- SamSelectorBuilder::SamSelectorBuilder()
- : SeSelector::SeSelectorBuilder()
+SamSelectorBuilder::SamSelectorBuilder() : SeSelector::SeSelectorBuilder()
 {
+    /* Set the ISO7816_3 protocol as the default one for SAMs */
+    SeSelector::SeSelectorBuilder::seProtocol(SeCommonProtocols::PROTOCOL_ISO7816_3);
     mAtrFilter = std::make_shared<AtrFilter>("");
 }
 
-SamSelectorBuilder& SamSelectorBuilder::samRevision(
-    const SamRevision samRevision)
+SamSelectorBuilder& SamSelectorBuilder::samRevision(const SamRevision samRevision)
 {
     mSamRevision = samRevision;
     return *this;
 }
 
-SamSelectorBuilder& SamSelectorBuilder::serialNumber(
-    const std::string& serialNumber)
+SamSelectorBuilder& SamSelectorBuilder::serialNumber(const std::string& serialNumber)
 {
     mSerialNumber = serialNumber;
     return *this;
@@ -109,31 +116,35 @@ SamSelectorBuilder& SamSelectorBuilder::samIdentifier(
     return *this;
 }
 
-SamSelectorBuilder& SamSelectorBuilder::seProtocol(
-    const std::shared_ptr<SeProtocol> seProtocol)
+SamSelectorBuilder& SamSelectorBuilder::unlockData(const std::vector<uint8_t>& unlockData)
 {
-    return dynamic_cast<SamSelectorBuilder&>(
-               SeSelector::SeSelectorBuilder::seProtocol(seProtocol));
+    if (unlockData.size() != 8 && unlockData.size() != 16)
+        throw IllegalArgumentException("Bad unlock data length. Should be 8 or 16 bytes.");
+
+    mUnlockData = unlockData;
+    return *this;
+}
+
+SamSelectorBuilder& SamSelectorBuilder::seProtocol(const std::shared_ptr<SeProtocol> seProtocol)
+{
+    return dynamic_cast<SamSelectorBuilder&>(SeSelector::SeSelectorBuilder::seProtocol(seProtocol));
 }
 
 /**
  * {@inheritDoc}
  */
-SamSelectorBuilder& SamSelectorBuilder::atrFilter(
-    const std::shared_ptr<AtrFilter> atrFilter)
+SamSelectorBuilder& SamSelectorBuilder::atrFilter(const std::shared_ptr<AtrFilter> atrFilter)
 {
-    return dynamic_cast<SamSelectorBuilder&>(
-               SeSelector::SeSelectorBuilder::atrFilter(atrFilter));
+    return dynamic_cast<SamSelectorBuilder&>(SeSelector::SeSelectorBuilder::atrFilter(atrFilter));
 }
 
 /**
  * {@inheritDoc}
  */
-SamSelectorBuilder& SamSelectorBuilder::aidSelector(
-    const std::shared_ptr<AidSelector> aidSelector)
+SamSelectorBuilder& SamSelectorBuilder::aidSelector(const std::shared_ptr<AidSelector> aidSelector)
 {
     return dynamic_cast<SamSelectorBuilder&>(
-               SeSelector::SeSelectorBuilder::aidSelector(aidSelector));
+        SeSelector::SeSelectorBuilder::aidSelector(aidSelector));
 }
 
 std::shared_ptr<SeSelector> SamSelectorBuilder::build()

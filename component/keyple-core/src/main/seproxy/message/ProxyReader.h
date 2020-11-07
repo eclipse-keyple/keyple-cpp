@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -81,7 +80,7 @@ public:
      * @param channelControl indicates if the channel has to be closed at the
      *        end of the transmission
      * @return the SE response
-     * @throws KeypleReaderIOException if the communication with the reader or
+     * @throw KeypleReaderIOException if the communication with the reader or
      *         the SE has failed
      */
     virtual std::vector<std::shared_ptr<SeResponse>> transmitSeRequests(
@@ -111,12 +110,11 @@ public:
      * @param channelControl a flag to tell if the channel has to be closed at
      *        the end
      * @return SeResponse the response to the SeRequest
-     * @throws KeypleReaderIOException if the communication with the reader or
+     * @throw KeypleReaderIOException if the communication with the reader or
      *         the SE has failed
      */
-    virtual std::shared_ptr<SeResponse> transmitSeRequest(
-        std::shared_ptr<SeRequest> seRequest,
-        ChannelControl channelControl) = 0;
+    virtual std::shared_ptr<SeResponse> transmitSeRequest(std::shared_ptr<SeRequest> seRequest,
+                                                          const ChannelControl& channelControl) = 0;
 };
 
 }

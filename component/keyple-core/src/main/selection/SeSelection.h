@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -45,8 +44,9 @@ using namespace keyple::common;
 /**
  * The SeSelection class handles the SE selection process.
  * <p>
- * It provides a way to do explicit SE selection or to post process a default SE
- * selection.
+ * It provides a way to do explicit SE selection or to post process a default SE selection. <br>
+ * The channel is kept open by default, but can be closed after each selection cases (see
+ * PrepareReleaseSeChannel).
  */
 class KEYPLECORE_API SeSelection final
 : public std::enable_shared_from_this<SeSelection> {
@@ -58,8 +58,7 @@ public:
      * @param channelControl indicates if the channel has to be closed at the
      *        end of the processing
      */
-    SeSelection(MultiSeRequestProcessing multiSeRequestProcessing,
-                ChannelControl channelControl);
+    SeSelection(MultiSeRequestProcessing multiSeRequestProcessing);
 
     /**
      * Alternate constructor for standard usages.
@@ -67,8 +66,8 @@ public:
     SeSelection();
 
     /**
-     * Prepare a selection: add the selection request from the provided selector
-     * to the selection request set.
+     * Prepare a selection: add the selection request from the provided selector to the selection
+     * request set.
      * <p>
      *
      * @param seSelectionRequest the selector to prepare
@@ -76,8 +75,16 @@ public:
      *         selection request.
      */
     int prepareSelection(
-        std::shared_ptr<AbstractSeSelectionRequest<AbstractApduCommandBuilder>>
-            seSelectionRequest);
+        std::shared_ptr<AbstractSeSelectionRequest<AbstractApduCommandBuilder>> seSelectionRequest);
+
+    /**
+     * Prepare to close the SE channel.<br>
+     * If this command is called before a "process" selection command then the last transmission to
+     * the PO will be associated with the indication CLOSE_AFTER in order to close the SE
+     * channel.<br>
+     * This makes it possible to chain several selections on the same SE if necessary.
+     */
+    void prepareReleaseSeChannel();
 
     /**
      * Parses the response to a selection operation sent to a SE and return a
@@ -178,7 +185,7 @@ private:
     /**
      *
      */
-    const ChannelControl mChannelControl;
+    ChannelControl mChannelControl = ChannelControl::KEEP_OPEN;
 
     /**
      * Process the selection response either from a

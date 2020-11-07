@@ -40,6 +40,16 @@ public:
                 initNativeReaders,
                 (),
                 (override));
+
+    MOCK_METHOD(void,
+                setParameters,
+                ((const std::map<const std::string, const std::string>&)),
+                (override));
+
+    MOCK_METHOD((const std::string&),
+                getName,
+                (),
+                (const, override));
 };
 
 class AOP_PublicObserverMock : public ObservablePlugin::PluginObserver {

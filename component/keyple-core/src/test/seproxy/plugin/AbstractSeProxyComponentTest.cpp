@@ -26,11 +26,6 @@ public:
     ASPC_AbstractSeProxyComponentMock(const std::string& name)
     : AbstractSeProxyComponent(name) {}
 
-    MOCK_METHOD((const std::map<const std::string, const std::string>&),
-                getParameters,
-                (),
-                (const, override));
-
     MOCK_METHOD(void,
                 setParameter,
                 (const std::string&, const std::string&),

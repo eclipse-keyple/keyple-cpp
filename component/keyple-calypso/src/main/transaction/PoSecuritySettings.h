@@ -18,6 +18,7 @@
 #include "AbstractPoCommandBuilder.h"
 #include "AbstractPoResponseParser.h"
 #include "CalypsoSam.h"
+#include "KeyReference.h"
 #include "PoTransaction.h"
 
 namespace keyple {
@@ -25,8 +26,11 @@ namespace calypso {
 namespace transaction {
 
 using AccessLevel = PoTransaction::SessionSetting::AccessLevel;
+using LogRead = PoTransaction::SvSettings::LogRead;
 using ModificationMode = PoTransaction::SessionSetting::ModificationMode;
+using NegativeBalance = PoTransaction::SvSettings::NegativeBalance;
 using RatificationMode = PoTransaction::SessionSetting::RatificationMode;
+using PinTransmissionMode = PoTransaction::PinTransmissionMode;
 
 /**
  * A class dedicated to managing the security settings involved in managing secure sessions.
@@ -42,7 +46,16 @@ public:
      *
      */
     static const ModificationMode mDefaultSessionModificationMode;
+
+    /**
+     *
+     */
     static const RatificationMode mDefaultRatificationMode;
+
+    /**
+     *
+     */
+    static const PinTransmissionMode mDefaultPinTransmissionMode;
 
     /**
      * Builder pattern
@@ -59,7 +72,31 @@ public:
          */
         ModificationMode mSessionModificationMode =
             PoSecuritySettings::mDefaultSessionModificationMode;
+
+        /**
+         *
+         */
         RatificationMode mRatificationMode = PoSecuritySettings::mDefaultRatificationMode;
+
+        /**
+         *
+         */
+        PinTransmissionMode mPinTransmissionMode = mDefaultPinTransmissionMode;
+
+        /**
+         *
+         */
+        std::shared_ptr<KeyReference> mPinCipheringKey = mDefaultPinCipheringKey;
+
+        /**
+         *
+         */
+        LogRead mSvGetLogReadMode = mDefaultSvGetLogReadMode;
+
+        /**
+         *
+         */
+        NegativeBalance mSvNegativeBalance = mDefaultSvNegativeBalance;
 
         /**
          * Constructor
@@ -89,6 +126,17 @@ public:
          * @since 0.9
          */
         PoSecuritySettingsBuilder& ratificationMode(const RatificationMode ratificationMode);
+
+        /**
+         * Set the PIN Transmission Mode<br>
+         * The default value is ENCRYPTED
+         *
+         * @param pinTransmissionMode the desired PIN Transmission Mode
+         * @return the builder instance
+         * @since 0.9
+         */
+        PoSecuritySettingsBuilder& pinTransmissionMode(
+            const PinTransmissionMode pinTransmissionMode);
 
         /**
          * Set the default KIF<br>
@@ -132,14 +180,42 @@ public:
          * @return the builder instance
          */
         PoSecuritySettingsBuilder& sessionAuthorizedKvcList(
-            const std::vector<uint8_t>& authorizedKvcList) ;
+            const std::vector<uint8_t>& authorizedKvcList);
+
+        /**
+         * Provides the KIF/KVC pair of the PIN ciphering key
+         *
+         * @param kif the KIF of the PIN ciphering key
+         * @param kvc the KVC of the PIN ciphering key
+         * @return the builder instance
+         */
+        PoSecuritySettingsBuilder& pinCipheringKey(const uint8_t kif, const uint8_t kvc);
+
+        /**
+         * Sets the SV Get log read mode to indicate whether only one or both log files are to be
+         * read
+         *
+         * @param svGetLogReadMode the {@link PoTransaction.SvSettings.LogRead} mode
+         * @return the builder instance
+         */
+        PoSecuritySettingsBuilder& svGetLogReadMode(const LogRead svGetLogReadMode);
+
+
+        /**
+         * Sets the SV negative balance mode to indicate whether negative balances are allowed or
+         * not
+         *
+         * @param svNegativeBalance the {@link PoTransaction.SvSettings.NegativeBalance} mode
+         * @return the builder instance
+         */
+        PoSecuritySettingsBuilder& svNegativeBalance(const NegativeBalance svNegativeBalance);
 
         /**
          * Build a new {@code PoSecuritySettings}.
          *
          * @return a new instance
          */
-        std::unique_ptr<PoSecuritySettings> build();
+        std::shared_ptr<PoSecuritySettings> build();
 
     private:
         /**
@@ -187,6 +263,14 @@ public:
     /**
      * (package-private)<br>
      *
+     * @return the PIN Transmission Mode
+     * @since 0.9
+     */
+    PinTransmissionMode getPinTransmissionMode() const;
+
+    /**
+     * (package-private)<br>
+     *
      * @return the default session KIF
      * @since 0.9
      */
@@ -219,6 +303,34 @@ public:
      */
     bool isSessionKvcAuthorized(const uint8_t kvc) const;
 
+    /**
+     * (package-private)<br>
+     *
+     * @return the default key reference to be used for PIN encryption
+     */
+    const std::shared_ptr<KeyReference> getDefaultPinCipheringKey() const;
+
+    /**
+     * (package-private)<br>
+     *
+     * @return how SV logs are read, indicating whether or not all SV logs are needed
+     */
+    LogRead getSvGetLogReadMode() const;
+
+    /**
+     * (package-private)<br>
+     *
+     * @return an indication of whether negative balances are allowed or not
+     */
+    NegativeBalance getSvNegativeBalance() const;
+
+    /**
+     * Private constructor
+     *
+     * C++ vs. Java: std::make_shared prevents from using private here
+     */
+    PoSecuritySettings(PoSecuritySettingsBuilder* builder);
+
 private:
     /**
      *
@@ -240,11 +352,25 @@ private:
     const ModificationMode mSessionModificationMode = ModificationMode::ATOMIC;
     const RatificationMode mRatificationMode = RatificationMode::CLOSE_RATIFIED;
 
+    const PinTransmissionMode mPinTransmissionMode;
+    const std::shared_ptr<KeyReference> mPinCipheringKey;
+    const LogRead mSvGetLogReadMode;
+    const NegativeBalance mSvNegativeBalance;
 
     /**
-     * Private constructor
+     *
      */
-    PoSecuritySettings(PoSecuritySettingsBuilder* builder);
+    static const std::shared_ptr<KeyReference> mDefaultPinCipheringKey;
+
+    /**
+     *
+     */
+    static const LogRead mDefaultSvGetLogReadMode;
+
+    /**
+     *
+     */
+    static const NegativeBalance mDefaultSvNegativeBalance;
 };
 
 }

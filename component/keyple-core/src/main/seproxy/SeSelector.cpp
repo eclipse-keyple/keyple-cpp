@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "SeSelector.h"
 
@@ -28,6 +27,7 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
 
@@ -45,11 +45,9 @@ const FileOccurrence FileOccurrence::LAST(0x01);
 const FileOccurrence FileOccurrence::NEXT(0x02);
 const FileOccurrence FileOccurrence::PREVIOUS(0x03);
 
-FileOccurrence::FileOccurrence(const uint8_t isoBitMask)
-: mIsoBitMask(isoBitMask) {}
+FileOccurrence::FileOccurrence(const uint8_t isoBitMask) : mIsoBitMask(isoBitMask) {}
 
-FileOccurrence::FileOccurrence(const FileOccurrence& o)
-: mIsoBitMask(o.mIsoBitMask) {}
+FileOccurrence::FileOccurrence(const FileOccurrence& o) : mIsoBitMask(o.mIsoBitMask) {}
 
 uint8_t FileOccurrence::getIsoBitMask() const
 {
@@ -112,8 +110,7 @@ bool FileControlInformation::operator!=(const FileControlInformation& o)
     return !(*this == o);
 }
 
-FileControlInformation& FileControlInformation::operator=(
-    const FileControlInformation& o)
+FileControlInformation& FileControlInformation::operator=(const FileControlInformation& o)
 {
     mIsoBitMask = o.mIsoBitMask;
     return *this;
@@ -200,9 +197,9 @@ bool AtrFilter::atrMatches(const std::vector<uint8_t>& atr)
     bool m;
 
     if (mAtrRegex.length() != 0) {
-        Pattern* p            = Pattern::compile(mAtrRegex);
+        Pattern* p = Pattern::compile(mAtrRegex);
         std::string atrString = ByteArrayUtil::toHex(atr);
-        m                     = p->matcher(atrString)->matches();
+        m = p->matcher(atrString)->matches();
     } else {
         m = true;
     }
@@ -221,13 +218,13 @@ std::ostream& operator<<(std::ostream& os, const AtrFilter& af)
 
 /* AID SELECTOR BUILDER ------------------------------------------------------*/
 
-AidSelectorBuilder& AidSelectorBuilder::aidToSelect(
-    const std::vector<uint8_t>& aid)
+AidSelectorBuilder& AidSelectorBuilder::aidToSelect(const std::vector<uint8_t>& aid)
 {
     if (aid.size() < AID_MIN_LENGTH || aid.size() > AID_MAX_LENGTH) {
-        throw IllegalArgumentException(
-                "Bad AID length: " + std::to_string(aid.size()) + ". " +
-                "The AID length should be between 5 and 15");
+        throw IllegalArgumentException("Bad AID length: " +
+                                       std::to_string(aid.size()) +
+                                       ". " +
+                                       "The AID length should be between 5 and 15");
     } else {
         mAidToSelect = aid;
     }
@@ -269,24 +266,21 @@ std::unique_ptr<AidSelectorBuilder> AidSelector::builder()
 
 /* SE SELECTOR BUILDER -------------------------------------------------------*/
 
-SeSelectorBuilder& SeSelectorBuilder::seProtocol(
-    const std::shared_ptr<SeProtocol> seProtocol)
+SeSelectorBuilder& SeSelectorBuilder::seProtocol(const std::shared_ptr<SeProtocol> seProtocol)
 {
     mSeProtocol = seProtocol;
 
     return *this;
 }
 
-SeSelectorBuilder& SeSelectorBuilder::atrFilter(
-    const std::shared_ptr<AtrFilter> atrFilter)
+SeSelectorBuilder& SeSelectorBuilder::atrFilter(const std::shared_ptr<AtrFilter> atrFilter)
 {
     mAtrFilter = atrFilter;
 
     return *this;
 }
 
-SeSelectorBuilder& SeSelectorBuilder::aidSelector(
-    const std::shared_ptr<AidSelector> aidSelector)
+SeSelectorBuilder& SeSelectorBuilder::aidSelector(const std::shared_ptr<AidSelector> aidSelector)
 {
     mAidSelector = aidSelector;
 
@@ -354,13 +348,12 @@ std::ostream& operator<<(std::ostream& os, const SeSelector& ss)
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os,
-                         const std::shared_ptr<SeSelector>& ss)
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<SeSelector>& ss)
 {
-	if (ss)
-		os << *(ss.get());
+    if (ss)
+        os << *(ss.get());
     else
-		os << "SESELECTOR = null";
+        os << "SESELECTOR = null";
 
     return os;
 }

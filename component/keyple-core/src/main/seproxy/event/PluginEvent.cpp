@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <iostream>
 
@@ -24,7 +23,7 @@ namespace core {
 namespace seproxy {
 namespace event {
 
-using namespace keyple::common;
+using namespace keyple::common::exception;
 
 using EventType = PluginEvent::EventType;
 
@@ -64,19 +63,17 @@ const EventType& EventType::valueOf(const std::string& name)
 
 /* PLUGIN EVENT ------------------------------------------------------------- */
 
-PluginEvent::PluginEvent(
-  const std::string& pluginName,
-  const std::string& readerName,
-  const EventType& eventType)
+PluginEvent::PluginEvent(const std::string& pluginName,
+                         const std::string& readerName,
+                         const EventType& eventType)
 : mReaderName(readerName), mEventType(eventType), mPluginName(pluginName)
 {
     mReaderNames.insert(readerName);
 }
 
-PluginEvent::PluginEvent(
-  const std::string& pluginName,
-  std::shared_ptr<std::set<std::string>> readerNames,
-  const EventType& eventType)
+PluginEvent::PluginEvent(const std::string& pluginName,
+                         std::shared_ptr<std::set<std::string>> readerNames,
+                         const EventType& eventType)
 : mEventType(eventType), mPluginName(pluginName)
 {
     mReaderNames.insert(readerNames->begin(), readerNames->end());

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "DigestAuthenticateCmdBuild.h"
 
@@ -30,7 +29,7 @@ namespace security {
 
 using namespace keyple::calypso::command::sam;
 using namespace keyple::calypso::command::sam::parser::security;
-using namespace keyple::common;
+using namespace keyple::common::exception;
 
 const CalypsoSamCommand& DigestAuthenticateCmdBuild::mCommand =
     CalypsoSamCommand::DIGEST_AUTHENTICATE;
@@ -47,12 +46,9 @@ DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
     if (signature.empty())
         throw IllegalArgumentException("Signature can't be null");
 
-    if (signature.size() != 4 && signature.size() != 8 &&
-        signature.size() != 16) {
-        throw IllegalArgumentException(
-                  "Signature is not the right length : length is " +
-                  std::to_string(signature.size()));
-    }
+    if (signature.size() != 4 && signature.size() != 8 &&  signature.size() != 16)
+        throw IllegalArgumentException("Signature is not the right length : length is " +
+                                       std::to_string(signature.size()));
 
     const uint8_t cla = SamRevision::S1D == (mDefaultRevision) ? 0x94 : 0x80;
     const uint8_t p1 = 0x00;
@@ -61,9 +57,8 @@ DigestAuthenticateCmdBuild::DigestAuthenticateCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, signature);
 }
 
-std::shared_ptr<DigestAuthenticateRespPars>
-    DigestAuthenticateCmdBuild::createResponseParser(
-        const std::shared_ptr<ApduResponse> apduResponse)
+std::shared_ptr<DigestAuthenticateRespPars> DigestAuthenticateCmdBuild::createResponseParser(
+    const std::shared_ptr<ApduResponse> apduResponse)
 {
     return std::make_shared<DigestAuthenticateRespPars>(apduResponse, this);
 }

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -23,6 +22,8 @@
 #include "ElementaryFile.h"
 #include "PoRevision.h"
 #include "PoClass.h"
+#include "SvDebitLogRecord.h"
+#include "SvLoadLogRecord.h"
 
 /* Core */
 #include "TransmissionMode.h"
@@ -44,20 +45,18 @@ using namespace keyple::common;
 using namespace keyple::core::seproxy::protocol;
 
 /**
- * The CalypsoPo class gathers all the information about the current PO
- * retrieved from the response to the select application command.
+ * The CalypsoPo class gathers all the information about the current PO retrieved from the response
+ * to the select application command.
  * <p>
- * An instance of CalypsoPo can be obtained by casting the AbstractMatchingSe
- * object from the selection process (e.g. (CalypsoPo)
- * matchingSelection.getMatchingSe())
+ * An instance of CalypsoPo can be obtained by casting the AbstractMatchingSe object from the
+ * selection process (e.g. (CalypsoPo) matchingSelection.getMatchingSe())
  * <p>
- * The various information contained in CalypsoPo is accessible by getters and
- * includes:
+ * The various information contained in CalypsoPo is accessible by getters and includes:
  * <ul>
- * <li>The application identification fields (revision/version, class, DF name,
- * serial number, ATR, issuer)
- * <li>The indication of the presence of optional features (Stored Value, PIN,
- * Rev3.2 mode, ratification management)
+ * <li>The application identification fields (revision/version, class, DF name, serial number, ATR,
+ * issuer)
+ * <li>The indication of the presence of optional features (Stored Value, PIN, Rev3.2 mode,
+ * ratification management)
  * <li>The management information of the modification buffer
  * <li>The invalidation status
  * </ul>
@@ -253,6 +252,65 @@ public:
      *        been opened
      */
     bool isDfRatified() const;
+
+    /**
+     * (package-private)<br>
+     * Sets the Stored Value data from the SV Get command
+     *
+     * @param svBalance the current SV balance
+     * @param svLastTNum the last SV transaction number
+     * @param svLoadLogRecord the SV load log record (may be null if not available)
+     * @param svDebitLogRecord the SV debit log record (may be null if not available)
+     */
+    void setSvData(const int svBalance,
+                   const int svLastTNum,
+                   const std::shared_ptr<SvLoadLogRecord> svLoadLogRecord,
+                   const std::shared_ptr<SvDebitLogRecord> svDebitLogRecord);
+
+    /**
+     * Gets the current SV balance
+     *
+     * @return the current SV balance value
+     * @throw IllegalStateException if no SV Get command has been executed
+     * @since 0.9
+     */
+    int getSvBalance() const;
+
+    /**
+     * Gets the last SV transaction number
+     *
+     * @return the last SV transaction number value
+     * @throw IllegalStateException if no SV Get command has been executed
+     * @since 0.9
+     */
+    int getSvLastTNum() const;
+
+    /**
+     * Gets the last SV load log record
+     *
+     * @return a last SV load log record object or null if not available
+     * @throw NoSuchElementException if requested log is not found.
+     * @since 0.9
+     */
+    const std::shared_ptr<SvLoadLogRecord> getSvLoadLogRecord();
+
+    /**
+     * Gets the last SV debit log record
+     *
+     * @return a last SV debit log record object or null if not available
+     * @throw NoSuchElementException if requested log is not found.
+     * @since 0.9
+     */
+    const std::shared_ptr<SvDebitLogRecord> getSvDebitLogLastRecord();
+
+    /**
+     * Gets all available SV debit log records
+     *
+     * @return a list of SV debit log record objects or null if not available
+     * @throw NoSuchElementException if requested log is not found.
+     * @since 0.9
+     */
+    const std::vector<std::shared_ptr<SvDebitLogRecord>> getSvDebitLogAllRecords() const;
 
     /**
      * (package-private)<br>
@@ -476,6 +534,35 @@ public:
      */
     int getPayloadCapacity() const;
 
+    /**
+     * Indicates if the PIN is blocked. The maximum number of incorrect PIN submissions has been
+     * reached.
+     *
+     * @return true if the PIN status is blocked
+     * @throw IllegalStateException if the PIN has not been checked
+     * @since 0.9
+     */
+    bool isPinBlocked() const;
+
+    /**
+     * Gives the number of erroneous PIN presentations remaining before blocking.
+     *
+     * @return the number of remaining attempts
+     * @throw IllegalStateException if the PIN has not been checked
+     * @since 0.9
+     */
+    int getPinAttemptRemaining() const;
+
+    /**
+     * (package-private)<br>
+     * Sets the PIN attempts counter.<br>
+     * The PIN attempt counter is interpreted to give the results of the methods
+     * {@link #isPinBlocked} and {@link #getPinAttemptRemaining}.
+     *
+     * @param pinAttemptCounter the number of remaining attempts to present the PIN code
+     */
+    void setPinAttemptRemaining(const int pinAttemptCounter);
+
 protected:
     /**
      * The serial number to be used as diversifier for key derivation.<br>
@@ -633,6 +720,31 @@ private:
      *
      */
     bool mIsDfRatified;
+
+    /**
+     *
+     */
+    std::shared_ptr<int> mPinAttemptCounter;
+
+    /**
+     *
+     */
+    std::shared_ptr<int> mSvBalance;
+
+    /**
+     *
+     */
+    int mSvLastTNum;
+
+    /**
+     *
+     */
+    std::shared_ptr<SvLoadLogRecord> mSvLoadLogRecord;
+
+    /**
+     *
+     */
+    std::shared_ptr<SvDebitLogRecord> mSvDebitLogRecord;
 
     /**
      * Resolve the PO revision from the application type byte

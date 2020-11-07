@@ -23,7 +23,9 @@
 #include "KeypleAssert.h"
 
 /* Calypso */
+#include "AbstractPoResponseParser.h"
 #include "CalypsoPoCommand.h"
+#include "CalypsoPoPinException.h"
 #include "PoClass.h"
 #include "ReadRecordsRespPars.h"
 
@@ -32,6 +34,8 @@ namespace calypso {
 namespace transaction {
 
 using namespace keyple::calypso::command;
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::exception;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::common;
 using namespace keyple::common::exception;
@@ -76,15 +80,27 @@ const int CalypsoPoUtils::SEL_KVCS_OFFSET = 14;
 const int CalypsoPoUtils::SEL_KIFS_OFFSET = 17;
 const int CalypsoPoUtils::SEL_DATA_REF_OFFSET = 14;
 const int CalypsoPoUtils::SEL_LID_OFFSET = 21;
+const int CalypsoPoUtils::PIN_LENGTH = 4;
+const uint8_t CalypsoPoUtils::STORED_VALUE_FILE_STRUCTURE_ID = 0x20;
+const uint8_t CalypsoPoUtils::SV_RELOAD_LOG_FILE_SFI = 0x14;
+const int CalypsoPoUtils::SV_RELOAD_LOG_FILE_NB_REC = 1;
+const uint8_t CalypsoPoUtils::SV_DEBIT_LOG_FILE_SFI = 0x15;
+const int CalypsoPoUtils::SV_DEBIT_LOG_FILE_NB_REC = 3;
+const int CalypsoPoUtils::SV_LOG_FILE_REC_LENGTH = 29;
+
+std::vector<uint8_t> CalypsoPoUtils::mPoChallenge;
+uint8_t CalypsoPoUtils::mSvKvc;
+std::vector<uint8_t> CalypsoPoUtils::mSvGetHeader;
+std::vector<uint8_t> CalypsoPoUtils::mSvGetData;
+std::vector<uint8_t> CalypsoPoUtils::mSvOperationSignature;
 
 CalypsoPoUtils::CalypsoPoUtils() {}
 
-std::shared_ptr<AbstractOpenSessionRespPars>
-    CalypsoPoUtils::updateCalypsoPoOpenSession(
-        std::shared_ptr<CalypsoPo> calypsoPo,
-        std::shared_ptr<AbstractOpenSessionCmdBuild<
-            AbstractOpenSessionRespPars>> openSessionCmdBuild,
-        const std::shared_ptr<ApduResponse> apduResponse)
+std::shared_ptr<AbstractOpenSessionRespPars> CalypsoPoUtils::updateCalypsoPoOpenSession(
+    std::shared_ptr<CalypsoPo> calypsoPo,
+    std::shared_ptr<AbstractOpenSessionCmdBuild<
+        AbstractOpenSessionRespPars>> openSessionCmdBuild,
+    const std::shared_ptr<ApduResponse> apduResponse)
 {
     /* Create parser */
     std::shared_ptr<AbstractOpenSessionRespPars> openSessionRespPars =
@@ -101,6 +117,21 @@ std::shared_ptr<AbstractOpenSessionRespPars>
                               recordDataRead);
 
     return openSessionRespPars;
+}
+
+std::shared_ptr<CloseSessionRespPars> CalypsoPoUtils::updateCalypsoPoCloseSession(
+    std::shared_ptr<CalypsoPo> calypsoPo,
+    std::shared_ptr<CloseSessionCmdBuild> closeSessionCmdBuild,
+    std::shared_ptr<ApduResponse> apduResponse)
+{
+    (void)calypsoPo;
+
+    std::shared_ptr<CloseSessionRespPars> closeSessionRespPars =
+            closeSessionCmdBuild->createResponseParser(apduResponse);
+
+    closeSessionRespPars->checkStatus();
+
+    return closeSessionRespPars;
 }
 
 std::shared_ptr<ReadRecordsRespPars> CalypsoPoUtils::updateCalypsoPoReadRecords(
@@ -164,11 +195,10 @@ std::shared_ptr<SelectFileRespPars> CalypsoPoUtils::updateCalypsoPoSelectFile(
     return selectFileRespPars;
 }
 
-std::shared_ptr<UpdateRecordRespPars>
-    CalypsoPoUtils::updateCalypsoPoUpdateRecord(
-        std::shared_ptr<CalypsoPo> calypsoPo,
-        std::shared_ptr<UpdateRecordCmdBuild> updateRecordCmdBuild,
-        std::shared_ptr<ApduResponse> apduResponse)
+std::shared_ptr<UpdateRecordRespPars> CalypsoPoUtils::updateCalypsoPoUpdateRecord(
+    std::shared_ptr<CalypsoPo> calypsoPo,
+    std::shared_ptr<UpdateRecordCmdBuild> updateRecordCmdBuild,
+    std::shared_ptr<ApduResponse> apduResponse)
 {
     std::shared_ptr<UpdateRecordRespPars> updateRecordRespPars =
         updateRecordCmdBuild->createResponseParser(apduResponse);
@@ -192,13 +222,9 @@ std::shared_ptr<WriteRecordRespPars> CalypsoPoUtils::updateCalypsoPoWriteRecord(
 
     writeRecordRespPars->checkStatus();
 
-    /**
-     * TODO we should add another method to Calypso to emulate the behavior of
-     * Write Record
-     */
-    calypsoPo->setContent(writeRecordCmdBuild->getSfi(),
-                          writeRecordCmdBuild->getRecordNumber(),
-                          writeRecordCmdBuild->getData());
+    calypsoPo->fillContent(writeRecordCmdBuild->getSfi(),
+                           writeRecordCmdBuild->getRecordNumber(),
+                           writeRecordCmdBuild->getData());
 
     return writeRecordRespPars;
 }
@@ -252,6 +278,99 @@ std::shared_ptr<IncreaseRespPars> CalypsoPoUtils::updateCalypsoPoIncrease(
                           3 * (increaseCmdBuild->getCounterNumber() - 1));
 
     return increaseRespPars;
+}
+
+std::shared_ptr<PoGetChallengeRespPars> CalypsoPoUtils::updateCalypsoPoGetChallenge(
+    std::shared_ptr<PoGetChallengeCmdBuild> poGetChallengeCmdBuild,
+    std::shared_ptr<ApduResponse> apduResponse)
+{
+    std::shared_ptr<PoGetChallengeRespPars> poGetChallengeRespPars =
+            poGetChallengeCmdBuild->createResponseParser(apduResponse);
+
+    poGetChallengeRespPars->checkStatus();
+
+    mPoChallenge = apduResponse->getDataOut();
+
+    return poGetChallengeRespPars;
+}
+
+std::shared_ptr<VerifyPinRespPars> CalypsoPoUtils::updateCalypsoVerifyPin(
+    std::shared_ptr<CalypsoPo> calypsoPo,
+    std::shared_ptr<VerifyPinCmdBuild> verifyPinCmdBuild,
+    std::shared_ptr<ApduResponse> apduResponse)
+{
+    std::shared_ptr<VerifyPinRespPars> verifyPinRespPars =
+        verifyPinCmdBuild->createResponseParser(apduResponse);
+
+    calypsoPo->setPinAttemptRemaining(verifyPinRespPars->getRemainingAttemptCounter());
+
+    try {
+        verifyPinRespPars->checkStatus();
+    } catch (const CalypsoPoPinException& ex) {
+        /*
+         * Forward the exception if the operation do not target the reading of the attempt counter.
+         * Catch it silently otherwise
+         */
+        if (!verifyPinCmdBuild->isReadCounterOnly())
+            throw ex;
+    }
+
+    return verifyPinRespPars;
+}
+
+std::shared_ptr<SvGetRespPars> CalypsoPoUtils::updateCalypsoPoSvGet(
+    std::shared_ptr<CalypsoPo> calypsoPo,
+    std::shared_ptr<SvGetCmdBuild> svGetCmdBuild,
+    std::shared_ptr<ApduResponse> apduResponse)
+{
+    std::shared_ptr<SvGetRespPars> svGetRespPars =
+        svGetCmdBuild->createResponseParser(apduResponse);
+
+    svGetRespPars->checkStatus();
+
+    calypsoPo->setSvData(svGetRespPars->getBalance(),
+                         svGetRespPars->getTransactionNumber(),
+                         svGetRespPars->getLoadLog(),
+                         svGetRespPars->getDebitLog());
+
+    mSvKvc = svGetRespPars->getCurrentKVC();
+    mSvGetHeader = svGetRespPars->getSvGetCommandHeader();
+    mSvGetData = svGetRespPars->getApduResponse()->getBytes();
+
+    return svGetRespPars;
+}
+
+std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoPoSvOperation(
+    std::shared_ptr<CalypsoPo> calypsoPo,
+    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>> svOperationCmdBuild,
+    std::shared_ptr<ApduResponse> apduResponse)
+{
+    (void)calypsoPo;
+
+    std::shared_ptr<AbstractPoResponseParser> svOperationRespPars =
+            svOperationCmdBuild->createResponseParser(apduResponse);
+
+    svOperationRespPars->checkStatus();
+
+    mSvOperationSignature = svOperationRespPars->getApduResponse()->getDataOut();
+
+    return svOperationRespPars;
+}
+
+std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoInvalidateRehabilitate(
+    std::shared_ptr<CalypsoPo> calypsoPo,
+    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
+        invalidateRehabilitateCmdBuild,
+    std::shared_ptr<ApduResponse> apduResponse)
+{
+    (void)calypsoPo;
+
+    std::shared_ptr<AbstractPoResponseParser> invalidateRehabilitateRespPars =
+            invalidateRehabilitateCmdBuild->createResponseParser(apduResponse);
+
+    invalidateRehabilitateRespPars->checkStatus();
+
+    return invalidateRehabilitateRespPars;
 }
 
 std::unique_ptr<DirectoryHeader> CalypsoPoUtils::createDirectoryHeader(
@@ -370,8 +489,7 @@ std::unique_ptr<FileHeader> CalypsoPoUtils::createFileHeader(
 
 std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoPo(
     std::shared_ptr<CalypsoPo> calypsoPo,
-    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>
-        commandBuilder,
+    std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>> commandBuilder,
     std::shared_ptr<ApduResponse> apduResponse)
 {
     const uint8_t ins =
@@ -379,45 +497,38 @@ std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoPo(
 
     if (ins == CalypsoPoCommand::READ_RECORDS.getInstructionByte())
         return updateCalypsoPoReadRecords(
-                 calypsoPo,
-                 std::reinterpret_pointer_cast<ReadRecordsCmdBuild>(
-                     commandBuilder),
-                 apduResponse);
+                   calypsoPo,
+                   std::reinterpret_pointer_cast<ReadRecordsCmdBuild>(commandBuilder),
+                   apduResponse);
     else if (ins == CalypsoPoCommand::SELECT_FILE.getInstructionByte())
         return updateCalypsoPoSelectFile(
-                 calypsoPo,
-                 std::reinterpret_pointer_cast<SelectFileCmdBuild>(
-                     commandBuilder),
-                 apduResponse);
+                   calypsoPo,
+                   std::reinterpret_pointer_cast<SelectFileCmdBuild>(commandBuilder),
+                   apduResponse);
     else if (ins == CalypsoPoCommand::UPDATE_RECORD.getInstructionByte())
         return updateCalypsoPoUpdateRecord(
-                 calypsoPo,
-                 std::reinterpret_pointer_cast<UpdateRecordCmdBuild>(
-                     commandBuilder),
-                 apduResponse);
+                   calypsoPo,
+                   std::reinterpret_pointer_cast<UpdateRecordCmdBuild>(commandBuilder),
+                   apduResponse);
     else if (ins == CalypsoPoCommand::WRITE_RECORD.getInstructionByte())
         return updateCalypsoPoWriteRecord(
-                 calypsoPo,
-                 std::reinterpret_pointer_cast<WriteRecordCmdBuild>(
-                     commandBuilder),
-                 apduResponse);
+                   calypsoPo,
+                   std::reinterpret_pointer_cast<WriteRecordCmdBuild>(commandBuilder),
+                   apduResponse);
     else if (ins == CalypsoPoCommand::APPEND_RECORD.getInstructionByte())
         return updateCalypsoPoAppendRecord(
-                 calypsoPo,
-                 std::reinterpret_pointer_cast<AppendRecordCmdBuild>(
-                     commandBuilder),
-                 apduResponse);
+                   calypsoPo,
+                   std::reinterpret_pointer_cast<AppendRecordCmdBuild>(commandBuilder),
+                   apduResponse);
     else if (ins == CalypsoPoCommand::DECREASE.getInstructionByte())
         return updateCalypsoPoDecrease(
-                 calypsoPo,
-                 std::reinterpret_pointer_cast<DecreaseCmdBuild>(
-                     commandBuilder),
-                 apduResponse);
+                   calypsoPo,
+                   std::reinterpret_pointer_cast<DecreaseCmdBuild>(commandBuilder),
+                   apduResponse);
     else if (ins ==  CalypsoPoCommand::INCREASE.getInstructionByte())
         return updateCalypsoPoIncrease(
                  calypsoPo,
-                 std::reinterpret_pointer_cast<IncreaseCmdBuild>(
-                     commandBuilder),
+                 std::reinterpret_pointer_cast<IncreaseCmdBuild>(commandBuilder),
                  apduResponse);
     else if (ins == CalypsoPoCommand::OPEN_SESSION_10.getInstructionByte() ||
              ins == CalypsoPoCommand::OPEN_SESSION_24.getInstructionByte() ||
@@ -426,9 +537,42 @@ std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoPo(
         return updateCalypsoPoOpenSession(
                  calypsoPo,
                  std::reinterpret_pointer_cast<
-                     AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>>(
-                         commandBuilder),
+                     AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>>(commandBuilder),
                  apduResponse);
+     else if (ins == CalypsoPoCommand::CLOSE_SESSION.getInstructionByte())
+        return updateCalypsoPoCloseSession(
+                 calypsoPo,
+                 std::reinterpret_pointer_cast<CloseSessionCmdBuild>(commandBuilder),
+                 apduResponse);
+    else if (ins == CalypsoPoCommand::GET_CHALLENGE.getInstructionByte())
+        return updateCalypsoPoGetChallenge(
+                    std::reinterpret_pointer_cast<PoGetChallengeCmdBuild>(commandBuilder),
+                    apduResponse);
+    else if (ins == CalypsoPoCommand::VERIFY_PIN.getInstructionByte())
+        return updateCalypsoVerifyPin(
+                   calypsoPo,
+                   std::reinterpret_pointer_cast<VerifyPinCmdBuild>(commandBuilder),
+                   apduResponse);
+    else if (ins == CalypsoPoCommand::SV_GET.getInstructionByte())
+        return updateCalypsoPoSvGet(
+                   calypsoPo,
+                   std::reinterpret_pointer_cast<SvGetCmdBuild>(commandBuilder),
+                   apduResponse);
+    else if (ins == CalypsoPoCommand::SV_RELOAD.getInstructionByte() ||
+             ins == CalypsoPoCommand::SV_DEBIT.getInstructionByte() ||
+             ins == CalypsoPoCommand::SV_UNDEBIT.getInstructionByte())
+        return updateCalypsoPoSvOperation(
+                   calypsoPo,
+                   std::reinterpret_pointer_cast
+                       <AbstractPoCommandBuilder<AbstractPoResponseParser>>(commandBuilder),
+                   apduResponse);
+    else if (ins == CalypsoPoCommand::INVALIDATE.getInstructionByte() ||
+             ins == CalypsoPoCommand::REHABILITATE.getInstructionByte())
+        return updateCalypsoInvalidateRehabilitate(
+                   calypsoPo,
+                   std::reinterpret_pointer_cast
+                       <AbstractPoCommandBuilder<AbstractPoResponseParser>>(commandBuilder),
+                   apduResponse);
     else if (ins == CalypsoPoCommand::CHANGE_KEY.getInstructionByte() ||
              ins == CalypsoPoCommand::GET_DATA_FCI.getInstructionByte() ||
              ins == CalypsoPoCommand::GET_DATA_TRACE.getInstructionByte())
@@ -489,6 +633,31 @@ std::unique_ptr<SelectFileCmdBuild> CalypsoPoUtils::prepareSelectFile(
 {
     return std::unique_ptr<SelectFileCmdBuild>(
                new SelectFileCmdBuild(poClass, selectControl));
+}
+
+const std::vector<uint8_t>& CalypsoPoUtils::getPoChallenge()
+{
+    return mPoChallenge;
+}
+
+uint8_t CalypsoPoUtils::getSvKvc()
+{
+    return mSvKvc;
+}
+
+const std::vector<uint8_t>& CalypsoPoUtils::getSvGetHeader()
+{
+    return mSvGetHeader;
+}
+
+const std::vector<uint8_t> CalypsoPoUtils::getSvGetData()
+{
+    return mSvGetData;
+}
+
+const std::vector<uint8_t> CalypsoPoUtils::getSvOperationSignature()
+{
+    return mSvOperationSignature;
 }
 
 }

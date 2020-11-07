@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -76,13 +75,11 @@ public:
      * A reader plugin will handle a list of protocol settings in order to
      * target multiple types of SE.
      *
-     * @param seProtocol the protocol key identifier to be added to the plugin
-     *        internal list
+     * @param seProtocol the protocol key identifier to be added to the plugin internal list
      * @param protocolRule a string use to define how to identify the protocol
      */
-    virtual void addSeProtocolSetting(
-        std::shared_ptr<SeProtocol> seProtocol,
-        const std::string& protocolRule) = 0;
+    virtual void addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol,
+                                      const std::string& protocolRule) = 0;
 
     /**
      * Complete the current setting map with the provided map
@@ -90,8 +87,7 @@ public:
      * @param protocolSetting the protocol setting map
      */
     virtual void setSeProtocolSetting(
-        const std::map<std::shared_ptr<SeProtocol>,
-                       std::string>& protocolSetting) = 0;
+        const std::map<std::shared_ptr<SeProtocol>, std::string>& protocolSetting) = 0;
 
     /**
      * @return the transmission mode in use with this SE reader
@@ -103,7 +99,7 @@ public:
      */
     virtual bool operator==(const SeReader& o) const
     {
-        return this->getName() ==  o.getName();
+        return this->getParameters() ==  o.getParameters();
     }
 
     /**
@@ -112,7 +108,6 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const std::shared_ptr<SeReader> sr)
     {
         os << "SEREADER: {"
-           << "NAME = " << sr->getName() << ", "
            << "PARAMETERS: " << sr->getParameters()
            << "}";
 

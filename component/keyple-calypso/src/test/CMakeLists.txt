@@ -21,9 +21,11 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/builder
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/builder/security
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/builder/storedvalue
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/parser
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/parser/security
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/po/parser/storedvalue
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/sam
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/sam/builder
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/command/sam/builder/security
@@ -96,9 +98,18 @@ ADD_EXECUTABLE(keyplecalypso_ut
 	# calypso - command - po - builder - security
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/ChangeKeyCmdBuildTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/CloseSessionCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/InvalidateCmdBuildTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/OpenSessionCmdBuildTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/PoGetChallengeCmdBuildTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/RatificationCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/RehabilitateCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/RehabilitateCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/security/VerifyPinCmdBuildTest.cpp
+
+	# calypso - command - po - builder - storedvalue
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/storedvalue/SvDebitCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/storedvalue/SvGetCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/storedvalue/SvReloadCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/builder/storedvalue/SvUndebitCmdBuildTest.cpp
 
 	# calypso - command - po - parser
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/AppendRecordRespParsTest.cpp
@@ -114,11 +125,19 @@ ADD_EXECUTABLE(keyplecalypso_ut
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/AbstractOpenSessionRespParsTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/ChangeKeyRespPars.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/CloseSessionRespParsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/InvalidateRespParsTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSessionRespParsTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSession24RespPars.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSession31RespPars.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/OpenSession32RespPars.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/PoGetChallengeRespParsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/RehabilitateRespParsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/security/VerifyPinRespParsTest.cpp
+
+	# calypso - command - po - parser - storedvalue
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/storedvalue/SvDebitRespParsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/storedvalue/SvGetRespParsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/po/parser/storedvalue/SvReloadRespParsTest.cpp
 
 	# calypso - command - sam
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/AbstractSamCommandBuilder.cpp
@@ -128,8 +147,9 @@ ADD_EXECUTABLE(keyplecalypso_ut
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/SamRevision.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/command/sam/SamSendableInSession.cpp
 
-	# calypso - command - sam - builder
+	# calypso - command - sam - builder - security
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/CardGenerateKeyCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/CardCipherPinCmdBuildTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/DigestAuthenticateCmdBuildTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/DigestCloseCmdBuildTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/DigestInitCmdBuildTest.cpp
@@ -141,10 +161,12 @@ ADD_EXECUTABLE(keyplecalypso_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamReadEventCounterCmdBuildTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SamWriteKeyCmdBuildTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SelectDiversifierCmdBuildTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/SvCheckCmdBuildTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/builder/security/UnlockCmdBuildTest.cpp
 
-	# calypso - command - sam - parser
+	# calypso - command - sam - parser - security
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/CardGenerateKeyRespParsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/CardCipherPinRespParsTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/DigestAuthenticateRespParsTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/DigestCloseRespParsTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/DigestInitRespParsTest.cpp
@@ -157,6 +179,7 @@ ADD_EXECUTABLE(keyplecalypso_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SamReadKeyParametersRespParsTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SamWriteKeyRespParsTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SelectDiversifierRespParsTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/SvCheckRespParsTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/command/sam/parser/security/UnlockRespParsTest.cpp
 
 	# calypso - transaction
@@ -172,6 +195,8 @@ ADD_EXECUTABLE(keyplecalypso_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectionRequestTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SamSelectorTest.cpp
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/SecuritySettings.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SvDebitLogRecordTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/transaction/SvLoadLogRecordTest.cpp
 
 	# calypso - transaction - exception
 	#${CMAKE_CURRENT_SOURCE_DIR}/transaction/exception/KeypleCalypsoSecureSessionException.cpp

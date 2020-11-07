@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "SamResourceManagerPool.h"
 
@@ -32,7 +31,7 @@ namespace calypso {
 namespace transaction {
 
 using namespace keyple::calypso::exception;
-using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::exception;
 
 SamResourceManagerPool::SamResourceManagerPool(
@@ -47,8 +46,7 @@ SamResourceManagerPool::SamResourceManagerPool(
         throw IllegalArgumentException("Sleep time must be greater than 0");
 
     if (maxBlockingTime < 1)
-        throw IllegalArgumentException(
-                  "Max Blocking Time must be greater than 0");
+        throw IllegalArgumentException("Max Blocking Time must be greater than 0");
 
     mLogger->info("Create SAM resource manager from reader pool plugin: %\n",
                   mSamReaderPlugin.getName());
@@ -56,10 +54,9 @@ SamResourceManagerPool::SamResourceManagerPool(
     /* HSM reader plugin type */
 }
 
-std::shared_ptr<SeResource<CalypsoSam>>
-    SamResourceManagerPool::allocateSamResource(
-        const AllocationMode allocationMode,
-        const std::shared_ptr<SamIdentifier> samIdentifier)
+std::shared_ptr<SeResource<CalypsoSam>> SamResourceManagerPool::allocateSamResource(
+    const AllocationMode allocationMode,
+    const std::shared_ptr<SamIdentifier> samIdentifier)
 {
     const long maxBlockingDate = System::currentTimeMillis() + mMaxBlockingTime;
     bool noSamResourceLogged = false;
@@ -69,13 +66,11 @@ std::shared_ptr<SeResource<CalypsoSam>>
     while (true) {
         try {
             /* virtually infinite number of readers */
-            std::shared_ptr<SeReader> samReader =
-                mSamReaderPlugin.allocateReader(
-                    samIdentifier->getGroupReference());
+            std::shared_ptr<SeReader> samReader = mSamReaderPlugin.allocateReader(
+                                                      samIdentifier->getGroupReference());
 
             if (samReader != nullptr) {
-                std::unique_ptr<ManagedSamResource> managedSamResource =
-                    createSamResource(samReader);
+                std::unique_ptr<ManagedSamResource> managedSamResource = createSamResource(samReader);
                 mLogger->debug("Allocation succeeded. SAM resource created\n");
                 return managedSamResource;
             }

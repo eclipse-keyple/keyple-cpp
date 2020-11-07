@@ -86,7 +86,7 @@ public:
     /**
      * @return the data sent to the PO
      */
-    const std::vector<uint8_t>& getData() const;
+    std::vector<uint8_t>& getData();
 
 private:
     /**
@@ -99,7 +99,7 @@ private:
      */
     const uint8_t mSfi;
     const uint8_t mRecordNumber;
-    const std::vector<uint8_t> mData;
+    std::vector<uint8_t> mData;
 };
 
 }

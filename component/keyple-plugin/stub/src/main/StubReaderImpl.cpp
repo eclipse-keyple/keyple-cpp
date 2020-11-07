@@ -1,22 +1,20 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "StubReaderImpl.h"
 
 /* Core */
 #include "ByteArrayUtil.h"
-#include "IllegalArgumentException.h"
 #include "KeypleReaderIOException.h"
 #include "KeypleReaderException.h"
 #include "ObservableReaderStateService.h"
@@ -33,22 +31,21 @@
 
 /* Common */
 #include "Thread.h"
+#include "IllegalArgumentException.h"
 #include "InterruptedException.h"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
 
+using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::plugin;
-using namespace keyple::core::seproxy::plugin::local;
-using namespace keyple::core::seproxy::plugin::local::monitoring;
-using namespace keyple::core::seproxy::plugin::local::state;
 using namespace keyple::core::seproxy::protocol;
 
-StubReaderImpl::StubReaderImpl(const std::string& pluginName,
-                               const std::string& readerName)
+StubReaderImpl::StubReaderImpl(const std::string& pluginName, const std::string& readerName)
 : AbstractObservableLocalReader(pluginName, readerName)
 {
     /* Create a executor service with one thread whose name is customized */
@@ -95,8 +92,7 @@ void StubReaderImpl::closePhysicalChannel()
         mSe->closePhysicalChannel();
 }
 
-std::vector<uint8_t> StubReaderImpl::transmitApdu(
-    const std::vector<uint8_t>& apduIn)
+std::vector<uint8_t> StubReaderImpl::transmitApdu(const std::vector<uint8_t>& apduIn)
 {
     if (mSe == nullptr)
         throw KeypleReaderIOException("No SE available.");
@@ -104,8 +100,7 @@ std::vector<uint8_t> StubReaderImpl::transmitApdu(
     return mSe->processApdu(apduIn);
 }
 
-bool StubReaderImpl::protocolFlagMatches(
-    const std::shared_ptr<SeProtocol> protocolFlag)
+bool StubReaderImpl::protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
 {
     bool result;
 
@@ -117,11 +112,8 @@ bool StubReaderImpl::protocolFlagMatches(
     if (!isPhysicalChannelOpen())
         openPhysicalChannel();
 
-    /*
-     * The request will be executed only if the protocol match the
-     * requestElement.
-     */
-    const std::string& selectionMask = mProtocolsMap.find(protocolFlag)->second;
+    /* The request will be executed only if the protocol match the requestElement */
+    const std::string& selectionMask = getProtocolsMap().find(protocolFlag)->second;
 
     if (selectionMask.empty())
         throw KeypleReaderIOException("Target selector mask not found!");
@@ -149,14 +141,12 @@ bool StubReaderImpl::checkSePresence()
     return mSe != nullptr;
 }
 
-void StubReaderImpl::setParameter(const std::string& name,
-                                  const std::string& value)
+void StubReaderImpl::setParameter(const std::string& name, const std::string& value)
 {
     mParameters.insert({name, value});
 }
 
-const std::map<const std::string, const std::string>&
-    StubReaderImpl::getParameters() const
+const std::map<const std::string, const std::string>& StubReaderImpl::getParameters() const
 {
     return mParameters;
 }
@@ -175,8 +165,7 @@ void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> se)
         try {
             closePhysicalChannel();
         } catch (KeypleReaderException& e) {
-            mLogger->error("Error while closing channel reader. %\n",
-                           e.getMessage());
+            mLogger->error("Error while closing channel reader. %\n", e.getMessage());
         }
     }
 

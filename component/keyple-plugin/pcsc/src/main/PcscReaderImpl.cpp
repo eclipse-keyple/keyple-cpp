@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "PcscReaderImpl.h"
 
@@ -37,11 +36,9 @@ namespace plugin {
 namespace pcsc {
 
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::plugin;
-using namespace keyple::core::seproxy::plugin::local;
-using namespace keyple::core::seproxy::plugin::local::monitoring;
-using namespace keyple::core::seproxy::plugin::local::state;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::util;
 
@@ -50,17 +47,16 @@ const std::string PcscReaderImpl::PROTOCOL_T1   = "T=1";
 const std::string PcscReaderImpl::PROTOCOL_T_CL = "T=CL";
 const std::string PcscReaderImpl::PROTOCOL_ANY  = "T=0";
 
-PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
-                               PcscTerminal& terminal)
+PcscReaderImpl::PcscReaderImpl(const std::string& pluginName, PcscTerminal& terminal)
 : AbstractObservableLocalReader(pluginName, terminal.getName()),
-  mLoopWaitSeRemoval(true), mTerminal(terminal),
+  mLoopWaitSeRemoval(true),
+  mTerminal(terminal),
   mTransmissionMode(TransmissionMode::NONE)
 {
     mExecutorService = std::make_shared<MonitoringPool>();
     mStateService    = initStateService();
 
-    mLogger->debug("[PcscReaderImpl] constructor => using terminal %\n",
-                  terminal.getName());
+    mLogger->debug("[PcscReaderImpl] constructor => using terminal %\n", terminal.getName());
 
     /*
      * Using null values to use the standard method for defining default values
@@ -238,8 +234,7 @@ std::vector<uint8_t> PcscReaderImpl::transmitApdu(
     return response;
 }
 
-bool PcscReaderImpl::protocolFlagMatches(
-    const std::shared_ptr<SeProtocol> protocolFlag)
+bool PcscReaderImpl::protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
 {
     bool result;
 
@@ -251,16 +246,12 @@ bool PcscReaderImpl::protocolFlagMatches(
             openPhysicalChannel();
         }
 
-        /*
-         * The request will be executed only if the protocol match the
-         * requestElement
-         */
-        std::string selectionMask = mProtocolsMap[protocolFlag];
-        mLogger->debug("protocolFlagMatches - selectionMask: %\n", selectionMask);
-        if (selectionMask == "") {
-            throw KeypleReaderIOException(
-                "Target selector mask not found!"); // nullptr));
-        }
+        /* The request will be executed only if the protocol match the requestElement */
+        const auto& it = getProtocolsMap().find(protocolFlag);
+        if (it == getProtocolsMap().end())
+            throw KeypleReaderIOException("Target selector mask not found!");
+
+        const std::string selectionMask = it->second;
 
         Pattern* p      = Pattern::compile(selectionMask);
         std::string atr = ByteArrayUtil::toHex(mTerminal.getATR());

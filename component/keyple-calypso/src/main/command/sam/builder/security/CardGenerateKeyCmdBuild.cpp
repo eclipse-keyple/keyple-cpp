@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "CardGenerateKeyCmdBuild.h"
 
@@ -32,7 +31,7 @@ namespace security {
 using namespace keyple::calypso;
 using namespace keyple::calypso::command::sam;
 using namespace keyple::calypso::command::sam::builder::security;
-using namespace keyple::common;
+using namespace keyple::common::exception;
 
 CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
   const SamRevision& revision,
@@ -46,8 +45,7 @@ CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
         mDefaultRevision = revision;
 
     if (sourceKey == nullptr)
-        throw IllegalArgumentException(
-                  "The source key reference can't be null.");
+        throw IllegalArgumentException("The source key reference can't be null.");
 
     const uint8_t cla = mDefaultRevision.getClassByte();
 
@@ -78,9 +76,8 @@ CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
     mRequest = setApduRequest(cla, mCommand, p1, p2, data);
 }
 
-std::shared_ptr<CardGenerateKeyRespPars>
-    CardGenerateKeyCmdBuild::createResponseParser(
-        std::shared_ptr<ApduResponse> apduResponse)
+std::shared_ptr<CardGenerateKeyRespPars> CardGenerateKeyCmdBuild::createResponseParser(
+    std::shared_ptr<ApduResponse> apduResponse)
 {
     return std::make_shared<CardGenerateKeyRespPars>(apduResponse, this);
 }

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -52,8 +51,7 @@ public:
      * @param workKeyRecordNumber the work key record number
      * @param workKeyKif from the AbstractOpenSessionCmdBuild response
      * @param workKeyKVC from the AbstractOpenSessionCmdBuild response
-     * @param digestData all data out from the AbstractOpenSessionCmdBuild
-     *        response
+     * @param digestData all data out from the AbstractOpenSessionCmdBuild response
      * @throw IllegalArgumentException - if the work key record number
      * @throw IllegalArgumentException - if the digest data is null
      * @throw IllegalArgumentException - if the request is inconsistent

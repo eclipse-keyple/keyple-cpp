@@ -152,14 +152,16 @@ std::shared_ptr<SeResource<CalypsoSam>> CalypsoUtilities::checkSamAndOpenChannel
      */
     auto samSelection = std::make_shared<SeSelection>();
     std::shared_ptr<SeSelector> seSelector =
-        SamSelector::builder()->seProtocol(SeCommonProtocols::PROTOCOL_ISO7816_3)
-                               .samRevision(SamRevision::C1)
+        SamSelector::builder()->samRevision(SamRevision::C1)
                                .serialNumber(".*")
                                .build();
     auto samSelector = std::dynamic_pointer_cast<SamSelector>(seSelector);
+    auto request = std::make_shared<SamSelectionRequest>(samSelector);
+    auto abstract = std::reinterpret_pointer_cast
+                        <AbstractSeSelectionRequest<AbstractApduCommandBuilder>>(request);
 
     /* Prepare selector, ignore MatchingSe here */
-    samSelection->prepareSelection(std::make_shared<SamSelectionRequest>(samSelector));
+    samSelection->prepareSelection(abstract);
     std::shared_ptr<CalypsoSam> calypsoSam = nullptr;
 
     try {

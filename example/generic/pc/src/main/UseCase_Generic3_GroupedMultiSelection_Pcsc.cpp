@@ -74,8 +74,7 @@ int main(int argc, char** argv)
     if (seReader->isSePresent()) {
 
         /* CLOSE_AFTER to force selection of all applications */
-        auto seSelection = std::make_shared<SeSelection>(MultiSeRequestProcessing::PROCESS_ALL,
-                                                         ChannelControl::CLOSE_AFTER);
+        auto seSelection = std::make_shared<SeSelection>(MultiSeRequestProcessing::PROCESS_ALL);
 
         /*
          * Operate SE selection (change the AID here to adapt it to the SE used
@@ -119,10 +118,10 @@ int main(int argc, char** argv)
         generic = std::make_shared<GenericSeSelectionRequest>(seSelector);
         seSelection->prepareSelection(generic);
 
-        /*
-         * Actual SE communication: operate through a single request the SE
-         * selection
-         */
+        /* Close the channel after the selection to force the selection of all applications */
+        seSelection->prepareReleaseSeChannel();
+
+        /* Actual SE communication: operate through a single request the SE selection */
         std::shared_ptr<SelectionsResult> selectionsResult =
             seSelection->processExplicitSelection(seReader);
 

@@ -91,7 +91,7 @@ ChangeKeyRespPars::ChangeKeyRespPars(
   std::shared_ptr<ApduResponse> response, ChangeKeyCmdBuild *builder)
 : AbstractPoResponseParser(
     response,
-    dynamic_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
+    reinterpret_cast<AbstractPoCommandBuilder<AbstractPoResponseParser>*>(builder))
 {}
 
 const std::map<int, std::shared_ptr<StatusProperties>>&

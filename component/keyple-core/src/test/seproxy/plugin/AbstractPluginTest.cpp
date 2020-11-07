@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <mutex>
 #include <thread>
@@ -34,6 +33,7 @@
 using namespace testing;
 
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::protocol;
 
@@ -50,6 +50,16 @@ public:
                 setParameter,
                 (const std::string&, const std::string&),
                 (override));
+
+    MOCK_METHOD(void,
+                setParameters,
+                ((const std::map<const std::string, const std::string>&)),
+                (override));
+
+    MOCK_METHOD((const std::string&),
+                getName,
+                (),
+                (const, override));
 
 protected:
     MOCK_METHOD((ConcurrentMap<const std::string, std::shared_ptr<SeReader>>),
@@ -94,6 +104,11 @@ public:
                 (const std::string&, const std::string&),
                 (override));
 
+    const std::string& getName() const override
+    {
+        return mName;
+    }
+
 protected:
     MOCK_METHOD(std::vector<std::shared_ptr<SeResponse>>,
                 processSeRequests,
@@ -105,6 +120,14 @@ protected:
                 processSeRequest,
                 (const std::shared_ptr<SeRequest>, const ChannelControl&),
                 (override));
+
+    MOCK_METHOD(void,
+                setParameters,
+                ((const std::map<const std::string, const std::string>&)),
+                (override));
+
+private:
+    const std::string mName = "AP_AbstractReaderMock";
 };
 
 static std::shared_ptr<Logger> logger =

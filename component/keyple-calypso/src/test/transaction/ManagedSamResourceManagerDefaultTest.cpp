@@ -99,7 +99,7 @@ public:
 
     MOCK_METHOD((std::shared_ptr<SeResponse>),
                 transmitSeRequest,
-                (std::shared_ptr<SeRequest>, ChannelControl),
+                (std::shared_ptr<SeRequest>, const ChannelControl&),
                 (override));
 };
 

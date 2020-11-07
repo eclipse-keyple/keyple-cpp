@@ -34,24 +34,27 @@ void AbstractReaderObserverEngine::runProcessSeInserted(const std::shared_ptr<Re
     std::thread(
         [this, event]() {
             mCurrentlyProcessingSe = true;
-            /* Optional, to process alternative AID selection */
-            processSeInserted();
-
-            /**
-             * Informs the underlying layer of the end of the SE processing, in order to manage
-             * the removal sequence.
-             * <p>
-             * If closing has already been requested, this method will do nothing.
-             */
             try {
-                std::shared_ptr<SeReader> reader =
-                    SeProxyService::getInstance().getPlugin(event->getPluginName())
-                                                ->getReader(event->getReaderName());
-                auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
-            } catch (const KeypleReaderNotFoundException& e) {
-                mLogger->error("Reader not found exception: {}", e.getMessage());
-            } catch (const KeyplePluginNotFoundException& e) {
-                mLogger->error("Plugin not found exception: {}", e.getMessage());
+                /* Optional, to process alternative AID selection */
+                processSeInserted();
+            } catch (const KeypleException& e) {
+                mLogger->error("Keyple exception: {}", e.getMessage());
+
+                /**
+                 * Informs the underlying layer of the end of the SE processing, in order to manage
+                 * the removal sequence.
+                 * <p>
+                 * If closing has already been requested, this method will do nothing.
+                 */
+                try {
+                    std::shared_ptr<SeReader> reader = event->getReader();
+                    auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
+                    observable->finalizeSeProcessing();
+                } catch (const KeypleReaderNotFoundException& ex) {
+                    mLogger->error("Reader not found exception: {}", ex.getMessage());
+                } catch (const KeyplePluginNotFoundException& ex) {
+                    mLogger->error("Plugin not found exception: {}", ex.getMessage());
+                }
             }
 
             mCurrentlyProcessingSe = false;
@@ -69,24 +72,20 @@ void AbstractReaderObserverEngine::runProcessSeMatched(const std::shared_ptr<Rea
                 processSeMatch(event->getDefaultSelectionsResponse());
             } catch (const KeypleException& e) {
                 mLogger->error("Keyple exception: %\n", e.getMessage());
-            }
 
-            /**
-             * Informs the underlying layer of the end of the SE processing, in order to manage
-             * the removal sequence.
-             * <p>
-             * If closing has already been requested, this method will do nothing.
-             */
-            try {
-                std::shared_ptr<SeReader> reader =
-                    SeProxyService::getInstance().getPlugin(event->getPluginName())
-                                                ->getReader(event->getReaderName());
-                auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
-                observable->notifySeProcessed();
-            } catch (KeypleReaderNotFoundException e) {
-                mLogger->error("Reader not found exception: {}", e.getMessage());
-            } catch (KeyplePluginNotFoundException e) {
-                mLogger->error("Plugin not found exception: {}", e.getMessage());
+                /*
+                 * Informs the underlying layer of the end of the SE processing, in order to
+                 * manage the removal sequence.
+                 */
+                try {
+                    std::shared_ptr<SeReader> reader = event->getReader();
+                    auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
+                    observable->finalizeSeProcessing();
+                } catch (KeypleReaderNotFoundException& ex) {
+                    mLogger->error("Reader not found exception: {}", ex.getMessage());
+                } catch (KeyplePluginNotFoundException& ex) {
+                    mLogger->error("Plugin not found exception: {}", ex.getMessage());
+                }
             }
 
             mCurrentlyProcessingSe = false;

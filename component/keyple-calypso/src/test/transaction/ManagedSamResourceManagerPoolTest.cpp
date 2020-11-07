@@ -49,7 +49,7 @@ public:
 
     std::shared_ptr<SeResponse> transmitSeRequest(
         std::shared_ptr<SeRequest> seRequest,
-        ChannelControl channelControl) override
+        const ChannelControl& channelControl) override
     {
         (void)seRequest;
         (void)channelControl;

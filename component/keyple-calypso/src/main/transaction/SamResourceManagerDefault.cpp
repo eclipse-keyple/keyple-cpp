@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "SamResourceManagerDefault.h"
 
@@ -38,7 +37,7 @@ namespace calypso {
 namespace transaction {
 
 using namespace keyple::calypso::exception;
-using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::selection;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
@@ -52,22 +51,18 @@ using SamResourceStatus =
 
 /* SAM RESOURCE MANAGER DEFAULT --------------------------------------------- */
 
-SamResourceManagerDefault::SamResourceManagerDefault(
-  std::shared_ptr<ReaderPlugin> readerPlugin,
-  const std::string& samReaderFilter,
-  const int maxBlockingTime,
-  const int sleepTime)
-: mSamReaderPlugin(readerPlugin),
-  mMaxBlockingTime(maxBlockingTime),
-  mSleepTime(sleepTime)
+SamResourceManagerDefault::SamResourceManagerDefault(std::shared_ptr<ReaderPlugin> readerPlugin,
+                                                     const std::string& samReaderFilter,
+                                                     const int maxBlockingTime,
+                                                     const int sleepTime)
+: mSamReaderPlugin(readerPlugin), mMaxBlockingTime(maxBlockingTime), mSleepTime(sleepTime)
 {
     /* Assign parameters */
     if (sleepTime < 1)
         throw IllegalArgumentException("Sleep time must be greater than 0");
 
     if (maxBlockingTime < 1)
-        throw IllegalArgumentException(
-                  "Max Blocking Time must be greater than 0");
+        throw IllegalArgumentException("Max Blocking Time must be greater than 0");
 
     mReaderObserver = std::make_shared<ReaderObserver>(*this);
 
@@ -86,12 +81,9 @@ SamResourceManagerDefault::SamResourceManagerDefault(
         if (p->matcher(samReader.first)->matches()) {
             mLogger->trace("Add reader: %\n", samReader.first);
             try {
-                initSamReader(mSamReaderPlugin->getReader(samReader.first),
-                              mReaderObserver);
+                initSamReader(mSamReaderPlugin->getReader(samReader.first), mReaderObserver);
             } catch (const KeypleReaderException& e) {
-                mLogger->error("could not init samReader %\n",
-                               samReader.second,
-                               e);
+                mLogger->error("could not init samReader %\n", samReader.second, e);
             }
         } else {
             mLogger->trace("Reader not matching: %\n", samReader.second);
@@ -100,22 +92,17 @@ SamResourceManagerDefault::SamResourceManagerDefault(
 
     if (std::dynamic_pointer_cast<ObservablePlugin>(readerPlugin)) {
         /* Add an observer to monitor reader and SAM insertions */
-        std::shared_ptr<SamResourceManagerDefault::PluginObserver>
-            pluginObserver =
-                std::make_shared<PluginObserver>(mReaderObserver,
-                                                 samReaderFilter,
-                                                 *this);
+        auto pluginObserver = std::make_shared<PluginObserver>(mReaderObserver,
+                                                               samReaderFilter,
+                                                               *this);
 
-        mLogger->trace("Add observer PLUGINNAME = %\n",
-                       mSamReaderPlugin->getName());
+        mLogger->trace("Add observer PLUGINNAME = %\n", mSamReaderPlugin->getName());
 
-        std::dynamic_pointer_cast<ObservablePlugin>(mSamReaderPlugin)
-            ->addObserver(pluginObserver);
+        std::dynamic_pointer_cast<ObservablePlugin>(mSamReaderPlugin)->addObserver(pluginObserver);
     }
 }
 
-void SamResourceManagerDefault::removeResource(
-    const std::shared_ptr<SeReader> samReader)
+void SamResourceManagerDefault::removeResource(const std::shared_ptr<SeReader> samReader)
 {
     const auto it = mLocalManagedSamResources.find(samReader->getName());
 
@@ -143,14 +130,11 @@ std::shared_ptr<SeResource<CalypsoSam>>
     while (true) {
         mMutex.lock();
         for (const auto& entry : mLocalManagedSamResources) {
-            std::shared_ptr<ManagedSamResource> managedSamResource =
-                entry.second;
+            std::shared_ptr<ManagedSamResource> managedSamResource = entry.second;
             if (managedSamResource->isSamResourceFree()) {
                 if (managedSamResource->isSamMatching(samIdentifier)) {
-                    managedSamResource->setSamResourceStatus(
-                        SamResourceStatus::BUSY);
-                    mLogger->debug("Allocation succeeded. SAM resource " \
-                                   "created\n");
+                    managedSamResource->setSamResourceStatus(SamResourceStatus::BUSY);
+                    mLogger->debug("Allocation succeeded. SAM resource created\n");
                     mMutex.unlock();
                     return managedSamResource;
                 }
