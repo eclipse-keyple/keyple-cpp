@@ -31,8 +31,8 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/monitoring
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/state
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/monitoring
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/state
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/command
 	${CMAKE_CURRENT_SOURCE_DIR}/transaction
@@ -55,8 +55,8 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/local
-	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/local/monitoring
-	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/local/state
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/monitoring
+	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/plugin/state
 	${CMAKE_CURRENT_SOURCE_DIR}/../main/seproxy/protocol
 
 	# google test and mock
@@ -83,6 +83,7 @@ ADD_EXECUTABLE(keyplecore_ut
 	# seproxy - event
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsRequestTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/AbstractDefaultSelectionsResponseTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/DefaultSelectionTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservablePluginTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/ObservableReaderTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/event/PluginEventTest.cpp
@@ -112,14 +113,14 @@ ADD_EXECUTABLE(keyplecore_ut
 	# seproxy - plugin - local - state
 
 	# seproxy - plugin - local
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReaderSelectionTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReaderTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractLocalReaderTransmitTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableLocalReaderTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractObservableStateTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractSmartInsertionThreadedReaderTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/AbstractSmartPresenceThreadedReaderTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/local/ObservableReaderStateServiceTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractLocalReaderSelectionTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractLocalReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractLocalReaderTransmitTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservableLocalReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservableStateTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractSmartInsertionThreadedReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractSmartPresenceThreadedReaderTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/ObservableReaderStateServiceTest.cpp
 
 	# seproxy - plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservablePluginTest.cpp

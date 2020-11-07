@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -26,10 +25,10 @@ namespace seproxy {
 namespace plugin {
 
 /**
- * This abstract class mutualizes the management of the name and part of the
- * configuration of SeProxy components (plugins and readers)
+ * This abstract class mutualizes the management of the name and part of the configuration of
+ * SeProxy components (plugins and readers)
  */
-class KEYPLECORE_API AbstractSeProxyComponent : virtual public ProxyElement {
+class KEYPLECORE_API AbstractSeProxyComponent {
 public:
     /**
      * Constructor
@@ -46,7 +45,7 @@ public:
     /**
      * @return the name of the component
      */
-    virtual const std::string& getName() const override;
+    const std::string& getName() const;
 
     /**
      * Sets at once a set of parameters for a reader
@@ -54,10 +53,21 @@ public:
      * See {@link #setParameter(String, String)} for more details
      *
      * @param parameters a Map &lt;String, String&gt; parameter set
-     * @throws KeypleBaseException if one of the parameters could not be set up
+     * @throw KeypleBaseException if one of the parameters could not be set up
      */
-    virtual void setParameters(
-        const std::map<const std::string, const std::string>& parameters) final;
+    void setParameters(const std::map<const std::string, const std::string>& parameters);
+
+    /**
+     * This method has to be implemented by the reader plugin.<br>
+     * Allows to define a proprietary setting for a reader or a plugin (contactless protocols
+     * polling sequence, baud rate, … etc.).
+     *
+     * @param key the parameter key
+     * @param value the parameter value
+     * @throw IllegalArgumentException if the parameter or the value is not supported
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
+     */
+    virtual void setParameter(const std::string& key, const std::string& value) = 0;
 
 private:
     /**

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -30,8 +29,6 @@ namespace core {
 namespace seproxy {
 namespace plugin {
 
-using namespace keyple::core::seproxy::plugin::local;
-
 /**
  * The {@link AbstractObservablePlugin} class provides the means to observe a
  * plugin (insertion/removal of readers).
@@ -47,8 +44,7 @@ public:
      *
      * @param observer the observer object
      */
-    virtual void addObserver(
-        const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+    virtual void addObserver(const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
         override;
 
     /**
@@ -58,14 +54,11 @@ public:
      *
      * @param observer the observer object
      */
-    virtual void removeObserver(
-        const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+    virtual void removeObserver(const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
         override;
 
     /**
      * Remove all observers at once
-     *
-     * @deprecated will change in a later version
      */
     virtual void clearObservers() override;
 
@@ -81,8 +74,7 @@ public:
      *
      * @param event the event
      */
-    virtual void notifyObservers(const std::shared_ptr<PluginEvent> event)
-        final;
+    virtual void notifyObservers(const std::shared_ptr<PluginEvent> event) final;
 
 protected:
     /**

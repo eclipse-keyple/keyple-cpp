@@ -165,6 +165,7 @@ public:
         ReaderEvent::EventType type = event->getEventType();
 
         if (type == ReaderEvent::EventType::SE_MATCHED) {
+            bool transactionComplete = false;
             std::shared_ptr<CalypsoPo> calypsoPo = nullptr;
             std::shared_ptr<SeReader> poReader = nullptr;
             try {
@@ -178,7 +179,7 @@ public:
                 logger->error("Reader not found! %\n", e.getMessage());
             } catch (const KeyplePluginNotFoundException& e) {
                 logger->error("Plugin not found! %\n", e.getMessage());
-            } catch (KeypleException e) {
+            } catch (const KeypleException& e) {
                 logger->error("The selection process failed! %\n", e.getMessage());
             }
 
@@ -196,22 +197,25 @@ public:
             /* Go on with the reading of the first record of the EventLog file */
             logger->info("= #### 2nd PO exchange: reading transaction of the EventLog file\n");
 
-            PoTransaction poTransaction(std::make_shared<SeResource<CalypsoPo>>(poReader, calypsoPo));
+            PoTransaction poTransaction(
+                std::make_shared<SeResource<CalypsoPo>>(poReader, calypsoPo));
 
             /*
              * Prepare the reading order and keep the associated parser for later use once the
              * transaction has been processed.
              */
             poTransaction.prepareReadRecordFile(CalypsoClassicInfo::SFI_EventLog,
-                                            CalypsoClassicInfo::RECORD_NUMBER_1);
+                                                CalypsoClassicInfo::RECORD_NUMBER_1);
 
             /*
              * Actual PO communication: send the prepared read order, then close the channel with
              * the PO
              */
             try {
-                poTransaction.processPoCommands(ChannelControl::CLOSE_AFTER);
-                logger->info("The reading of the EventLog has succeeded.");
+                poTransaction.prepareReleasePoChannel();
+                poTransaction.processPoCommands();
+
+                logger->info("The reading of the EventLog has succeeded\n");
 
                 /* Retrieve the data read from the CalyspoPo updated during the transaction process */
                 std::shared_ptr<ElementaryFile> efEventLog =
@@ -222,6 +226,7 @@ public:
                 /* Log the result */
                 logger->info("EventLog file data: %\n", eventLog);
 
+                transactionComplete = true;
             } catch (const CalypsoPoTransactionException& e) {
                 logger->error("CalypsoPoTransactionException: %\n", e.getMessage());
             } catch (const CalypsoPoCommandException& e) {
@@ -231,6 +236,21 @@ public:
                               e.getStatusCode() & 0xFFFF,
                               e.getMessage());
             }
+            if (!transactionComplete) {
+                /*
+                 * Informs the underlying layer of the end of the SE processing, in order to
+                 * manage the removal sequence.
+                 */
+                try {
+                    std::shared_ptr<SeReader> reader = event->getReader();
+                    auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
+                    observable->finalizeSeProcessing();
+                } catch (const KeypleReaderNotFoundException& e) {
+                    logger->error("Reader not found! {}", e.getMessage());
+                } catch (const KeyplePluginNotFoundException& e) {
+                    logger->error("Plugin not found! {}", e.getMessage());
+                }
+            }
             logger->info("= #### End of the Calypso PO processing\n");
 
         } else if (type == ReaderEvent::EventType::SE_INSERTED) {
@@ -239,25 +259,6 @@ public:
         } else if (type == ReaderEvent::EventType::SE_REMOVED) {
             logger->info("The PO has been removed\n");
         } else {
-        }
-
-        if (event->getEventType() == ReaderEvent::EventType::SE_INSERTED ||
-            event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
-            /*
-             * Informs the underlying layer of the end of the SE processing, in
-             * order to manage the removal sequence. <p>If closing has already
-             * been requested, this method will do nothing.
-             */
-            try {
-                std::dynamic_pointer_cast<ObservableReader>(
-                    SeProxyService::getInstance().getPlugin(event->getPluginName())
-                                                ->getReader(event->getReaderName()))
-                                                ->notifySeProcessed();
-            } catch (const KeypleReaderNotFoundException& e) {
-                logger->error("Reader not found! %\n", e.getMessage());
-            } catch (const KeyplePluginNotFoundException& e) {
-                logger->error("Plugin not found! %\n", e.getMessage());
-            }
         }
     }
 };

@@ -179,7 +179,7 @@ int main(int argc, char** argv)
         poTransaction.prepareReadRecordFile(CalypsoClassicInfo::SFI_ContractList,
                                             CalypsoClassicInfo::RECORD_NUMBER_1);
 
-        poTransaction.processPoCommandsInSession();
+        poTransaction.processPoCommands();
 
         /* Get the ContractList data */
         std::shared_ptr<ElementaryFile> efContractList =
@@ -197,7 +197,8 @@ int main(int argc, char** argv)
         logger->info("========= PO Calypso session ======= Closing ============================\n");
 
         /* A ratification command will be sent (CONTACTLESS_MODE) */
-        poTransaction.processClosing(ChannelControl::CLOSE_AFTER);
+       poTransaction.prepareReleasePoChannel();
+        poTransaction.processPoCommands();
 
         logger->info("The Calypso session ended successfully\n");
 

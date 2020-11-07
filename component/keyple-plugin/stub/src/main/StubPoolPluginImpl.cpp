@@ -185,11 +185,6 @@ const std::shared_ptr<SeReader> StubPoolPluginImpl::getReader(
     return mStubPlugin->getReader(name);
 }
 
-int StubPoolPluginImpl::compareTo(std::shared_ptr<ReaderPlugin> plugin)
-{
-    return mStubPlugin->compareTo(plugin);
-}
-
 const std::map<const std::string, const std::string>&
     StubPoolPluginImpl::getParameters() const
 {

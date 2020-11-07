@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -26,8 +25,8 @@ namespace exception {
 using namespace keyple::core::command::exception;
 
 /**
- * The exception {@code CalypsoPoAccessForbiddenException} indicates that the
- * access is forbidden (e.g. Never access mode, DF is invalidated,...).
+ * The exception {@code CalypsoPoAccessForbiddenException} indicates that the access is forbidden
+ * (e.g. Never access mode, DF is invalidated,...).
  */
 class CalypsoPoCommandException : public KeypleSeCommandException {
 public:
@@ -36,10 +35,9 @@ public:
      * @param command the Calypso PO command
      * @param statusCode the status code (option)
      */
-    CalypsoPoCommandException(
-      const std::string& message,
-      const std::shared_ptr<CalypsoPoCommand> command,
-      const int statusCode)
+    CalypsoPoCommandException(const std::string& message,
+                              const std::shared_ptr<CalypsoPoCommand> command,
+                              const int statusCode)
     : KeypleSeCommandException(message, command, statusCode) {}
 
 };

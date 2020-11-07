@@ -26,6 +26,7 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::exception;
 
 SeProxyService::SeProxyService() {}

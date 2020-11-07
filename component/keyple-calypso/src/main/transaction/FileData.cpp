@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "FileData.h"
 
@@ -31,14 +30,14 @@ namespace calypso {
 namespace transaction {
 
 using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::util;
 
 FileData::FileData() {}
 
 FileData::FileData(const FileData& o) : mRecords(o.mRecords) {}
 
-const std::map<int, std::vector<uint8_t>>&
-    FileData::getAllRecordsContent() const
+const std::map<int, std::vector<uint8_t>>& FileData::getAllRecordsContent() const
 {
     return mRecords;
 }
@@ -52,8 +51,7 @@ const std::vector<uint8_t>& FileData::getContent(const int numRecord) const
 {
     const auto it = mRecords.find(numRecord);
     if (it == mRecords.end())
-        throw NoSuchElementException(
-                  "Record #" + std::to_string(numRecord) + " is not set.");
+        throw NoSuchElementException("Record #" + std::to_string(numRecord) + " is not set.");
 
     return it->second;
 }
@@ -62,28 +60,24 @@ const std::vector<uint8_t> FileData::getContent(const int numRecord,
                                                 const int dataOffset,
                                                 const int dataLength) const
 {
-    KeypleAssert::getInstance()
-        .greaterOrEqual(dataOffset, 0, "dataOffset")
-        .greaterOrEqual(dataLength, 1, "dataLength");
+    KeypleAssert::getInstance().greaterOrEqual(dataOffset, 0, "dataOffset")
+                               .greaterOrEqual(dataLength, 1, "dataLength");
 
     const auto it= mRecords.find(numRecord);
     if (it == mRecords.end())
-        throw NoSuchElementException(
-                  "Record #" + std::to_string(numRecord) + " is not set.");
+        throw NoSuchElementException("Record #" + std::to_string(numRecord) + " is not set.");
 
     const std::vector<uint8_t>& content = it->second;
     if (dataOffset >= static_cast<int>(content.size()))
-        throw IndexOutOfBoundsException(
-                  "Offset [" + std::to_string(dataOffset) + "] >= " +
-                  "content length [" + std::to_string(content.size()) + "].");
+        throw IndexOutOfBoundsException("Offset [" + std::to_string(dataOffset) + "] >= " +
+                                        "content length [" + std::to_string(content.size()) + "].");
 
     const int toIndex = dataOffset + dataLength;
     if (toIndex > static_cast<int>(content.size()))
-        throw IndexOutOfBoundsException(
-                  "Offset [" + std::to_string(dataOffset) + "] + " +
-                  "Length [" + std::to_string(dataLength) + "] = " +
-                  "[" + std::to_string(toIndex) + "] > " +
-                  "content length [" + std::to_string(content.size()) + "].");
+        throw IndexOutOfBoundsException("Offset [" + std::to_string(dataOffset) + "] + " +
+                                        "Length [" + std::to_string(dataLength) + "] = " +
+                                        "[" + std::to_string(toIndex) + "] > " +
+                                        "content length [" + std::to_string(content.size()) + "].");
 
     return Arrays::copyOfRange(content, dataOffset, toIndex);
 }
@@ -100,16 +94,14 @@ int FileData::getContentAsCounterValue(const int numCounter) const
     const int counterIndex = (numCounter - 1) * 3;
 
     if (counterIndex >= static_cast<int>(rec1.size()))
-        throw NoSuchElementException(
-                  "Counter #" + std::to_string(numCounter) +
-                  " is not set (nb of actual counters = " +
-                  std::to_string(rec1.size() / 3) + ").");
+        throw NoSuchElementException("Counter #" + std::to_string(numCounter) +
+                                     " is not set (nb of actual counters = " +
+                                     std::to_string(rec1.size() / 3) + ").");
 
     if (counterIndex + 3 > static_cast<int>(rec1.size()))
-        throw IndexOutOfBoundsException(
-                  "Counter #" + std::to_string(numCounter) +
-                  "has a truncated value (nb of actual counters = " +
-                  std::to_string(rec1.size() / 3) + ").");
+        throw IndexOutOfBoundsException("Counter #" + std::to_string(numCounter) +
+                                        "has a truncated value (nb of actual counters = " +
+                                        std::to_string(rec1.size() / 3) + ").");
 
     return ByteArrayUtil::threeBytesToInt(rec1, counterIndex);
 }
@@ -131,15 +123,13 @@ const std::map<int, int> FileData::getAllCountersValue() const
     return result;
 }
 
-void FileData::setContent(const int numRecord,
-                          const std::vector<uint8_t>& content)
+void FileData::setContent(const int numRecord,const std::vector<uint8_t>& content)
 {
     /* Using operator[] will update if exists, add if not */
     mRecords[numRecord] = content;
 }
 
-void FileData::setCounter(const int numCounter,
-                          const std::vector<uint8_t>& content)
+void FileData::setCounter(const int numCounter, const std::vector<uint8_t>& content)
 {
     setContent(1, content, (numCounter - 1) * 3);
 }
@@ -173,8 +163,7 @@ void FileData::setContent(const int numRecord,
     mRecords[numRecord] = newContent;
 }
 
-void FileData::fillContent(const int numRecord,
-                           std::vector<uint8_t>& content)
+void FileData::fillContent(const int numRecord, std::vector<uint8_t>& content)
 {
     /*
      * /!\ Make sure 'actualContent' *is* the vector from the map and not a copy

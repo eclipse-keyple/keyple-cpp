@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "PoClass.h"
 
@@ -23,18 +22,16 @@ namespace keyple {
 namespace calypso {
 namespace command {
 
-using namespace keyple::common;
+using namespace keyple::common::exception;
 
 const PoClass PoClass::LEGACY("LEGACY", static_cast<char>(0x94));
 const PoClass PoClass::ISO("ISO", static_cast<char>(0x00));
 
 
 
-PoClass::PoClass(const std::string& name, const uint8_t cla)
-: mName(name), mCla(cla) {}
+PoClass::PoClass(const std::string& name, const uint8_t cla) : mName(name), mCla(cla) {}
 
-PoClass::PoClass(const PoClass& o)
-: mName(o.mName), mCla(o.mCla) {}
+PoClass::PoClass(const PoClass& o) : mName(o.mName), mCla(o.mCla) {}
 
 PoClass& PoClass::operator=(const PoClass& o)
 {

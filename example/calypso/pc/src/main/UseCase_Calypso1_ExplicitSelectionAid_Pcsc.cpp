@@ -145,7 +145,8 @@ int main(int argc, char** argv)
         /*
          * Actual PO communication: send the prepared read order, then close the channel with the PO
          */
-        poTransaction.processPoCommands(ChannelControl::CLOSE_AFTER);
+        poTransaction.prepareReleasePoChannel();
+        poTransaction.processPoCommands();
         logger->info("The reading of the EventLog has succeeded\n");
 
         /* Retrieve the data read from the CalyspoPo updated during the transaction process */

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "OpenSession32RespPars.h"
 #include "ApduResponse.h"
@@ -68,22 +67,18 @@ OpenSession32RespPars::createSecureSession(
     char kif       = apduResponse[9];
     int dataLength = apduResponse[11];
 
-    std::vector<uint8_t> data =
-        Arrays::copyOfRange(apduResponse, 12, 12 + dataLength);
-    std::vector<uint8_t> challengeTransactionCounter =
-        Arrays::copyOfRange(apduResponse, 0, 3);
-    std::vector<uint8_t> challengeRandomNumber =
-        Arrays::copyOfRange(apduResponse, 3, 8);
+    std::vector<uint8_t> data = Arrays::copyOfRange(apduResponse, 12, 12 + dataLength);
+    std::vector<uint8_t> challengeTransactionCounter = Arrays::copyOfRange(apduResponse, 0, 3);
+    std::vector<uint8_t> challengeRandomNumber = Arrays::copyOfRange(apduResponse, 3, 8);
 
-    return std::make_shared<SecureSession>(
-               challengeTransactionCounter,
-               challengeRandomNumber,
-               previousSessionRatified,
-               manageSecureSessionAuthorized,
-               kif,
-               apduResponse[10],
-               data,
-               apduResponse);
+    return std::make_shared<SecureSession>(challengeTransactionCounter,
+                                           challengeRandomNumber,
+                                           previousSessionRatified,
+                                           manageSecureSessionAuthorized,
+                                           kif,
+                                           apduResponse[10],
+                                           data,
+                                           apduResponse);
 }
 
 }

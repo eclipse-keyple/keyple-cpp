@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "AbstractObservablePlugin.h"
 
@@ -22,9 +21,7 @@ namespace seproxy {
 namespace plugin {
 
 AbstractObservablePlugin::AbstractObservablePlugin(const std::string& name)
-: AbstractPlugin(name)
-{
-}
+: AbstractPlugin(name) { }
 
 void AbstractObservablePlugin::addObserver(
     const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
@@ -32,8 +29,7 @@ void AbstractObservablePlugin::addObserver(
     if (!observer)
         return;
 
-    logger->trace("Adding '%' as an observer of '%'\n",
-                  typeid(observer).name(), getName());
+    logger->trace("Adding '%' as an observer of '%'\n", typeid(observer).name(), getName());
 
     mtx.lock();
     observers.push_back(observer);
@@ -66,13 +62,13 @@ int AbstractObservablePlugin::countObservers() const
 void AbstractObservablePlugin::notifyObservers(
     const std::shared_ptr<PluginEvent> event)
 {
-    logger->trace("[%] Notifying a plugin event to % observers. EVENTNAME = " \
-                  "%\n", getName(), countObservers(),
+    logger->trace("[%] Notifying a plugin event to % observers. EVENTNAME = %\n",
+                  getName(),
+                  countObservers(),
                   event->getEventType().getName());
 
     mtx.lock();
-    std::list<std::shared_ptr<ObservablePlugin::PluginObserver>>
-        observersCopy(observers);
+    std::list<std::shared_ptr<ObservablePlugin::PluginObserver>> observersCopy(observers);
     mtx.unlock();
 
     for (const auto& observer : observersCopy)

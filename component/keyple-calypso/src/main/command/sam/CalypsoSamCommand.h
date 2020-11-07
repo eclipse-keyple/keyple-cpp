@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -74,6 +73,11 @@ public:
     static const CalypsoSamCommand CARD_GENERATE_KEY;
 
     /**
+     * The sam card cipher PIN
+     */
+    static const CalypsoSamCommand CARD_CIPHER_PIN;
+
+    /**
      * The sam unlock
      */
     static const CalypsoSamCommand UNLOCK;
@@ -99,6 +103,26 @@ public:
     static const CalypsoSamCommand READ_CEILINGS;
 
     /**
+     *
+     */
+    static const CalypsoSamCommand SV_CHECK;
+
+    /**
+     *
+     */
+    static const CalypsoSamCommand SV_PREPARE_DEBIT;
+
+    /**
+     *
+     */
+    static const CalypsoSamCommand SV_PREPARE_LOAD;
+
+    /**
+     *
+     */
+    static const CalypsoSamCommand SV_PREPARE_UNDEBIT;
+
+    /**
      * Gets the name.
      *
      * @return the command name
@@ -112,20 +136,6 @@ public:
      */
     uint8_t getInstructionByte() const;
 
-    /**
-     * Gets the command builder class.
-     *
-     * @return the corresponding command builder class
-     */
-    const std::type_info& getCommandBuilderClass() const;
-
-    /**
-     * Gets the response parser class.
-     *
-     * @return the corresponding response parser class
-     */
-    const std::type_info& getResponseParserClass() const;
-
 private:
     /**
      * The name
@@ -138,26 +148,12 @@ private:
     const uint8_t mInstructionByte;
 
     /**
-     * The command builder class
-     */
-    const std::type_info& mCommandBuilderClass;
-
-    /**
-     * The response parser class
-     */
-    const std::type_info& mResponseParserClass;
-
-    /**
      * The generic constructor of CalypsoCommands.
      *
      * @param name the name
      * @param instructionByte the instruction byte
-     * @param commandBuilderClass the command builder class
-     * @param responseParserClass the response parser class
      */
-    CalypsoSamCommand(const std::string& name, const uint8_t instructionByte,
-                      const std::type_info& commandBuilderClass,
-                      const std::type_info& responseParserClass);
+    CalypsoSamCommand(const std::string& name, const uint8_t instructionByte);
 };
 
 }
