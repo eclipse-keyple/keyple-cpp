@@ -36,7 +36,7 @@ StubPluginImpl::StubPluginImpl(const std::string& pluginName)
      */
     mThreadWaitTimeout = 10;
 
-    mReaders = initNativeReaders();
+    initNativeReaders();
 }
 
 const std::map<const std::string, const std::string>&
@@ -69,7 +69,7 @@ void StubPluginImpl::plugStubReader(const std::string& readerName,
 
     if (!exist && synchronous) {
         /* add the reader as a new reader to the readers list */
-        mReaders.insert(
+        mNativeReaders.insert(
             {readerName,
              std::make_shared<StubReaderImpl>(
                  getName(), readerName, transmissionMode)});
@@ -103,24 +103,21 @@ void StubPluginImpl::plugStubReaders(const std::set<std::string>& readerNames,
     /* Add new readerNames to the connectedStubNames */
     if (newNames.size() > 0) {
         if (synchronous) {
-            ConcurrentMap<const std::string, std::shared_ptr<StubReaderImpl>>
-                newReaders;
+            ConcurrentMap<const std::string, std::shared_ptr<StubReaderImpl>> newReaders;
 
-            for (auto& name : newNames) {
-                newReaders.insert(
-                    {name,
-                     std::make_shared<StubReaderImpl>(this->getName(), name)});
-            }
+            for (auto& name : newNames)
+                newReaders.insert({name, std::make_shared<StubReaderImpl>(this->getName(), name)});
 
-            std::copy(newReaders.begin(), newReaders.end(),
-                      std::inserter(mReaders, mReaders.end()));
+            std::copy(newReaders.begin(),
+                      newReaders.end(),
+                      std::inserter(mNativeReaders, mNativeReaders.end()));
         }
 
-        std::copy(readerNames.begin(), readerNames.end(),
+        std::copy(readerNames.begin(),
+                  readerNames.end(),
                   std::inserter(mConnectedStubNames, mConnectedStubNames.end()));
     } else {
-        mLogger->error("All % readers were already plugged\n",
-                       readerNames.size());
+        mLogger->error("All % readers were already plugged\n", readerNames.size());
     }
 }
 
@@ -134,7 +131,7 @@ void StubPluginImpl::unplugStubReader(const std::string& readerName,
         /* Remove the reader from the readers list */
         if (synchronous) {
             mConnectedStubNames.erase(readerName);
-            mReaders.erase(readerName);
+            mNativeReaders.erase(readerName);
         } else {
             mConnectedStubNames.erase(readerName);
         }
@@ -169,7 +166,7 @@ void StubPluginImpl::unplugStubReaders(const std::set<std::string>& readerNames,
 
     if (synchronous) {
         for (const auto& reader : readersToDelete)
-            mReaders.erase(reader->getName());
+            mNativeReaders.erase(reader->getName());
     }
 }
 
@@ -184,14 +181,12 @@ const std::set<std::string>& StubPluginImpl::fetchNativeReadersNames()
     return mConnectedStubNames;
 }
 
-ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
-    StubPluginImpl::initNativeReaders()
+ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& StubPluginImpl::initNativeReaders()
 {
     /* Init Stub Readers response object */
-    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
-        newNativeReaders;
+    mNativeReaders.clear();
 
-    return newNativeReaders;
+    return mNativeReaders;
 }
 
 std::shared_ptr<SeReader> StubPluginImpl::fetchNativeReader(
@@ -200,9 +195,9 @@ std::shared_ptr<SeReader> StubPluginImpl::fetchNativeReader(
     std::shared_ptr<SeReader> reader = nullptr;
 
     ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
-        ::const_iterator it = mReaders.find(readerName);
+        ::const_iterator it = mNativeReaders.find(readerName);
 
-    if (it != mReaders.end())
+    if (it != mNativeReaders.end())
         reader = it->second;
 
     if (reader == nullptr &&

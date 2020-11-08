@@ -32,7 +32,7 @@ std::shared_ptr<PcscPluginImpl> PcscPluginImpl::mInstance;
 
 PcscPluginImpl::PcscPluginImpl() : AbstractThreadedObservablePlugin(PLUGIN_NAME)
 {
-    mReaders = initNativeReaders();
+    initNativeReaders();
 }
 
 std::shared_ptr<PcscPluginImpl> PcscPluginImpl::getInstance()
@@ -91,10 +91,10 @@ const std::set<std::string>& PcscPluginImpl::fetchNativeReadersNames()
     return nativeReadersNames;
 }
 
-ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
-    PcscPluginImpl::initNativeReaders()
+ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& PcscPluginImpl::initNativeReaders()
 {
-    ConcurrentMap<const std::string, std::shared_ptr<SeReader>> nativeReaders;
+    /* C++ vs. Java: clear class member instead of creating new map */
+    mNativeReaders.clear();
 
     /*
      * activate a special processing "SCARD_E_NO_NO_SERVICE" (on Windows
@@ -119,14 +119,14 @@ ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
 
     if (terminals.empty()) {
         logger->trace("No reader available\n");
-        return nativeReaders;
+        return mNativeReaders;
     }
 
     try {
         for (auto& term : terminals) {
             std::shared_ptr<PcscReaderImpl> pcscReader =
                 std::make_shared<PcscReaderImpl>(getName(), term);
-            nativeReaders.insert({pcscReader->getName(), pcscReader});
+            mNativeReaders.insert({pcscReader->getName(), pcscReader});
         }
     } catch (PcscTerminalException& e) {
         logger->trace("[%] terminal list not accessible, msg: %, cause: %",
@@ -138,7 +138,7 @@ ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
          */
     }
 
-    return nativeReaders;
+    return mNativeReaders;
 }
 
 std::shared_ptr<SeReader>
@@ -147,7 +147,7 @@ PcscPluginImpl::fetchNativeReader(const std::string& name)
     /* Return the current reader if it is already listed */
     ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
         ::const_iterator it;
-    if ((it = mReaders.find(name)) != mReaders.end())
+    if ((it = mNativeReaders.find(name)) != mNativeReaders.end())
         return it->second;
 
     /*
