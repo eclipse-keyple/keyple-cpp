@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -36,43 +35,20 @@ public:
      */
     typedef std::pair<const K, V> value_type;
 
-private:
+    /**
+     *
+     */
+    typedef typename std::map<K, V>::iterator iterator;
 
     /**
      *
      */
-#ifndef _WIN32
-    typedef typename __gnu_cxx
-        ::__alloc_traits<std::allocator<std::pair<const K, V>>>::template
-        rebind<value_type>::other _Pair_alloc_type;
-#endif
+    typedef typename std::map<K, V>::const_iterator const_iterator;
 
     /**
      *
      */
-#ifdef _WIN32
-    typedef std::_Tree<std::_Tmap_traits<K, V, std::less<K>,
-        std::allocator<std::pair<const K, V>>, false>> _Rep_type;
-#else
-    typedef std::_Rb_tree<key_type, value_type, std::_Select1st<value_type>,
-        std::less<K>, _Pair_alloc_type> _Rep_type;
-#endif
-
-public:
-    /**
-     *
-     */
-    typedef typename _Rep_type::iterator iterator;
-
-    /**
-     *
-     */
-    typedef typename _Rep_type::const_iterator const_iterator;
-
-    /**
-     *
-     */
-    typedef typename _Rep_type::size_type size_type;
+    typedef typename std::map<K, V>::size_type size_type;
 
     /**
      *
@@ -82,10 +58,10 @@ public:
     /**
      *
      */
-    ConcurrentMap<K, V>(const ConcurrentMap& other)
-    {
-        this->mMap = other.mMap;
-    }
+    //ConcurrentMap<K, V>(const ConcurrentMap& other)
+    //{
+    //    this->mMap = other.mMap;
+    //}
 
     /**
      *
@@ -131,7 +107,19 @@ public:
     }
 
     /**
-     * /!\ This function is not thread safe. Use erase(const K& k) instead
+     *
+     */
+    iterator erase(iterator position)
+    {
+        const std::lock_guard<std::mutex> lock(mMutex);
+        if (position != mMap.end())
+            return mMap.erase(position);
+        else
+            return mMap.end();
+    }
+
+    /**
+     *
      */
     iterator erase(const_iterator position)
     {
@@ -214,16 +202,6 @@ public:
     size_type size() const noexcept
     {
         return mMap.size();
-    }
-
-    /**
-     *
-     */
-    ConcurrentMap operator=(const ConcurrentMap& other)
-    {
-        this->mMap = other.mMap;
-
-        return *this;
     }
 
     /**

@@ -118,9 +118,6 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
         while ((!isInterrupted()) && mRunning) {
             /* Retrieves the current readers names list */
             const std::set<std::string>& actualNativeReadersNames = mParent->fetchNativeReadersNames();
-            mParent->mLogger->trace("run - actualNativeReadersNames: %\n", actualNativeReadersNames);
-            mParent->mLogger->trace("run - mParent->mNativeReadersNames: %\n", mParent->mNativeReadersNames);
-            mParent->mLogger->trace("run - mParent->mReaders: %\n", mParent->mReaders);
 
             /*
              * Checks if it has changed this algorithm favors cases where
@@ -135,7 +132,7 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
                 /* build changed reader names list */
                 changedReaderNames->clear();
 
-                for (const auto& pair : mParent->mReaders) {
+                for (const auto& pair : mParent->mNativeReaders) {
                     const auto& it = actualNativeReadersNames.find(pair.second->getName());
                     if (it == actualNativeReadersNames.end())
                         changedReaderNames->insert(pair.second->getName());
@@ -150,9 +147,9 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
                                                       PluginEvent::EventType::READER_DISCONNECTED));
 
                     /* list update */
-                    const auto readersCopy = mParent->mReaders;
-                    for (const auto it : readersCopy) {
-                        const std::shared_ptr<SeReader> reader = it.second;
+                    auto it = mParent->mNativeReaders.begin();
+                    while (it != mParent->mNativeReaders.end()) {
+                        const std::shared_ptr<SeReader> reader = it->second;
                         if (actualNativeReadersNames.find(reader->getName()) ==
                                 actualNativeReadersNames.end()) {
                             /* Removes any possible observers before removing the reader */
@@ -163,7 +160,7 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
                                 observable->stopSeDetection();
                             }
 
-                            mParent->mReaders.erase(reader->getName());
+                            it = mParent->mNativeReaders.erase(it);
                             mParent->mLogger->trace("[%][%] Plugin thread => Remove unplugged " \
                                                     "reader from readers list\n",
                                                     mPluginName,
@@ -171,6 +168,8 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
 
                             /* remove reader name from the current list */
                             mParent->mNativeReadersNames.erase(reader->getName());
+                        } else {
+                            it++;
                         }
                     }
 
@@ -186,7 +185,7 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
                     const auto it = mParent->mNativeReadersNames.find(readerName);
                     if (it == mParent->mNativeReadersNames.end()) {
                         std::shared_ptr<SeReader> reader = mParent->fetchNativeReader(readerName);
-                        mParent->mReaders.insert({reader->getName(), reader});
+                        mParent->mNativeReaders.insert({reader->getName(), reader});
 
                         /* add to the notification list */
                         changedReaderNames->insert(readerName);

@@ -62,7 +62,7 @@ public:
                 (const, override));
 
 protected:
-    MOCK_METHOD((ConcurrentMap<const std::string, std::shared_ptr<SeReader>>),
+    MOCK_METHOD((ConcurrentMap<const std::string, std::shared_ptr<SeReader>>&),
                 initNativeReaders,
                 (),
                 (override));
@@ -149,13 +149,9 @@ static void listReaders(
     int n, std::shared_ptr<CountDownLatch> lock)
 {
     for (int i = 0; i < n; i++) {
-        /* Copy map to avoid listing something that has already changed */
-        const ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
-            _readers = readers;
-
-        for (const auto& pair : _readers) {
+        for (const auto& pair : readers) {
             logger->trace("list, readers: %, reader %\n",
-                          _readers.size(), pair.second->getName());
+                          readers.size(), pair.second->getName());
         }
 
         try {
