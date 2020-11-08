@@ -34,7 +34,8 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-AbstractPlugin::AbstractPlugin(const std::string& name) : AbstractSeProxyComponent(name)
+AbstractPlugin::AbstractPlugin(const std::string& name)
+: AbstractSeProxyComponent(name)
 {
     /*
      * /!\ C++ vs. Java: C++ cannot call a pure virtual function from a
@@ -47,14 +48,14 @@ AbstractPlugin::AbstractPlugin(const std::string& name) : AbstractSeProxyCompone
 
 ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& AbstractPlugin::getReaders()
 {
-    return mReaders;
+    return mNativeReaders;
 }
 
 const std::set<std::string> AbstractPlugin::getReaderNames() const
 {
     std::set<std::string> readerNames;
 
-    for (const auto& reader : mReaders)
+    for (const auto& reader : mNativeReaders)
         readerNames.insert(reader.first);
 
     return readerNames;
@@ -64,7 +65,7 @@ const std::shared_ptr<SeReader> AbstractPlugin::getReader(const std::string& nam
 {
     ConcurrentMap<const std::string, std::shared_ptr<SeReader>> ::const_iterator it;
 
-    if ((it = mReaders.find(name)) != mReaders.end())
+    if ((it = mNativeReaders.find(name)) != mNativeReaders.end())
         return it->second;
     else
         throw KeypleReaderNotFoundException(name);
