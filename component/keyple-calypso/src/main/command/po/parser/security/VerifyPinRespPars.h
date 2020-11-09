@@ -15,6 +15,7 @@
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"
+#include "KeypleCalypsoExport.h"
 #include "VerifyPinCmdBuild.h"
 
 namespace keyple {
@@ -31,7 +32,7 @@ using StatusProperties = AbstractApduResponseParser::StatusProperties;
 /**
  * VerifyPin response parser.
  */
-class VerifyPinRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API VerifyPinRespPars final : public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new VerifyPinRespPars.

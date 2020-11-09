@@ -1,32 +1,33 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <string>
 #include <vector>
+
+ /* Core */
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
 namespace util {
 
 /**
- * The utility class {@code Assert} exposes very useful methods for testing
- * method call parameters and raising a {@link IllegalArgumentException}
- * unchecked exception.
+ * The utility class {@code Assert} exposes very useful methods for testing method call parameters
+ * and raising a {@link IllegalArgumentException} unchecked exception.
  *
  * @since 0.9
  */
-class KeypleAssert final {
+class KEYPLECORE_API KeypleAssert final {
 public:
     /**
      * Gets the unique instance.
@@ -55,8 +56,7 @@ public:
      * @throw IllegalArgumentException if object is null or empty
      * @since 0.9
      */
-    const KeypleAssert& notEmpty(const std::string& obj,
-                                 const std::string& name) const;
+    const KeypleAssert& notEmpty(const std::string& obj, const std::string& name) const;
 
     /**
      * Assert that a list of objects is not null and not empty.
@@ -86,8 +86,7 @@ public:
      * @throw IllegalArgumentException if object is null or empty
      * @since 0.9
      */
-    const KeypleAssert& notEmpty(const std::vector<uint8_t> obj,
-                                 const std::string& name) const;
+    const KeypleAssert& notEmpty(const std::vector<uint8_t> obj,  const std::string& name) const;
 
     /**
      * Assert that a condition is true.
@@ -98,8 +97,7 @@ public:
      * @throw IllegalArgumentException if condition is null or false
      * @since 0.9
      */
-    const KeypleAssert& isTrue(const bool condition, const std::string& name)
-        const;
+    const KeypleAssert& isTrue(const bool condition, const std::string& name) const;
 
     /**
      * Assert that an integer is not null and is greater than or equal to minValue.
@@ -108,8 +106,7 @@ public:
      * @param minValue the min accepted value
      * @param name the object name
      * @return the current instance
-     * @throw IllegalArgumentException if number is null or has a value less
-     *        than minValue.
+     * @throw IllegalArgumentException if number is null or has a value less  than minValue.
      * @since 0.9
      */
     const KeypleAssert& greaterOrEqual(const int number,
@@ -123,13 +120,10 @@ public:
      * @param value the expected value
      * @param name the object name
      * @return the current instance
-     * @throw IllegalArgumentException if number is null or has a value less
-     *        than minValue.
+     * @throw IllegalArgumentException if number is null or has a value less than minValue.
      * @since 0.9
      */
-    const KeypleAssert& isEqual(const int number,
-                                const int value,
-                                const std::string& name) const;
+    const KeypleAssert& isEqual(const int number,  const int value, const std::string& name) const;
 
     /**
      * Assert that an integer is not null and is in the range minValue, maxValue.

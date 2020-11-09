@@ -15,18 +15,21 @@
 
 #include <memory>
 
+/* Calypso */
+#include "KeypleCalypsoExport.h"
+
 namespace keyple {
 namespace calypso {
 
 /**
  * The KeyReference class groups all information about a Calypso key
  */
-class KeyReference {
+class KEYPLECALYPSO_API KeyReference {
 public:
     /**
      * Constructor
      */
-    KeyReference(char kif, char kvc);
+    KeyReference(const uint8_t kif, const uint8_t kvc);
 
     /**
      *
@@ -36,23 +39,23 @@ public:
     /**
      * @return the key identifier
      */
-    virtual char getKif();
+    virtual uint8_t getKif() const;
 
     /**
      * @return the key version
      */
-    virtual char getKvc();
+    virtual uint8_t getKvc() const;
 
 private:
     /**
      * Key identifier
      */
-    const char mKif;
+    const uint8_t mKif;
 
     /*
      * Key version
      s*/
-    const char mKvc;
+    const uint8_t mKvc;
 };
 
 }

@@ -29,6 +29,12 @@
 #include "SeRequest.h"
 #include "SeSelector.h"
 
+/* Calypso */
+#include "AbstractPoCommandBuilder.h"
+#include "AbstractPoResponseParser.h"
+#include "AbstractSamCommandBuilder.h"
+#include "AbstractSamResponseParser.h"
+
 namespace keyple {
 namespace core {
 namespace selection {
@@ -37,6 +43,9 @@ using namespace keyple::common::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
+
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::sam;
 
 /**
  * The AbstractSeSelectionRequest class combines a SeSelector with additional helper methods useful
@@ -61,7 +70,7 @@ public:
     /**
      *
      */
-    virtual ~AbstractSeSelectionRequest<T>() {}
+    virtual ~AbstractSeSelectionRequest<T>() = default;
 
     /**
      * Returns a selection SeRequest built from the information provided in the constructor and
@@ -154,6 +163,8 @@ private:
 
 /* Explicit template instanciation */
 template class AbstractSeSelectionRequest<AbstractApduCommandBuilder>;
+template class AbstractSeSelectionRequest<AbstractPoCommandBuilder<AbstractPoResponseParser>>;
+template class AbstractSeSelectionRequest<AbstractSamCommandBuilder<AbstractSamResponseParser>>;
 
 }
 }

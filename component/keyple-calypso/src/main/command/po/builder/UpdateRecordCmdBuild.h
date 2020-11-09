@@ -88,16 +88,6 @@ public:
      */
     const std::vector<uint8_t>& getData() const;
 
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<UpdateRecordCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<UpdateRecordCmdBuild>(
-            AbstractPoCommandBuilder<UpdateRecordRespPars>::shared_from_this());
-    }
-
 private:
     /**
      * The command

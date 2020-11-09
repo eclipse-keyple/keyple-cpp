@@ -45,7 +45,7 @@ TEST(FileDataTest, etAllRecordsContent_whenNoContent_shouldReturnNotNullObject)
      *               Let's just check the size is 0 as should be on a new
      *               object.
      */
-    ASSERT_EQ(file.getAllRecordsContent().size(), 0);
+    ASSERT_EQ(static_cast<uint8_t>(file.getAllRecordsContent().size()), 0);
 }
 
 TEST(FileDataTest, getAllRecordsContent_shouldReturnAReference)
@@ -228,7 +228,7 @@ TEST(FileDataTest, getAllCountersValue_shouldReturnAllNonTruncatedCounters)
 
     const std::map<int, int> counters = file.getAllCountersValue();
 
-    ASSERT_EQ(counters.size(), 1);
+    ASSERT_EQ(static_cast<int>(counters.size()), 1);
     ASSERT_EQ(counters.find(1)->second, 0x444444);
 }
 
@@ -275,7 +275,7 @@ TEST(FileDataTest, setCounter_whenRecord1IsNotSet_shouldCreateRecord1)
      *               Let's just check the size is exactly 3 here (data3 is 3
      *               bytes long)
      */
-    ASSERT_EQ(val.size(), 3);
+    ASSERT_EQ(static_cast<int>(val.size()), 3);
 }
 
 TEST(FileDataTest, setCounter_shouldPutACopy)
@@ -396,7 +396,7 @@ TEST(FileDataTest,
     file.setContent(2, data2);
     file.addCyclicContent(data3);
 
-    ASSERT_EQ(file.getAllRecordsContent().size(), 3);
+    ASSERT_EQ(static_cast<int>(file.getAllRecordsContent().size()), 3);
     ASSERT_EQ(file.getAllRecordsContent().find(1)->second,
               ByteArrayUtil::fromHex("333333"));
     ASSERT_EQ(file.getAllRecordsContent().find(2)->second,

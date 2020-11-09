@@ -17,6 +17,8 @@
 #include <string>
 #include <vector>
 
+#include "KeypleCalypsoExport.h"
+
 namespace keyple {
 namespace calypso {
 namespace transaction {
@@ -26,7 +28,7 @@ namespace transaction {
  *
  * @since 0.9
  */
-class SvLoadLogRecord {
+class KEYPLECALYPSO_API SvLoadLogRecord {
 public:
     /**
      * Constructor

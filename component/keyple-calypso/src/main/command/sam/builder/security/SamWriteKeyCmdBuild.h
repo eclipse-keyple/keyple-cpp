@@ -15,6 +15,7 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
+#include "KeypleCalypsoExport.h"
 #include "SamRevision.h"
 
 /* Forward declaration */
@@ -35,7 +36,7 @@ using namespace keyple::calypso::command::sam::parser::security;
 /**
  * Builder for the SAM Write Key APDU command.
  */
-class SamWriteKeyCmdBuild final
+class KEYPLECALYPSO_API SamWriteKeyCmdBuild final
 : public AbstractSamCommandBuilder<SamWriteKeyRespPars> {
 public:
     /**

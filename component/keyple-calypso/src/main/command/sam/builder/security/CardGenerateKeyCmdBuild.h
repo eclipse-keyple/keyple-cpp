@@ -20,6 +20,7 @@
 /* Calypso */
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
+#include "KeypleCalypsoExport.h"
 #include "KeyReference.h"
 #include "SamRevision.h"
 
@@ -42,7 +43,7 @@ using namespace keyple::calypso::command::sam::parser::security;
 /**
  * Builder for the SAM Give Random APDU command.
  */
-class CardGenerateKeyCmdBuild
+class KEYPLECALYPSO_API CardGenerateKeyCmdBuild
 : public AbstractSamCommandBuilder<CardGenerateKeyRespPars> {
 public:
     /**

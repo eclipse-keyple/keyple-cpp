@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -23,6 +22,7 @@
 
 /* Calypso */
 #include "AbstractSamCommandBuilder.h"
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -32,7 +32,7 @@ namespace sam {
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
-class AbstractSamResponseParser : public AbstractApduResponseParser {
+class KEYPLECALYPSO_API AbstractSamResponseParser : public AbstractApduResponseParser {
 public:
     /**
      * Constructor to build a parser of the APDU response.
@@ -40,9 +40,8 @@ public:
      * @param response response to parse
      * @param builder the reference of the builder that created the parser
      */
-    AbstractSamResponseParser(
-        const std::shared_ptr<ApduResponse> response,
-        AbstractSamCommandBuilder<AbstractSamResponseParser>* builder);
+    AbstractSamResponseParser(const std::shared_ptr<ApduResponse> response,
+                              AbstractSamCommandBuilder<AbstractSamResponseParser>* builder);
 
     /**
      *
@@ -55,8 +54,7 @@ public:
      * Return type should be
      *   AbstractSamCommandBuilder<AbstractSamResponseParser>*
      */
-    AbstractApduCommandBuilder* getBuilder() const
-        override;
+    AbstractApduCommandBuilder* getBuilder() const override;
 
     /**
      * {@inheritDoc}
@@ -72,8 +70,7 @@ protected:
     /**
      *
      */
-    const std::map<int, std::shared_ptr<StatusProperties>>&
-        getStatusTable() const override;
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable() const override;
 
     /**
      * {@inheritDoc}
@@ -83,7 +80,6 @@ protected:
         const std::string& message,
         const std::shared_ptr<SeCommand> commandRef,
         const int statusCode) const override;
-
 };
 
 }

@@ -16,14 +16,14 @@
 namespace keyple {
 namespace calypso {
 
-KeyReference::KeyReference(char kif, char kvc) : mKif(kif), mKvc(kvc) {}
+KeyReference::KeyReference(const uint8_t kif, const uint8_t kvc) : mKif(kif), mKvc(kvc) {}
 
-char KeyReference::getKif()
+uint8_t KeyReference::getKif() const
 {
     return mKif;
 }
 
-char KeyReference::getKvc()
+uint8_t KeyReference::getKvc() const
 {
     return mKvc;
 }

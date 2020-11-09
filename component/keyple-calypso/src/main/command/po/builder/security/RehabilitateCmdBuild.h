@@ -15,6 +15,7 @@
 
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
+#include "KeypleCalypsoExport.h"
 #include "PoClass.h"
 
 /* Forward declaration */

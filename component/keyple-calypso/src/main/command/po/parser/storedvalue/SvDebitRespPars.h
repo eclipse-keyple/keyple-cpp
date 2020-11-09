@@ -18,6 +18,7 @@
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"
+#include "KeypleCalypsoExport.h"
 #include "SvDebitCmdBuild.h"
 
 namespace keyple {
@@ -73,7 +74,7 @@ using StatusProperties = AbstractApduResponseParser::StatusProperties;
     Notice: -32768 (%10000000.00000000) is not allowed.
  * </pre>
  */
-class SvDebitRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API SvDebitRespPars final : public AbstractPoResponseParser {
 public:
     /**
      * Constructor to build a parser of the SvDebit command response.

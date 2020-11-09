@@ -67,7 +67,7 @@ bool WriteRecordCmdBuild::isSessionBufferUsed() const
     return true;
 }
 
-int WriteRecordCmdBuild::getSfi() const
+uint8_t WriteRecordCmdBuild::getSfi() const
 {
     return mSfi;
 }

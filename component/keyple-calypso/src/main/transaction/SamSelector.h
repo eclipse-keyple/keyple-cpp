@@ -45,7 +45,7 @@ public:
      *
      * @since 0.9
      */
-    class SamSelectorBuilder final : public SeSelector::SeSelectorBuilder {
+    class KEYPLECALYPSO_API SamSelectorBuilder final : public SeSelector::SeSelectorBuilder {
     public:
         /**
          *

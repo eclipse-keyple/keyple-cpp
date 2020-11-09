@@ -14,6 +14,7 @@
 #pragma once
 
 /* Calypso */
+#include "KeypleCalypsoExport.h"
 #include "PoTransaction.h"
 
 /* Forward declaration */
