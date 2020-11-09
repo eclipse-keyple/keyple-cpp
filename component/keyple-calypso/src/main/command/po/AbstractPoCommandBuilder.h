@@ -37,7 +37,6 @@ namespace po {
 
 class AbstractPoResponseParser;
 
-using namespace keyple::calypso::command::po;
 using namespace keyple::common;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
@@ -46,8 +45,7 @@ using namespace keyple::core::seproxy::message;
  * Abstract class for all PO command builders.
  */
 template<typename T>
-class KEYPLECALYPSO_API AbstractPoCommandBuilder
-: public AbstractIso7816CommandBuilder {
+class KEYPLECALYPSO_API AbstractPoCommandBuilder : public AbstractIso7816CommandBuilder {
 public:
     /**
      * Constructor dedicated for the building of referenced Calypso commands

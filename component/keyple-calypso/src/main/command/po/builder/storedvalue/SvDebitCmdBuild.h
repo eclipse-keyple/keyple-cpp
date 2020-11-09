@@ -15,6 +15,7 @@
 
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
+#include "KeypleCalypsoExport.h"
 #include "PoClass.h"
 
 /* Forward declaration */
@@ -37,7 +38,7 @@ using namespace keyple::calypso::command::po::parser::storedvalue;
  * command. Note: {@link SvDebitCmdBuild} and {@link SvUndebitCmdBuild} shares the same parser
  * {@link SvDebitRespPars}
  */
-class SvDebitCmdBuild final : public AbstractPoCommandBuilder<SvDebitRespPars> {
+class KEYPLECALYPSO_API SvDebitCmdBuild final : public AbstractPoCommandBuilder<SvDebitRespPars> {
 public:
     /**
      * Instantiates a new SvDebitCmdBuild.

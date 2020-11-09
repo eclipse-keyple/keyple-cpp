@@ -43,16 +43,16 @@ static const std::string APDU_BAD_SW1SW2 = SW1SW2_KO;
 static const std::string APDU_ONE_RECORD = REC1 + SW1SW2_OK;
 static const std::string APDU_TWO_RECORDS =
     "01" +
-    StringHelper::uint8ToHexString(REC1.length() / 2) +
+    StringHelper::uint8ToHexString(static_cast<uint8_t>(REC1.length()) / 2) +
     REC1 +
     "02" +
-    StringHelper::uint8ToHexString(REC2.length() / 2) +
+    StringHelper::uint8ToHexString(static_cast<uint8_t>(REC2.length()) / 2) +
     REC2 +
     SW1SW2_OK;
 static const int SFI1 = 1;
 static const int FIRST_REC1 = 1;
-static const int EXPECTED_LENGTH1 = REC1.length();
-static const int EXPECTED_LENGTH2 = (REC1.length() + REC2.length()) / 2;
+static const uint8_t EXPECTED_LENGTH1 = static_cast<uint8_t>(REC1.length());
+static const uint8_t EXPECTED_LENGTH2 = static_cast<uint8_t>((REC1.length() + REC2.length()) / 2);
 
 TEST(ReadRecordsRespParsTest, readRecordRespPars_badStatus)
 {

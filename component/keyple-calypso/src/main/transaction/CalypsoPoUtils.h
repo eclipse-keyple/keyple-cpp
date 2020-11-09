@@ -13,6 +13,7 @@
 
 #pragma once
 
+/* Calypso */
 #include "AbstractOpenSessionCmdBuild.h"
 #include "AbstractOpenSessionRespPars.h"
 #include "AppendRecordRespPars.h"
@@ -21,6 +22,7 @@
 #include "DecreaseRespPars.h"
 #include "FileHeader.h"
 #include "IncreaseRespPars.h"
+#include "KeypleCalypsoExport.h"
 #include "PoGetChallengeRespPars.h"
 #include "ReadRecordsCmdBuild.h"
 #include "SelectFileCmdBuild.h"
@@ -46,7 +48,7 @@ using FileType = FileHeader::FileType;
 /**
  * Utility class used to check Calypso specific data.
  */
-class CalypsoPoUtils final {
+class KEYPLECALYPSO_API CalypsoPoUtils final {
 public:
     /**
      *
@@ -127,10 +129,10 @@ public:
 
     static const uint8_t STORED_VALUE_FILE_STRUCTURE_ID;
     static const uint8_t SV_RELOAD_LOG_FILE_SFI;
-    static const int SV_RELOAD_LOG_FILE_NB_REC;
+    static const uint8_t SV_RELOAD_LOG_FILE_NB_REC;
     static const uint8_t SV_DEBIT_LOG_FILE_SFI;
-    static const int SV_DEBIT_LOG_FILE_NB_REC;
-    static const int SV_LOG_FILE_REC_LENGTH;
+    static const uint8_t SV_DEBIT_LOG_FILE_NB_REC;
+    static const uint8_t SV_LOG_FILE_REC_LENGTH;
 
 public:
     /**

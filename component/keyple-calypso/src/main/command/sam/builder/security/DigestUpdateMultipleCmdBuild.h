@@ -19,6 +19,7 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
+#include "KeypleCalypsoExport.h"
 #include "SamRevision.h"
 
 /* Forward declaration */
@@ -40,7 +41,7 @@ using namespace keyple::calypso::command::sam::parser::security;
  * This class provides the dedicated constructor to build the SAM Digest Update
  * Multiple APDU command.
  */
-class DigestUpdateMultipleCmdBuild final
+class KEYPLECALYPSO_API DigestUpdateMultipleCmdBuild final
 : public AbstractSamCommandBuilder<DigestUpdateMultipleRespPars> {
 public:
     /**

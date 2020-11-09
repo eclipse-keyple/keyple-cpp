@@ -122,7 +122,7 @@ std::shared_ptr<SeResource<CalypsoSam>>
         const AllocationMode allocationMode,
         const std::shared_ptr<SamIdentifier> samIdentifier)
 {
-    const long maxBlockingDate = System::currentTimeMillis() + mMaxBlockingTime;
+    const uint64_t maxBlockingDate = System::currentTimeMillis() + mMaxBlockingTime;
     bool noSamResourceLogged = false;
 
     mLogger->trace("Allocating SAM reader channel...\n");
@@ -228,6 +228,7 @@ void SamResourceManagerDefault::initSamReader(
             mMutex.unlock();
         }
     } catch (const KeypleException& e) {
+        (void)e;
         throw IllegalArgumentException("Parameters are not supported for this" \
                                        " reader : protocol:TO, mode:shared");
     }
@@ -274,9 +275,11 @@ void PluginObserver::update(const std::shared_ptr<PluginEvent> event)
                            .getPlugin(event->getPluginName())
                            ->getReader(readerName);
         } catch (const KeyplePluginNotFoundException& e) {
+            (void)e;
             mLogger->error("Plugin not found %\n", event->getPluginName());
             return;
         } catch (const KeypleReaderNotFoundException& e) {
+            (void)e;
             mLogger->error("Reader not found %\n", readerName);
             return;
         }
@@ -393,6 +396,7 @@ void ReaderObserver::update(const std::shared_ptr<ReaderEvent> event)
              */
             newSamResource = mParent.createSamResource(samReader);
         } catch (const CalypsoNoSamResourceAvailableException& e) {
+            (void)e;
             mLogger->error("Failed to create a SeResource<CalypsoSam> from %\n",
                            samReader->getName());
         }

@@ -478,7 +478,9 @@ TEST(StubReaderTest, testInsert)
     std::dynamic_pointer_cast<SRT_ReaderObserverMock1>(readerObs)
         ->mLock.await(std::chrono::seconds(2));
 
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock1>(readerObs)->mLock.getCount(), 0);
+    ASSERT_EQ(static_cast<int>(
+                  std::dynamic_pointer_cast<SRT_ReaderObserverMock1>(readerObs)->mLock.getCount()),
+              0);
     ASSERT_TRUE(reader->isSePresent());
 
     tearDown();
@@ -549,8 +551,8 @@ TEST(StubReaderTest, testRemove)
         ->mInsertLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because insertLock is countDown by obs */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock2>(readerObs)
-                  ->mInsertLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock2>(readerObs)
+                                   ->mInsertLock.getCount()),
               0);
 
     auto proxy = std::dynamic_pointer_cast<ProxyReader>(reader);
@@ -562,8 +564,8 @@ TEST(StubReaderTest, testRemove)
         ->mRemoveLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because removeLock is countDown by obs */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock2>(readerObs)
-                  ->mRemoveLock.getCount(), 0);
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock2>(readerObs)
+                                  ->mRemoveLock.getCount()), 0);
 
     ASSERT_FALSE(reader->isSePresent());
 
@@ -658,8 +660,8 @@ TEST(StubReaderTest, A_testInsertRemoveTwice)
         ->mFirstInsertLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because insertLock is countDown by obs */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-                  ->mFirstInsertLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
+                                   ->mFirstInsertLock.getCount()),
               0);
 
     // Thread.sleep(1000);
@@ -673,8 +675,8 @@ TEST(StubReaderTest, A_testInsertRemoveTwice)
         ->mFirstRemoveLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because removeLock is countDown by obs */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-                  ->mFirstRemoveLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
+                                   ->mFirstRemoveLock.getCount()),
               0);
 
     /*
@@ -693,8 +695,8 @@ TEST(StubReaderTest, A_testInsertRemoveTwice)
 
 
     /* Should be 0 because insertLock is countDown by obs */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-                  ->mSecondInsertLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
+                                   ->mSecondInsertLock.getCount()),
               0);
 
     proxy->transmitSeRequest({}, ChannelControl::CLOSE_AFTER);
@@ -708,8 +710,8 @@ TEST(StubReaderTest, A_testInsertRemoveTwice)
         ->mSecondRemoveLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because removeLock is countDown by obs */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-                  ->mSecondRemoveLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
+                                   ->mSecondRemoveLock.getCount()),
               0);
 
     ASSERT_FALSE(reader->isSePresent());
@@ -744,8 +746,8 @@ TEST(StubReaderTest, A_testInsertRemoveTwiceFast)
         ->mFirstRemoveLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because removeLock is countDown by obs */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-                  ->mFirstRemoveLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
+                                   ->mFirstRemoveLock.getCount()),
               0);
 
     auto proxy = std::dynamic_pointer_cast<ProxyReader>(reader);
@@ -757,8 +759,8 @@ TEST(StubReaderTest, A_testInsertRemoveTwiceFast)
         ->mFirstRemoveLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because removeLock is countDown by obs */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-                  ->mFirstRemoveLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
+                                   ->mFirstRemoveLock.getCount()),
               0);
 
     /*
@@ -775,8 +777,8 @@ TEST(StubReaderTest, A_testInsertRemoveTwiceFast)
         ->mSecondRemoveLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because removeLock is countDown by obs */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-                  ->mSecondRemoveLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
+                                   ->mSecondRemoveLock.getCount()),
               0);
 
     proxy->transmitSeRequest({}, ChannelControl::CLOSE_AFTER);
@@ -787,8 +789,8 @@ TEST(StubReaderTest, A_testInsertRemoveTwiceFast)
         ->mSecondRemoveLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because removeLock is countDown by obs */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-                  ->mSecondRemoveLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
+                                   ->mSecondRemoveLock.getCount()),
               0);
 
     ASSERT_FALSE(reader->isSePresent());
@@ -829,7 +831,7 @@ public:
         selectApplicationCommand[1] = 0xA4; // INS
         selectApplicationCommand[2] = 0x04; // P1: select by name
         selectApplicationCommand[3] = 0x00; // P2: requests the first
-        selectApplicationCommand[4] = aid.size(); // Lc
+        selectApplicationCommand[4] = static_cast<uint8_t>(aid.size()); // Lc
         System::arraycopy(aid, 0, selectApplicationCommand, 5, aid.size()); // data
 
         selectApplicationCommand[5 + aid.size()] = 0x00; // Le
@@ -905,8 +907,8 @@ TEST(StubReaderTest, testInsertMatchingSe)
          ->mLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because countDown is called by observer */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock4>(readerObs)
-                  ->mLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock4>(readerObs)
+                                   ->mLock.getCount()),
               0);
 
     tearDown();
@@ -983,7 +985,9 @@ TEST(StubReaderTest, testInsertNotMatching_MatchedOnly)
          ->mLock.await(std::chrono::milliseconds(100));
 
     /* Should be 1 because countDown is never called */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock5>(readerObs)->mLock.getCount(), 1);
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock5>(readerObs)
+                                   ->mLock.getCount()),
+              1);
 
     tearDown();
 }
@@ -1065,7 +1069,9 @@ TEST(StubReaderTest, testInsertNotMatching_Always)
          ->mLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because countDown is called by observer */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock6>(readerObs)->mLock.getCount(), 0);
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock6>(readerObs)
+                                   ->mLock.getCount()),
+              0);
 
     tearDown();
 }
@@ -1151,8 +1157,8 @@ TEST(StubReaderTest, testExplicitSelection_onEvent)
          ->mLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because countDown is called by observer */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock7>(readerObs)
-                  ->mLock.getCount(),
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock7>(readerObs)
+                                   ->mLock.getCount()),
               0);
 
     tearDown();
@@ -1227,7 +1233,8 @@ TEST(StubReaderTest, testReleaseSeChannel)
          ->mLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because countDown is called by observer */
-    ASSERT_EQ(std::dynamic_pointer_cast<SRT_ReaderObserverMock8>(readerObs)->mLock.getCount(), 0);
+    ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock8>(readerObs)
+                                   ->mLock.getCount()), 0);
 
     tearDown();
 }

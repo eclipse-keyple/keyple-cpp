@@ -1,19 +1,20 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
+/* Calypso */
+#include "KeypleCalypsoExport.h"
 #include "PoTransaction.h"
 
 #include <cstdint>
@@ -31,13 +32,13 @@ using AccessLevel = PoTransaction::SessionSetting::AccessLevel;
  *
  * @since 0.9
  */
-class DirectoryHeader final {
+class KEYPLECALYPSO_API DirectoryHeader final {
 public:
     /**
      * (package-private)<br>
      * Builder pattern
      */
-    class DirectoryHeaderBuilder final {
+    class KEYPLECALYPSO_API DirectoryHeaderBuilder final {
     public:
         /**
          * Friend declaration to give access to private members

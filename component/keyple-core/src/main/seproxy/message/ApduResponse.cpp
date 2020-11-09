@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "ApduResponse.h"
 
@@ -58,15 +57,15 @@ bool ApduResponse::isSuccessful() const
     return mSuccessful;
 }
 
-int ApduResponse::getStatusCode() const
+uint16_t ApduResponse::getStatusCode() const
 {
     if (mBytes.size() < 2) {
         mLogger->debug("bad response length (%)\n", mBytes.size());
         return 0;
     }
 
-    int code = ((mBytes[mBytes.size() - 2] & 0x000000FF) << 8) +
-                (mBytes[mBytes.size() - 1] & 0x000000FF);
+    uint16_t code = ((mBytes[mBytes.size() - 2] & 0x000000FF) << 8) +
+                     (mBytes[mBytes.size() - 1] & 0x000000FF);
 
     return code;
 }

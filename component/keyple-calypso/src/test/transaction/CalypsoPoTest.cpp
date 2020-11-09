@@ -652,7 +652,7 @@ TEST(CalypsoPoTest, svData_AllRecords)
     std::vector<std::shared_ptr<SvDebitLogRecord>> allDebitLogs =
         calypsoPo->getSvDebitLogAllRecords();
 
-    ASSERT_EQ(calypsoPo->getSvDebitLogAllRecords().size(), 3);
+    ASSERT_EQ(static_cast<uint8_t>(calypsoPo->getSvDebitLogAllRecords().size()), 3);
     ASSERT_EQ(allDebitLogs[0]->getSamId(), 0xAABBCC01);
     ASSERT_EQ(allDebitLogs[1]->getSamId(), 0xAABBCC02);
     ASSERT_EQ(allDebitLogs[2]->getSamId(), 0xAABBCC03);

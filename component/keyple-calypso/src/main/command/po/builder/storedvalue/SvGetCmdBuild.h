@@ -15,6 +15,7 @@
 
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
+#include "KeypleCalypsoExport.h"
 #include "PoClass.h"
 #include "PoTransaction.h"
 
@@ -41,7 +42,7 @@ using Operation = PoTransaction::SvSettings::Operation;
  * The Class SvGetCmdBuild. This class provides the dedicated constructor to build the SV Get
  * command.
  */
-class SvGetCmdBuild final : public AbstractPoCommandBuilder<SvGetRespPars> {
+class KEYPLECALYPSO_API SvGetCmdBuild final : public AbstractPoCommandBuilder<SvGetRespPars> {
 public:
     /**
      * Instantiates a new SvGetCmdBuild.

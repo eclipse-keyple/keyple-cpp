@@ -110,7 +110,6 @@ using namespace keyple::calypso::command::sam::builder::security;
 using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::calypso::command::sam::parser;
 using namespace keyple::calypso::command::sam::parser::security;
-using namespace keyple::calypso::transaction;
 using namespace keyple::calypso::transaction::exception;
 
 using AccessLevel = PoTransaction::SessionSetting::AccessLevel;
@@ -166,8 +165,8 @@ void PoTransaction::processAtomicOpening(
      * default value is 0 (no record to read) but we will optimize the exchanges if a read record
      * command has been prepared.
      */
-    int sfi = 0;
-    int recordNumber = 0;
+    uint8_t sfi = 0;
+    uint8_t recordNumber = 0;
 
     /*
      * Let's check if we have a read record command at the top of the command list.
@@ -189,13 +188,12 @@ void PoTransaction::processAtomicOpening(
     }
 
     /* Build the PO Open Secure Session command */
-    std::shared_ptr<AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>> openSessionCmdBuild =
-        AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>::create(
-            mCalypsoPo->getRevision(),
-            accessLevel.getSessionKey(),
-            sessionTerminalChallenge,
-            sfi,
-            recordNumber);
+    auto openSessionCmdBuild = AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>::create(
+                                   mCalypsoPo->getRevision(),
+                                   accessLevel.getSessionKey(),
+                                   sessionTerminalChallenge,
+                                   sfi,
+                                   recordNumber);
 
     /* Add the resulting ApduRequest to the PO ApduRequest list */
     poApduRequests.push_back(openSessionCmdBuild->getApduRequest());
@@ -503,6 +501,7 @@ int PoTransaction::getCounterValue(const uint8_t sfi, const int counter) const
         std::shared_ptr<ElementaryFile> ef = mCalypsoPo->getFileBySfi(sfi);
         return ef->getData()->getContentAsCounterValue(counter);
     } catch (const NoSuchElementException& e) {
+        (void)e;
         throw CalypsoPoTransactionIllegalStateException(
                   "Anticipated response. " \
                   "Unable to determine anticipated value of counter "  +
@@ -537,14 +536,14 @@ std::vector<std::shared_ptr<ApduResponse>> PoTransaction::getAnticipatedResponse
         auto calypsoCmd = std::dynamic_pointer_cast<CalypsoPoCommand>(cmd);
         if (*calypsoCmd.get() == CalypsoPoCommand::DECREASE) {
             auto builder = std::reinterpret_pointer_cast<DecreaseCmdBuild>(commandBuilder);
-            const int sfi = builder->getSfi();
+            const uint8_t sfi = builder->getSfi();
             const int counter = builder->getCounterNumber();
             const int newCounterValue = getCounterValue(sfi, counter) - builder->getDecValue();
             apduResponses.push_back(createIncreaseDecreaseResponse(newCounterValue));
 
         } else if (*calypsoCmd.get() == CalypsoPoCommand::INCREASE) {
             auto builder = std::reinterpret_pointer_cast<IncreaseCmdBuild>(commandBuilder);
-            const int sfi = builder->getSfi();
+            const uint8_t sfi = builder->getSfi();
             const int counter = builder->getCounterNumber();
             const int newCounterValue = getCounterValue(sfi, counter) + builder->getIncValue();
             apduResponses.push_back(createIncreaseDecreaseResponse(newCounterValue));
@@ -1023,7 +1022,7 @@ void PoTransaction::prepareSelectFile(const SelectFileControl control)
 }
 
 void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
-                                          const int recordNumber)
+                                          const uint8_t recordNumber)
 {
     /* Create the builder and add it to the list of commands */
     std::shared_ptr<ReadRecordsCmdBuild> cmd =
@@ -1036,9 +1035,9 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
 }
 
 void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
-                                          const int firstRecordNumber,
-                                          const int numberOfRecords,
-                                          const int recordSize) {
+                                          const uint8_t firstRecordNumber,
+                                          const uint8_t numberOfRecords,
+                                          const uint8_t recordSize) {
 
     KeypleAssert::getInstance()
         .isInRange(sfi, CalypsoPoUtils::SFI_MIN, CalypsoPoUtils::SFI_MAX, "sfi")
@@ -1068,13 +1067,13 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
          * the PO and the response format (2 extra bytes)
          * Multiple APDUs can be generated depending on record size and transmission capacity.
          */
-        const int recordsPerApdu = mCalypsoPo->getPayloadCapacity() / (recordSize + 2);
-        const int maxSizeDataPerApdu = recordsPerApdu * (recordSize + 2);
-        int remainingRecords = numberOfRecords;
-        int startRecordNumber = firstRecordNumber;
+        const uint8_t recordsPerApdu = mCalypsoPo->getPayloadCapacity() / (recordSize + 2);
+        const uint8_t maxSizeDataPerApdu = recordsPerApdu * (recordSize + 2);
+        uint8_t remainingRecords = numberOfRecords;
+        uint8_t startRecordNumber = firstRecordNumber;
 
         while (remainingRecords > 0) {
-            int expectedLength;
+            uint8_t expectedLength;
             if (remainingRecords > recordsPerApdu) {
                 expectedLength = maxSizeDataPerApdu;
                 remainingRecords -= recordsPerApdu;
@@ -1098,7 +1097,7 @@ void PoTransaction::prepareReadRecordFile(const uint8_t sfi,
     }
 }
 
-void PoTransaction::prepareReadCounterFile(const uint8_t sfi, const int countersNumber)
+void PoTransaction::prepareReadCounterFile(const uint8_t sfi, const uint8_t countersNumber)
 {
     prepareReadRecordFile(sfi, 1, 1, countersNumber * 3);
 }
@@ -1121,7 +1120,7 @@ void PoTransaction::prepareAppendRecord(const uint8_t sfi, const std::vector<uin
 }
 
 void PoTransaction::prepareUpdateRecord(const uint8_t sfi,
-                                        const int recordNumber,
+                                        const uint8_t recordNumber,
                                         const std::vector<uint8_t>& recordData)
 {
     KeypleAssert::getInstance()
@@ -1142,7 +1141,7 @@ void PoTransaction::prepareUpdateRecord(const uint8_t sfi,
 }
 
 void PoTransaction::prepareWriteRecord(const uint8_t sfi,
-                                       const int recordNumber,
+                                       const uint8_t recordNumber,
                                        const std::vector<uint8_t>& recordData)
 {
     KeypleAssert::getInstance()
@@ -1163,7 +1162,7 @@ void PoTransaction::prepareWriteRecord(const uint8_t sfi,
 }
 
 void PoTransaction::prepareIncreaseCounter(const uint8_t sfi,
-                                           const int counterNumber,
+                                           const uint8_t counterNumber,
                                            const int incValue)
 {
     KeypleAssert::getInstance()
@@ -1187,7 +1186,7 @@ void PoTransaction::prepareIncreaseCounter(const uint8_t sfi,
 }
 
 void PoTransaction::prepareDecreaseCounter(const uint8_t sfi,
-                                           const int counterNumber,
+                                           const uint8_t counterNumber,
                                            const int decValue)
 {
     KeypleAssert::getInstance()

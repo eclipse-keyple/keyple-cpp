@@ -18,6 +18,7 @@
 #include <typeinfo>
 
 /* Calypso */
+#include "KeypleCalypsoExport.h"
 #include "SamResourceManager.h"
 
 /* Common */
@@ -42,7 +43,7 @@ using namespace keyple::core::seproxy::event;
  * Stub or Pcsc) It is meant to work with a Keyple Pcsc Plugin or a Keyple Stub
  * Plugin.
  */
-class SamResourceManagerDefault : public SamResourceManager {
+class KEYPLECALYPSO_API SamResourceManagerDefault : public SamResourceManager {
 public:
     /**
      * Reader observer to handle SAM insertion/withdraw

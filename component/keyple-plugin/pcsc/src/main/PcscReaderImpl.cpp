@@ -132,8 +132,6 @@ bool PcscReaderImpl::checkSePresence()
     } catch (PcscTerminalException& e) {
         throw KeypleReaderIOException("Exception occurred in isSePresent", e);
     }
-
-    return false;
 }
 
 bool PcscReaderImpl::waitForCardPresent()

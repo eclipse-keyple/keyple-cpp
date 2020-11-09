@@ -75,6 +75,6 @@ TEST(DigestCloseCmdBuild, digestCloseCmdBuild_cla80)
 TEST(DigestCloseCmdBuild, digestCloseCmdBuild_badExpectedLength)
 {
     EXPECT_THROW(std::make_shared<DigestCloseCmdBuild>(SamRevision::NO_REV,
-                                                       LENGTH_4 + 1),
+                                                       static_cast<uint8_t>(LENGTH_4 + 1)),
                  IllegalArgumentException);
 }

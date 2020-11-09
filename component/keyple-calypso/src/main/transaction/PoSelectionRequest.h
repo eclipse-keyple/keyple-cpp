@@ -58,8 +58,7 @@ using namespace keyple::calypso::command::po::parser;
  * Calypso POs
  */
 class KEYPLECALYPSO_API PoSelectionRequest final
-: public
-  AbstractSeSelectionRequest<AbstractPoCommandBuilder<AbstractPoResponseParser>>
+: public AbstractSeSelectionRequest<AbstractPoCommandBuilder<AbstractPoResponseParser>>
 {
 public:
     /**
@@ -77,7 +76,7 @@ public:
      * @throw IllegalArgumentException if one of the provided argument is out of
      *        range
      */
-    void prepareReadRecordFile(const uint8_t sfi, const int recordNumber);
+    void prepareReadRecordFile(const uint8_t sfi, const uint8_t recordNumber);
 
     /**
      * Prepare a select file ApduRequest to be executed following the selection.

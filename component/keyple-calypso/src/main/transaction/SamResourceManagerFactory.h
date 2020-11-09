@@ -17,6 +17,8 @@
 /* Core */
 #include "ReaderPlugin.h"
 
+/* Calypso */
+#include "KeypleCalypsoExport.h"
 #include "SamResourceManager.h"
 #include "SamResourceManagerDefault.h"
 #include "SamResourceManagerPool.h"
@@ -30,7 +32,7 @@ using namespace keyple::core::seproxy;
 /**
  * Factory that builds a SamResourceManager depending on the plugin used
  */
-class SamResourceManagerFactory {
+class KEYPLECALYPSO_API SamResourceManagerFactory {
 public:
 
     /**

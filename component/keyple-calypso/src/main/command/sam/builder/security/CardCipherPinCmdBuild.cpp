@@ -31,7 +31,6 @@ namespace security {
 
 using namespace keyple::calypso;
 using namespace keyple::calypso::command::sam;
-using namespace keyple::calypso::command::sam::builder::security;
 using namespace keyple::common;
 using namespace keyple::common::exception;
 

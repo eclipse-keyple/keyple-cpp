@@ -16,6 +16,7 @@
 /* Calypso */
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
+#include "KeypleCalypsoExport.h"
 #include "SamRevision.h"
 
 /* Forward declaration */
@@ -36,7 +37,7 @@ using namespace keyple::calypso::command::sam::parser::security;
 /**
  * Builder for the SAM Read Ceilings APDU command.
  */
-class SamReadCeilingsCmdBuild final
+class KEYPLECALYPSO_API SamReadCeilingsCmdBuild final
 : public AbstractSamCommandBuilder<SamReadCeilingsRespPars> {
 public:
     /**

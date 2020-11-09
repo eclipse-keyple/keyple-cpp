@@ -226,6 +226,7 @@ TEST(ManagedSamResourceManagerDefaultTest, waitResources)
                                            .build());
 
     } catch (const CalypsoNoSamResourceAvailableException& e) {
+        (void)e;
         exceptionThrown = true;
     }
 

@@ -19,6 +19,7 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
+#include "KeypleCalypsoExport.h"
 #include "SamRevision.h"
 
 /* Forward declaration */
@@ -39,7 +40,7 @@ using namespace keyple::calypso::command::sam::parser::security;
 /**
  * Builder for the SAM Give Random APDU command.
  */
-class GiveRandomCmdBuild final
+class KEYPLECALYPSO_API GiveRandomCmdBuild final
 : public AbstractSamCommandBuilder<GiveRandomRespPars> {
 public:
     /**

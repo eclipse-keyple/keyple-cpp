@@ -63,6 +63,10 @@ INCLUDE_DIRECTORIES(
 	${GOOGLETEST_DIRECTORY}/googletest-src
 	${GOOGLETEST_DIRECTORY}/googletest-src/googlemock/include
 	${GOOGLETEST_DIRECTORY}/googletest-src/googletest/include
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main/command/po
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main/command/sam
 )
 
 ADD_EXECUTABLE(keyplecore_ut
@@ -145,6 +149,6 @@ ADD_EXECUTABLE(keyplecore_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
 )
 
-SET(LINK_LIBS gtest gmock keyplecore ${WINSCARD} )
+SET(LINK_LIBS gtest gmock keyplecore)
 
 TARGET_LINK_LIBRARIES(keyplecore_ut ${LINK_LIBS})

@@ -20,6 +20,7 @@
 
 /* Calypso */
 #include "CalypsoSam.h"
+#include "KeypleCalypsoExport.h"
 #include "SamIdentifier.h"
 
 namespace keyple {
@@ -35,7 +36,7 @@ using namespace keyple::core::seproxy;
  * <p>
  * Provides methods fot the allocation/deallocation of SAM resources
  */
-class SamResourceManager {
+class KEYPLECALYPSO_API SamResourceManager {
 public:
     /**
      *

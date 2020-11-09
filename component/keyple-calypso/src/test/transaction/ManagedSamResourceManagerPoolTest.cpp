@@ -197,8 +197,10 @@ TEST(ManagedSamResourceManagerPoolTest, waitResources)
                                              .groupReference("any")
                                              .build());
     } catch (const CalypsoNoSamResourceAvailableException& e) {
+        (void)e;
         exceptionThrown = true;
     } catch (const KeypleAllocationReaderException& e) {
+        (void)e;
         exceptionThrown = true;
     }
 

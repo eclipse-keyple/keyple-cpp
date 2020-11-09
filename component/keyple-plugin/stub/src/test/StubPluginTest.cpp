@@ -69,7 +69,6 @@ static void tearDown()
 
 TEST(StubPluginTest, instantiatePlugin)
  {
-    const std::string PLUGIN_NAME = "test1";
     StubPluginFactory factory(PLUGIN_NAME);
 
     std::shared_ptr<ReaderPlugin> plugin = factory.getPlugin();
@@ -117,7 +116,7 @@ TEST(StubPluginTest, plugOneReaderSyncEvent_success)
     plugin->mReaderConnected.await(std::chrono::seconds(2));
 
     ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
-    ASSERT_EQ(plugin->mReaderConnected.getCount(), 0);
+    ASSERT_EQ(static_cast<int>(plugin->mReaderConnected.getCount()), 0);
 
     tearDown();
 }

@@ -18,6 +18,7 @@
 #include "AbstractPoCommandBuilder.h"
 #include "AbstractPoResponseParser.h"
 #include "CalypsoSam.h"
+#include "KeypleCalypsoExport.h"
 #include "KeyReference.h"
 #include "PoTransaction.h"
 
@@ -40,7 +41,7 @@ using PinTransmissionMode = PoTransaction::PinTransmissionMode;
  * <p>
  * The getKeyInfo method returns the specified setting value.
  */
-class PoSecuritySettings final {
+class KEYPLECALYPSO_API PoSecuritySettings final {
 public:
     /**
      *
@@ -60,7 +61,7 @@ public:
     /**
      * Builder pattern
      */
-    class PoSecuritySettingsBuilder final {
+    class KEYPLECALYPSO_API PoSecuritySettingsBuilder final {
     public:
         /**
          *
