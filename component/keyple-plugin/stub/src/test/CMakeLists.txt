@@ -54,6 +54,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/po
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/po/builder
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/po/parser
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/sam
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/transaction
 
 	# google test and mock
@@ -71,6 +72,6 @@ ADD_EXECUTABLE(keyplepluginstub_ut
 	${CMAKE_CURRENT_SOURCE_DIR}/StubReaderTest.cpp
 )
 
-SET(LINK_LIBS gtest gmock keyplepluginstub keyplecore keyplecalypso ${WINSCARD} )
+SET(LINK_LIBS gtest gmock keyplepluginstub keyplecore keyplecalypso)
 
 TARGET_LINK_LIBRARIES(keyplepluginstub_ut ${LINK_LIBS})

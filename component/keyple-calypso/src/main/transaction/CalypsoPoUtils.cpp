@@ -80,13 +80,15 @@ const int CalypsoPoUtils::SEL_KVCS_OFFSET = 14;
 const int CalypsoPoUtils::SEL_KIFS_OFFSET = 17;
 const int CalypsoPoUtils::SEL_DATA_REF_OFFSET = 14;
 const int CalypsoPoUtils::SEL_LID_OFFSET = 21;
+
 const int CalypsoPoUtils::PIN_LENGTH = 4;
+
 const uint8_t CalypsoPoUtils::STORED_VALUE_FILE_STRUCTURE_ID = 0x20;
 const uint8_t CalypsoPoUtils::SV_RELOAD_LOG_FILE_SFI = 0x14;
-const int CalypsoPoUtils::SV_RELOAD_LOG_FILE_NB_REC = 1;
+const uint8_t CalypsoPoUtils::SV_RELOAD_LOG_FILE_NB_REC = 1;
 const uint8_t CalypsoPoUtils::SV_DEBIT_LOG_FILE_SFI = 0x15;
-const int CalypsoPoUtils::SV_DEBIT_LOG_FILE_NB_REC = 3;
-const int CalypsoPoUtils::SV_LOG_FILE_REC_LENGTH = 29;
+const uint8_t CalypsoPoUtils::SV_DEBIT_LOG_FILE_NB_REC = 3;
+const uint8_t CalypsoPoUtils::SV_LOG_FILE_REC_LENGTH = 29;
 
 std::vector<uint8_t> CalypsoPoUtils::mPoChallenge;
 uint8_t CalypsoPoUtils::mSvKvc;

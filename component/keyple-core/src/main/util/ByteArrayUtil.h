@@ -34,8 +34,7 @@ using namespace keyple::common;
 /**
  * Utils around byte arrays
  */
-class KEYPLECORE_API ByteArrayUtil
-: public std::enable_shared_from_this<ByteArrayUtil> {
+class KEYPLECORE_API ByteArrayUtil {
 public:
     /**
      * Create a byte array from an hexa string. This method allows spaces and "h".

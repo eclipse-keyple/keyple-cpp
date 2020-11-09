@@ -39,10 +39,10 @@ using namespace keyple::core::util;
 using CeilingsOperationType = SamReadCeilingsCmdBuild::CeilingsOperationType;
 
 static const std::string SW1SW2_OK = "9000";
-static const int INDEX_M1 = -1;
-static const int INDEX1 = 1;
-static const int INDEX4 = 4;
-static const int INDEX27 = 27;
+static const uint8_t INDEX_M1 = static_cast<uint8_t>(-1);
+static const uint8_t INDEX1 = 1;
+static const uint8_t INDEX4 = 4;
+static const uint8_t INDEX27 = 27;
 static const std::string APDU_CLA_80_SINGLE = "80BE01B800";
 static const std::string APDU_CLA_80_RECORD = "80BE00B100";
 static const std::string APDU_CLA_94 = "94BE01B800";
@@ -107,7 +107,8 @@ TEST(SamReadCeilingsCmdBuildTest,
     EXPECT_THROW(
         std::make_shared<SamReadCeilingsCmdBuild>(
             SamRevision::C1,
-            CeilingsOperationType::CEILING_RECORD, INDEX_M1),
+            CeilingsOperationType::CEILING_RECORD,
+            INDEX_M1),
         IllegalArgumentException);
 }
 

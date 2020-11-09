@@ -40,10 +40,10 @@ using SamEventCounterOperationType =
     SamReadEventCounterCmdBuild::SamEventCounterOperationType;
 
 static const std::string SW1SW2_OK = "9000";
-static const int INDEX_M1 = -1;
-static const int INDEX1 = 1;
-static const int INDEX4 = 4;
-static const int INDEX27 = 27;
+static const uint8_t INDEX_M1 = static_cast<uint8_t>(-1);
+static const uint8_t INDEX1 = 1;
+static const uint8_t INDEX4 = 4;
+static const uint8_t INDEX27 = 27;
 static const std::string APDU_CLA_80_SINGLE = "80BE008100";
 static const std::string APDU_CLA_80_RECORD = "80BE00E100";
 static const std::string APDU_CLA_94 = "94BE008100";

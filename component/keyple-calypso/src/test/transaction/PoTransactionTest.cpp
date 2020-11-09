@@ -2142,7 +2142,7 @@ TEST(PoTransactionTest, testPrepareSvReadAllLogs)
     std::vector<std::shared_ptr<SvDebitLogRecord>> allDebitLogs =
         calypsoPoRev31->getSvDebitLogAllRecords();
 
-    ASSERT_EQ(calypsoPoRev31->getSvDebitLogAllRecords().size(), 3);
+    ASSERT_EQ(static_cast<int>(calypsoPoRev31->getSvDebitLogAllRecords().size()), 3);
     ASSERT_EQ(allDebitLogs[0]->getSamId(), 0xAABBCC01);
     ASSERT_EQ(allDebitLogs[1]->getSamId(), 0xAABBCC02);
     ASSERT_EQ(allDebitLogs[2]->getSamId(), 0xAABBCC03);

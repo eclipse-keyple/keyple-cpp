@@ -18,6 +18,7 @@
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"
+#include "KeypleCalypsoExport.h"
 #include "SvGetCmdBuild.h"
 #include "SvLoadLogRecord.h"
 #include "SvDebitLogRecord.h"
@@ -38,7 +39,7 @@ using StatusProperties = AbstractApduResponseParser::StatusProperties;
 /**
  * SV Get (007C) response parser. See specs: Calypso
  */
-class SvGetRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API SvGetRespPars final : public AbstractPoResponseParser {
 public:
     /**
      * Constructor to build a parser of the SvGet command response.

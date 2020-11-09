@@ -70,7 +70,7 @@ TEST(SvGetRespParsTest, modeRevision3_2_base)
     SvGetRespPars svGetRespPars(header, apduResponse, nullptr);
 
     /* Check length */
-    ASSERT_EQ(svGetRespPars.getApduResponse()->getBytes().size(), 0x3D + 2);
+    ASSERT_EQ(static_cast<int>(svGetRespPars.getApduResponse()->getBytes().size()), 0x3D + 2);
 
     /* Check common fields */
     ASSERT_EQ(svGetRespPars.getChallengeOut(), ByteArrayUtil::fromHex("0011223344556677"));
@@ -267,7 +267,7 @@ TEST(SvGetRespParsTest, modeCompat_base_Reload)
     SvGetRespPars svGetRespPars(header, apduResponse, nullptr);
 
     /* Check length */
-    ASSERT_EQ(svGetRespPars.getApduResponse()->getBytes().size(), 0x21 + 2);
+    ASSERT_EQ(static_cast<int>(svGetRespPars.getApduResponse()->getBytes().size()), 0x21 + 2);
 
     /* Check common fields */
     ASSERT_EQ(svGetRespPars.getChallengeOut(), ByteArrayUtil::fromHex("1122"));
@@ -425,7 +425,7 @@ TEST(SvGetRespParsTest, modeCompat_base_Debit)
     SvGetRespPars svGetRespPars(header, apduResponse, nullptr);
 
     /* check length */
-    ASSERT_EQ(0x1E + 2, svGetRespPars.getApduResponse()->getBytes().size());
+    ASSERT_EQ(static_cast<int>(svGetRespPars.getApduResponse()->getBytes().size()), 0x1E + 2);
 
     /* check common fields */
     ASSERT_EQ(ByteArrayUtil::fromHex("1122"), svGetRespPars.getChallengeOut());

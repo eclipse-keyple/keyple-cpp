@@ -101,7 +101,7 @@ public:
         /*
          * Prepare a Calypso PO selection
          */
-        SeSelection seSelection;
+        seSelection = std::make_shared<SeSelection>();
 
         /*
          * Setting of an AID based selection of a Calypso REV3 PO
@@ -133,7 +133,7 @@ public:
         auto abstract = std::reinterpret_pointer_cast
                             <AbstractSeSelectionRequest<AbstractApduCommandBuilder>>(
                                 poSelectionRequest);
-        seSelection.prepareSelection(abstract);
+        seSelection->prepareSelection(abstract);
 
         /*
          * Provide the SeReader with the selection operation to be processed
@@ -141,7 +141,7 @@ public:
          */
         (std::dynamic_pointer_cast<ObservableReader>(poReader))
             ->setDefaultSelectionRequest(
-                seSelection.getSelectionOperation(),
+                seSelection->getSelectionOperation(),
                 ObservableReader::NotificationMode::MATCHED_ONLY,
                 ObservableReader::PollingMode::REPEATING);
 

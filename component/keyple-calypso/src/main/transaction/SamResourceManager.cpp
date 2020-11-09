@@ -54,6 +54,7 @@ std::unique_ptr<ManagedSamResource> SamResourceManager::createSamResource(
     try {
         selectionsResult = samSelection.processExplicitSelection(samReader);
     } catch (const KeypleException& e) {
+        (void)e;
         throw CalypsoNoSamResourceAvailableException("Failed to select a SAM");
     }
 

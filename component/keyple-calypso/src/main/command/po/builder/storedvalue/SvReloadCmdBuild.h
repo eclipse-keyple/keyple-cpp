@@ -15,6 +15,7 @@
 
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
+#include "KeypleCalypsoExport.h"
 #include "PoClass.h"
 #include "PoTransaction.h"
 
@@ -41,7 +42,7 @@ using Operation = PoTransaction::SvSettings::Operation;
  * The Class SvReloadCmdBuild. This class provides the dedicated constructor to build the SV Reload
  * command.
  */
-class SvReloadCmdBuild final : public AbstractPoCommandBuilder<SvReloadRespPars> {
+class KEYPLECALYPSO_API SvReloadCmdBuild final : public AbstractPoCommandBuilder<SvReloadRespPars> {
 public:
     /**
      * Instantiates a new SvReloadCmdBuild.

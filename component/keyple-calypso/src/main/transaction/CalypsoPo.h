@@ -532,7 +532,7 @@ public:
      * @return the maximum length of data that an APDU in this PO can carry
      * @since 0.9
      */
-    int getPayloadCapacity() const;
+    uint8_t getPayloadCapacity() const;
 
     /**
      * Indicates if the PIN is blocked. The maximum number of incorrect PIN submissions has been

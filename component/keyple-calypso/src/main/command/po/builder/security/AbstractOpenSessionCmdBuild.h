@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -55,7 +54,6 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::po;
-using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::common;
 using namespace keyple::core::command;
 
@@ -82,9 +80,11 @@ public:
           nullptr) {}
 
     static  std::shared_ptr<AbstractOpenSessionCmdBuild<T>> create(
-        PoRevision revision, uint8_t debitKeyIndex,
-        const std::vector<uint8_t>& sessionTerminalChallenge, uint8_t sfi,
-        uint8_t recordNumber)
+        const PoRevision revision,
+        const uint8_t debitKeyIndex,
+        const std::vector<uint8_t>& sessionTerminalChallenge,
+        const uint8_t sfi,
+        const uint8_t recordNumber)
     {
         switch (revision) {
         case PoRevision::REV1_0:

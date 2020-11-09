@@ -22,6 +22,7 @@
 #include "ReaderPoolPlugin.h"
 
 /* Calypso */
+#include "KeypleCalypsoExport.h"
 #include "SamResourceManager.h"
 
 namespace keyple {
@@ -34,7 +35,7 @@ using namespace keyple::core::seproxy;
 /**
  * Implementation of Sam Resource Manager working a {@link ReaderPoolPlugin}
  */
-class SamResourceManagerPool final : public SamResourceManager {
+class KEYPLECALYPSO_API SamResourceManagerPool final : public SamResourceManager {
 public:
     /**
      * {@inheritDoc}

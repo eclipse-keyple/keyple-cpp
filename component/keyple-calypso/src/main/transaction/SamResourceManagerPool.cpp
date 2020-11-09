@@ -58,7 +58,7 @@ std::shared_ptr<SeResource<CalypsoSam>> SamResourceManagerPool::allocateSamResou
     const AllocationMode allocationMode,
     const std::shared_ptr<SamIdentifier> samIdentifier)
 {
-    const long maxBlockingDate = System::currentTimeMillis() + mMaxBlockingTime;
+    const uint64_t maxBlockingDate = System::currentTimeMillis() + mMaxBlockingTime;
     bool noSamResourceLogged = false;
 
     mLogger->debug("Allocating SAM reader channel...\n");
@@ -124,6 +124,7 @@ std::shared_ptr<SeResource<CalypsoSam>> SamResourceManagerPool::allocateSamResou
                       "Allocation failed due to a plugin technical error", e);
         } catch (const KeypleAllocationNoReaderException& e) {
             /* No reader is available, let's retry */
+            (void)e;
         }
     }
 }

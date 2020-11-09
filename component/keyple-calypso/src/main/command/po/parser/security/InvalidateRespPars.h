@@ -16,6 +16,7 @@
 /* Calypso */
 #include "AbstractPoResponseParser.h"
 #include "InvalidateCmdBuild.h"
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -31,7 +32,7 @@ using StatusProperties = AbstractApduResponseParser::StatusProperties;
 /**
  * Invalidate response parser.
  */
-class InvalidateRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API InvalidateRespPars final : public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new InvalidateRespPars.

@@ -38,7 +38,6 @@ namespace transaction {
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
-using namespace keyple::calypso::transaction;
 using namespace keyple::common;
 using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::message;
@@ -128,9 +127,8 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
          * number is provided in the ATR
          */
         if (!hasAtr())
-            throw IllegalStateException(
-                      "Unable to identify this PO: Neither the CFI nor the " \
-                      "ATR are available.");
+            throw IllegalStateException("Unable to identify this PO: Neither the CFI nor the " \
+                                        "ATR are available.");
 
         const std::vector<uint8_t> atr = getAtrBytes();
 
@@ -139,9 +137,8 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
          * ATR
          */
         if (static_cast<int>(atr.size()) != PO_REV1_ATR_LENGTH)
-            throw IllegalStateException(
-                    "Unexpected ATR length: " +
-                    ByteArrayUtil::toHex(getAtrBytes()));
+            throw IllegalStateException("Unexpected ATR length: " +
+                                        ByteArrayUtil::toHex(getAtrBytes()));
 
         mRevision = PoRevision::REV1_0;
 
@@ -153,21 +150,14 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
         /* Old cards have their modification counter in number of commands */
         mModificationCounterIsInBytes = false;
 
-        /*
-         * The array is initialized with 0 (cf. default value for primitive
-         * types)
-         */
+        /* The array is initialized with 0 (cf. default value for primitive types) */
         System::arraycopy(atr, 12, mCalypsoSerialNumber, 4, 4);
-        mModificationsCounterMax =
-            REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
+        mModificationsCounterMax = REV1_PO_DEFAULT_WRITE_OPERATIONS_NUMBER_SUPPORTED_PER_SESSION;
 
         mStartupInfo = std::vector<uint8_t>(7);
         /* Create buffer size indicator */
-        mStartupInfo[0] = mModificationsCounterMax;
-
-        /*
-         * Create the startup info with the 6 bytes of the ATR from position 6
-         */
+        mStartupInfo[0] = static_cast<uint8_t>(mModificationsCounterMax);
+        /* Create the startup info with the 6 bytes of the ATR from position 6 */
         System::arraycopy(atr, 6, mStartupInfo, 1, 6);
 
         /* TODO check these flags */
@@ -238,7 +228,7 @@ const std::vector<uint8_t>& CalypsoPo::getSerialNumberExpirationBytes() const
     throw IllegalStateException("Not yet implemented");
 }
 
-int CalypsoPo::getPayloadCapacity() const
+uint8_t CalypsoPo::getPayloadCapacity() const
 {
     /* TODO make this value dependent on the type of PO identified */
     return 250;

@@ -18,6 +18,7 @@
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"
+#include "KeypleCalypsoExport.h"
 #include "SvReloadCmdBuild.h"
 #include "SvLoadLogRecord.h"
 #include "SvDebitLogRecord.h"
@@ -63,7 +64,7 @@ using StatusProperties = AbstractApduResponseParser::StatusProperties;
  * </pre>
  *
  */
-class SvReloadRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API SvReloadRespPars final : public AbstractPoResponseParser {
 public:
     /**
      * Constructor to build a parser of the SvDebit command response.
@@ -71,8 +72,7 @@ public:
      * @param response response to parse
      * @param builder the reference to the builder that created this parser
      */
-    SvReloadRespPars(std::shared_ptr<ApduResponse> response,
-                     SvReloadCmdBuild* builder);
+    SvReloadRespPars(std::shared_ptr<ApduResponse> response, SvReloadCmdBuild* builder);
 
     /**
      * Gets the SV signature. <br>

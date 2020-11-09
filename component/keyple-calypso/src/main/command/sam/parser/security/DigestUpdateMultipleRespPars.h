@@ -22,6 +22,7 @@
 
 /* Calypso */
 #include "DigestUpdateMultipleCmdBuild.h"
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -39,7 +40,7 @@ using namespace keyple::core::seproxy::message;
  * - Session MAC
  * computation
  */
-class DigestUpdateMultipleRespPars final : public AbstractSamResponseParser {
+class KEYPLECALYPSO_API DigestUpdateMultipleRespPars final : public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new DigestUpdateMultipleRespPars.

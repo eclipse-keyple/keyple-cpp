@@ -17,8 +17,10 @@
 #include <vector>
 #include <memory>
 
+/* Calypso */
 #include "AbstractSamResponseParser.h"
 #include "CardCipherPinCmdBuild.h"
+#include "KeypleCalypsoExport.h"
 
 namespace keyple {
 namespace calypso {
@@ -33,7 +35,7 @@ using namespace keyple::core::seproxy::message;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-class CardCipherPinRespPars : public AbstractSamResponseParser {
+class KEYPLECALYPSO_API CardCipherPinRespPars : public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new CardCipherPinRespPars.

@@ -129,7 +129,7 @@ TEST(SamSelectorTest, test_UnlockData_notSet)
     auto seSelector = SamSelector::builder()->samIdentifier(samIdentifier).build();
     auto samSelector = std::dynamic_pointer_cast<SamSelector>(seSelector);
 
-    ASSERT_EQ(samSelector->getUnlockData().size(), 0);
+    ASSERT_EQ(static_cast<int>(samSelector->getUnlockData().size()), 0);
 }
 
 TEST(SamSelectorTest, test_UnlockData_ok)

@@ -15,6 +15,7 @@
 
 #include "AbstractSamCommandBuilder.h"
 #include "CalypsoSamCommand.h"
+#include "KeypleCalypsoExport.h"
 #include "SamRevision.h"
 
 /* Forward declaration */
@@ -35,7 +36,7 @@ using namespace keyple::calypso::command::sam::parser::security;
 /**
  * Builder for the SAM SV Check APDU command.
  */
-class SvCheckCmdBuild final : public AbstractSamCommandBuilder<SvCheckRespPars> {
+class KEYPLECALYPSO_API SvCheckCmdBuild final : public AbstractSamCommandBuilder<SvCheckRespPars> {
 public:
     /**
      * Instantiates a new SvCheckCmdBuild to authenticate a card SV transaction.

@@ -15,6 +15,7 @@
 
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
+#include "KeypleCalypsoExport.h"
 #include "PoClass.h"
 #include "PoTransaction.h"
 
@@ -42,7 +43,7 @@ using Operation = PoTransaction::SvSettings::Operation;
  * Undebit command. Note: {@link SvUndebitCmdBuild} and {@link SvDebitCmdBuild} shares the same
  * parser {@link SvDebitRespPars}
  */
-class SvUndebitCmdBuild final : public AbstractPoCommandBuilder<SvUndebitRespPars> {
+class KEYPLECALYPSO_API SvUndebitCmdBuild final : public AbstractPoCommandBuilder<SvUndebitRespPars> {
 public:
     /**
      * Instantiates a new SvUndebitCmdBuild.

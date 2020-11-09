@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -48,7 +49,6 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::builder;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::calypso::command::sam;
-using namespace keyple::calypso::transaction;
 using namespace keyple::common;
 using namespace keyple::core::selection;
 using namespace keyple::core::seproxy;
@@ -435,26 +435,24 @@ public:
      *
      * @param sfi the SFI of the EF to read
      * @param recordNumber the record number to read
-     * @throw IllegalArgumentException if one of the provided argument is out of
-     *        range
+     * @throw IllegalArgumentException if one of the provided argument is out of range
      */
-    void prepareReadRecordFile(const uint8_t sfi, const int recordNumber);
+    void prepareReadRecordFile(const uint8_t sfi, const uint8_t recordNumber);
 
     /**
      * Read one or more records from the indicated EF
      *
      * @param sfi the SFI of the EF
-     * @param firstRecordNumber the record number to read (or first record to
-     *        read in case of several records)
+     * @param firstRecordNumber the record number to read (or first record to read in case of
+              several records)
      * @param numberOfRecords the number of records expected
      * @param recordSize the record length
-     * @throw IllegalArgumentException if one of the provided argument is out of
-     *        range
+     * @throw IllegalArgumentException if one of the provided argument is out of range
      */
     void prepareReadRecordFile(const uint8_t sfi,
-                               const int firstRecordNumber,
-                               const int numberOfRecords,
-                               const int recordSize);
+                               const uint8_t firstRecordNumber,
+                               const uint8_t numberOfRecords,
+                               const uint8_t recordSize);
 
     /**
      * Read a record of the indicated EF, which should be a count file.
@@ -465,10 +463,9 @@ public:
      *
      * @param sfi the SFI of the EF
      * @param countersNumber the number of the last counter to be read
-     * @throw IllegalArgumentException if one of the provided argument is out of
-     *        range
+     * @throw IllegalArgumentException if one of the provided argument is out of range
      */
-    void prepareReadCounterFile(const uint8_t sfi, const int countersNumber);
+    void prepareReadCounterFile(const uint8_t sfi, const uint8_t countersNumber);
 
     /**
      * Builds an AppendRecord command and add it to the list of commands to be sent with the next
@@ -479,8 +476,7 @@ public:
      * @param recordData the new record data to write
      * @throw IllegalArgumentException - if the command is inconsistent
      */
-    void prepareAppendRecord(const uint8_t sfi,
-                             const std::vector<uint8_t>& recordData);
+    void prepareAppendRecord(const uint8_t sfi, const std::vector<uint8_t>& recordData);
 
     /**
      * Builds an UpdateRecord command and add it to the list of commands to be sent with the next
@@ -495,7 +491,7 @@ public:
      * @throw IllegalArgumentException - if the request is inconsistent
      */
     void prepareUpdateRecord(const uint8_t sfi,
-                             const int recordNumber,
+                             const uint8_t recordNumber,
                              const std::vector<uint8_t>& recordData);
 
 
@@ -512,7 +508,7 @@ public:
      * @throw IllegalArgumentException - if the request is inconsistent
      */
     void prepareWriteRecord(const uint8_t sfi,
-                            const int recordNumber,
+                            const uint8_t recordNumber,
                             const std::vector<uint8_t>& recordData);
 
     /**
@@ -528,7 +524,7 @@ public:
      * @throw IllegalArgumentException - if the decrement value is out of range
      * @throw IllegalArgumentException - if the command is inconsistent
      */
-    void prepareIncreaseCounter(const uint8_t sfi, const int counterNumber, const int incValue);
+    void prepareIncreaseCounter(const uint8_t sfi, const uint8_t counterNumber, const int incValue);
 
     /**
      * Builds a Decrease command and add it to the list of commands to be sent with the next process
@@ -543,7 +539,7 @@ public:
      * @throw IllegalArgumentException - if the decrement value is out of range
      * @throw IllegalArgumentException - if the command is inconsistent
      */
-    void prepareDecreaseCounter(const uint8_t sfi, const int counterNumber, const int decValue);
+    void prepareDecreaseCounter(const uint8_t sfi, const uint8_t counterNumber, const int decValue);
 
     /**
      * Builds a VerifyPin command without PIN presentation in order to get the attempt counter.<br>

@@ -80,7 +80,7 @@ public:
 	/**
 	 *
 	 */
-	friend std::ostream& operator<<(std::ostream& os, const PoClass& pc);
+	friend KEYPLECALYPSO_API  std::ostream& operator<<(std::ostream& os, const PoClass& pc);
 
 private:
     /**

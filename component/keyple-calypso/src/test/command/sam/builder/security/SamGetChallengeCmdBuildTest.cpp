@@ -82,6 +82,6 @@ TEST(SamGetChallengeCmdBuildTest, samGetChallengeCmdBuild_badLength)
 {
     EXPECT_THROW(
         std::make_shared<SamGetChallengeCmdBuild>(SamRevision::NO_REV,
-                                                  LENGTH_4 + 1),
+                                                  static_cast<uint8_t>(LENGTH_4 + 1)),
         IllegalArgumentException);
 }

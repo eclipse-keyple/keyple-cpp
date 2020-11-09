@@ -24,8 +24,8 @@ namespace command {
 
 using namespace keyple::common::exception;
 
-const PoClass PoClass::LEGACY("LEGACY", static_cast<char>(0x94));
-const PoClass PoClass::ISO("ISO", static_cast<char>(0x00));
+const PoClass PoClass::LEGACY("LEGACY", 0x94);
+const PoClass PoClass::ISO("ISO", 0x00);
 
 
 

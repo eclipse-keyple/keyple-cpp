@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -31,7 +30,7 @@ namespace transaction {
  *
  * @since 0.9
  */
-class FileHeader final {
+class KEYPLECALYPSO_API FileHeader final {
 public:
     /**
      * The EF type enum
@@ -44,13 +43,13 @@ public:
         SIMULATED_COUNTERS
     };
 
-    friend std::ostream& operator<<(std::ostream& os, const FileType ft);
+    friend KEYPLECALYPSO_API std::ostream& operator<<(std::ostream& os, const FileType ft);
 
     /**
      * (package-private)<br>
      * Builder pattern
      */
-    class FileHeaderBuilder final {
+    class KEYPLECALYPSO_API FileHeaderBuilder final {
     public:
         /**
          * Authorize access to private members
@@ -101,8 +100,7 @@ public:
          *        4 bytes length)
          * @return the builder instance
          */
-        FileHeaderBuilder& accessConditions(
-            const std::vector<uint8_t>& accessConditions);
+        FileHeaderBuilder& accessConditions(const std::vector<uint8_t>& accessConditions);
 
         /**
          * (package-private)<br>
@@ -299,8 +297,7 @@ public:
     /**
      *
      */
-    friend KEYPLECALYPSO_API std::ostream& operator<<(
-        std::ostream& os, const FileHeader& fh);
+    friend KEYPLECALYPSO_API std::ostream& operator<<(std::ostream& os, const FileHeader& fh);
 
 private:
     /**

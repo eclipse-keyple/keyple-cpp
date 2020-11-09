@@ -15,6 +15,7 @@
 
 /* Calypso */
 #include "AbstractPoResponseParser.h"
+#include "KeypleCalypsoExport.h"
 #include "RehabilitateCmdBuild.h"
 
 namespace keyple {
@@ -31,7 +32,7 @@ using StatusProperties = AbstractApduResponseParser::StatusProperties;
 /**
  * Rehabilitate response parser.
  */
-class RehabilitateRespPars final : public AbstractPoResponseParser {
+class KEYPLECALYPSO_API RehabilitateRespPars final : public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new RehabilitateRespPars.

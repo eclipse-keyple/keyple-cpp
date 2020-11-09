@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -43,12 +42,11 @@ using namespace keyple::core::seproxy::message;
  * <li>the corresponding AbstractApduResponseParser class.</li>
  * </ul>
  */
-class KEYPLECORE_API AbstractApduCommandBuilder
-: public std::enable_shared_from_this<AbstractApduCommandBuilder> {
+class KEYPLECORE_API AbstractApduCommandBuilder {
 public:
     /**
-     * the generic abstract constructor to build an APDU request with a command
-     * reference and a byte array.
+     * the generic abstract constructor to build an APDU request with a command reference and a byte
+     * array.
      *
      * @param commandRef command reference
      * @param request request

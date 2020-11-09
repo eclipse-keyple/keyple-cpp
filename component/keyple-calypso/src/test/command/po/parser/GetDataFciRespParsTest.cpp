@@ -286,16 +286,16 @@ static void check_CLR_1(const std::string& dfName,
 {
 
     const std::string dfNameLength =
-        StringHelper::uint8ToHexString(dfName.length() / 2);
+        StringHelper::uint8ToHexString(static_cast<uint8_t>(dfName.length() / 2));
     const std::string snLength =
-        StringHelper::uint8ToHexString(appSerialNumber.length() / 2);
+        StringHelper::uint8ToHexString(static_cast<uint8_t>(appSerialNumber.length() / 2));
     const std::string siLength =
-        StringHelper::uint8ToHexString(startupInformation.length() / 2);
+        StringHelper::uint8ToHexString(static_cast<uint8_t>(startupInformation.length() / 2));
     const std::string totalLength =
         StringHelper::uint8ToHexString(12 +
-                                       (dfName.length() +
-                                        appSerialNumber.length() +
-                                        startupInformation.length()) / 2);
+                                       (static_cast<uint8_t>((dfName.length() +
+                                                              appSerialNumber.length() +
+                                                              startupInformation.length()) / 2)));
 
     std::shared_ptr<ApduResponse> apduResponse =
         std::make_shared<ApduResponse>(
