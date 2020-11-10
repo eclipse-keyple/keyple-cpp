@@ -13,6 +13,8 @@
 
 #pragma once
 
+#include <atomic>
+
 /* Core */
 #include "ObservableReader.h"
 
@@ -41,6 +43,11 @@ public:
      * @param event the event (see {@link ReaderEvent})
      */
     virtual void notifyObservers(const std::shared_ptr<ReaderEvent> event) = 0;
+
+    /**
+     * C++ vs. Java: added this flag to handle threads gracefully
+     */
+    std::atomic<bool> mShuttingDown = false;
 };
 
 }

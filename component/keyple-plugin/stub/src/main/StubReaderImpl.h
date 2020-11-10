@@ -153,7 +153,7 @@ public:
      *
      */
     bool checkSePresence() override;
-
+   
 protected:
     /**
      *
@@ -208,14 +208,12 @@ private:
     TransmissionMode mTransmissionMode = TransmissionMode::CONTACTLESS;
 
     /**
-     *
+     * C++ vs. Java: flag to handle threads properly...
      */
-    std::atomic<bool> mLoopWaitSe;
-
-    /**
-     *
-     */
-    std::atomic<bool> mLoopWaitSeRemoval;
+    std::atomic<bool> mLoopWaitSe = false;
+    std::atomic<bool> mLoopWaitSeOngoing = false;
+    std::atomic<bool> mLoopWaitSeRemoval = false;
+    std::atomic<bool> mLoopWaitSeRemovalOngoing = false;
 };
 
 }

@@ -54,24 +54,29 @@ void AbstractObservableState::switchState(const MonitoringState stateId)
 
 void AbstractObservableState::onActivate()
 {
-    logger->trace("[%] onActivate => %\n", reader->getName(),
-                  getMonitoringState());
+    /* C++ vs. Java: thread management */
+    if (reader->mShuttingDown)
+        return;
+
+    logger->trace("[%] onActivate => %\n", reader->getName(),  getMonitoringState());
 
     cancellationFlag = false;
 
     /* Launch the monitoringJob is necessary */
     if (monitoringJob != nullptr) {
-        if (executorService == nullptr) {
+        if (executorService == nullptr)
             throw AssertionError("ExecutorService must be set");
-        }
 
-        monitoringEvent =
-            executorService->submit(monitoringJob, this, cancellationFlag);
+        monitoringEvent = executorService->submit(monitoringJob, this, cancellationFlag);
     }
 }
 
 void AbstractObservableState::onDeactivate()
 {
+    /* C++ vs. Java: thread management */
+    if (reader->mShuttingDown)
+        return;
+
     logger->trace("[%] onDeactivate => %\n", reader->getName(),
                   getMonitoringState());
 

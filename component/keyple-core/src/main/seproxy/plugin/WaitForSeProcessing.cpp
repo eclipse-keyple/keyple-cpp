@@ -32,6 +32,10 @@ WaitForSeProcessing::WaitForSeProcessing(
 
 void WaitForSeProcessing::onEvent(const InternalEvent event)
 {
+    /* C++ vs. Java: thread management */
+    if (reader->mShuttingDown)
+        return;
+
     logger->trace("[%] onEvent => Event % received in currentState %\n",
                   reader->getName(),
                   event,

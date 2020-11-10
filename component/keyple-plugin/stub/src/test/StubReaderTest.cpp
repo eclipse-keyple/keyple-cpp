@@ -743,11 +743,11 @@ TEST(StubReaderTest, A_testInsertRemoveTwiceFast)
 
     /* Lock thread for 2 seconds max to wait to the event SE_INSERTED */
     std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-        ->mFirstRemoveLock.await(std::chrono::seconds(2));
+        ->mFirstInsertLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because removeLock is countDown by obs */
     ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-                                   ->mFirstRemoveLock.getCount()),
+                                   ->mFirstInsertLock.getCount()),
               0);
 
     auto proxy = std::dynamic_pointer_cast<ProxyReader>(reader);
@@ -774,11 +774,11 @@ TEST(StubReaderTest, A_testInsertRemoveTwiceFast)
 
     /* Lock thread for 2 seconds max to wait to the event SE_INSERTED */
     std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-        ->mSecondRemoveLock.await(std::chrono::seconds(2));
+        ->mSecondInsertLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because removeLock is countDown by obs */
     ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock3>(readerObs)
-                                   ->mSecondRemoveLock.getCount()),
+                                   ->mSecondInsertLock.getCount()),
               0);
 
     proxy->transmitSeRequest({}, ChannelControl::CLOSE_AFTER);

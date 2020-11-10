@@ -147,9 +147,8 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
                                                       PluginEvent::EventType::READER_DISCONNECTED));
 
                     /* list update */
-                    auto it = mParent->mNativeReaders.begin();
-                    while (it != mParent->mNativeReaders.end()) {
-                        const std::shared_ptr<SeReader> reader = it->second;
+                    for (const auto &r : mParent->mNativeReaders) {
+                        const std::shared_ptr<SeReader> reader = r.second;
                         if (actualNativeReadersNames.find(reader->getName()) ==
                                 actualNativeReadersNames.end()) {
                             /* Removes any possible observers before removing the reader */
@@ -160,7 +159,7 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
                                 observable->stopSeDetection();
                             }
 
-                            it = mParent->mNativeReaders.erase(it);
+                            mParent->mNativeReaders.erase(reader->getName());
                             mParent->mLogger->trace("[%][%] Plugin thread => Remove unplugged " \
                                                     "reader from readers list\n",
                                                     mPluginName,
@@ -168,8 +167,6 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
 
                             /* remove reader name from the current list */
                             mParent->mNativeReadersNames.erase(reader->getName());
-                        } else {
-                            it++;
                         }
                     }
 

@@ -76,6 +76,13 @@ public:
      */
     void onDeactivate();
 
+    /**
+     * C++ vs. Java: protected in Java, public to help close monitoring threads
+     *
+     * Background job definition if any
+     */
+    std::shared_ptr<AbstractMonitoringJob> monitoringJob;
+
 protected:
     /**
      * Identifier of the currentState
@@ -86,11 +93,6 @@ protected:
      * Reference to Reader
      */
     AbstractObservableLocalReader* reader;
-
-    /**
-     * Background job definition if any
-     */
-    std::shared_ptr<AbstractMonitoringJob> monitoringJob;
 
     /**
      * Result of the background job if any

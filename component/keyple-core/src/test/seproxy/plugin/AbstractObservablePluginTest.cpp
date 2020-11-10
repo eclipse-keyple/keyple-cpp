@@ -46,10 +46,13 @@ public:
                 ((const std::map<const std::string, const std::string>&)),
                 (override));
 
-    MOCK_METHOD((const std::string&),
-                getName,
-                (),
-                (const, override));
+    const std::string& getName() const override
+    {
+        return mName;
+    }
+
+private:
+    const std::string mName = "AOP_AbstractObservablePluginMock";
 };
 
 class AOP_PublicObserverMock : public ObservablePlugin::PluginObserver {

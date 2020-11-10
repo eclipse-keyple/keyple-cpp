@@ -67,6 +67,12 @@ public:
      * Should stop/interrupt the monitoring job
      */
     virtual void stop() = 0;
+
+protected:
+    /**
+     * C++ vs. Java: running flag
+     */
+    std::atomic<bool> mRunning = false;
 };
 
 }
