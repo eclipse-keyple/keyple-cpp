@@ -56,7 +56,7 @@ void AbstractObservableLocalReader::startSeDetection(
 
 void AbstractObservableLocalReader::stopSeDetection()
 {
-    mLogger->trace("[%] stop Se Detection\n", getName());
+    mLogger->trace("[%] stop SE Detection\n", getName());
 
     if (mStateService)
         mStateService->onEvent(InternalEvent::STOP_DETECT);
@@ -118,10 +118,8 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
                     mDefaultSelectionsRequest->getChannelControl());
 
             for (auto seResponse : seResponses) {
-                if (seResponse != nullptr &&
-                    seResponse->getSelectionStatus()->hasMatched()) {
-                    mLogger->trace("[%] a default selection has matched\n",
-                                  getName());
+                if (seResponse != nullptr && seResponse->getSelectionStatus()->hasMatched()) {
+                    mLogger->trace("[%] a default selection has matched\n", getName());
                     aSeMatched = true;
                     break;
                 }
@@ -129,53 +127,46 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
 
             if (mNotificationMode ==
                 ObservableReader::NotificationMode::MATCHED_ONLY) {
-                /*
-                 * Notify only if a SE matched the selection, just ignore if not
-                 */
+                /* Notify only if a SE matched the selection, just ignore if not */
                 if (aSeMatched) {
                     return std::make_shared<ReaderEvent>(
-                        getPluginName(), getName(),
-                        ReaderEvent::EventType::SE_MATCHED,
-                        std::make_shared<DefaultSelectionsResponse>(
-                            seResponses));
+                                    getPluginName(),
+                                    getName(),
+                                    ReaderEvent::EventType::SE_MATCHED,
+                                    std::make_shared<DefaultSelectionsResponse>(seResponses));
                 } else {
                     mLogger->trace("[%] selection hasn't matched, do not throw" \
-                                  " any event because of MATCHED_ONLY flag\n",
-                                  getName());
+                                   " any event because of MATCHED_ONLY flag\n",
+                                   getName());
                     return nullptr;
                 }
             } else {
                 /* ObservableReader::NotificationMode::ALWAYS */
                 if (aSeMatched) {
-                    /*
-                     * The SE matched, notify a SE_MATCHED event with the
-                     * received response.
-                     */
+                    /* The SE matched, notify a SE_MATCHED event with the received response */
                     return std::make_shared<ReaderEvent>(
-                        getPluginName(), getName(),
-                        ReaderEvent::EventType::SE_MATCHED,
-                        std::make_shared<DefaultSelectionsResponse>(
-                            seResponses));
+                               getPluginName(),
+                               getName(),
+                               ReaderEvent::EventType::SE_MATCHED,
+                               std::make_shared<DefaultSelectionsResponse>(seResponses));
                 } else {
                     /*
                      * The SE didn't match, notify an SE_INSERTED event with the
                      * received response
                      */
                     mLogger->trace("[%] none of % default selection matched\n",
-                                  getName(), seResponses.size());
+                                   getName(),
+                        seResponses.size());
 
                     return std::make_shared<ReaderEvent>(
-                        getPluginName(), getName(),
-                        ReaderEvent::EventType::SE_INSERTED,
-                        std::make_shared<DefaultSelectionsResponse>(
-                            seResponses));
+                               getPluginName(),
+                               getName(),
+                               ReaderEvent::EventType::SE_INSERTED,
+                               std::make_shared<DefaultSelectionsResponse>(seResponses));
                 }
             }
         } catch (const KeypleReaderException& e) {
-            /*
-             * The last transmission failed, close the logical and physical
-             * channels.
-             */
+            /* The last transmission failed, close the logical and physical channels */
             closeLogicalAndPhysicalChannels();
             mLogger->debug("An IO Exception occurred while processing the "
                           "default selection. %\n", e);

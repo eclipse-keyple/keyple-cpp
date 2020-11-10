@@ -23,7 +23,7 @@ int main(int argc, char** argv)
     /* Initialize GTest */
     ::InitGoogleTest(&argc, argv);
 
-    Logger::setLoggerLevel(Logger::Level::logError);
+    Logger::setLoggerLevel(Logger::Level::logTrace);
 
     /* Run */
     return RUN_ALL_TESTS();

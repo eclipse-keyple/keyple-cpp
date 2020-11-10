@@ -65,9 +65,21 @@ StubReaderImpl::StubReaderImpl(const std::string& pluginName,
 StubReaderImpl::~StubReaderImpl()
 {
     /* Force threads to stop */
+    mShuttingDown = true;
+
+    /*
+     * I would rather avoid that, base classes virtual destructors will end up
+     * calling stopWaitForCard() and stopWaitForCardRemoval() at a time where
+     * the class state is unfortunatly unknown (seems like some class members
+     * are already gone. Let's stop them first here, double call is no problem.
+     */
     stopWaitForCard();
+    while(mLoopWaitSeOngoing)
+        Thread::sleep(1);
+
     stopWaitForCardRemoval();
-    stopSeDetection();
+    while(mLoopWaitSeRemovalOngoing)
+        Thread::sleep(1);
 }
 
 const std::vector<uint8_t>& StubReaderImpl::getATR()
@@ -121,12 +133,14 @@ bool StubReaderImpl::protocolFlagMatches(const std::shared_ptr<SeProtocol> proto
     Pattern* p = Pattern::compile(selectionMask);
     const std::string& protocol = mSe->getSeProcotol();
     if (!p->matcher(protocol)->matches()) {
-        mLogger->trace("[%] protocolFlagMatches => unmatching SE. " \
-                       "PROTOCOLFLAG = %\n", getName(), protocolFlag);
+        mLogger->trace("[%] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %\n",
+                       getName(),
+                       protocolFlag);
         result = false;
     } else {
-        mLogger->trace("[%] protocolFlagMatches => matching SE. PROTOCOLFLAG ="\
-			          " %\n", getName(), protocolFlag);
+        mLogger->trace("[%] protocolFlagMatches => matching SE. PROTOCOLFLAG = %\n",
+                       getName(),
+                       protocolFlag);
         result = true;
     }
     //} else {
@@ -188,9 +202,14 @@ std::shared_ptr<StubSecureElement> StubReaderImpl::getSe()
 bool StubReaderImpl::waitForCardPresent()
 {
     mLoopWaitSe = true;
+    mLoopWaitSeOngoing = true;
+
+    mLogger->trace("[%] waitForCardPresent\n", getName());
 
     while (mLoopWaitSe) {
         if (checkSePresence()) {
+            mLogger->trace("[%] card present\n", getName());
+            mLoopWaitSeOngoing = false;
             return true;
         }
 
@@ -201,6 +220,8 @@ bool StubReaderImpl::waitForCardPresent()
         }
     }
 
+    mLogger->trace("[%] waitForCardPresent - complete\n", getName());
+    mLoopWaitSeOngoing = false;
     return false;
     // logger.trace("[{}] no card was inserted", this.getName());
     // return false;
@@ -208,16 +229,21 @@ bool StubReaderImpl::waitForCardPresent()
 
 void StubReaderImpl::stopWaitForCard()
 {
+    /* Do not log anything here! */
     mLoopWaitSe = false;
 }
 
 bool StubReaderImpl::waitForCardAbsentNative()
 {
     mLoopWaitSeRemoval = true;
+    mLoopWaitSeRemovalOngoing = true;
+
+    mLogger->trace("[%] waitForCardAbsentNative\n", getName());
 
     while (mLoopWaitSeRemoval) {
         if (!checkSePresence()) {
             mLogger->trace("[%] card removed\n", getName());
+            mLoopWaitSeRemovalOngoing = false;
             return true;
         }
 
@@ -228,6 +254,8 @@ bool StubReaderImpl::waitForCardAbsentNative()
         }
     }
 
+    mLogger->trace("[%] waitForCardAbsentNative - complete\n", getName());
+    mLoopWaitSeRemovalOngoing = false;
     return false;
     // logger.trace("[{}] no card was removed", this.getName());
     // return false;
@@ -235,14 +263,14 @@ bool StubReaderImpl::waitForCardAbsentNative()
 
 void StubReaderImpl::stopWaitForCardRemoval()
 {
+    /* Do not log anything here! */
     mLoopWaitSeRemoval = false;
 }
 
 std::shared_ptr<ObservableReaderStateService> StubReaderImpl::initStateService()
 {
     if (mExecutorService == nullptr)
-        throw IllegalArgumentException("Executor service has not been "
-                                       "initialized");
+        throw IllegalArgumentException("Executor service has not been initialized");
 
     std::map<MonitoringState, std::shared_ptr<AbstractObservableState>> states;
 

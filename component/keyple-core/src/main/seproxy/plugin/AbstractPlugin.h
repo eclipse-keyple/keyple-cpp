@@ -40,12 +40,7 @@ using namespace keyple::common;
  */
 class KEYPLECORE_API AbstractPlugin : public AbstractSeProxyComponent, public virtual ReaderPlugin {
 public:
-    using ReaderPlugin::getName;
-
-    /**
-     *
-     */
-    void initReaders();
+    using AbstractSeProxyComponent::getName;
 
     /**
      * Returns the current readers name instance map.

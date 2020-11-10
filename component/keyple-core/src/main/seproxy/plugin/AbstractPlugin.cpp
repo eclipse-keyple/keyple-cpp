@@ -34,8 +34,7 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-AbstractPlugin::AbstractPlugin(const std::string& name)
-: AbstractSeProxyComponent(name)
+AbstractPlugin::AbstractPlugin(const std::string& name) : AbstractSeProxyComponent(name)
 {
     /*
      * /!\ C++ vs. Java: C++ cannot call a pure virtual function from a
@@ -55,7 +54,7 @@ const std::set<std::string> AbstractPlugin::getReaderNames() const
 {
     std::set<std::string> readerNames;
 
-    for (const auto& reader : mNativeReaders)
+    for (auto& reader : mNativeReaders)
         readerNames.insert(reader.first);
 
     return readerNames;

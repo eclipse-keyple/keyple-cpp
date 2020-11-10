@@ -23,46 +23,61 @@ ObservableReaderStateService::ObservableReaderStateService(
     std::map<MonitoringState,
     std::shared_ptr<AbstractObservableState>> states,
     const MonitoringState initState)
-: reader(reader), states(states)
+: mReader(reader), mStates(states)
 {
     switchState(initState);
 }
 
+ObservableReaderStateService::~ObservableReaderStateService()
+{
+    mLogger->trace("terminating states jobs\n");
+    for (auto& state : mStates) {
+        if (state.second && state.second->monitoringJob)
+            state.second->monitoringJob->stop();
+    }
+}
+
 void ObservableReaderStateService::onEvent(const InternalEvent event)
 {
-    this->currentState->onEvent(event);
+    mCurrentState->onEvent(event);
 }
 
 void ObservableReaderStateService::switchState(const MonitoringState stateId)
 {
-    if (currentState != nullptr) {
-        logger->trace("[%] Switch currentState from % to %\n",
-                      reader->getName(),
-                      currentState->getMonitoringState(),
+    /* C++ vs. Java: thread management */
+    if (mReader->mShuttingDown)
+        return;
+
+    if (mCurrentState != nullptr) {
+        mLogger->trace("[%] Switch currentState from % to %\n",
+                      mReader->getName(),
+                      mCurrentState->getMonitoringState(),
                       stateId);
 
-        currentState->onDeactivate();
+        mCurrentState->onDeactivate();
     } else {
-        logger->trace("[%] Switch to a new currentState %\n", reader->getName(), stateId);
+        mLogger->trace("[%] Switch to a new currentState %\n", mReader->getName(), stateId);
     }
 
     /* Switch currentState */
-    currentState = this->states.find(stateId)->second;
+    mCurrentState = mStates.find(stateId)->second;
 
-    logger->trace("[%] New currentState %\n", reader->getName(),currentState->getMonitoringState());
+    mLogger->trace("[%] New currentState %\n", 
+                   mReader->getName(),
+                   mCurrentState->getMonitoringState());
 
     /* onActivate the new current state */
-    currentState->onActivate();
+    mCurrentState->onActivate();
 }
 
 const std::shared_ptr<AbstractObservableState> ObservableReaderStateService::getCurrentState() const
 {
-    return currentState;
+    return mCurrentState;
 }
 
 const MonitoringState& ObservableReaderStateService::getCurrentMonitoringState() const
 {
-    return this->currentState->getMonitoringState();
+    return mCurrentState->getMonitoringState();
 }
 
 }

@@ -41,9 +41,7 @@ using namespace keyple::common;
  * The {@link AbstractThreadedObservablePlugin} class provides the means to
  * observe a plugin (insertion/removal of readers) using a monitoring thread.
  */
-class KEYPLECORE_API AbstractThreadedObservablePlugin
-: public AbstractObservablePlugin,
-  public std::enable_shared_from_this<AbstractThreadedObservablePlugin> {
+class KEYPLECORE_API AbstractThreadedObservablePlugin : public AbstractObservablePlugin {
 public:
     /**
      * Add a plugin observer.

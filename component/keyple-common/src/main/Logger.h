@@ -57,11 +57,6 @@ public:
     Logger(const std::string& className, std::mutex* mtx);
 
     /**
-     * Destructor
-     */
-    ~Logger();
-
-    /**
      *
      */
     std::string getClassName();

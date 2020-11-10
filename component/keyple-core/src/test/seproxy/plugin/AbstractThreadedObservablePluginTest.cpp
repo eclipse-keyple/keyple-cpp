@@ -23,8 +23,6 @@ using namespace keyple::core::seproxy::plugin;
 class ATOP_AbstractThreadedObservablePluginMock
 : public AbstractThreadedObservablePlugin {
 public:
-    const std::set<std::string> readerNames;
-
     ATOP_AbstractThreadedObservablePluginMock(const std::string& name)
     : AbstractThreadedObservablePlugin(name) {}
 
@@ -48,20 +46,28 @@ public:
                 (const std::string& name),
                 (override));
 
-    MOCK_METHOD(const std::set<std::string>&,
-                fetchNativeReadersNames,
-                (),
-                (override));
-
     MOCK_METHOD(void,
                 setParameters,
                 ((const std::map<const std::string, const std::string>&)),
                 (override));
 
-    MOCK_METHOD((const std::string&),
-                getName,
-                (),
-                (const, override));
+    bool isMonitoring()
+    {
+        return AbstractThreadedObservablePlugin::isMonitoring();
+    }
+
+    const std::set<std::string>& fetchNativeReadersNames() override
+    {
+        return readerNames;
+    }
+
+    const std::string& getName() const override
+    {
+        return AbstractThreadedObservablePlugin::getName();
+    }
+
+private:
+    std::set<std::string> readerNames;
 };
 
 class ATOP_PublicObserverMock : public ObservablePlugin::PluginObserver {
@@ -92,33 +98,20 @@ TEST(AbstractThreadedObservablePluginTest, addObserver)
 {
     ATOP_AbstractThreadedObservablePluginMock plugin("plugin");
 
-    std::shared_ptr<ATOP_PublicObserverMock> observer =
-        std::make_shared<ATOP_PublicObserverMock>();
-
-    EXPECT_CALL(plugin, fetchNativeReadersNames())
-        .WillRepeatedly(ReturnRef(plugin.readerNames));
-
+    auto observer = std::make_shared<ATOP_PublicObserverMock>();
+   
     plugin.addObserver(observer);
 
     ASSERT_EQ(plugin.countObservers(), 1);
-
-    /*
-     * Cannot test protected function, cannot override it in mock, need to find
-     * a way
-     */
-    //ASSERT_TRUE(plugin.isMonitoring());
+    ASSERT_TRUE(plugin.isMonitoring());
 }
 
 TEST(AbstractThreadedObservablePluginTest, removeObserver)
 {
     ATOP_AbstractThreadedObservablePluginMock plugin("plugin");
 
-    std::shared_ptr<ATOP_PublicObserverMock> observer =
-        std::make_shared<ATOP_PublicObserverMock>();
-
-    EXPECT_CALL(plugin, fetchNativeReadersNames())
-        .WillRepeatedly(ReturnRef(plugin.readerNames));
-
+    auto observer = std::make_shared<ATOP_PublicObserverMock>();
+    
     plugin.addObserver(observer);
 
     ASSERT_EQ(plugin.countObservers(), 1);
@@ -126,23 +119,14 @@ TEST(AbstractThreadedObservablePluginTest, removeObserver)
     plugin.removeObserver(observer);
 
     ASSERT_EQ(plugin.countObservers(), 0);
-
-    /*
-     * Cannot test protected function, cannot override it in mock, need to find
-     * a way
-     */
-    //ASSERT_FALSE(plugin.isMonitoring());
+    ASSERT_FALSE(plugin.isMonitoring());
 }
 
 TEST(AbstractThreadedObservablePluginTest, clearObservers)
 {
     ATOP_AbstractThreadedObservablePluginMock plugin("plugin");
 
-    std::shared_ptr<ATOP_PublicObserverMock> observer =
-        std::make_shared<ATOP_PublicObserverMock>();
-
-    EXPECT_CALL(plugin, fetchNativeReadersNames())
-        .WillRepeatedly(ReturnRef(plugin.readerNames));
+    auto observer = std::make_shared<ATOP_PublicObserverMock>();
 
     plugin.addObserver(observer);
 
@@ -151,12 +135,7 @@ TEST(AbstractThreadedObservablePluginTest, clearObservers)
     plugin.clearObservers();
 
     ASSERT_EQ(plugin.countObservers(), 0);
-
-    /*
-     * Cannot test protected function, cannot override it in mock, need to find
-     * a way
-     */
-     //ASSERT_FALSE(plugin.isMonitoring());
+    ASSERT_FALSE(plugin.isMonitoring());
 }
 
 
@@ -164,19 +143,15 @@ TEST(AbstractThreadedObservablePluginTest, notifyObservers)
 {
     ATOP_AbstractThreadedObservablePluginMock plugin("plugin");
 
-    std::shared_ptr<ATOP_PublicObserverMock> observer =
-        std::make_shared<ATOP_PublicObserverMock>();
-
-    EXPECT_CALL(plugin, fetchNativeReadersNames())
-        .WillRepeatedly(ReturnRef(plugin.readerNames));
+    auto observer = std::make_shared<ATOP_PublicObserverMock>();
 
     plugin.addObserver(observer);
 
     ASSERT_FALSE(observer->notified);
 
-    std::shared_ptr<PluginEvent> event =
-        std::make_shared<PluginEvent>("plugin", "reader",
-                                      PluginEvent::EventType::READER_CONNECTED);
+    auto event = std::make_shared<PluginEvent>("plugin",
+                                               "reader",
+                                               PluginEvent::EventType::READER_CONNECTED);
 
     plugin.notifyObservers(event);
 

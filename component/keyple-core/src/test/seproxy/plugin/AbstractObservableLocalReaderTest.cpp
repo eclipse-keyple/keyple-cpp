@@ -531,7 +531,7 @@ TEST(AbstractObservableLocalReaderTest, communicationClosing_forced)
     configure(reader);
 
     EXPECT_CALL(reader, processSeRequest(_,_))
-        .Times(1)
+        .Times(AtLeast(1))
         .WillRepeatedly(Return(getASeResponse()));
 
     /* Keep open */
