@@ -113,6 +113,8 @@ enum class InternalEvent {
 class KEYPLECORE_API AbstractObservableLocalReader
 : public AbstractLocalReader, public virtual ObservableReaderNotifier {
 public:
+    using AbstractLocalReader::getName;
+
     /**
      * Reader constructor
      *

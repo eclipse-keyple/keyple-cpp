@@ -48,10 +48,6 @@ public:
 
 class SS_SeCommandMock final : public SeCommand {
 public:
-
-    static const std::shared_ptr<SS_SeCommandMock> COMMAND_1;
-    static const std::shared_ptr<SS_SeCommandMock> COMMAND_2;
-
     SS_SeCommandMock(const std::string name, const uint8_t instructionByte)
     : mName(name), mInstructionByte(instructionByte) {}
 
@@ -80,14 +76,6 @@ private:
     const uint8_t mInstructionByte;
 };
 
-const std::shared_ptr<SS_SeCommandMock> SS_SeCommandMock::COMMAND_1 =
-    std::make_shared<SS_SeCommandMock>(
-        "COMMAND_1", static_cast<uint8_t>(0xc1));
-
-const std::shared_ptr<SS_SeCommandMock> SS_SeCommandMock::COMMAND_2 =
-    std::make_shared<SS_SeCommandMock>(
-        "COMMAND_2", static_cast<uint8_t>(0xc2));
-
 class SS_AbstractSeSelectionRequestMock
 : public AbstractSeSelectionRequest<AbstractApduCommandBuilder> {
 public:
@@ -113,13 +101,14 @@ std::unique_ptr<SeSelection> createSeSelection()
 {
     std::unique_ptr<SeSelection> selection(new SeSelection());
 
+    auto COMMAND_1 = std::make_shared<SS_SeCommandMock>("COMMAND_1", static_cast<uint8_t>(0xc1));
+
     /* Create and add two selection cases */
     std::shared_ptr<SeSelector::AidSelector> aidSelector1 =
         SeSelector::AidSelector::builder()
             ->aidToSelect("AABBCCDDEE")
             .fileOccurrence(SeSelector::AidSelector::FileOccurrence::FIRST)
-            .fileControlInformation(SeSelector::AidSelector
-                                    ::FileControlInformation::FCI)
+            .fileControlInformation(SeSelector::AidSelector::FileControlInformation::FCI)
             .build();
 
     std::shared_ptr<SeSelector> seSelector1 =
@@ -132,13 +121,13 @@ std::unique_ptr<SeSelection> createSeSelection()
     std::vector<std::shared_ptr<AbstractApduCommandBuilder>> commandBuilders;
     commandBuilders.push_back(
         std::make_shared<SS_AbstractApduCommandBuilderMock>(
-            SS_SeCommandMock::COMMAND_1,
+            COMMAND_1,
             std::make_shared<ApduRequest>(
                 "Apdu 001122334455", ByteArrayUtil::fromHex("001122334455"),
                 false)));
     commandBuilders.push_back(
         std::make_shared<SS_AbstractApduCommandBuilderMock>(
-            SS_SeCommandMock::COMMAND_1,
+            COMMAND_1,
             std::make_shared<ApduRequest>(
                 "Apdu 66778899AABB", ByteArrayUtil::fromHex("66778899AABB"),
                  true)));
@@ -298,8 +287,7 @@ TEST(SeSelectionTest, SeSelection2_processDefaultSelection_Empty)
     }
 
     ASSERT_FALSE(selectionsResult->hasActiveSelection());
-    ASSERT_EQ(
-        static_cast<int>(selectionsResult->getMatchingSelections().size()), 0);
+    ASSERT_EQ(static_cast<int>(selectionsResult->getMatchingSelections().size()), 0);
 }
 
 TEST(SeSelectionTest, SeSelection2_processDefaultSelection_NotMatching)

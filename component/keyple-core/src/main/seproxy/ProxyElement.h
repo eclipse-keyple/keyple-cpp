@@ -31,16 +31,12 @@ public:
      */
     virtual ~ProxyElement() = default;
 
-
     /**
      * C++ vs. Java: hack to avoid linker issues. Should be removed in 1.0
      *
      * @return the unique name of the item
      */
-    virtual const std::string& getName() const
-    {
-        return mName;
-    }
+    virtual const std::string& getName() const = 0;
 
     /**
      * Gets the parameters
@@ -72,12 +68,6 @@ public:
     {
         (void)parameters;
     }
-
-private:
-    /**
-     * C++ vs. Java: hack to avoid linker issues. Should be removed in 1.0
-     */
-    std::string mName = "";
 };
 
 }

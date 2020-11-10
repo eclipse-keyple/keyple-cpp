@@ -50,11 +50,6 @@ using namespace keyple::common;
 class KEYPLECORE_API AbstractReader : public AbstractSeProxyComponent, public virtual ProxyReader {
 public:
     /**
-     *
-     */
-    using AbstractSeProxyComponent::getName;
-
-    /**
      * Execute the transmission of a list of {@link SeRequest} and returns a list of
      * {@link SeResponse}
      * <p>
@@ -106,6 +101,15 @@ public:
      * @return the plugin name String
      */
     const std::string& getPluginName() const;
+
+    /**
+     * C++ vs. Java: have to override the method here to link ProxyElement interface to actual
+     *               implementation
+     */
+    const std::string& getName() const override
+    {
+        return AbstractSeProxyComponent::getName();
+    }
 
 protected:
     /**

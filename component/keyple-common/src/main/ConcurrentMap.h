@@ -109,34 +109,26 @@ public:
     /**
      *
      */
-    iterator erase(iterator position)
-    {
-        const std::lock_guard<std::mutex> lock(mMutex);
-        if (position != mMap.end())
-            return mMap.erase(position);
-        else
-            return mMap.end();
-    }
-
-    /**
-     *
-     */
-    iterator erase(const_iterator position)
-    {
-        const std::lock_guard<std::mutex> lock(mMutex);
-        if (position != mMap.end())
-            return mMap.erase(position);
-        else
-            return mMap.end();
-    }
-
-    /**
-     *
-     */
     size_type erase(const K& k)
     {
         const std::lock_guard<std::mutex> lock(mMutex);
-        return mMap.erase(k);
+        auto it = mMap.find(k);
+        if (it != mMap.end())
+            return mMap.erase(k);
+        else
+            return 0;
+    }
+
+    /**
+     *
+     */
+    size_type eraseFirstElement()
+    {
+        const std::lock_guard<std::mutex> lock(mMutex);
+        if (mMap.begin() == mMap.end())
+            return 0;
+        else
+            return mMap.erase(mMap.begin()->first);
     }
 
     /**
@@ -144,6 +136,7 @@ public:
      */
     void clear() noexcept
     {
+        const std::lock_guard<std::mutex> lock(mMutex);
         mMap.clear();
     }
 
@@ -157,13 +150,16 @@ public:
     }
 
     /**
+     *
      */
     iterator begin() noexcept
     {
+        const std::lock_guard<std::mutex> lock(mMutex);
         return mMap.begin();
     }
 
     /**
+     *
      */
     const_iterator begin() const noexcept
     {
@@ -175,6 +171,7 @@ public:
      */
     iterator end() noexcept
     {
+        const std::lock_guard<std::mutex> lock(mMutex);
         return mMap.end();
     }
 
@@ -189,9 +186,8 @@ public:
     /**
      *
      */
-    size_type count(const K& k)
+    size_type count(const K& k) const
     {
-        const std::lock_guard<std::mutex> lock(mMutex);
         return mMap.count(k);
     }
 
@@ -199,8 +195,9 @@ public:
      * Let's avoid using the mutex here as we would have to drop the 'const'
      * from the function (impacts in other classes I'd rather avoid)
      */
-    size_type size() const noexcept
+    size_type size() noexcept
     {
+        const std::lock_guard<std::mutex> lock(mMutex);
         return mMap.size();
     }
 

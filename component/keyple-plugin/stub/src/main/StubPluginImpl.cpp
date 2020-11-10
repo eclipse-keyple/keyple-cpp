@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "StubPluginImpl.h"
 
@@ -31,28 +30,25 @@ StubPluginImpl::StubPluginImpl(const std::string& pluginName)
 : AbstractThreadedObservablePlugin(pluginName)
 {
     /*
-     * Monitoring is not handled by a lower layer (as in PC/SC), reduce the
-     * threading period to 10 ms to speed up responsiveness.
+     * Monitoring is not handled by a lower layer (as in PC/SC), reduce the threading period to 10
+     * ms to speed up responsiveness.
      */
     mThreadWaitTimeout = 10;
 
     initNativeReaders();
 }
 
-const std::map<const std::string, const std::string>&
-    StubPluginImpl::getParameters() const
+const std::map<const std::string, const std::string>& StubPluginImpl::getParameters() const
 {
     return mParameters;
 }
 
-void StubPluginImpl::setParameter(const std::string& key,
-                                  const std::string& value)
+void StubPluginImpl::setParameter(const std::string& key, const std::string& value)
 {
     mParameters.insert({key, value});
 }
 
-void StubPluginImpl::plugStubReader(const std::string& readerName,
-                                    bool synchronous)
+void StubPluginImpl::plugStubReader(const std::string& readerName, bool synchronous)
 {
     plugStubReader(readerName, TransmissionMode::CONTACTLESS, synchronous);
 }
@@ -64,22 +60,18 @@ void StubPluginImpl::plugStubReader(const std::string& readerName,
     mLogger->info("Plugging a new reader with readerName %\n", readerName);
 
     /* Add the native reader to the native readers list */
-    bool exist =
-        mConnectedStubNames.find(readerName) != mConnectedStubNames.end();
+    bool exist =  mConnectedStubNames.find(readerName) != mConnectedStubNames.end();
 
     if (!exist && synchronous) {
         /* add the reader as a new reader to the readers list */
-        mNativeReaders.insert(
-            {readerName,
-             std::make_shared<StubReaderImpl>(
-                 getName(), readerName, transmissionMode)});
+        auto reader = std::make_shared<StubReaderImpl>(getName(), readerName, transmissionMode);
+        mNativeReaders.insert({readerName, reader });
     }
 
     mConnectedStubNames.insert(readerName);
 
     if (exist) {
-        mLogger->error("Reader with readerName % was already plugged\n",
-                       readerName);
+        mLogger->error("Reader with readerName % was already plugged\n", readerName);
     }
 }
 
@@ -88,10 +80,7 @@ void StubPluginImpl::plugStubReaders(const std::set<std::string>& readerNames,
 {
     mLogger->debug("Plugging % readers\n", readerNames.size());
 
-    /*
-     * Plug stub readers that were not plugged already
-     * Duplicate readerNames
-     */
+    /* Plug stub readers that were not plugged already duplicate readerNames */
     std::set<std::string> newNames = readerNames;
 
     /* Remove already connected stubNames */
@@ -125,8 +114,7 @@ void StubPluginImpl::unplugStubReader(const std::string& readerName,
                                       bool synchronous)
 {
     if (mConnectedStubNames.find(readerName) == mConnectedStubNames.end()) {
-        mLogger->warn("unplugStubReader() No reader found with name %\n",
-                      readerName);
+        mLogger->warn("unplugStubReader() No reader found with name %\n", readerName);
     } else {
         /* Remove the reader from the readers list */
         if (synchronous) {
@@ -137,13 +125,14 @@ void StubPluginImpl::unplugStubReader(const std::string& readerName,
         }
 
         /* Remove the native reader from the native readers list */
-        mLogger->info("Unplugged reader with name %, connectedStubNames size" \
-                      ": %\n", readerName, mConnectedStubNames.size());
+        mLogger->info("Unplugged reader with name %, connectedStubNames size : %\n", 
+                      readerName, 
+                      mConnectedStubNames.size());
     }
 }
 
 void StubPluginImpl::unplugStubReaders(const std::set<std::string>& readerNames,
-                                       bool synchronous)
+                                       const bool synchronous)
 {
     mLogger->info("Unplug % stub readers\n", readerNames.size());
     mLogger->debug("Unplug stub readers.. %\n", readerNames);

@@ -88,17 +88,18 @@ public:
     /**
      *
      */
-    void plugStubReaders(const std::set<std::string>& readerNames, bool synchronous) override;
+    void plugStubReaders(const std::set<std::string>& readerNames, const bool synchronous) override;
 
     /**
      *
      */
-    void unplugStubReader(const std::string& readerName, bool synchronous) override;
+    void unplugStubReader(const std::string& readerName, const bool synchronous) override;
 
     /**
      *
      */
-    void unplugStubReaders(const std::set<std::string>& readerNames, bool synchronous) override;
+    void unplugStubReaders(const std::set<std::string>& readerNames, const bool synchronous)
+        override;
 
     /**
      * Fetch the list of connected native reader (from a simulated list) and
@@ -107,6 +108,15 @@ public:
      * @return connected readers' name list
      */
     const std::set<std::string>& fetchNativeReadersNames() override;
+
+    /**
+     * C++ vs. Java: have to override the method here to link ProxyElement interface to actual
+     *               implementation
+     */
+    const std::string& getName() const override
+    {
+        return AbstractSeProxyComponent::getName();
+    }
 
 protected:
     /**

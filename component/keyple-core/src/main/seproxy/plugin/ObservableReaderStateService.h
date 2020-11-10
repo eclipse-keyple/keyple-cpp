@@ -32,7 +32,7 @@ namespace plugin {
  * Manages the internal state of an AbstractObservableLocalReader Process InternalEvent against the
  * current state
  */
-class KEYPLECORE_API ObservableReaderStateService {
+class KEYPLECORE_API ObservableReaderStateService final {
 public:
     /**
      *
@@ -41,6 +41,11 @@ public:
         AbstractObservableLocalReader* reader,
         std::map<MonitoringState, std::shared_ptr<AbstractObservableState>> states,
         const MonitoringState initState);
+
+    /**
+     *
+     */
+    ~ObservableReaderStateService();
 
     /**
      * Thread safe method to communicate an internal event to this reader Use this method to inform
@@ -65,8 +70,9 @@ public:
      */
     const MonitoringState& getCurrentMonitoringState() const;
 
-protected:
     /**
+     * C++ vs. Java: protected in Java, made public to ease thread cancellation when needed
+     *
      * Get reader current state
      *
      * @return reader current state
@@ -77,23 +83,23 @@ private:
     /**
      * Logger
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(ObservableReaderStateService));
 
     /**
      * AbstractObservableLocalReader to manage event and states
      */
-    AbstractObservableLocalReader* reader;
+    AbstractObservableLocalReader* mReader;
 
     /**
      * Map of all instantiated states possible
      */
-    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>> states;
+    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>> mStates;
 
     /**
      * Current currentState of the Observable Reader
      */
-    std::shared_ptr<AbstractObservableState> currentState;
+    std::shared_ptr<AbstractObservableState> mCurrentState;
 };
 
 }

@@ -40,8 +40,16 @@ using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::util;
 
+#ifdef _WIN32
+    /* Alignment issue raised by GMock */
+    #pragma warning(disable : 4121)
+#endif
+
 class AR_AbstractReaderMock : public AbstractReader {
 public:
+    bool processSeRequestsCalled = false;
+    bool processSeRequestCalled = false;
+
     AR_AbstractReaderMock(const std::string& pluginName, const std::string& name)
     : AbstractReader(pluginName, name) {}
 
@@ -60,16 +68,67 @@ public:
                 (),
                 (const, override));
 
-    MOCK_METHOD(std::vector<std::shared_ptr<SeResponse>>,
-                processSeRequests,
-                (const std::vector<std::shared_ptr<SeRequest>>&,
-                 const MultiSeRequestProcessing&, const ChannelControl&),
-                (override));
+    std::shared_ptr<AnswerToReset> getAAtr()
+    {
+        return std::make_shared<AnswerToReset>(
+            ByteArrayUtil::fromHex("3B8F8001804F0CA000000306030001000000006A"));
+    }
 
-    MOCK_METHOD(std::shared_ptr<SeResponse>,
-                processSeRequest,
-                (const std::shared_ptr<SeRequest>, const ChannelControl&),
-                (override));
+    std::shared_ptr<ApduResponse> getAFCI()
+    {
+        return std::make_shared<ApduResponse>(ByteArrayUtil::fromHex("9000"), nullptr);
+    }
+
+    std::shared_ptr<ApduResponse> getSuccessfullResponse()
+    {
+        return std::make_shared<ApduResponse>(
+            ByteArrayUtil::fromHex("FEDCBA98 9000h"), nullptr);
+    }
+
+    std::vector<std::shared_ptr<ApduResponse>> getAListOfAPDUs()
+    {
+        std::vector<std::shared_ptr<ApduResponse>> apdus;
+
+        apdus.push_back(getSuccessfullResponse());
+
+        return apdus;
+    }
+
+    std::shared_ptr<SeResponse> getASeResponse()
+    {
+        std::vector<std::shared_ptr<ApduResponse>> apdus = getAListOfAPDUs();
+        return std::make_shared<SeResponse>(
+                   true,
+                   true,
+                   std::make_shared<SelectionStatus>(getAAtr(), getAFCI(), true), apdus);
+    }
+
+    std::shared_ptr<SeResponse> processSeRequest(const std::shared_ptr<SeRequest>,
+                                                 const ChannelControl&) override
+    {
+        processSeRequestCalled = true;
+        return getASeResponse();   
+    }
+
+    std::vector<std::shared_ptr<SeResponse>> getSeResponses()
+    {
+        std::vector<std::shared_ptr<SeResponse>> responses;
+        responses.push_back(getASeResponse());
+        return responses;
+    }
+
+    std::vector<std::shared_ptr<SeResponse>> processSeRequests(
+        const std::vector<std::shared_ptr<SeRequest>>& seRequests,
+        const MultiSeRequestProcessing& multiSeRequestProcessing,
+        const ChannelControl& channelControl) override
+    {
+        (void)seRequests;
+        (void)multiSeRequestProcessing;
+        (void)channelControl;
+
+        processSeRequestsCalled = true;
+        return getSeResponses();
+    }
 
     MOCK_METHOD(bool,
                 isSePresent,
@@ -85,18 +144,11 @@ public:
                 setSeProtocolSetting,
                 ((const std::map<std::shared_ptr<SeProtocol>, std::string>&)),
                 (override));
+
     MOCK_METHOD(void,
                 setParameters,
                 ((const std::map<const std::string, const std::string>&)),
                 (override));
-
-    const std::string& getName() const override
-    {
-        return mName;
-    }
-
-private:
-    const std::string mName = "AR_AbstractReaderMock";
 };
 
 static const std::string PLUGIN_NAME = "AbstractReaderTestP";
@@ -161,14 +213,13 @@ static std::shared_ptr<SeSelector> getSelector(
 static std::shared_ptr<SeRequest> getSeRequestSample()
 {
     std::vector<std::shared_ptr<ApduRequest>> apdus = getAapduLists();
-    std::shared_ptr<std::set<int>> selectionStatusCode =
-        getSuccessFulStatusCode();
+    std::shared_ptr<std::set<int>> selectionStatusCode = getSuccessFulStatusCode();
 
     return std::make_shared<SeRequest>(getSelector(selectionStatusCode), apdus);
 
 }
 
-static std::vector<std::shared_ptr<SeRequest>> getSeRequestSet()
+static std::vector<std::shared_ptr<SeRequest>> getSeRequestList()
 {
     std::vector<std::shared_ptr<SeRequest>> set;
     set.push_back(getSeRequestSample());
@@ -176,51 +227,7 @@ static std::vector<std::shared_ptr<SeRequest>> getSeRequestSet()
     return set;
 }
 
-static std::shared_ptr<AnswerToReset> getAAtr()
-{
-    return std::make_shared<AnswerToReset>(
-        ByteArrayUtil::fromHex("3B8F8001804F0CA000000306030001000000006A"));
-}
-
-static std::shared_ptr<ApduResponse> getAFCI()
-{
-    return std::make_shared<ApduResponse>(ByteArrayUtil::fromHex("9000"),
-                                          nullptr);
-}
-
-static std::shared_ptr<ApduResponse> getSuccessfullResponse()
-{
-    return std::make_shared<ApduResponse>(
-               ByteArrayUtil::fromHex("FEDCBA98 9000h"), nullptr);
-}
-
-static std::vector<std::shared_ptr<ApduResponse>> getAListOfAPDUs()
-{
-    std::vector<std::shared_ptr<ApduResponse>> apdus;
-
-    apdus.push_back(getSuccessfullResponse());
-
-    return apdus;
-}
-
-static std::shared_ptr<SeResponse> getASeResponse()
-{
-    std::vector<std::shared_ptr<ApduResponse>> apdus = getAListOfAPDUs();
-    return std::make_shared<SeResponse>(
-        true, true,
-        std::make_shared<SelectionStatus>(getAAtr(), getAFCI(), true), apdus);
-}
-
-static std::vector<std::shared_ptr<SeResponse>> getSeResponses()
-{
-    std::vector<std::shared_ptr<SeResponse>> responses;
-
-    responses.push_back(getASeResponse());
-
-    return responses;
-}
-
-TEST(AbstractReaderTest, AbstractReader)
+TEST(AbstractReaderTest, testConstructor)
 {
     AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
 
@@ -228,40 +235,59 @@ TEST(AbstractReaderTest, AbstractReader)
     ASSERT_EQ(r.getName(), READER_NAME);
 }
 
-TEST(AbstractReaderTest, transmitSet)
+/*
+ * TransmitSet "ts_"
+ */
+TEST(AbstractReaderTest, ts_transmit_null)
 {
     AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
 
-    std::vector<std::shared_ptr<SeRequest>> set = getSeRequestSet();
-
-    EXPECT_CALL(r, processSeRequests(_, _, _))
-        .Times(1)
-        .WillOnce(Return(getSeResponses()));
-
-    std::vector<std::shared_ptr<SeResponse>> responses =
-        r.transmitSeRequests(set, MultiSeRequestProcessing::FIRST_MATCH,
-                             ChannelControl::CLOSE_AFTER);
-
-
-    ASSERT_NE(static_cast<int>(responses.size()), 0);
-}
-
-TEST(AbstractReaderTest, transmit_NullPtr1)
-{
-    AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
-
+    /* We are just waiting right here for no exception to be thrown */
     r.transmitSeRequests(std::vector<std::shared_ptr<SeRequest>>{},
-                         MultiSeRequestProcessing::FIRST_MATCH,
+                         MultiSeRequestProcessing::FIRST_MATCH, 
                          ChannelControl::CLOSE_AFTER);
 }
 
-TEST(AbstractReaderTest, transmit_NullPtr2)
+TEST(AbstractReaderTest, ts_transmit2_null)
 {
     AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
 
-    r.transmitSeRequests(std::vector<std::shared_ptr<SeRequest>>{},
-                         MultiSeRequestProcessing::FIRST_MATCH,
-                         ChannelControl::KEEP_OPEN);
+    EXPECT_THROW(r.transmitSeRequests(std::vector<std::shared_ptr<SeRequest>>{},
+                                      MultiSeRequestProcessing::FIRST_MATCH,
+                                      ChannelControl::KEEP_OPEN),
+                 IllegalArgumentException);
+}
+
+TEST(AbstractReaderTest, ts_transmit)
+{
+    AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
+
+    std::vector<std::shared_ptr<SeRequest>> seRequests = getSeRequestList();
+    auto responses = r.transmitSeRequests(seRequests,
+                                          MultiSeRequestProcessing::FIRST_MATCH,
+                                          ChannelControl::CLOSE_AFTER);
+   
+    ASSERT_TRUE(r.processSeRequestsCalled);
+    ASSERT_NE(static_cast<int>(responses.size()), 0);
+}
+
+/*
+ * Transmit
+ */
+TEST(AbstractReaderTest, tranmist_null)
+{
+    AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
+
+    r.transmitSeRequest({}, ChannelControl::CLOSE_AFTER);
+
+    /* We are just waiting right here for no exception to be thrown */
+}
+
+TEST(AbstractReaderTest, tranmist2_null)
+{
+    AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
+
+    EXPECT_THROW(r.transmitSeRequest({}, ChannelControl::KEEP_OPEN), IllegalArgumentException);
 }
 
 TEST(AbstractReaderTest, transmit)
@@ -269,13 +295,9 @@ TEST(AbstractReaderTest, transmit)
     AR_AbstractReaderMock r(PLUGIN_NAME, READER_NAME);
 
     std::shared_ptr<SeRequest> request = getSeRequestSample();
-
-    EXPECT_CALL(r, processSeRequest(_, _))
-        .Times(1)
-        .WillOnce(Return(getASeResponse()));
-
     std::shared_ptr<SeResponse> response =
         r.transmitSeRequest(request, ChannelControl::CLOSE_AFTER);
 
+    ASSERT_TRUE(r.processSeRequestCalled);
     ASSERT_NE(response, nullptr);
 }

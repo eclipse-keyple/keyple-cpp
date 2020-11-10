@@ -73,7 +73,7 @@ TEST(StubPluginTest, instantiatePlugin)
 
     std::shared_ptr<ReaderPlugin> plugin = factory.getPlugin();
 
-   ASSERT_EQ(plugin->getName(), PLUGIN_NAME);
+    ASSERT_EQ(plugin->getName(), PLUGIN_NAME);
 }
 
 /* Plug one reader synchronously Check: Count if created */
@@ -187,8 +187,6 @@ TEST(StubPluginTest, plugMultiReadersSync_success)
 
     tearDown();
 }
-
-
 
 /* Plug and unplug many readers at once synchronously Check : count */
 TEST(StubPluginTest, plugUnplugMultiReadersSync_success)

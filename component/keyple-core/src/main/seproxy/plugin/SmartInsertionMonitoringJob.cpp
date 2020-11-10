@@ -18,12 +18,16 @@
 #include "KeypleReaderIOException.h"
 #include "InterruptedException.h"
 
-using namespace keyple::core::seproxy::exception;
+/* Common */
+#include "Thread.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace plugin {
+
+using namespace keyple::common;
+using namespace keyple::core::seproxy::exception;
 
 SmartInsertionMonitoringJob::SmartInsertionMonitoringJob(SmartInsertionReader* reader)
 : mReader(reader) {}
@@ -31,25 +35,31 @@ SmartInsertionMonitoringJob::SmartInsertionMonitoringJob(SmartInsertionReader* r
 void SmartInsertionMonitoringJob::monitoringJob(AbstractObservableState* state,
                                                 std::atomic<bool>& cancellationFlag)
 {
+    mRunning = true;
+    
     mLogger->trace("[%] Invoke waitForCardPresent asynchronously\n", mReader->getName());
 
     try {
-        if (cancellationFlag)
+        if (cancellationFlag) {
+            mRunning = false;
             throw InterruptedException("monitoring job interrupted");
+        }
 
-        if (mReader->waitForCardPresent()) {
-            mLogger->debug("throwing card inserted event\n");
-            state->onEvent(InternalEvent::SE_INSERTED);
+        if (!mReader->mShuttingDown && mReader->waitForCardPresent()) {
+            if (!mReader->mShuttingDown) {
+                mLogger->debug("throwing card inserted event\n");
+                state->onEvent(InternalEvent::SE_INSERTED);
+            }
         }
 
     } catch (KeypleReaderIOException& e) {
-        mLogger->trace("[%] waitForCardPresent => Error while polling SE with waitForCardPresent." \
-                       " %\n",
-                       mReader->getName(), e.getMessage());
+        mLogger->trace("[%] waitForCardPresent => Error while polling SE with waitForCardPresent. %\n",
+                       mReader->getName(),
+                       e.getMessage());
         state->onEvent(InternalEvent::STOP_DETECT);
     }
 
-    mLogger->debug("SmartInsertionMonitoringJob complete\n");
+    mRunning = false;
 }
 
 std::future<void> SmartInsertionMonitoringJob::startMonitoring(AbstractObservableState* state,

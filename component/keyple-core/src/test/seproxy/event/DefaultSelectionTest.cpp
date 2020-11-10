@@ -118,11 +118,6 @@ public:
         (void)parameters;
     }
 
-    const std::string& getName() const override
-    {
-        return mName;
-    }
-
     MOCK_METHOD((std::shared_ptr<SeResponse>),
                 processSeRequest,
                 (const std::shared_ptr<SeRequest>, const ChannelControl&),
@@ -151,7 +146,6 @@ private:
     std::vector<uint8_t> mAtr;
     std::map<const std::string, const std::string> mParameters;
     TransmissionMode mMode = TransmissionMode::NONE;
-    const std::string mName = "AbstractObservableLocalReaderMock";
 };
 
 static std::shared_ptr<AnswerToReset> getAAtr()
@@ -222,7 +216,7 @@ static const std::vector<std::shared_ptr<ApduResponse>> empty;
 static std::vector<std::shared_ptr<SeResponse>> getMatchingResponses()
 {
     auto response = std::make_shared<ApduResponse>(RESP_SUCCESS, STATUS_CODE_LIST);
-    auto selectionStatus = std::make_shared<SelectionStatus>(nullptr, response, false);
+    auto selectionStatus = std::make_shared<SelectionStatus>(nullptr, response, true);
     auto seResponse = std::make_shared<SeResponse>(true, false, selectionStatus, empty);
 
     std::vector<std::shared_ptr<SeResponse>> responses;
@@ -308,7 +302,7 @@ TEST(DefaultSelection, seMatched_MATCHED_ONLY)
     std::vector<std::shared_ptr<SeResponse>> responses =
         getMatchingResponses();
 
-    EXPECT_CALL(*r, transmitSeRequests(selections, multi, channel))
+    EXPECT_CALL(*r, transmitSeRequests(_,_,_))
         .Times(1)
         .WillOnce(Return(responses));
 
@@ -370,7 +364,7 @@ TEST(DefaultSelection, noEvent_IOError)
 
     /* Throw IO */
     EXPECT_CALL(*r, transmitSeRequests(selections, multi, channel))
-        .Times(1)
+        .Times(AtLeast(1))
         .WillRepeatedly(Throw(KeypleReaderIOException("io error when selecting")));
 
 

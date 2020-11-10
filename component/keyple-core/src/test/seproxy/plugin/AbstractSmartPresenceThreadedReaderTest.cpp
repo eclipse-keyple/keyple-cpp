@@ -171,10 +171,10 @@ public:
                 (),
                 (override));
 
-    MOCK_METHOD(std::shared_ptr<ReaderEvent>,
-                processSeInserted,
-                (),
-                (override));
+    std::shared_ptr<ReaderEvent> processSeInserted() override
+    {
+        return nullptr;
+    }
 
     MOCK_METHOD(void,
                 setParameters,
@@ -223,10 +223,6 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence)
     ASPTR_SmartPresenceTheadedReaderMock r(PLUGIN_NAME, READER_NAME, 1);
 
     /* SE matched */
-    EXPECT_CALL(r, processSeInserted())
-        .Times(AtMost(1))
-        .WillOnce(Return(nullptr));
-
     r.addObserver(getObs());
     Thread::sleep(100);
 
@@ -234,8 +230,7 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence)
     Thread::sleep(100);
 
     /* Does nothing */
-    ASSERT_EQ(r.getCurrentMonitoringState(),
-              MonitoringState::WAIT_FOR_START_DETECTION);
+    ASSERT_EQ(r.getCurrentMonitoringState(),  MonitoringState::WAIT_FOR_START_DETECTION);
 }
 
 TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_CONTINUE)
@@ -243,10 +238,6 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_CONTINUE)
     ASPTR_SmartPresenceTheadedReaderMock r(PLUGIN_NAME, READER_NAME, 1);
 
     /* SE matched */
-    EXPECT_CALL(r, processSeInserted())
-        .Times(AtMost(1))
-        .WillOnce(Return(nullptr));
-
     r.addObserver(getObs());
     r.startSeDetection(ObservableReader::PollingMode::REPEATING);
     Thread::sleep(100);
@@ -254,8 +245,7 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_CONTINUE)
     r.terminateSeCommunication();
     Thread::sleep(100);
 
-    ASSERT_EQ(r.getCurrentMonitoringState(),
-              MonitoringState::WAIT_FOR_SE_INSERTION);
+    ASSERT_EQ(r.getCurrentMonitoringState(),  MonitoringState::WAIT_FOR_SE_INSERTION);
 }
 
 TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_noping_STOP)
@@ -263,10 +253,7 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_noping_STOP)
     ASPTR_SmartPresenceTheadedReaderMock r(PLUGIN_NAME, READER_NAME, 1);
 
     /* SE matched */
-    EXPECT_CALL(r, processSeInserted())
-        .Times(AtMost(1))
-        .WillOnce(Return(nullptr));
-
+    
     //EXPECT_CALL(r, isSePresentPing())
     //    .Times(1)
     //    .WillOnce(Return(false));
@@ -276,10 +263,9 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_noping_STOP)
     Thread::sleep(100);
 
     r.terminateSeCommunication();
-    Thread::sleep(100);
+    Thread::sleep(1000);
 
-    ASSERT_EQ(r.getCurrentMonitoringState(),
-              MonitoringState::WAIT_FOR_SE_INSERTION);
+    ASSERT_EQ(r.getCurrentMonitoringState(), MonitoringState::WAIT_FOR_SE_INSERTION);
 }
 
 TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_ping_STOP)
@@ -287,10 +273,7 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_ping_STOP)
     ASPTR_SmartPresenceTheadedReaderMock r(PLUGIN_NAME, READER_NAME, 1);
 
     /* SE matched */
-    EXPECT_CALL(r, processSeInserted())
-        .Times(AtMost(1))
-        .WillOnce(Return(nullptr));
-
+   
     // Commented in Java
     //EXPECT_CALL(r, isSePresentPing())
     //    .Times(1)
@@ -298,7 +281,7 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_ping_STOP)
 
     //EXPECT_CALL(r, isSePresent())
     //    .Times(1)
-    //d    .WillOnce(Return(true));
+    //    .WillOnce(Return(true));
 
     r.addObserver(getObs());
     r.startSeDetection(ObservableReader::PollingMode::SINGLESHOT);
@@ -307,6 +290,5 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_ping_STOP)
     r.terminateSeCommunication();
     Thread::sleep(100);
 
-    ASSERT_EQ(r.getCurrentMonitoringState(),
-              MonitoringState::WAIT_FOR_START_DETECTION);
+    ASSERT_EQ(r.getCurrentMonitoringState(), MonitoringState::WAIT_FOR_START_DETECTION);
 }

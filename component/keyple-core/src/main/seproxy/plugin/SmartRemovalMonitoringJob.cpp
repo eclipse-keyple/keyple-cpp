@@ -16,11 +16,17 @@
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "KeypleReaderIOException.h"
+#include "InterruptedException.h"
+
+/* Common */
+#include "Thread.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace plugin {
+
+using namespace keyple::common;
 
 SmartRemovalMonitoringJob::SmartRemovalMonitoringJob(SmartRemovalReader* reader)
 : mReader(reader) {}
@@ -28,24 +34,32 @@ SmartRemovalMonitoringJob::SmartRemovalMonitoringJob(SmartRemovalReader* reader)
 void SmartRemovalMonitoringJob::monitoringJob(AbstractObservableState* state,
                                               std::atomic<bool>& cancellationFlag)
 {
-    (void)cancellationFlag;
+    mRunning = true;
+
+    mLogger->trace("[%] Invoke waitForCardAbsentNative asynchronously\n", mReader->getName());
 
     try {
-        if (mReader->waitForCardAbsentNative()) {
+        if (cancellationFlag) {
+            mRunning = false;
+            throw InterruptedException("monitoring job interrupted");
+        }
+
+        if (!mReader->mShuttingDown && mReader->waitForCardAbsentNative()) {
             // timeout is already managed within the task
-            state->onEvent(InternalEvent::SE_REMOVED);
-        } else {
-            mLogger->trace("[%] waitForCardAbsentNative => return false, task interrupted\n",
-                           mReader->getName());
+            if (!mReader->mShuttingDown) {
+                mLogger->debug("throwing card removed event\n");
+                state->onEvent(InternalEvent::SE_REMOVED);
+            }
         }
     } catch (const KeypleReaderIOException& e) {
-        mLogger->trace("[%] waitForCardAbsent => Error while polling SE with waitForCardAbsent, " \
-                       "%\n",
+        mLogger->trace("[%] waitForCardAbsent => Error while polling SE with waitForCardAbsent, %\n",
                        mReader->getName(),
 			           e.getMessage());
 
         state->onEvent(InternalEvent::STOP_DETECT);
     }
+
+    mRunning = false;
 }
 
 std::future<void> SmartRemovalMonitoringJob::startMonitoring(AbstractObservableState* state,
@@ -61,9 +75,7 @@ std::future<void> SmartRemovalMonitoringJob::startMonitoring(AbstractObservableS
 void SmartRemovalMonitoringJob::stop()
 {
     mLogger->trace("[%] stopWaitForCardRemoval on reader\n", mReader->getName());
-
-    if (mReader)
-        mReader->stopWaitForCardRemoval();
+    mReader->stopWaitForCardRemoval();
 }
 
 }
