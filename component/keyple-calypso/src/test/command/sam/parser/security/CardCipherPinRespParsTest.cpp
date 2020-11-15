@@ -51,5 +51,5 @@ TEST(CardCipherPinRespParsTest, cardCipherPinRespPars_badStatus)
 {
     CardCipherPinRespPars parser(std::make_shared<ApduResponse>(SW1SW2_KO, nullptr), nullptr);
 
-    EXPECT_THROW(parser.checkStatus(), CalypsoSamCommandException);
+    EXPECT_THROW(parser.checkStatus(), KeypleSeCommandException);
 }

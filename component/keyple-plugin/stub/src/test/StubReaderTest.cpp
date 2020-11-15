@@ -54,24 +54,29 @@ using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::util;
 using namespace keyple::plugin::stub;
 
-static const std::string PLUGIN_NAME = "stub1";
-static std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
-static std::shared_ptr<StubPluginImpl> stubPlugin;
+class StubReaderTest {};
 
-static void setUp()
+static const std::string PLUGIN_NAME = "stub1";
+static const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(StubReaderTest));
+
+static std::shared_ptr<StubPluginImpl> setUp()
 {
     auto factory = std::make_shared<StubPluginFactory>(PLUGIN_NAME);
-    stubPlugin = std::dynamic_pointer_cast<StubPluginImpl>(factory->getPlugin());
+
+    return std::dynamic_pointer_cast<StubPluginImpl>(factory->getPlugin());
 }
 
-static void tearDown()
+static void tearDown(std::shared_ptr<StubPluginImpl> stubPlugin,
+                     std::shared_ptr<ObservableReader::ReaderObserver> readerObs)
 {
     auto reader = std::dynamic_pointer_cast<StubReader>(stubPlugin->getReader("StubReaderTest"));
     stubPlugin->clearObservers();
     reader->removeObserver(readerObs);
-    readerObs = nullptr;
     ASSERT_EQ(reader->countObservers(), 0);
     stubPlugin->unplugStubReader("StubReaderTest", true);
+
+    readerObs = nullptr;
+    stubPlugin = nullptr;
 }
 
 class SRT_StubSecureElementMock_hopLinkSe final : public StubSecureElement {
@@ -456,7 +461,10 @@ private:
  */
 TEST(StubReaderTest, testInsert)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -483,7 +491,7 @@ TEST(StubReaderTest, testInsert)
               0);
     ASSERT_TRUE(reader->isSePresent());
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 class SRT_ReaderObserverMock2 final : public ObservableReader::ReaderObserver {
@@ -528,7 +536,10 @@ private:
  */
 TEST(StubReaderTest, testRemove)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -569,7 +580,7 @@ TEST(StubReaderTest, testRemove)
 
     ASSERT_FALSE(reader->isSePresent());
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 class SRT_ReaderObserverMock3 final : public ObservableReader::ReaderObserver {
@@ -633,7 +644,10 @@ private:
  */
 TEST(StubReaderTest, A_testInsertRemoveTwice)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -716,12 +730,15 @@ TEST(StubReaderTest, A_testInsertRemoveTwice)
 
     ASSERT_FALSE(reader->isSePresent());
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 TEST(StubReaderTest, A_testInsertRemoveTwiceFast)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -795,7 +812,7 @@ TEST(StubReaderTest, A_testInsertRemoveTwiceFast)
 
     ASSERT_FALSE(reader->isSePresent());
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 class SRT_ReaderObserverMock4 final : public ObservableReader::ReaderObserver {
@@ -863,6 +880,11 @@ private:
 
 TEST(StubReaderTest, testInsertMatchingSe)
 {
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
+
     stubPlugin->plugStubReader("StubReaderTest", true);
 
     ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
@@ -904,14 +926,14 @@ TEST(StubReaderTest, testInsertMatchingSe)
 
     /* Lock thread for 2 seconds max to wait for the event */
     std::dynamic_pointer_cast<SRT_ReaderObserverMock4>(readerObs)
-         ->mLock.await(std::chrono::seconds(2));
+        ->mLock.await(std::chrono::seconds(2));
 
     /* Should be 0 because countDown is called by observer */
     ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock4>(readerObs)
                                    ->mLock.getCount()),
               0);
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 class SRT_ReaderObserverMock5 final : public ObservableReader::ReaderObserver {
 public:
@@ -936,7 +958,10 @@ private:
 
 TEST(StubReaderTest, testInsertNotMatching_MatchedOnly)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -989,7 +1014,7 @@ TEST(StubReaderTest, testInsertNotMatching_MatchedOnly)
                                    ->mLock.getCount()),
               1);
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 class SRT_ReaderObserverMock6 final : public ObservableReader::ReaderObserver {
@@ -1023,7 +1048,10 @@ private:
 
 TEST(StubReaderTest, testInsertNotMatching_Always)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -1073,7 +1101,7 @@ TEST(StubReaderTest, testInsertNotMatching_Always)
                                    ->mLock.getCount()),
               0);
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 class SRT_ReaderObserverMock7 final : public ObservableReader::ReaderObserver {
@@ -1130,7 +1158,10 @@ private:
 
 TEST(StubReaderTest, testExplicitSelection_onEvent)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -1161,7 +1192,7 @@ TEST(StubReaderTest, testExplicitSelection_onEvent)
                                    ->mLock.getCount()),
               0);
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 class SRT_ReaderObserverMock8 final : public ObservableReader::ReaderObserver {
@@ -1174,7 +1205,7 @@ public:
     {
         if (event->getEventType() == ReaderEvent::EventType::SE_MATCHED) {
             auto proxy = std::dynamic_pointer_cast<ProxyReader>(mReader);
-            proxy->transmitSeRequest({}, ChannelControl::CLOSE_AFTER);
+            proxy->transmitSeRequest(nullptr, ChannelControl::CLOSE_AFTER);
             mLock.countDown();
         }
      }
@@ -1188,6 +1219,11 @@ private:
 
 TEST(StubReaderTest, testReleaseSeChannel)
 {
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
+
     stubPlugin->plugStubReader("StubReaderTest", true);
 
     ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
@@ -1236,7 +1272,7 @@ TEST(StubReaderTest, testReleaseSeChannel)
     ASSERT_EQ(static_cast<int>(std::dynamic_pointer_cast<SRT_ReaderObserverMock8>(readerObs)
                                    ->mLock.getCount()), 0);
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 /*
@@ -1248,6 +1284,11 @@ TEST(StubReaderTest, testReleaseSeChannel)
 
 TEST(StubReaderTest, transmit_Hoplink_Successful)
 {
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
+
     stubPlugin->plugStubReader("StubReaderTest", true);
 
     ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
@@ -1277,6 +1318,8 @@ TEST(StubReaderTest, transmit_Hoplink_Successful)
 
     /* Assert */
     ASSERT_TRUE(seResponse[0]->getApduResponses()[0]->isSuccessful());
+
+    tearDown(stubPlugin, readerObs);
 }
 
 /* Commented out in Java code */
@@ -1300,7 +1343,10 @@ TEST(StubReaderTest, transmit_Hoplink_Successful)
 
 TEST(StubReaderTest, transmit_no_response)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -1329,12 +1375,15 @@ TEST(StubReaderTest, transmit_no_response)
                                            ChannelControl::KEEP_OPEN),
                  KeypleReaderException);
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 TEST(StubReaderTest, transmit_partial_response_set_0)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -1370,7 +1419,7 @@ TEST(StubReaderTest, transmit_partial_response_set_0)
         ASSERT_EQ(static_cast<int>(ex.getSeResponses()[0]->getApduResponses().size()), 2);
     }
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 /* @Test commented in Java code */
@@ -1476,7 +1525,10 @@ TEST(StubReaderTest, transmit_partial_response_set_0)
 
 TEST(StubReaderTest, transmit_partial_response_0)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -1508,12 +1560,15 @@ TEST(StubReaderTest, transmit_partial_response_0)
         ASSERT_EQ(static_cast<int>(ex.getSeResponse()->getApduResponses().size()), 0);
     }
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 TEST(StubReaderTest, transmit_partial_response_1)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -1545,12 +1600,15 @@ TEST(StubReaderTest, transmit_partial_response_1)
         ASSERT_EQ(static_cast<int>(ex.getSeResponse()->getApduResponses().size()), 1);
     }
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 TEST(StubReaderTest, transmit_partial_response_2)
 {
-    setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -1582,12 +1640,15 @@ TEST(StubReaderTest, transmit_partial_response_2)
         ASSERT_EQ(static_cast<int>(ex.getSeResponse()->getApduResponses().size()), 2);
     }
 
-    tearDown();
+    tearDown(stubPlugin, readerObs);
 }
 
 TEST(StubReaderTest, transmit_partial_response_3)
 {
-setUp();
+    std::shared_ptr<ObservableReader::ReaderObserver> readerObs;
+    std::shared_ptr<StubPluginImpl> stubPlugin;
+
+    stubPlugin = setUp();
 
     stubPlugin->plugStubReader("StubReaderTest", true);
 
@@ -1619,6 +1680,8 @@ setUp();
         (void)ex;
         FAIL();
     }
+
+    tearDown(stubPlugin, readerObs);
 }
 
 

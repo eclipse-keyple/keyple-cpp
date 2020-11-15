@@ -28,15 +28,6 @@ ObservableReaderStateService::ObservableReaderStateService(
     switchState(initState);
 }
 
-ObservableReaderStateService::~ObservableReaderStateService()
-{
-    mLogger->trace("terminating states jobs\n");
-    for (auto& state : mStates) {
-        if (state.second && state.second->monitoringJob)
-            state.second->monitoringJob->stop();
-    }
-}
-
 void ObservableReaderStateService::onEvent(const InternalEvent event)
 {
     mCurrentState->onEvent(event);
@@ -50,9 +41,9 @@ void ObservableReaderStateService::switchState(const MonitoringState stateId)
 
     if (mCurrentState != nullptr) {
         mLogger->trace("[%] Switch currentState from % to %\n",
-                      mReader->getName(),
-                      mCurrentState->getMonitoringState(),
-                      stateId);
+                       mReader->getName(),
+                       mCurrentState->getMonitoringState(),
+                       stateId);
 
         mCurrentState->onDeactivate();
     } else {
@@ -62,7 +53,7 @@ void ObservableReaderStateService::switchState(const MonitoringState stateId)
     /* Switch currentState */
     mCurrentState = mStates.find(stateId)->second;
 
-    mLogger->trace("[%] New currentState %\n", 
+    mLogger->trace("[%] New currentState %\n",
                    mReader->getName(),
                    mCurrentState->getMonitoringState());
 

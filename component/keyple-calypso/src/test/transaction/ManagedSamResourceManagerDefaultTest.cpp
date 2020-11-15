@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -160,10 +159,6 @@ static std::shared_ptr<SeResponse> samSelectionSuccess()
     return seResponse;
 }
 
-/* Get a sam manager spy with a selectable sam */
-static ConcurrentMap<const std::string, std::shared_ptr<SeReader>> readers;
-static std::shared_ptr<MSRMD_ProxyReaderMock> reader;
-static std::shared_ptr<MSRMD_ReaderPluginMock> plugin;
 
 static std::shared_ptr<SamResourceManagerDefault> srmSpy(
     const std::string& samFilter)
@@ -172,46 +167,35 @@ static std::shared_ptr<SamResourceManagerDefault> srmSpy(
     selectionResponses.push_back(samSelectionSuccess());
 
     /* Create a mock reader */
-    reader = std::make_shared<MSRMD_ProxyReaderMock>();
-    Mock::AllowLeak(reader.get());
+    auto reader = std::make_shared<MSRMD_ProxyReaderMock>();
 
-    EXPECT_CALL(*reader, getName())
-        .WillRepeatedly(ReturnRef(SAM_READER_NAME));
-    EXPECT_CALL(*reader, isSePresent())
-        .WillRepeatedly(Return(true));
-    EXPECT_CALL(*reader, transmitSeRequests(_,_,_))
-        .WillRepeatedly(Return(selectionResponses));
+    EXPECT_CALL(*reader, getName()).WillRepeatedly(ReturnRef(SAM_READER_NAME));
+    EXPECT_CALL(*reader, isSePresent()).WillRepeatedly(Return(true));
+    EXPECT_CALL(*reader, transmitSeRequests(_,_,_)).WillRepeatedly(Return(selectionResponses));
     if (samFilter == ".*") {
-        EXPECT_CALL(*reader, addSeProtocolSetting(_,_))
-            .WillRepeatedly(Return());
-        EXPECT_CALL(*reader, setParameter(_,_))
-            .WillRepeatedly(Return());
+        EXPECT_CALL(*reader, addSeProtocolSetting(_,_)).WillRepeatedly(Return());
+        EXPECT_CALL(*reader, setParameter(_,_)).WillRepeatedly(Return());
     }
 
     /* Create a list of mock readers */
-    readers.clear();
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>> readers;
     readers.insert({reader->getName(), reader});
 
     /* Create the mock plugin */
-    plugin = std::make_shared<MSRMD_ReaderPluginMock>();
-    Mock::AllowLeak(plugin.get());
+    auto plugin = std::make_shared<MSRMD_ReaderPluginMock>();
 
-    EXPECT_CALL(*plugin, getReaders())
-        .WillRepeatedly(ReturnRef(readers));
-    EXPECT_CALL(*plugin, getReader(SAM_READER_NAME))
-        .WillRepeatedly(Return(reader));
-    EXPECT_CALL(*plugin, getName())
-        .WillRepeatedly(ReturnRef(SAM_PLUGIN_NAME));
+    EXPECT_CALL(*plugin, getReaders()).WillRepeatedly(ReturnRef(readers));
+    EXPECT_CALL(*plugin, getReader(SAM_READER_NAME)).WillRepeatedly(Return(reader));
+    EXPECT_CALL(*plugin, getName()).WillRepeatedly(ReturnRef(SAM_PLUGIN_NAME));
 
-    return std::make_shared<SamResourceManagerDefault>(
-               plugin, samFilter, 1000, 10);
+    return std::make_shared<SamResourceManagerDefault>(plugin, samFilter, 1000, 10);
 }
 
 TEST(ManagedSamResourceManagerDefaultTest, waitResources)
 {
     /* Init SamResourceManager with a not mathching filter */
-    std::shared_ptr<SamResourceManagerDefault> spy =
-        srmSpy("notMatchingFilter");
+    std::shared_ptr<SamResourceManagerDefault> spy = srmSpy("notMatchingFilter");
+
     unsigned long long start = System::currentTimeMillis();
     bool exceptionThrown = false;
 
@@ -246,11 +230,9 @@ TEST(ManagedSamResourceManagerDefaultTest, getSamResource)
     long long start = System::currentTimeMillis();
 
     /* Test */
-    std::shared_ptr<SeResource<CalypsoSam>> out =
-        spy->allocateSamResource(AllocationMode::BLOCKING,
-                                 SamIdentifier::builder()
-                                     ->samRevision(SamRevision::AUTO)
-                                     .build());
+    auto samIdentifier = SamIdentifier::builder()->samRevision(SamRevision::AUTO).build();
+    std::shared_ptr<SeResource<CalypsoSam>> out = spy->allocateSamResource(AllocationMode::BLOCKING,
+                                                                           samIdentifier);
 
     long long stop = System::currentTimeMillis();
 

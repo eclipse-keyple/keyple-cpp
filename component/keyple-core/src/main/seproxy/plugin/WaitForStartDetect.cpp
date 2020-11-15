@@ -32,10 +32,10 @@ WaitForStartDetect::WaitForStartDetect(
 
 void WaitForStartDetect::onEvent(const InternalEvent event)
 {
-    logger->trace("[%] onEvent => Event % received in currentState %\n",
-                  reader->getName(),
+    mLogger->trace("[%] onEvent => Event % received in currentState %\n",
+                  mReader->getName(),
                   event,
-                  state);
+                  mState);
 
     /*
      * Process InternalEvent
@@ -46,10 +46,10 @@ void WaitForStartDetect::onEvent(const InternalEvent event)
         break;
 
     default:
-        logger->warn("[%] Ignore =>  Event % received in currentState %\n",
-                     reader->getName(),
+        mLogger->warn("[%] Ignore =>  Event % received in currentState %\n",
+                     mReader->getName(),
                      event,
-                     state);
+                     mState);
         break;
     }
 }

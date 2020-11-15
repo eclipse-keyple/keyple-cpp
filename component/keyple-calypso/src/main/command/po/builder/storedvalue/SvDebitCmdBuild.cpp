@@ -37,8 +37,7 @@ SvDebitCmdBuild::SvDebitCmdBuild(const PoClass& poClass,
                                  const std::vector<uint8_t> date,
                                  const std::vector<uint8_t> time)
 : AbstractPoCommandBuilder<SvDebitRespPars>(
-      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::SV_DEBIT),
-      nullptr),
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::SV_DEBIT), nullptr),
   mPoClass(poClass),
   mPoRevision(poRevision)
 {

@@ -46,5 +46,5 @@ TEST(RehabilitateRespParsTest, rehabilitateRespPars_badStatus)
 {
     RehabilitateRespPars parser(std::make_shared<ApduResponse>(SW1SW2_KO, nullptr), nullptr);
 
-    EXPECT_THROW(parser.checkStatus(), CalypsoPoCommandException);
+    EXPECT_THROW(parser.checkStatus(), KeypleSeCommandException);
 }

@@ -315,7 +315,7 @@ TEST(CalypsoPoTest, testDfRatified_Unset)
 {
     std::shared_ptr<CalypsoPo> calypsoPo = getCalypsoPo(ATR_VALUE, FCI_REV31);
 
-    EXPECT_THROW(calypsoPo->isDfRatified(), IllegalStateException);
+    ASSERT_FALSE(calypsoPo->isDfRatified());
 }
 
 TEST(CalypsoPoTest, testDfRatified)

@@ -102,9 +102,9 @@ TEST(SamSelectionRequestTest, samSelectionRequest_unlock_ko)
     auto selectionStatus = std::make_shared<SelectionStatus>(atr, nullptr, true);
 
     std::vector<std::shared_ptr<ApduResponse>> apduResponses;
-    apduResponses.push_back(UNLOCK_APDU_RESPONSE_OK);
+    apduResponses.push_back(UNLOCK_APDU_RESPONSE_KO);
 
     auto seResponse = std::make_shared<SeResponse>(true, true, selectionStatus, apduResponses);
 
-    EXPECT_THROW(samSelectionRequest->parse(seResponse), CalypsoSamCommandException);
+    EXPECT_THROW(samSelectionRequest->parse(seResponse), KeypleSeCommandException);
 }

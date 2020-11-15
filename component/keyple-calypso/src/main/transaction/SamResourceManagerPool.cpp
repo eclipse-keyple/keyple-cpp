@@ -70,7 +70,7 @@ std::shared_ptr<SeResource<CalypsoSam>> SamResourceManagerPool::allocateSamResou
                                                       samIdentifier->getGroupReference());
 
             if (samReader != nullptr) {
-                std::unique_ptr<ManagedSamResource> managedSamResource = createSamResource(samReader);
+                std::shared_ptr<ManagedSamResource> managedSamResource = createSamResource(samReader);
                 mLogger->debug("Allocation succeeded. SAM resource created\n");
                 return managedSamResource;
             }

@@ -81,29 +81,31 @@ TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_compat_256)
 TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_compat_negative_amount)
 {
     /** @see Calypso Layer ID 8.02 (200108) */
-    SvUndebitCmdBuild svUndebitCmdBuild(PoClass::ISO,
-                                        PoRevision::REV3_1,
-                                        -1, /* Amount */
-                                        0xAA, /* KVC */
-                                        ByteArrayUtil::fromHex("1122"), /* Date */
-                                        ByteArrayUtil::fromHex("3344")); /* Time */
-    svUndebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    EXPECT_THROW(SvUndebitCmdBuild(PoClass::ISO,
+                                   PoRevision::REV3_1,
+                                   -1, /* Amount */
+                                   0xAA, /* KVC */
+                                   ByteArrayUtil::fromHex("1122"), /* Date */
+                                   ByteArrayUtil::fromHex("3344")), /* Time */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svUndebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svUndebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    //svUndebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_compat_overlimit_amount)
 {
     /** @see Calypso Layer ID 8.02 (200108) */
-    SvUndebitCmdBuild svUndebitCmdBuild(PoClass::ISO,
-                                        PoRevision::REV3_1,
-                                        32768, /* Amount */
-                                        0xAA, /* KVC */
-                                        ByteArrayUtil::fromHex("1122"), /* Date */
-                                        ByteArrayUtil::fromHex("3344")); /* Time */
-    svUndebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    EXPECT_THROW(SvUndebitCmdBuild(PoClass::ISO,
+                                   PoRevision::REV3_1,
+                                   32768, /* Amount */
+                                   0xAA, /* KVC */
+                                   ByteArrayUtil::fromHex("1122"), /* Date */
+                                   ByteArrayUtil::fromHex("3344")), /* Time */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svUndebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svUndebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    //svUndebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_compat_bad_signature_length_1)
@@ -114,10 +116,11 @@ TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_compat_bad_signature_length_1
                                         0xAA, /* KVC */
                                         ByteArrayUtil::fromHex("1122"), /* Date */
                                         ByteArrayUtil::fromHex("3344")); /* Time */
-    svUndebitCmdBuild.finalizeBuilder(
-        ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900"));
+    EXPECT_THROW(svUndebitCmdBuild.finalizeBuilder(
+                     ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900")),
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svUndebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svUndebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_compat_bad_signature_length_2)
@@ -128,9 +131,12 @@ TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_compat_bad_signature_length_2
                                         0xAA, /* KVC */
                                         ByteArrayUtil::fromHex("1122"), /* Date */
                                         ByteArrayUtil::fromHex("3344")); /* Time */
-    svUndebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD556677123456112233"));
 
-    EXPECT_THROW(svUndebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    EXPECT_THROW(svUndebitCmdBuild.finalizeBuilder(
+                     ByteArrayUtil::fromHex("AABBCCDD556677123456112233")),
+                 IllegalArgumentException);
+
+    //svUndebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_compat_illegal_date_1)
@@ -243,31 +249,33 @@ TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_rev3_2_256)
 TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_rev3_2_negative_amount)
 {
     /** @see Calypso Layer ID 8.02 (200108) */
-    SvUndebitCmdBuild svUndebitCmdBuild(PoClass::ISO,
-                                        PoRevision::REV3_2,
-                                        -1, /* Amount */
-                                        0xAA, /* KVC */
-                                        ByteArrayUtil::fromHex("1122"), /* Date */
-                                        ByteArrayUtil::fromHex("3344")); /* Time */
-    svUndebitCmdBuild.finalizeBuilder(
-        ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900"));
+    EXPECT_THROW(SvUndebitCmdBuild(PoClass::ISO,
+                                   PoRevision::REV3_2,
+                                   -1, /* Amount */
+                                   0xAA, /* KVC */
+                                   ByteArrayUtil::fromHex("1122"), /* Date */
+                                   ByteArrayUtil::fromHex("3344")), /* Time */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svUndebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svUndebitCmdBuild.finalizeBuilder(
+    //    ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900"));
+    //svUndebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_rev3_2_overlimit_amount)
 {
     /** @see Calypso Layer ID 8.02 (200108) */
-    SvUndebitCmdBuild svUndebitCmdBuild(PoClass::ISO,
-                                        PoRevision::REV3_2,
-                                        32769, /* Amount */
-                                        0xAA, /* KVC */
-                                        ByteArrayUtil::fromHex("1122"), /* Date */
-                                        ByteArrayUtil::fromHex("3344")); /* Time */
-    svUndebitCmdBuild.finalizeBuilder(
-        ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900"));
+    EXPECT_THROW(SvUndebitCmdBuild(PoClass::ISO,
+                                   PoRevision::REV3_2,
+                                   32769, /* Amount */
+                                   0xAA, /* KVC */
+                                   ByteArrayUtil::fromHex("1122"), /* Date */
+                                   ByteArrayUtil::fromHex("3344")), /* Time */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svUndebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svUndebitCmdBuild.finalizeBuilder(
+    //    ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900"));
+    //svUndebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_rev3_2_bad_signature_length_1)
@@ -278,10 +286,11 @@ TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_rev3_2_bad_signature_length_1
                                         0xAA, /* KVC */
                                         ByteArrayUtil::fromHex("1122"), /* Date */
                                         ByteArrayUtil::fromHex("3344")); /* Time */
-    svUndebitCmdBuild.finalizeBuilder(
-        ByteArrayUtil::fromHex("AABBCCDD556677123456112233445566778899001122"));
+    EXPECT_THROW(svUndebitCmdBuild.finalizeBuilder(
+                     ByteArrayUtil::fromHex("AABBCCDD556677123456112233445566778899001122")),
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svUndebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svUndebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_rev3_2_bad_signature_length_2)
@@ -292,10 +301,11 @@ TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_rev3_2_bad_signature_length_2
                                         0xAA, /* KVC */
                                         ByteArrayUtil::fromHex("1122"), /* Date */
                                         ByteArrayUtil::fromHex("3344")); /* Time */
-    svUndebitCmdBuild.finalizeBuilder(
-        ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455667788"));
+    EXPECT_THROW(svUndebitCmdBuild.finalizeBuilder(
+                     ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455667788")),
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svUndebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svUndebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvUndebitCmdBuildTest, svUndebitCmdBuild_mode_rev3_2_illegal_date_1)

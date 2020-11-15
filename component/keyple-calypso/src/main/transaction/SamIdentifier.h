@@ -152,7 +152,7 @@ private:
     /**
      *
      */
-    const SamRevision& mSamRevision;
+    const SamRevision mSamRevision = SamRevision::NO_REV;
 
     /**
      *

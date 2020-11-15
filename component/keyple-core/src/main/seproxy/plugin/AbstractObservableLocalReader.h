@@ -164,8 +164,7 @@ public:
      *        SINGLESHOT, the SE detection is stopped until a new call to
      *        startSeDetection is made.
      */
-    void startSeDetection(const ObservableReader::PollingMode pollingMode)
-        final;
+    void startSeDetection(const ObservableReader::PollingMode pollingMode) final;
 
     /**
      * Stops the SE detection.
@@ -199,8 +198,7 @@ public:
      *        MATCHED_ONLY)
      */
     void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
+        std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
         const ObservableReader::NotificationMode notificationMode) final;
 
     /**
@@ -217,8 +215,7 @@ public:
      *        made.
      */
     void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
+        std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
         const ObservableReader::NotificationMode notificationMode,
         const ObservableReader::PollingMode pollingMode) final;
 

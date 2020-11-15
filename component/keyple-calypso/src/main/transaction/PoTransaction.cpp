@@ -575,45 +575,33 @@ void PoTransaction::processOpening(const AccessLevel& accessLevel)
     for (const auto& commandBuilder : mPoCommandManager->getPoCommandBuilders())
     {
         /*
-         * Check if the command is a modifying one and get it status (overflow
-         * yes/no, neededSessionBufferSpace)
-         * if the command overflows the session buffer in atomic modification
-         * mode, an exception is raised.
+         * Check if the command is a modifying one and get it status (overflow yes/no,
+         * neededSessionBufferSpace) if the command overflows the session buffer in atomic
+         * modification mode, an exception is raised.
          */
-        if (checkModifyingCommand(commandBuilder,
-                                  overflow,
-                                  neededSessionBufferSpace)) {
+        if (checkModifyingCommand(commandBuilder, overflow, neededSessionBufferSpace)) {
             if (overflow) {
                 /* Open the session with the current commands */
                 processAtomicOpening(mCurrentAccessLevel, poAtomicCommands);
 
                 /*
-                 * Closes the session, resets the modifications buffer counters
-                 * for the next round (set the contact mode to avoid the
-                 * transmission of the ratification)
+                 * Closes the session, resets the modifications buffer counters for the next round
+                 * (set the contact mode to avoid the transmission of the ratification)
                  */
-                processAtomicClosing(RatificationMode::CLOSE_RATIFIED,
-                                     ChannelControl::KEEP_OPEN);
+                processAtomicClosing(RatificationMode::CLOSE_RATIFIED, ChannelControl::KEEP_OPEN);
                 resetModificationsBufferCounter();
 
                 /*
-                 * Clear the list and add the command that did not fit in the PO
-                 * modifications buffer. We also update the usage counter
-                 * without checking the result.
+                 * Clear the list and add the command that did not fit in the PO modifications
+                 * buffer. We also update the usage counter without checking the result.
                  */
                 poAtomicCommands.clear();
                 poAtomicCommands.push_back(commandBuilder);
 
-                /*
-                 * Just update modifications buffer usage counter, ignore result
-                 * (always false)
-                 */
+                /* Just update modifications buffer usage counter, ignore result (always false) */
                 isSessionBufferOverflowed(neededSessionBufferSpace);
             } else {
-                /*
-                 * The command fits in the PO modifications buffer, just add it
-                 * to the list
-                 */
+                /* The command fits in the PO modifications buffer, just add it to the list */
                 poAtomicCommands.push_back(commandBuilder);
             }
         } else {
@@ -883,7 +871,7 @@ void PoTransaction::processVerifyPin(const std::vector<uint8_t>& pin)
 
 void PoTransaction::processVerifyPin(const std::string& pin)
 {
-    const std::vector<uint8_t> bPin(pin.begin(), pin.end());
+    std::vector<uint8_t> bPin(pin.begin(), pin.end());
     processVerifyPin(bPin);
 }
 

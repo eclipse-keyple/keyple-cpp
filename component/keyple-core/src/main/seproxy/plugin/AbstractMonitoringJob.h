@@ -44,18 +44,18 @@ public:
     /**
      *
      */
-    virtual ~AbstractMonitoringJob() = default;
+    AbstractMonitoringJob()
+    {
+        mRunning = false;
+    }
 
     /**
-     * Define a Runnable task of the monitoring job
      *
-     * @param state reference to the state the monitoring job in running against
-     * @return routine that will be executed in background of the state
-     *
-     * /!\ Not used anymore
      */
-    //virtual void (*getMonitoringJob())(
-    //    AbstractObservableState* state, std::atomic<bool>& cancellationFlag) = 0;
+    virtual ~AbstractMonitoringJob()
+    {
+        stop();
+    }
 
     /**
      *
@@ -65,14 +65,24 @@ public:
 
     /**
      * Should stop/interrupt the monitoring job
+     *
+     * C++ vs. Java: should be pure virtual, but couln't call it from destructor
      */
-    virtual void stop() = 0;
+    virtual void stop() {}
+
+    /**
+     *
+     */
+    bool isRunning() const
+    {
+        return mRunning;
+    }
 
 protected:
     /**
      * C++ vs. Java: running flag
      */
-    std::atomic<bool> mRunning = false;
+    std::atomic<bool> mRunning;
 };
 
 }

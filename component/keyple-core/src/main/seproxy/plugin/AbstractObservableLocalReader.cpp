@@ -42,8 +42,7 @@ bool AbstractObservableLocalReader::isSePresent()
     }
 }
 
-void AbstractObservableLocalReader::startSeDetection(
-    const ObservableReader::PollingMode pollingMode)
+void AbstractObservableLocalReader::startSeDetection(const ObservableReader::PollingMode pollingMode)
 {
     mLogger->trace("[%] start Se Detection with pollingMode %\n", getName(),
                   pollingMode);
@@ -67,8 +66,7 @@ void AbstractObservableLocalReader::setDefaultSelectionRequest(
     const ObservableReader::NotificationMode notificationMode)
 {
     mDefaultSelectionsRequest =
-        std::dynamic_pointer_cast<DefaultSelectionsRequest>(
-            defaultSelectionsRequest);
+        std::dynamic_pointer_cast<DefaultSelectionsRequest>(defaultSelectionsRequest);
     mNotificationMode = notificationMode;
 }
 
@@ -202,7 +200,8 @@ bool AbstractObservableLocalReader::isSePresentPing()
         transmitApdu(apdu);
     } catch (const KeypleReaderIOException& e) {
         mLogger->trace("[%] Exception occurred in isSePresentPing. Message: %\n",
-                      getName(), e.getMessage());
+                       getName(),
+                       e.getMessage());
         return false;
     }
 
@@ -212,13 +211,14 @@ bool AbstractObservableLocalReader::isSePresentPing()
 void AbstractObservableLocalReader::processSeRemoved()
 {
     closeLogicalAndPhysicalChannels();
-    notifyObservers(std::make_shared<ReaderEvent>(
-        getPluginName(), getName(), ReaderEvent::EventType::SE_REMOVED,
-        nullptr));
+    auto event = std::make_shared<ReaderEvent>(getPluginName(),
+                                               getName(),
+                                               ReaderEvent::EventType::SE_REMOVED,
+                                               nullptr);
+    notifyObservers(event);
 }
 
-const ObservableReader::PollingMode&
-    AbstractObservableLocalReader::getPollingMode() const
+const ObservableReader::PollingMode& AbstractObservableLocalReader::getPollingMode() const
 {
     return mCurrentPollingMode;
 }
@@ -267,20 +267,43 @@ void AbstractObservableLocalReader::removeObserver(
     mMutex.unlock();
 }
 
-void AbstractObservableLocalReader::notifyObservers(
-    const std::shared_ptr<ReaderEvent> event)
+void AbstractObservableLocalReader::notifyObservers(const std::shared_ptr<ReaderEvent> event)
 {
-    mLogger->trace("[%] Notifying a reader event to % observers. EVENTNAME =" \
-                  " %\n", getName(), countObservers(),
-                  event->getEventType().getName());
+    mLogger->trace("[%] Notifying a reader event to % observers. EVENTNAME = %\n",
+                   getName(),
+                   countObservers(),
+                   event->getEventType().getName());
 
+    if (mShuttingDown)
+        return;
+
+/*
     mMutex.lock();
-    std::list<std::shared_ptr<ObservableReader::ReaderObserver>>
-        observersCopy(mObservers);
+    std::list<std::shared_ptr<ObservableReader::ReaderObserver>> observersCopy(mObservers);
     mMutex.unlock();
+*/
+    //mMutex.lock();
 
-    for (const auto& observer : observersCopy)
-        observer->update(event);
+    auto it = mObservers.begin();
+    while (1) {
+        if (mObservers.size() == 0)
+            break;
+
+        mLogger->trace("[%] Calling update on observer\n", getName());
+        (*it)->update(event);
+
+        it++;
+        if (it == mObservers.end())
+            break;
+    }
+
+    // for (auto& observer : mObservers) {
+    //     if (mObservers.size() != 0) {
+    //         mLogger->trace("[%] Calling update on observer %d\n", getName(), i++);
+    //         observer->update(event);
+    //     }
+    // }
+    //mMutex.unlock();
 }
 
 int AbstractObservableLocalReader::countObservers() const

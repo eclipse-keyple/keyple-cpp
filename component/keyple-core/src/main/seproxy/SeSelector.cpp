@@ -306,7 +306,7 @@ SeSelector::SeSelector(SeSelectorBuilder* builder)
   mAidSelector(builder->mAidSelector),
   mAtrFilter(builder->mAtrFilter)
 {
-    mLogger->trace("%", *this);
+    mLogger->trace("%\n", *this);
 }
 
 const std::shared_ptr<SeProtocol> SeSelector::getSeProtocol() const

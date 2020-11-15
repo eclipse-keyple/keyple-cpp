@@ -342,35 +342,27 @@ CalypsoPo* CalypsoPo::setDirectoryHeader(
     return this;
 }
 
-const std::shared_ptr<ElementaryFile> CalypsoPo::getFileBySfi(const uint8_t sfi)
-    const
+const std::shared_ptr<ElementaryFile> CalypsoPo::getFileBySfi(const uint8_t sfi) const
 {
-    std::map<uint8_t, std::shared_ptr<ElementaryFile>>::const_iterator it;
+    const auto it = mEfBySfi.find(sfi);
 
-    if ((it = mEfBySfi.find(sfi)) == mEfBySfi.end())
-        throw NoSuchElementException(
-                  "EF with SFI [" + StringHelper::uint8ToHexString(sfi) + "]" +
-                  " is not found.");
+    if (it == mEfBySfi.end())
+        throw NoSuchElementException("EF with SFI [" + StringHelper::uint8ToHexString(sfi) + "] is not found.");
 
     return it->second;
 }
 
-const std::shared_ptr<ElementaryFile> CalypsoPo::getFileByLid(
-    const uint16_t lid)
+const std::shared_ptr<ElementaryFile> CalypsoPo::getFileByLid(const uint16_t lid)
 {
     std::map<uint16_t, uint8_t>::const_iterator it;
 
     if ((it = mSfiByLid.find(lid)) == mSfiByLid.end())
-        throw NoSuchElementException(
-                  "EF with LID [" + StringHelper::uint16ToHexString(lid) + "]" +
-                  " is not found.");
+        throw NoSuchElementException("EF with LID [" + StringHelper::uint16ToHexString(lid) + "] is not found.");
 
     std::map<uint8_t, std::shared_ptr<ElementaryFile>>::const_iterator it2;
 
     if ((it2 = mEfBySfi.find(it->second)) == mEfBySfi.end())
-        throw NoSuchElementException(
-                  "EF with LID [" + StringHelper::uint16ToHexString(lid) + "]" +
-                  " is not found.");
+        throw NoSuchElementException("EF with LID [" + StringHelper::uint16ToHexString(lid) + "] is not found.");
 
     return it2->second;
 }
@@ -381,8 +373,7 @@ const std::map<uint8_t, std::shared_ptr<ElementaryFile>>&
     return mEfBySfi;
 }
 
-void CalypsoPo::setFileHeader(const uint8_t sfi,
-                              const std::shared_ptr<FileHeader> header)
+void CalypsoPo::setFileHeader(const uint8_t sfi, const std::shared_ptr<FileHeader> header)
 {
     std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
     ef->setHeader(header);
@@ -422,8 +413,7 @@ void CalypsoPo::fillContent(const uint8_t sfi,
     ef->getData()->fillContent(numRecord, content);
 }
 
-void CalypsoPo::addCyclicContent(const uint8_t sfi,
-                                 const std::vector<uint8_t>& content)
+void CalypsoPo::addCyclicContent(const uint8_t sfi, const std::vector<uint8_t>& content)
 {
     std::shared_ptr<ElementaryFile> ef = getOrCreateFile(sfi);
     ef->getData()->addCyclicContent(content);
@@ -493,14 +483,14 @@ void CalypsoPo::setSvData(const int svBalance,
                           const std::shared_ptr<SvLoadLogRecord> svLoadLogRecord,
                           const std::shared_ptr<SvDebitLogRecord> svDebitLogRecord)
 {
-    *mSvBalance = svBalance;
+    mSvBalance = std::make_shared<int>(svBalance);
     mSvLastTNum = svLastTNum;
 
     /* Update logs, do not overwrite existing values (case of double reading) */
-    if (!svLoadLogRecord)
+    if (mSvLoadLogRecord == nullptr)
         mSvLoadLogRecord = svLoadLogRecord;
 
-    if (!svDebitLogRecord)
+    if (mSvDebitLogRecord == nullptr)
         mSvDebitLogRecord = svDebitLogRecord;
 }
 
@@ -573,7 +563,7 @@ int CalypsoPo::getPinAttemptRemaining() const
 
 void CalypsoPo::setPinAttemptRemaining(const int pinAttemptCounter)
 {
-    *mPinAttemptCounter = pinAttemptCounter;
+    mPinAttemptCounter = std::make_shared<int>(pinAttemptCounter);
 }
 
 }

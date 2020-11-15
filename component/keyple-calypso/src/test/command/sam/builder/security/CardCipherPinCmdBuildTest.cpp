@@ -99,7 +99,7 @@ TEST(CardCipherPinCmdBuildTest, cardCipherPinCmdBuild_parser)
     CardCipherPinCmdBuild builder(SamRevision::C1, KEY_REFERENCE_CIPH_KEY, CURRENT_PIN, NEW_PIN);
     auto apduResponse = std::make_shared<ApduResponse>(SW1SW2_OK, nullptr);
 
-    auto& parser = *(builder.createResponseParser(apduResponse)).get();
+    auto parser = *(builder.createResponseParser(apduResponse)).get();
 
     ASSERT_EQ(typeid(parser), typeid(CardCipherPinRespPars));
 }

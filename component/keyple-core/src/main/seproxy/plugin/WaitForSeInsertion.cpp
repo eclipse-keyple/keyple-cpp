@@ -38,10 +38,10 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
 {
     std::shared_ptr<ReaderEvent> seEvent;
 
-    logger->trace("[%] onEvent => Event % received in currentState %\n",
-                  reader->getName(),
-                  event,
-                  state);
+    mLogger->trace("[%] onEvent => Event % received in currentState %\n",
+                   mReader->getName(),
+                   event,
+                   mState);
 
     /*
      * Process InternalEvent
@@ -49,27 +49,27 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
     switch (event) {
     case InternalEvent::SE_INSERTED:
         /* Process default selection if any, return an event, can be null */
-        seEvent = this->reader->processSeInserted();
+        seEvent = mReader->processSeInserted();
 
         if (seEvent != nullptr) {
             /* Switch internal state */
-            logger->trace("switching to WAIT_FOR_SE_PROCESSING state\n");
+            mLogger->trace("switching to WAIT_FOR_SE_PROCESSING state\n");
             switchState(MonitoringState::WAIT_FOR_SE_PROCESSING);
 
             /* Notify the external observer of the event */
-            reader->notifyObservers(seEvent);
+            mReader->notifyObservers(seEvent);
         } else {
             /*
              * If none event was sent to the application, back to SE detection
              * stay in the same state, however switch to WAIT_FOR_SE_INSERTION
              * to relaunch the monitoring job
              */
-            logger->trace("[%] onEvent => Inserted SE hasn't matched\n", reader->getName());
+            mLogger->trace("[%] onEvent => Inserted SE hasn't matched\n", mReader->getName());
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         }
         break;
     case InternalEvent::STOP_DETECT:
-        logger->trace("switching to WAIT_FOR_SE_PROCESSING state\n");
+        mLogger->trace("switching to WAIT_FOR_SE_PROCESSING state\n");
         switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         break;
     case InternalEvent::SE_REMOVED:
@@ -77,20 +77,19 @@ void WaitForSeInsertion::onEvent(const InternalEvent event)
          * TODO Check if this case really happens (NFC?)
          * SE has been removed during default selection
          */
-        if (reader->getPollingMode() ==
-            ObservableReader::PollingMode::REPEATING) {
-            logger->trace("switching to WAIT_FOR_SE_INSERTION state\n");
+        if (mReader->getPollingMode() == ObservableReader::PollingMode::REPEATING) {
+            mLogger->trace("switching to WAIT_FOR_SE_INSERTION state\n");
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         } else {
-            logger->trace("switching to WAIT_FOR_START_DETECTION state\n");
+            mLogger->trace("switching to WAIT_FOR_START_DETECTION state\n");
             switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         }
         break;
     default:
-        logger->warn("[%] Ignore =>  Event % received in currentState %\n",
-                     reader->getName(),
-                     event,
-                     state);
+        mLogger->warn("[%] Ignore =>  Event % received in currentState %\n",
+                      mReader->getName(),
+                      event,
+                      mState);
         break;
     }
 }

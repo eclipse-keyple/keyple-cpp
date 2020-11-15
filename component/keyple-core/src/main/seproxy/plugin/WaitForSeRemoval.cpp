@@ -32,10 +32,10 @@ WaitForSeRemoval::WaitForSeRemoval(
 
 void WaitForSeRemoval::onEvent(const InternalEvent event)
 {
-    logger->trace("[%] onEvent => Event % received in currentState %\n",
-                  reader->getName(),
+    mLogger->trace("[%] onEvent => Event % received in currentState %\n",
+                  mReader->getName(),
                   event,
-                  state);
+                  mState);
 
     /* Process InternalEvent */
     switch (event) {
@@ -45,23 +45,23 @@ void WaitForSeRemoval::onEvent(const InternalEvent event)
          * the currentState of waiting for insertion
          * We notify the application of the SE_REMOVED event.
          */
-        reader->processSeRemoved();
-        if (reader->getPollingMode() == ObservableReader::PollingMode::REPEATING) {
+        mReader->processSeRemoved();
+        if (mReader->getPollingMode() == ObservableReader::PollingMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         } else {
             switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         }
         break;
     case InternalEvent::STOP_DETECT:
-        reader->processSeRemoved();
+        mReader->processSeRemoved();
         switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         break;
 
     default:
-        logger->warn("[%] Ignore =>  Event % received in currentState %\n",
-                     reader->getName(),
+        mLogger->warn("[%] Ignore =>  Event % received in currentState %\n",
+                     mReader->getName(),
                      event,
-                     state);
+                     mState);
         break;
     }
 }

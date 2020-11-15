@@ -107,9 +107,13 @@ public:
      */
     friend std::ostream& operator<<(std::ostream& os, const std::shared_ptr<SeReader> sr)
     {
-        os << "SEREADER: {"
-           << "PARAMETERS: " << sr->getParameters()
-           << "}";
+        if (sr == nullptr) {
+            os << "SEREADER = null";
+        } else {
+            os << "SEREADER: {"
+               << "PARAMETERS: " << sr->getParameters()
+               << "}";
+        }
 
         return  os;
     }

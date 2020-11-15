@@ -29,7 +29,10 @@ public:
     /**
      *
      */
-    virtual ~SmartRemovalReader() = default;
+    virtual ~SmartRemovalReader()
+    {
+        stopWaitForCardRemoval();
+    }
 
     /**
      * Wait until the SE disappears.
@@ -55,7 +58,7 @@ public:
     /**
      * Interrupts the waiting of the removal of the SE
      */
-    virtual void stopWaitForCardRemoval() = 0;
+    virtual void stopWaitForCardRemoval() {}
 };
 
 }
