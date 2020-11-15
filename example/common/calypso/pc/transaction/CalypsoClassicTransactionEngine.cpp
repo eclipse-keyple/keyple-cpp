@@ -205,7 +205,7 @@ void CalypsoClassicTransactionEngine::doCalypsoReadWriteTransaction(
         poTransaction->processClosing();
     }
 
-    mLogger->info("========= PO Calypso session ======= SUCCESS !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    mLogger->info("========= PO Calypso session ======= SUCCESS !!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 }
 
 std::shared_ptr<AbstractDefaultSelectionsRequest>

@@ -144,7 +144,6 @@ void PcscReaderImpl::closePhysicalChannel()
 bool PcscReaderImpl::checkSePresence()
 {
     try {
-        mLogger->debug("checkSePresence - calling isCardPresent\n");
         return mTerminal.isCardPresent(true);
 
     } catch (PcscTerminalException& e) {
@@ -164,20 +163,18 @@ bool PcscReaderImpl::waitForCardPresent()
     try {
 
         while (mLoopWaitSe) {
-            if (checkSePresence()) {
+            if (mTerminal.isCardPresent(false)) {
                 /* Card inserted */
                  mLogger->trace("[%] card present\n", getName());
                 return true;
             }
 
-            mLogger->trace("[%] sleeping for 10 ms\n", getName());
             try {
-                Thread::sleep(10);
+                Thread::sleep(50);
             } catch (const InterruptedException& e) {
                 mLogger->debug("Sleep was interrupted - %\n", e);
             }
 
-            mLogger->trace("[%] looping back\n", getName());
         }
 
         mLogger->trace("[%] mLoopWaitSe=false, leaving\n", getName());
@@ -208,13 +205,13 @@ bool PcscReaderImpl::waitForCardAbsentNative()
 
     try {
         while (mLoopWaitSeRemoval) {
-        if (!checkSePresence()) {
+        if (!mTerminal.isCardPresent(false)) {
             mLogger->trace("[%] card removed\n", getName());
             return true;
         }
 
         try {
-            Thread::sleep(10);
+            Thread::sleep(50);
         } catch (const InterruptedException& e) {
             mLogger->debug("Sleep was interrupted - %\n", e);
         }
@@ -223,9 +220,9 @@ bool PcscReaderImpl::waitForCardAbsentNative()
     return false;
 
     } catch (PcscTerminalException& e) {
-        throw KeypleReaderIOException(
-                  "[" + getName() + "] Exception occurred in " \
-                  "waitForCardAbsentNative. Message: " + e.getMessage());
+        throw KeypleReaderIOException("[" + getName() + "] "\
+                                      "Exception occurred in waitForCardAbsentNative. " \
+                                      "Message: " + e.getMessage());
     }
 }
 
@@ -234,8 +231,7 @@ void PcscReaderImpl::stopWaitForCardRemoval()
     mLoopWaitSeRemoval = false;
 }
 
-std::vector<uint8_t> PcscReaderImpl::transmitApdu(
-    const std::vector<uint8_t>& apduIn)
+std::vector<uint8_t> PcscReaderImpl::transmitApdu(const std::vector<uint8_t>& apduIn)
 {
     mLogger->debug("transmitApdu\n");
 
