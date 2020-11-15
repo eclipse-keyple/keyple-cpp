@@ -78,6 +78,10 @@ const std::map<int, std::shared_ptr<StatusProperties>> VerifyPinRespPars::STATUS
         std::make_shared<StatusProperties>(
             "PIN function not present.",
             typeid(CalypsoPoIllegalParameterException)),
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>(
+            "Success")
     }
 };
 

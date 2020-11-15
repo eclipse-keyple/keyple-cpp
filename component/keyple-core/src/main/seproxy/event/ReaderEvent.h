@@ -42,8 +42,8 @@ class KEYPLECORE_API ReaderEvent final
 
 public:
     /**
-     * The different types of reader events, reflecting the status of the reader
-     * regarding the presence of the card
+     * The different types of reader events, reflecting the status of the reader regarding the
+     * presence of the card
      */
     class KEYPLECORE_API EventType final {
     public:
@@ -58,14 +58,12 @@ public:
         static EventType SE_INSERTED;
 
         /**
-         * A SE has been inserted and the default requests process has been
-         * successfully operated.
+         * A SE has been inserted and the default requests process has been successfully operated.
          */
         static EventType SE_MATCHED;
 
         /**
-         * The SE has been removed and is no longer able to communicate with the
-         * reader
+         * The SE has been removed and is no longer able to communicate with the reader
          */
         static EventType SE_REMOVED;
 
@@ -87,8 +85,7 @@ public:
         /**
          *
          */
-        EventType(const std::string& nameValue, InnerEnum innerEnum,
-                  const std::string& name);
+        EventType(const std::string& nameValue, InnerEnum innerEnum, const std::string& name);
 
         /**
          *
@@ -138,8 +135,7 @@ public:
 		/**
 		 *
 		 */
-        friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
-                                                       const EventType& et);
+        friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const EventType& et);
 
     private:
         /**
@@ -187,13 +183,13 @@ public:
      * @param pluginName the name of the current plugin
      * @param readerName the name of the current reader
      * @param eventType the type of event
-     * @param defaultSelectionsResponse the response to the default
-     *        AbstractDefaultSelectionsRequest (may be null)
+     * @param defaultSelectionsResponse the response to the default AbstractDefaultSelectionsRequest
+     *                                  (may be null)
      */
-    ReaderEvent(const std::string& pluginName, const std::string& readerName,
-                EventType eventType,
-                std::shared_ptr<AbstractDefaultSelectionsResponse>
-                    defaultSelectionsResponse);
+    ReaderEvent(const std::string& pluginName,
+                const std::string& readerName,
+                const EventType& eventType,
+                std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse);
 
     /**
      * @return the name of the plugin from which the reader that generated the event comes from
@@ -247,9 +243,8 @@ private:
     const std::string mReaderName;
 
     /**
-     * The response to the selection request Note: although the object is
-     * instantiated externally, we use DefaultSelectionsResponse here to keep
-     * ReaderEvent serializable
+     * The response to the selection request Note: although the object is instantiated externally,
+     * we use DefaultSelectionsResponse here to keep ReaderEvent serializable
      */
     const std::shared_ptr<DefaultSelectionsResponse> mDefaultResponses;
 };

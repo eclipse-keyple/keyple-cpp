@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -41,11 +40,10 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::common;
 
 /**
- * The SeSelector class groups the information and methods used to select a
- * particular secure element
+ * The SeSelector class groups the information and methods used to select a particular secure
+ * element
  */
-class KEYPLECORE_API SeSelector
-: public std::enable_shared_from_this<SeSelector> {
+class KEYPLECORE_API SeSelector {
 public:
     /**
      * AID’s bytes of the SE application to select. In case the SE application
@@ -62,11 +60,11 @@ public:
     class KEYPLECORE_API AidSelector final {
     public:
         /**
-         * FileOccurrence indicates how to carry out the file occurrence in
-         * accordance with ISO7816-4
+         * FileOccurrence indicates how to carry out the file occurrence in accordance with
+         * ISO7816-4
          * <p>
-         * The getIsoBitMask method provides the bit mask to be used to set P2
-         * in the select command (ISO/IEC 7816-4.2)
+         * The getIsoBitMask method provides the bit mask to be used to set P2 in the select command
+         * (ISO/IEC 7816-4.2)
          */
         class KEYPLECORE_API FileOccurrence final {
         public:
@@ -111,8 +109,8 @@ public:
             /**
              *
              */
-            friend KEYPLECORE_API std::ostream& operator<<(
-                std::ostream& os, const FileOccurrence& fc);
+            friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                           const FileOccurrence& fc);
 
         private:
             /**

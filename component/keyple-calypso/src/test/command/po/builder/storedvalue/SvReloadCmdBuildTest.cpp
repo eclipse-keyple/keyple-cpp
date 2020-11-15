@@ -67,32 +67,30 @@ TEST(SvReloadCmdBuildTest, svReloadCmdBuild_mode_compat_not_finalized)
 
 TEST(SvReloadCmdBuildTest, svReloadCmdBuild_mode_compat_overlimit_negative_amount)
 {
-    SvReloadCmdBuild svReloadCmdBuild(PoClass::ISO,
-                                      PoRevision::REV3_1,
-                                      -8388609, /* Amount */
-                                      0xAA, /* KVC */
-                                      ByteArrayUtil::fromHex("1122"), /* Date */
-                                      ByteArrayUtil::fromHex("3344"), /* Time */
-                                      ByteArrayUtil::fromHex("F3EE")); /* Free */
+    EXPECT_THROW(SvReloadCmdBuild(PoClass::ISO,
+                                  PoRevision::REV3_1,
+                                  -8388609, /* Amount */
+                                  0xAA, /* KVC */
+                                  ByteArrayUtil::fromHex("1122"), /* Date */
+                                  ByteArrayUtil::fromHex("3344"), /* Time */
+                                  ByteArrayUtil::fromHex("F3EE")), /* Free */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(
-        svReloadCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455")),
-        IllegalArgumentException);
+    //svReloadCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
 }
 
 TEST(SvReloadCmdBuildTest, svReloadCmdBuild_mode_compat_overlimit_positive_amount)
 {
-    SvReloadCmdBuild svReloadCmdBuild(PoClass::ISO,
-                                      PoRevision::REV3_1,
-                                      8388608, /* Amount */
-                                      0xAA, /* KVC */
-                                      ByteArrayUtil::fromHex("1122"), /* Date */
-                                      ByteArrayUtil::fromHex("3344"), /* Time */
-                                      ByteArrayUtil::fromHex("F3EE")); /* Free */
+    EXPECT_THROW(SvReloadCmdBuild(PoClass::ISO,
+                                  PoRevision::REV3_1,
+                                  8388608, /* Amount */
+                                  0xAA, /* KVC */
+                                  ByteArrayUtil::fromHex("1122"), /* Date */
+                                  ByteArrayUtil::fromHex("3344"), /* Time */
+                                  ByteArrayUtil::fromHex("F3EE")), /* Free */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(
-        svReloadCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455")),
-        IllegalArgumentException);
+    //svReloadCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
 }
 
 TEST(SvReloadCmdBuildTest, svReloadCmdBuild_mode_compat_bad_signature_length_1)
@@ -297,34 +295,32 @@ TEST(SvReloadCmdBuildTest, svReloadCmdBuild_mode_rev3_2_amout_m256)
 
 TEST(SvReloadCmdBuildTest, svReloadCmdBuild_mode_rev3_2_overlimit_negative_amount)
 {
-    SvReloadCmdBuild svReloadCmdBuild(PoClass::ISO,
-                                      PoRevision::REV3_2,
-                                      -8388609, /* Amount */
-                                      0xAA, /* KVC */
-                                      ByteArrayUtil::fromHex("1122"), /* Date */
-                                      ByteArrayUtil::fromHex("3344"), /* Time */
-                                      ByteArrayUtil::fromHex("F3EE")); /* Free */
+    EXPECT_THROW(SvReloadCmdBuild(PoClass::ISO,
+                                  PoRevision::REV3_2,
+                                  -8388609, /* Amount */
+                                  0xAA, /* KVC */
+                                  ByteArrayUtil::fromHex("1122"), /* Date */
+                                  ByteArrayUtil::fromHex("3344"), /* Time */
+                                  ByteArrayUtil::fromHex("F3EE")), /* Free */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(
-        svReloadCmdBuild.finalizeBuilder(
-            ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900")),
-        IllegalArgumentException);
+    //svReloadCmdBuild.finalizeBuilder(
+    //    ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900"));
 }
 
 TEST(SvReloadCmdBuildTest, svReloadCmdBuild_mode_rev3_2_overlimit_positive_amount)
 {
-    SvReloadCmdBuild svReloadCmdBuild(PoClass::ISO,
-                                      PoRevision::REV3_2,
-                                      8388608, /* Amount */
-                                      0xAA, /* KVC */
-                                      ByteArrayUtil::fromHex("1122"), /* Date */
-                                      ByteArrayUtil::fromHex("3344"), /* Time */
-                                      ByteArrayUtil::fromHex("F3EE")); /* Free */
+    EXPECT_THROW(SvReloadCmdBuild(PoClass::ISO,
+                                  PoRevision::REV3_2,
+                                  8388608, /* Amount */
+                                  0xAA, /* KVC */
+                                  ByteArrayUtil::fromHex("1122"), /* Date */
+                                  ByteArrayUtil::fromHex("3344"), /* Time */
+                                  ByteArrayUtil::fromHex("F3EE")), /* Free */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(
-        svReloadCmdBuild.finalizeBuilder(
-            ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900")),
-        IllegalArgumentException);
+    //svReloadCmdBuild.finalizeBuilder(
+    //    ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900"));
 }
 
 TEST(SvReloadCmdBuildTest, svReloadCmdBuild_mode_rev3_2_bad_signature_length_1)

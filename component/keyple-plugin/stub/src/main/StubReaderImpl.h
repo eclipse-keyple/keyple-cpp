@@ -25,6 +25,7 @@
 /* Core */
 #include "AbstractObservableLocalReader.h"
 #include "MonitoringPool.h"
+#include "ObservableReaderStateService.h"
 #include "ReaderEvent.h"
 #include "SmartInsertionReader.h"
 #include "SmartRemovalReader.h"
@@ -35,13 +36,8 @@
 #include "StubReader.h"
 
 /* Forward declarations */
-namespace keyple {
-namespace plugin {
-namespace stub {
-class StubSecureElement;
-}
-}
-}
+namespace keyple { namespace plugin { namespace stub { class StubSecureElement; } } }
+namespace keyple { namespace plugin { namespace stub { class StubReaderImpl; } } }
 
 namespace keyple {
 namespace plugin {
@@ -54,7 +50,7 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::common;
 
-class KEYPLEPLUGINSTUB_API StubReaderImpl final
+class KEYPLEPLUGINSTUB_API StubReaderImpl
 : public AbstractObservableLocalReader,
   public StubReader,
   public SmartInsertionReader,
@@ -75,8 +71,8 @@ public:
      * @param transmissionMode
      */
     StubReaderImpl(const std::string& pluginName,
-                   const std::string& name,
-                   TransmissionMode transmissionMode);
+                    const std::string& name,
+                    TransmissionMode transmissionMode);
 
     /**
      *
@@ -153,7 +149,7 @@ public:
      *
      */
     bool checkSePresence() override;
-   
+
 protected:
     /**
      *
@@ -210,10 +206,8 @@ private:
     /**
      * C++ vs. Java: flag to handle threads properly...
      */
-    std::atomic<bool> mLoopWaitSe = false;
-    std::atomic<bool> mLoopWaitSeOngoing = false;
-    std::atomic<bool> mLoopWaitSeRemoval = false;
-    std::atomic<bool> mLoopWaitSeRemovalOngoing = false;
+    std::atomic<bool> mLoopWaitSe;
+    std::atomic<bool> mLoopWaitSeRemoval;
 };
 
 }

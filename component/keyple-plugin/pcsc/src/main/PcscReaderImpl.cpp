@@ -14,8 +14,10 @@
 #include "PcscReaderImpl.h"
 
 /* Common */
+#include "InterruptedException.h"
 #include "IllegalArgumentException.h"
 #include "IllegalStateException.h"
+#include "Thread.h"
 
 /* Core */
 #include "ByteArrayUtil.h"
@@ -53,6 +55,9 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName, PcscTerminal& term
   mTerminal(terminal),
   mTransmissionMode(TransmissionMode::NONE)
 {
+    mLoopWaitSe = false;
+    mLoopWaitSeRemoval = false;
+
     mExecutorService = std::make_shared<MonitoringPool>();
     mStateService    = initStateService();
 
@@ -73,6 +78,19 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName, PcscTerminal& term
     } catch (KeypleException& e) {
         (void)e;
         /* Can not fail with null value */
+    }
+}
+
+PcscReaderImpl::~PcscReaderImpl()
+{
+    mShuttingDown = true;
+    if (mStateService) {
+        for (auto& state : mStateService->getStates()) {
+            if (state.second && state.second->mMonitoringJob) {
+                state.second->mMonitoringJob->stop();
+                while (state.second->mMonitoringJob->isRunning());
+            }
+        }
     }
 }
 
@@ -136,27 +154,33 @@ bool PcscReaderImpl::checkSePresence()
 
 bool PcscReaderImpl::waitForCardPresent()
 {
-    mLogger->debug("[%] waitForCardPresent => loop with latency of % ms\n",
-                  getName(), INSERT_LATENCY);
+    if (mShuttingDown)
+        return false;
 
-    /* Activate loop */
     mLoopWaitSe = true;
 
-    /* Rearm flag for removal process as well */
-    mLoopWaitSeRemoval = true;
+    mLogger->trace("[%] waitForCardPresent\n", getName());
 
     try {
-        mLogger->trace("[%] waitForCardPresent => looping...\n", getName());
+
         while (mLoopWaitSe) {
-            if (mTerminal.waitForCardPresent(INSERT_LATENCY)) {
+            if (checkSePresence()) {
                 /* Card inserted */
-                 mLogger->debug("[%] waitForCardPresent => card inserted\n",
-                               getName());
+                 mLogger->trace("[%] card present\n", getName());
                 return true;
-            } else {
-                /* Check if task has been cancelled ? */
             }
+
+            mLogger->trace("[%] sleeping for 10 ms\n", getName());
+            try {
+                Thread::sleep(10);
+            } catch (const InterruptedException& e) {
+                mLogger->debug("Sleep was interrupted - %\n", e);
+            }
+
+            mLogger->trace("[%] looping back\n", getName());
         }
+
+        mLogger->trace("[%] mLoopWaitSe=false, leaving\n", getName());
 
         /* If loop was stopped */
         return false;
@@ -175,29 +199,28 @@ void PcscReaderImpl::stopWaitForCard()
 
 bool PcscReaderImpl::waitForCardAbsentNative()
 {
-    mLogger->debug("[%] waitForCardAbsentNative => loop with latency of "
-                  "% ms\n", getName(), REMOVAL_LATENCY);
+    if (mShuttingDown)
+        return false;
 
-    while(!mLoopWaitSeRemoval)
-        /* A stopWaitForCardRemoval() has been triggered. Wait for finish. */
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    mLoopWaitSeRemoval = true;
+
+    mLogger->trace("[%] waitForCardAbsentNative\n", getName());
 
     try {
         while (mLoopWaitSeRemoval) {
-            mLogger->trace("[%] waitForCardAbsentNative => looping\n",getName());
-            if (mTerminal.waitForCardAbsent(REMOVAL_LATENCY)) {
-                /* notify removal only if expected */
-                if(mLoopWaitSeRemoval) {
-                    /* Card removed */
-                    return true;
-                }
-            }
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        if (!checkSePresence()) {
+            mLogger->trace("[%] card removed\n", getName());
+            return true;
         }
 
-        mLoopWaitSeRemoval = true;
-        return false;
+        try {
+            Thread::sleep(10);
+        } catch (const InterruptedException& e) {
+            mLogger->debug("Sleep was interrupted - %\n", e);
+        }
+    }
+
+    return false;
 
     } catch (PcscTerminalException& e) {
         throw KeypleReaderIOException(

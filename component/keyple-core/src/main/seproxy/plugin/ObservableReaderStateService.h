@@ -45,7 +45,7 @@ public:
     /**
      *
      */
-    ~ObservableReaderStateService();
+    ~ObservableReaderStateService() = default;
 
     /**
      * Thread safe method to communicate an internal event to this reader Use this method to inform
@@ -71,13 +71,23 @@ public:
     const MonitoringState& getCurrentMonitoringState() const;
 
     /**
-     * C++ vs. Java: protected in Java, made public to ease thread cancellation when needed
+     * C++ vs. Java: added this function to stop all potential threads
      *
+     */
+    std::map<MonitoringState, std::shared_ptr<AbstractObservableState>>& getStates()
+    {
+        return mStates;
+    }
+
+protected:
+    /**
      * Get reader current state
      *
      * @return reader current state
      */
     const std::shared_ptr<AbstractObservableState> getCurrentState() const;
+
+
 
 private:
     /**

@@ -43,5 +43,5 @@ TEST(SvCheckRespParsTest, svCheckParse_failed)
     SvCheckRespPars svDebitRespPars(apduResponse, nullptr);
 
     ASSERT_FALSE(svDebitRespPars.getApduResponse()->isSuccessful());
-    EXPECT_THROW(svDebitRespPars.checkStatus(), CalypsoSamCommandException);
+    EXPECT_THROW(svDebitRespPars.checkStatus(), KeypleSeCommandException);
 }

@@ -54,16 +54,6 @@ public:
     /**
      *
      */
-    bool waitForCardPresent(long long timeout);
-
-    /**
-     *
-     */
-    bool waitForCardAbsent(long long timeout);
-
-    /**
-     *
-     */
     void openAndConnect(const std::string& protocol);
 
     /**

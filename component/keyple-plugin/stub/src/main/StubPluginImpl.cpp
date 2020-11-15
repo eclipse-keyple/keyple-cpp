@@ -65,7 +65,7 @@ void StubPluginImpl::plugStubReader(const std::string& readerName,
     if (!exist && synchronous) {
         /* add the reader as a new reader to the readers list */
         auto reader = std::make_shared<StubReaderImpl>(getName(), readerName, transmissionMode);
-        mNativeReaders.insert({readerName, reader });
+        mNativeReaders.insert({readerName, reader});
     }
 
     mConnectedStubNames.insert(readerName);
@@ -125,8 +125,8 @@ void StubPluginImpl::unplugStubReader(const std::string& readerName,
         }
 
         /* Remove the native reader from the native readers list */
-        mLogger->info("Unplugged reader with name %, connectedStubNames size : %\n", 
-                      readerName, 
+        mLogger->info("Unplugged reader with name %, connectedStubNames size : %\n",
+                      readerName,
                       mConnectedStubNames.size());
     }
 }
@@ -141,12 +141,10 @@ void StubPluginImpl::unplugStubReaders(const std::set<std::string>& readerNames,
 
     for (const std::string name : readerNames) {
         try {
-            readersToDelete.push_back(
-                std::dynamic_pointer_cast<StubReaderImpl>(getReader(name)));
+            readersToDelete.push_back(std::dynamic_pointer_cast<StubReaderImpl>(getReader(name)));
         } catch (KeypleReaderNotFoundException& e) {
             (void)e;
-            mLogger->warn("unplugStubReaders() No reader found with name %\n",
-                          name);
+            mLogger->warn("unplugStubReaders() No reader found with name %\n", name);
         }
     }
 

@@ -27,7 +27,7 @@ using namespace keyple::core::command;
 
 TEST(PoGetChallengeCmdBuildTest, POGetChallenge_Rev2_4)
 {
-    const std::vector<uint8_t> request = {0x94, 0x84, 0x01, 0x10, 0x08};
+    const std::vector<uint8_t> request = {0x94, 0x84, 0x00, 0x00, 0x08};
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder =
         std::make_shared<PoGetChallengeCmdBuild>(PoClass::LEGACY);
@@ -39,7 +39,7 @@ TEST(PoGetChallengeCmdBuildTest, POGetChallenge_Rev2_4)
 
 TEST(PoGetChallengeCmdBuildTest, POGetChallenge_Rev3_1)
 {
-    const std::vector<uint8_t> request = {0x00, 0x84, 0x01, 0x10, 0x08};
+    const std::vector<uint8_t> request = {0x00, 0x84, 0x00, 0x00, 0x08};
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder =
         std::make_shared<PoGetChallengeCmdBuild>(PoClass::ISO);
@@ -51,7 +51,7 @@ TEST(PoGetChallengeCmdBuildTest, POGetChallenge_Rev3_1)
 
 TEST(PoGetChallengeCmdBuildTest, POGetChallenge_Rev3_2)
 {
-    const std::vector<uint8_t> request = {0x00, 0x84, 0x01, 0x10, 0x08};
+    const std::vector<uint8_t> request = {0x00, 0x84, 0x00, 0x00, 0x08};
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder =
         std::make_shared<PoGetChallengeCmdBuild>(PoClass::ISO);

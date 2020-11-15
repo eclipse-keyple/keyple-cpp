@@ -36,6 +36,8 @@ namespace plugin {
 class KEYPLECORE_API AbstractObservablePlugin
 : public AbstractPlugin, public virtual ObservablePluginNotifier {
 public:
+    using AbstractPlugin::getName;
+
     /**
      * Add a plugin observer.
      * <p>

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -87,14 +86,12 @@ TEST(StubPluginTest, plugOneReaderSync_success)
     const std::string READER_NAME = "plugOneReaderSync_sucess";
 
     /* Connect reader */
-    stubPlugin->plugStubReader(READER_NAME, TransmissionMode::CONTACTLESS,
-                               true);
+    stubPlugin->plugStubReader(READER_NAME, TransmissionMode::CONTACTLESS, true);
 
     ASSERT_EQ(static_cast<int>(stubPlugin->getReaders().size()), 1);
 
-    std::shared_ptr<StubReader> stubReader =
-        std::dynamic_pointer_cast<StubReader>(
-            stubPlugin->getReaders().begin()->second);
+    std::shared_ptr<SeReader> reader = stubPlugin->getReaders().begin()->second;
+    auto stubReader = std::dynamic_pointer_cast<StubReader>(reader);
 
     ASSERT_EQ(stubReader->getName(), READER_NAME);
     ASSERT_EQ(stubReader->getTransmissionMode(), TransmissionMode::CONTACTLESS);

@@ -67,11 +67,13 @@ void AbstractObservablePlugin::notifyObservers(
                   countObservers(),
                   event->getEventType().getName());
 
+/*
     mtx.lock();
     std::list<std::shared_ptr<ObservablePlugin::PluginObserver>> observersCopy(observers);
     mtx.unlock();
+*/
 
-    for (const auto& observer : observersCopy)
+    for (const auto& observer : observers)
         observer->update(event);
 
 }

@@ -35,7 +35,7 @@ using ManagedSamResource = SamResourceManager::ManagedSamResource;
 
 /* SAM RESOURCE MANAGER ------------------------------------------------------------------------- */
 
-std::unique_ptr<ManagedSamResource> SamResourceManager::createSamResource(
+std::shared_ptr<ManagedSamResource> SamResourceManager::createSamResource(
     std::shared_ptr<SeReader> samReader)
 {
     SeSelection samSelection;
@@ -63,7 +63,7 @@ std::unique_ptr<ManagedSamResource> SamResourceManager::createSamResource(
 
     auto calypsoSam =std::dynamic_pointer_cast<CalypsoSam>(selectionsResult->getActiveMatchingSe());
 
-    return std::unique_ptr<ManagedSamResource>(new ManagedSamResource(samReader, calypsoSam));
+    return std::make_shared<ManagedSamResource>(samReader, calypsoSam);
 }
 
 /* MANAGED SAM RESOURCE ------------------------------------------------------------------------- */

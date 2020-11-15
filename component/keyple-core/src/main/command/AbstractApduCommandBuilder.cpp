@@ -51,8 +51,7 @@ void AbstractApduCommandBuilder::addSubName(const std::string& subName)
     }
 }
 
-const std::shared_ptr<SeCommand> AbstractApduCommandBuilder::getCommandRef()
-    const
+const std::shared_ptr<SeCommand> AbstractApduCommandBuilder::getCommandRef() const
 {
     return mCommandRef;
 }
@@ -62,8 +61,7 @@ const std::string& AbstractApduCommandBuilder::getName() const
     return mName;
 }
 
-const std::shared_ptr<ApduRequest> AbstractApduCommandBuilder::getApduRequest()
-    const
+const std::shared_ptr<ApduRequest> AbstractApduCommandBuilder::getApduRequest() const
 {
     return mRequest;
 }

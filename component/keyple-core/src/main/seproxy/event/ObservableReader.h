@@ -49,7 +49,7 @@ public:
         /**
          *
          */
-        virtual ~ReaderObserver() {}
+        virtual ~ReaderObserver() = default;
 
         /**
          *

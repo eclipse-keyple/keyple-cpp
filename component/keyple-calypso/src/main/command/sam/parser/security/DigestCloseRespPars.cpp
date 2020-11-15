@@ -50,8 +50,7 @@ DigestCloseRespPars::DigestCloseRespPars(
   const std::shared_ptr<ApduResponse> response, DigestCloseCmdBuild* builder)
 : AbstractSamResponseParser(
    response,
-   reinterpret_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(
-       builder)) {}
+   reinterpret_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(builder)) {}
 
 const std::vector<uint8_t> DigestCloseRespPars::getSignature() const
 {

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -39,6 +38,7 @@ using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
 using AllocationMode = SamResourceManager::AllocationMode;
+using ManagedSamResource = SamResourceManager::ManagedSamResource;
 
 class MSRMP_ProxyReaderMock : public ProxyReader {
 public:
@@ -78,10 +78,10 @@ public:
         );
     }
 
-    MOCK_METHOD((const std::map<const std::string, const std::string>&),
-                getParameters,
-                (),
-                (const, override));
+    const std::map<const std::string, const std::string>& getParameters() const override
+    {
+        return mParameters;
+    }
 
     MOCK_METHOD(void,
                 addSeProtocolSetting,
@@ -115,6 +115,7 @@ public:
 
 private:
     const std::string mName = "seRader";
+    const std::map<const std::string, const std::string> mParameters;
 };
 
 class MSRMP_ReaderPoolPluginMock : public ReaderPoolPlugin {
@@ -124,13 +125,10 @@ public:
         return std::set<std::string>{};
     }
 
-    std::shared_ptr<SeReader> allocateReader(const std::string& groupReference)
-        override
-    {
-        (void)groupReference;
-
-        return mSeReader;
-    }
+    MOCK_METHOD(std::shared_ptr<SeReader>,
+                allocateReader,
+                (const std::string&),
+                (override));
 
     void releaseReader(std::shared_ptr<SeReader> seReader) override
     {
@@ -142,10 +140,10 @@ public:
         return mName;
     }
 
-    MOCK_METHOD((const std::map<const std::string, const std::string>&),
-                getParameters,
-                (),
-                (const, override));
+    const std::map<const std::string, const std::string>& getParameters() const override
+    {
+        return mParameters;
+    }
 
     MOCK_METHOD(void,
                 setParameter,
@@ -173,10 +171,22 @@ public:
                 (override));
 
 private:
-    std::shared_ptr<MSRMP_ProxyReaderMock> mSeReader =
-        std::make_shared<MSRMP_ProxyReaderMock>();
-
     const std::string mName = "seRader";
+    const std::map<const std::string, const std::string> mParameters;
+};
+
+class MSRMP_SamResourceManagerPoolMock : public SamResourceManagerPool {
+public:
+    MSRMP_SamResourceManagerPoolMock(
+        ReaderPoolPlugin& samReaderPoolPlugin,
+        const int maxBlockingTime,
+        const int sleepTime)
+    : SamResourceManagerPool(samReaderPoolPlugin, maxBlockingTime, sleepTime) {}
+
+    MOCK_METHOD((std::shared_ptr<ManagedSamResource>),
+                createSamResource,
+                (std::shared_ptr<SeReader> samReader),
+                (override));
 };
 
 TEST(ManagedSamResourceManagerPoolTest, waitResources)
@@ -187,15 +197,16 @@ TEST(ManagedSamResourceManagerPoolTest, waitResources)
     long long start = System::currentTimeMillis();
     bool exceptionThrown = false;
 
+    EXPECT_CALL(poolPlugin, allocateReader(_)).WillRepeatedly(Return(nullptr));
+
     /* Test */
     std::shared_ptr<SeResource<CalypsoSam>> out = nullptr;
     try {
-        out = srmSpy.allocateSamResource(AllocationMode::BLOCKING,
-                                         SamIdentifier::builder()
-                                             ->samRevision(SamRevision::AUTO)
-                                             .serialNumber("any")
-                                             .groupReference("any")
-                                             .build());
+        auto samIdentifier = SamIdentifier::builder()->samRevision(SamRevision::AUTO)
+                                                      .serialNumber("any")
+                                                      .groupReference("any")
+                                                      .build();
+        out = srmSpy.allocateSamResource(AllocationMode::BLOCKING, samIdentifier);
     } catch (const CalypsoNoSamResourceAvailableException& e) {
         (void)e;
         exceptionThrown = true;
@@ -205,7 +216,6 @@ TEST(ManagedSamResourceManagerPoolTest, waitResources)
     }
 
     long long stop = System::currentTimeMillis();
-
 
     /* Assert an exception is thrown after MAX_BLOCKING_TIME */
     ASSERT_TRUE(exceptionThrown);
@@ -217,9 +227,14 @@ TEST(ManagedSamResourceManagerPoolTest, getResource)
     /* Init plugin */
     MSRMP_ReaderPoolPluginMock poolPlugin;
 
+    EXPECT_CALL(poolPlugin, allocateReader(_))
+        .WillRepeatedly(Return(std::make_shared<MSRMP_ProxyReaderMock>()));
+
     /* Init SamResourceManagerPool with custom pool plugin */
-    SamResourceManagerPool srmSpy(poolPlugin, 1000, 10);
-    //doReturn(samResourceMock()).when(srmSpy).createSamResource(any(SeReader.class));
+    MSRMP_SamResourceManagerPoolMock srmSpy(poolPlugin, 1000, 10);
+
+    EXPECT_CALL(srmSpy, createSamResource(_))
+        .WillRepeatedly(Return(std::make_shared<ManagedSamResource>(nullptr, nullptr)));
 
     long long start = System::currentTimeMillis();
 
