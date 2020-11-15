@@ -13,7 +13,7 @@
 
 #include "AbstractReaderObserverEngine.h"
 
-#include <thread>
+#include <future>
 
 /* Core */
 #include "AbstractDefaultSelectionsResponse.h"
@@ -31,14 +31,14 @@ using namespace keyple::core::seproxy::event;
 void AbstractReaderObserverEngine::runProcessSeInserted(const std::shared_ptr<ReaderEvent> event)
 {
     /* Run the PO processing asynchronously in a detach thread */
-    std::thread(
+    std::async(
         [this, event]() {
             mCurrentlyProcessingSe = true;
             try {
                 /* Optional, to process alternative AID selection */
                 processSeInserted();
             } catch (const KeypleException& e) {
-                mLogger->error("Keyple exception: {}", e.getMessage());
+                mLogger->error("Keyple exception: %\n", e.getMessage());
 
                 /**
                  * Informs the underlying layer of the end of the SE processing, in order to manage
@@ -51,9 +51,9 @@ void AbstractReaderObserverEngine::runProcessSeInserted(const std::shared_ptr<Re
                     auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
                     observable->finalizeSeProcessing();
                 } catch (const KeypleReaderNotFoundException& ex) {
-                    mLogger->error("Reader not found exception: {}", ex.getMessage());
+                    mLogger->error("Reader not found exception: %\n", ex.getMessage());
                 } catch (const KeyplePluginNotFoundException& ex) {
-                    mLogger->error("Plugin not found exception: {}", ex.getMessage());
+                    mLogger->error("Plugin not found exception: %\n", ex.getMessage());
                 }
             }
 
@@ -64,7 +64,7 @@ void AbstractReaderObserverEngine::runProcessSeInserted(const std::shared_ptr<Re
 void AbstractReaderObserverEngine::runProcessSeMatched(const std::shared_ptr<ReaderEvent> event)
 {
     /* Run the PO processing asynchronously in a detach thread */
-    std::thread(
+    std::async(
         [this, event]() {
             mCurrentlyProcessingSe = true;
             try {
@@ -82,9 +82,9 @@ void AbstractReaderObserverEngine::runProcessSeMatched(const std::shared_ptr<Rea
                     auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
                     observable->finalizeSeProcessing();
                 } catch (KeypleReaderNotFoundException& ex) {
-                    mLogger->error("Reader not found exception: {}", ex.getMessage());
+                    mLogger->error("Reader not found exception: %\n", ex.getMessage());
                 } catch (KeyplePluginNotFoundException& ex) {
-                    mLogger->error("Plugin not found exception: {}", ex.getMessage());
+                    mLogger->error("Plugin not found exception: %\n", ex.getMessage());
                 }
             }
 
