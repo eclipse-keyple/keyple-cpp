@@ -46,6 +46,8 @@ int main(int argc, char** argv)
     (void)argc;
     (void)argv;
 
+    logger->setLoggerLevel(Logger::Level::logTrace);
+
     /* Get the instance of the SeProxyService (Singleton pattern) */
     SeProxyService& seProxyService = SeProxyService::getInstance();
 
