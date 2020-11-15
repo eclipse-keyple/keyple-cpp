@@ -73,10 +73,11 @@ SamCommandProcessor::SamCommandProcessor(
   const std::shared_ptr<SeResource<CalypsoPo>> poResource,
   const std::shared_ptr<PoSecuritySettings> poSecuritySettings)
 : mSamResource(poSecuritySettings->getSamResource()),
-  mSamReader(
-      std::dynamic_pointer_cast<ProxyReader>(mSamResource->getSeReader())),
+  mSamReader(std::dynamic_pointer_cast<ProxyReader>(mSamResource->getSeReader())),
   mPoResource(poResource),
-  mPoSecuritySettings(poSecuritySettings) {}
+  mPoSecuritySettings(poSecuritySettings),
+  mWorkKeyKif(0),
+  mWorkKeyKVC(0) {}
 
 const std::vector<uint8_t> SamCommandProcessor::getSessionTerminalChallenge()
 {
@@ -356,9 +357,8 @@ const std::vector<uint8_t> SamCommandProcessor::getTerminalSignature()
     std::shared_ptr<AbstractSamResponseParser> response =
         samCommands[samCommands.size() - 1]->createResponseParser(
             samApduResponses[samCommands.size() - 1]);
-    auto resp = std::reinterpret_pointer_cast<SamReadKeyParametersRespPars>(response);
+    auto digestCloseRespPars = std::reinterpret_pointer_cast<DigestCloseRespPars>(response);
 
-    auto digestCloseRespPars = std::dynamic_pointer_cast<DigestCloseRespPars>(resp);
     const std::vector<uint8_t>& sessionTerminalSignature = digestCloseRespPars->getSignature();
 
     mLogger->debug("SIGNATURE = %\n", sessionTerminalSignature);

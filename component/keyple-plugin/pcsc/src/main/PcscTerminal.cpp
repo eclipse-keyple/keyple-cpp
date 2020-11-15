@@ -171,36 +171,6 @@ bool PcscTerminal::isCardPresent(bool release)
     return true;
 }
 
-bool PcscTerminal::waitForCardPresent(long long timeout)
-{
-    bool present;
-    long long current;
-    long long start = System::currentTimeMillis();
-
-    mLogger->trace("waitForCardPresent - waiting for card insertion for % ms\n",
-                  timeout);
-
-    do {
-        present = isCardPresent(false);
-        if (present) {
-            mLogger->trace("waitForCardPresent - card present\n");
-            return true;
-        }
-
-        Thread::sleep(100);
-
-        if (timeout == INFINITE)
-            continue;
-
-        current = System::currentTimeMillis();
-        if (current > (start + timeout)) {
-            mLogger->trace("waitForCardPresent - timeout\n");
-            return false;
-        }
-
-    } while (1);
-}
-
 void PcscTerminal::openAndConnect(const std::string& protocol)
 {
     LONG rv;
@@ -277,36 +247,6 @@ void PcscTerminal::closeAndDisconnect(bool reset)
     SCardDisconnect(mContext, reset ? SCARD_LEAVE_CARD : SCARD_RESET_CARD);
 
     releaseContext();
-}
-
-bool PcscTerminal::waitForCardAbsent(long long timeout)
-{
-    bool present;
-    long long current;
-    long long start = System::currentTimeMillis();
-
-    mLogger->trace("waitForCardAbsent - waiting for card removal for % ms\n",
-                  timeout);
-
-    do {
-        present = isCardPresent(false);
-        if (!present) {
-            mLogger->trace("waitForCardAbsent - card absent\n");
-            return true;
-        }
-
-        Thread::sleep(100);
-
-        if (timeout == INFINITE)
-            continue;
-
-        current = System::currentTimeMillis();
-        if (current > (start + timeout)) {
-            mLogger->trace("waitForCardAbsent - timeout\n");
-            return false;
-        }
-
-    } while (1);
 }
 
 const std::vector<uint8_t>& PcscTerminal::getATR()

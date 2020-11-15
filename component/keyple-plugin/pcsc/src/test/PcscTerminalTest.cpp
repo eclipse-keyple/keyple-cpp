@@ -54,22 +54,3 @@ TEST(PcscTerminalTest, isCardPresent)
 
     ASSERT_FALSE(t.isCardPresent(false));
 }
-
-TEST(PcscTerminalTest, waitForCardPresent)
-{
-    const std::vector<std::string>& list = PcscTerminal::listTerminals();
-
-    PcscTerminal t(list[0]);
-
-    ASSERT_FALSE(t.waitForCardPresent(100));
-}
-
-TEST(PcscTerminalTest, waitForCardAbsent)
-{
-    const std::vector<std::string>& list = PcscTerminal::listTerminals();
-
-    PcscTerminal t(list[0]);
-
-    ASSERT_TRUE(t.waitForCardAbsent(100));
-}
-

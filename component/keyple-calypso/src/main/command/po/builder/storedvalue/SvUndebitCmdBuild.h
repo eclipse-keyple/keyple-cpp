@@ -108,7 +108,7 @@ private:
     /**
      * The command
      */
-    const CalypsoPoCommand& mCommand = CalypsoPoCommand::SV_RELOAD;
+    const CalypsoPoCommand& mCommand = CalypsoPoCommand::SV_UNDEBIT;
 
     /**
      *

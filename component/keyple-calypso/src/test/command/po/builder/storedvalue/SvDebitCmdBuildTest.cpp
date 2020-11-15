@@ -56,7 +56,7 @@ TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_compat_not_finalized)
                                     ByteArrayUtil::fromHex("3344")); /* Time */
     std::shared_ptr<ApduRequest> request = svDebitCmdBuild.getApduRequest();
 
-    ASSERT_NE(request, nullptr);
+    ASSERT_TRUE(request == nullptr);
 }
 
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_compat_4081)
@@ -76,29 +76,31 @@ TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_compat_4081)
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_compat_negative_amount)
 {
     /** @see Calypso Layer ID 8.02 (200108) */
-    SvDebitCmdBuild svDebitCmdBuild(PoClass::ISO,
-                                    PoRevision::REV3_1,
-                                    -1, /* Amount */
-                                    0xAA, /* KVC */
-                                    ByteArrayUtil::fromHex("1122"), /* Date */
-                                    ByteArrayUtil::fromHex("3344")); /* Time */
-    svDebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    EXPECT_THROW(SvDebitCmdBuild(PoClass::ISO,
+                                 PoRevision::REV3_1,
+                                 -1, /* Amount */
+                                 0xAA, /* KVC */
+                                 ByteArrayUtil::fromHex("1122"), /* Date */
+                                 ByteArrayUtil::fromHex("3344")), /* Time */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svDebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svDebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    //EXPECT_THROW(svDebitCmdBuild.getApduRequest()->getBytes(), std::exception);
 }
 
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_compat_overlimit_amount)
 {
     /** @see Calypso Layer ID 8.02 (200108) */
-    SvDebitCmdBuild svDebitCmdBuild(PoClass::ISO,
-                                    PoRevision::REV3_1,
-                                    32768, /* Amount */
-                                    0xAA, /* KVC */
-                                    ByteArrayUtil::fromHex("1122"), /* Date */
-                                    ByteArrayUtil::fromHex("3344")); /* Time */
-    svDebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    EXPECT_THROW(SvDebitCmdBuild(PoClass::ISO,
+                                 PoRevision::REV3_1,
+                                 32768, /* Amount */
+                                 0xAA, /* KVC */
+                                 ByteArrayUtil::fromHex("1122"), /* Date */
+                                 ByteArrayUtil::fromHex("3344")), /* Time */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svDebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svDebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    //svDebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_compat_bad_signature_length_1)
@@ -109,23 +111,28 @@ TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_compat_bad_signature_length_1)
                                     0xAA, /* KVC */
                                     ByteArrayUtil::fromHex("1122"), /* Date */
                                     ByteArrayUtil::fromHex("3344")); /* Time */
-    svDebitCmdBuild.finalizeBuilder(
-        ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900"));
 
-    EXPECT_THROW(svDebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    EXPECT_THROW(svDebitCmdBuild.finalizeBuilder(
+                     ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900")),
+                 IllegalArgumentException);
+
+    //svDebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_compat_bad_signature_length_2)
 {
     SvDebitCmdBuild svDebitCmdBuild(PoClass::ISO,
-                                    PoRevision::REV3_1,
-                                    1, /* Amount */
-                                    0xAA, /* KVC */
-                                    ByteArrayUtil::fromHex("1122"), /* Date */
-                                    ByteArrayUtil::fromHex("3344")); /* Time */
-    svDebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD556677123456112233"));
+                                 PoRevision::REV3_1,
+                                 1, /* Amount */
+                                 0xAA, /* KVC */
+                                 ByteArrayUtil::fromHex("1122"), /* Date */
+                                 ByteArrayUtil::fromHex("3344"));/* Time */
 
-    EXPECT_THROW(svDebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    EXPECT_THROW(svDebitCmdBuild.finalizeBuilder(
+                     ByteArrayUtil::fromHex("AABBCCDD556677123456112233")),
+                 IllegalArgumentException);
+
+    //EXPECT_THROW(svDebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
 }
 
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_compat_illegal_date_1)
@@ -229,7 +236,7 @@ TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_rev3_2_not_finalized)
                                     ByteArrayUtil::fromHex("3344")); /* Time */
     std::shared_ptr<ApduRequest> request = svDebitCmdBuild.getApduRequest();
 
-    ASSERT_EQ(request, nullptr);
+    ASSERT_TRUE(request == nullptr);
 }
 
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_rev3_2_4081)
@@ -250,29 +257,31 @@ TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_rev3_2_4081)
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_rev3_2_negative_amount)
 {
     /** @see Calypso Layer ID 8.02 (200108) */
-    SvDebitCmdBuild svDebitCmdBuild(PoClass::ISO,
-                                    PoRevision::REV3_2,
-                                    -1, /* Amount */
-                                    0xAA, /* KVC */
-                                    ByteArrayUtil::fromHex("1122"), /* Date */
-                                    ByteArrayUtil::fromHex("3344")); /* Time */
-    svDebitCmdBuild.finalizeBuilder( ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    EXPECT_THROW(SvDebitCmdBuild(PoClass::ISO,
+                                 PoRevision::REV3_2,
+                                 -1, /* Amount */
+                                 0xAA, /* KVC */
+                                 ByteArrayUtil::fromHex("1122"), /* Date */
+                                 ByteArrayUtil::fromHex("3344")), /* Time */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svDebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svDebitCmdBuild.finalizeBuilder( ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"))
+    //svDebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_rev3_2_overlimit_amount)
 {
     /** @see Calypso Layer ID 8.02 (200108) */
-    SvDebitCmdBuild svDebitCmdBuild(PoClass::ISO,
-                                    PoRevision::REV3_2,
-                                    32768, /* Amount */
-                                    0xAA, /* KVC */
-                                    ByteArrayUtil::fromHex("1122"), /* Date */
-                                    ByteArrayUtil::fromHex("3344")); /* Time */
-    svDebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    EXPECT_THROW(SvDebitCmdBuild(PoClass::ISO,
+                                 PoRevision::REV3_2,
+                                 32768, /* Amount */
+                                 0xAA, /* KVC */
+                                 ByteArrayUtil::fromHex("1122"), /* Date */
+                                 ByteArrayUtil::fromHex("3344")), /* Time */
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svDebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svDebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
+    //svDebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_rev3_2_bad_signature_length_1)
@@ -283,9 +292,12 @@ TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_rev3_2_bad_signature_length_1)
                                     0xAA, /* KVC */
                                     ByteArrayUtil::fromHex("1122"), /* Date */
                                     ByteArrayUtil::fromHex("3344")); /* Time */
-    svDebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
 
-    EXPECT_THROW(svDebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    EXPECT_THROW(svDebitCmdBuild.finalizeBuilder(
+                     ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455")),
+                 IllegalArgumentException);
+
+    //svDebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_rev3_2_bad_signature_length_2)
@@ -296,9 +308,11 @@ TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_rev3_2_bad_signature_length_2)
                                     0xAA, /* KVC */
                                     ByteArrayUtil::fromHex("1122"), /* Date */
                                     ByteArrayUtil::fromHex("3344")); /* Time */
-    svDebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD556677123456112233"));
+    EXPECT_THROW(svDebitCmdBuild.finalizeBuilder(
+                     ByteArrayUtil::fromHex("AABBCCDD556677123456112233")),
+                 IllegalArgumentException);
 
-    EXPECT_THROW(svDebitCmdBuild.getApduRequest()->getBytes(), IllegalArgumentException);
+    //svDebitCmdBuild.getApduRequest()->getBytes();
 }
 
 TEST(SvDebitCmdBuildTest,  svDebitCmdBuild_mode_rev3_2_illegal_date_1)

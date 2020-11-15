@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -46,7 +45,7 @@ public:
         NON_BLOCKING
     };
 
-       /**
+    /**
      * (package-private)<br>
      * Inner class to handle specific attributes associated with an {@code
      * SeResource<CalypsoSam>} in the {@link SamResourceManager} context.
@@ -107,8 +106,7 @@ public:
          * @return true or false according to the result of the correspondence
          *         test
          */
-        bool isSamMatching(const std::shared_ptr<SamIdentifier> samIdentifier)
-            const;
+        bool isSamMatching(const std::shared_ptr<SamIdentifier> samIdentifier) const;
 
         /**
          * Sets the free/busy status of the ManagedSamResource
@@ -183,7 +181,7 @@ protected:
      * @throw CalypsoNoSamResourceAvailableException if an error occurs while
      *        doing the selection
      */
-    std::unique_ptr<ManagedSamResource> createSamResource(
+    virtual std::shared_ptr<ManagedSamResource> createSamResource(
         std::shared_ptr<SeReader> samReader);
 };
 

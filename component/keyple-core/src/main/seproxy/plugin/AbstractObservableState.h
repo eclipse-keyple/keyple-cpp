@@ -77,37 +77,38 @@ public:
     void onDeactivate();
 
     /**
-     * C++ vs. Java: protected in Java, public to help close monitoring threads
+     * C++ vs. Java: protected in Java, public in C++ to try and workaround threading issues
      *
      * Background job definition if any
      */
-    std::shared_ptr<AbstractMonitoringJob> monitoringJob;
+    std::shared_ptr<AbstractMonitoringJob> mMonitoringJob;
 
 protected:
+
     /**
      * Identifier of the currentState
      */
-    MonitoringState state;
+    MonitoringState mState;
 
     /**
      * Reference to Reader
      */
-    AbstractObservableLocalReader* reader;
+    AbstractObservableLocalReader* mReader;
 
     /**
      * Result of the background job if any
      */
-    std::future<void>* monitoringEvent;
+    std::future<void>* mMonitoringEvent;
 
     /**
      * Executor service used to execute AbstractMonitoringJob
      */
-    std::shared_ptr<MonitoringPool> executorService;
+    std::shared_ptr<MonitoringPool> mExecutorService;
 
     /**
      *
      */
-    std::atomic<bool> cancellationFlag;
+    std::atomic<bool> mCancellationFlag;
 
     /**
      * Create a new state with a state identifier and a monitor job
@@ -147,7 +148,7 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger= LoggerFactory::getLogger(typeid(AbstractObservableState));
+    const std::shared_ptr<Logger> mLogger= LoggerFactory::getLogger(typeid(AbstractObservableState));
 };
 
 }

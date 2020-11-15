@@ -45,41 +45,38 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::plugin;
 using namespace keyple::core::seproxy::protocol;
 
-StubReaderImpl::StubReaderImpl(const std::string& pluginName, const std::string& readerName)
-: AbstractObservableLocalReader(pluginName, readerName)
+
+StubReaderImpl::StubReaderImpl(const std::string& pluginName,
+                               const std::string& readerName,
+                               TransmissionMode transmissionMode)
+: AbstractObservableLocalReader(pluginName, readerName),
+  mTransmissionMode(transmissionMode)
 {
+    mLoopWaitSe = false;
+    mLoopWaitSeRemoval = false;
+
     /* Create a executor service with one thread whose name is customized */
     mExecutorService = std::make_shared<MonitoringPool>();
 
     mStateService = initStateService();
 }
 
-StubReaderImpl::StubReaderImpl(const std::string& pluginName,
-                               const std::string& name,
-                               TransmissionMode transmissionMode)
-: StubReaderImpl(pluginName, name)
-{
-    mTransmissionMode = transmissionMode;
-}
+
+StubReaderImpl::StubReaderImpl(const std::string& pluginName, const std::string& readerName)
+: StubReaderImpl(pluginName, readerName, TransmissionMode::NONE) {}
 
 StubReaderImpl::~StubReaderImpl()
 {
-    /* Force threads to stop */
     mShuttingDown = true;
 
-    /*
-     * I would rather avoid that, base classes virtual destructors will end up
-     * calling stopWaitForCard() and stopWaitForCardRemoval() at a time where
-     * the class state is unfortunatly unknown (seems like some class members
-     * are already gone. Let's stop them first here, double call is no problem.
-     */
-    stopWaitForCard();
-    while(mLoopWaitSeOngoing)
-        Thread::sleep(1);
-
-    stopWaitForCardRemoval();
-    while(mLoopWaitSeRemovalOngoing)
-        Thread::sleep(1);
+    if (mStateService) {
+        for (auto& state : mStateService->getStates()) {
+            if (state.second && state.second->mMonitoringJob) {
+                state.second->mMonitoringJob->stop();
+                while (state.second->mMonitoringJob->isRunning());
+            }
+        }
+    }
 }
 
 const std::vector<uint8_t>& StubReaderImpl::getATR()
@@ -152,6 +149,7 @@ bool StubReaderImpl::protocolFlagMatches(const std::shared_ptr<SeProtocol> proto
 
 bool StubReaderImpl::checkSePresence()
 {
+    mLogger->trace("SE: %\n", mSe);
     return mSe != nullptr;
 }
 
@@ -175,14 +173,17 @@ void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> se)
     mLogger->debug("Insert SE %\n", se);
 
     /* Clean channels status */
+    mLogger->trace("Verifying if physical channel is open\n");
     if (isPhysicalChannelOpen()) {
         try {
+            mLogger->trace("Closing physical channel\n");
             closePhysicalChannel();
         } catch (KeypleReaderException& e) {
             mLogger->error("Error while closing channel reader. %\n", e.getMessage());
         }
     }
 
+    mLogger->trace("Setting SE to %\n", se);
     if (se != nullptr)
         mSe = se;
 }
@@ -201,27 +202,33 @@ std::shared_ptr<StubSecureElement> StubReaderImpl::getSe()
 
 bool StubReaderImpl::waitForCardPresent()
 {
+    if (mShuttingDown)
+        return false;
+
     mLoopWaitSe = true;
-    mLoopWaitSeOngoing = true;
 
     mLogger->trace("[%] waitForCardPresent\n", getName());
 
     while (mLoopWaitSe) {
+        mLogger->trace("[%] checking for card presence\n", getName());
         if (checkSePresence()) {
             mLogger->trace("[%] card present\n", getName());
-            mLoopWaitSeOngoing = false;
             return true;
         }
 
+
+        mLogger->trace("[%] sleeping for 10 ms\n", getName());
         try {
             Thread::sleep(10);
         } catch (const InterruptedException& e) {
             mLogger->debug("Sleep was interrupted - %\n", e);
         }
+
+        mLogger->trace("[%] looping back\n", getName());
     }
 
-    mLogger->trace("[%] waitForCardPresent - complete\n", getName());
-    mLoopWaitSeOngoing = false;
+    mLogger->trace("[%] mLoopWaitSe=false, leaving\n", getName());
+
     return false;
     // logger.trace("[{}] no card was inserted", this.getName());
     // return false;
@@ -229,21 +236,22 @@ bool StubReaderImpl::waitForCardPresent()
 
 void StubReaderImpl::stopWaitForCard()
 {
-    /* Do not log anything here! */
+    mLogger->trace("[%] stopping waitForCard - setting mLoopWaitSe to false\n", getName());
     mLoopWaitSe = false;
 }
 
 bool StubReaderImpl::waitForCardAbsentNative()
 {
+    if (mShuttingDown)
+        return false;
+
     mLoopWaitSeRemoval = true;
-    mLoopWaitSeRemovalOngoing = true;
 
     mLogger->trace("[%] waitForCardAbsentNative\n", getName());
 
     while (mLoopWaitSeRemoval) {
         if (!checkSePresence()) {
             mLogger->trace("[%] card removed\n", getName());
-            mLoopWaitSeRemovalOngoing = false;
             return true;
         }
 
@@ -254,16 +262,11 @@ bool StubReaderImpl::waitForCardAbsentNative()
         }
     }
 
-    mLogger->trace("[%] waitForCardAbsentNative - complete\n", getName());
-    mLoopWaitSeRemovalOngoing = false;
     return false;
-    // logger.trace("[{}] no card was removed", this.getName());
-    // return false;
 }
 
 void StubReaderImpl::stopWaitForCardRemoval()
 {
-    /* Do not log anything here! */
     mLoopWaitSeRemoval = false;
 }
 

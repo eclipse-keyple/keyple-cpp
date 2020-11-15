@@ -173,7 +173,7 @@ public:
 
     std::shared_ptr<ReaderEvent> processSeInserted() override
     {
-        return nullptr;
+        return std::make_shared<ReaderEvent>("reader", "plugin", ReaderEvent::EventType::SE_REMOVED, nullptr);
     }
 
     MOCK_METHOD(void,
@@ -253,7 +253,7 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_noping_STOP)
     ASPTR_SmartPresenceTheadedReaderMock r(PLUGIN_NAME, READER_NAME, 1);
 
     /* SE matched */
-    
+
     //EXPECT_CALL(r, isSePresentPing())
     //    .Times(1)
     //    .WillOnce(Return(false));
@@ -265,7 +265,7 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_noping_STOP)
     r.terminateSeCommunication();
     Thread::sleep(1000);
 
-    ASSERT_EQ(r.getCurrentMonitoringState(), MonitoringState::WAIT_FOR_SE_INSERTION);
+    ASSERT_EQ(r.getCurrentMonitoringState(), MonitoringState::WAIT_FOR_START_DETECTION);
 }
 
 TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_ping_STOP)
@@ -273,7 +273,7 @@ TEST(AbstractSmartPresenceThreadedReaderTest, startRemovalSequence_ping_STOP)
     ASPTR_SmartPresenceTheadedReaderMock r(PLUGIN_NAME, READER_NAME, 1);
 
     /* SE matched */
-   
+
     // Commented in Java
     //EXPECT_CALL(r, isSePresentPing())
     //    .Times(1)

@@ -28,7 +28,10 @@ public:
     /**
      *
      */
-    virtual ~SmartInsertionReader() = default;
+    virtual ~SmartInsertionReader()
+    {
+        stopWaitForCard();
+    }
 
     /**
      * Waits for a SE. Returns true if a SE is detected before the end of the provided timeout.
@@ -47,7 +50,7 @@ public:
     /**
      * Interrupts the waiting of a SE
      */
-    virtual void stopWaitForCard() = 0;
+    virtual void stopWaitForCard() {}
 };
 
 }

@@ -34,7 +34,18 @@ public:
     /**
      *
      */
-    virtual ~ObservableReaderNotifier() = default;
+    ObservableReaderNotifier()
+    {
+        mShuttingDown = false;
+    }
+
+    /**
+     *
+     */
+    virtual ~ObservableReaderNotifier()
+    {
+        mShuttingDown = true;
+    }
 
     /**
      * Push a ReaderEvent of the {@link ObservableReaderNotifier} to its
@@ -47,7 +58,7 @@ public:
     /**
      * C++ vs. Java: added this flag to handle threads gracefully
      */
-    std::atomic<bool> mShuttingDown = false;
+    std::atomic<bool> mShuttingDown;
 };
 
 }

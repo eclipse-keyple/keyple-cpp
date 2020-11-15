@@ -35,8 +35,11 @@ SmartInsertionMonitoringJob::SmartInsertionMonitoringJob(SmartInsertionReader* r
 void SmartInsertionMonitoringJob::monitoringJob(AbstractObservableState* state,
                                                 std::atomic<bool>& cancellationFlag)
 {
+    if (!mReader || mReader->mShuttingDown)
+        return;
+
     mRunning = true;
-    
+
     mLogger->trace("[%] Invoke waitForCardPresent asynchronously\n", mReader->getName());
 
     try {
@@ -45,11 +48,9 @@ void SmartInsertionMonitoringJob::monitoringJob(AbstractObservableState* state,
             throw InterruptedException("monitoring job interrupted");
         }
 
-        if (!mReader->mShuttingDown && mReader->waitForCardPresent()) {
-            if (!mReader->mShuttingDown) {
-                mLogger->debug("throwing card inserted event\n");
-                state->onEvent(InternalEvent::SE_INSERTED);
-            }
+        if (mReader->waitForCardPresent()) {
+            mLogger->debug("throwing card inserted event\n");
+            state->onEvent(InternalEvent::SE_INSERTED);
         }
 
     } catch (KeypleReaderIOException& e) {

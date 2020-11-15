@@ -32,23 +32,19 @@ WaitForSeProcessing::WaitForSeProcessing(
 
 void WaitForSeProcessing::onEvent(const InternalEvent event)
 {
-    /* C++ vs. Java: thread management */
-    if (reader->mShuttingDown)
-        return;
-
-    logger->trace("[%] onEvent => Event % received in currentState %\n",
-                  reader->getName(),
-                  event,
-                  state);
+    mLogger->trace("[%] onEvent => Event % received in currentState %\n",
+                   mReader->getName(),
+                   event,
+                   mState);
 
     /* Process InternalEvent */
     switch (event) {
     case InternalEvent::SE_PROCESSED:
-        if (this->reader->getPollingMode() == ObservableReader::PollingMode::REPEATING) {
+        if (this->mReader->getPollingMode() == ObservableReader::PollingMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_SE_REMOVAL);
         } else {
             /* We close the channels now and notify the application of the SE_REMOVED event */
-            this->reader->processSeRemoved();
+            this->mReader->processSeRemoved();
             switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         }
         break;
@@ -58,23 +54,23 @@ void WaitForSeProcessing::onEvent(const InternalEvent event)
          * the currentState of waiting for insertion
          * We notify the application of the SE_REMOVED event.
          */
-        reader->processSeRemoved();
-        if (reader->getPollingMode() == ObservableReader::PollingMode::REPEATING) {
+        mReader->processSeRemoved();
+        if (mReader->getPollingMode() == ObservableReader::PollingMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_SE_INSERTION);
         } else {
             switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         }
         break;
     case InternalEvent::STOP_DETECT:
-        reader->processSeRemoved();
+        mReader->processSeRemoved();
         switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         break;
 
     default:
-        logger->warn("[%] Ignore =>  Event % received in currentState %\n",
-                     reader->getName(),
+        mLogger->warn("[%] Ignore =>  Event % received in currentState %\n",
+                     mReader->getName(),
                      event,
-                     state);
+                     mState);
         break;
     }
 }

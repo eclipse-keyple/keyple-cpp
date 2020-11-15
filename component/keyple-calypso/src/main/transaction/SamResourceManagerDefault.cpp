@@ -46,8 +46,7 @@ using namespace keyple::core::seproxy::exception;
 using PluginObserver = SamResourceManagerDefault::PluginObserver;
 using PollingMode = ObservableReader::PollingMode;
 using ReaderObserver = SamResourceManagerDefault::ReaderObserver;
-using SamResourceStatus =
-    SamResourceManager::ManagedSamResource::SamResourceStatus;
+using SamResourceStatus = SamResourceManager::ManagedSamResource::SamResourceStatus;
 
 /* SAM RESOURCE MANAGER DEFAULT --------------------------------------------- */
 

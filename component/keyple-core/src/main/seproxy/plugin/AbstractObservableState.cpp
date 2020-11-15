@@ -29,70 +29,68 @@ namespace plugin {
 AbstractObservableState::AbstractObservableState(
   MonitoringState state,
   AbstractObservableLocalReader* reader,
-  std::shared_ptr<AbstractMonitoringJob> monitoringJob,
+  std::shared_ptr<AbstractMonitoringJob> mMonitoringJob,
   std::shared_ptr<MonitoringPool> executorService)
-: state(state),
-  reader(reader),
-  monitoringJob(monitoringJob),
-  monitoringEvent(nullptr),
-  executorService(executorService),
-  cancellationFlag() {}
+: mMonitoringJob(mMonitoringJob),
+  mState(state),
+  mReader(reader),
+  mMonitoringEvent(nullptr),
+  mExecutorService(executorService),
+  mCancellationFlag() {}
 
 AbstractObservableState::AbstractObservableState(
     MonitoringState state, AbstractObservableLocalReader* reader)
-: state(state), reader(reader), monitoringEvent(nullptr), cancellationFlag() {}
+: mState(state), mReader(reader), mMonitoringEvent(nullptr), mCancellationFlag() {}
 
 const MonitoringState& AbstractObservableState::getMonitoringState() const
 {
-    return state;
+    return mState;
 }
 
 void AbstractObservableState::switchState(const MonitoringState stateId)
 {
-    reader->switchState(stateId);
+    mReader->switchState(stateId);
 }
 
 void AbstractObservableState::onActivate()
 {
     /* C++ vs. Java: thread management */
-    if (reader->mShuttingDown)
+    if (mReader->mShuttingDown)
         return;
 
-    logger->trace("[%] onActivate => %\n", reader->getName(),  getMonitoringState());
+    mLogger->trace("[%] onActivate => %\n", mReader->getName(),  getMonitoringState());
 
-    cancellationFlag = false;
+    mCancellationFlag = false;
 
-    /* Launch the monitoringJob is necessary */
-    if (monitoringJob != nullptr) {
-        if (executorService == nullptr)
+    /* Launch the mMonitoringJob is necessary */
+    if (mMonitoringJob != nullptr) {
+        if (mExecutorService == nullptr)
             throw AssertionError("ExecutorService must be set");
 
-        monitoringEvent = executorService->submit(monitoringJob, this, cancellationFlag);
+        mMonitoringEvent = mExecutorService->submit(mMonitoringJob, this, mCancellationFlag);
     }
 }
 
 void AbstractObservableState::onDeactivate()
 {
     /* C++ vs. Java: thread management */
-    if (reader->mShuttingDown)
+    if (mReader->mShuttingDown)
         return;
 
-    logger->trace("[%] onDeactivate => %\n", reader->getName(),
-                  getMonitoringState());
+    mLogger->trace("[%] onDeactivate => %\n", mReader->getName(), getMonitoringState());
 
-    /* Cancel the monitoringJob is necessary */
-    if (monitoringEvent != nullptr &&
-        monitoringEvent->wait_for(std::chrono::seconds(0)) !=
-            std::future_status::ready) {
+    /* Cancel the mMonitoringJob is necessary */
+    if (mMonitoringEvent != nullptr &&
+        mMonitoringEvent->wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
 
-        logger->debug("onDeactivate - cancelling monitoring job\n");
-        monitoringJob->stop();
+        mLogger->debug("onDeactivate - cancelling monitoring job\n");
+        mMonitoringJob->stop();
 
         /* TODO this could be inside the stop method? */
-        cancellationFlag = true;
-        monitoringEvent = nullptr;
-        logger->trace("[%] onDeactivate => cancel runnable waitForCarPresent"
-                      " by thead interruption\n", reader->getName());
+        mCancellationFlag = true;
+        mMonitoringEvent = nullptr;
+        mLogger->trace("[%] onDeactivate => cancel runnable waitForCarPresent by thead interrupt\n",
+                       mReader->getName());
     }
 }
 

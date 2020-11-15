@@ -70,7 +70,13 @@ const std::vector<uint8_t> SvLoadLogRecord::getLoadDateBytes() const
 
 std::string SvLoadLogRecord::getFreeByte() const
 {
-    return StringHelper::uint8ToHexString(getFreeByteBytes().data(), 2);
+    const char bytes[3] = {
+        static_cast<char>(getFreeByteBytes().data()[0]),
+        static_cast<char>(getFreeByteBytes().data()[1]),
+        '\0'
+    };
+
+    return std::string(bytes);
 }
 
 const std::vector<uint8_t> SvLoadLogRecord::getFreeByteBytes() const

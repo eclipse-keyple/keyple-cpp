@@ -26,7 +26,7 @@ using namespace keyple::calypso::transaction;
 using namespace keyple::core::util;
 
 static const std::string HEADER = "79007013DE31A75F00001A";
-static const std::string AMOUNT_STR = "FFFE";
+static const std::string AMOUNT_STR = "FFFFFE";
 static const std::string DATE_STR = "1234";
 static const std::string TIME_STR = "5678";
 static const std::string FREE1_STR = "41";

@@ -53,7 +53,7 @@ TEST(VerifyPinRespParsTest, verifyPinRespPars_badStatus)
 {
     VerifyPinRespPars parser(std::make_shared<ApduResponse>(SW1SW2_KO, nullptr), nullptr);
 
-    EXPECT_THROW(parser.checkStatus(), CalypsoPoCommandException);
+    EXPECT_THROW(parser.checkStatus(), KeypleSeCommandException);
 }
 
 TEST(VerifyPinRespParsTest, verifyPinRespPars_badStatus_2)
@@ -68,7 +68,7 @@ TEST(VerifyPinRespParsTest, verifyPinRespPars_attempts_1)
     VerifyPinRespPars parser(std::make_shared<ApduResponse>(ATTEMPTS_1, nullptr), nullptr);
 
     ASSERT_EQ(parser.getRemainingAttemptCounter(), 1);
-    EXPECT_THROW(parser.checkStatus(), CalypsoPoPinException);
+    EXPECT_THROW(parser.checkStatus(), KeypleSeCommandException);
 }
 
 TEST(VerifyPinRespParsTest, verifyPinRespPars_attempts_2)
@@ -76,7 +76,7 @@ TEST(VerifyPinRespParsTest, verifyPinRespPars_attempts_2)
     VerifyPinRespPars parser(std::make_shared<ApduResponse>(ATTEMPTS_2, nullptr), nullptr);
 
     ASSERT_EQ(parser.getRemainingAttemptCounter(), 2);
-    EXPECT_THROW(parser.checkStatus(), CalypsoPoPinException);
+    EXPECT_THROW(parser.checkStatus(), KeypleSeCommandException);
 }
 
 TEST(VerifyPinRespParsTest, verifyPinRespPars_pin_blocked)
@@ -84,5 +84,5 @@ TEST(VerifyPinRespParsTest, verifyPinRespPars_pin_blocked)
     VerifyPinRespPars parser(std::make_shared<ApduResponse>(PIN_BLOCKED, nullptr), nullptr);
 
     ASSERT_EQ(parser.getRemainingAttemptCounter(), 0);
-    EXPECT_THROW(parser.checkStatus(), CalypsoPoPinException);
+    EXPECT_THROW(parser.checkStatus(), KeypleSeCommandException);
 }

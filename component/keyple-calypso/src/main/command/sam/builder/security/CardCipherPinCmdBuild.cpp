@@ -39,8 +39,7 @@ CardCipherPinCmdBuild::CardCipherPinCmdBuild(const SamRevision& revision,
                                              const std::vector<uint8_t>& currentPin,
                                              const std::vector<uint8_t>& newPin)
 : AbstractSamCommandBuilder(
-      std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::CARD_CIPHER_PIN),
-      nullptr)
+      std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::CARD_CIPHER_PIN), nullptr)
 {
     if (revision != SamRevision::NO_REV)
         mDefaultRevision = revision;

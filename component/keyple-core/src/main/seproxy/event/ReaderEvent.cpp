@@ -28,6 +28,8 @@ using namespace keyple::core::seproxy::message;
 
 using EventType = ReaderEvent::EventType;
 
+/* EVENT TYPE ----------------------------------------------------------------------------------- */
+
 EventType EventType::TIMEOUT_ERROR("TIMEOUT_ERROR", InnerEnum::TIMEOUT_ERROR,
                                    "SE Reader timeout Error");
 EventType EventType::SE_INSERTED("SE_INSERTED", InnerEnum::SE_INSERTED, "SE insertion");
@@ -99,9 +101,12 @@ EventType EventType::valueOf(const std::string& name)
     return EventType::TIMEOUT_ERROR;
 }
 
+/* READER EVENT --------------------------------------------------------------------------------- */
+
 ReaderEvent::ReaderEvent(
   const std::string& pluginName,
-  const std::string& readerName, EventType eventType,
+  const std::string& readerName,
+  const EventType& eventType,
   std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
 : mEventType(eventType),
   mPluginName(pluginName),

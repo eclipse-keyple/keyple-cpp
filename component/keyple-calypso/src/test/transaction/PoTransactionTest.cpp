@@ -87,12 +87,11 @@ static const std::string FCI_STORED_VALUE_REV31 =
 static const std::string FCI_REV31_INVALIDATED =
    "6F238409315449432E49434131A516BF0C13C708 0000000011223344 53070A3C23121410016283";
 
-
 static const std::string ATR1 = "3B3F9600805A0080C120000012345678829000";
 
-static const std::string PIN_OK = "0000";
+static const std::string PIN_OK        = "0000";
 static const std::string CIPHER_PIN_OK = "1122334455667788";
-static const std::string PIN_KO = "0000";
+static const std::string PIN_KO        = "0000";
 
 static const uint8_t FILE7  = 0x07;
 static const uint8_t FILE8  = 0x08;
@@ -101,281 +100,171 @@ static const uint8_t FILE10 = 0x10;
 static const uint8_t FILE11 = 0x11;
 
 static const std::string SW1SW2_OK      = "9000";
-static const std::string SW1SW2_KO = "6700";
+static const std::string SW1SW2_KO      = "6700";
 static const std::string SAM_CHALLENGE  = "C1C2C3C4";
-static const std::string PO_CHALLENGE = "C1C2C3C4C5C6C7C8";
+static const std::string PO_CHALLENGE   = "C1C2C3C4C5C6C7C8";
 static const std::string PO_DIVERSIFIER = "0000000011223344";
 static const std::string SAM_SIGNATURE  = "12345678";
 static const std::string PO_SIGNATURE   = "9ABCDEF0";
 
-static const std::string FILE7_REC1_29B = "7111111111111111111111111111111111" \
-                                          "111111111111111111111111";
-static const std::string FILE7_REC2_29B = "7222222222222222222222222222222222" \
-                                          "222222222222222222222222";
-static const std::string FILE7_REC3_29B = "7333333333333333333333333333333333" \
-                                          "333333333333333333333333";
-static const std::string FILE7_REC4_29B = "7444444444444444444444444444444444" \
-                                          "444444444444444444444444";
-static const std::string FILE7_REC1_4B  = "00112233";
-static const std::string FILE8_REC1_29B = "8111111111111111111111111111111111" \
-                                          "111111111111111111111111";
-static const std::string FILE8_REC1_5B  = "8122334455";
-static const std::string FILE8_REC1_4B  = "84332211";
-static const std::string FILE9_REC1_4B  = "8899AABB";
+static const std::string FILE7_REC1_29B      = "7111111111111111111111111111111111111111111111111111111111";
+static const std::string FILE7_REC2_29B      = "7222222222222222222222222222222222222222222222222222222222";
+static const std::string FILE7_REC3_29B      = "7333333333333333333333333333333333333333333333333333333333";
+static const std::string FILE7_REC4_29B      = "7444444444444444444444444444444444444444444444444444444444";
+static const std::string FILE7_REC1_4B       = "00112233";
+static const std::string FILE8_REC1_29B      = "8111111111111111111111111111111111111111111111111111111111";
+static const std::string FILE8_REC1_5B       = "8122334455";
+static const std::string FILE8_REC1_4B       = "84332211";
+static const std::string FILE9_REC1_4B       = "8899AABB";
 
-static const std::string FILE10_REC1_COUNTER = "00112200000000000000000000000" \
-                                               "00000000000000000000000000000" \
-                                               "0000000000";
-static const std::string FILE11_REC1_COUNTER = "00221100000000000000000000000" \
-                                               "00000000000000000000000000000" \
-                                               "0000000000";
+static const std::string FILE10_REC1_COUNTER = "00112200000000000000000000000000000000000000000000000000000000000000";
+static const std::string FILE11_REC1_COUNTER = "00221100000000000000000000000000000000000000000000000000000000000000";
 static const std::string FILE7_REC1_COUNTER1 = "A55AA5";
 static const std::string FILE7_REC1_COUNTER2 = "5AA55A";
 
-static const std::vector<uint8_t> FILE7_REC1_29B_BYTES =
-    ByteArrayUtil::fromHex(FILE7_REC1_29B);
-static const std::vector<uint8_t> FILE7_REC2_29B_BYTES =
-    ByteArrayUtil::fromHex(FILE7_REC2_29B);
-static const std::vector<uint8_t> FILE7_REC3_29B_BYTES =
-    ByteArrayUtil::fromHex(FILE7_REC3_29B);
-static const std::vector<uint8_t> FILE7_REC4_29B_BYTES =
-    ByteArrayUtil::fromHex(FILE7_REC4_29B);
-static const std::vector<uint8_t> FILE8_REC1_29B_BYTES =
-    ByteArrayUtil::fromHex(FILE8_REC1_29B);
-static const std::vector<uint8_t> FILE8_REC1_5B_BYTES =
-    ByteArrayUtil::fromHex(FILE8_REC1_5B);
-static const std::vector<uint8_t> FILE8_REC1_4B_BYTES =
-    ByteArrayUtil::fromHex(FILE8_REC1_4B);
+static const std::vector<uint8_t> FILE7_REC1_29B_BYTES = ByteArrayUtil::fromHex(FILE7_REC1_29B);
+static const std::vector<uint8_t> FILE7_REC2_29B_BYTES = ByteArrayUtil::fromHex(FILE7_REC2_29B);
+static const std::vector<uint8_t> FILE7_REC3_29B_BYTES = ByteArrayUtil::fromHex(FILE7_REC3_29B);
+static const std::vector<uint8_t> FILE7_REC4_29B_BYTES = ByteArrayUtil::fromHex(FILE7_REC4_29B);
+static const std::vector<uint8_t> FILE8_REC1_29B_BYTES = ByteArrayUtil::fromHex(FILE8_REC1_29B);
+static const std::vector<uint8_t> FILE8_REC1_5B_BYTES  = ByteArrayUtil::fromHex(FILE8_REC1_5B);
+static const std::vector<uint8_t> FILE8_REC1_4B_BYTES  = ByteArrayUtil::fromHex(FILE8_REC1_4B);
 
 static const uint16_t LID_3F00 = 0x3F00;
 static const uint16_t LID_0002 = 0x0002;
 static const uint16_t LID_0003 = 0x0003;
 
-static const std::string LID_3F00_STR           = "3F00";
-static const std::string LID_0002_STR           = "0002";
-static const std::string LID_0003_STR           = "0003";
+static const std::string LID_3F00_STR = "3F00";
+static const std::string LID_0002_STR = "0002";
+static const std::string LID_0003_STR = "0003";
 static const std::string ACCESS_CONDITIONS_3F00 = "10100000";
-static const std::string KEY_INDEXES_3F00       = "01030101";
+static const std::string KEY_INDEXES_3F00 = "01030101";
 static const std::string ACCESS_CONDITIONS_0002 = "1F000000";
-static const std::string KEY_INDEXES_0002       = "01010101";
+static const std::string KEY_INDEXES_0002 = "01010101";
 static const std::string ACCESS_CONDITIONS_0003 = "01100000";
-static const std::string KEY_INDEXES_0003       = "01020101";
+static const std::string KEY_INDEXES_0003 = "01020101";
 
 static const std::string SW1SW2_OK_RSP = SW1SW2_OK;
-static const std::string PO_OPEN_SECURE_SESSION_SFI7_REC1_CMD =
-     "008A0B3904" + SAM_CHALLENGE + "00";
-static const std::string PO_OPEN_SECURE_SESSION_SFI7_REC1_RSP =
-    "030490980030791D" + FILE7_REC1_29B + SW1SW2_OK;
-static const std::string PO_OPEN_SECURE_SESSION_SFI7_REC1_NOT_RATIFIED_RSP =
-    "030490980130791D" + FILE7_REC1_29B + SW1SW2_OK;
-static const std::string PO_OPEN_SECURE_SESSION_CMD =
-    "008A030104" + SAM_CHALLENGE + "00";
-static const std::string PO_OPEN_SECURE_SESSION_RSP =
-    "0304909800307900" + SW1SW2_OK;
-static const std::string PO_OPEN_SECURE_SESSION_KVC_78_CMD =
-    "0304909800307800" + SW1SW2_OK;
-static const std::string PO_OPEN_SECURE_SESSION_SFI7_REC1_2_4_CMD =
-    "948A8B3804C1C2C3C400";
-static const std::string PO_OPEN_SECURE_SESSION_SFI7_REC1_2_4_RSP =
-    "79030D307124B928480805CBABAE30001240800000000000000000000000000000009000";
-static const std::string PO_CLOSE_SECURE_SESSION_CMD =
-    "008E800004" + SAM_SIGNATURE + "00";
-static const std::string PO_CLOSE_SECURE_SESSION_NOT_RATIFIED_CMD =
-    "008E000004" + SAM_SIGNATURE + "00";
-static const std::string PO_CLOSE_SECURE_SESSION_RSP =
-    PO_SIGNATURE + SW1SW2_OK;
-static const std::string PO_CLOSE_SECURE_SESSION_FAILED_RSP =
-    "6988";
-static const std::string PO_ABORT_SECURE_SESSION_CMD =
-    "008E000000";
-static const std::string PO_RATIFICATION_CMD =
-    "00B2000000";
-static const std::string PO_RATIFICATION_RSP =
-    "6B00";
 
-static const std::string PO_READ_REC_SFI7_REC1_CMD =
-    "00B2013C00";
-static const std::string PO_READ_REC_SFI7_REC1_RSP =
-    FILE7_REC1_29B + SW1SW2_OK;
-static const std::string PO_READ_REC_SFI7_REC1_6B_COUNTER_CMD =
-    "00B2013C06";
-static const std::string PO_READ_REC_SFI7_REC1_6B_COUNTER_RSP =
-    FILE7_REC1_COUNTER1 + FILE7_REC1_COUNTER2 + SW1SW2_OK;
-static const std::string PO_READ_REC_SFI8_REC1_CMD =
-    "00B2014400";
-static const std::string PO_READ_REC_SFI8_REC1_RSP =
-    FILE8_REC1_29B + SW1SW2_OK;
-static const std::string PO_READ_REC_SFI7_REC3_4_CMD =
-    "00B2033D3E";
-static const std::string PO_READ_REC_SFI7_REC3_4_RSP =
-    "031D" + FILE7_REC3_29B + "041D" + FILE7_REC4_29B + SW1SW2_OK;
-static const std::string PO_READ_REC_SFI10_REC1_CMD =
-    "00B2018400";
-static const std::string PO_READ_REC_SFI10_REC1_RSP =
-    FILE10_REC1_COUNTER + SW1SW2_OK;
-static const std::string PO_READ_REC_SFI11_REC1_CMD =
-    "00B2018C00";
-static const std::string PO_READ_REC_SFI11_REC1_RSP =
-    FILE11_REC1_COUNTER + SW1SW2_OK;
-static const std::string PO_UPDATE_REC_SFI7_REC1_4B_CMD =
-    "00DC013C0400112233";
-static const std::string PO_UPDATE_REC_SFI8_REC1_29B_CMD =
-    "00DC01441D" + FILE8_REC1_29B;
-static const std::string PO_UPDATE_REC_SFI8_REC1_5B_CMD =
-    "00DC014405" + FILE8_REC1_5B;
-static const std::string PO_UPDATE_REC_SFI8_REC1_4B_CMD =
-     "00DC014404" + FILE8_REC1_4B;
-static const std::string PO_UPDATE_REC_SFI8_REC1_29B_2_4_CMD =
-    "94DC01441D" + FILE8_REC1_29B;
-static const std::string PO_WRITE_REC_SFI8_REC1_4B_CMD =
-    "00D2014404" + FILE8_REC1_4B;
-static const std::string PO_APPEND_REC_SFI9_REC1_4B_CMD =
-    "00E2004804" + FILE9_REC1_4B;
-static const std::string PO_DECREASE_SFI10_REC1_100U_CMD =
-    "003001800300006400";
-static const std::string PO_DECREASE_SFI10_REC1_100U_RSP =
-    "0010BE9000";
-static const std::string PO_DECREASE_SFI11_REC1_100U_CMD =
-    "003201880300006400";
-static const std::string PO_DECREASE_SFI11_REC1_100U_RSP =
-    "0022759000";
-
+static const std::string PO_OPEN_SECURE_SESSION_SFI7_REC1_CMD = "008A0B3904" + SAM_CHALLENGE + "00";
+static const std::string PO_OPEN_SECURE_SESSION_SFI7_REC1_RSP = "030490980030791D" + FILE7_REC1_29B + SW1SW2_OK;
+static const std::string PO_OPEN_SECURE_SESSION_SFI7_REC1_NOT_RATIFIED_RSP = "030490980130791D" + FILE7_REC1_29B + SW1SW2_OK;
+static const std::string PO_OPEN_SECURE_SESSION_CMD = "008A030104" + SAM_CHALLENGE + "00";
+static const std::string PO_OPEN_SECURE_SESSION_RSP = "0304909800307900" + SW1SW2_OK;
+static const std::string PO_OPEN_SECURE_SESSION_KVC_78_CMD = "0304909800307800" + SW1SW2_OK;
+static const std::string PO_OPEN_SECURE_SESSION_SFI7_REC1_2_4_CMD = "948A8B3804C1C2C3C400";
+static const std::string PO_OPEN_SECURE_SESSION_SFI7_REC1_2_4_RSP = "79030D307124B928480805CBABAE30001240800000000000000000000000000000009000";
+static const std::string PO_CLOSE_SECURE_SESSION_CMD = "008E800004" + SAM_SIGNATURE + "00";
+static const std::string PO_CLOSE_SECURE_SESSION_NOT_RATIFIED_CMD = "008E000004" + SAM_SIGNATURE + "00";
+static const std::string PO_CLOSE_SECURE_SESSION_RSP = PO_SIGNATURE + SW1SW2_OK;
+static const std::string PO_CLOSE_SECURE_SESSION_FAILED_RSP = "6988";
+static const std::string PO_ABORT_SECURE_SESSION_CMD = "008E000000";
+static const std::string PO_RATIFICATION_CMD = "00B2000000";
+static const std::string PO_RATIFICATION_RSP = "6B00";
+static const std::string PO_READ_REC_SFI7_REC1_CMD = "00B2013C00";
+static const std::string PO_READ_REC_SFI7_REC1_RSP = FILE7_REC1_29B + SW1SW2_OK;
+static const std::string PO_READ_REC_SFI7_REC1_6B_COUNTER_CMD = "00B2013C06";
+static const std::string PO_READ_REC_SFI7_REC1_6B_COUNTER_RSP = FILE7_REC1_COUNTER1 + FILE7_REC1_COUNTER2 + SW1SW2_OK;
+static const std::string PO_READ_REC_SFI8_REC1_CMD = "00B2014400";
+static const std::string PO_READ_REC_SFI8_REC1_RSP = FILE8_REC1_29B + SW1SW2_OK;
+static const std::string PO_READ_REC_SFI7_REC3_4_CMD = "00B2033D3E";
+static const std::string PO_READ_REC_SFI7_REC3_4_RSP = "031D" + FILE7_REC3_29B + "041D" + FILE7_REC4_29B + SW1SW2_OK;
+static const std::string PO_READ_REC_SFI10_REC1_CMD = "00B2018400";
+static const std::string PO_READ_REC_SFI10_REC1_RSP = FILE10_REC1_COUNTER + SW1SW2_OK;
+static const std::string PO_READ_REC_SFI11_REC1_CMD =  "00B2018C00";
+static const std::string PO_READ_REC_SFI11_REC1_RSP = FILE11_REC1_COUNTER + SW1SW2_OK;
+static const std::string PO_UPDATE_REC_SFI7_REC1_4B_CMD = "00DC013C0400112233";
+static const std::string PO_UPDATE_REC_SFI8_REC1_29B_CMD = "00DC01441D" + FILE8_REC1_29B;
+static const std::string PO_UPDATE_REC_SFI8_REC1_5B_CMD = "00DC014405" + FILE8_REC1_5B;
+static const std::string PO_UPDATE_REC_SFI8_REC1_4B_CMD = "00DC014404" + FILE8_REC1_4B;
+static const std::string PO_UPDATE_REC_SFI8_REC1_29B_2_4_CMD = "94DC01441D" + FILE8_REC1_29B;
+static const std::string PO_WRITE_REC_SFI8_REC1_4B_CMD = "00D2014404" + FILE8_REC1_4B;
+static const std::string PO_APPEND_REC_SFI9_REC1_4B_CMD = "00E2004804" + FILE9_REC1_4B;
+static const std::string PO_DECREASE_SFI10_REC1_100U_CMD = "003001800300006400";
+static const std::string PO_DECREASE_SFI10_REC1_100U_RSP = "0010BE9000";
+static const std::string PO_DECREASE_SFI11_REC1_100U_CMD = "003201880300006400";
+static const std::string PO_DECREASE_SFI11_REC1_100U_RSP = "0022759000";
 static const std::string PO_SELECT_FILE_CURRENT_CMD = "00A4090002000000";
 static const std::string PO_SELECT_FILE_FIRST_CMD = "00A4020002000000";
 static const std::string PO_SELECT_FILE_NEXT_CMD = "00A4020202000000";
 static const std::string PO_SELECT_FILE_3F00_CMD = "00A40900023F0000";
 static const std::string PO_SELECT_FILE_0002_CMD = "00A4090002000200";
 static const std::string PO_SELECT_FILE_0003_CMD = "00A4090002000300";
-static const std::string PO_SELECT_FILE_3F00_RSP = "85170001000000" +
-                                                   ACCESS_CONDITIONS_3F00 +
-                                                   KEY_INDEXES_3F00 +
-                                                   "00777879616770003F009000";
-static const std::string PO_SELECT_FILE_0002_RSP = "85170204021D01" +
-                                                   ACCESS_CONDITIONS_0002 +
-                                                   KEY_INDEXES_0002 +
-                                                   "003F02000000000000029000";
-static const std::string PO_SELECT_FILE_0003_RSP = "85170304021D01" +
-                                                   ACCESS_CONDITIONS_0003 +
-                                                   KEY_INDEXES_0003 +
-                                                   "003F03000000000000039000";
-
-
-static const std::string PO_VERIFY_PIN_PLAIN_OK_CMD =
-    "0020000004" + ByteArrayUtil::toHex(std::vector<uint8_t>{0x00, 0x00, 0x00, 0x00});
+static const std::string PO_SELECT_FILE_3F00_RSP = "85170001000000" + ACCESS_CONDITIONS_3F00 + KEY_INDEXES_3F00 + "00777879616770003F009000";
+static const std::string PO_SELECT_FILE_0002_RSP = "85170204021D01" + ACCESS_CONDITIONS_0002 + KEY_INDEXES_0002 + "003F02000000000000029000";
+static const std::string PO_SELECT_FILE_0003_RSP = "85170304021D01" + ACCESS_CONDITIONS_0003 + KEY_INDEXES_0003 + "003F03000000000000039000";
+static const std::string PO_VERIFY_PIN_PLAIN_OK_CMD = "0020000004" + ByteArrayUtil::toHex(std::vector<uint8_t>{'0', '0', '0', '0'});
 static const std::string PO_VERIFY_PIN_ENCRYPTED_OK_CMD = "0020000008" + CIPHER_PIN_OK;
 static const std::string PO_CHECK_PIN_CMD = "0020000000";
 static const std::string PO_VERIFY_PIN_OK_RSP = "9000";
 static const std::string PO_VERIFY_PIN_KO_RSP = "63C2";
-
 static const int SV_BALANCE = 0x123456;
 static const std::string SV_BALANCE_STR = "123456";
 static const std::string PO_SV_GET_DEBIT_CMD = "007C000900";
-static const std::string PO_SV_GET_DEBIT_RSP = "790073A54BC97DFA" + SV_BALANCE_STR
-    + "FFFE0000000079123456780000DD0000160072" + SW1SW2_OK;
+static const std::string PO_SV_GET_DEBIT_RSP = "790073A54BC97DFA" + SV_BALANCE_STR + "FFFE0000000079123456780000DD0000160072" + SW1SW2_OK;
 static const std::string PO_SV_GET_RELOAD_CMD = "007C000700";
-static const std::string PO_SV_GET_RELOAD_RSP = "79007221D35F0E36" + SV_BALANCE_STR
-    + "000000790000001A0000020000123456780000DB0070" + SW1SW2_OK;
-static const std::string PO_SV_RELOAD_CMD =
-    "00B89591171600000079000000020000123456780000DE2C8CB3D280";
+static const std::string PO_SV_GET_RELOAD_RSP = "79007221D35F0E36" + SV_BALANCE_STR + "000000790000001A0000020000123456780000DB0070" + SW1SW2_OK;
+static const std::string PO_SV_RELOAD_CMD = "00B89591171600000079000000020000123456780000DE2C8CB3D280";
 static const std::string PO_SV_RELOAD_RSP = "A54BC9" + SW1SW2_OK;
-static const std::string PO_SV_DEBIT_CMD =
-    "00BACD001434FFFE0000000079123456780000DF0C9437AABB";
+static const std::string PO_SV_DEBIT_CMD = "00BACD001434FFFE0000000079123456780000DF0C9437AABB";
 static const std::string PO_SV_DEBIT_RSP = "A54BC9" + SW1SW2_OK;
-static const std::string PO_SV_UNDEBIT_CMD =
-    "00BCCD00143400020000000079123456780000DF0C9437AABB";
+static const std::string PO_SV_UNDEBIT_CMD = "00BCCD00143400020000000079123456780000DF0C9437AABB";
 static const std::string PO_SV_UNDEBIT_RSP = "A54BC9" + SW1SW2_OK;
 static const std::string PO_READ_SV_LOAD_LOG_FILE_CMD = "00B201A400";
-static const std::string PO_READ_SV_LOAD_LOG_FILE_RSP =
-    "000000780000001A0000020000AABBCCDD0000DB007000000000000000" + SW1SW2_OK;
+static const std::string PO_READ_SV_LOAD_LOG_FILE_RSP = "000000780000001A0000020000AABBCCDD0000DB007000000000000000" + SW1SW2_OK;
 static const std::string PO_READ_SV_DEBIT_LOG_FILE_CMD = "00B201AD5D";
-static const std::string PO_READ_SV_DEBIT_LOG_FILE_RSP =
-    std::string("011DFFFE0000000079AABBCC010000DA000018006F00000000000000000000") +
-    "021DFFFE0000000079AABBCC020000DA000018006F00000000000000000000" +
-    "031DFFFE0000000079AABBCC030000DA000018006F00000000000000000000" +
-    SW1SW2_OK;
-
+static const std::string PO_READ_SV_DEBIT_LOG_FILE_RSP = std::string("011DFFFE0000000079AABBCC010000DA000018006F00000000000000000000") +
+                                                                     "021DFFFE0000000079AABBCC020000DA000018006F00000000000000000000" +
+                                                                     "031DFFFE0000000079AABBCC030000DA000018006F00000000000000000000" +
+                                                         SW1SW2_OK;
 static const std::string PO_INVALIDATE_CMD = "0004000000";
 static const std::string PO_REHABILITATE_CMD = "0044000000";
-
 static const std::string PO_GET_CHALLENGE_CMD = "0084000008";
 static const std::string PO_GET_CHALLENGE_RSP = PO_CHALLENGE + SW1SW2_OK;
 
-static const std::string SAM_SELECT_DIVERSIFIER_CMD =
-    "8014000008" + PO_DIVERSIFIER;
-static const std::string SAM_GET_CHALLENGE_CMD =
-    "8084000004";
-static const std::string SAM_GET_CHALLENGE_RSP =
-    SAM_CHALLENGE + SW1SW2_OK;
-static const std::string SAM_DIGEST_INIT_OPEN_SECURE_SESSION_SFI7_REC1_CMD =
-    "808A00FF273079030490980030791D" + FILE7_REC1_29B;
-static const std::string SAM_DIGEST_INIT_OPEN_SECURE_SESSION_CMD =
-    "808A00FF0A30790304909800307900";
-static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_CMD =
-    "808C00000500B2013C00";
-static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_RSP_CMD =
-    "808C00001F\" + FILE7_REC1_29B+ \"9000";
-static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI8_REC1_RSP_CMD =
-    "808C00001F" + FILE8_REC1_29B + "9000";
-static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_RSP =
-    "808C00001F" + FILE7_REC1_29B + SW1SW2_OK;
-static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI8_REC1_CMD =
-    "808C00000500B2014400";
-static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI10_REC1_CMD =
-    "808C00000500B2018C00";
-static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI10_REC1_RSP_CMD =
-    "808C000024001122000000000000000000000000000000000000000000000000000000000000009000";
-static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI11_REC1_CMD =
-    "808C00000500B2018400";
-static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI11_REC1_RSP_CMD =
-    "808C000024002211000000000000000000000000000000000000000000000000000000000000009000";
-static const std::string SAM_DIGEST_UPDATE_RSP_OK_CMD =
-    "808C0000029000";
-static const std::string SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_29B_CMD =
-    "808C00002200DC01441D" + FILE8_REC1_29B;
-static const std::string SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_5B_CMD =
-    "808C00000A00DC0144058122334455";
-static const std::string SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_4B_CMD =
-    "808C00000900DC014404" + FILE8_REC1_4B;
-static const std::string SAM_DIGEST_UPDATE_UPDATE_REC_SFI7_REC1_4B_CMD =
-    "808C00000900DC013C04" + FILE7_REC1_4B;
-static const std::string SAM_DIGEST_UPDATE_DECREASE_SFI10_CMD =
-    "808C0000080030018003000064";
-static const std::string SAM_DIGEST_UPDATE_DECREASE_SFI10_RESP =
-    "808C0000050010BE9000";
-static const std::string SAM_DIGEST_UPDATE_INCREASE_SFI11_CMD =
-    "808C0000080032018803000064";
-static const std::string SAM_DIGEST_UPDATE_INCREASE_SFI11_RESP =
-    "808C0000050022759000";
-static const std::string SAM_DIGEST_UPDATE_WRITE_REC_SFI8_REC1_4B_CMD =
-    "808C00000900D2014404" + FILE8_REC1_4B;
-static const std::string SAM_DIGEST_UPDATE_APPEND_REC_SFI9_REC1_4B_CMD =
-    "808C00000900E2004804" + FILE9_REC1_4B;
-static const std::string SAM_DIGEST_CLOSE_CMD =
-    "808E000004";
-static const std::string SAM_DIGEST_CLOSE_RSP =
-    SAM_SIGNATURE + SW1SW2_OK;
-static const std::string SAM_DIGEST_AUTHENTICATE =
-    "8082000004" + PO_SIGNATURE;
-static const std::string SAM_DIGEST_AUTHENTICATE_FAILED =
-    "6988";
-
-static const std::string SAM_CARD_CIPHER_PIN_CMD =
-    "801280FF060000" + ByteArrayUtil::toHex(std::vector<uint8_t>{0x00, 0x00, 0x00, 0x00});
+static const std::string SAM_SELECT_DIVERSIFIER_CMD = "8014000008" + PO_DIVERSIFIER;
+static const std::string SAM_GET_CHALLENGE_CMD = "8084000004";
+static const std::string SAM_GET_CHALLENGE_RSP = SAM_CHALLENGE + SW1SW2_OK;
+static const std::string SAM_DIGEST_INIT_OPEN_SECURE_SESSION_SFI7_REC1_CMD = "808A00FF273079030490980030791D" + FILE7_REC1_29B;
+static const std::string SAM_DIGEST_INIT_OPEN_SECURE_SESSION_CMD = "808A00FF0A30790304909800307900";
+static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_CMD = "808C00000500B2013C00";
+static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_RSP_CMD = "808C00001F" + FILE7_REC1_29B+ "9000";
+static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI8_REC1_RSP_CMD = "808C00001F" + FILE8_REC1_29B + "9000";
+static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI7_REC1_RSP = "808C00001F" + FILE7_REC1_29B + SW1SW2_OK;
+static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI8_REC1_CMD = "808C00000500B2014400";
+static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI10_REC1_CMD = "808C00000500B2018C00";
+static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI10_REC1_RSP_CMD = "808C000024001122000000000000000000000000000000000000000000000000000000000000009000";
+static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI11_REC1_CMD = "808C00000500B2018400";
+static const std::string SAM_DIGEST_UPDATE_READ_REC_SFI11_REC1_RSP_CMD = "808C000024002211000000000000000000000000000000000000000000000000000000000000009000";
+static const std::string SAM_DIGEST_UPDATE_RSP_OK_CMD = "808C0000029000";
+static const std::string SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_29B_CMD = "808C00002200DC01441D" + FILE8_REC1_29B;
+static const std::string SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_5B_CMD = "808C00000A00DC0144058122334455";
+static const std::string SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_4B_CMD = "808C00000900DC014404" + FILE8_REC1_4B;
+static const std::string SAM_DIGEST_UPDATE_UPDATE_REC_SFI7_REC1_4B_CMD = "808C00000900DC013C04" + FILE7_REC1_4B;
+static const std::string SAM_DIGEST_UPDATE_DECREASE_SFI10_CMD = "808C0000080030018003000064";
+static const std::string SAM_DIGEST_UPDATE_DECREASE_SFI10_RESP = "808C0000050010BE9000";
+static const std::string SAM_DIGEST_UPDATE_INCREASE_SFI11_CMD = "808C0000080032018803000064";
+static const std::string SAM_DIGEST_UPDATE_INCREASE_SFI11_RESP = "808C0000050022759000";
+static const std::string SAM_DIGEST_UPDATE_WRITE_REC_SFI8_REC1_4B_CMD = "808C00000900D2014404" + FILE8_REC1_4B;
+static const std::string SAM_DIGEST_UPDATE_APPEND_REC_SFI9_REC1_4B_CMD = "808C00000900E2004804" + FILE9_REC1_4B;
+static const std::string SAM_DIGEST_CLOSE_CMD = "808E000004";
+static const std::string SAM_DIGEST_CLOSE_RSP = SAM_SIGNATURE + SW1SW2_OK;
+static const std::string SAM_DIGEST_AUTHENTICATE = "8082000004" + PO_SIGNATURE;
+static const std::string SAM_DIGEST_AUTHENTICATE_FAILED = "6988";
+static const std::string SAM_CARD_CIPHER_PIN_CMD = std::string("801280FF060000") + "30303030";
 static const std::string SAM_CARD_CIPHER_PIN_RSP = CIPHER_PIN_OK + SW1SW2_OK;
 static const std::string SAM_GIVE_RANDOM_CMD = "8086000008" + PO_CHALLENGE;
 static const std::string SAM_GIVE_RANDOM_RSP = SW1SW2_OK;
-static const std::string SAM_PREPARE_LOAD_CMD = "805601FF367C00070079007221D35F0E36"
-    + SV_BALANCE_STR
-    + "000000790000001A0000020000123456780000DB00709000B80000170000000079000000020000";
+static const std::string SAM_PREPARE_LOAD_CMD = "805601FF367C00070079007221D35F0E36" + SV_BALANCE_STR +
+                                                "000000790000001A0000020000123456780000DB00709000B80000170000000079000000020000";
 static const std::string SAM_PREPARE_LOAD_RSP = "9591160000DE2C8CB3D280" + SW1SW2_OK;
-static const std::string SAM_PREPARE_DEBIT_CMD = "805401FF307C000900790073A54BC97DFA"
-    + SV_BALANCE_STR + "FFFE0000000079123456780000DD00001600729000BA00001400FFFE0000000079";
+static const std::string SAM_PREPARE_DEBIT_CMD = "805401FF307C000900790073A54BC97DFA" + SV_BALANCE_STR +
+                                                 "FFFE0000000079123456780000DD00001600729000BA00001400FFFE0000000079";
 static const std::string SAM_PREPARE_DEBIT_RSP = "CD00340000DF0C9437AABB" + SW1SW2_OK;
-static const std::string SAM_PREPARE_UNDEBIT_CMD = "805C01FF307C000900790073A54BC97DFA"
-    + SV_BALANCE_STR + "FFFE0000000079123456780000DD00001600729000BC0000140000020000000079";
+static const std::string SAM_PREPARE_UNDEBIT_CMD = "805C01FF307C000900790073A54BC97DFA" + SV_BALANCE_STR +
+                                                   "FFFE0000000079123456780000DD00001600729000BC0000140000020000000079";
 static const std::string SAM_PREPARE_UNDEBIT_RSP = "CD00340000DF0C9437AABB" + SW1SW2_OK;
 static const std::string SAM_SV_CHECK_CMD = "8058000003A54BC9";
-
 
 class PT_ProxyReaderMock : public ProxyReader {
 public:
@@ -436,36 +325,25 @@ public:
 
 static std::shared_ptr<CalypsoPo> createCalypsoPo(const std::string& FCI)
 {
-    auto selectionData =
-        std::make_shared<SeResponse>(
-            true,
-            false,
-            std::make_shared<SelectionStatus>(
-                nullptr,
-                std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(FCI),
-                                               nullptr),
-                true),
-            std::vector<std::shared_ptr<ApduResponse>>{});
+    auto apduResponse = std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(FCI), nullptr);
+    auto selectionStatus = std::make_shared<SelectionStatus>(nullptr, apduResponse, true);
+    auto selectionData = std::make_shared<SeResponse>(true,
+                                                      false,
+                                                      selectionStatus,
+                                                      std::vector<std::shared_ptr<ApduResponse>>{});
 
-    return std::make_shared<CalypsoPo>(selectionData,
-                                       TransmissionMode::CONTACTLESS);
+    return std::make_shared<CalypsoPo>(selectionData, TransmissionMode::CONTACTLESS);
 }
 
 static std::shared_ptr<CalypsoSam> createCalypsoSam()
 {
-    auto selectionStatus =
-        std::make_shared<SelectionStatus>(
-            std::make_shared<AnswerToReset>(ByteArrayUtil::fromHex(ATR1)),
-            nullptr,
-            true);
-
-    return std::make_shared<CalypsoSam>(
-               std::make_shared<SeResponse>(
-                   true,
-                   true,
-                   selectionStatus,
-                   std::vector<std::shared_ptr<ApduResponse>>{}),
-               TransmissionMode::CONTACTS);
+    auto atr = std::make_shared<AnswerToReset>(ByteArrayUtil::fromHex(ATR1));
+    auto selectionStatus = std::make_shared<SelectionStatus>(atr, nullptr, true);
+    auto response = std::make_shared<SeResponse>(true,
+                                                 true,
+                                                 selectionStatus,
+                                                 std::vector<std::shared_ptr<ApduResponse>>{});
+    return std::make_shared<CalypsoSam>(response, TransmissionMode::CONTACTS);
 }
 
 
@@ -478,12 +356,10 @@ static std::shared_ptr<ApduResponse> getResponses(
 
     const std::string apdu_c = ByteArrayUtil::toHex(apduRequest->getBytes());
 
-    const auto it = cmdRespMap->find(apdu_c);
-
     /* Return matching hexa response if found */
+    const auto it = cmdRespMap->find(apdu_c);
     if (it != cmdRespMap->end())
-        return std::make_shared<ApduResponse>(
-                   ByteArrayUtil::fromHex(it->second), nullptr);
+        return std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(it->second), nullptr);
 
     /* Throw a KeypleReaderIOException if not found */
     throw KeypleReaderIOException("No response available for this request.");
@@ -947,8 +823,7 @@ TEST(PoTransactionTest, testProcessOpening_sessionBuffer_overflowBytesCounter_Mu
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
-                               DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
             .sessionModificationMode(ModificationMode::MULTIPLE)
@@ -961,28 +836,22 @@ TEST(PoTransactionTest, testProcessOpening_sessionBuffer_overflowBytesCounter_Mu
 
     samCommandsTestSet.insert({SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP});
     samCommandsTestSet.insert({SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP});
-    samCommandsTestSet.insert(
-        {SAM_DIGEST_INIT_OPEN_SECURE_SESSION_SFI7_REC1_CMD, SW1SW2_OK_RSP});
-    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_29B_CMD,
-                               SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_INIT_OPEN_SECURE_SESSION_SFI7_REC1_CMD, SW1SW2_OK_RSP});
+    samCommandsTestSet.insert({SAM_DIGEST_UPDATE_UPDATE_REC_SFI8_REC1_29B_CMD, SW1SW2_OK_RSP});
     samCommandsTestSet.insert({SAM_DIGEST_UPDATE_RSP_OK_CMD, SW1SW2_OK_RSP});
     samCommandsTestSet.insert({SAM_DIGEST_CLOSE_CMD, SAM_DIGEST_CLOSE_RSP});
     samCommandsTestSet.insert({SAM_DIGEST_AUTHENTICATE, SW1SW2_OK_RSP});
 
     poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_SFI7_REC1_CMD,
                               PO_OPEN_SECURE_SESSION_SFI7_REC1_RSP});
-    poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_CMD,
-                              PO_OPEN_SECURE_SESSION_RSP});
+    poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_CMD, PO_OPEN_SECURE_SESSION_RSP});
     poCommandsTestSet.insert({PO_UPDATE_REC_SFI8_REC1_29B_CMD, SW1SW2_OK_RSP});
     poCommandsTestSet.insert({PO_UPDATE_REC_SFI8_REC1_5B_CMD, SW1SW2_OK_RSP});
-    poCommandsTestSet.insert({PO_CLOSE_SECURE_SESSION_CMD,
-                              PO_CLOSE_SECURE_SESSION_RSP});
+    poCommandsTestSet.insert({PO_CLOSE_SECURE_SESSION_CMD, PO_CLOSE_SECURE_SESSION_RSP});
 
     poTransaction->prepareReadRecordFile(FILE7, 1);
 
-    /*
-     * 12 x update (29 b) = 12 x (29 + 6) = 420 consumed in the session buffer
-     */
+    /* 12 x update (29 b) = 12 x (29 + 6) = 420 consumed in the session buffer */
     for (int i = 0; i < 12; i++)
         poTransaction->prepareUpdateRecord(FILE8, 1, FILE8_REC1_29B_BYTES);
 
@@ -1032,22 +901,19 @@ TEST(PoTransactionTest, testprocessPoCommands_nominalCase)
 
     std::shared_ptr<PoSecuritySettings> poSecuritySettings =
         PoSecuritySettingsBuilder(samResource)
-            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT,
-                               DEFAULT_KIF_DEBIT)
+            .sessionDefaultKif(AccessLevel::SESSION_LVL_DEBIT, DEFAULT_KIF_DEBIT)
             .sessionDefaultKeyRecordNumber(AccessLevel::SESSION_LVL_DEBIT,
                                            DEFAULT_KEY_RECORD_NUMBER_DEBIT)
-            .sessionModificationMode(ModificationMode::MULTIPLE)
             .build();
 
-    poTransaction = std::make_shared<PoTransaction>(
-                        std::make_shared<SeResource<CalypsoPo>>(poReader,
-                                                                calypsoPoRev31),
-                        poSecuritySettings);
+    auto seResource = std::make_shared<SeResource<CalypsoPo>>(poReader, calypsoPoRev31);
+    poTransaction = std::make_shared<PoTransaction>(seResource, poSecuritySettings);
 
     samCommandsTestSet.insert({SAM_SELECT_DIVERSIFIER_CMD, SW1SW2_OK_RSP});
     samCommandsTestSet.insert({SAM_GET_CHALLENGE_CMD, SAM_GET_CHALLENGE_RSP});
     poCommandsTestSet.insert({PO_OPEN_SECURE_SESSION_SFI7_REC1_CMD,
                               PO_OPEN_SECURE_SESSION_SFI7_REC1_RSP});
+    poCommandsTestSet.insert({PO_READ_REC_SFI8_REC1_CMD, PO_READ_REC_SFI8_REC1_RSP});
 
     poTransaction->prepareReadRecordFile(FILE7, 1);
     poTransaction->processOpening(AccessLevel::SESSION_LVL_DEBIT);
@@ -1259,7 +1125,7 @@ TEST(PoTransactionTest, testProcessClosing_poCommandFail)
     poTransaction->prepareReleasePoChannel();
     poTransaction->prepareAppendRecord(FILE9, ByteArrayUtil::fromHex(FILE9_REC1_4B));
 
-    EXPECT_THROW(poTransaction->processClosing(), CalypsoPoCommandException);
+    EXPECT_THROW(poTransaction->processClosing(), KeypleSeCommandException);
 
     tearDown();
 }
@@ -1797,8 +1663,8 @@ TEST(PoTransactionTest, testProcessVerifyPin_plain_outside_secureSession)
     setUp();
 
     std::shared_ptr<CalypsoPo> calypsoPoRev31 = createCalypsoPo(FCI_REV31);
-    auto se = std::make_shared<SeResource<CalypsoPo>>(poReader, calypsoPoRev31);
-    poTransaction = std::make_shared<PoTransaction>(se);
+    auto seResource = std::make_shared<SeResource<CalypsoPo>>(poReader, calypsoPoRev31);
+    poTransaction = std::make_shared<PoTransaction>(seResource);
 
     poCommandsTestSet.insert({PO_VERIFY_PIN_PLAIN_OK_CMD, PO_VERIFY_PIN_OK_RSP});
 
@@ -1824,6 +1690,7 @@ TEST(PoTransactionTest, testProcessCheckPinStatus_outside_secureSession)
 
     ASSERT_EQ(calypsoPoRev31->getPinAttemptRemaining(), 3);
 
+    poCommandsTestSet.clear();
     poCommandsTestSet.insert({PO_CHECK_PIN_CMD, PO_VERIFY_PIN_KO_RSP});
 
     poTransaction->prepareCheckPinStatus();
@@ -2177,10 +2044,10 @@ TEST(PoTransactionTest, testPrepareInvalidate_invalidated)
 
     poCommandsTestSet.insert({PO_INVALIDATE_CMD, SW1SW2_OK_RSP});
 
-    poTransaction->prepareInvalidate();
-    poTransaction->prepareReleasePoChannel();
+    EXPECT_THROW(poTransaction->prepareInvalidate(), CalypsoPoTransactionIllegalStateException);
 
-    EXPECT_THROW(poTransaction->processPoCommands(), CalypsoPoTransactionIllegalStateException);
+    //poTransaction->prepareReleasePoChannel();
+    //poTransaction->processPoCommands();
 
     tearDown();
 }
@@ -2195,10 +2062,10 @@ TEST(PoTransactionTest, testPrepareRehabilitate_notInvalidated)
 
     poCommandsTestSet.insert({PO_REHABILITATE_CMD, SW1SW2_OK_RSP});
 
-    poTransaction->prepareRehabilitate();
-    poTransaction->prepareReleasePoChannel();
+    EXPECT_THROW(poTransaction->prepareRehabilitate(), CalypsoPoTransactionIllegalStateException);
 
-    EXPECT_THROW(poTransaction->processPoCommands(), CalypsoPoTransactionIllegalStateException);
+    //poTransaction->prepareReleasePoChannel();
+    //poTransaction->processPoCommands();
 
     tearDown();
 }

@@ -63,7 +63,7 @@ private:
     /**
      * Logger
      */
-    const std::shared_ptr<Logger> logger = LoggerFactory::getLogger(typeid(WaitForSeProcessing));
+    const std::shared_ptr<Logger> mLogger = LoggerFactory::getLogger(typeid(WaitForSeProcessing));
 };
 
 }

@@ -34,6 +34,9 @@ SmartRemovalMonitoringJob::SmartRemovalMonitoringJob(SmartRemovalReader* reader)
 void SmartRemovalMonitoringJob::monitoringJob(AbstractObservableState* state,
                                               std::atomic<bool>& cancellationFlag)
 {
+    if (!mReader || mReader->mShuttingDown)
+        return;
+
     mRunning = true;
 
     mLogger->trace("[%] Invoke waitForCardAbsentNative asynchronously\n", mReader->getName());
@@ -44,12 +47,10 @@ void SmartRemovalMonitoringJob::monitoringJob(AbstractObservableState* state,
             throw InterruptedException("monitoring job interrupted");
         }
 
-        if (!mReader->mShuttingDown && mReader->waitForCardAbsentNative()) {
+        if (mReader->waitForCardAbsentNative()) {
             // timeout is already managed within the task
-            if (!mReader->mShuttingDown) {
-                mLogger->debug("throwing card removed event\n");
-                state->onEvent(InternalEvent::SE_REMOVED);
-            }
+            mLogger->debug("throwing card removed event\n");
+            state->onEvent(InternalEvent::SE_REMOVED);
         }
     } catch (const KeypleReaderIOException& e) {
         mLogger->trace("[%] waitForCardAbsent => Error while polling SE with waitForCardAbsent, %\n",

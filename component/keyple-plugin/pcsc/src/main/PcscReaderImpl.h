@@ -54,6 +54,11 @@ public:
     PcscReaderImpl(const std::string& pluginName, PcscTerminal& terminal);
 
     /**
+     *
+     */
+    ~PcscReaderImpl();
+
+    /**
      * Set a parameter.
      * <p>
      * These are the parameters you can use with their associated values:
@@ -238,12 +243,12 @@ private:
      * execute. This will correspond to the capacity to react to the interrupt
      * signal of the thread (see cancel method of the Future object).
      */
-    static const long INSERT_LATENCY = 500;
+    static const long INSERT_LATENCY = 10;
 
     /**
      *
      */
-    static const long REMOVAL_LATENCY = 500;
+    static const long REMOVAL_LATENCY = 10;
 
     /**
      * clang compiler warning - not used
