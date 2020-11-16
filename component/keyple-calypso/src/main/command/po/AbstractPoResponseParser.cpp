@@ -20,6 +20,7 @@
 /* Calypso */
 #include "CalypsoPoCommand.h"
 #include "CalypsoPoAccessForbiddenException.h"
+#include "CalypsoPoCommandException.h"
 #include "CalypsoPoDataAccessException.h"
 #include "CalypsoPoDataOutOfBoundsException.h"
 #include "CalypsoPoIllegalArgumentException.h"
@@ -94,7 +95,9 @@ void AbstractPoResponseParser::checkStatus() const
     try {
         AbstractApduResponseParser::checkStatus();
     } catch (const KeypleSeCommandException& e) {
-        throw e;
+        throw CalypsoPoCommandException(e.getMessage(),
+                                        std::dynamic_pointer_cast<CalypsoPoCommand>(e.getCommand()),
+                                        e.getStatusCode());
     }
 }
 
