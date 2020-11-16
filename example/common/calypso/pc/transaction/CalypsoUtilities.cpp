@@ -65,7 +65,7 @@ CalypsoUtilities::StaticConstructor::StaticConstructor()
 {
     properties = std::make_shared<Properties>();
 
-    std::string propertiesFileName = "/home/amunsch/repos/eclipse/github.com.eclipse.keyple-cpp/build/config.properties";
+    std::string propertiesFileName = "C:\\Users\\alexandre.munsch\\Documents\\GitHub\\eclipse\\keyple-cpp\\example\\calypso\\config.properties";
 
     std::ifstream inputStream;
     inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);

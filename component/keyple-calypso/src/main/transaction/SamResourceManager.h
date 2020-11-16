@@ -52,7 +52,7 @@ public:
      *
      * @since 0.9
      */
-    class ManagedSamResource final : public SeResource<CalypsoSam> {
+    class KEYPLECALYPSO_API ManagedSamResource final : public SeResource<CalypsoSam> {
     public:
         /**
          * The free/busy enum status
