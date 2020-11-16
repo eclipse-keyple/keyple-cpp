@@ -26,6 +26,7 @@ SET(CMAKE_CXX_COMPILER cl.exe)
 
 # Compiler flags
 #SET(CMAKE_CXX_FLAGS "")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")          # multi proces
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")          # warning level
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")          # warning as error
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")          # debug symbols
