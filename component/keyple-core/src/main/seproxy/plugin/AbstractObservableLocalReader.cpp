@@ -292,8 +292,8 @@ void AbstractObservableLocalReader::notifyObservers(const std::shared_ptr<Reader
         mLogger->trace("[%] Calling update on observer\n", getName());
         (*it)->update(event);
 
-        it++;
-        if (it == mObservers.end())
+        /* Check again as update could have modified the list */
+        if (mObservers.size() == 0 || it == mObservers.end() || (++it == mObservers.end()))
             break;
     }
 
