@@ -77,7 +77,12 @@ SamCommandProcessor::SamCommandProcessor(
   mPoResource(poResource),
   mPoSecuritySettings(poSecuritySettings),
   mWorkKeyKif(0),
-  mWorkKeyKVC(0) {}
+  mWorkKeyKVC(0),
+  mIsDiversificationDone(false),
+  mIsDigestInitDone(false),
+  mIsDigesterInitialized(false),
+  mSessionEncryption(false),
+  mVerificationMode(false) {}
 
 const std::vector<uint8_t> SamCommandProcessor::getSessionTerminalChallenge()
 {
@@ -258,7 +263,7 @@ const std::vector<std::shared_ptr<AbstractSamCommandResponse>>
 
     /* Sanity checks */
     if (mPoDigestDataCache.empty()) {
-        mLogger->debug("getSamDigestRequest: no data in cache.");
+        mLogger->debug("getSamDigestRequest: no data in cache\n");
         throw IllegalStateException("Digest data cache is empty.");
     }
 
