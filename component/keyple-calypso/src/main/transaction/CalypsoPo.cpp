@@ -72,7 +72,8 @@ const std::vector<int> CalypsoPo::BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE = {
 
 CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
                      const TransmissionMode& transmissionMode)
-: AbstractMatchingSe(selectionResponse, transmissionMode)
+: AbstractMatchingSe(selectionResponse, transmissionMode),
+  mIsDfRatified(false)
 {
     int bufferSizeIndicator;
     int bufferSizeValue;

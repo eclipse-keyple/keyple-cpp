@@ -105,7 +105,7 @@ TEST(VerifyPinCmdBuild, verifyPin_various_tests)
     VerifyPinCmdBuild builder(PoClass::ISO, PinTransmissionMode::PLAIN, PIN_DATA);
     auto apduResponse = std::make_shared<ApduResponse>(SW1SW2_OK, nullptr);
 
-    auto& resp = *(builder.createResponseParser(apduResponse)).get();
+    auto resp = *(builder.createResponseParser(apduResponse)).get();
 
     ASSERT_EQ(typeid(resp), typeid(VerifyPinRespPars));
     ASSERT_FALSE(builder.isSessionBufferUsed());
