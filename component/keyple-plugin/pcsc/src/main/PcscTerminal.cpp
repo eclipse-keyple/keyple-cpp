@@ -264,8 +264,6 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(const std::vector<uint8_t>& apdu
     bool t1GetResponse = true;
     bool t1StripLe     = true;
 
-    mLogger->debug("[%] transmitApdu - c-apdu >> %\n", mName, apduIn);
-
     /*
      * Note that we modify the 'command' array in some cases, so it must be a copy of the
      * application provided data
@@ -304,6 +302,8 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(const std::vector<uint8_t>& apdu
         DWORD dwRecv = sizeof(r_apdu);
         long rv;
 
+        mLogger->debug("[%] transmitApdu - c-apdu >> %\n", mName, _apduIn);
+
         rv = SCardTransmit(mHandle,
                            &mPioSendPCI,
                            (LPCBYTE)_apduIn.data(),
@@ -318,6 +318,9 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(const std::vector<uint8_t>& apdu
         }
 
         std::vector<uint8_t> response(r_apdu, r_apdu + dwRecv);
+
+        mLogger->debug("[%] transmitApdu - r-apdu << %\n", mName, response);
+
         int rn = response.size();
         if (getresponse && (rn >= 2)) {
             /* See ISO 7816/2005, 5.1.3 */
@@ -332,11 +335,14 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(const std::vector<uint8_t>& apdu
                 if (rn > 2)
                     result.insert(result.end(), response.begin(), response.begin() + rn - 2);
 
-                _apduIn[1] = 0xC0;
-                _apduIn[2] = 0;
-                _apduIn[3] = 0;
-                _apduIn[4] = response[rn - 1];
+                std::vector<uint8_t> getResponse(5);
+                getResponse[0] = _apduIn[0];
+                getResponse[1] = 0xC0;
+                getResponse[2] = 0;
+                getResponse[3] = 0;
+                getResponse[4] = response[rn - 1];
                 n          = 5;
+                _apduIn.swap(getResponse);
                 continue;
             }
         }
@@ -344,8 +350,6 @@ std::vector<uint8_t> PcscTerminal::transmitApdu(const std::vector<uint8_t>& apdu
         result.insert(result.end(), response.begin(), response.begin() + rn);
         break;
     }
-
-    mLogger->debug("[%] transmitApdu - r-apdu << %\n", mName, result);
 
     return result;
 }
