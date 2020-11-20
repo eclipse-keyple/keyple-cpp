@@ -64,8 +64,7 @@ const std::map<int, std::shared_ptr<StatusProperties>> SvDebitRespPars::STATUS_T
     }, {
         0x6200,
         std::make_shared<StatusProperties>(
-            "Successful execution, response data postponed until session closing.",
-            typeid(ClassNotFoundException)),
+            "Successful execution, response data postponed until session closing.")
     }, {
         0x9000,
         std::make_shared<StatusProperties>("Success")
