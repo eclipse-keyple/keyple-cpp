@@ -76,13 +76,13 @@ SamCommandProcessor::SamCommandProcessor(
   mSamReader(std::dynamic_pointer_cast<ProxyReader>(mSamResource->getSeReader())),
   mPoResource(poResource),
   mPoSecuritySettings(poSecuritySettings),
+  mSessionEncryption(false),
+  mVerificationMode(false),
   mWorkKeyKif(0),
   mWorkKeyKVC(0),
   mIsDiversificationDone(false),
   mIsDigestInitDone(false),
-  mIsDigesterInitialized(false),
-  mSessionEncryption(false),
-  mVerificationMode(false) {}
+  mIsDigesterInitialized(false) {}
 
 const std::vector<uint8_t> SamCommandProcessor::getSessionTerminalChallenge()
 {
