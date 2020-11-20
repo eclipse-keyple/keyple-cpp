@@ -190,7 +190,7 @@ int main(int argc, char** argv)
         poTransaction.prepareReleasePoChannel();
         poTransaction.processPoCommands();
 
-        logger->info("The balance of the PO has been recharged by 2 units");
+        logger->info("The balance of the PO has been recharged by 2 units\n");
     } else {
         logger->error("The PO selection failed\n");
     }
