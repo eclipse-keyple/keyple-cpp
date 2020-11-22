@@ -49,14 +49,12 @@ std::shared_ptr<PcscPluginImpl> PcscPluginImpl::getInstance()
     return mInstance;
 }
 
-const std::map<const std::string, const std::string>&
-    PcscPluginImpl::getParameters() const
+const std::map<const std::string, const std::string>& PcscPluginImpl::getParameters() const
 {
     return mParameters;
 }
 
-void PcscPluginImpl::setParameter(const std::string& key,
-                                  const std::string& value)
+void PcscPluginImpl::setParameter(const std::string& key, const std::string& value)
 {
     (void)key;
     (void)value;
@@ -114,8 +112,7 @@ ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& PcscPluginImpl::ini
      */
     logger->debug("initNativeReaders - getting card terminals\n");
     std::vector<PcscTerminal>& terminals = getTerminals();
-    logger->trace("[%] initNativeReaders => CardTerminal in list: %\n",
-                  getName(), terminals);
+    logger->trace("[%] initNativeReaders => CardTerminal in list: %\n", getName(), terminals);
 
     if (terminals.empty()) {
         logger->trace("No reader available\n");
@@ -130,7 +127,9 @@ ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& PcscPluginImpl::ini
         }
     } catch (PcscTerminalException& e) {
         logger->trace("[%] terminal list not accessible, msg: %, cause: %",
-                      getName(), e.getMessage(), e.getCause().what());
+                      getName(), 
+                      e.getMessage(), 
+                      e.getCause().what());
         /*
          * Throw new KeypleReaderIOException("Could not access terminals list",
          * e); do not propagate exception at the constructor will propagate it
@@ -141,12 +140,10 @@ ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& PcscPluginImpl::ini
     return mNativeReaders;
 }
 
-std::shared_ptr<SeReader>
-PcscPluginImpl::fetchNativeReader(const std::string& name)
+std::shared_ptr<SeReader> PcscPluginImpl::fetchNativeReader(const std::string& name)
 {
     /* Return the current reader if it is already listed */
-    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
-        ::const_iterator it;
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>> ::const_iterator it;
     if ((it = mNativeReaders.find(name)) != mNativeReaders.end())
         return it->second;
 
@@ -161,20 +158,22 @@ PcscPluginImpl::fetchNativeReader(const std::string& name)
     try {
         for (auto& term : terminals) {
             if (!term.getName().compare(name)) {
-                logger->trace("[%s] fetchNativeReader => CardTerminal in new " \
-                              "PcscReader: %\n", getName(), terminals);
+                logger->trace("[%s] fetchNativeReader => CardTerminal in new PcscReader: %\n", 
+                              getName(), 
+                              terminals);
                 seReader = std::make_shared<PcscReaderImpl>(getName(), term);
             }
         }
     } catch (const PcscTerminalException& e) {
         logger->trace("[%] caught PcscTerminalException (msg: %, cause: %)\n",
-                      getName(), e.getMessage(), e.getCause().what());
+                      getName(), 
+                      e.getMessage(), 
+                      e.getCause().what());
         throw KeypleReaderIOException("Could not access terminals list", e);
     }
 
-    if (seReader == nullptr) {
+    if (seReader == nullptr)
         throw KeypleReaderNotFoundException("Reader " + name + " not found!");
-    }
 
     return seReader;
 }
@@ -189,7 +188,7 @@ std::vector<PcscTerminal>& PcscPluginImpl::getTerminals()
         for (auto name : list)
             mTerminals.push_back(PcscTerminal(name));
 
-    } catch (PcscTerminalException& e) {
+    } catch (const PcscTerminalException& e) {
         (void)e;
         logger->error("unexpected exception - %", e);
     }

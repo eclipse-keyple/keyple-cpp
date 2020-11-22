@@ -31,6 +31,7 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 
+using PollingMode = ObservableReader::PollingMode;
 using SpecificReaderObserver = ObservableReaderNotificationEngine::SpecificReaderObserver;
 using SpecificPluginObserver = ObservableReaderNotificationEngine::SpecificPluginObserver;
 
@@ -46,25 +47,24 @@ ObservableReaderNotificationEngine::ObservableReaderNotificationEngine()
 void ObservableReaderNotificationEngine::setPluginObserver()
 {
     /*
-     * We add an observer to each plugin (only one in this example) the readers
-     * observers will be aded dynamically upon plugin notification (see
-     * SpecificPluginObserver.update)
+     * We add an observer to each plugin (only one in this example) the readers observers will be
+     * aded dynamically upon plugin notification (see SpecificPluginObserver.update)
      */
     for (auto plugin_it : SeProxyService::getInstance().getPlugins()) {
         std::shared_ptr<ReaderPlugin> plugin = plugin_it.second;
         auto observable = std::dynamic_pointer_cast<ObservablePlugin>(plugin);
         if (observable != nullptr) {
-            mLogger->info("add observer PLUGINNAME = %\n", plugin->getName());
+            mLogger->info("Add observer PLUGINNAME = %\n", plugin->getName());
             observable->addObserver(mPluginObserver);
         } else {
-            mLogger->info("PLUGINNAME = % not observable\n", plugin->getName());
+            mLogger->info("PLUGINNAME = % ins't observable\n", plugin->getName());
         }
     }
 }
 
 /* SPECIFIC READER OBSERVER --------------------------------------------------------------------- */
 
-SpecificReaderObserver::SpecificReaderObserver() {}
+SpecificReaderObserver::SpecificReaderObserver() : ObservableReader::ReaderObserver() {}
 
 void ObservableReaderNotificationEngine::SpecificReaderObserver::update(
     const std::shared_ptr<ReaderEvent> event)
@@ -129,7 +129,7 @@ void ObservableReaderNotificationEngine::SpecificPluginObserver::update(
         }
 
         if (event->getEventType() == PluginEvent::EventType::READER_CONNECTED) {
-            mLogger->info("new reader! READERNAME = %\n", reader->getName());
+            mLogger->info("New reader! READERNAME = %\n", reader->getName());
 
             /*
              * We are informed here of a disconnection of a reader.
@@ -139,10 +139,11 @@ void ObservableReaderNotificationEngine::SpecificPluginObserver::update(
             auto observable = std::dynamic_pointer_cast<ObservableReader>(reader);
             if (observable) {
                 if (mReaderObserver) {
-                    mLogger->info("add observer READERNAME = %\n", reader->getName());
+                    mLogger->info("Add observer READERNAME = %\n", reader->getName());
                     observable->addObserver(mReaderObserver);
+                    observable->startSeDetection(PollingMode::REPEATING);
                 } else {
-                    mLogger->info("no observer to add READERNAME = %\n", reader->getName());
+                    mLogger->info("No observer to add READERNAME = %\n", reader->getName());
                 }
             }
         } else if (event->getEventType() == PluginEvent::EventType::READER_DISCONNECTED) {
@@ -155,8 +156,7 @@ void ObservableReaderNotificationEngine::SpecificPluginObserver::update(
              */
             mLogger->info("reader removed. READERNAME = %\n", readerName);
 
-            if (std::dynamic_pointer_cast<ObservableReader>(reader) !=
-                nullptr) {
+            if (std::dynamic_pointer_cast<ObservableReader>(reader) != nullptr) {
                 if (mReaderObserver != nullptr) {
                     mLogger->info("remove observer READERNAME = %\n", readerName);
                     (std::dynamic_pointer_cast<ObservableReader>(reader))

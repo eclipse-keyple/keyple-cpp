@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -28,17 +27,15 @@ namespace seproxy {
 namespace event {
 
 /**
- * A {@link PluginEvent} is used to propagate a change of reader currentState in
- * reader plugin.
+ * A {@link PluginEvent} is used to propagate a change of reader currentState in reader plugin.
  * <p>
- * The getReaderNames and getEventType methods allow the event recipient to
- * retrieve the names of the readers involved and the type of the event.
+ * The getReaderNames and getEventType methods allow the event recipient to retrieve the names of
+ * the readers involved and the type of the event.
  * <p>
- * At the moment, two types of events are supported: a connection or
- * disconnection of the reader.
+ * At the moment, two types of events are supported: a connection or disconnection of the reader.
  * <p>
- * Since the event provides a list of reader names, a single event can be used
- * to notify a change for one or more readers.
+ * Since the event provides a list of reader names, a single event can be used to notify a change
+ * for one or more readers.
  * <p>
  * However, only one type of event is notified at a time.
  */
@@ -77,8 +74,7 @@ public:
         /**
          *
          */
-        friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
-                                                       const EventType& et);
+        friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const EventType& et);
 
         /**
          *
@@ -90,6 +86,7 @@ public:
          *
          */
         EventType(const std::string& name);
+        
         /**
          * The event name
          */
@@ -134,10 +131,15 @@ public:
     const EventType& getEventType() const;
 
     /**
-	 *
-	 */
-    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
-		                                           const PluginEvent& re);
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const PluginEvent& pe);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, 
+                                                   const std::shared_ptr<PluginEvent>& pe);
 
 private:
     /**

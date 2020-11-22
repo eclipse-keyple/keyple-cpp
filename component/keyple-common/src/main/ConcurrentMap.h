@@ -120,6 +120,15 @@ public:
     }
 
     /**
+     * 
+     */
+    iterator erase (const_iterator position)
+    {
+        const std::lock_guard<std::mutex> lock(mMutex);
+        return mMap.erase(position);
+    }
+
+    /**
      *
      */
     size_type eraseFirstElement()

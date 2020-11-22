@@ -49,7 +49,7 @@ const std::string PcscReaderImpl::PROTOCOL_T1   = "T=1";
 const std::string PcscReaderImpl::PROTOCOL_T_CL = "T=CL";
 const std::string PcscReaderImpl::PROTOCOL_ANY  = "T=0";
 
-PcscReaderImpl::PcscReaderImpl(const std::string& pluginName, PcscTerminal& terminal)
+PcscReaderImpl::PcscReaderImpl(const std::string& pluginName, const PcscTerminal& terminal)
 : AbstractObservableLocalReader(pluginName, terminal.getName()),
   mLoopWaitSeRemoval(true),
   mTerminal(terminal),
