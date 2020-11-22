@@ -80,8 +80,7 @@ public:
      * @param command : hexadecimal command to react to
      * @param response : hexadecimal response to be sent in reaction to command
      */
-    virtual void addHexCommand(const std::string& command,
-                               const std::string& response);
+    virtual void addHexCommand(const std::string& command, const std::string& response);
 
     /**
      * Remove simulated commands from the Stub SE
@@ -95,30 +94,25 @@ public:
      *
      * @param apduIn : commands to be processed
      * @return APDU response
-     * @throw KeypleReaderIOException if the communication with the reader or
-     *        the SE has failed
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
      */
-    virtual std::vector<uint8_t> processApdu(
-        const std::vector<uint8_t>& apduIn);
+    virtual std::vector<uint8_t> processApdu(const std::vector<uint8_t>& apduIn);
 
-	/**
-	 *
-	 */
-	friend std::ostream& operator<<(std::ostream& os,
-		                            const StubSecureElement& s);
+    /**
+     *
+     */
+    friend std::ostream& operator<<(std::ostream& os, const StubSecureElement& s);
 
-	/**
-	 *
-	 */
-    friend std::ostream& operator<<(
-		std::ostream& os, const std::shared_ptr<StubSecureElement>& s);
+    /**
+     *
+     */
+    friend std::ostream& operator<<(std::ostream& os, const std::shared_ptr<StubSecureElement>& s);
 
 private:
     /**
      *
      */
-    const std::shared_ptr<Logger> mLogger =
-        LoggerFactory::getLogger(typeid(StubSecureElement));
+    const std::shared_ptr<Logger> mLogger = LoggerFactory::getLogger(typeid(StubSecureElement));
 };
 
 }

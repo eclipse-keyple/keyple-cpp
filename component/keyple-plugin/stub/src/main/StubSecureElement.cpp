@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "StubSecureElement.h"
 
@@ -43,8 +42,7 @@ void StubSecureElement::closePhysicalChannel()
     mIsPhysicalChannelOpen = false;
 }
 
-void StubSecureElement::addHexCommand(const std::string& command,
-                                      const std::string& response)
+void StubSecureElement::addHexCommand(const std::string& command, const std::string& response)
 {
     if (!command.compare("") || !response.compare("")) {
         mLogger->debug("either command or response is empty\n");
@@ -53,7 +51,7 @@ void StubSecureElement::addHexCommand(const std::string& command,
 
     /* Add commands without space */
     mHexCommands.emplace(StringHelper::replace(command, " ", ""),
-                        StringHelper::replace(response, " ", ""));
+                         StringHelper::replace(response, " ", ""));
 }
 
 void StubSecureElement::removeHexCommand(const std::string& command)
@@ -65,8 +63,7 @@ void StubSecureElement::removeHexCommand(const std::string& command)
     mHexCommands.erase(StringHelper::trim(command));
 }
 
-std::vector<uint8_t>
-StubSecureElement::processApdu(const std::vector<uint8_t>& apduIn)
+std::vector<uint8_t> StubSecureElement::processApdu(const std::vector<uint8_t>& apduIn)
 {
     if (!apduIn.size())
         return apduIn;
@@ -78,8 +75,7 @@ StubSecureElement::processApdu(const std::vector<uint8_t>& apduIn)
 
     /* Return matching hexa response if found */
     if (mHexCommands.find(hexApdu) != mHexCommands.end()) {
-        mLogger->debug("processApdu - response found: %\n",
-                       mHexCommands[hexApdu]);
+        mLogger->debug("processApdu - response found: %\n", mHexCommands[hexApdu]);
         return ByteArrayUtil::fromHex(mHexCommands[hexApdu]);
     }
 
@@ -90,20 +86,19 @@ StubSecureElement::processApdu(const std::vector<uint8_t>& apduIn)
 
 std::ostream& operator<<(std::ostream& os, const StubSecureElement& s)
 {
-	os << "STUBSECUREELEMENT: {"
-	   << "ISPHYSICALCHANNELOPEN = " << s.mIsPhysicalChannelOpen
-	   << "}";
+    os << "STUBSECUREELEMENT: {"
+       << "ISPHYSICALCHANNELOPEN = " << s.mIsPhysicalChannelOpen
+       << "}";
 
-	return os;
+    return os;
 }
 
-std::ostream& operator<<(std::ostream& os,
-	                     const std::shared_ptr<StubSecureElement>& s)
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<StubSecureElement>& s)
 {
     if (s)
-		os << *(s.get());
+        os << *s.get();
     else
-		os << "STUBSECUREELEMENT: null";
+        os << "STUBSECUREELEMENT: null";
 
     return os;
 }
