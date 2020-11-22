@@ -44,6 +44,13 @@ public:
                               AbstractSamCommandBuilder<AbstractSamResponseParser>* builder);
 
     /**
+     * Copy constructor
+     * 
+     * Required by macOS/CLang 
+     */
+    AbstractSamResponseParser(const AbstractSamResponseParser& asrp) = default;
+    
+    /**
      *
      */
     virtual ~AbstractSamResponseParser() = default;

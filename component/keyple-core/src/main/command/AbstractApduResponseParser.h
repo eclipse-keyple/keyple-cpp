@@ -103,6 +103,13 @@ public:
                                AbstractApduCommandBuilder* builder);
 
     /**
+     * Copy constructor
+     * 
+     * Required by macOS/CLang...
+     */
+    AbstractApduResponseParser(const AbstractApduResponseParser& aarp) = default;
+    
+    /**
      *
      */
     virtual ~AbstractApduResponseParser() = default;

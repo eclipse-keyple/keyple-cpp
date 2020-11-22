@@ -42,6 +42,13 @@ public:
                              AbstractPoCommandBuilder<AbstractPoResponseParser>* builder);
 
     /**
+     * Copy Constructor
+     * 
+     * Required by macOS/CLang
+     */
+    AbstractPoResponseParser(const AbstractPoResponseParser& arp) = default;
+      
+    /**
      *
      */
     virtual ~AbstractPoResponseParser() = default;

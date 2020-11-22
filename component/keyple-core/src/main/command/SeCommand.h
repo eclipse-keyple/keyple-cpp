@@ -23,9 +23,21 @@ namespace command {
 class SeCommand {
 public:
     /**
+     * Required by macOS/CLang...
+     */
+    SeCommand() = default;
+
+    /**
      *
      */
     virtual ~SeCommand() = default;
+
+    /**
+     * Copy constructor
+     * 
+     * Required by macOS/CLang because of virtual destructor...
+     */
+    SeCommand(const SeCommand& sc) = default;
 
     /**
      *
