@@ -48,7 +48,9 @@ void SmartInsertionMonitoringJob::monitoringJob(AbstractObservableState* state,
             throw InterruptedException("monitoring job interrupted");
         }
 
-        if (mReader->waitForCardPresent()) {
+        if (mReader &&
+            mReader->mShuttingDown == false &&
+            mReader->waitForCardPresent()) {
             mLogger->debug("throwing card inserted event\n");
             state->onEvent(InternalEvent::SE_INSERTED);
         }

@@ -164,13 +164,23 @@ std::ostream& operator<<(std::ostream& os, const ReaderEvent::EventType& et)
 
 std::ostream& operator<<(std::ostream& os, const ReaderEvent& re)
 {
-	os << "READEREVENT: {"
-	   << "EVENTTYPE = " << re.mEventType << ", "
-	   << "PLUGINNAME = " << re.mPluginName << ", "
-	   << "READERNAME = " << re.mReaderName
-	   << "}";
+    os << "READEREVENT: {"
+        << "EVENTTYPE = " << re.mEventType << ", "
+        << "PLUGINNAME = " << re.mPluginName << ", "
+        << "READERNAME = " << re.mReaderName
+        << "}";
 
-	return os;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<ReaderEvent>& re)
+{
+    if (re == nullptr)
+        os << "READEREVENT = null";
+    else
+        os << *re.get();
+
+    return os;
 }
 
 const std::shared_ptr<AbstractDefaultSelectionsResponse> ReaderEvent::getDefaultSelectionsResponse()

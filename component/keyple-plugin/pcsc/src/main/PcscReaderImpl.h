@@ -51,7 +51,7 @@ public:
      * @param pluginName the name of the plugin
      * @param terminal the PC/SC terminal
      */
-    PcscReaderImpl(const std::string& pluginName, PcscTerminal& terminal);
+    PcscReaderImpl(const std::string& pluginName, const PcscTerminal& terminal);
 
     /**
      *
@@ -94,14 +94,12 @@ public:
      *        the SE has failed, when disabling the exclusive mode as it's
      *        executed instantly
      */
-    void setParameter(const std::string& name,
-                      const std::string& value) override;
+    void setParameter(const std::string& name, const std::string& value) override;
 
     /**
      *
      */
-    const std::map<const std::string, const std::string>& getParameters() const
-        override;
+    const std::map<const std::string, const std::string>& getParameters() const override;
 
     /**
      * The transmission mode can set with
@@ -283,7 +281,7 @@ private:
     /**
      *
      */
-    PcscTerminal& mTerminal;
+    PcscTerminal mTerminal;
 
     /**
      *

@@ -110,13 +110,23 @@ std::ostream& operator<<(std::ostream& os, const PluginEvent::EventType& et)
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const PluginEvent& re)
+std::ostream& operator<<(std::ostream& os, const PluginEvent& pe)
 {
-    os << "READEREVENT: {"
-       << "EVENTTYPE = " << re.mEventType << ", "
-       << "PLUGINNAME = " << re.mPluginName << ", "
-       << "READERNAME = " << re.mReaderName << "}";
+    os << "PLUGINEVENT: {"
+       << "EVENTTYPE = " << pe.mEventType << ", "
+       << "PLUGINNAME = " << pe.mPluginName << ", "
+       << "READERNAME = " << pe.mReaderName << "}";
 
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<PluginEvent>& pe)
+{
+    if (pe == nullptr)
+        os << "PLUGINEVENT = null";
+    else
+        os << *pe.get();
+        
     return os;
 }
 
