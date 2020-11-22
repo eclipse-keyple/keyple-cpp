@@ -118,32 +118,36 @@ bool StubReaderImpl::protocolFlagMatches(const std::shared_ptr<SeProtocol> proto
 
     /* Test protocolFlag to check if ATR based protocol filtering is required */
     //if (protocolFlag != null) {
-    if (!isPhysicalChannelOpen())
-        openPhysicalChannel();
+        if (!isPhysicalChannelOpen())
+            openPhysicalChannel();
 
-    /* The request will be executed only if the protocol match the requestElement */
-    const std::string& selectionMask = getProtocolsMap().find(protocolFlag)->second;
+        /* The request will be executed only if the protocol match the requestElement */
+        const std::string& selectionMask = getProtocolsMap().find(protocolFlag)->second;
 
-    if (selectionMask.empty())
-        throw KeypleReaderIOException("Target selector mask not found!");
+        if (selectionMask.empty())
+            throw KeypleReaderIOException("Target selector mask not found!");
 
-    Pattern* p = Pattern::compile(selectionMask);
-    const std::string& protocol = mSe->getSeProcotol();
-    if (!p->matcher(protocol)->matches()) {
-        mLogger->trace("[%] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %\n",
-                       getName(),
-                       protocolFlag);
-        result = false;
-    } else {
-        mLogger->trace("[%] protocolFlagMatches => matching SE. PROTOCOLFLAG = %\n",
-                       getName(),
-                       protocolFlag);
-        result = true;
-    }
-    //} else {
-    //    // no protocol defined returns true
-    //    result = true;
+        /* C++ vs. Java: mSe can be null if removeSe() has been called by another thread */
+        if (mSe == nullptr)
+            return false;
+
+        Pattern* p = Pattern::compile(selectionMask);
+        const std::string& protocol = mSe->getSeProcotol();
+        if (!p->matcher(protocol)->matches()) {
+            mLogger->trace("[%] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %\n",
+                           getName(),
+                           protocolFlag);
+            result = false;
+        } else {
+            mLogger->trace("[%] protocolFlagMatches => matching SE. PROTOCOLFLAG = %\n",
+                           getName(),
+                           protocolFlag);
+            result = true;
+        } //else {
+        //    // no protocol defined returns true
+        //    result = true;
     //}
+
     return result;
 }
 
@@ -202,36 +206,25 @@ std::shared_ptr<StubSecureElement> StubReaderImpl::getSe()
 
 bool StubReaderImpl::waitForCardPresent()
 {
+    /* C++ vs. Java: do not log in this function */
+
     if (mShuttingDown)
         return false;
 
     mLoopWaitSe = true;
 
-    mLogger->trace("[%] waitForCardPresent\n", getName());
-
     while (mLoopWaitSe) {
-        mLogger->trace("[%] checking for card presence\n", getName());
-        if (checkSePresence()) {
-            mLogger->trace("[%] card present\n", getName());
+        if (checkSePresence())
             return true;
-        }
 
-
-        mLogger->trace("[%] sleeping for 10 ms\n", getName());
         try {
             Thread::sleep(10);
         } catch (const InterruptedException& e) {
-            mLogger->debug("Sleep was interrupted - %\n", e);
+            (void)e;
         }
-
-        mLogger->trace("[%] looping back\n", getName());
     }
 
-    mLogger->trace("[%] mLoopWaitSe=false, leaving\n", getName());
-
     return false;
-    // logger.trace("[{}] no card was inserted", this.getName());
-    // return false;
 }
 
 void StubReaderImpl::stopWaitForCard()
@@ -242,23 +235,21 @@ void StubReaderImpl::stopWaitForCard()
 
 bool StubReaderImpl::waitForCardAbsentNative()
 {
+    /* C++ vs. Java: do not log in this function */
+
     if (mShuttingDown)
         return false;
 
     mLoopWaitSeRemoval = true;
 
-    mLogger->trace("[%] waitForCardAbsentNative\n", getName());
-
     while (mLoopWaitSeRemoval) {
-        if (!checkSePresence()) {
-            mLogger->trace("[%] card removed\n", getName());
+        if (!checkSePresence())
             return true;
-        }
 
         try {
             Thread::sleep(10);
-        } catch (InterruptedException& e) {
-            mLogger->debug("Sleep was interrupted - %\n", e);
+        } catch (const InterruptedException& e) {
+            (void)e;
         }
     }
 
