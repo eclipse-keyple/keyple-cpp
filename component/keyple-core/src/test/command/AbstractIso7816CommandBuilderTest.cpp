@@ -27,6 +27,8 @@ using namespace testing;
 
 class SeCommandMock final : public SeCommand {
 public:
+    SeCommandMock() : SeCommand() {}
+
     MOCK_METHOD(const std::string&,
                 getName,
                 (),
