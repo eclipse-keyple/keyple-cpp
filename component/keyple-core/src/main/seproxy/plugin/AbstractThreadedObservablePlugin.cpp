@@ -31,6 +31,8 @@ namespace plugin {
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 
+using EventType = PluginEvent::EventType;
+
 std::set<std::string> _set;
 std::shared_ptr<std::set<std::string>> nativeReadersNames =
     std::make_shared<std::set<std::string>>(_set);
@@ -117,38 +119,43 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
     try {
         while ((!isInterrupted()) && mRunning) {
             /* Retrieves the current readers names list */
+            mParent->mLogger->debug("run - fetching native readers names\n");
             const std::set<std::string>& actualNativeReadersNames = mParent->fetchNativeReadersNames();
 
-            /*
-             * Checks if it has changed this algorithm favors cases where
-             * nothing changes.
-             */
+            /* Checks if it has changed this algorithm favors cases where nothing changes */
             if (mParent->mNativeReadersNames != actualNativeReadersNames) {
+                mParent->mLogger->debug("run - mNativeReadersNames != actualNativeReadersNames\n");
+
                 /*
-                 * Parse the current readers list, notify for disappeared
-                 * readers, update readers list
+                 * Parse the current readers list, notify for disappeared readers, update readers
+                 * list
                  */
 
-                /* build changed reader names list */
+                /* Build changed reader names list */
                 changedReaderNames->clear();
 
+                mParent->mLogger->debug("run - building changedReaderNames list\n");
                 for (const auto& pair : mParent->mNativeReaders) {
                     const auto& it = actualNativeReadersNames.find(pair.second->getName());
                     if (it == actualNativeReadersNames.end())
                         changedReaderNames->insert(pair.second->getName());
                 }
 
-                /* notify disconnections if any and update the reader list */
+                /* Notify disconnections if any and update the reader list */
                 if (changedReaderNames->size() > 0) {
-                    /* grouped notification */
-                    mParent->notifyObservers(
-                        std::make_shared<PluginEvent>(mPluginName,
-                                                      changedReaderNames,
-                                                      PluginEvent::EventType::READER_DISCONNECTED));
+                    mParent->mLogger->debug("run - changedReaderNames not empty\n");
+
+                    /* Grouped notification */
+                    auto event = std::make_shared<PluginEvent>(mPluginName,
+                                                               changedReaderNames,
+                                                               EventType::READER_DISCONNECTED);
+                    mParent->notifyObservers(event);
 
                     /* list update */
-                    for (const auto &r : mParent->mNativeReaders) {
-                        const std::shared_ptr<SeReader> reader = r.second;
+                    for (auto it = mParent->mNativeReaders.begin(); 
+                         it != mParent->mNativeReaders.end();) {
+                        const std::shared_ptr<SeReader> reader = it->second;
+                        
                         if (actualNativeReadersNames.find(reader->getName()) ==
                                 actualNativeReadersNames.end()) {
                             /* Removes any possible observers before removing the reader */
@@ -159,35 +166,38 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
                                 observable->stopSeDetection();
                             }
 
-                            mParent->mNativeReaders.erase(reader->getName());
                             mParent->mLogger->trace("[%][%] Plugin thread => Remove unplugged " \
                                                     "reader from readers list\n",
                                                     mPluginName,
                                                     reader->getName());
 
-                            /* remove reader name from the current list */
+                            /* Remove reader name from the current list */
                             mParent->mNativeReadersNames.erase(reader->getName());
+
+                            /* C++ vs. Java: remove reader *after* we are done with it */
+                            mParent->mNativeReaders.erase(it++);
+                        } else {
+                            ++it;
                         }
                     }
 
-                    /* clean the list for a possible connection notification */
+                    /* Clean the list for a possible connection notification */
                     changedReaderNames->clear();
                 }
 
-                /*
-                 * Parse the new readers list, notify for readers appearance,
-                 * update readers list
-                 */
+                /* Parse the new readers list, notify for readers appearance, update readers list */
                 for (const auto& readerName : actualNativeReadersNames) {
                     const auto it = mParent->mNativeReadersNames.find(readerName);
                     if (it == mParent->mNativeReadersNames.end()) {
                         std::shared_ptr<SeReader> reader = mParent->fetchNativeReader(readerName);
                         mParent->mNativeReaders.insert({reader->getName(), reader});
 
-                        /* add to the notification list */
+                        /* Add to the notification list */
                         changedReaderNames->insert(readerName);
                         mParent->mLogger->trace("[%][%] Plugin thread => Add plugged reader to " \
-                                                "readers list\n", mPluginName, reader->getName());
+                                                "readers list\n", 
+                                                mPluginName, 
+                                                reader->getName());
 
                         /* add reader name to the current list */
                         mParent->mNativeReadersNames.insert(readerName);
@@ -196,10 +206,10 @@ void* AbstractThreadedObservablePlugin::EventThread::run()
 
                 /* notify connections if any */
                 if (changedReaderNames->size() > 0) {
-                    mParent->notifyObservers(
-                        std::make_shared<PluginEvent>(mPluginName,
-                                                      changedReaderNames,
-                                                      PluginEvent::EventType::READER_CONNECTED));
+                    auto event = std::make_shared<PluginEvent>(mPluginName,
+                                                               changedReaderNames,
+                                                               EventType::READER_CONNECTED);
+                    mParent->notifyObservers(event);
                 }
             }
 

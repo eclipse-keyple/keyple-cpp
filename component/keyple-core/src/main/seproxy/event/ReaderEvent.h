@@ -132,9 +132,9 @@ public:
          */
         static EventType valueOf(const std::string& name);
 
-		/**
-		 *
-		 */
+        /**
+         *
+         */
         friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const EventType& et);
 
     private:
@@ -225,6 +225,12 @@ public:
      *
      */
     friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const ReaderEvent& re);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const std::shared_ptr<ReaderEvent>& re);
 
 private:
     /**
