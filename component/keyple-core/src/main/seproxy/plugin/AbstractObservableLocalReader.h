@@ -430,7 +430,7 @@ private:
      * This object will be used to synchronize the access to the observers list
      * in order to be thread safe
      */
-    std::mutex mMutex;
+    std::recursive_mutex mMutex;
 };
 
 

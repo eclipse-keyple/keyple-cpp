@@ -43,12 +43,12 @@ AbstractThreadedObservablePlugin::AbstractThreadedObservablePlugin(const std::st
     mLogger->trace("constructor (name: %)\n", name);
 }
 
-void AbstractThreadedObservablePlugin::finalize()
+AbstractThreadedObservablePlugin::~AbstractThreadedObservablePlugin()
 {
-    mThread->end();
-    mLogger->trace("[%] observable Plugin thread ended\n", getName());
+    if (mThread != nullptr)
+        mThread->end();
 
-    //AbstractPlugin::finalize();
+    mLogger->trace("[%] observable Plugin thread ended\n", getName());
 }
 
 void AbstractThreadedObservablePlugin::addObserver(
