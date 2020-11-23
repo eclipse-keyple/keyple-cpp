@@ -75,7 +75,7 @@ public:
     /**
      *
      */
-    virtual ~AbstractThreadedObservablePlugin() = default;
+    virtual ~AbstractThreadedObservablePlugin();
 
 protected:
 
@@ -132,11 +132,13 @@ protected:
 
     /**
      * Called when the class is unloaded. Attempt to do a clean exit.
+     * 
+     * C++ vs. Java: replaced by destructor
      *
      * @throws Throwable a generic exception
      * @deprecated will change in a later version
      */
-    void finalize() /* override */;
+    //void finalize() override;
 
 private:
     /**

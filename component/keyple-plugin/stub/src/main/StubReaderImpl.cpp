@@ -68,7 +68,6 @@ StubReaderImpl::StubReaderImpl(const std::string& pluginName, const std::string&
 StubReaderImpl::~StubReaderImpl()
 {
     mShuttingDown = true;
-
     if (mStateService) {
         for (auto& state : mStateService->getStates()) {
             if (state.second && state.second->mMonitoringJob) {
@@ -81,28 +80,43 @@ StubReaderImpl::~StubReaderImpl()
 
 const std::vector<uint8_t>& StubReaderImpl::getATR()
 {
+    std::lock_guard<std::mutex> lock(mMutex);
+
+    if (mSe == nullptr)
+        throw KeypleReaderIOException("No SE available.");
+
     return mSe->getATR();
 }
 
 bool StubReaderImpl::isPhysicalChannelOpen()
 {
+    std::lock_guard<std::mutex> lock(mMutex);
     return mSe != nullptr && mSe->isPhysicalChannelOpen();
 }
 
 void StubReaderImpl::openPhysicalChannel()
 {
-    if (mSe != nullptr)
-        mSe->openPhysicalChannel();
+    std::lock_guard<std::mutex> lock(mMutex);
+
+    if (mSe == nullptr)
+        throw KeypleReaderIOException("No SE available.");
+
+    mSe->openPhysicalChannel();
 }
 
 void StubReaderImpl::closePhysicalChannel()
 {
-    if (mSe != nullptr)
-        mSe->closePhysicalChannel();
+    std::lock_guard<std::mutex> lock(mMutex);
+
+    if (mSe == nullptr)
+        throw KeypleReaderIOException("No SE available.");
+    mSe->closePhysicalChannel();
 }
 
 std::vector<uint8_t> StubReaderImpl::transmitApdu(const std::vector<uint8_t>& apduIn)
 {
+    std::lock_guard<std::mutex> lock(mMutex);
+
     if (mSe == nullptr)
         throw KeypleReaderIOException("No SE available.");
 
@@ -113,23 +127,25 @@ bool StubReaderImpl::protocolFlagMatches(const std::shared_ptr<SeProtocol> proto
 {
     bool result;
 
-    if (mSe == nullptr)
-        throw KeypleReaderIOException("No SE available.");
-
     /* Test protocolFlag to check if ATR based protocol filtering is required */
     //if (protocolFlag != null) {
         if (!isPhysicalChannelOpen())
             openPhysicalChannel();
+
+        /*
+         * C++ vs. Java: moved that verification after isPhysicalChannelOpen() and
+         * openPhysicalChannel() as they both lock the class mutex for mSe manipulation.
+         */
+        std::lock_guard<std::mutex> lock(mMutex);
+     
+        if (mSe == nullptr)
+            throw KeypleReaderIOException("No SE available.");
 
         /* The request will be executed only if the protocol match the requestElement */
         const std::string& selectionMask = getProtocolsMap().find(protocolFlag)->second;
 
         if (selectionMask.empty())
             throw KeypleReaderIOException("Target selector mask not found!");
-
-        /* C++ vs. Java: mSe can be null if removeSe() has been called by another thread */
-        if (mSe == nullptr)
-            return false;
 
         Pattern* p = Pattern::compile(selectionMask);
         const std::string& protocol = mSe->getSeProcotol();
@@ -153,6 +169,7 @@ bool StubReaderImpl::protocolFlagMatches(const std::shared_ptr<SeProtocol> proto
 
 bool StubReaderImpl::checkSePresence()
 {
+    std::lock_guard<std::mutex> lock(mMutex);
     mLogger->trace("SE: %\n", mSe);
     return mSe != nullptr;
 }
@@ -187,6 +204,7 @@ void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> se)
         }
     }
 
+    std::lock_guard<std::mutex> lock(mMutex);
     mLogger->trace("Setting SE to %\n", se);
     if (se != nullptr)
         mSe = se;
@@ -194,8 +212,8 @@ void StubReaderImpl::insertSe(std::shared_ptr<StubSecureElement> se)
 
 void StubReaderImpl::removeSe()
 {
+    std::lock_guard<std::mutex> lock(mMutex);
     mLogger->debug("Remove SE %\n", mSe);
-
     mSe = nullptr;
 }
 
