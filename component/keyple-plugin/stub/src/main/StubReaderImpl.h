@@ -208,6 +208,11 @@ private:
      */
     std::atomic<bool> mLoopWaitSe;
     std::atomic<bool> mLoopWaitSeRemoval;
+
+    /**
+     * 
+     */
+    std::mutex mMutex;
 };
 
 }

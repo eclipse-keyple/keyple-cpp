@@ -244,27 +244,25 @@ void AbstractObservableLocalReader::onEvent(const InternalEvent event)
 void AbstractObservableLocalReader::addObserver(
     const std::shared_ptr<ObservableReader::ReaderObserver> observer)
 {
+    std::lock_guard<std::recursive_mutex> lock(mMutex);
+
     if (observer == nullptr)
         return;
 
     mLogger->trace("Adding an observer of '%'\n", getName());
-
-    mMutex.lock();
     mObservers.push_back(observer);
-    mMutex.unlock();
 }
 
 void AbstractObservableLocalReader::removeObserver(
     const std::shared_ptr<ObservableReader::ReaderObserver>  observer)
 {
+    std::lock_guard<std::recursive_mutex> lock(mMutex);
+
     if (observer == nullptr)
         return;
 
     mLogger->trace("[%] Deleting a reader observer\n", getName());
-
-    mMutex.lock();
     mObservers.remove(observer);
-    mMutex.unlock();
 }
 
 void AbstractObservableLocalReader::notifyObservers(const std::shared_ptr<ReaderEvent> event)
@@ -277,33 +275,13 @@ void AbstractObservableLocalReader::notifyObservers(const std::shared_ptr<Reader
     if (mShuttingDown)
         return;
 
-/*
-    mMutex.lock();
-    std::list<std::shared_ptr<ObservableReader::ReaderObserver>> observersCopy(mObservers);
-    mMutex.unlock();
-*/
-    //mMutex.lock();
-
-    auto it = mObservers.begin();
-    while (1) {
-        if (mObservers.size() == 0)
-            break;
-
-        mLogger->trace("[%] Calling update on observer\n", getName());
-        (*it)->update(event);
-
-        /* Check again as update could have modified the list */
-        if (mObservers.size() == 0 || it == mObservers.end() || (++it == mObservers.end()))
-            break;
+    std::lock_guard<std::recursive_mutex> lock(mMutex);
+    for (auto& observer : mObservers) {
+        if (mObservers.size() != 0) {
+            mLogger->trace("[%] Calling update on observer\n", getName());
+            observer->update(event);
+        }
     }
-
-    // for (auto& observer : mObservers) {
-    //     if (mObservers.size() != 0) {
-    //         mLogger->trace("[%] Calling update on observer %d\n", getName(), i++);
-    //         observer->update(event);
-    //     }
-    // }
-    //mMutex.unlock();
 }
 
 int AbstractObservableLocalReader::countObservers() const
