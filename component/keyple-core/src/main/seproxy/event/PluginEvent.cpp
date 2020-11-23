@@ -32,8 +32,7 @@ using EventType = PluginEvent::EventType;
 const EventType EventType::READER_CONNECTED("Reader connected");
 const EventType EventType::READER_DISCONNECTED("Reader disconnected");
 
-EventType::EventType(const std::string& name)
-: mName(name) {}
+EventType::EventType(const std::string& name) : mName(name) {}
 
 const std::string& EventType::getName() const
 {
@@ -58,7 +57,15 @@ const EventType& EventType::valueOf(const std::string& name)
         return READER_DISCONNECTED;
     else
         throw IllegalArgumentException("No event named " + name);
+}
 
+std::ostream& operator<<(std::ostream& os, const PluginEvent::EventType& et)
+{
+    os << "EVENTTYPE: {"
+       << "NAME = " << et.mName
+       << "}";
+
+    return os;
 }
 
 /* PLUGIN EVENT ------------------------------------------------------------- */
@@ -94,22 +101,6 @@ const EventType& PluginEvent::getEventType() const
     return mEventType;
 }
 
-std::ostream& operator<<(std::ostream& os, const PluginEvent::EventType& et)
-{
-    std::string value;
-
-    if (et == PluginEvent::EventType::READER_CONNECTED)
-        value = "READER_CONNECTED";
-    else if (et == PluginEvent::EventType::READER_DISCONNECTED)
-        value = "READER_DISCONNECTED";
-
-    os << "EVENTTYPE: {"
-       << "NAME = " << et.mName
-       << "}";
-
-    return os;
-}
-
 std::ostream& operator<<(std::ostream& os, const PluginEvent& pe)
 {
     os << "PLUGINEVENT: {"
@@ -126,7 +117,7 @@ std::ostream& operator<<(std::ostream& os, const std::shared_ptr<PluginEvent>& p
         os << "PLUGINEVENT = null";
     else
         os << *pe.get();
-        
+
     return os;
 }
 

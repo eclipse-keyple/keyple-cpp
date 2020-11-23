@@ -50,57 +50,27 @@ public:
         /**
          * An timeout error occurred.
          */
-        static EventType TIMEOUT_ERROR;
+        static const EventType TIMEOUT_ERROR;
 
         /**
          * A SE has been inserted.
          */
-        static EventType SE_INSERTED;
+        static const EventType SE_INSERTED;
 
         /**
          * A SE has been inserted and the default requests process has been successfully operated.
          */
-        static EventType SE_MATCHED;
+        static const EventType SE_MATCHED;
 
         /**
          * The SE has been removed and is no longer able to communicate with the reader
          */
-        static EventType SE_REMOVED;
+        static const EventType SE_REMOVED;
 
         /**
          *
          */
-        enum class InnerEnum {
-            TIMEOUT_ERROR,
-            SE_INSERTED,
-            SE_MATCHED,
-            SE_REMOVAL
-        };
-
-        /**
-         *
-         */
-        const InnerEnum innerEnumValue;
-
-        /**
-         *
-         */
-        EventType(const std::string& nameValue, InnerEnum innerEnum, const std::string& name);
-
-        /**
-         *
-         */
-        EventType(const EventType& o);
-
-        /**
-         *
-         */
-        virtual ~EventType() = default;
-
-        /**
-         *
-         */
-        virtual const std::string& getName() const;
+        const std::string& getName() const;
 
         /**
          *
@@ -115,22 +85,7 @@ public:
         /**
          *
          */
-        static std::vector<EventType> values();
-
-        /**
-         *
-         */
-        int ordinal();
-
-        /**
-         *
-         */
-        std::string toString();
-
-        /**
-         *
-         */
-        static EventType valueOf(const std::string& name);
+        static const EventType& valueOf(const std::string& name);
 
         /**
          *
@@ -138,43 +93,16 @@ public:
         friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const EventType& et);
 
     private:
-        /**
-         *
-         */
-        static std::vector<EventType> valueList;
 
         /**
          *
          */
-        class StaticConstructor {
-        public:
-            StaticConstructor();
-        };
+        EventType(const std::string& name);
 
         /**
          *
          */
-        static StaticConstructor staticConstructor;
-
-        /**
-         *
-         */
-        const std::string nameValue;
-
-        /**
-         *
-         */
-        const int ordinalValue;
-
-        /**
-         *
-         */
-        static int nextOrdinal;
-
-        /**
-         * The event name
-         */
-        std::string name;
+        const std::string mName;
     };
 
     /**
