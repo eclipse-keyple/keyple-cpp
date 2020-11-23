@@ -48,7 +48,7 @@ const std::vector<std::string> ByteArrayUtil::byteToHex = {
         "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB",
         "FC", "FD", "FE", "FF"};
 
-Pattern* ByteArrayUtil::HEX_IGNORED_CHARS = Pattern::compile(" |h");
+std::unique_ptr<Pattern> ByteArrayUtil::HEX_IGNORED_CHARS = Pattern::compile(" |h");
 
 std::vector<uint8_t> ByteArrayUtil::fromHex(const std::string& hex)
 {

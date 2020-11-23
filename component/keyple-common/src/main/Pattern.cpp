@@ -16,24 +16,25 @@
 namespace keyple {
 namespace common {
 
-Pattern::Pattern(std::string pattern, int flags) : pattern(pattern), mFlags(flags) { }
+Pattern::Pattern(const std::string& pattern, const int flags) : mPattern(pattern), mFlags(flags) {}
 
-Pattern* Pattern::compile(std::string regularExpression, int flags)
+std::unique_ptr<Pattern> Pattern::compile(const std::string& regularExpression, const int flags)
+    const
 {
     /* Compiler hack */
     (void)mFlags;
 
-    return new Pattern(regularExpression, flags);
+    return std::unique_ptr<Pattern>(new Pattern(regularExpression, flags));
 }
 
-Pattern* Pattern::compile(std::string pattern)
+std::unique_ptr<Pattern> Pattern::compile(const std::string& pattern)
 {
-    return new Pattern(pattern, 0);
+    return std::unique_ptr<Pattern>(new Pattern(pattern, 0));
 }
 
-Matcher* Pattern::matcher(std::string input)
+std::unique_ptr<Matcher> Pattern::matcher(const std::string& input) const
 {
-    return new Matcher(this, input);
+    return std::unique_ptr<Matcher>(new Matcher(this, input));
 }
 
 }

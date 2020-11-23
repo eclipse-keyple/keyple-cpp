@@ -137,7 +137,7 @@ bool StubReaderImpl::protocolFlagMatches(const std::shared_ptr<SeProtocol> proto
          * openPhysicalChannel() as they both lock the class mutex for mSe manipulation.
          */
         std::lock_guard<std::mutex> lock(mMutex);
-     
+
         if (mSe == nullptr)
             throw KeypleReaderIOException("No SE available.");
 
@@ -147,7 +147,7 @@ bool StubReaderImpl::protocolFlagMatches(const std::shared_ptr<SeProtocol> proto
         if (selectionMask.empty())
             throw KeypleReaderIOException("Target selector mask not found!");
 
-        Pattern* p = Pattern::compile(selectionMask);
+        std::unique_ptr<Pattern> p = Pattern::compile(selectionMask);
         const std::string& protocol = mSe->getSeProcotol();
         if (!p->matcher(protocol)->matches()) {
             mLogger->trace("[%] protocolFlagMatches => unmatching SE. PROTOCOLFLAG = %\n",

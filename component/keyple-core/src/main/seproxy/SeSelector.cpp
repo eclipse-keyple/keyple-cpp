@@ -197,7 +197,7 @@ bool AtrFilter::atrMatches(const std::vector<uint8_t>& atr)
     bool m;
 
     if (mAtrRegex.length() != 0) {
-        Pattern* p = Pattern::compile(mAtrRegex);
+        std::unique_ptr<Pattern> p = Pattern::compile(mAtrRegex);
         std::string atrString = ByteArrayUtil::toHex(atr);
         m = p->matcher(atrString)->matches();
     } else {

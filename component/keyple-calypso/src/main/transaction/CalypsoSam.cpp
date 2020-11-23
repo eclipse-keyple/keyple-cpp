@@ -55,8 +55,8 @@ CalypsoSam::CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
 
     /* extract the historical bytes from T3 to T12 */
     std::string extractRegex = "3B(.{6}|.{10})805A(.{20})829000";
-    Pattern* pattern         = Pattern::compile(extractRegex);
-    Matcher* matcher         = pattern->matcher(atrString);
+    std::unique_ptr<Pattern> pattern = Pattern::compile(extractRegex);
+    std::unique_ptr<Matcher> matcher = pattern->matcher(atrString);
     if (matcher->find(0)) {
         std::vector<uint8_t> atrSubElements =
             ByteArrayUtil::fromHex(matcher->group(2));
