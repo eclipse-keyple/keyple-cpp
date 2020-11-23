@@ -71,7 +71,7 @@ SamResourceManagerDefault::SamResourceManagerDefault(std::shared_ptr<ReaderPlugi
                   mSamReaderPlugin->getReaders().size(),
                   samReaderFilter);
 
-    Pattern* p = Pattern::compile(samReaderFilter);
+    std::unique_ptr<Pattern> p = Pattern::compile(samReaderFilter);
 
     const ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& readers =
         mSamReaderPlugin->getReaders();
@@ -302,8 +302,8 @@ void PluginObserver::update(const std::shared_ptr<PluginEvent> event)
              *
              * We add an observer to this reader if possible.
              */
-            p = Pattern::compile(mSamReaderFilter);
-            if (p->matcher(readerName)->matches()) {
+            mPattern = Pattern::compile(mSamReaderFilter);
+            if (mPattern->matcher(readerName)->matches()) {
                 /* Enable logging */
                 try {
                     mParent.initSamReader(samReader, mReaderObserver);
@@ -324,8 +324,8 @@ void PluginObserver::update(const std::shared_ptr<PluginEvent> event)
              * reader list right after. Thus, we can properly remove the
              * observer attached to this reader before the list update.
              */
-            p = Pattern::compile(mSamReaderFilter);
-            if (p->matcher(readerName)->matches()) {
+            mPattern = Pattern::compile(mSamReaderFilter);
+            if (mPattern->matcher(readerName)->matches()) {
                 mLogger->trace("Reader removed. READERNAME = %\n", readerName);
 
                 std::shared_ptr<ObservableReader> obsReader =

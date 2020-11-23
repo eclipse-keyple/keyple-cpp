@@ -98,7 +98,7 @@ public:
         /**
          *
          */
-        Pattern* p;
+        std::unique_ptr<Pattern> mPattern;
 
         /**
          *

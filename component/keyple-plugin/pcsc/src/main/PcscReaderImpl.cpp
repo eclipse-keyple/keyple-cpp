@@ -270,7 +270,7 @@ bool PcscReaderImpl::protocolFlagMatches(const std::shared_ptr<SeProtocol> proto
 
         const std::string selectionMask = it->second;
 
-        Pattern* p      = Pattern::compile(selectionMask);
+        std::unique_ptr<Pattern> p = Pattern::compile(selectionMask);
         std::string atr = ByteArrayUtil::toHex(mTerminal.getATR());
         if (!p->matcher(atr)->matches()) {
             mLogger->debug("[%] protocolFlagMatches => unmatching SE. "

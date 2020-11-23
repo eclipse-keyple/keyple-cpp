@@ -147,7 +147,7 @@ private:
      * Chars we will ignore when loading a sample HEX string. It allows to
      * copy/paste the specs APDU
      */
-    static Pattern* HEX_IGNORED_CHARS;
+    static std::unique_ptr<Pattern> HEX_IGNORED_CHARS;
 };
 
 }

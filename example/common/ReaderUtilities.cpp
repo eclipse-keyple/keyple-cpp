@@ -42,7 +42,7 @@ ReaderUtilities::ReaderUtilities() {}
 
 std::shared_ptr<SeReader> ReaderUtilities::getReaderByName(const std::string& pattern)
 {
-    Pattern* p = Pattern::compile(pattern);
+    std::unique_ptr<Pattern> p = Pattern::compile(pattern);
     const auto& plugins = SeProxyService::getInstance().getPlugins();
 
     for (const auto& plugin_it : plugins) {
