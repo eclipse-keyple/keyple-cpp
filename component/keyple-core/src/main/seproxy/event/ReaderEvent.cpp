@@ -18,11 +18,15 @@
 #include "DefaultSelectionsResponse.h"
 #include "SeProxyService.h"
 
+/* Common */
+#include "IllegalArgumentException.h"
+
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace event {
 
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
 
@@ -30,75 +34,49 @@ using EventType = ReaderEvent::EventType;
 
 /* EVENT TYPE ----------------------------------------------------------------------------------- */
 
-EventType EventType::TIMEOUT_ERROR("TIMEOUT_ERROR", InnerEnum::TIMEOUT_ERROR,
-                                   "SE Reader timeout Error");
-EventType EventType::SE_INSERTED("SE_INSERTED", InnerEnum::SE_INSERTED, "SE insertion");
-EventType EventType::SE_MATCHED("SE_MATCHED", InnerEnum::SE_MATCHED, "SE matched");
-EventType EventType::SE_REMOVED("SE_REMOVED", InnerEnum::SE_REMOVAL, "SE removed");
+const EventType EventType::TIMEOUT_ERROR("SE Reader timeout Error");
+const EventType EventType::SE_INSERTED("SE insertion");
+const EventType EventType::SE_MATCHED("SE matched");
+const EventType EventType::SE_REMOVED("SE removed");
 
-std::vector<EventType> EventType::valueList;
-
-EventType::StaticConstructor::StaticConstructor()
-{
-    valueList.push_back(TIMEOUT_ERROR);
-    valueList.push_back(SE_INSERTED);
-    valueList.push_back(SE_MATCHED);
-    valueList.push_back(SE_REMOVED);
-}
-
-EventType::StaticConstructor EventType::staticConstructor;
-int EventType::nextOrdinal = 0;
-
-EventType::EventType(const std::string& nameValue, InnerEnum innerEnum, const std::string& name)
-: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++), name(name)
-{
-}
-
-EventType::EventType(const EventType& o)
-: innerEnumValue(o.innerEnumValue),
-  nameValue(o.nameValue),
-  ordinalValue(o.ordinalValue),
-  name(o.name) {}
+EventType::EventType(const std::string& name) : mName(name) {}
 
 const std::string& EventType::getName() const
 {
-    return name;
+    return mName;
 }
 
 bool EventType::operator==(const EventType& other) const
 {
-    return this->ordinalValue == other.ordinalValue;
+    return mName == other.mName;
 }
 
 bool EventType::operator!=(const EventType& other) const
 {
-    return this->ordinalValue != other.ordinalValue;
+    return !(*this == other);
 }
 
-std::vector<EventType> EventType::values()
+const EventType& EventType::valueOf(const std::string& name)
 {
-    return valueList;
+    if (name == TIMEOUT_ERROR.mName)
+        return TIMEOUT_ERROR;
+    else if (name == SE_INSERTED.mName)
+        return SE_INSERTED;
+    else if (name == SE_MATCHED.mName)
+        return SE_MATCHED;
+    else if (name == SE_REMOVED.mName)
+        return SE_REMOVED;
+    else
+        throw IllegalArgumentException("No event named " + name);
 }
 
-int EventType::ordinal()
+std::ostream& operator<<(std::ostream& os, const EventType& et)
 {
-    return ordinalValue;
-}
+    os << "EVENTTYPE: {"
+       << "NAME = " << et.mName
+       << "}";
 
-std::string EventType::toString()
-{
-    return nameValue;
-}
-
-EventType EventType::valueOf(const std::string& name)
-{
-    for (auto enumInstance : EventType::valueList) {
-        if (enumInstance.nameValue == name)
-            return enumInstance;
-    }
-
-    /* Should not end up here */
-    return EventType::TIMEOUT_ERROR;
+    return os;
 }
 
 /* READER EVENT --------------------------------------------------------------------------------- */
@@ -139,27 +117,6 @@ const std::shared_ptr<ReaderPlugin> ReaderEvent::getPlugin() const
 const std::shared_ptr<SeReader> ReaderEvent::getReader() const
 {
     return getPlugin()->getReader(mReaderName);
-}
-
-std::ostream& operator<<(std::ostream& os, const ReaderEvent::EventType& et)
-{
-    std::string value;
-
-    if (et == ReaderEvent::EventType::TIMEOUT_ERROR)
-        value = "TIMEOUT_ERROR";
-    else if (et == ReaderEvent::EventType::SE_INSERTED)
-        value = "SE_INSERTED";
-    else if (et == ReaderEvent::EventType::SE_MATCHED)
-        value = "SE_MATCHED";
-    else if (et == ReaderEvent::EventType::SE_REMOVED)
-        value = "SE_REMOVED";
-
-    os << "EVENTTYPE: {"
-       << "NAME = " << et.name << ", "
-       << "VALUE = " << value << ", "
-       << "ORDINAL = " << et.ordinalValue << "}";
-
-    return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const ReaderEvent& re)
