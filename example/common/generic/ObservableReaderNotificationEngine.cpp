@@ -34,6 +34,7 @@ using namespace keyple::core::seproxy::exception;
 using PollingMode = ObservableReader::PollingMode;
 using SpecificReaderObserver = ObservableReaderNotificationEngine::SpecificReaderObserver;
 using SpecificPluginObserver = ObservableReaderNotificationEngine::SpecificPluginObserver;
+using EventType = ReaderEvent::EventType;
 
 /* OBSERVABLE READER NOTIFICATION ENGINE -------------------------------------------------------- */
 
@@ -69,8 +70,8 @@ SpecificReaderObserver::SpecificReaderObserver() : ObservableReader::ReaderObser
 void ObservableReaderNotificationEngine::SpecificReaderObserver::update(
     const std::shared_ptr<ReaderEvent> event)
 {
-    switch (event->getEventType().innerEnumValue) {
-    case ReaderEvent::EventType::InnerEnum::SE_MATCHED:
+    const EventType& type = event->getEventType();
+    if (type == EventType::SE_MATCHED) {
         /*
          * Informs the underliying later of the end of the SE processing, in order to manage the
          * removal sequence.
@@ -84,12 +85,9 @@ void ObservableReaderNotificationEngine::SpecificReaderObserver::update(
         } catch (KeyplePluginNotFoundException& e) {
             mLogger->debug("update - KeyplePluginNotFoundException: %\n", e);
         }
-        break;
-
-    case ReaderEvent::EventType::InnerEnum::SE_INSERTED:
+    } else if (type == EventType::SE_INSERTED) {
         /* End of the SE processing is automatically done */
-        break;
-    default:
+    } else {
         mLogger->debug("unhandled case %\n", event->getEventType());
     }
 
