@@ -64,7 +64,7 @@ bool SamIdentifier::matches(const std::shared_ptr<SamIdentifier> samIdentifier)
     }
 
     if (samIdentifier->getSerialNumber() != "") {
-        Pattern* p = Pattern::compile(samIdentifier->getSerialNumber());
+        std::unique_ptr<Pattern> p = Pattern::compile(samIdentifier->getSerialNumber());
         if (!p->matcher(mSerialNumber)->matches())
             return false;
     }

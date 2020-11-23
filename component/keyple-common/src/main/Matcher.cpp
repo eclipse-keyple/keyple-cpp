@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <stdio.h>
 #include <sstream>
@@ -23,19 +22,19 @@
 namespace keyple {
 namespace common {
 
-Matcher::Matcher(Pattern* parent, const std::string& text)
-: parentPattern(parent), text(text)
+Matcher::Matcher(const Pattern* parent, const std::string& text)
+: mParentPattern(parent), mText(text)
 {
     /* Put fields to initial states */
     reset();
 }
 
-bool Matcher::match(int from, int anchor)
+bool Matcher::match(const int from, const int anchor) const
 {
     (void)from;
     (void)anchor;
 
-    if (std::regex_search(text, parentPattern->pattern))
+    if (std::regex_search(mText, mParentPattern->mPattern))
         return true;
 
     return false;
@@ -46,19 +45,19 @@ bool Matcher::matches()
     return match(mFrom, ENDANCHOR);
 }
 
-std::string Matcher::replaceAll(std::string replacement)
+std::string Matcher::replaceAll(const std::string& replacement) const
 {
    std::stringstream ss;
 
-   ss << std::regex_replace(text, parentPattern->pattern, replacement);
+   ss << std::regex_replace(mText, mParentPattern->mPattern, replacement);
 
    return ss.str();
 }
 
 bool Matcher::find()
 {
-    int nextSearchIndex = last;
-    if (nextSearchIndex == first)
+    int nextSearchIndex = mLast;
+    if (nextSearchIndex == mFirst)
         nextSearchIndex++;
 
     /* If next search starts before region, start it at region */
@@ -75,7 +74,7 @@ bool Matcher::find()
     return search(nextSearchIndex);
 }
 
-bool Matcher::find(int start)
+bool Matcher::find(const int start)
 {
     int limit = getTextLength();
 
@@ -87,46 +86,46 @@ bool Matcher::find(int start)
     return search(start);
 }
 
-std::string Matcher::group(int group)
+const std::string Matcher::group(const int group) const
 {
-    if (group < 0 || group > (int)groups.size())
+    if (group < 0 || group > (int)mGroups.size())
         throw IndexOutOfBoundsException("No group" + std::to_string(group));
 
-    return groups[group];
+    return mGroups[group];
 }
 
-std::string Matcher::group()
+const std::string Matcher::group() const
 {
     return group(0);
 }
 
-bool Matcher::search(int from)
+bool Matcher::search(const int from)
 {
-    subs = text.substr(from, text.length() - from);
+    mSubs = mText.substr(from, mText.length() - from);
 
-    if (std::regex_search(subs, groups, parentPattern->pattern))
+    if (std::regex_search(mSubs, mGroups, mParentPattern->mPattern))
         return true;
 
     return false;
 }
 
-int Matcher::getTextLength()
+int Matcher::getTextLength() const
 {
-    return text.length();
+    return mText.length();
 }
 
 Matcher* Matcher::reset()
 {
-    first   = -1;
-    last    = 0;
-    oldLast = -1;
+    mFirst   = -1;
+    mLast    = 0;
+    mOldLast = -1;
 
-    for (int i = 0; i < (int)groups.size(); i++)
+    for (int i = 0; i < (int)mGroups.size(); i++)
         ; //groups[i] = -1;
-    for (int i = 0; i < (int)locals.size(); i++)
-        locals[i] = -1;
+    for (int i = 0; i < (int)mLocals.size(); i++)
+        mLocals[i] = -1;
 
-    lastAppendPosition = 0;
+    mLastAppendPosition = 0;
     mFrom = 0;
     mTo = getTextLength();
 
