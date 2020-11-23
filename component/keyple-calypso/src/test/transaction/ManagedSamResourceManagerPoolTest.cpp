@@ -115,7 +115,7 @@ public:
 
 private:
     const std::string mName = "seRader";
-    const std::map<const std::string, const std::string> mParameters;
+    const std::map<const std::string, const std::string> mParameters = {};
 };
 
 class MSRMP_ReaderPoolPluginMock : public ReaderPoolPlugin {
@@ -172,7 +172,7 @@ public:
 
 private:
     const std::string mName = "seRader";
-    const std::map<const std::string, const std::string> mParameters;
+    const std::map<const std::string, const std::string> mParameters = {};
 };
 
 class MSRMP_SamResourceManagerPoolMock : public SamResourceManagerPool {
