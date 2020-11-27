@@ -136,7 +136,7 @@ bool PcscTerminal::isCardPresent(bool release)
         establishContext();
     } catch (PcscTerminalException& e) {
         mLogger->error("isCardPresent - caught PcscTerminalException %\n", e);
-        throw e;
+        throw;
     }
 
     DWORD protocol;
@@ -181,7 +181,7 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
         establishContext();
     } catch (PcscTerminalException& e) {
         mLogger->error("openAndConnect - caught PcscTerminalException %\n", e);
-        throw e;
+        throw;
     }
 
     if (!protocol.compare("*")) {

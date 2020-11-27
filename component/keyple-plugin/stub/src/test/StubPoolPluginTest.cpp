@@ -131,7 +131,6 @@ TEST(StubPoolPluginTest, allocate_twice)
 
     EXPECT_THROW(stubPoolPlugin->allocateReader("group1"),
                  KeypleAllocationNoReaderException);
-
 }
 
 /* Release one reader */

@@ -86,7 +86,7 @@ public:
      * @throw IllegalArgumentException if object is null or empty
      * @since 0.9
      */
-    const KeypleAssert& notEmpty(const std::vector<uint8_t> obj,  const std::string& name) const;
+    const KeypleAssert& notEmpty(const std::vector<uint8_t>& obj,  const std::string& name) const;
 
     /**
      * Assert that a condition is true.

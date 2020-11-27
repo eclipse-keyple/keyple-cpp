@@ -52,7 +52,7 @@ public:
         /**
          *
          */
-        ReaderObserver(SamResourceManagerDefault& parent);
+        explicit ReaderObserver(SamResourceManagerDefault& parent);
 
         /**
          * Handle {@link ReaderEvent}
@@ -144,7 +144,7 @@ public:
         const std::shared_ptr<SamIdentifier> samIdentifier) override;
 
     /**
-     *
+     * C++: not used...
      */
     void freeSamResource(const SeResource<CalypsoSam>& samResource) override;
 

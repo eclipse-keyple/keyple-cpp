@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -35,12 +34,10 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::plugin;
 
 /**
- * This plugin allows to simulate Secure Element communication by creating
- * @{@link StubReaderImpl} and @{@link StubSecureElement}. Plug a new StubReader
- * with StubPlugin#plugStubReader and insert an implementation of your own of
- * {@link StubSecureElement} to start simulation communication. This class is a
- * singleton, use StubPlugin#getInstance to access it
- *
+ * This plugin allows to simulate Secure Element communication by creating @{@link StubReaderImpl}
+ * and @{@link StubSecureElement}. Plug a new StubReader with StubPlugin#plugStubReader and insert
+ * an implementation of your own of {@link StubSecureElement} to start simulation communication.
+ * This class is a singleton, use StubPlugin#getInstance to access it
  */
 class StubPluginImpl
 : public AbstractThreadedObservablePlugin, public StubPlugin {
@@ -52,7 +49,7 @@ public:
      *
      * @param pluginName : custom name for the plugin
      */
-    StubPluginImpl(const std::string& pluginName);
+    explicit StubPluginImpl(const std::string& pluginName);
 
     /**
      * Gets the single instance of StubPlugin.
@@ -102,8 +99,8 @@ public:
         override;
 
     /**
-     * Fetch the list of connected native reader (from a simulated list) and
-     * returns their names (or id)
+     * Fetch the list of connected native reader (from a simulated list) and returns their names (or
+     * id)
      *
      * @return connected readers' name list
      */
@@ -132,7 +129,7 @@ protected:
      * current reader if it is already listed. Creates and returns a new reader
      * if not.
      *
-     * Throws an exception if the wanted reader is not found.
+     * Throw an exception if the wanted reader is not found.
      *
      * @param readerName name of the reader
      * @return the reader object

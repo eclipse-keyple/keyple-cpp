@@ -37,7 +37,7 @@ class AOLR_AbstractDefaultSelectionsRequestMock
 : public AbstractDefaultSelectionsRequest {
 public:
     AOLR_AbstractDefaultSelectionsRequestMock(
-      std::vector<std::shared_ptr<SeRequest>> selectionSeRequests,
+      const std::vector<std::shared_ptr<SeRequest>>& selectionSeRequests,
       const MultiSeRequestProcessing& multiSeRequestProcessing,
       const ChannelControl& channelControl)
     : AbstractDefaultSelectionsRequest(selectionSeRequests,

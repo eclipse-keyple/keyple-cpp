@@ -102,17 +102,17 @@ std::string NotificationMode::toString()
 
 NotificationMode NotificationMode::valueOf(const std::string& name)
 {
-    for (auto enumInstance : NotificationMode::valueList) {
-        if (enumInstance.nameValue == name) {
-            return enumInstance;
-        }
-    }
+    const auto& it = std::find_if(NotificationMode::valueList.begin(),
+                                  NotificationMode::valueList.end(),
+                                  [name](const NotificationMode& mode) {return name == mode.nameValue;});
 
-    return NotificationMode::ALWAYS;
+    if (it != NotificationMode::valueList.end())
+        return *it;
+    else
+        return NotificationMode::ALWAYS;
 }
 
-std::ostream& operator<<(std::ostream& os,
-                         const ObservableReader::PollingMode& pm)
+std::ostream& operator<<(std::ostream& os, const ObservableReader::PollingMode& pm)
 {
     switch (pm) {
     case ObservableReader::PollingMode::REPEATING:

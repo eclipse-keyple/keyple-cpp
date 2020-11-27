@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <map>
 
@@ -29,8 +28,7 @@ using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
 class AARP_AbstractApduResponseParserMock : public AbstractApduResponseParser {
 public:
-    AARP_AbstractApduResponseParserMock(
-        const std::shared_ptr<ApduResponse>& response)
+    explicit AARP_AbstractApduResponseParserMock(const std::shared_ptr<ApduResponse>& response)
     : AbstractApduResponseParser(response, nullptr) {}
 
     const std::map<int, std::shared_ptr<StatusProperties>>&

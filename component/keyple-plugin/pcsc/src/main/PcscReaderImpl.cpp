@@ -51,14 +51,12 @@ const std::string PcscReaderImpl::PROTOCOL_ANY  = "T=0";
 
 PcscReaderImpl::PcscReaderImpl(const std::string& pluginName, const PcscTerminal& terminal)
 : AbstractObservableLocalReader(pluginName, terminal.getName()),
-  mLoopWaitSeRemoval(true),
+  mLoopWaitSe(false),
+  mLoopWaitSeRemoval(false),
+  mExecutorService(std::make_shared<MonitoringPool>()),
   mTerminal(terminal),
   mTransmissionMode(TransmissionMode::NONE)
 {
-    mLoopWaitSe = false;
-    mLoopWaitSeRemoval = false;
-
-    mExecutorService = std::make_shared<MonitoringPool>();
     mStateService    = initStateService();
 
     mLogger->debug("[PcscReaderImpl] constructor => using terminal %\n", terminal.getName());
@@ -174,7 +172,6 @@ bool PcscReaderImpl::waitForCardPresent()
             } catch (const InterruptedException& e) {
                 mLogger->debug("Sleep was interrupted - %\n", e);
             }
-
         }
 
         mLogger->trace("[%] mLoopWaitSe=false, leaving\n", getName());

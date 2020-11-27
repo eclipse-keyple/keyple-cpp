@@ -35,7 +35,7 @@ public:
      *
      * @param name the name of the component
      */
-    AbstractSeProxyComponent(const std::string& name);
+    explicit AbstractSeProxyComponent(const std::string& name);
 
     /**
      *

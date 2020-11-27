@@ -54,7 +54,7 @@ TEST(DigestAuthenticateCmdBuildTest,
             std::make_shared<ApduResponse>(
                 ByteArrayUtil::fromHex(SW1SW2_OK), nullptr));
 
-    auto& instance = *digestAuthenticateRespPars.get();
+    const auto& instance = *digestAuthenticateRespPars.get();
 
     ASSERT_EQ(typeid(instance), typeid(DigestAuthenticateRespPars));
 }

@@ -41,8 +41,8 @@ std::shared_ptr<ManagedSamResource> SamResourceManager::createSamResource(
     SeSelection samSelection;
 
     /* Prepare selector */
-    auto samIdentifier = SamIdentifier::builder()->samRevision(SamRevision::AUTO).build();
-    auto seSelector = SamSelector::builder()->samIdentifier(samIdentifier).build();
+    auto identifier = SamIdentifier::builder()->samRevision(SamRevision::AUTO).build();
+    auto seSelector = SamSelector::builder()->samIdentifier(identifier).build();
     auto samSelector = std::dynamic_pointer_cast<SamSelector>(seSelector);
     auto request = std::make_shared<SamSelectionRequest>(samSelector);
     auto selection = std::reinterpret_pointer_cast

@@ -34,7 +34,7 @@ using namespace keyple::plugin::stub;
 
 class SP_PluginObserverMock final : public ObservablePlugin::PluginObserver {
 public:
-    SP_PluginObserverMock(const std::string& readerName)
+    explicit SP_PluginObserverMock(const std::string& readerName)
     : mReaderConnected(1), mReaderName(readerName) {}
 
     void update(std::shared_ptr<PluginEvent> event) override

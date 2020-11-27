@@ -85,7 +85,7 @@ protected:
      * @param name name of the plugin
      * @throw KeypleReaderException when an issue is raised with reader
      */
-    AbstractObservablePlugin(const std::string& name);
+    explicit AbstractObservablePlugin(const std::string& name);
 
     /**
      *

@@ -55,7 +55,7 @@ TEST(SelectDiversifierCmdBuildTest,
             std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(SW1SW2_OK),
                                            nullptr));
 
-    auto& instance = *selectDiversifierRespPars.get();
+    const auto& instance = *selectDiversifierRespPars.get();
 
     ASSERT_EQ(typeid(instance), typeid(SelectDiversifierRespPars));
 }

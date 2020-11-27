@@ -102,7 +102,7 @@ std::shared_ptr<SeResource<CalypsoSam>> SamResourceManagerPool::allocateSamResou
                      */
                     //Thread::currentThread()->interrupt();
                     mLogger->error("Interrupt exception in Thread::sleep\n");
-                    throw e;
+                    throw;
                 }
 
                 if (System::currentTimeMillis() >=

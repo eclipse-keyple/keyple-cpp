@@ -39,7 +39,7 @@ public:
     /**
      *
      */
-    PcscTerminal(const std::string& name);
+    explicit PcscTerminal(const std::string& name);
 
     /**
      *

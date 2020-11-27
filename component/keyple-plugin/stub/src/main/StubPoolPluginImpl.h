@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -33,10 +32,9 @@ namespace plugin {
 namespace stub {
 
 /**
- * Simulates a @{@link ReaderPoolPlugin} with {@link StubReaderImpl} and {@link
- * StubSecureElement} Manages allocation readers by group reference,
- * Limitations : - each group can contain only one StubReader thus one
- * StubSecureElement This class uses internally @{@link StubPluginImpl} which is
+ * Simulates a @{@link ReaderPoolPlugin} with {@link StubReaderImpl} and {@link StubSecureElement}
+ * Manages allocation readers by group reference, Limitations : - each group can contain only one
+ * StubReader thus one StubSecureElement This class uses internally @{@link StubPluginImpl} which is
  * a singleton.
  */
 class StubPoolPluginImpl : public StubPoolPlugin {
@@ -59,7 +57,7 @@ public:
     /**
      *
      */
-    StubPoolPluginImpl(const std::string& pluginName);
+    explicit StubPoolPluginImpl(const std::string& pluginName);
 
     /**
      *
@@ -86,16 +84,14 @@ public:
     /**
      * Allocate a reader if available by groupReference
      *
-     * @param groupReference the reference of the group to which the reader
-     *        belongs (may be null depending on the implementation made)
+     * @param groupReference the reference of the group to which the reader belongs (may be null
+     *        depending on the implementation made)
      * @return seReader if available, null otherwise
-     * @throw KeypleAllocationReaderException if the allocation failed due to a
-     *        technical error
-     * @throw KeypleAllocationNoReaderException if the allocation failed due to
-     *        lack of available reader
+     * @throw KeypleAllocationReaderException if the allocation failed due to a technical error
+     * @throw KeypleAllocationNoReaderException if the allocation failed due to lack of available
+     *        reader
      */
-    std::shared_ptr<SeReader> allocateReader(const std::string& groupReference)
-        override;
+    std::shared_ptr<SeReader> allocateReader(const std::string& groupReference) override;
 
     /**
      * Release a reader
@@ -107,8 +103,7 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string>&
-        listAllocatedReaders();
+    const std::map<const std::string, const std::string>& listAllocatedReaders();
 
     /*
      * Delegate methods to embedded stub plugin
@@ -122,8 +117,7 @@ public:
     /**
      *
      */
-    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& getReaders()
-        override;
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& getReaders() override;
 
     /**
      *
@@ -133,21 +127,17 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string>& getParameters() const
-        override;
+    const std::map<const std::string, const std::string>& getParameters() const override;
 
     /**
      *
      */
-    void setParameter(const std::string& key, const std::string& value)
-        override;
+    void setParameter(const std::string& key, const std::string& value) override;
 
     /**
      *
      */
-    void setParameters(
-        const std::map<const std::string, const std::string>& parameters)
-        override;
+    void setParameters(const std::map<const std::string, const std::string>& parameters) override;
 };
 
 }

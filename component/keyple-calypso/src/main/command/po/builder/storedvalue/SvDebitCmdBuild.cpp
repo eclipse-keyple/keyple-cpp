@@ -34,8 +34,8 @@ SvDebitCmdBuild::SvDebitCmdBuild(const PoClass& poClass,
                                  const PoRevision& poRevision,
                                  const int amount,
                                  const uint8_t kvc,
-                                 const std::vector<uint8_t> date,
-                                 const std::vector<uint8_t> time)
+                                 const std::vector<uint8_t>& date,
+                                 const std::vector<uint8_t>& time)
 : AbstractPoCommandBuilder<SvDebitRespPars>(
       std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::SV_DEBIT), nullptr),
   mPoClass(poClass),
@@ -70,7 +70,7 @@ SvDebitCmdBuild::SvDebitCmdBuild(const PoClass& poClass,
     // dataIn[8]..dataIn[8+7+sigLen] will be filled in at the finalization phase.
 }
 
-void SvDebitCmdBuild::finalizeBuilder(const std::vector<uint8_t> debitComplementaryData)
+void SvDebitCmdBuild::finalizeBuilder(const std::vector<uint8_t>& debitComplementaryData)
 {
     if ((mPoRevision == PoRevision::REV3_2 && debitComplementaryData.size() != 20) ||
         (mPoRevision != PoRevision::REV3_2 && debitComplementaryData.size() != 15))

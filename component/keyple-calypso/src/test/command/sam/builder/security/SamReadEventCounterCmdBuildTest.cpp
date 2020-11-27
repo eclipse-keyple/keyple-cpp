@@ -64,7 +64,7 @@ TEST(SamReadEventCounterCmdBuildTest,
             std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(SW1SW2_OK),
                                                                   nullptr));
 
-    auto& instance = *samReadEventCounterRespPars.get();
+    const auto& instance = *samReadEventCounterRespPars.get();
 
     ASSERT_EQ(typeid(instance), typeid(SamReadEventCounterRespPars));
 }

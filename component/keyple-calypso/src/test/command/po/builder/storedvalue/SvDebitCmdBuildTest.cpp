@@ -202,7 +202,7 @@ TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_compat_response_parser)
                                     0xAA, /* KVC */
                                     ByteArrayUtil::fromHex("1122"), /* Date */
                                     ByteArrayUtil::fromHex("3344")); /* Time */
-    const std::vector<uint8_t> svDebitData = svDebitCmdBuild.getSvDebitData();
+    //const std::vector<uint8_t> svDebitData = svDebitCmdBuild.getSvDebitData();
     svDebitCmdBuild.finalizeBuilder(ByteArrayUtil::fromHex("AABBCCDD5566771234561122334455"));
     auto apdu = std::make_shared<ApduResponse>(ByteArrayUtil::fromHex("1122339000"), nullptr);
     std::shared_ptr<SvDebitRespPars> svBuildCmdParser = svDebitCmdBuild.createResponseParser(apdu);
@@ -380,7 +380,7 @@ TEST(SvDebitCmdBuildTest, svDebitCmdBuild_mode_rev3_2_response_parser)
                                     0xAA, /* KVC */
                                     ByteArrayUtil::fromHex("1122"), /* Date */
                                     ByteArrayUtil::fromHex("3344")); /* Time */
-    const std::vector<uint8_t> svDebitData = svDebitCmdBuild.getSvDebitData();
+    //const std::vector<uint8_t> svDebitData = svDebitCmdBuild.getSvDebitData();
     svDebitCmdBuild.finalizeBuilder(
         ByteArrayUtil::fromHex("AABBCCDD55667712345611223344556677889900"));
     auto apdu = std::make_shared<ApduResponse>(ByteArrayUtil::fromHex("1122334455669000"), nullptr);

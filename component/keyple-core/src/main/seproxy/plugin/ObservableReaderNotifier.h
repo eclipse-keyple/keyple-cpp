@@ -34,10 +34,7 @@ public:
     /**
      *
      */
-    ObservableReaderNotifier()
-    {
-        mShuttingDown = false;
-    }
+    ObservableReaderNotifier() : mShuttingDown(false) {}
 
     /**
      *

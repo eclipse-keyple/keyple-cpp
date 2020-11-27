@@ -37,8 +37,8 @@ using AbstractSamCommandResponse = AbstractSamCommandBuilder<AbstractSamResponse
 SamSelectionRequest::SamSelectionRequest(std::shared_ptr<SamSelector> samSelector)
 : AbstractSeSelectionRequest<AbstractSamCommandBuilder<AbstractSamResponseParser>>(samSelector)
 {
-    const std::vector<uint8_t> unlockData = samSelector->getUnlockData();
-    if (!unlockData.empty()) {
+    const std::vector<uint8_t> data = samSelector->getUnlockData();
+    if (!data.empty()) {
         /*
          * A unlock data value has been set, let's add the unlock command to be executed
          * following the selection

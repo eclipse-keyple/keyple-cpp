@@ -95,7 +95,7 @@ protected:
      * @throw KeypleReaderIOException if the communication with the reader or
      *        the SE has failed
      */
-    AbstractThreadedObservablePlugin(const std::string& name);
+    explicit AbstractThreadedObservablePlugin(const std::string& name);
 
     /**
      * Fetch the list of connected native reader (usually from third party
@@ -132,7 +132,7 @@ protected:
 
     /**
      * Called when the class is unloaded. Attempt to do a clean exit.
-     * 
+     *
      * C++ vs. Java: replaced by destructor
      *
      * @throws Throwable a generic exception

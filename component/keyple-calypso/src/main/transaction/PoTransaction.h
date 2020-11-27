@@ -578,9 +578,9 @@ public:
      *         PO.
      */
     void prepareSvReload(const int amount,
-                         const std::vector<uint8_t> date,
-                         const std::vector<uint8_t> time,
-                         const std::vector<uint8_t> free);
+                         const std::vector<uint8_t>& date,
+                         const std::vector<uint8_t>& time,
+                         const std::vector<uint8_t>& free);
 
     /**
      * Prepares an SV reload (increasing the current SV balance)
@@ -607,8 +607,8 @@ public:
      * @param time 2-byte free value
      */
     void prepareSvDebit(const int amount,
-                        const std::vector<uint8_t> date,
-                        const std::vector<uint8_t> time);
+                        const std::vector<uint8_t>& date,
+                        const std::vector<uint8_t>& time);
 
     /**
      * Prepares an SV debit or Undebit (partially or totally cancels the last SV debit command).
@@ -1089,8 +1089,8 @@ private:
      * @param time 2-byte free value
      */
     void prepareSvDebitPriv(const int amount,
-                            const std::vector<uint8_t> date,
-                            const std::vector<uint8_t> time);
+                            const std::vector<uint8_t>& date,
+                            const std::vector<uint8_t>& time);
 
     /**
      * Prepares an SV Undebit (partially or totally cancels the last SV debit command).
@@ -1103,8 +1103,8 @@ private:
      * @param time 2-byte free value
      */
     void prepareSvUndebitPriv(const int amount,
-                              const std::vector<uint8_t> date,
-                              const std::vector<uint8_t> time);
+                              const std::vector<uint8_t>& date,
+                              const std::vector<uint8_t>& time);
 };
 
 using Operation = PoTransaction::SvSettings::Operation;

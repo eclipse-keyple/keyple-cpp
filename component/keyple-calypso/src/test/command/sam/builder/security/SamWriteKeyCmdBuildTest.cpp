@@ -69,7 +69,7 @@ TEST(SamWriteKeyCmdBuildTest, samWriteKeyCmdBuild_defaultRevision_createParser)
             std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(SW1SW2_OK),
                                            nullptr));
 
-    auto& instance = *samWriteKeyRespPars.get();
+    const auto& instance = *samWriteKeyRespPars.get();
 
     ASSERT_EQ(typeid(instance), typeid(SamWriteKeyRespPars));
 }

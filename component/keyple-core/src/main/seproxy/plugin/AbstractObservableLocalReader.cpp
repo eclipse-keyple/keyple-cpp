@@ -63,7 +63,7 @@ void AbstractObservableLocalReader::stopSeDetection()
 
 void AbstractObservableLocalReader::setDefaultSelectionRequest(
     std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
-    const ObservableReader::NotificationMode notificationMode)
+    const ObservableReader::NotificationMode& notificationMode)
 {
     mDefaultSelectionsRequest =
         std::dynamic_pointer_cast<DefaultSelectionsRequest>(defaultSelectionsRequest);
@@ -72,7 +72,7 @@ void AbstractObservableLocalReader::setDefaultSelectionRequest(
 
 void AbstractObservableLocalReader::setDefaultSelectionRequest(
     std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
-    const ObservableReader::NotificationMode notificationMode,
+    const ObservableReader::NotificationMode& notificationMode,
     const ObservableReader::PollingMode pollingMode)
 {
     /* Define the default selection request */
@@ -106,14 +106,14 @@ std::shared_ptr<ReaderEvent> AbstractObservableLocalReader::processSeInserted()
          * A default request is defined, send it and notify according to the
          * notification mode and the selection status
          */
-        bool aSeMatched = false;
-
         try {
             std::vector<std::shared_ptr<SeResponse>> seResponses =
                 transmitSeRequests(
                     mDefaultSelectionsRequest->getSelectionSeRequests(),
                     mDefaultSelectionsRequest->getMultiSeRequestProcessing(),
                     mDefaultSelectionsRequest->getChannelControl());
+
+            bool aSeMatched = false;
 
             for (auto seResponse : seResponses) {
                 if (seResponse != nullptr && seResponse->getSelectionStatus()->hasMatched()) {

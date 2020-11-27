@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "FileHeader.h"
 
@@ -27,7 +26,7 @@ namespace transaction {
 using FileHeaderBuilder = FileHeader::FileHeaderBuilder;
 using FileType = FileHeader::FileType;
 
-/* FILE HEADER -------------------------------------------------------------- */
+/* FILE HEADER ---------------------------------------------------------------------------------- */
 
 FileHeader::FileHeader(FileHeaderBuilder* builder)
 : mLid(builder->mLid),
@@ -119,7 +118,7 @@ std::ostream& operator<<(std::ostream& os, const FileHeader& fh)
     return os;
 }
 
-/* FILE HEADER BUILDER ------------------------------------------------------ */
+/* FILE HEADER BUILDER -------------------------------------------------------------------------- */
 
 FileHeaderBuilder::FileHeaderBuilder()
 : mShared(false) {}
@@ -148,15 +147,13 @@ FileHeaderBuilder& FileHeaderBuilder::type(const FileType type)
     return *this;
 }
 
-FileHeaderBuilder& FileHeaderBuilder::accessConditions(
-    const std::vector<uint8_t>& accessConditions)
+FileHeaderBuilder& FileHeaderBuilder::accessConditions(const std::vector<uint8_t>& accessConditions)
 {
     mAccessConditions = accessConditions;
     return *this;
 }
 
-FileHeaderBuilder& FileHeaderBuilder::keyIndexes(
-    const std::vector<uint8_t> keyIndexes)
+FileHeaderBuilder& FileHeaderBuilder::keyIndexes(const std::vector<uint8_t>& keyIndexes)
 {
     mKeyIndexes = keyIndexes;
     return *this;
@@ -168,8 +165,7 @@ FileHeaderBuilder& FileHeaderBuilder::dfStatus(const uint8_t dfStatus)
     return *this;
 }
 
-FileHeaderBuilder& FileHeaderBuilder::sharedReference(
-    const uint16_t sharedReference)
+FileHeaderBuilder& FileHeaderBuilder::sharedReference(const uint16_t sharedReference)
 {
     mSharedReference = sharedReference;
     return *this;
@@ -180,7 +176,7 @@ std::unique_ptr<FileHeader> FileHeaderBuilder::build()
     return std::unique_ptr<FileHeader>(new FileHeader(this));
 }
 
-/* FILE TYPE ---------------------------------------------------------------- */
+/* FILE TYPE ------------------------------------------------------------------------------------ */
 
 std::ostream& operator<<(std::ostream& os, const FileType ft)
 {
