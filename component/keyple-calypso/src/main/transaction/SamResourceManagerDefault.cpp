@@ -168,7 +168,7 @@ std::shared_ptr<SeResource<CalypsoSam>>
                  */
                 //Thread::currentThread()->interrupt();
                 mLogger->error("Interrupt exception in Thread::sleep\n");
-                throw e;
+                throw;
             }
 
             if (System::currentTimeMillis() >=

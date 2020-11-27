@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -51,7 +50,7 @@ public:
      *
      * @param value the value to be represeneed by the Integer object
      */
-    Integer(int value)
+    explicit Integer(int value)
     {
         this->value = value;
     }
@@ -112,7 +111,7 @@ public:
      * @throws NumberFormatException if <code>s</code> cannot be parsed as an
      *         <code>int</code>
      */
-    static int parseInt(std::string str, int radix)
+    static int parseInt(const std::string& str, const int radix)
     {
         return parseInt(str, radix, false);
     }
@@ -124,14 +123,14 @@ public:
      * @param radix the radix to use, must be 10 if decode is true
      * @param decode if called from decode
      * @return the parsed int value
-     * @throws NumberFormatException if there is an error
-     * @throws NullPointerException if decode is true and str if null
+     * @throw NumberFormatException if there is an error
+     * @throw NullPointerException if decode is true and str if null
      * @see #parseInt(String, int)
      * @see #decode(String)
      * @see Byte#parseByte(String, int)
      * @see Short#parseShort(String, int)
      */
-    static int parseInt(std::string str, int radix, bool decode)
+    static int parseInt(const std::string& str, int radix, const bool decode)
     {
         if (!decode && str.empty())
             throw new NumberFormatException();

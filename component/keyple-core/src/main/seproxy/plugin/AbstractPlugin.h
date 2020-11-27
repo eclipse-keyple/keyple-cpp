@@ -88,7 +88,7 @@ protected:
      * @param name name of the plugin
      * @throw KeypleReaderException when an issue is raised with reader
      */
-    AbstractPlugin(const std::string& name);
+    explicit AbstractPlugin(const std::string& name);
 
     /**
      *

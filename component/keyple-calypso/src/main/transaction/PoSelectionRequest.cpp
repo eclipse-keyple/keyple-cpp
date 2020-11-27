@@ -66,7 +66,7 @@ void PoSelectionRequest::prepareReadRecordFile(const uint8_t sfi,
             AbstractPoCommandBuilder<AbstractPoResponseParser>>(rr));
 }
 
-void PoSelectionRequest::prepareSelectFile(const std::vector<uint8_t> lid)
+void PoSelectionRequest::prepareSelectFile(const std::vector<uint8_t>& lid)
 {
     std::shared_ptr<SelectFileCmdBuild> sf =
         CalypsoPoUtils::prepareSelectFile(mPoClass, lid);

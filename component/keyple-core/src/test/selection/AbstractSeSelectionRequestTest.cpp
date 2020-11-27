@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -36,15 +35,13 @@ class ASSR_MatchingSeMock final : public AbstractMatchingSe {
 public:
     ASSR_MatchingSeMock(std::shared_ptr<SeResponse> selectionResponse,
                         TransmissionMode transmissionMode)
-    : AbstractMatchingSe(selectionResponse, transmissionMode)
-    {
-    }
+    : AbstractMatchingSe(selectionResponse, transmissionMode) {}
 };
 
 class ASSR_SeSelectionRequestMock final
 : public AbstractSeSelectionRequest<AbstractApduCommandBuilder> {
 public:
-    ASSR_SeSelectionRequestMock(std::shared_ptr<SeSelector> seSelector)
+    explicit ASSR_SeSelectionRequestMock(std::shared_ptr<SeSelector> seSelector)
     : AbstractSeSelectionRequest(seSelector) {}
 
 protected:
@@ -55,7 +52,7 @@ protected:
 class ASSR_CommandBuilderMock final : public AbstractApduCommandBuilder {
 public:
     ASSR_CommandBuilderMock(const std::shared_ptr<SeCommand> commandRef,
-                       const std::shared_ptr<ApduRequest> request)
+                            const std::shared_ptr<ApduRequest> request)
     : AbstractApduCommandBuilder(commandRef, request) {}
 
 };

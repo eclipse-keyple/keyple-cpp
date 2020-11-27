@@ -62,7 +62,7 @@ TEST(DigestUpdateCmdBuildTest,
             std::make_shared<ApduResponse>(
                 ByteArrayUtil::fromHex(SW1SW2_OK), nullptr));
 
-    auto& instance = *digestUpdateRespPars.get();
+    const auto& instance = *digestUpdateRespPars.get();
 
     ASSERT_EQ(typeid(instance), typeid(DigestUpdateRespPars));
 }

@@ -73,8 +73,7 @@ public:
      *
      * @param sfi the SFI of the EF to read
      * @param recordNumber the record number to read
-     * @throw IllegalArgumentException if one of the provided argument is out of
-     *        range
+     * @throw IllegalArgumentException if one of the provided argument is out of range
      */
     void prepareReadRecordFile(const uint8_t sfi, const uint8_t recordNumber);
 
@@ -82,17 +81,15 @@ public:
      * Prepare a select file ApduRequest to be executed following the selection.
      *
      * @param lid LID of the EF to select as a byte array
-     * @throw IllegalArgumentException if the argument is not an array of 2
-     *        bytes
+     * @throw IllegalArgumentException if the argument is not an array of 2 bytes
      */
-    void prepareSelectFile(const std::vector<uint8_t> lid);
+    void prepareSelectFile(const std::vector<uint8_t>& lid);
 
     /**
      * Prepare a select file ApduRequest to be executed following the selection.
      *
      * @param lid LID of the EF to select as a byte array
-     * @throw IllegalArgumentException if the argument is not an array of 2
-     *        bytes
+     * @throw IllegalArgumentException if the argument is not an array of 2 bytes
      */
     void prepareSelectFile(const uint16_t lid);
 
@@ -104,23 +101,22 @@ public:
     void prepareSelectFile(const SelectFileControl selectControl);
 
     /**
-     * Create a CalypsoPo object containing the selection data received from the
-     * plugin
+     * Create a CalypsoPo object containing the selection data received from the plugin
      *
      * C++ vs. Java: function is protected in Java
      *
      * @param seResponse the SE response received
      * @return a {@link CalypsoPo}
-     * @throw CalypsoDesynchronizedExchangesException if the number of responses
-     *        is different from the number of requests
+     * @throw CalypsoDesynchronizedExchangesException if the number of responses is different from
+     *        the number of requests
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
      *
      * Return type should be
      *   std::shared_ptr<CalypdoPo>
      * ... but invalid covariant return type
      */
-    const std::shared_ptr<AbstractMatchingSe> parse(
-        std::shared_ptr<SeResponse> seResponse) override;
+    const std::shared_ptr<AbstractMatchingSe> parse(std::shared_ptr<SeResponse> seResponse)
+        override;
 
 private:
     /**

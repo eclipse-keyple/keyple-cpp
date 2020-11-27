@@ -55,10 +55,7 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
 
     /* Buffer allocation */
     int length = 4; // header
-    if (dataIn.size() == 0) {
-        /* Case 1: 5-byte apdu, le=0 */
-        length += 1; // Le
-    } else if (dataIn.size() > 0) {
+    if (dataIn.size() > 0) {
         length += dataIn.size() + 1; // Lc + data
     }
 

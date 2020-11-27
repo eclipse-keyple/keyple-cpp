@@ -39,7 +39,7 @@ using namespace keyple::core::seproxy::protocol;
 
 class AP_AbstractPluginMock : public AbstractPlugin {
 public:
-    AP_AbstractPluginMock(const std::string& name) : AbstractPlugin(name) {}
+    explicit AP_AbstractPluginMock(const std::string& name) : AbstractPlugin(name) {}
 
     MOCK_METHOD((const std::map<const std::string, const std::string>&),
                 getParameters,

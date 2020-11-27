@@ -44,10 +44,7 @@ public:
     /**
      *
      */
-    AbstractMonitoringJob()
-    {
-        mRunning = false;
-    }
+    AbstractMonitoringJob() : mRunning(false) {}
 
     /**
      *

@@ -199,7 +199,7 @@ public:
      */
     void setDefaultSelectionRequest(
         std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
-        const ObservableReader::NotificationMode notificationMode) final;
+        const ObservableReader::NotificationMode& notificationMode) final;
 
     /**
      * A combination of defining the default selection request and starting the
@@ -216,7 +216,7 @@ public:
      */
     void setDefaultSelectionRequest(
         std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
-        const ObservableReader::NotificationMode notificationMode,
+        const ObservableReader::NotificationMode& notificationMode,
         const ObservableReader::PollingMode pollingMode) final;
 
     /**

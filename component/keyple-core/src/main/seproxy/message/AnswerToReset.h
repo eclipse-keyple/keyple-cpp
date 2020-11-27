@@ -36,13 +36,12 @@ using namespace keyple::common;
  * <p>
  * (May be enhanced to provide analysis methods)
  */
-class KEYPLECORE_API AnswerToReset
-: public std::enable_shared_from_this<AnswerToReset> {
+class KEYPLECORE_API AnswerToReset {
 public:
     /**
      *
      */
-    AnswerToReset(const std::vector<uint8_t>& atrBytes);
+    explicit AnswerToReset(const std::vector<uint8_t>& atrBytes);
 
     /**
      *

@@ -64,7 +64,7 @@ public:
     /**
      *
      */
-    AbstractSeSelectionRequest<T>(std::shared_ptr<SeSelector> seSelector)
+    explicit AbstractSeSelectionRequest<T>(std::shared_ptr<SeSelector> seSelector)
     : mSeSelector(seSelector) {}
 
     /**

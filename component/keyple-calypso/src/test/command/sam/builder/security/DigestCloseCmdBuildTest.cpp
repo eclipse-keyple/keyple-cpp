@@ -51,7 +51,7 @@ TEST(DigestCloseCmdBuild, digestCloseCmdBuild_defaultRevision_createParser)
             std::make_shared<ApduResponse>(
                 ByteArrayUtil::fromHex(SW1SW2_OK), nullptr));
 
-    auto& instance = *digestCloseRespPars.get();
+    const auto& instance = *digestCloseRespPars.get();
 
     ASSERT_EQ(typeid(instance), typeid(DigestCloseRespPars));
 }

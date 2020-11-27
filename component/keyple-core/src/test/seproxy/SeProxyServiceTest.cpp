@@ -37,7 +37,7 @@ using namespace keyple::core::seproxy::plugin;
 class SPS_AbstractThreadedObservablePluginMock
 : public AbstractThreadedObservablePlugin {
 public:
-    SPS_AbstractThreadedObservablePluginMock(const std::string& name)
+    explicit SPS_AbstractThreadedObservablePluginMock(const std::string& name)
     : AbstractThreadedObservablePlugin(name) {}
 
     MOCK_METHOD((const std::map<const std::string, const std::string>&),
@@ -92,7 +92,7 @@ public:
 
 class SPS_ObservablePluginFactoryMock : public PluginFactory {
 public:
-    SPS_ObservablePluginFactoryMock(const std::string& pluginName)
+    explicit SPS_ObservablePluginFactoryMock(const std::string& pluginName)
     : PluginFactory(), mPluginName(pluginName) {}
 
     const std::string& getPluginName() const override
@@ -125,7 +125,7 @@ TEST(SeProxyServiceTest, testGetVersion)
 
 TEST(SeProxyServiceTest, testFailingPlugin)
 {
-    auto plugin1 = std::make_shared<SPS_AbstractThreadedObservablePluginMock>(PLUGIN_NAME_1);
+    //auto plugin1 = std::make_shared<SPS_AbstractThreadedObservablePluginMock>(PLUGIN_NAME_1);
     auto factory1 = std::make_shared<SPS_PluginFactoryMock>();
 
     SeProxyService& proxyService = SeProxyService::getInstance();

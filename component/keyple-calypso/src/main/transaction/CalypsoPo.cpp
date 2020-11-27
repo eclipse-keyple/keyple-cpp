@@ -75,9 +75,6 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
 : AbstractMatchingSe(selectionResponse, transmissionMode),
   mIsDfRatified(false)
 {
-    int bufferSizeIndicator;
-    int bufferSizeValue;
-
     if (hasFci() && static_cast<int>(getFciBytes().size()) > 2) {
 
         /*
@@ -97,9 +94,8 @@ CalypsoPo::CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
         mRevision = determineRevision(applicationType);
 
         /* Session buffer size */
-        bufferSizeIndicator = mStartupInfo[SI_BUFFER_SIZE_INDICATOR];
-        bufferSizeValue =
-            BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE[bufferSizeIndicator];
+        int bufferSizeIndicator = mStartupInfo[SI_BUFFER_SIZE_INDICATOR];
+        int bufferSizeValue = BUFFER_SIZE_INDICATOR_TO_BUFFER_SIZE[bufferSizeIndicator];
 
         if (mRevision == PoRevision::REV2_4) {
             /*
@@ -539,12 +535,15 @@ const std::shared_ptr<SvDebitLogRecord> CalypsoPo::getSvDebitLogLastRecord()
 const std::vector<std::shared_ptr<SvDebitLogRecord>> CalypsoPo::getSvDebitLogAllRecords() const
 {
     /* Get the logs from the file data */
-    std::map<int, std::vector<uint8_t>> logRecords = getFileBySfi(CalypsoPoUtils::SV_DEBIT_LOG_FILE_SFI)
-                                                         ->getData()
-                                                         ->getAllRecordsContent();
+    std::map<int, std::vector<uint8_t>> logRecords =
+        getFileBySfi(CalypsoPoUtils::SV_DEBIT_LOG_FILE_SFI)->getData()->getAllRecordsContent();
     std::vector<std::shared_ptr<SvDebitLogRecord>> svDebitLogRecords;
-    for (const auto& entry : logRecords)
-        svDebitLogRecords.push_back(std::make_shared<SvDebitLogRecord>(entry.second, 0));
+
+    std::for_each(logRecords.begin(),
+                  logRecords.end(),
+                  [&](const std::pair<int, std::vector<uint8_t>>& o) {
+                      svDebitLogRecords.push_back(std::make_shared<SvDebitLogRecord>(o.second, 0));
+                  });
 
     return svDebitLogRecords;
 }

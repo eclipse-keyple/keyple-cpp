@@ -127,8 +127,12 @@ std::shared_ptr<SelectionsResult> SeSelection::processExplicitSelection(
 {
     std::vector<std::shared_ptr<SeRequest>> selectionRequests;
 
-    for (const auto& seSelectionRequest : mSeSelectionRequests)
-        selectionRequests.push_back(seSelectionRequest->getSelectionRequest());
+    std::for_each(mSeSelectionRequests.begin(),
+                  mSeSelectionRequests.end(),
+                  [&](const std::shared_ptr<AbstractSeSelectionRequest<
+                          AbstractApduCommandBuilder>>& r) {
+                      selectionRequests.push_back(r->getSelectionRequest());
+                  });
 
     logger->trace("Transmit SELECTIONREQUEST (% request(s))\n",
                   selectionRequests.size());
@@ -154,12 +158,16 @@ SeSelection::getSelectionOperation()
 {
     std::vector<std::shared_ptr<SeRequest>> selectionRequests;
 
-    for (const auto& seSelectionRequest : mSeSelectionRequests)
-        selectionRequests.push_back(seSelectionRequest->getSelectionRequest());
+    std::for_each(mSeSelectionRequests.begin(),
+                  mSeSelectionRequests.end(),
+                  [&](const std::shared_ptr<AbstractSeSelectionRequest<
+                          AbstractApduCommandBuilder>>& r) {
+                      selectionRequests.push_back(r->getSelectionRequest());
+                  });
 
-    return std::make_shared<DefaultSelectionsRequest>(
-               selectionRequests, mMultiSeRequestProcessing,
-               mChannelControl);
+    return std::make_shared<DefaultSelectionsRequest>(selectionRequests,
+                                                      mMultiSeRequestProcessing,
+                                                      mChannelControl);
 }
 
 std::ostream& operator<<(std::ostream& os, const SeSelection& ss)

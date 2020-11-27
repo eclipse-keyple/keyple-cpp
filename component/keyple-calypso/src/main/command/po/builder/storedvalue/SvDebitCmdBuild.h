@@ -55,8 +55,8 @@ public:
                     const PoRevision& poRevision,
                     const int amount,
                     const uint8_t kvc,
-                    const std::vector<uint8_t> date,
-                    const std::vector<uint8_t> time);
+                    const std::vector<uint8_t>& date,
+                    const std::vector<uint8_t>& time);
 
 
     /**
@@ -74,7 +74,7 @@ public:
      *
      * @param debitComplementaryData the data out from the SvPrepareDebit SAM command
      */
-    void finalizeBuilder(const std::vector<uint8_t> debitComplementaryData);
+    void finalizeBuilder(const std::vector<uint8_t>& debitComplementaryData);
 
     /**
      * Gets the SV Debit part of the data to include in the SAM SV Prepare Debit command

@@ -57,7 +57,7 @@ TEST(SamGetChallengeCmdBuildTest,
             std::make_shared<ApduResponse>(
                 ByteArrayUtil::fromHex(SW1SW2_OK), nullptr));
 
-    auto& instance = *samGetChallengeRespPars.get();
+    const auto& instance = *samGetChallengeRespPars.get();
 
     ASSERT_EQ(typeid(instance), typeid(SamGetChallengeRespPars));
 }

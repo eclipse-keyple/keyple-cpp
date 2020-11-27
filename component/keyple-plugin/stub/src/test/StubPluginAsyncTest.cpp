@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -33,7 +32,7 @@ using namespace keyple::plugin::stub;
 
 class SPA_PluginObserverMock1 final : public ObservablePlugin::PluginObserver {
 public:
-    SPA_PluginObserverMock1(const std::string& readerName)
+    explicit SPA_PluginObserverMock1(const std::string& readerName)
     : mReaderConnected(1), mReaderName(readerName) {}
 
     void update(std::shared_ptr<PluginEvent> event) override
@@ -53,7 +52,7 @@ private:
 
 class SPA_PluginObserverMock2 final : public ObservablePlugin::PluginObserver {
 public:
-    SPA_PluginObserverMock2(const std::string& readerName)
+    explicit SPA_PluginObserverMock2(const std::string& readerName)
     : mReaderConnected(1), mReaderDisconnected(1), mReaderName(readerName) {}
 
     void update(std::shared_ptr<PluginEvent> event) override
@@ -84,7 +83,7 @@ private:
 
 class SPA_PluginObserverMock3 final : public ObservablePlugin::PluginObserver {
 public:
-    SPA_PluginObserverMock3(const std::string& readerName)
+    explicit SPA_PluginObserverMock3(const std::string& readerName)
     : mReaderConnected(3), mReaderName(readerName) {}
 
     void update(std::shared_ptr<PluginEvent> event) override
@@ -109,7 +108,7 @@ private:
 
 class SPA_PluginObserverMock4 final : public ObservablePlugin::PluginObserver {
 public:
-    SPA_PluginObserverMock4(const std::set<std::string>& readerNames)
+    explicit SPA_PluginObserverMock4(const std::set<std::string>& readerNames)
     : mReaderConnected(1), mReaderDisconnected(1), mReaderNames(readerNames) {}
 
     void update(std::shared_ptr<PluginEvent> event) override

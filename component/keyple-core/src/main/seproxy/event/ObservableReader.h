@@ -308,9 +308,8 @@ public:
      *        case (MATCHED_ONLY).
      */
     virtual void setDefaultSelectionRequest(
-        std::shared_ptr<AbstractDefaultSelectionsRequest>
-            defaultSelectionsRequest,
-        const NotificationMode notificationMode) = 0;
+        std::shared_ptr<AbstractDefaultSelectionsRequest> defaultSelectionsRequest,
+        const NotificationMode& notificationMode) = 0;
 
     /**
      * A combination of defining the default selection request and starting the SE detection.
@@ -325,7 +324,7 @@ public:
      */
     virtual void setDefaultSelectionRequest(
         std::shared_ptr<AbstractDefaultSelectionsRequest>defaultSelectionsRequest,
-        const NotificationMode notificationMode,
+        const NotificationMode& notificationMode,
         const PollingMode pollingMode) = 0;
 
     /**

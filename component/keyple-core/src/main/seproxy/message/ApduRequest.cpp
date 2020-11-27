@@ -90,12 +90,6 @@ bool equals(std::shared_ptr<void> o)
     return false;
 }
 
-int hashCode()
-{
-    /* To be implemented */
-    return 0;
-}
-
 std::ostream& operator<<(std::ostream& os, const ApduRequest& se)
 {
 	os << "APDUREQUEST: {"
@@ -113,7 +107,7 @@ std::ostream& operator<<(std::ostream& os, const ApduRequest& se)
             if (iterator != se.successfulStatusCodes->end()) {
                 os << ", ";
             }
-            iterator++;
+            ++iterator;
         }
 		os << "}";
     }

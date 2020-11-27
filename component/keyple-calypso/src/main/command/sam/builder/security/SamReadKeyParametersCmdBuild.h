@@ -56,7 +56,7 @@ public:
     /**
      *
      */
-    SamReadKeyParametersCmdBuild(const SamRevision& revision);
+    explicit SamReadKeyParametersCmdBuild(const SamRevision& revision);
 
     /**
      *

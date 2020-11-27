@@ -48,7 +48,7 @@ public:
 
 class SS_SeCommandMock final : public SeCommand {
 public:
-    SS_SeCommandMock(const std::string name, const uint8_t instructionByte)
+    SS_SeCommandMock(const std::string& name, const uint8_t instructionByte)
     : mName(name), mInstructionByte(instructionByte) {}
 
     const std::string& getName() const override

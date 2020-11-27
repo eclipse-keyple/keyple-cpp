@@ -104,7 +104,7 @@ public:
                             const bool verificationMode,
                             const uint8_t poKif,
                             const uint8_t poKVC,
-                            const std::vector<uint8_t> digestData);
+                            const std::vector<uint8_t>& digestData);
 
     /**
      * Appends a list full PO exchange (request and response) to the digest data
@@ -166,7 +166,7 @@ public:
      */
     const std::vector<uint8_t> getCipheredPinData(const std::vector<uint8_t>& poChallenge,
                                                   const std::vector<uint8_t>& currentPin,
-                                                  const std::vector<uint8_t> newPin);
+                                                  const std::vector<uint8_t>& newPin);
 
     /**
      * Computes the cryptographic data required for the SvReload command.

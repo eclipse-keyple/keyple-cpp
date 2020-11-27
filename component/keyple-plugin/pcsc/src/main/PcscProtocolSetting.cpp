@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "PcscProtocolSetting.h"
 
@@ -20,8 +19,7 @@ namespace pcsc {
 
 using namespace keyple::core::seproxy::protocol;
 
-std::map<std::shared_ptr<SeCommonProtocol>, std::string>
-    PcscProtocolSetting::PCSC_PROTOCOL_SETTING;
+std::map<std::shared_ptr<SeCommonProtocol>, std::string> PcscProtocolSetting::PCSC_PROTOCOL_SETTING;
 
 PcscProtocolSetting::StaticConstructor::StaticConstructor()
 {
@@ -45,7 +43,7 @@ PcscProtocolSetting::StaticConstructor PcscProtocolSetting::staticConstructor;
 
 const std::map<std::shared_ptr<SeCommonProtocol>, std::string>
     PcscProtocolSetting::getSpecificSettings(
-        std::set<std::shared_ptr<SeCommonProtocol>>& specificProtocols)
+        const std::set<std::shared_ptr<SeCommonProtocol>>& specificProtocols)
 {
     std::map<std::shared_ptr<SeCommonProtocol>, std::string> map;
 

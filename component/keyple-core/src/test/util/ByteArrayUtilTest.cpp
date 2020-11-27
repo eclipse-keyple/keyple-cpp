@@ -51,7 +51,7 @@ TEST(ByteArrayUtilTest, fromHex_odd_length)
 TEST(ByteArrayUtilTest, fromHex_bad_hex)
 {
     /* No verification is being carried out at the moment */
-    std::vector<uint8_t> bytes = ByteArrayUtil::fromHex(HEXSTRING_BAD);
+    ByteArrayUtil::fromHex(HEXSTRING_BAD);
 }
 
 TEST(ByteArrayUtilTest, fromHex_good_hex)
