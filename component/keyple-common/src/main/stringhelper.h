@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -28,20 +27,17 @@ namespace common {
 
 class StringHelper {
 public:
-    static std::string trimStart(std::string source,
-                                 const std::string& trimChars = " \t\n\r\v\f")
+    static std::string trimStart(std::string source, const std::string& trimChars = " \t\n\r\v\f")
     {
         return source.erase(0, source.find_first_not_of(trimChars));
     }
 
-    static std::string trimEnd(std::string source,
-                               const std::string& trimChars = " \t\n\r\v\f")
+    static std::string trimEnd(std::string source, const std::string& trimChars = " \t\n\r\v\f")
     {
         return source.erase(source.find_last_not_of(trimChars) + 1);
     }
 
-    static std::string trim(std::string source,
-                            const std::string& trimChars = " \t\n\r\v\f")
+    static std::string trim(const std::string& source, const std::string& trimChars = " \t\n\r\v\f")
     {
         return trimStart(trimEnd(source, trimChars), trimChars);
     }

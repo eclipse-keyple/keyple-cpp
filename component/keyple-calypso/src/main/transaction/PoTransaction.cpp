@@ -200,8 +200,9 @@ void PoTransaction::processAtomicOpening(
 
     /* Add all optional commands to the PO ApduRequest list */
     const std::vector<std::shared_ptr<ApduRequest>>& commands = getApduRequests(poCommands);
-    for (const auto& command : commands)
-        poApduRequests.push_back(command);
+    std::for_each(commands.begin(),
+                  commands.end(),
+                  [&](const std::shared_ptr<ApduRequest>& r) {poApduRequests.push_back(r);});
 
     /* Create a SeRequest from the ApduRequest list, PO AID as Selector, keep channel open */
     auto poSeRequest = std::make_shared<SeRequest>(poApduRequests);
@@ -291,22 +292,23 @@ void PoTransaction::processAtomicOpening(const AccessLevel& accessLevel)
 }
 
 std::vector<std::shared_ptr<ApduRequest>> PoTransaction::getApduRequests(
-    const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-        AbstractPoResponseParser>>>& poCommands) const
+    const std::vector<std::shared_ptr<AbstractPoCommandResponse>>& poCommands) const
 {
     std::vector<std::shared_ptr<ApduRequest>> apduRequests;
 
     if (poCommands.size()) {
-        for (const auto& commandBuilder : poCommands)
-            apduRequests.push_back(commandBuilder->getApduRequest());
+        std::for_each(poCommands.begin(),
+                      poCommands.end(),
+                      [&](const std::shared_ptr<AbstractPoCommandResponse>& p) {
+                          apduRequests.push_back(p->getApduRequest());
+                      });
     }
 
     return apduRequests;
 }
 
 void PoTransaction::processAtomicPoCommands(
-    const std::vector<std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>>&
-        poCommands,
+    const std::vector<std::shared_ptr<AbstractPoCommandResponse>>& poCommands,
     const ChannelControl channelControl)
 {
     /* Get the PO ApduRequest List */
@@ -483,16 +485,12 @@ void PoTransaction::processAtomicClosing(
                          channelControl);
 }
 
-void PoTransaction::processAtomicClosing(
-    const RatificationMode ratificationMode,
-    const ChannelControl channelControl)
+void PoTransaction::processAtomicClosing(const RatificationMode ratificationMode,
+                                         const ChannelControl channelControl)
 {
-    const std::vector<std::shared_ptr<AbstractPoCommandBuilder<
-        AbstractPoResponseParser>>> empty;
+    const std::vector<std::shared_ptr<AbstractPoCommandBuilder<AbstractPoResponseParser>>> empty;
 
-    processAtomicClosing(empty,
-                         ratificationMode,
-                         channelControl);
+    processAtomicClosing(empty, ratificationMode, channelControl);
 }
 
 int PoTransaction::getCounterValue(const uint8_t sfi, const int counter) const
@@ -535,17 +533,17 @@ std::vector<std::shared_ptr<ApduResponse>> PoTransaction::getAnticipatedResponse
         std::shared_ptr<SeCommand> cmd = commandBuilder->getCommandRef();
         auto calypsoCmd = std::dynamic_pointer_cast<CalypsoPoCommand>(cmd);
         if (*calypsoCmd.get() == CalypsoPoCommand::DECREASE) {
-            auto builder = std::reinterpret_pointer_cast<DecreaseCmdBuild>(commandBuilder);
-            const uint8_t sfi = builder->getSfi();
-            const int counter = builder->getCounterNumber();
-            const int newCounterValue = getCounterValue(sfi, counter) - builder->getDecValue();
+            auto decBuilder = std::reinterpret_pointer_cast<DecreaseCmdBuild>(commandBuilder);
+            const uint8_t sfi = decBuilder->getSfi();
+            const int counter = decBuilder->getCounterNumber();
+            const int newCounterValue = getCounterValue(sfi, counter) - decBuilder->getDecValue();
             apduResponses.push_back(createIncreaseDecreaseResponse(newCounterValue));
 
         } else if (*calypsoCmd.get() == CalypsoPoCommand::INCREASE) {
-            auto builder = std::reinterpret_pointer_cast<IncreaseCmdBuild>(commandBuilder);
-            const uint8_t sfi = builder->getSfi();
-            const int counter = builder->getCounterNumber();
-            const int newCounterValue = getCounterValue(sfi, counter) + builder->getIncValue();
+            auto incBuilder = std::reinterpret_pointer_cast<IncreaseCmdBuild>(commandBuilder);
+            const uint8_t sfi = incBuilder->getSfi();
+            const int counter = incBuilder->getCounterNumber();
+            const int newCounterValue = getCounterValue(sfi, counter) + incBuilder->getIncValue();
             apduResponses.push_back(createIncreaseDecreaseResponse(newCounterValue));
 
          } else if (*calypsoCmd.get() == CalypsoPoCommand::SV_RELOAD ||
@@ -1238,9 +1236,9 @@ void PoTransaction::prepareSvGet(const Operation& svOperation, const Action& svA
 }
 
 void PoTransaction::prepareSvReload(const int amount,
-                                    const std::vector<uint8_t> date,
-                                    const std::vector<uint8_t> time,
-                                    const std::vector<uint8_t> free)
+                                    const std::vector<uint8_t>& date,
+                                    const std::vector<uint8_t>& time,
+                                    const std::vector<uint8_t>& free)
 {
     /* Create the initial builder with the application data */
     auto svReloadCmdBuild = std::make_shared<SvReloadCmdBuild>(mCalypsoPo->getPoClass(),
@@ -1272,8 +1270,8 @@ void PoTransaction::prepareSvReload(const int amount)
 }
 
 void PoTransaction::prepareSvDebitPriv(const int amount,
-                                       const std::vector<uint8_t> date,
-                                       const std::vector<uint8_t> time)
+                                       const std::vector<uint8_t>& date,
+                                       const std::vector<uint8_t>& time)
 {
     if (mPoSecuritySettings->getSvNegativeBalance() == NegativeBalance::FORBIDDEN &&
         (mCalypsoPo->getSvBalance() - amount) < 0)
@@ -1302,8 +1300,8 @@ void PoTransaction::prepareSvDebitPriv(const int amount,
 }
 
 void PoTransaction::prepareSvUndebitPriv(const int amount,
-                                         const std::vector<uint8_t> date,
-                                         const std::vector<uint8_t> time)
+                                         const std::vector<uint8_t>& date,
+                                         const std::vector<uint8_t>& time)
 {
     /* Create the initial builder with the application data */
     auto svUndebitCmdBuild = std::make_shared<SvUndebitCmdBuild>(mCalypsoPo->getPoClass(),
@@ -1328,8 +1326,8 @@ void PoTransaction::prepareSvUndebitPriv(const int amount,
 }
 
 void PoTransaction::prepareSvDebit(const int amount,
-                                   const std::vector<uint8_t> date,
-                                   const std::vector<uint8_t> time)
+                                   const std::vector<uint8_t>& date,
+                                   const std::vector<uint8_t>& time)
 {
     if (mSvAction == Action::DO)
         prepareSvDebitPriv(amount, date, time);

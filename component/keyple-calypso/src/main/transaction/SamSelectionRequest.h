@@ -53,7 +53,7 @@ public:
      * @param samSelector the SAM selector
      * @param channelState the action to take after (close or keep open)
      */
-    SamSelectionRequest(std::shared_ptr<SamSelector> samSelector);
+    explicit SamSelectionRequest(std::shared_ptr<SamSelector> samSelector);
 
     /**
      * Create a CalypsoSam object containing the selection data received from the plugin<br>

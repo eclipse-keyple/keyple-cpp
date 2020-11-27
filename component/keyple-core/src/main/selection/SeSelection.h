@@ -71,8 +71,7 @@ public:
      * <p>
      *
      * @param seSelectionRequest the selector to prepare
-     * @return the selection index giving the current selection position in the
-     *         selection request.
+     * @return the selection index giving the current selection position in the selection request.
      */
     int prepareSelection(
         std::shared_ptr<AbstractSeSelectionRequest<AbstractApduCommandBuilder>> seSelectionRequest);
@@ -87,28 +86,24 @@ public:
     void prepareReleaseSeChannel();
 
     /**
-     * Parses the response to a selection operation sent to a SE and return a
-     * list of {@link AbstractMatchingSe}
+     * Parses the response to a selection operation sent to a SE and return a list of {@link
+     * AbstractMatchingSe}
      * <p>
      * Selection cases that have not matched the current SE are set to null.
      *
-     * @param defaultSelectionsResponse the response from the reader to the
-     *        {@link AbstractDefaultSelectionsRequest}
-     * @return the {@link SelectionsResult} containing the result of all
-     *         prepared selection cases, including {@link AbstractMatchingSe}
-     *         and {@link SeResponse}.
-     * @throws KeypleException if an error occurs during the selection process
+     * @param defaultSelectionsResponse the response from the reader to the {@link
+     *        AbstractDefaultSelectionsRequest}
+     * @return the {@link SelectionsResult} containing the result of all prepared selection cases,
+     *         including {@link AbstractMatchingSe} and {@link SeResponse}.
+     * @throw KeypleException if an error occurs during the selection process
      */
     std::shared_ptr<SelectionsResult> processDefaultSelection(
-        std::shared_ptr<AbstractDefaultSelectionsResponse>
-            defaultSelectionsResponse);
+        std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse);
 
     /**
-     * Execute the selection process and return a list of {@link
-     * AbstractMatchingSe}.
+     * Execute the selection process and return a list of {@link AbstractMatchingSe}.
      * <p>
-     * Selection requests are transmitted to the SE through the supplied
-     * SeReader.
+     * Selection requests are transmitted to the SE through the supplied SeReader.
      * <p>
      * The process stops in the following cases:
      * <ul>
@@ -119,44 +114,39 @@ public:
      * <p>
      *
      * @param seReader the SeReader on which the selection is made
-     * @return the {@link SelectionsResult} containing the result of all
-     *         prepared selection cases, including {@link AbstractMatchingSe}
-     *         and {@link SeResponse}.
-     * @throws KeypleReaderIOException if the communication with the reader or
-     *         the SE has failed
-     * @throws KeypleException if an error occurs during the selection process
+     * @return the {@link SelectionsResult} containing the result of all prepared selection cases,
+     *         including {@link AbstractMatchingSe} and {@link SeResponse}.
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
+     * @throw KeypleException if an error occurs during the selection process
      */
-    std::shared_ptr<SelectionsResult> processExplicitSelection(
-        std::shared_ptr<SeReader> seReader);
+    std::shared_ptr<SelectionsResult> processExplicitSelection(std::shared_ptr<SeReader> seReader);
 
     /**
-     * The SelectionOperation is the {@link AbstractDefaultSelectionsRequest} to
-     * process in ordered to select a SE among others through the selection
-     * process. This method is useful to build the prepared selection to be
-     * executed by a reader just after a SE insertion.
+     * The SelectionOperation is the {@link AbstractDefaultSelectionsRequest} to process in ordered
+     * to select a SE among others through the selection process. This method is useful to build the
+     * prepared selection to be executed by a reader just after a SE insertion.
      *
-     * @return the {@link AbstractDefaultSelectionsRequest} previously prepared
-     *         with prepareSelection
+     * @return the {@link AbstractDefaultSelectionsRequest} previously prepared with
+     *         prepareSelection
      */
     std::shared_ptr<AbstractDefaultSelectionsRequest> getSelectionOperation();
 
     /**
      *
      */
-    friend KEYPLECORE_API std::ostream& operator<<(
-        std::ostream& os, const SeSelection& ss);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const SeSelection& ss);
 
     /**
      *
      */
-    friend KEYPLECORE_API std::ostream& operator<<(
-        std::ostream& os, const std::unique_ptr<SeSelection>& ss);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const std::unique_ptr<SeSelection>& ss);
 
     /**
      *
      */
-    friend KEYPLECORE_API std::ostream& operator<<(
-        std::ostream& os, const std::shared_ptr<SeSelection>& ss);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const std::shared_ptr<SeSelection>& ss);
 
 private:
     /**
@@ -169,8 +159,8 @@ private:
      * list of selection requests used to build the AbstractMatchingSe list in
      * return of processSelection methods
      */
-    std::vector<std::shared_ptr<AbstractSeSelectionRequest<
-        AbstractApduCommandBuilder>>> mSeSelectionRequests;
+    std::vector<std::shared_ptr<AbstractSeSelectionRequest<AbstractApduCommandBuilder>>>
+        mSeSelectionRequests;
 
     /**
      *

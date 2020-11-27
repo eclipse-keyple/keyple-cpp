@@ -35,6 +35,7 @@ TestsUtilsStatusCodeGenerator::generateFileNotFoundStatusCode()
     return std::vector<uint8_t>{0x69, 0x82};
 }
 
+#if 0
 std::vector<uint8_t>
 TestsUtilsStatusCodeGenerator::generateRecordNotFoundStatusCode()
 {
@@ -52,6 +53,7 @@ TestsUtilsStatusCodeGenerator::generateLeValueIncorrectStatusCode()
 {
     return std::vector<uint8_t>{0x6C, 0xFF};
 }
+#endif
 
 std::vector<uint8_t>
 TestsUtilsStatusCodeGenerator::generateAccessForbiddenStatusCode()

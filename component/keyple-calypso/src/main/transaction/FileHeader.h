@@ -110,7 +110,7 @@ public:
          *        length)
          * @return the builder instance
          */
-        FileHeaderBuilder& keyIndexes(const std::vector<uint8_t> keyIndexes);
+        FileHeaderBuilder& keyIndexes(const std::vector<uint8_t>& keyIndexes);
 
         /**
          * (package-private)<br>
@@ -202,8 +202,7 @@ public:
      * Gets the number of records :
      * <ul>
      * <li>For a Counter file, the number of records is always 1.<br>
-     * Extra bytes (rest of the division of the file size by 3) aren't
-     * accessible.</li>
+     * Extra bytes (rest of the division of the file size by 3) aren't accessible.</li>
      * <li>For a Binary file, the number of records is always 1.</li>
      * </ul>
      *
@@ -217,8 +216,7 @@ public:
      * <ul>
      * <li>For a Counter file, the record size is the original size of the
      * record #1.<br>
-     * Extra bytes (rest of the division of the file size by 3) aren't
-     * accessible.</li>
+     * Extra bytes (rest of the division of the file size by 3) aren't accessible.</li>
      * <li>For a Binary file, the size of the record is corresponding to the
      * file size.</li>
      * </ul>

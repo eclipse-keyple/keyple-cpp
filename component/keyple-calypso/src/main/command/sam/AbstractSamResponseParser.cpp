@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "AbstractSamResponseParser.h"
 
@@ -40,18 +39,15 @@ using namespace keyple::core::seproxy::message;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-const std::map<int, std::shared_ptr<StatusProperties>>
-    AbstractSamResponseParser::STATUS_TABLE = {
+const std::map<int, std::shared_ptr<StatusProperties>> AbstractSamResponseParser::STATUS_TABLE = {
     {
         0x6D00,
-        std::make_shared<StatusProperties>(
-            "Instruction unknown.",
-            typeid(CalypsoSamIllegalParameterException))
+        std::make_shared<StatusProperties>("Instruction unknown.",
+                                           typeid(CalypsoSamIllegalParameterException))
     }, {
         0x6E00,
-        std::make_shared<StatusProperties>(
-            "Class not supported.",
-            typeid(CalypsoSamIllegalParameterException))
+        std::make_shared<StatusProperties>("Class not supported.",
+                                           typeid(CalypsoSamIllegalParameterException))
     }, {
         0x9000,
         std::make_shared<StatusProperties>("Success")
@@ -63,8 +59,8 @@ AbstractSamResponseParser::AbstractSamResponseParser(
   AbstractSamCommandBuilder<AbstractSamResponseParser>* builder)
 : AbstractApduResponseParser(response, builder) {}
 
-const std::map<int, std::shared_ptr<StatusProperties>>&
-    AbstractSamResponseParser::getStatusTable() const
+const std::map<int, std::shared_ptr<StatusProperties>>& AbstractSamResponseParser::getStatusTable()
+    const
 {
     return STATUS_TABLE;
 }
@@ -138,7 +134,7 @@ void AbstractSamResponseParser::checkStatus() const
     try {
         AbstractApduResponseParser::checkStatus();
     } catch (const KeypleSeCommandException& e) {
-        throw e;
+        throw;
     }
 }
 

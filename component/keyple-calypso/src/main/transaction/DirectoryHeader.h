@@ -58,23 +58,19 @@ public:
          * (package-private)<br>
          * Sets a reference to the provided access conditions byte array.
          *
-         * @param accessConditions the access conditions (should be not null and
-         *        4 bytes length)
+         * @param accessConditions the access conditions (should be not null and 4 bytes length)
          * @return the builder instance
          */
-        DirectoryHeaderBuilder& accessConditions(
-            const std::vector<uint8_t>& accessConditions);
+        DirectoryHeaderBuilder& accessConditions(const std::vector<uint8_t>& accessConditions);
 
         /**
          * (package-private)<br>
          * Sets a reference to the provided key indexes byte array.
          *
-         * @param keyIndexes the key indexes (should be not null and 4 bytes
-         *        length)
+         * @param keyIndexes the key indexes (should be not null and 4 bytes length)
          * @return the builder instance
          */
-        DirectoryHeaderBuilder& keyIndexes(
-            const std::vector<uint8_t>& keyIndexes);
+        DirectoryHeaderBuilder& keyIndexes(const std::vector<uint8_t>& keyIndexes);
 
         /**
          * (package-private)<br>
@@ -93,8 +89,7 @@ public:
          * @param kif the KIF value
          * @return the builder instance
          */
-        DirectoryHeaderBuilder& kif(const AccessLevel& level,
-                                    const uint8_t kif);
+        DirectoryHeaderBuilder& kif(const AccessLevel& level, const uint8_t kif);
 
         /**
          * (package-private)<br>
@@ -104,8 +99,7 @@ public:
          * @param kvc the KVC value
          * @return the builder instance
          */
-        DirectoryHeaderBuilder& kvc(const AccessLevel& level,
-                                    const uint8_t kvc);
+        DirectoryHeaderBuilder& kvc(const AccessLevel& level, const uint8_t kvc);
 
         /**
          * (package-private)<br>

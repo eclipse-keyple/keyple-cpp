@@ -23,7 +23,7 @@ using namespace keyple::core::seproxy::plugin;
 class ATOP_AbstractThreadedObservablePluginMock
 : public AbstractThreadedObservablePlugin {
 public:
-    ATOP_AbstractThreadedObservablePluginMock(const std::string& name)
+    explicit ATOP_AbstractThreadedObservablePluginMock(const std::string& name)
     : AbstractThreadedObservablePlugin(name) {}
 
     MOCK_METHOD((const std::map<const std::string, const std::string>&),
@@ -99,7 +99,7 @@ TEST(AbstractThreadedObservablePluginTest, addObserver)
     ATOP_AbstractThreadedObservablePluginMock plugin("plugin");
 
     auto observer = std::make_shared<ATOP_PublicObserverMock>();
-   
+
     plugin.addObserver(observer);
 
     ASSERT_EQ(plugin.countObservers(), 1);
@@ -111,7 +111,7 @@ TEST(AbstractThreadedObservablePluginTest, removeObserver)
     ATOP_AbstractThreadedObservablePluginMock plugin("plugin");
 
     auto observer = std::make_shared<ATOP_PublicObserverMock>();
-    
+
     plugin.addObserver(observer);
 
     ASSERT_EQ(plugin.countObservers(), 1);

@@ -97,7 +97,7 @@ TEST(DigestInitCmdBuildTest,
             std::make_shared<ApduResponse>(
                 ByteArrayUtil::fromHex(SW1SW2_OK), nullptr));
 
-    auto& instance = *digestInitRespPars.get();
+    const auto& instance = *digestInitRespPars.get();
 
     ASSERT_EQ(typeid(instance), typeid(DigestInitRespPars));
 }
@@ -181,8 +181,7 @@ TEST(DigestInitCmdBuildTest, digestInitCmdBuild_verificationMode)
                                           KVC_OK,
                                           ByteArrayUtil::fromHex(DIGEST_DATA));
 
-    std::shared_ptr<ApduRequest> ApduRequest =
-        digestInitCmdBuild.getApduRequest();
+    //std::shared_ptr<ApduRequest> ApduRequest = digestInitCmdBuild.getApduRequest();
 
     ASSERT_EQ(digestInitCmdBuild.getApduRequest()->getBytes(),
               ByteArrayUtil::fromHex(APDU_CLA_80_VERIF_MODE));
@@ -198,8 +197,7 @@ TEST(DigestInitCmdBuildTest, digestInitCmdBuild_confidentialSessionMode)
                                           KVC_OK,
                                           ByteArrayUtil::fromHex(DIGEST_DATA));
 
-    std::shared_ptr<ApduRequest> ApduRequest =
-        digestInitCmdBuild.getApduRequest();
+    //std::shared_ptr<ApduRequest> ApduRequest = digestInitCmdBuild.getApduRequest();
 
     ASSERT_EQ(digestInitCmdBuild.getApduRequest()->getBytes(),
               ByteArrayUtil::fromHex(APDU_CLA_80_CONFIDENTIAL_SESSION_MODE));

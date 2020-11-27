@@ -133,7 +133,7 @@ std::shared_ptr<SeResponse> AbstractReader::transmitSeRequest(std::shared_ptr<Se
                        elapsed10ms / 10);
 
         /* Throw an exception with the responses collected so far (ex.getSeResponse()). */
-        throw ex;
+        throw;
     }
 
     timeStamp = System::nanoTime();

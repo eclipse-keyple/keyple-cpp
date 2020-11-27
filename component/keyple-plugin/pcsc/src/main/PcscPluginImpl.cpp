@@ -127,8 +127,8 @@ ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& PcscPluginImpl::ini
         }
     } catch (PcscTerminalException& e) {
         logger->trace("[%] terminal list not accessible, msg: %, cause: %",
-                      getName(), 
-                      e.getMessage(), 
+                      getName(),
+                      e.getMessage(),
                       e.getCause().what());
         /*
          * Throw new KeypleReaderIOException("Could not access terminals list",
@@ -153,21 +153,21 @@ std::shared_ptr<SeReader> PcscPluginImpl::fetchNativeReader(const std::string& n
      */
     std::shared_ptr<SeReader> seReader = nullptr;
     std::vector<PcscTerminal>& terminals = getTerminals();
-    std::vector<std::string> terminalList;
+    //std::vector<std::string> terminalList;
 
     try {
         for (auto& term : terminals) {
             if (!term.getName().compare(name)) {
-                logger->trace("[%s] fetchNativeReader => CardTerminal in new PcscReader: %\n", 
-                              getName(), 
+                logger->trace("[%s] fetchNativeReader => CardTerminal in new PcscReader: %\n",
+                              getName(),
                               terminals);
                 seReader = std::make_shared<PcscReaderImpl>(getName(), term);
             }
         }
     } catch (const PcscTerminalException& e) {
         logger->trace("[%] caught PcscTerminalException (msg: %, cause: %)\n",
-                      getName(), 
-                      e.getMessage(), 
+                      getName(),
+                      e.getMessage(),
                       e.getCause().what());
         throw KeypleReaderIOException("Could not access terminals list", e);
     }
@@ -185,8 +185,9 @@ std::vector<PcscTerminal>& PcscPluginImpl::getTerminals()
     try {
         const std::vector<std::string>& list = PcscTerminal::listTerminals();
 
-        for (auto name : list)
-            mTerminals.push_back(PcscTerminal(name));
+        std::for_each(list.begin(),
+                      list.end(),
+                      [&](const std::string& name){mTerminals.push_back(PcscTerminal(name));});
 
     } catch (const PcscTerminalException& e) {
         (void)e;

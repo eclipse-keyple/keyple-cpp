@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -63,16 +62,13 @@ public:
          * @param challengeTransactionCounter Challenge transaction counter
          * @param challengeRandomNumber Challenge random number
          * @param previousSessionRatified the previous session ratified
-         * @param manageSecureSessionAuthorized the manage secure session
-         *        authorized
-         * @param kif the KIF from the response of the open secure session APDU
+         * @param manageSecureSessionAuthorized the manage secure session authorized
+         * @param kif the KIF from the response of the open secure session APDU command
+         * @param kvc the KVC from the response of the open secure session APDU command
+         * @param originalData the original data from the response of the open secure session APDU
          *        command
-         * @param kvc the KVC from the response of the open secure session APDU
-         *        command
-         * @param originalData the original data from the response of the open
-         *        secure session APDU command
-         * @param secureSessionData the secure session data from the response of
-         *        open secure session APDU command
+         * @param secureSessionData the secure session data from the response of open secure session
+         *        APDU command
          */
         SecureSession(const std::vector<uint8_t>& challengeTransactionCounter,
                       const std::vector<uint8_t>& challengeRandomNumber,
@@ -84,20 +80,17 @@ public:
                       const std::vector<uint8_t>& secureSessionData);
 
         /**
-         * Instantiates a new SecureSession for a Calypso application revision
-         * 2.4
+         * Instantiates a new SecureSession for a Calypso application revision 2.4
          *
          * @param challengeTransactionCounter Challenge transaction counter
          * @param challengeRandomNumber Challenge random number
          * @param previousSessionRatified the previous session ratified
-         * @param manageSecureSessionAuthorized the manage secure session
-         *        authorized
-         * @param kvc the KVC from the response of the open secure session APDU
+         * @param manageSecureSessionAuthorized the manage secure session authorized
+         * @param kvc the KVC from the response of the open secure session APDU command
+         * @param originalData the original data from the response of the open secure session APDU
          *        command
-         * @param originalData the original data from the response of the open
-         *        secure session APDU command
-         * @param secureSessionData the secure session data from the response of
-         *        open secure session APDU command
+         * @param secureSessionData the secure session data from the response of open secure session
+         *        APDU command
          */
         SecureSession(const std::vector<uint8_t>& challengeTransactionCounter,
                       const std::vector<uint8_t>& challengeRandomNumber,
@@ -108,18 +101,16 @@ public:
                       const std::vector<uint8_t>& secureSessionData);
 
         /**
-         * Instantiates a new SecureSession for a Calypso application revision
-         * 1.0
+         * Instantiates a new SecureSession for a Calypso application revision 1.0
          *
          * @param challengeTransactionCounter Challenge transaction counter
          * @param challengeRandomNumber Challenge random number
          * @param previousSessionRatified the previous session ratified
-         * @param manageSecureSessionAuthorized the manage secure session
-         *        authorized
-         * @param originalData the original data from the response of the open
-         *        secure session APDU command
-         * @param secureSessionData the secure session data from the response of
-         *        open secure session APDU command
+         * @param manageSecureSessionAuthorized the manage secure session authorized
+         * @param originalData the original data from the response of the open secure session APDU
+         *        command
+         * @param secureSessionData the secure session data from the response of open secure session
+         *        APDU command
          */
         SecureSession(const std::vector<uint8_t>& challengeTransactionCounter,
                       const std::vector<uint8_t>& challengeRandomNumber,
@@ -136,8 +127,7 @@ public:
         /**
          *
          */
-        virtual const std::vector<uint8_t>& getChallengeTransactionCounter()
-            const;
+        virtual const std::vector<uint8_t>& getChallengeTransactionCounter() const;
 
         /**
          *
@@ -240,10 +230,9 @@ public:
      * @param builder the reference to the builder that created this parser
      * @param revision the revision of the PO
      */
-    AbstractOpenSessionRespPars(
-        std::shared_ptr<ApduResponse> response,
-        AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>* builder,
-        const PoRevision revision);
+    AbstractOpenSessionRespPars(std::shared_ptr<ApduResponse> response,
+                                AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars>* builder,
+                                const PoRevision revision);
 
     /**
      *
@@ -253,8 +242,8 @@ public:
     /**
      *
      */
-    std::shared_ptr<AbstractOpenSessionRespPars> create(
-        std::shared_ptr<ApduResponse> response, const PoRevision revision);
+    std::shared_ptr<AbstractOpenSessionRespPars> create(std::shared_ptr<ApduResponse> response,
+                                                        const PoRevision revision);
 
     /*
      * C++: This method is called from the class constructor. It *cannot* be
@@ -302,8 +291,7 @@ protected:
     /**
      *
      */
-    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
-        const override;
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable() const override;
 
 private:
     /**

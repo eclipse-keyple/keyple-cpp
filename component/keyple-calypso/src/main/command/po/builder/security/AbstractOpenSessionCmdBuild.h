@@ -58,9 +58,8 @@ using namespace keyple::common;
 using namespace keyple::core::command;
 
 /**
- * The Class AbstractOpenSessionCmdBuild. This class provides the dedicated
- * constructor to build the Open Secure Session APDU command.
- *
+ * The Class AbstractOpenSessionCmdBuild. This class provides the dedicated constructor to build the
+ * Open Secure Session APDU command.
  */
 template <typename T>
 class KEYPLECALYPSO_API AbstractOpenSessionCmdBuild
@@ -73,13 +72,12 @@ public:
      * @throw IllegalArgumentException - if the key index is 0 and rev is 2.4
      * @throw IllegalArgumentException - if the request is inconsistent
      */
-    AbstractOpenSessionCmdBuild(PoRevision revision)
+    explicit AbstractOpenSessionCmdBuild(PoRevision revision)
     : AbstractPoCommandBuilder<T>(
-          std::make_shared<CalypsoPoCommand>(
-              CalypsoPoCommand::getOpenSessionForRev(revision)),
-          nullptr) {}
+        std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::getOpenSessionForRev(revision)),
+        nullptr) {}
 
-    static  std::shared_ptr<AbstractOpenSessionCmdBuild<T>> create(
+    static std::shared_ptr<AbstractOpenSessionCmdBuild<T>> create(
         const PoRevision revision,
         const uint8_t debitKeyIndex,
         const std::vector<uint8_t>& sessionTerminalChallenge,
@@ -88,30 +86,26 @@ public:
     {
         switch (revision) {
         case PoRevision::REV1_0:
-            return std::make_shared<OpenSession10CmdBuild>(
-                       debitKeyIndex,
-                       sessionTerminalChallenge,
-                       sfi,
-                       recordNumber);
+            return std::make_shared<OpenSession10CmdBuild>(debitKeyIndex,
+                                                           sessionTerminalChallenge,
+                                                           sfi,
+                                                           recordNumber);
         case PoRevision::REV2_4:
-            return std::make_shared<OpenSession24CmdBuild>(
-                       debitKeyIndex,
-                       sessionTerminalChallenge,
-                       sfi,
-                       recordNumber);
+            return std::make_shared<OpenSession24CmdBuild>(debitKeyIndex,
+                                                           sessionTerminalChallenge,
+                                                           sfi,
+                                                           recordNumber);
         case PoRevision::REV3_1:
         case PoRevision::REV3_1_CLAP:
-            return std::make_shared<OpenSession31CmdBuild>(
-                       debitKeyIndex,
-                       sessionTerminalChallenge,
-                       sfi,
-                       recordNumber);
+            return std::make_shared<OpenSession31CmdBuild>(debitKeyIndex,
+                                                           sessionTerminalChallenge,
+                                                           sfi,
+                                                           recordNumber);
         case PoRevision::REV3_2:
-            return std::make_shared<OpenSession32CmdBuild>(
-                       debitKeyIndex,
-                       sessionTerminalChallenge,
-                       sfi,
-                       recordNumber);
+            return std::make_shared<OpenSession32CmdBuild>(debitKeyIndex,
+                                                           sessionTerminalChallenge,
+                                                           sfi,
+                                                           recordNumber);
         default:
             throw std::invalid_argument("Revision " +
                                         StringHelper::toString(revision) +

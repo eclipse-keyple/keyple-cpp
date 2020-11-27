@@ -314,7 +314,7 @@ std::shared_ptr<VerifyPinRespPars> CalypsoPoUtils::updateCalypsoVerifyPin(
          * Catch it silently otherwise
          */
         if (!verifyPinCmdBuild->isReadCounterOnly())
-            throw ex;
+            throw;
     }
 
     return verifyPinRespPars;
@@ -378,25 +378,23 @@ std::shared_ptr<AbstractPoResponseParser> CalypsoPoUtils::updateCalypsoInvalidat
 std::unique_ptr<DirectoryHeader> CalypsoPoUtils::createDirectoryHeader(
     const std::vector<uint8_t>& proprietaryInformation)
 {
-    std::vector<uint8_t> accessConditions(SEL_AC_LENGTH);
-    System::arraycopy(proprietaryInformation, SEL_AC_OFFSET, accessConditions,
-                      0, SEL_AC_LENGTH);
+    std::vector<uint8_t> lAccessConditions(SEL_AC_LENGTH);
+    System::arraycopy(proprietaryInformation, SEL_AC_OFFSET, lAccessConditions, 0, SEL_AC_LENGTH);
 
-    std::vector<uint8_t> keyIndexes(SEL_NKEY_LENGTH);
-    System::arraycopy(proprietaryInformation, SEL_NKEY_OFFSET, keyIndexes, 0,
-                      SEL_NKEY_LENGTH);
+    std::vector<uint8_t> lKeyIndexes(SEL_NKEY_LENGTH);
+    System::arraycopy(proprietaryInformation, SEL_NKEY_OFFSET, lKeyIndexes, 0, SEL_NKEY_LENGTH);
 
-    const uint8_t dfStatus = proprietaryInformation[SEL_DF_STATUS_OFFSET];
+    const uint8_t lDfStatus = proprietaryInformation[SEL_DF_STATUS_OFFSET];
 
-    const uint16_t lid =
+    const uint16_t lLid =
         (((proprietaryInformation[SEL_LID_OFFSET] << 8) & 0xff00) |
          (proprietaryInformation[SEL_LID_OFFSET + 1] & 0x00ff));
 
     return DirectoryHeader::builder()
-            ->lid(lid)
-            .accessConditions(accessConditions)
-            .keyIndexes(keyIndexes)
-            .dfStatus(dfStatus)
+            ->lid(lLid)
+            .accessConditions(lAccessConditions)
+            .keyIndexes(lKeyIndexes)
+            .dfStatus(lDfStatus)
             .kvc(PoTransaction::SessionSetting::AccessLevel::SESSION_LVL_PERSO,
                  proprietaryInformation[SEL_KVCS_OFFSET])
             .kvc(PoTransaction::SessionSetting::AccessLevel::SESSION_LVL_LOAD,
@@ -443,49 +441,45 @@ FileType CalypsoPoUtils::getEfTypeFromPoValue(const uint8_t efType)
 std::unique_ptr<FileHeader> CalypsoPoUtils::createFileHeader(
     const std::vector<uint8_t>& proprietaryInformation)
 {
-    const FileType fileType =
-        getEfTypeFromPoValue(proprietaryInformation[SEL_EF_TYPE_OFFSET]);
+    const FileType fileType = getEfTypeFromPoValue(proprietaryInformation[SEL_EF_TYPE_OFFSET]);
 
-    int recordSize;
-    int recordsNumber;
+    int lRecordSize;
+    int lRecordsNumber;
 
     if (fileType == FileType::BINARY) {
-        recordSize =
-            ((proprietaryInformation[SEL_REC_SIZE_OFFSET] << 8) & 0x0000ff00) |
-             (proprietaryInformation[SEL_NUM_REC_OFFSET] & 0x000000ff);
-        recordsNumber = 1;
+        lRecordSize = ((proprietaryInformation[SEL_REC_SIZE_OFFSET] << 8) & 0x0000ff00) |
+                       (proprietaryInformation[SEL_NUM_REC_OFFSET] & 0x000000ff);
+        lRecordsNumber = 1;
     } else {
-        recordSize = proprietaryInformation[SEL_REC_SIZE_OFFSET];
-        recordsNumber = proprietaryInformation[SEL_NUM_REC_OFFSET];
+        lRecordSize = proprietaryInformation[SEL_REC_SIZE_OFFSET];
+        lRecordsNumber = proprietaryInformation[SEL_NUM_REC_OFFSET];
     }
 
-    std::vector<uint8_t> accessConditions(SEL_AC_LENGTH);
-    System::arraycopy(proprietaryInformation, SEL_AC_OFFSET, accessConditions,
-                      0, SEL_AC_LENGTH);
+    std::vector<uint8_t> lAccessConditions(SEL_AC_LENGTH);
+    System::arraycopy(proprietaryInformation, SEL_AC_OFFSET, lAccessConditions, 0, SEL_AC_LENGTH);
 
-    std::vector<uint8_t> keyIndexes(SEL_NKEY_LENGTH);
-    System::arraycopy(proprietaryInformation, SEL_NKEY_OFFSET, keyIndexes, 0,
-                      SEL_NKEY_LENGTH);
+    std::vector<uint8_t> lKeyIndexes(SEL_NKEY_LENGTH);
+    System::arraycopy(proprietaryInformation, SEL_NKEY_OFFSET, lKeyIndexes, 0, SEL_NKEY_LENGTH);
 
-    const uint8_t dfStatus = proprietaryInformation[SEL_DF_STATUS_OFFSET];
+    const uint8_t lDfStatus = proprietaryInformation[SEL_DF_STATUS_OFFSET];
 
-    const uint16_t sharedReference =
+    const uint16_t lSharedReference =
         (((proprietaryInformation[SEL_DATA_REF_OFFSET] << 8) & 0xff00) |
          (proprietaryInformation[SEL_DATA_REF_OFFSET + 1] & 0x00ff));
 
-    const uint16_t lid =
+    const uint16_t lLid =
         (((proprietaryInformation[SEL_LID_OFFSET] << 8) & 0xff00) |
          (proprietaryInformation[SEL_LID_OFFSET + 1] & 0x00ff));
 
     return FileHeader::builder()
-               ->lid(lid)
-               .recordsNumber(recordsNumber)
-               .recordSize(recordSize)
+               ->lid(lLid)
+               .recordsNumber(lRecordsNumber)
+               .recordSize(lRecordSize)
                .type(fileType)
-               .accessConditions(accessConditions)
-               .keyIndexes(keyIndexes)
-               .dfStatus(dfStatus)
-               .sharedReference(sharedReference)
+               .accessConditions(lAccessConditions)
+               .keyIndexes(lKeyIndexes)
+               .dfStatus(lDfStatus)
+               .sharedReference(lSharedReference)
                .build();
 }
 
@@ -596,7 +590,7 @@ void CalypsoPoUtils::updateCalypsoPo(
         for (const auto& commandBuilder : commandBuilders) {
             std::shared_ptr<ApduResponse> apduResponse = *responseIterator;
             updateCalypsoPo(calypsoPo, commandBuilder, apduResponse);
-            responseIterator++;
+            ++responseIterator;
         }
     }
 }

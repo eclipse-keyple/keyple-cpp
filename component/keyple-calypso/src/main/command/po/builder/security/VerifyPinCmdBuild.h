@@ -54,13 +54,13 @@ public:
      *
      * @param poClass indicates which CLA byte should be used for the Apdu
      */
-    VerifyPinCmdBuild(const PoClass& poClass);
+    explicit VerifyPinCmdBuild(const PoClass& poClass);
 
     /**
      *
      */
     std::shared_ptr<VerifyPinRespPars> createResponseParser(
-	    std::shared_ptr<ApduResponse> apduResponse) override;
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
     /**
      *

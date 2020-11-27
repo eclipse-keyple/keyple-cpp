@@ -539,7 +539,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
     try {
         rapdu  = transmitApdu(buffer);
     } catch (const KeypleReaderIOException& e) {
-        throw e;
+        throw;
     }
 
     apduResponse = std::make_shared<ApduResponse>(
@@ -561,8 +561,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
     return apduResponse;
 }
 
-std::shared_ptr<ApduResponse>
-AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
+std::shared_ptr<ApduResponse> AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
 {
     mLogger->debug("case4HackGetResponse\n");
 
@@ -574,24 +573,34 @@ AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
     long long elapsed10ms = (timeStamp - mBefore) / 100000;
     mBefore = timeStamp;
 
-    mLogger->debug("[%] case4HackGetResponse => ApduRequest: NAME = "
-                  "\"Internal Get Response\", RAWDATA = %, elapsed = %\n",
-                  getName(), mGetResponseHackRequestBytes, elapsed10ms / 10.0);
+    mLogger->debug("[%] case4HackGetResponse => ApduRequest: NAME = \"Internal Get Response\", "
+                   "RAWDATA = %, elapsed = %\n",
+                   getName(),
+                   mGetResponseHackRequestBytes,
+                   elapsed10ms / 10.0);
 
     std::vector<uint8_t> getResponseHackResponseBytes =
         transmitApdu(mGetResponseHackRequestBytes);
 
-    /* We expect here a 0x9000 status code */
-    std::shared_ptr<ApduResponse> getResponseHackResponse =
+    /*
+     * We expect here a 0x9000 status code
+     *
+     * C++ vs. Java: Careful, Java modifies the byte array *after* having created the ApduResponse
+     *               class - does not work at all in C++. Create a temp ApduRespon object, do the
+     *               buffer modification if necessary and create the final object.
+     */
+    std::shared_ptr<ApduResponse> getResponseHackResponseTemp =
         std::make_shared<ApduResponse>(getResponseHackResponseBytes, nullptr);
 
-    timeStamp    = System::nanoTime();
+    timeStamp = System::nanoTime();
     elapsed10ms = (timeStamp - mBefore) / 100000;
     mBefore = timeStamp;
     mLogger->debug("[%] case4HackGetResponse => Internal %, elapsed % ms\n",
-                  getName(), mGetResponseHackRequestBytes, elapsed10ms / 10.0);
+                   getName(),
+                   mGetResponseHackRequestBytes,
+                   elapsed10ms / 10.0);
 
-    if (getResponseHackResponse->isSuccessful()) {
+    if (getResponseHackResponseTemp->isSuccessful()) {
         /* Replace the two last status word bytes by the original status word */
         getResponseHackResponseBytes[getResponseHackResponseBytes.size() - 2] =
             static_cast<uint8_t>((originalStatusCode & 0xff00) >> 8);
@@ -599,7 +608,7 @@ AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
             static_cast<uint8_t>(originalStatusCode & 0x00ff);
     }
 
-    return getResponseHackResponse;
+    return std::make_shared<ApduResponse>(getResponseHackResponseBytes, nullptr);
 }
 
 void AbstractLocalReader::closeLogicalAndPhysicalChannels()
@@ -609,9 +618,9 @@ void AbstractLocalReader::closeLogicalAndPhysicalChannels()
     try {
         closePhysicalChannel();
     } catch (const KeypleReaderIOException& e) {
-        mLogger->debug("[%] Exception occurred in "
-                      "closeLogicalAndPhysicalChannels. Message: %\n",
-                      getName(), e.getMessage());
+        mLogger->debug("[%] Exception occurred in closeLogicalAndPhysicalChannels. Message: %\n",
+                       getName(),
+                       e.getMessage());
     }
 }
 
@@ -621,13 +630,10 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processExplicitAidSelection(
     std::shared_ptr<ApduResponse> fciResponse;
     const std::vector<uint8_t> aid = aidSelector.getAidToSelect();
 
-    if (aid.empty()) {
-        throw IllegalArgumentException(
-            "AID must not be null for an AidSelector");
-    }
+    if (aid.empty())
+        throw IllegalArgumentException("AID must not be null for an AidSelector");
 
-    mLogger->debug("[%] openLogicalChannel => Select Application with AID = %\n",
-		          getName(), aid);
+    mLogger->debug("[%] openLogicalChannel => Select Application with AID = %\n", getName(), aid);
 
     /*
      * build a get response command the actual length expected by the SE in the
@@ -637,29 +643,31 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processExplicitAidSelection(
     selectApplicationCommand.push_back(0x00); // CLA
     selectApplicationCommand.push_back(0xA4); // INS
     selectApplicationCommand.push_back(0x04); // P1: select by name
+
     /*
      * P2: b0,b1 define the File occurrence, b2,b3 define the File control
      * information. We use the bitmask defined in the respective enums.
      */
-    selectApplicationCommand.push_back(
-        aidSelector.getFileOccurrence().getIsoBitMask() |
-        aidSelector.getFileControlInformation().getIsoBitMask());
-    selectApplicationCommand.push_back((uint8_t)(aid.size()));     // Lc
-    selectApplicationCommand.insert(selectApplicationCommand.end(), aid.begin(),
-                                    aid.end()); // data
-    selectApplicationCommand.push_back(0x00);                    // Le
+    selectApplicationCommand.push_back(aidSelector.getFileOccurrence().getIsoBitMask() |
+                                       aidSelector.getFileControlInformation().getIsoBitMask());
+    selectApplicationCommand.push_back((uint8_t)(aid.size()));                               // Lc
+    selectApplicationCommand.insert(selectApplicationCommand.end(), aid.begin(), aid.end()); // Data
+    selectApplicationCommand.push_back(0x00);                                                // Le
 
     /*
-     * we use here processApduRequest to manage case 4 hack. The successful
-     * status codes list for this command is provided.
+     * We use here processApduRequest to manage case 4 hack. The successful status codes list for
+     * this command is provided.
      */
     fciResponse = processApduRequest(std::make_shared<ApduRequest>(
-        "Internal Select Application", selectApplicationCommand, true,
-        aidSelector.getSuccessfulSelectionStatusCodes()));
+                      "Internal Select Application",
+                      selectApplicationCommand,
+                      true,
+                      aidSelector.getSuccessfulSelectionStatusCodes()));
 
     if (!fciResponse->isSuccessful()) {
-        mLogger->debug("[%] openLogicalChannel => Application Selection "
-                      "failed. SELECTOR = %\n", getName(), aidSelector);
+        mLogger->debug("[%] openLogicalChannel => Application Selection failed. SELECTOR = %\n",
+                       getName(),
+                       aidSelector);
     }
 
     return fciResponse;
@@ -678,8 +686,10 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::recoverSelectionFciData(
 
     /* The successful status codes list for this command is provided */
     fciResponse = processApduRequest(std::make_shared<ApduRequest>(
-        "Internal Get Data", getDataCommand, false,
-        aidSelector.getSuccessfulSelectionStatusCodes()));
+                      "Internal Get Data",
+                      getDataCommand,
+                      false,
+                      aidSelector.getSuccessfulSelectionStatusCodes()));
 
     if (!fciResponse->isSuccessful()) {
         mLogger->debug("[%] selectionGetData => Get data failed. SELECTOR = "

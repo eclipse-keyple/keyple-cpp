@@ -92,7 +92,8 @@ public:
     MOCK_METHOD(void,
                 setDefaultSelectionRequest,
                 (std::shared_ptr<AbstractDefaultSelectionsRequest>,
-                 NotificationMode, PollingMode),
+                 const NotificationMode&,
+                 PollingMode),
                 (override));
 
     MOCK_METHOD(const TransmissionMode&,
@@ -102,8 +103,7 @@ public:
 
     MOCK_METHOD(void,
                 setDefaultSelectionRequest,
-                (std::shared_ptr<AbstractDefaultSelectionsRequest>,
-                 NotificationMode),
+                (std::shared_ptr<AbstractDefaultSelectionsRequest>, const NotificationMode&),
                 (override));
 
     MOCK_METHOD(void,

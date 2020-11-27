@@ -393,7 +393,7 @@ public:
 class GenericSeSelectionRequest final
 : public AbstractSeSelectionRequest<AbstractApduCommandBuilder> {
 public:
-    GenericSeSelectionRequest(std::shared_ptr<SeSelector> seSelector)
+    explicit GenericSeSelectionRequest(std::shared_ptr<SeSelector> seSelector)
     : AbstractSeSelectionRequest(seSelector),
       mTransmissionMode(seSelector->getSeProtocol()->getTransmissionMode()) {}
 

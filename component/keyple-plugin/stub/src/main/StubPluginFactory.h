@@ -36,7 +36,7 @@ public:
      *
      * @param pluginName name of the plugin that will be instantiated
      */
-    StubPluginFactory(const std::string& pluginName);
+    explicit StubPluginFactory(const std::string& pluginName);
 
     /**
      *

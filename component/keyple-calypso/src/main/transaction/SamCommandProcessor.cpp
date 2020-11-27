@@ -78,6 +78,7 @@ SamCommandProcessor::SamCommandProcessor(
   mPoSecuritySettings(poSecuritySettings),
   mSessionEncryption(false),
   mVerificationMode(false),
+  mWorkKeyRecordNumber(0),
   mWorkKeyKif(0),
   mWorkKeyKVC(0),
   mIsDiversificationDone(false),
@@ -166,18 +167,17 @@ const std::vector<uint8_t> SamCommandProcessor::getSessionTerminalChallenge()
     return sessionTerminalChallenge;
 }
 
-uint8_t SamCommandProcessor::determineWorkKif(const uint8_t poKif,
-                                              const AccessLevel& accessLevel)
+uint8_t SamCommandProcessor::determineWorkKif(const uint8_t poKif, const AccessLevel& accessLevel)
     const
 {
-    uint8_t kif;
+    uint8_t workKif;
 
     if (poKif == KIF_UNDEFINED)
-        kif = mPoSecuritySettings->getSessionDefaultKif(accessLevel);
+        workKif = mPoSecuritySettings->getSessionDefaultKif(accessLevel);
     else
-        kif = poKif;
+        workKif = poKif;
 
-    return kif;
+    return workKif;
 }
 
 void SamCommandProcessor::initializeDigester(
@@ -186,7 +186,7 @@ void SamCommandProcessor::initializeDigester(
     const bool verificationMode,
     const uint8_t poKif,
     const uint8_t poKVC,
-    const std::vector<uint8_t> digestData)
+    const std::vector<uint8_t>& digestData)
 {
     mSessionEncryption = sessionEncryption;
     mVerificationMode = verificationMode;
@@ -415,8 +415,11 @@ const std::vector<std::shared_ptr<ApduRequest>> SamCommandProcessor::getApduRequ
     std::vector<std::shared_ptr<ApduRequest>> apduRequests;
 
     if (!samCommands.empty()) {
-        for (const auto& commandBuilder : samCommands)
-            apduRequests.push_back(commandBuilder->getApduRequest());
+        std::for_each(samCommands.begin(),
+                      samCommands.end(),
+                      [&](const std::shared_ptr<AbstractSamCommandResponse>& r) {
+                          apduRequests.push_back(r->getApduRequest());
+                      });
     }
 
     return apduRequests;
@@ -425,17 +428,17 @@ const std::vector<std::shared_ptr<ApduRequest>> SamCommandProcessor::getApduRequ
 const std::vector<uint8_t> SamCommandProcessor::getCipheredPinData(
     const std::vector<uint8_t>& poChallenge,
     const std::vector<uint8_t>& currentPin,
-    const std::vector<uint8_t> newPin)
+    const std::vector<uint8_t>& newPin)
 {
     std::vector<std::shared_ptr<AbstractSamCommandResponse>> samCommands;
-    std::shared_ptr<KeyReference> pinCipheringKey;
+    std::shared_ptr<KeyReference> pinCipheringKeyRef;
 
     if (mWorkKeyKif != 0) {
         /* The current work key has been set (a secure session is open) */
-        pinCipheringKey = std::make_shared<KeyReference>(mWorkKeyKif, mWorkKeyKVC);
+        pinCipheringKeyRef = std::make_shared<KeyReference>(mWorkKeyKif, mWorkKeyKVC);
     } else {
         /* No current work key is available (outside secure session) */
-        pinCipheringKey = mPoSecuritySettings->getDefaultPinCipheringKey();
+        pinCipheringKeyRef = mPoSecuritySettings->getDefaultPinCipheringKey();
     }
 
     if (!mIsDiversificationDone) {
@@ -466,12 +469,12 @@ const std::vector<uint8_t> SamCommandProcessor::getCipheredPinData(
 
     auto cardCipherPinCmdBuild = std::make_shared<CardCipherPinCmdBuild>(
                                      mSamResource->getMatchingSe()->getSamRevision(),
-                                     pinCipheringKey,
+                                     pinCipheringKeyRef,
                                      currentPin,
                                      newPin);
     auto cipher = std::make_shared<CardCipherPinCmdBuild>(
                       mSamResource->getMatchingSe()->getSamRevision(),
-                      pinCipheringKey,
+                      pinCipheringKeyRef,
                       currentPin,
                       newPin);
     cmd = std::reinterpret_pointer_cast<AbstractSamCommandResponse>(cipher);
