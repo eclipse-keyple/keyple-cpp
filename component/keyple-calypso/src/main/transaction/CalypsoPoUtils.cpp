@@ -313,6 +313,7 @@ std::shared_ptr<VerifyPinRespPars> CalypsoPoUtils::updateCalypsoVerifyPin(
          * Forward the exception if the operation do not target the reading of the attempt counter.
          * Catch it silently otherwise
          */
+        (void)ex;
         if (!verifyPinCmdBuild->isReadCounterOnly())
             throw;
     }
