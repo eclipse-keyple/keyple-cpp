@@ -44,7 +44,7 @@ INCLUDE_DIRECTORIES(
 	/* Helpers */
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/exception
-	
+
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main/command/po
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main/command/sam
@@ -97,7 +97,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractLocalReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservableLocalReader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/AbstractObservableState.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/MonitoringPool.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/ExecutorService.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/seproxy/plugin/ObservableReaderStateService.cpp
 
 	# seproxy - plugin

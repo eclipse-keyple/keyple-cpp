@@ -53,7 +53,7 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName, const PcscTerminal
 : AbstractObservableLocalReader(pluginName, terminal.getName()),
   mLoopWaitSe(false),
   mLoopWaitSeRemoval(false),
-  mExecutorService(std::make_shared<MonitoringPool>()),
+  mExecutorService(std::make_shared<ExecutorService>()),
   mTerminal(terminal),
   mTransmissionMode(TransmissionMode::NONE)
 {

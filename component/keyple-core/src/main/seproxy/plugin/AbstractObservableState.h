@@ -19,7 +19,7 @@
 /* Core */
 #include "AbstractMonitoringJob.h"
 #include "KeypleCoreExport.h"
-#include "MonitoringPool.h"
+#include "ExecutorService.h"
 
 namespace keyple {
 namespace core {
@@ -103,7 +103,7 @@ protected:
     /**
      * Executor service used to execute AbstractMonitoringJob
      */
-    std::shared_ptr<MonitoringPool> mExecutorService;
+    std::shared_ptr<ExecutorService> mExecutorService;
 
     /**
      *
@@ -122,7 +122,7 @@ protected:
     AbstractObservableState(MonitoringState state,
                             AbstractObservableLocalReader* reader,
                             std::shared_ptr<AbstractMonitoringJob> monitoringJob,
-                            std::shared_ptr<MonitoringPool> executorService);
+                            std::shared_ptr<ExecutorService> executorService);
 
     /**
      * Create a new state with a state identifier
