@@ -124,6 +124,7 @@ std::shared_ptr<SeResponse> AbstractReader::transmitSeRequest(std::shared_ptr<Se
     try {
         seResponse = processSeRequest(seRequest, channelControl);
     } catch (const KeypleReaderIOException& ex) {
+        (void)ex;
         timeStamp = System::nanoTime();
         elapsed10ms = (timeStamp - mBefore) / 100000;
         mBefore = timeStamp;

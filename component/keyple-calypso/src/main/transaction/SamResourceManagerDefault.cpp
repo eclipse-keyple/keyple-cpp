@@ -166,6 +166,7 @@ std::shared_ptr<SeResource<CalypsoSam>>
                  *               as this scenario is quite unlikely to happen,
                  *               will throw instead for now.
                  */
+                (void)e;
                 //Thread::currentThread()->interrupt();
                 mLogger->error("Interrupt exception in Thread::sleep\n");
                 throw;
