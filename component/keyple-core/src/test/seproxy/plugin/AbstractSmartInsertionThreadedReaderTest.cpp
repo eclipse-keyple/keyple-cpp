@@ -20,7 +20,7 @@
 #include "AbstractObservableState.h"
 #include "CardAbsentPingMonitoringJob.h"
 #include "InterruptedException.h"
-#include "MonitoringPool.h"
+#include "ExecutorService.h"
 #include "ObservableReaderStateService.h"
 #include "SmartInsertionMonitoringJob.h"
 #include "Thread.h"
@@ -186,8 +186,7 @@ private:
 
     int mMockDetect;
     int mDetectCount = 0;
-    std::shared_ptr<MonitoringPool> mExecutorService =
-        std::make_shared<MonitoringPool>();
+    std::shared_ptr<ExecutorService> mExecutorService = std::make_shared<ExecutorService>();
     std::vector<uint8_t> mAtr;
     std::vector<uint8_t> mRApdu;
     std::map<const std::string, const std::string> mParameters;

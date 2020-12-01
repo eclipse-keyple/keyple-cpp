@@ -16,10 +16,14 @@
 #include "AbstractMonitoringJob.h"
 
 #include <future>
+#include <typeinfo>
 #include <vector>
 
 /* Core */
 #include "KeypleCoreExport.h"
+
+/* Common */
+#include "LoggerFactory.h"
 
 namespace keyple {
 namespace core {
@@ -28,12 +32,19 @@ namespace plugin {
 
 class AbstractObservableState;
 
-class KEYPLECORE_API MonitoringPool final {
+using namespace keyple::common;
+
+class KEYPLECORE_API ExecutorService final {
 public:
     /**
      *
      */
-    MonitoringPool();
+    ExecutorService();
+
+    /**
+     *
+     */
+    ~ExecutorService();
 
     /**
      *
@@ -46,19 +57,44 @@ public:
      * /!\ MSVC requires operator= to be deleted because of std::future
      * not being copyable.
      */
-    MonitoringPool& operator=(MonitoringPool o) = delete;
+    ExecutorService& operator=(ExecutorService o) = delete;
 
     /**
      * /!\ MSVC requires copy constructor to be deleted because of std::future
      * not being copyable.
      */
-    MonitoringPool(const MonitoringPool& o) = delete;
+    ExecutorService(const ExecutorService& o) = delete;
 
 private:
     /**
      *
      */
     std::vector<std::future<void>> mPool;
+
+    /**
+     *
+     */
+    std::thread* mThread;
+
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> mLogger = LoggerFactory::getLogger(typeid(ExecutorService));
+
+    /**
+     *
+     */
+    void run();
+
+    /**
+     *
+     */
+    std::atomic<bool> mRunning;
+
+    /**
+     *
+     */
+    std::atomic<bool> mTerminated;
 };
 
 }

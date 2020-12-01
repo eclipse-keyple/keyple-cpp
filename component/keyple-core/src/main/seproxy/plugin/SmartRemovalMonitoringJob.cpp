@@ -55,7 +55,7 @@ void SmartRemovalMonitoringJob::monitoringJob(AbstractObservableState* state,
     } catch (const KeypleReaderIOException& e) {
         mLogger->trace("[%] waitForCardAbsent => Error while polling SE with waitForCardAbsent, %\n",
                        mReader->getName(),
-			           e.getMessage());
+                       e.getMessage());
 
         state->onEvent(InternalEvent::STOP_DETECT);
     }
@@ -66,7 +66,7 @@ void SmartRemovalMonitoringJob::monitoringJob(AbstractObservableState* state,
 std::future<void> SmartRemovalMonitoringJob::startMonitoring(AbstractObservableState* state,
                                                              std::atomic<bool>& cancellationFlag)
 {
-    return std::async(std::launch::async,
+    return std::async(std::launch::deferred,
                       &SmartRemovalMonitoringJob::monitoringJob,
                       this,
                       state,

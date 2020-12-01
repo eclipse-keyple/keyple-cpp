@@ -30,7 +30,7 @@ AbstractObservableState::AbstractObservableState(
   MonitoringState state,
   AbstractObservableLocalReader* reader,
   std::shared_ptr<AbstractMonitoringJob> mMonitoringJob,
-  std::shared_ptr<MonitoringPool> executorService)
+  std::shared_ptr<ExecutorService> executorService)
 : mMonitoringJob(mMonitoringJob),
   mState(state),
   mReader(reader),
@@ -79,9 +79,9 @@ void AbstractObservableState::onDeactivate()
 
     mLogger->trace("[%] onDeactivate => %\n", mReader->getName(), getMonitoringState());
 
-    /* Cancel the mMonitoringJob is necessary */
-    if (mMonitoringEvent != nullptr &&
-        mMonitoringEvent->wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
+    /* Cancel the mMonitoringJob if necessary */
+    if (mMonitoringEvent != nullptr) {// &&
+        //mMonitoringEvent->wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
 
         mLogger->debug("onDeactivate - cancelling monitoring job\n");
         mMonitoringJob->stop();

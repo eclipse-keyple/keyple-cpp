@@ -24,7 +24,7 @@
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
-#include "MonitoringPool.h"
+#include "ExecutorService.h"
 #include "ObservableReaderStateService.h"
 #include "ReaderEvent.h"
 #include "SmartInsertionReader.h"
@@ -154,7 +154,7 @@ protected:
     /**
      *
      */
-    std::shared_ptr<MonitoringPool> mExecutorService;
+    std::shared_ptr<ExecutorService> mExecutorService;
 
     /**
      *
@@ -210,7 +210,7 @@ private:
     std::atomic<bool> mLoopWaitSeRemoval;
 
     /**
-     * 
+     *
      */
     std::mutex mMutex;
 };

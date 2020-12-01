@@ -50,7 +50,7 @@ StubReaderImpl::StubReaderImpl(const std::string& pluginName,
                                const std::string& readerName,
                                TransmissionMode transmissionMode)
 : AbstractObservableLocalReader(pluginName, readerName),
-  mExecutorService(std::make_shared<MonitoringPool>()),
+  mExecutorService(std::make_shared<ExecutorService>()),
   mTransmissionMode(transmissionMode),
   mLoopWaitSe(false),
   mLoopWaitSeRemoval(false)

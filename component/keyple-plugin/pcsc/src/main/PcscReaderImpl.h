@@ -18,7 +18,7 @@
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
-#include "MonitoringPool.h"
+#include "ExecutorService.h"
 #include "ReaderEvent.h"
 #include "SmartInsertionReader.h"
 #include "SmartRemovalReader.h"
@@ -266,7 +266,7 @@ private:
     /**
      *
      */
-    std::shared_ptr<MonitoringPool> mExecutorService;
+    std::shared_ptr<ExecutorService> mExecutorService;
 
     /**
      * clang compiler warning - not used
