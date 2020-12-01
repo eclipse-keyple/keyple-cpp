@@ -23,7 +23,7 @@
 #include "AbstractThreadedObservablePlugin.h"
 #include "CountDownLatch.h"
 #include "InterruptedException.h"
-#include "MonitoringPool.h"
+#include "ExecutorService.h"
 #include "ReaderPlugin.h"
 #include "KeyplePluginInstantiationException.h"
 #include "KeyplePluginNotFoundException.h"
@@ -257,7 +257,7 @@ TEST(SeProxyServiceTest, testRegister_MultiThread)
     std::atomic<int> overlaps;
 
     int threads = 10;
-    MonitoringPool service;
+    ExecutorService service;
     std::vector<std::future<void>> futures;
 
     for (int t = 0; t < threads; ++t) {
@@ -322,7 +322,7 @@ TEST(SeProxyServiceTest, unregisterMultiThread)
     std::atomic<int> overlaps;
 
     int threads = 10;
-    MonitoringPool service;
+    ExecutorService service;
     std::vector<std::future<void>> futures;
 
     for (int t = 0; t < threads; ++t) {

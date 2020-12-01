@@ -32,6 +32,7 @@
 /* Calypso */
 #include "AppendRecordRespPars.h"
 #include "CalypsoPoCommandException.h"
+#include "CalypsoPoIOException.h"
 #include "CalypsoPo.h"
 #include "ReadRecordsRespPars.h"
 
@@ -48,6 +49,7 @@ namespace transaction {
 using namespace keyple::calypso::command::po::exception;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::calypso::transaction;
+using namespace keyple::calypso::transaction::exception;
 using namespace keyple::example::calypso::common::postructure;
 using namespace keyple::example::generic::common;
 using namespace keyple::core::seproxy;

@@ -24,7 +24,7 @@ WaitForSeRemoval::WaitForSeRemoval(AbstractObservableLocalReader* reader)
 WaitForSeRemoval::WaitForSeRemoval(
   AbstractObservableLocalReader* reader,
   std::shared_ptr<AbstractMonitoringJob> monitoringJob,
-  std::shared_ptr<MonitoringPool> executorService)
+  std::shared_ptr<ExecutorService> executorService)
 : AbstractObservableState(MonitoringState::WAIT_FOR_SE_REMOVAL,
                           reader,
                           monitoringJob,

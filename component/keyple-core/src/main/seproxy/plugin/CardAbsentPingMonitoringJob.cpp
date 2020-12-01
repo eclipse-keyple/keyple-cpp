@@ -90,7 +90,7 @@ void CardAbsentPingMonitoringJob::stop()
 std::future<void> CardAbsentPingMonitoringJob::startMonitoring(
     AbstractObservableState* state, std::atomic<bool>& cancellationFlag)
 {
-    return std::async(std::launch::async,
+    return std::async(std::launch::deferred,
                       &CardAbsentPingMonitoringJob::monitoringJob, this, state,
                       std::ref(cancellationFlag));
 }

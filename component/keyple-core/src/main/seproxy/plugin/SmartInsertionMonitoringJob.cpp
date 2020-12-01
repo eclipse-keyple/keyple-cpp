@@ -68,7 +68,7 @@ void SmartInsertionMonitoringJob::monitoringJob(AbstractObservableState* state,
 std::future<void> SmartInsertionMonitoringJob::startMonitoring(AbstractObservableState* state,
                                                                std::atomic<bool>& cancellationFlag)
 {
-    return std::async(std::launch::async,
+    return std::async(std::launch::deferred,
                       &SmartInsertionMonitoringJob::monitoringJob,
                       this,
                       state,

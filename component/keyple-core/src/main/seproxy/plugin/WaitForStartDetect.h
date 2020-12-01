@@ -18,7 +18,7 @@
 #include "AbstractObservableLocalReader.h"
 #include "AbstractObservableState.h"
 #include "KeypleCoreExport.h"
-#include "MonitoringPool.h"
+#include "ExecutorService.h"
 
 /* Common */
 #include "LoggerFactory.h"
@@ -49,7 +49,7 @@ public:
      */
     WaitForStartDetect(AbstractObservableLocalReader* reader,
                        std::shared_ptr<AbstractMonitoringJob> monitoringJob,
-                       std::shared_ptr<MonitoringPool> executorService);
+                       std::shared_ptr<ExecutorService> executorService);
 
     /**
      *
