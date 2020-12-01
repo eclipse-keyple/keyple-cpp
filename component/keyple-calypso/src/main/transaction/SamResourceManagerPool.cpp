@@ -100,6 +100,7 @@ std::shared_ptr<SeResource<CalypsoSam>> SamResourceManagerPool::allocateSamResou
                      *               scenario is unlikely to happen so throw
                      *               for now.
                      */
+                    (void)e;
                     //Thread::currentThread()->interrupt();
                     mLogger->error("Interrupt exception in Thread::sleep\n");
                     throw;
