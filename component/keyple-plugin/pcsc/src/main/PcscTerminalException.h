@@ -19,7 +19,7 @@ namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-using namespace keyple::common;
+using namespace keyple::common::exception;
 
 class PcscTerminalException : public Exception {
 public:

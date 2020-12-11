@@ -35,7 +35,7 @@ namespace calypso {
 namespace command {
 namespace sam {
 
-using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
@@ -86,8 +86,7 @@ public:
             std::dynamic_pointer_cast<CalypsoSamCommand>(mCommandRef);
 
         if (cmd == nullptr)
-            throw InstantiationException(
-                      "mCommandRef conversion to CalypsoSamCommand failed");
+            throw InstantiationException("mCommandRef conversion to CalypsoSamCommand failed");
 
         return cmd;
     }
