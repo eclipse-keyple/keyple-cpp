@@ -230,8 +230,6 @@ void PcscReaderImpl::stopWaitForCardRemoval()
 
 std::vector<uint8_t> PcscReaderImpl::transmitApdu(const std::vector<uint8_t>& apduIn)
 {
-    mLogger->debug("transmitApdu\n");
-
     std::vector<uint8_t> response;
 
     try {
