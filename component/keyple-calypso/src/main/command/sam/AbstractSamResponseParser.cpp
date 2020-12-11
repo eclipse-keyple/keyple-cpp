@@ -134,6 +134,7 @@ void AbstractSamResponseParser::checkStatus() const
     try {
         AbstractApduResponseParser::checkStatus();
     } catch (const KeypleSeCommandException& e) {
+        (void)e;
         throw;
     }
 }
