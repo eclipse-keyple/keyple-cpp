@@ -22,6 +22,8 @@
 namespace keyple {
 namespace common {
 
+using namespace keyple::common::exception;
+
 class Integer {
 private:
     /*

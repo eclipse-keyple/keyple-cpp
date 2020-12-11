@@ -21,7 +21,7 @@ namespace core {
 namespace seproxy {
 namespace exception {
 
-using namespace keyple::common;
+using namespace keyple::common::exception;
 
 /**
  * Base Exception for all Keyple Checked Exception
