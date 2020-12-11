@@ -539,6 +539,7 @@ std::shared_ptr<ApduResponse> AbstractLocalReader::processApduRequest(
     try {
         rapdu  = transmitApdu(buffer);
     } catch (const KeypleReaderIOException& e) {
+        (void)e;
         throw;
     }
 
