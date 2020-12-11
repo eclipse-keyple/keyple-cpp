@@ -22,6 +22,8 @@
 namespace keyple {
 namespace common {
 
+using namespace keyple::common::exception;
+
 Matcher::Matcher(const Pattern* parent, const std::string& text)
 : mParentPattern(parent), mText(text)
 {
