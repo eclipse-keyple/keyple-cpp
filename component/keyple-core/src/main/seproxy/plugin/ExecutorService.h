@@ -79,11 +79,6 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> mLogger = LoggerFactory::getLogger(typeid(ExecutorService));
-
-    /**
-     *
-     */
     void run();
 
     /**
