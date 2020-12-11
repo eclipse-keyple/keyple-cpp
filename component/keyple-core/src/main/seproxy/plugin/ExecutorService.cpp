@@ -29,33 +29,24 @@ ExecutorService::ExecutorService() : mRunning(true), mTerminated(false)
 
 ExecutorService::~ExecutorService()
 {
-    mLogger->error("~ExecutorService - shutting down\n");
-
     mRunning = false;
 
     while (!mTerminated)
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-    mLogger->error("~ExecutorService - shut down\n");
 }
 
 void ExecutorService::run()
 {
     /* Emulates a SingleThreadExecutor (e.g. only one thread at a time) */
-    mLogger->error("run - starting executor monitoring thread\n");
 
     while (mRunning) {
         if (mPool.size()) {
             /* Start first service and wait until completion */
             std::future<void>& current = mPool[0];
-            mLogger->error("run - executing new job\n");
             current.wait();
-            mLogger->error("run - job complete\n");
 
             /* Remove from vector */
-            mLogger->error("run - removing job from list\n");
             mPool.erase(mPool.begin());
-            mLogger->error("run - pool size: %\n", mPool.size());
         }
     }
 
@@ -66,9 +57,7 @@ std::future<void>* ExecutorService::submit(std::shared_ptr<AbstractMonitoringJob
                                            AbstractObservableState* state,
                                            std::atomic<bool>& cancellationFlag)
 {
-    mLogger->error("submit - adding job to queue - state: %\n", state->getMonitoringState());
     mPool.push_back(monitoringJob->startMonitoring(state, cancellationFlag));
-    mLogger->error("submit - pool size: %\n", mPool.size());
 
     return &mPool.back();
 }
