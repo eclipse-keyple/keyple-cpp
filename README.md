@@ -1,6 +1,6 @@
 # 'Eclipse Keyple' C++ implementation
 
-This is the repository for the C++ implementation of the 'Eclipse [Keyple](https://keyple.org/)' API.
+This is the repository for the C++ implementation of the '[Eclipse Keyple](https://keyple.org/)' API.
 
  - [Global Architecture of Keyple](#global-architecture-of-keyple)
    - [Supported platforms](#supported-platforms)
@@ -28,11 +28,11 @@ Dedicated reader’s plugins have to be implemented in order to interface the SE
 - Windows / Linux / MacOS
 - G++ 6 and higher, MSVC++ 14 (other compilers untested)
 
-### keyple-java repositories structure
+### keyple-cpp repositories structure
 
 - Modules that are provided as artifacts
-  - keyple-core: source and unit tests for the SE Proxy module (artifact : keyple-java-core)
-  - keyple-calypso: source and unit tests for the Calypso library (artifact : keyple-java-calypso)
+  - keyple-core: source and unit tests for the SE Proxy module (artifact : keyple-cpp-core)
+  - keyple-calypso: source and unit tests for the Calypso library (artifact : keyple-cpp-calypso)
   - keyple-plugin: source and unit tests for the different plugins: PC/SC, Stub, etc.
 - Developer support, testing
   - example: source for Keyple implementation examples, generic or Calypso specific.
@@ -106,3 +106,13 @@ make
 
 If using Windows or IDEs, CMake support must be installed. Compilation should automatically be handled.
 
+## Trademarks
+
+* Eclipse Keyple and the Eclipse Keyple project are Trademarks of the Eclipse Foundation, Inc.
+* Eclipse® is a Trademark of the Eclipse Foundation, Inc.
+* Eclipse Foundation is a Trademark of the Eclipse Foundation, Inc.
+
+## Copyright and license
+
+Copyright 2020 the [Eclipse Foundation, Inc.](https://www.eclipse.org) and the [Keyple C++ authors](https://github.com/eclipse/keyple-cpp/graphs/contributors). 
+Code released under the [Eclipse Public License Version 2.0 (EPL-2.0)](https://github.com/eclipse/keyple-cpp/blob/src/LICENSE).
