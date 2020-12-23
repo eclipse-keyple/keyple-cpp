@@ -53,7 +53,7 @@ public:
      * Get the default reader for SAM communications
      *
      * @param seProxyService the current ProxyService
-     * @return a {@link SeResource} object
+     * @return a keyple::core::selection::SeResource<T> object
      * @throw KeypleException if an error occurred
      */
     static std::shared_ptr<SeResource<CalypsoSam>> getDefaultSamResource();

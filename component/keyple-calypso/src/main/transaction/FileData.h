@@ -68,7 +68,7 @@ public:
      *
      * @param numRecord the record number
      * @return a not empty reference to the record content.
-     * @throws NoSuchElementException if record #numRecord is not set.
+     * @throws NoSuchElementException if record numRecord is not set.
      * @since 0.9
      */
     const std::vector<uint8_t>& getContent(const int numRecord) const;
@@ -83,7 +83,7 @@ public:
      * @return a copy not empty of the record subset content.
      * @throw IllegalArgumentException if dataOffset {@code <} 0 or dataLength
      *        {@code <} 1.
-     * @throw NoSuchElementException if record #numRecord is not set.
+     * @throw NoSuchElementException if record numRecord is not set.
      * @throw IndexOutOfBoundsException if dataOffset {@code >=} content length
      *        or (dataOffset + dataLength) {@code >} content length.
      * @since 0.9
@@ -94,7 +94,7 @@ public:
 
 
     /**
-     * Gets the known value of the counter #numCounter.<br>
+     * Gets the known value of the counter numCounter.<br>
      * The counter value is extracted from the 3 next bytes at the index
      * [(numCounter - 1) * 3] of the record #1.<br>
      * e.g. if numCounter == 2, then value is extracted from bytes indexes
@@ -124,7 +124,7 @@ public:
 
     /**
      * (package-private)<br>
-     * Set or replace the entire content of the specified record #numRecord by
+     * Set or replace the entire content of the specified record numRecord by
      * the provided content.
      *
      * @param numRecord the record number (should be {@code >=} 1)
@@ -143,7 +143,7 @@ public:
 
     /**
      * (package-private)<br>
-     * Set or replace the content at the specified offset of record #numRecord
+     * Set or replace the content at the specified offset of record numRecord
      * by a copy of the provided content.<br>
      * If actual record content is not set or has a size {@code <} offset, then
      * missing data will be padded with 0.
@@ -158,7 +158,7 @@ public:
 
     /**
      * (package-private)<br>
-     * Fill the content of the specified #numRecord using a binary OR operation
+     * Fill the content of the specified numRecord using a binary OR operation
      * with the provided content.<br>
      * If actual record content is not set or has a size {@code <} content size,
      * then missing data will be completed by the provided content.

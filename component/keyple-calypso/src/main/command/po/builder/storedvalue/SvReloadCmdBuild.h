@@ -96,10 +96,10 @@ public:
      * Create the response parser.
      * <p>
      * A check is made to see if the object has been finalized. If not, an exception
-     * {@link IllegalStateException} is thrown.
+     * keyple::common::exception::IllegalStateException is thrown.
      *
      * @param apduResponse the response data from the SE
-     * @return a {@link SvReloadRespPars} object
+     * @return a keyple::calypso::command::po::parser::storedvalue::SvReloadRespPars object
      */
     std::shared_ptr<SvReloadRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;

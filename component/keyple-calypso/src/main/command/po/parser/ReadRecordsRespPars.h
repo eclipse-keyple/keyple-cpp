@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -42,10 +41,10 @@ using namespace keyple::calypso::command::po::builder;
 
 /**
  * Read Records (00B2) response parser. See specs: Calypso / page 89 / 9.4.7
- * Read Records The {@link ReadRecordsRespPars} class holds the data resulting
- * from a Read Records command. It provides methods to retrieve these data
- * according to the file structure profile specified in the command preparation
- * step: SINGLE or MULTIPLE RECORD or COUNTER.
+ * Read Records The keyple::calypso::command::po::parser::ReadRecordsRespPars class holds the data
+ * resulting from a Read Records command. It provides methods to retrieve these data according to
+ * the file structure profile specified in the command preparation step: SINGLE or MULTIPLE RECORD
+ * or COUNTER.
  */
 class KEYPLECALYPSO_API ReadRecordsRespPars final
 : public AbstractPoResponseParser {
@@ -60,11 +59,10 @@ public:
                         ReadRecordsCmdBuild* builder);
 
     /**
-     * Parses the Apdu response as a data record (single or multiple), retrieves
-     * the records and place it in an map.
+     * Parses the Apdu response as a data record (single or multiple), retrieves the records and
+     * place it in an map.
      * <p>
-     * The map index follows the PO specification, i.e. starts at 1 for the
-     * first record.
+     * The map index follows the PO specification, i.e. starts at 1 for the first record.
      * <p>
      * An empty map is returned if no data is available.
      *
@@ -76,8 +74,7 @@ protected:
     /**
      *
      */
-    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
-        const override;
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable() const override;
 
 private:
     /**

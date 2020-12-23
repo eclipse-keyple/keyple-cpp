@@ -182,7 +182,7 @@ public:
         };
 
         /**
-         * Builder of {@link AidSelector}
+         * Builder of keyple::core::seproxy::SeSelector::AidSelector
          *
          * @since 0.9
          */
@@ -430,32 +430,29 @@ public:
         /**
          * Sets the SE protocol
          *
-         * @param seProtocol the {@link SeProtocol} of the targeted SE
+         * @param seProtocol the keyple::core::seproxy::protocol::SeProtocol of the targeted SE
          * @return the builder instance
          */
-        virtual SeSelectorBuilder& seProtocol(
-            const std::shared_ptr<SeProtocol> seProtocol);
+        virtual SeSelectorBuilder& seProtocol(const std::shared_ptr<SeProtocol> seProtocol);
 
         /**
          * Sets the SE ATR Filter
          *
-         * @param atrFilter the {@link AtrFilter} of the targeted SE
+         * @param atrFilter the keyple::core::seproxy::SeSelector::AtrFilter of the targeted SE
          * @return the builder instance
          */
-        virtual SeSelectorBuilder& atrFilter(
-            const std::shared_ptr<AtrFilter> atrFilter);
+        virtual SeSelectorBuilder& atrFilter(const std::shared_ptr<AtrFilter> atrFilter);
 
         /**
          * Sets the SE AID Selector
          *
-         * @param aidSelector the {@link AidSelector} of the targeted SE
+         * @param aidSelector the keyple::core::seproxy::SeSelector::AidSelector of the targeted SE
          * @return the builder instance
          */
-        virtual SeSelectorBuilder& aidSelector(
-            const std::shared_ptr<AidSelector> aidSelector);
+        virtual SeSelectorBuilder& aidSelector(const std::shared_ptr<AidSelector> aidSelector);
 
         /**
-         * Build a new {@code SeSelector}.
+         * Build a new keyple::core::seproxy::SeSelector.
          *
          * @return a new instance
          */
@@ -508,21 +505,21 @@ public:
     /**
      * Getter
      *
-     * @return the {@link SeProtocol} provided at construction time
+     * @return the keyple::core::seproxy::protocol::SeProtocol provided at construction time
      */
     virtual const std::shared_ptr<SeProtocol> getSeProtocol() const;
 
     /**
      * Getter
      *
-     * @return the {@link AtrFilter} provided at construction time
+     * @return the keyple::core::seproxy::SeSelector::AtrFilter provided at construction time
      */
     virtual std::shared_ptr<AtrFilter> getAtrFilter() const;
 
     /**
      * Getter
      *
-     * @return the {@link AidSelector} provided at construction time
+     * @return the keyple::core::seproxy::SeSelector::AidSelector provided at construction time
      */
     virtual std::shared_ptr<AidSelector> getAidSelector() const;
 

@@ -27,8 +27,8 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
 
 /**
- * The {@link PoSelector} class extends {@link SeSelector} to handle specific PO
- * features such as the additional successful status codes list (in response to
+ * The keyple::calypso::transaction::PoSelector class extends keyple::core::seproxy::SeSelector to
+ * handle specific PO features such as the additional successful status codes list (in response to
  * a select application command)
  */
 class KEYPLECALYPSO_API PoSelector final : public SeSelector {
@@ -36,8 +36,8 @@ public:
     /**
      * Indicates if an invalidated PO should be selected or not.
      * <p>
-     * The acceptance of an invalid PO is determined with the additional
-     * successful status codes specified in the {@link AidSelector}
+     * The acceptance of an invalid PO is determined with the additional successful status codes
+     * specified in the keyple::core::seproxy::SeSelector::AidSelector
      */
     enum class InvalidatedPo {
         REJECT,
@@ -59,7 +59,8 @@ public:
         /**
          * Sets the desired behaviour in case of invalidated POs
          *
-         * @param invalidatedPo the {@link InvalidatedPo} wanted behaviour
+         * @param invalidatedPo the keyple::calypso::transaction::PoSelector::InvalidatedPo wanted
+         *        behaviour
          * @return the builder instance
          */
         PoSelectorBuilder& invalidatedPo(const InvalidatedPo invalidatedPo);
@@ -67,8 +68,7 @@ public:
         /**
          * {@inheritDoc}
          */
-        PoSelectorBuilder& seProtocol(
-            const std::shared_ptr<SeProtocol> seProtocol) override;
+        PoSelectorBuilder& seProtocol(const std::shared_ptr<SeProtocol> seProtocol) override;
 
         /**
          * {@inheritDoc}

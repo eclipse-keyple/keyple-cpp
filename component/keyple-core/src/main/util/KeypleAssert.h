@@ -22,8 +22,8 @@ namespace core {
 namespace util {
 
 /**
- * The utility class {@code Assert} exposes very useful methods for testing method call parameters
- * and raising a {@link IllegalArgumentException} unchecked exception.
+ * The utility class KeypleAssert exposes very useful methods for testing method call parameters
+ * and raising a keyple::common::exception::IllegalArgumentException unchecked exception.
  *
  * @since 0.9
  */
@@ -59,25 +59,6 @@ public:
     const KeypleAssert& notEmpty(const std::string& obj, const std::string& name) const;
 
     /**
-     * Assert that a list of objects is not null and not empty.
-     *
-     * @param obj the object to check
-     * @param name the object name
-     * @return the current instance
-     * @throw IllegalArgumentException if object is null or empty
-     * @since 0.9
-     */
-    // const KeypleAssert& notEmpty(List<? extends Object> obj, String name) {
-    //     if (obj == null) {
-    //         throw new IllegalArgumentException("Argument [" + name + "] is null.");
-    //     }
-    //     if (obj.isEmpty()) {
-    //         throw new IllegalArgumentException("Argument [" + name + "] is empty.");
-    //     }
-    //     return INSTANCE;
-    // }
-
-    /**
      * Assert that a byte array is not null and not empty.
      *
      * @param obj the object to check
@@ -86,7 +67,7 @@ public:
      * @throw IllegalArgumentException if object is null or empty
      * @since 0.9
      */
-    const KeypleAssert& notEmpty(const std::vector<uint8_t>& obj,  const std::string& name) const;
+    const KeypleAssert& notEmpty(const std::vector<uint8_t>& obj, const std::string& name) const;
 
     /**
      * Assert that a condition is true.

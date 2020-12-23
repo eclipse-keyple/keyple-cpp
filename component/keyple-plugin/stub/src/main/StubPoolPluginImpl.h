@@ -32,10 +32,11 @@ namespace plugin {
 namespace stub {
 
 /**
- * Simulates a @{@link ReaderPoolPlugin} with {@link StubReaderImpl} and {@link StubSecureElement}
- * Manages allocation readers by group reference, Limitations : - each group can contain only one
- * StubReader thus one StubSecureElement This class uses internally @{@link StubPluginImpl} which is
- * a singleton.
+ * Simulates a keyple::core::seproxy::ReaderPoolPlugin with
+ * keyple::core::seproxy::protocol::TransmissionMode and keyple::plugin::stub::StubSecureElement.
+ * Manages allocation readers by group reference, Limitations :
+ * - each group can contain only one StubReader thus one StubSecureElement This class uses
+ * internally keyple::plugin::stub::StubPluginImpl which is a singleton.
  */
 class StubPoolPluginImpl : public StubPoolPlugin {
 public:

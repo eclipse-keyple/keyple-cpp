@@ -127,52 +127,39 @@ public:
         std::shared_ptr<SeSelector> seSelector);
 
     /**
-     * Open (if needed) a physical channel and try to establish a logical
-     * channel.
+     * Open (if needed) a physical channel and try to establish a logical channel.
      *
      * <p>
-     * The logical opening is done either by sending a Select Application
-     * command (AID based selection) or by checking the current ATR received
-     * from the SE (ATR based selection).
+     * The logical opening is done either by sending a Select Application command (AID based
+     * selection) or by checking the current ATR received from the SE (ATR based selection).
      * <p>
-     * If the selection is successful, the logical channel is considered open.
-     * On the contrary, if the selection fails, the logical channel remains
-     * closed.
+     * If the selection is successful, the logical channel is considered open. On the contrary, if
+     * the selection fails, the logical channel remains closed.
      * <p>
-     * This method relies on the abstracts methods openLogicalChannelByAtr and
-     * openLogicalChannelByAid implemented either by {@link
-     * AbstractSelectionLocalReader} or by any other derived class that provides
-     * a SE selection mechanism (e.g. OmapiReader).
      *
-     * @param seSelector the SE Selector: either the AID of the application to
-     *        select or an ATR selection regular expression
-     * @return a {@link SelectionStatus} object containing the SE ATR, the SE
-     *         FCI and a flag giving the selection process result. When ATR or
-     *         FCI are not available, they are set to null but they can't be
-     *         both null at the same time.
-     * @throw KeypleReaderIOException if the communication with the reader or
-     *         the SE has failed
+     * @param seSelector the SE Selector: either the AID of the application to select or an ATR
+     *        selection regular expression
+     * @return a keyple::core::seproxy::message::SelectionStatus object containing the SE ATR, the
+     *         SE FCI and a flag giving the selection process result. When ATR or FCI are not
+     *         available, they are set to null but they can't be both null at the same time.
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
      */
     std::shared_ptr<SelectionStatus> openLogicalChannelAndSelect(
         std::shared_ptr<SeSelector> seSelector);
 
     /**
-     * Do the transmission of all requests according to the protocol flag
-     * selection logic.<br>
+     * Do the transmission of all requests according to the protocol flag selection logic.<br>
      * <br>
-     * The received responses are returned as {@link List} of {@link SeResponse}
-     * The requests are ordered at application level and the responses match
-     * this order.<br>
-     * When a request is not matching the current PO, the response responses
-     * pushed in the response List object is set to null.
+     * The received responses are returned as list of keyple::core::seproxy::message::SeResponse
+     * The requests are ordered at application level and the responses match this order.<br>
+     * When a request is not matching the current PO, the response responses pushed in the response
+     * List object is set to null.
      *
      * @param seRequests the request list
      * @param multiSeRequestProcessing the multi se processing mode
-     * @param channelControl indicates if the channel has to be closed at the
-     *        end of the processing
+     * @param channelControl indicates if the channel has to be closed at the end of the processing
      * @return the response list
-     * @throw KeypleReaderIOException if the communication with the reader or
-     *        the SE has failed
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
      *
      * /!\ C++ vs. Java: this function is protected in Java
      */
@@ -182,15 +169,15 @@ public:
         const ChannelControl& channelControl) override; //final;
 
     /**
-     * Executes a request made of one or more Apdus and receives their answers.
-     * The selection of the application is handled.
+     * Executes a request made of one or more Apdus and receives their answers. The selection of the
+     * application is handled.
      * <p>
      * The physical channel is closed if requested.
      *
      * @param seRequest the SeRequest
+     * @param channelControl indicates if the channel has to be closed at the end of the processing
      * @return the SeResponse to the SeRequest
-     * @throw KeypleReaderIOException if the communication with the reader or
-     *        the SE has failed
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
      *
      * /!\ C++ vs. Java: this function is protected in Java
      */
@@ -447,7 +434,7 @@ private:
      * <p>
      * The logical channel is closed when requested.
      *
-     * @param seRequest the {@link SeRequest} to be sent
+     * @param seRequest the keyple::core::seproxy::message::SeRequest to be sent
      * @return seResponse
      * @throw KeypleReaderIOException if the communication with the reader or
      *        the SE has failed

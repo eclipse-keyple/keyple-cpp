@@ -66,10 +66,9 @@ public:
     /**
      * Constructor.
      *
-     * @param selectionResponse the response to the selection application
-     *        command
-     * @param transmissionMode the current {@link TransmissionMode} (contacts or
-     *        contactless)
+     * @param selectionResponse the response to the selection application command
+     * @param transmissionMode the current keyple::core::seproxy::protocol::TransmissionMode
+     *        (contacts or contactless)
      */
     CalypsoPo(std::shared_ptr<SeResponse> selectionResponse,
               const TransmissionMode& transmissionMode);
@@ -77,22 +76,21 @@ public:
     /**
      * The PO revision indicates the generation of the product presented.
      * <p>
-     * It will also have an impact on the internal construction of some commands
-     * to take into account the specificities of the different POs.
+     * It will also have an impact on the internal construction of some commands to take into
+     * account the specificities of the different POs.
      *
      * @return an enum giving the identified PO revision
      */
     PoRevision getRevision() const;
 
     /**
-     * The DF name is the name of the application DF as defined in ISO/IEC
-     * 7816-4.
+     * The DF name is the name of the application DF as defined in ISO/IEC 7816-4.
      * <p>
-     * It also corresponds to the complete representation of the target covered
-     * by the AID value provided in the selection command.
+     * It also corresponds to the complete representation of the target covered by the AID value
+     * provided in the selection command.
      * <p>
-     * The AID selects the application by specifying all or part of the targeted
-     * DF Name (5 bytes minimum).
+     * The AID selects the application by specifying all or part of the targeted DF Name (5 bytes
+     * minimum).
      *
      * @return a byte array containing the DF Name bytes (5 to 16 bytes)
      */
@@ -111,20 +109,18 @@ public:
     const std::vector<uint8_t> getApplicationSerialNumberBytes() const;
 
     /**
-     * The Answer To Reset is sent by the PO is ISO7816-3 mode and in
-     * contactless mode for PC/SC readers.
+     * The Answer To Reset is sent by the PO is ISO7816-3 mode and in contactless mode for PC/SC
+     * readers.
      * <p>
-     * When the ATR is obtained in contactless mode, it is in fact reconstructed
-     * by the reader from information obtained from the lower communication
-     * layers. Therefore, it may differ from one reader to another depending on
-     * the interpretation that has been made by the manufacturer of the PC/SC
-     * standard.
+     * When the ATR is obtained in contactless mode, it is in fact reconstructed by the reader from
+     * information obtained from the lower communication layers. Therefore, it may differ from one
+     * reader to another depending on the interpretation that has been made by the manufacturer of
+     * the PC/SC standard.
      * <p>
      * This field is not interpreted in the Calypso module.
      *
      * @return an HEX chain representing the ATR
-     * @throw IllegalStateException if the ATR is not available (see {@code
-     *        hasAtr()} method)
+     * @throw IllegalStateException if the ATR is not available (see {@code hasAtr()} method)
      * @since 0.9
      */
     const std::string getAtr() const;
@@ -145,8 +141,7 @@ public:
     uint8_t getApplicationType() const;
 
     /**
-     * Indicates whether the Confidential Session Mode is supported or not
-     * (since rev 3.2).
+     * Indicates whether the Confidential Session Mode is supported or not (since rev 3.2).
      * <p>
      * This boolean is interpreted from the Application Type byte
      *
@@ -155,8 +150,7 @@ public:
     bool isConfidentialSessionModeSupported() const;
 
     /**
-     * Indicates if the ratification is done on deselect (ratification command
-     * not necessary)
+     * Indicates if the ratification is done on deselect (ratification command not necessary)
      * <p>
      * This boolean is interpreted from the Application Type byte
      *
@@ -183,8 +177,7 @@ public:
     bool isPinFeatureAvailable() const;
 
     /**
-     * Indicates whether the Public Authentication is supported or not (since
-     * rev 3.3).
+     * Indicates whether the Public Authentication is supported or not (since rev 3.3).
      * <p>
      * This boolean is interpreted from the Application Type byte
      *
@@ -193,41 +186,40 @@ public:
     bool isPublicAuthenticationSupported() const;
 
     /**
-     * The Application Subtype indicates to the terminal a reference to the file
-     * structure of the Calypso DF.
+     * The Application Subtype indicates to the terminal a reference to the file structure of the
+     * Calypso DF.
      *
      * @return the Application Subtype byte
      */
     uint8_t getApplicationSubtype() const;
 
     /**
-     * The Software Issuer byte indicates the entity responsible for the
-     * software of the selected application.
+     * The Software Issuer byte indicates the entity responsible for the software of the selected
+     * application.
      *
      * @return the Software Issuer byte
      */
     uint8_t getSoftwareIssuer() const;
 
     /**
-     * The Software Version field may be set to any fixed value by the Software
-     * Issuer of the Calypso application.
+     * The Software Version field may be set to any fixed value by the Software Issuer of the
+     * Calypso application.
      *
      * @return the Software Version byte
      */
     uint8_t getSoftwareVersion() const;
 
     /**
-     * The Software Revision field may be set to any fixed value by the Software
-     * Issuer of the Calypso application.
+     * The Software Revision field may be set to any fixed value by the Software Issuer of the
+     * Calypso application.
      *
      * @return the Software Revision byte
      */
     uint8_t getSoftwareRevision() const;
 
     /**
-     * Depending on the type of PO, the session modification byte indicates the
-     * maximum number of bytes that can be modified or the number of possible
-     * write commands in a session.
+     * Depending on the type of PO, the session modification byte indicates the maximum number of
+     * bytes that can be modified or the number of possible write commands in a session.
      *
      * @return the Session Modifications byte
      */
@@ -236,8 +228,7 @@ public:
     /**
      * Indicated whether the PO has been invalidated or not.
      * <p>
-     * An invalidated PO has 6283 as status word in response to the Select
-     * Application command.
+     * An invalidated PO has 6283 as status word in response to the Select Application command.
      *
      * @return true if the PO has been invalidated.
      */
@@ -248,8 +239,7 @@ public:
      * <p>
      *
      * @return true if the PO has been ratified.
-     * @throw IllegalStateException if these methods is call when no session has
-     *        been opened
+     * @throw IllegalStateException if these methods is call when no session has been opened
      */
     bool isDfRatified() const;
 
@@ -353,11 +343,10 @@ public:
         const std::shared_ptr<DirectoryHeader> directoryHeader);
 
     /**
-     * Gets a reference to the {@link ElementaryFile} that has the provided SFI
-     * value.<br>
-     * Note that if a secure session is actually running, then the object
-     * contains all session modifications, which can be canceled if the secure
-     * session fails.
+     * Gets a reference to the keyple::calypso::transaction::ElementaryFile that has the provided
+     * SFI value.<br>
+     * Note that if a secure session is actually running, then the object contains all session
+     * modifications, which can be canceled if the secure session fails.
      *
      * @param sfi the SFI to search
      * @return a not null reference.
@@ -367,11 +356,10 @@ public:
     const std::shared_ptr<ElementaryFile> getFileBySfi(const uint8_t sfi) const;
 
     /**
-     * Gets a reference to the {@link ElementaryFile} that has the provided LID
-     * value.<br>
-     * Note that if a secure session is actually running, then the object
-     * contains all session modifications, which can be canceled if the secure
-     * session fails.
+     * Gets a reference to the keyple::calypso::transaction::ElementaryFile that has the provided
+     * LID value.<br>
+     * Note that if a secure session is actually running, then the object contains all session
+     * modifications, which can be canceled if the secure session fails.
      *
      * @param lid the LID to search
      * @return a not null reference.
@@ -381,11 +369,9 @@ public:
     const std::shared_ptr<ElementaryFile> getFileByLid(const uint16_t lid);
 
     /**
-     * Gets a reference to a map of all known Elementary Files by their
-     * associated SFI.<br>
-     * Note that if a secure session is actually running, then the map contains
-     * all session modifications, which can be canceled if the secure session
-     * fails.
+     * Gets a reference to a map of all known Elementary Files by their associated SFI.<br>
+     * Note that if a secure session is actually running, then the map contains all session
+     * modifications, which can be canceled if the secure session fails.
      *
      * @return a not null reference (may be empty if no one EF is set).
      * @since 0.9
@@ -395,7 +381,7 @@ public:
 
     /**
      * (package-private)<br>
-     * Sets the provided {@link FileHeader} to the EF having the provided SFI.
+     * Sets the provided keyple::calypso::transaction::FileHeader to the EF having the provided SFI.
      * <br>
      * If EF does not exist, then it is created.
      *
@@ -407,8 +393,8 @@ public:
 
     /**
      * (package-private)<br>
-     * Set or replace the entire content of the specified record #numRecord of
-     * the provided SFI by the provided content.<br>
+     * Set or replace the entire content of the specified record numRecord of the provided SFI by
+     * the provided content.<br>
      * If EF does not exist, then it is created.
      *
      * @param sfi the SFI
@@ -428,17 +414,15 @@ public:
      * @param numCounter the counter number (should be {@code >=} 1)
      * @param content the counter value (should be not null and 3 bytes length)
      */
-    void setCounter(const uint8_t sfi,
-                    const int numCounter,
-                    const std::vector<uint8_t>& content);
+    void setCounter(const uint8_t sfi, const int numCounter, const std::vector<uint8_t>& content);
 
     /**
      * (package-private)<br>
-     * Set or replace the content at the specified offset of record #numRecord
-     * of the provided SFI by a copy of the provided content.<br>
+     * Set or replace the content at the specified offset of record numRecord of the provided SFI
+     * by a copy of the provided content.<br>
      * If EF does not exist, then it is created.<br>
-     * If actual record content is not set or has a size {@code <} offset, then
-     * missing data will be padded with 0.
+     * If actual record content is not set or has a size {@code <} offset, then missing data will be
+     * padded with 0.
      *
      * @param sfi the SFI
      * @param numRecord the record number (should be {@code >=} 1)
@@ -452,35 +436,30 @@ public:
 
     /**
      * (package-private)<br>
-     * Fill the content of the specified #numRecord of the provided SFI using a
-     * binary OR operation with the provided content.<br>
+     * Fill the content of the specified numRecord of the provided SFI using a binary OR operation
+     * with the provided content.<br>
      * If EF does not exist, then it is created.<br>
-     * If actual record content is not set or has a size {@code <} content size,
-     * then missing data will be completed by the provided content.
+     * If actual record content is not set or has a size {@code <} content size, then missing data
+     * will be completed by the provided content.
      *
      * @param sfi the SFI
      * @param numRecord the record number (should be {@code >=} 1)
      * @param content the content (should be not empty)
      */
-    void fillContent(const uint8_t sfi,
-                     const int numRecord,
-                     std::vector<uint8_t>& content);
+    void fillContent(const uint8_t sfi, const int numRecord, std::vector<uint8_t>& content);
 
     /**
      * (package-private)<br>
-     * Add cyclic content at record #1 by rolling previously all actual records
-     * contents (record #1 -> record #2, record #2 -> record #3,...) of the
-     * provided SFI.<br>
-     * This is useful for cyclic files. Note that records are infinitely
-     * shifted.<br>
+     * Add cyclic content at record #1 by rolling previously all actual records contents (record #1
+     * -> record #2, record #2 -> record #3,...) of the provided SFI.<br>
+     * This is useful for cyclic files. Note that records are infinitely shifted.<br>
      * <br>
      * If EF does not exist, then it is created.
      *
      * @param sfi the SFI
      * @param content the content (should be not empty)
      */
-    void addCyclicContent(const uint8_t sfi,
-                          const std::vector<uint8_t>& content);
+    void addCyclicContent(const uint8_t sfi, const std::vector<uint8_t>& content);
 
     /**
      * (package-private)<br>
@@ -492,8 +471,8 @@ public:
     /**
      * (package-private)<br>
      * Restore the last backup of Elementary Files.<br>
-     * This method should be used when SW of the PO close secure session command
-     * is unsuccessful or if secure session is aborted.
+     * This method should be used when SW of the PO close secure session command is unsuccessful or
+     * if secure session is aborted.
      */
     void restoreFiles();
 
@@ -501,7 +480,7 @@ public:
      * Indicates the maximum number of changes allowed in session.
      * <p>
      * This number can be a number of operations or a number of commands (see
-     * isModificationsCounterInBytes)
+     * isModificationsCounterInBytes())
      *
      * @return the maximum number of modifications allowed
      */
@@ -519,8 +498,8 @@ public:
     const PoClass& getPoClass() const;
 
     /**
-     * Specifies whether the change counter allowed in session is established in
-     * number of operations or number of bytes modified.
+     * Specifies whether the change counter allowed in session is established in number of
+     * operations or number of bytes modified.
      * <p>
      * This varies depending on the revision of the PO.
      *
@@ -557,7 +536,8 @@ public:
      * (package-private)<br>
      * Sets the PIN attempts counter.<br>
      * The PIN attempt counter is interpreted to give the results of the methods
-     * {@link #isPinBlocked} and {@link #getPinAttemptRemaining}.
+     * keyple::calypso::transaction::CalypsoPo::isPinBlocked() and
+     * keyple::calypso::transaction::CalypsoPo::getPinAttemptRemaining().
      *
      * @param pinAttemptCounter the number of remaining attempts to present the PIN code
      */
@@ -566,8 +546,7 @@ public:
 protected:
     /**
      * The serial number to be used as diversifier for key derivation.<br>
-     * This is the complete number returned by the PO in its response to the
-     * Select command.
+     * This is the complete number returned by the PO in its response to the Select command.
      *
      * @return a byte array containing the Calypso Serial Number (8 bytes)
      */
@@ -758,7 +737,8 @@ private:
      * </ul>
      *
      * @param applicationType the application type (field of startup info)
-     * @return the {@link PoRevision}
+     * @return the keyple::calypso::command::po::PoRevision
+
      */
     PoRevision determineRevision(const uint8_t applicationType) const;
 
@@ -773,8 +753,7 @@ private:
 
     /**
      * (private)<br>
-     * Copy a map of ElementaryFile by SFI to another one by cloning each
-     * element.
+     * Copy a map of ElementaryFile by SFI to another one by cloning each element.
      *
      * @param src the source (should be not null)
      * @param dest the destination (should be not null)

@@ -191,9 +191,9 @@ public:
      *
      * <p>
      *
-     * @param defaultSelectionsRequest the {@link
-     *        AbstractDefaultSelectionsRequest} to be executed when a SE is
-     *        inserted
+     * @param defaultSelectionsRequest the
+     *        keyple::core::seproxy::event::AbstractDefaultSelectionsRequest to be executed when a
+     *        SE is inserted
      * @param notificationMode the notification mode enum (ALWAYS or
      *        MATCHED_ONLY)
      */
@@ -308,7 +308,7 @@ public:
     void switchState(const MonitoringState stateId);
 
     /**
-     * Add a {@link ObservableReader.ReaderObserver}.
+     * Add a keyple::core::seproxy::event::ObservableReader::ReaderObserver
      *
      * <p>
      * The observer will receive all the events produced by this reader (se
@@ -319,7 +319,7 @@ public:
     void addObserver(const std::shared_ptr<ObservableReader::ReaderObserver> observer) final;
 
     /**
-     * Remove a {@link ObservableReader.ReaderObserver}.
+     * Remove a keyple::core::seproxy::event::ObservableReader::ReaderObserver
      *
      * <p>
      * The observer will do not receive any of the events produced by this
@@ -330,7 +330,7 @@ public:
     void removeObserver(const std::shared_ptr<ObservableReader::ReaderObserver> observer) final;
 
     /**
-     * Notify all registered observers with the provided {@link ReaderEvent}
+     * Notify all registered observers with the provided keyple::core::seproxy::event::ReaderEvent
      *
      * @param event the reader event
      */

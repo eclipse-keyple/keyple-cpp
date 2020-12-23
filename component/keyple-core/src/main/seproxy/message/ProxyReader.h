@@ -51,37 +51,36 @@ public:
     virtual ~ProxyReader() {}
 
     /**
-     * Transmits a Set of {@link SeRequest} (list of {@link SeRequest}) to a SE
-     * application and get back the corresponding a List of {@link SeResponse}.
+     * Transmits a Set of keyple::core::seproxy::message::SeRequest (list of
+     * keyple::core::seproxy::message::SeRequest) to a SE application and get back the corresponding
+     * a List of keyple::core::seproxy::message::SeResponse.
      * <p>
-     * The usage of this method is conditioned to the presence of a SE in the
-     * selected reader.
+     * The usage of this method is conditioned to the presence of a SE in the selected reader.
      * <p>
-     * All the {@link SeRequest} are processed consecutively. The received
-     * {@link SeResponse} and placed in the List of {@link SeResponse}.
+     * All the keyple::core::seproxy::message::SeRequest are processed consecutively. The received
+     * keyple::core::seproxy::message::SeResponse and placed in the List of
+     * keyple::core::seproxy::message::SeResponse.
      * <p>
-     * If the protocol flag set in the request match the current SE protocol and
-     * the keepChannelOpen flag is set to true, the transmit method returns
-     * immediately with a List of {@link SeResponse}. This response contains the
-     * received response from the matching SE in the last position of set. The
-     * previous one are set to null, the logical channel is open.
+     * If the protocol flag set in the request match the current SE protocol and the keepChannelOpen
+     * flag is set to true, the transmit method returns immediately with a List of
+     * keyple::core::seproxy::message::SeResponse. This response contains the received response from
+     * the matching SE in the last position of set. The previous one are set to null, the logical
+     * channel is open.
      * <p>
-     * If the protocol flag set in the request match the current SE protocol and
-     * the keepChannelOpen flag is set to false, the transmission go on for the
-     * next {@link SeRequest}. The channel is left closed.
+     * If the protocol flag set in the request match the current SE protocol and the keepChannelOpen
+     * flag is set to false, the transmission go on for the next
+     * keyple::core::seproxy::message::SeRequest. The channel is left closed.
      * <p>
-     * This method could also fail in case of IO error or wrong card
-     * currentState &rarr; some reader’s exception (SE missing, IO error, wrong
-     * card currentState, timeout) have to be caught during the processing of
-     * the SE request transmission.
+     * This method could also fail in case of IO error or wrong card currentState &rarr; some
+     * reader’s exception (SE missing, IO error, wrong card currentState, timeout) have to be caught
+     * during the processing of the SE request transmission.
      *
-     * @param seRequests a {@link List} of application requests
+     * @param seRequests a list of application requests
      * @param multiSeRequestProcessing the multi se processing mode
-     * @param channelControl indicates if the channel has to be closed at the
-     *        end of the transmission
+     * @param channelControl indicates if the channel has to be closed at the end of the
+     *        transmission
      * @return the SE response
-     * @throw KeypleReaderIOException if the communication with the reader or
-     *         the SE has failed
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
      */
     virtual std::vector<std::shared_ptr<SeResponse>> transmitSeRequests(
         const std::vector<std::shared_ptr<SeRequest>>& seRequests,
@@ -89,14 +88,14 @@ public:
         const ChannelControl& channelControl) = 0;
 
     /**
-     * Transmits a single {@link SeRequest} (list of {@link ApduRequest}) and
-     * get back the corresponding {@link SeResponse}
+     * Transmits a single keyple::core::seproxy::message::SeRequest (list of
+     * keyple::core::seproxy::message::ApduRequest) and get back the corresponding
+     * keyple::core::seproxy::message::SeResponse
      * <p>
-     * The usage of this method is conditioned to the presence of a SE in the
-     * selected reader.
+     * The usage of this method is conditioned to the presence of a SE in the selected reader.
      * <p>
-     * The {@link SeRequest} is processed and the received {@link SeResponse} is
-     * returned.
+     * The keyple::core::seproxy::message::SeRequest is processed and the received
+     * keyple::core::seproxy::message::SeResponse is returned.
      * <p>
      * The logical channel is set according to the keepChannelOpen flag.
      *
@@ -107,11 +106,9 @@ public:
      * the SE request transmission. *
      *
      * @param seRequest the SeRequest to transmit
-     * @param channelControl a flag to tell if the channel has to be closed at
-     *        the end
+     * @param channelControl a flag to tell if the channel has to be closed at the end
      * @return SeResponse the response to the SeRequest
-     * @throw KeypleReaderIOException if the communication with the reader or
-     *         the SE has failed
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
      */
     virtual std::shared_ptr<SeResponse> transmitSeRequest(std::shared_ptr<SeRequest> seRequest,
                                                           const ChannelControl& channelControl) = 0;

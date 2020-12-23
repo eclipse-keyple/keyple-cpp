@@ -47,8 +47,8 @@ enum class MonitoringState {
 KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const MonitoringState& ms);
 
 /**
- * Defines a state behaviour for a {@link AbstractObservableLocalReader} Handles
- * {@link AbstractObservableLocalReader.InternalEvent} that might results on a switch of state.
+ * Defines a state behaviour for a keyple::core::seproxy::plugin::AbstractObservableLocalReader.
+ * Handles keyple::core::seproxy::plugin::InternalEvent that might results on a switch of state.
  */
 class KEYPLECORE_API AbstractObservableState {
 public:

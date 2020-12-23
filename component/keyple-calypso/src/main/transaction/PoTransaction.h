@@ -59,8 +59,8 @@ using namespace keyple::core::seproxy::protocol;
  * Portable Object Secure Session.
  *
  * A non-encrypted secure session with a Calypso PO requires the management of
- * two {@link ProxyReader} in order to communicate with both a Calypso PO and a
- * SAM
+ * two keyple::core::seproxy::message::ProxyReader in order to communicate with both a Calypso PO
+ * and a SAM
  *
  * @author Calypso Networks Association
  */
@@ -83,7 +83,8 @@ public:
     };
 
     /**
-     * The {@link PinTransmissionMode} indicates whether the PIN transmission is encrypted or not.
+     * The keyple::calypso::transaction::PoTransaction::PinTransmissionMode indicates whether the
+     * PIN transmission is encrypted or not.
      */
     enum class PinTransmissionMode {
         PLAIN,
@@ -96,7 +97,8 @@ public:
     class SvSettings {
     public:
         /**
-         * {@link Operation} specifies the type of operation intended to be carried out
+         * keyple::calypso::transaction::PoTransaction::SvSettings::Operation specifies the type of
+         * operation intended to be carried out
          */
         enum class Operation {
             NONE,
@@ -111,7 +113,8 @@ public:
         };
 
         /**
-         * {@link Action} specifies the type of action:
+         * keyple::calypso::transaction::PoTransaction::SvSettings::Action specifies the type of
+         * action:
          * <ul>
          * <li>Reload: DO loads a positive amount, UNDO loads a negative amount
          * <li>Debit: DO debits a positive amount, UNDO cancels, totally or partially, a previous
@@ -124,8 +127,8 @@ public:
         };
 
         /**
-         * {@link LogRead} specifies whether only the log related to the current operation
-         * {@link} is requested or whether both logs are requested.
+         * keyple::calypso::transaction::PoTransaction::SvSettings::LogRead specifies whether only
+         * the log related to the current operation is requested or whether both logs are requested.
          */
         enum class LogRead {
             /**
@@ -139,8 +142,8 @@ public:
         };
 
         /**
-         * {@link NegativeBalance} indicates whether negative balances are allowed when debiting the
-         * SV
+         * keyple::calypso::transaction::PoTransaction::SvSettings::NegativeBalance indicates
+         * whether negative balances are allowed when debiting the SV
          */
         enum class NegativeBalance {
             /**
@@ -267,15 +270,14 @@ public:
     /**
      * PoTransaction with PO and SAM readers.
      * <ul>
-     * <li>Logical channels with PO &amp; SAM could already be established or
-     * not.</li>
+     * <li>Logical channels with PO &amp; SAM could already be established or not.</li>
      * <li>A list of SAM parameters is provided as en EnumMap.</li>
      * </ul>
      *
-     * @param poResource the PO resource (combination of {@link SeReader} and
-     *        {@link CalypsoPo})
-     * @param poSecuritySettings a list of security settings ({@link
-     *        PoSecuritySettings}) used in
+     * @param poResource the PO resource (combination of keyple::core::seproxy::SeReader and
+     *        keyple::calypso::transaction::CalypsoPo)
+     * @param poSecuritySettings a list of security settings
+     *        (keyple::calypso::transaction::PoSecuritySettings) used in
      */
     PoTransaction(std::shared_ptr<SeResource<CalypsoPo>> poResource,
                   std::shared_ptr<PoSecuritySettings> poSecuritySettings);
@@ -286,8 +288,8 @@ public:
      * <li>Logical channels with PO could already be established or not.</li>
      * </ul>
      *
-     * @param poResource the PO resource (combination of {@link SeReader} and
-     *        {@link CalypsoPo})
+     * @param poResource the PO resource (combination of keyple::core::seproxy::SeReader and
+     *        keyple::calypso::transaction::CalypsoPo)
      */
     PoTransaction(std::shared_ptr<SeResource<CalypsoPo>> poResource);
 
@@ -737,7 +739,7 @@ private:
     SvSettings::Action mSvAction;
 
     /**
-     * The {@link ChannelControl} action
+     * The keyple::core::seproxy::message::ChannelControl action
      */
     ChannelControl mChannelControl;
 
@@ -885,7 +887,7 @@ private:
      * command cache. The SAM command cache is emptied.</li>
      * <li>The SAM certificate is retrieved from the Digest Close response. The terminal signature
      * is identified.</li>
-     * <li>Then, on the PO reader, a SeRequest is transmitted with a {@link ChannelControl} set to
+     * <li>Then, on the PO reader, a SeRequest is transmitted with a keyple::core::seproxy::message::ChannelControl set to
      * CLOSE_AFTER or KEEP_OPEN depending on whether or not prepareReleasePoChannel was called, and
      * apduRequests including the new PO commands to send in the session, a Close Session command
      * (defined with the SAM certificate), and optionally a ratificationCommand.

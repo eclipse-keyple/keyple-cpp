@@ -139,7 +139,7 @@ public:
      * (package-private)<br>
      * Fills the CalypsoPo with the PO's response to a single command
      *
-     * @param calypsoPo the {@link CalypsoPo} object to fill with the provided
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to fill with the provided
      *        response from the PO
      * @param commandBuilder the builder of the command that get the response
      * @param apduResponse the APDU response returned by the PO to the command
@@ -154,7 +154,8 @@ public:
      * (package-private)<br>
      * Fills the CalypsoPo with the PO's responses to a list of commands
      *
-     * @param calypsoPo the {@link CalypsoPo} object to fill with the provided response from the PO
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to fill with the provided
+     *        response from the PO
      * @param commandBuilders the list of builders that get the responses
      * @param apduResponses the APDU responses returned by the PO to all commands
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
@@ -171,7 +172,7 @@ public:
      * @param poClass the class of the PO
      * @param sfi the SFI of the EF to read
      * @param recordNumber the record number to read
-     * @return a {@link ReadRecordsCmdBuild} object
+     * @return a keyple::calypso::command::po::builder::ReadRecordsCmdBuild object
      */
     static std::unique_ptr<ReadRecordsCmdBuild> prepareReadRecordFile(
         const PoClass& poClass, const uint8_t sfi, const uint8_t recordNumber);
@@ -181,7 +182,7 @@ public:
      *
      * @param poClass the class of the PO
      * @param lid the LID of the EF to select
-     * @return a {@link SelectFileCmdBuild} object
+     * @return a keyple::calypso::command::po::builder::SelectFileCmdBuild object
      */
     static std::unique_ptr<SelectFileCmdBuild> prepareSelectFile(
         const PoClass& poClass, const std::vector<uint8_t>& lid);
@@ -191,7 +192,7 @@ public:
      *
      * @param poClass the class of the PO
      * @param selectControl provides the navigation case: FIRST, NEXT or CURRENT
-     * @return a {@link SelectFileCmdBuild} object
+     * @return a keyple::calypso::command::po::builder::SelectFileCmdBuild object
      */
     static std::unique_ptr<SelectFileCmdBuild> prepareSelectFile(
         const PoClass& poClass, const SelectFileControl selectControl);
@@ -269,12 +270,12 @@ private:
     CalypsoPoUtils();
 
     /**
-     * Updates the {@link CalypsoPo} object with the response to a Open Secure Session command
-     * received from the PO <br>
+     * Updates the keyple::calypso::transaction::CalypsoPo object with the response to a Open Secure
+     * Session command received from the PO <br>
      * The ratification status and the data read at the time of the session opening are added to the
      * CalypsoPo.
      *
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param openSessionCmdBuild the Open Secure Session command builder
      * @param apduResponse the response received
      * @return the created response parser
@@ -288,7 +289,7 @@ private:
     /**
      * Checks the response to a Close Session command
      *
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param closeSessionCmdBuild the Close Session command builder
      * @param apduResponse the response received
      * @return the created response parser
@@ -300,11 +301,11 @@ private:
         std::shared_ptr<ApduResponse> apduResponse);
 
     /**
-     * Updates the {@link CalypsoPo} object with the response to a Read Records command received
-     * from the PO <br>
-     * The records read are added to the {@link CalypsoPo} file structure
+     * Updates the keyple::calypso::transaction::CalypsoPo object with the response to a Read
+     * Records command received from the PO <br>
+     * The records read are added to the keyple::calypso::transaction::CalypsoPo file structure
      *
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param readRecordsCmdBuild the Read Records command builder
      * @param apduResponse the response received
      * @return the created response parser
@@ -316,12 +317,12 @@ private:
         std::shared_ptr<ApduResponse> apduResponse);
 
     /**
-     * Updates the {@link CalypsoPo} object with the response to a Select File command received from
-     * the PO <br>
-     * Depending on the content of the response, either a {@link FileHeader} is added or the
-     * {@link DirectoryHeader} is updated
+     * Updates the keyple::calypso::transaction::CalypsoPo object with the response to a Select File
+     * command received from the PO <br>
+     * Depending on the content of the response, either a keyple::calypso::transaction::FileHeader
+     * is added or the keyple::calypso::transaction::DirectoryHeader is updated
      *
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param selectFileCmdBuild the Select File command builder
      * @param apduResponse the response received
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
@@ -332,11 +333,11 @@ private:
         std::shared_ptr<ApduResponse> apduResponse);
 
     /**
-     * Updates the {@link CalypsoPo} object with the response to a Update Record command sent and
-     * received from the PO <br>
-     * The records read are added to the {@link CalypsoPo} file structure
+     * Updates the keyple::calypso::transaction::CalypsoPo object with the response to a Update
+     * Record command sent and received from the PO <br>
+     * The records read are added to the keyple::calypso::transaction::CalypsoPo file structure
      *
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param updateRecordCmdBuild the Update Record command builder
      * @param apduResponse the response received
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
@@ -347,12 +348,12 @@ private:
         std::shared_ptr<ApduResponse> apduResponse);
 
     /**
-     * Updates the {@link CalypsoPo} object with the response to a Write Record command sent and
-     * received from the PO <br>
-     * The records read are added to the {@link CalypsoPo} file structure using the dedicated
-     * {@link CalypsoPo#fillContent } method.
+     * Updates the keyple::calypso::transaction::CalypsoPo object with the response to a Write
+     * Record command sent and received from the PO <br>
+     * The records read are added to the keyple::calypso::transaction::CalypsoPo file structure
+     * using the dedicated keyple::calypso::transaction::CalypsoPo::fillContent() method.
      *
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param writeRecordCmdBuild the Write Record command builder
      * @param apduResponse the response received
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
@@ -363,12 +364,12 @@ private:
         std::shared_ptr<ApduResponse> apduResponse);
 
     /**
-     * Updates the {@link CalypsoPo} object with the response to a Read Records command received
-     * from the PO <br>
-     * The records read are added to the {@link CalypsoPo} file structure
+     * Updates the keyple::calypso::transaction::CalypsoPo object with the response to a Read
+     * Records command received from the PO <br>
+     * The records read are added to the keyple::calypso::transaction::CalypsoPo file structure
      *
      * @param appendRecordCmdBuild the Append Records command builder
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param apduResponse the response received
      * @throws CalypsoPoCommandException if a response from the PO was unexpected
      */
@@ -378,12 +379,12 @@ private:
         std::shared_ptr<ApduResponse> apduResponse);
 
     /**
-     * Updates the {@link CalypsoPo} object with the response to a Decrease command received from
-     * the PO <br>
-     * The counter value is updated in the {@link CalypsoPo} file structure
+     * Updates the keyple::calypso::transaction::CalypsoPo object with the response to a Decrease
+     * command received from the PO <br>
+     * The counter value is updated in the keyple::calypso::transaction::CalypsoPo file structure
      *
      * @param decreaseCmdBuild the Decrease command builder
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param apduResponse the response received
      * @throws CalypsoPoCommandException if a response from the PO was unexpected
      */
@@ -393,12 +394,12 @@ private:
         std::shared_ptr<ApduResponse> apduResponse);
 
     /**
-     * Updates the {@link CalypsoPo} object with the response to an Increase command received from
-     * the PO <br>
-     * The counter value is updated in the {@link CalypsoPo} file structure
+     * Updates the keyple::calypso::transaction::CalypsoPo object with the response to an Increase
+     * command received from the PO <br>
+     * The counter value is updated in the keyple::calypso::transaction::CalypsoPo file structure
      *
      * @param increaseCmdBuild the Increase command builder
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param apduResponse the response received
      * @throws CalypsoPoCommandException if a response from the PO was unexpected
      */
@@ -409,8 +410,8 @@ private:
 
     /**
      * Parses the response to a Get Challenge command received from the PO <br>
-     * The PO challenge value is stored in {@link CalypsoPoUtils} and made available through a
-     * dedicated getters for later use
+     * The PO challenge value is stored in keyple::calypso::transaction::CalypsoPoUtils and made
+     * available through a dedicated getters for later use
      *
      * @param poGetChallengeCmdBuild the Get Challenge command builder
      * @param apduResponse the response received
@@ -421,13 +422,13 @@ private:
         std::shared_ptr<ApduResponse> apduResponse);
 
     /**
-     * Updates the {@link CalypsoPo} object with the response to an Verify Pin command received from
-     * the PO <br>
-     * The PIN attempt counter value is stored in the {@link CalypsoPo}<br>
+     * Updates the keyple::calypso::transaction::CalypsoPo object with the response to an Verify Pin
+     * command received from the PO <br>
+     * The PIN attempt counter value is stored in the keyple::calypso::transaction::CalypsoPo<br>
      * CalypsoPoPinException are filtered when the initial command targets the reading of the
      * attempt counter.
      *
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param verifyPinCmdBuild the Verify PIN command builder
      * @param apduResponse the response received
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
@@ -438,12 +439,13 @@ private:
         std::shared_ptr<ApduResponse> apduResponse);
 
     /**
-     * Updates the {@link CalypsoPo} object with the response to an SV Get command received from the
-     * PO <br>
-     * The SV Data values (KVC, command header, response data) are stored in {@link CalypsoPoUtils}
-     * and made available through a dedicated getters for later use<br>
+     * Updates the keyple::calypso::transaction::CalypsoPo object with the response to an SV Get
+     * command received from the PO <br>
+     * The SV Data values (KVC, command header, response data) are stored in
+     * keyple::calypso::transaction::CalypsoPoUtils and made available through a dedicated getters
+     * for later use<br>
      *
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param svGetCmdBuild the SV Get command builder
      * @param apduResponse the response received
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
@@ -458,7 +460,7 @@ private:
      * from the PO<br>
      * Keep the PO SV signature if any (command executed outside a secure session).
      *
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param svOperationCmdBuild the SV Operation command builder (SvReloadCmdBuild,
      *        SvDebitCmdBuild or SvUndebitCmdBuild)
      * @param apduResponse the response received
@@ -472,7 +474,7 @@ private:
     /**
      * Checks the response to Invalidate/Rehabilitate commands
      *
-     * @param calypsoPo the {@link CalypsoPo} object to update
+     * @param calypsoPo the keyple::calypso::transaction::CalypsoPo object to update
      * @param invalidateRehabilitateCmdBuild the Invalidate or Rehabilitate response parser
      * @param apduResponse the response received
      * @throw CalypsoPoCommandException if a response from the PO was unexpected
@@ -485,29 +487,30 @@ private:
 
     /**
      * Parses the proprietaryInformation field of a file identified as an DF and
-     * create a {@link DirectoryHeader}
+     * create a keyple::calypso::transaction::DirectoryHeader
      *
      * @param proprietaryInformation from the response to a Select File command
-     * @return a {@link DirectoryHeader} object
+     * @return a keyple::calypso::transaction::DirectoryHeader object
      */
     static std::unique_ptr<DirectoryHeader> createDirectoryHeader(
         const std::vector<uint8_t>& proprietaryInformation);
 
     /**
-     * Converts the EF type value from the PO into a {@link
-     * FileHeader::FileType} enum
+     * Converts the EF type value from the PO into a
+     * keyple::calypso::transaction::FileHeader::FileType enum
      *
      * @param efType the value returned by the PO
-     * @return the corresponding {@link FileHeader.FileType}
+     * @return the corresponding keyple::calypso::transaction::FileHeader::FileType
+
      */
     static FileType getEfTypeFromPoValue(const uint8_t efType);
 
     /**
      * Parses the proprietaryInformation field of a file identified as an EF and
-     * create a {@link FileHeader}
+     * create a keyple::calypso::transaction::FileHeader
      *
      * @param proprietaryInformation from the response to a Select File command
-     * @return a {@link FileHeader} object
+     * @return a keyple::calypso::transaction::FileHeader object
      */
     static std::unique_ptr<FileHeader> createFileHeader(
         const std::vector<uint8_t>& proprietaryInformation);

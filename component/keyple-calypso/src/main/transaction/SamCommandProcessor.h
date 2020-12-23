@@ -93,6 +93,7 @@ public:
      * <p>
      * Note: there is no communication with the SAM here.
      *
+     * @param accessLevel the Acces Level
      * @param sessionEncryption true if the session is encrypted
      * @param verificationMode true if the verification mode is active
      * @param poKif the PO KIF
@@ -196,6 +197,7 @@ public:
      * <p>
      * The returned data will be used to finalize the PO SvDebit command.
      *
+     * @param svDebitCmdBuild the SV Debit command builder
      * @param svGetHeader the SV Get command header
      * @param svGetData the SV Get command response data
      * @return the complementary security data to finalize the SvDebit PO command (sam ID + SV
@@ -215,6 +217,7 @@ public:
      * <p>
      * The returned data will be used to finalize the PO SvUndebit command.
      *
+     * @param svUndebitCmdBuild the SV Undebit command builder
      * @param svGetHeader the SV Get command header
      * @param svGetData the SV Get command response data
      * @return the complementary security data to finalize the SvUndebit PO command (sam ID + SV

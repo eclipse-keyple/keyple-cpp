@@ -95,18 +95,20 @@ public:
     int getBalance() const;
 
     /**
-     * Gets a {@link SvLoadLogRecord} containing the load record <br>
+     * Gets a keyple::calypso::transaction::SvLoadLogRecord containing the load record <br>
      * May return null if the load record is not available (debit/undebit case for PO rev &lt; 3.2)
      *
-     * @return a {@link SvLoadLogRecord} object containing the log data or null
+     * @return a keyple::calypso::transaction::SvLoadLogRecord object containing the log data or
+     *         null
      */
     const std::shared_ptr<SvLoadLogRecord> getLoadLog() const;
 
     /**
-     * Gets a {@link SvDebitLogRecord} containing the last debit record <br>
+     * Gets a keyple::calypso::transaction::SvDebitLogRecord containing the last debit record <br>
      * May return null if the debit record is not available (load case for PO rev &lt; 3.2)
      *
-     * @return a {@link SvDebitLogRecord} object containing the log data or null
+     * @return a keyple::calypso::transaction::SvDebitLogRecord object containing the log data or
+     *         null
      */
     const std::shared_ptr<SvDebitLogRecord> getDebitLog() const;
 

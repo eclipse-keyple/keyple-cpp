@@ -27,7 +27,7 @@ namespace pcsc {
 using namespace keyple::core::seproxy;
 
 /**
- * Builds a {@link PcscPlugin}
+ * Builds a keyple::plugin::pcsc::PcscPlugin
  */
 class KEYPLEPLUGINPCSC_API PcscPluginFactory : public PluginFactory {
 public:
@@ -37,7 +37,7 @@ public:
     const std::string& getPluginName() const override;
 
     /**
-     * Returns an instance of the {@link PcscPlugin} if the platform is ready
+     * Returns an instance of the keyple::plugin::pcsc::PcscPlugin if the platform is ready
      *
      * @return PcscPlugin instance
      * @throws KeyplePluginInstantiationException if Smartcard.io library is not

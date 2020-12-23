@@ -36,7 +36,7 @@ namespace message {
 using namespace keyple::common;
 
 /**
- * Group of SE responses received in response to a {@link SeRequest}.
+ * Group of SE responses received in response to a keyple::core::seproxy::message::SeRequest.
  *
  * @see SeRequest
  */
@@ -73,7 +73,7 @@ public:
     /**
      * Gets the selection status and its associated data.
      *
-     * @return a {@link SelectionStatus} object.
+     * @return a keyple::core::seproxy::message::SelectionStatus object.
      */
     const std::shared_ptr<SelectionStatus> getSelectionStatus() const;
 
