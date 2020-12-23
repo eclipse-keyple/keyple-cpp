@@ -34,8 +34,8 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser::security;
 
 /**
- * The Class {@link InvalidateCmdBuild}. This class provides the dedicated constructor to build the
- * PO Invalidate command.
+ * The Class keyple::calypso::command::po::builder::security::InvalidateCmdBuild. This class
+ * provides the dedicated constructor to build the PO Invalidate command.
  */
 class KEYPLECALYPSO_API InvalidateCmdBuild final
 : public AbstractPoCommandBuilder<InvalidateRespPars> {

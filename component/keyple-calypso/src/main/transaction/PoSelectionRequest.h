@@ -106,7 +106,7 @@ public:
      * C++ vs. Java: function is protected in Java
      *
      * @param seResponse the SE response received
-     * @return a {@link CalypsoPo}
+     * @return a keyple::calypso::transaction::CalypsoPo
      * @throw CalypsoDesynchronizedExchangesException if the number of responses is different from
      *        the number of requests
      * @throw CalypsoPoCommandException if a response from the PO was unexpected

@@ -40,8 +40,9 @@ using Operation = PoTransaction::SvSettings::Operation;
 
 /**
  * The Class SvUndebitCmdBuild. This class provides the dedicated constructor to build the SV
- * Undebit command. Note: {@link SvUndebitCmdBuild} and {@link SvDebitCmdBuild} shares the same
- * parser {@link SvDebitRespPars}
+ * Undebit command. Note: keyple::calypso::command::po::builder::storedvalue::SvUndebitCmdBuild and
+ * keyple::calypso::command::po::builder::storedvalue::SvDebitCmdBuild shares the same
+ * parser keyple::calypso::command::po::parser::storedvalue::SvDebitRespPars
  */
 class KEYPLECALYPSO_API SvUndebitCmdBuild final : public AbstractPoCommandBuilder<SvUndebitRespPars> {
 public:
@@ -91,10 +92,10 @@ public:
      * Create the response parser.
      * <p>
      * A check is made to see if the object has been finalized. If not, an exception
-     * {@link IllegalStateException} is thrown.
+     * keyple::common::exception::IllegalStateException is thrown.
      *
      * @param apduResponse the response data from the SE
-     * @return a {@link SvUndebitRespPars} object
+     * @return a keyple::calypso::command::po::parser::storedvalue::SvUndebitRespPars object
      */
     std::shared_ptr<SvUndebitRespPars> createResponseParser(
         std::shared_ptr<ApduResponse> apduResponse) override;

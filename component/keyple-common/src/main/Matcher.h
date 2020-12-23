@@ -56,10 +56,10 @@ public:
      * <p> This method first resets this matcher.  It then scans the input sequence looking for
      * matches of the pattern.  Characters that are not part of any match are appended directly to
      * the result string; each match is replaced in the result by the replacement string. The
-     * replacement string may contain references to captured subsequences as in the {@link
-     * #appendReplacement appendReplacement} method.
+     * replacement string may contain references to captured subsequences as in the
+     * appendReplacement() method.
      *
-     * <p> Note that backslashes (<tt>\</tt>) and dollar signs (<tt>$</tt>) in the replacement
+     * <p> Note that backslashes (<tt>\\</tt>) and dollar signs (<tt>$</tt>) in the replacement
      * string may cause the results to be different than if it were being treated as a literal
      * replacement string. Dollar signs may be treated as references to captured subsequences as
      * described above, and backslashes are used to escape literal characters in the replacement

@@ -38,9 +38,8 @@ using namespace keyple::common;
 using namespace keyple::core::seproxy::event;
 
 /**
- * Implementation of Sam Resource Manager working a {@link ReaderPlugin} (either
- * Stub or Pcsc) It is meant to work with a Keyple Pcsc Plugin or a Keyple Stub
- * Plugin.
+ * Implementation of Sam Resource Manager working a keyple::core::seproxy::ReaderPlugin (either
+ * Stub or Pcsc) It is meant to work with a Keyple Pcsc Plugin or a Keyple Stub Plugin.
  */
 class KEYPLECALYPSO_API SamResourceManagerDefault : public SamResourceManager {
 public:
@@ -55,9 +54,9 @@ public:
         explicit ReaderObserver(SamResourceManagerDefault& parent);
 
         /**
-         * Handle {@link ReaderEvent}
+         * Handle keyple::core::seproxy::event::ReaderEvent
          * <p>
-         * Create {@link SeResource<CalypsoSam>}
+         * Create keyple::core::selection::SeResource<T>
          *
          * @param event the reader event
          */
@@ -81,7 +80,7 @@ public:
      * <p>
      * Add or remove readers
      * <p>
-     * Add a reader observer when an {@link ObservableReader} is connected.
+     * Add a reader observer when an keyple::core::seproxy::event::ObservableReader is connected.
      */
     class PluginObserver final : public ObservablePlugin::PluginObserver {
     public:
@@ -107,7 +106,7 @@ public:
                        const std::string& samReaderFilter,
                        SamResourceManagerDefault& parent);
         /**
-         * Handle {@link PluginEvent}
+         * Handle keyple::core::seproxy::event::PluginEvent
          *
          * @param event the plugin event
          */
@@ -157,14 +156,12 @@ public:
      *               otherwise if need be.
      *
      * @param readerPlugin the plugin through which SAM readers are accessible
-     * @param samReaderFilter the regular expression defining how to identify
-     *        SAM readers among others.
-     * @param maxBlockingTime the maximum duration for which the
-     *        allocateSamResource method will attempt to allocate a new reader
-     *        by retrying (in milliseconds)
+     * @param samReaderFilter the regular expression defining how to identify SAM readers among
+     *        others.
+     * @param maxBlockingTime the maximum duration for which the allocateSamResource method will
+     *        attempt to allocate a new reader by retrying (in milliseconds)
      * @param sleepTime the duration to wait between two retries
-     * @throw KeypleReaderException thrown if an error occurs while getting the
-     *        readers list.
+     * @throw KeypleReaderException thrown if an error occurs while getting the readers list.
      */
     SamResourceManagerDefault(std::shared_ptr<ReaderPlugin> readerPlugin,
                               const std::string& samReaderFilter,
@@ -178,8 +175,8 @@ protected:
     std::shared_ptr<ReaderPlugin> mSamReaderPlugin;
 
     /**
-     * Remove a {@link SeResource} from the current
-     * {@code SeResourceCalypsoSam>} list
+     * Remove a keyple::core::selection::SeResource<T> from the current
+     * keyple::core::selection::SeResource<T> list
      *
      * @param samReader the SAM reader of the resource to remove from the list.
      */

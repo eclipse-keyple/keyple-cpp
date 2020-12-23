@@ -125,7 +125,7 @@ public:
     uint8_t getInstructionByte() const;
 
     /**
-     * Get the right open-session command for a given {@link PoRevision}
+     * Get the right open-session command for a given keyple::calypso::command::po::PoRevision
      *
      * @param rev Command revision
      * @return Returned command

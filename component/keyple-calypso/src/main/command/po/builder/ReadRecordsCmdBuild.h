@@ -39,8 +39,8 @@ using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
 /**
- * The {@link ReadRecordsCmdBuild} class provides the dedicated constructor to build the Read
- Records APDU command.
+ * The keyple::calypso::command::po::builder::ReadRecordsCmdBuild class provides the dedicated
+ * constructor to build the Read Records APDU command.
  */
 class KEYPLECALYPSO_API ReadRecordsCmdBuild final
 : public AbstractPoCommandBuilder<ReadRecordsRespPars> {

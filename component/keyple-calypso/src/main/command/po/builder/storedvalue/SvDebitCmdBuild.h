@@ -35,8 +35,9 @@ using namespace keyple::calypso::command::po::parser::storedvalue;
 
 /**
  * The Class SvDebitCmdBuild. This class provides the dedicated constructor to build the SV Debit
- * command. Note: {@link SvDebitCmdBuild} and {@link SvUndebitCmdBuild} shares the same parser
- * {@link SvDebitRespPars}
+ * command. Note: keyple::calypso::command::po::builder::storedvalue::SvDebitCmdBuild and
+ * keyple::calypso::command::po::builder::storedvalue::SvUndebitCmdBuild shares the same parser
+ * keyple::calypso::command::po::parser::storedvalue::SvDebitRespPars.
  */
 class KEYPLECALYPSO_API SvDebitCmdBuild final : public AbstractPoCommandBuilder<SvDebitRespPars> {
 public:

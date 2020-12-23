@@ -35,8 +35,8 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser::security;
 
 /**
- * The Class {@link RehabilitateCmdBuild}. This class provides the dedicated constructor to build
- * the PO Rehabilitate command.
+ * The Class keyple::calypso::command::po::builder::security::RehabilitateCmdBuild. This class
+ * provides the dedicated constructor to build the PO Rehabilitate command.
  */
 class KEYPLECALYPSO_API RehabilitateCmdBuild final
 : public AbstractPoCommandBuilder<RehabilitateRespPars> {

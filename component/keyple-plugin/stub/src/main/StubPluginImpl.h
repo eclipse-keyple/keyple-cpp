@@ -34,9 +34,10 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::plugin;
 
 /**
- * This plugin allows to simulate Secure Element communication by creating @{@link StubReaderImpl}
- * and @{@link StubSecureElement}. Plug a new StubReader with StubPlugin#plugStubReader and insert
- * an implementation of your own of {@link StubSecureElement} to start simulation communication.
+ * This plugin allows to simulate Secure Element communication by creating
+ * keyple::core::seproxy::protocol::TransmissionMode and keyple::plugin::stub::StubSecureElement.
+ * Plug a new StubReader with plugStubReader() and insert an implementation of your own of
+ * keyple::plugin::stub::StubSecureElement to start simulation communication.
  * This class is a singleton, use StubPlugin#getInstance to access it
  */
 class StubPluginImpl

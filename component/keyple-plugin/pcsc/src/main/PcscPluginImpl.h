@@ -98,9 +98,9 @@ protected:
 
     /**
      * Fetch connected native readers (from smartcard.io) and returns a list of corresponding
-     * {@link AbstractObservableReader} are new instances.
+     * keyple::core::seproxy::plugin::AbstractReader are new instances.
      *
-     * @return the list of AbstractObservableReader objects.
+     * @return the list of AbstractReader objects.
      * @throw KeypleReaderException if a reader error occurs
      */
     ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& initNativeReaders() override;

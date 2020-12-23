@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -27,11 +26,10 @@ namespace selection {
 using namespace keyple::core::seproxy;
 
 /**
- * The SeResource class groups a AbstractMatchingSe and its associated
- * SeReader<br>
+ * The SeResource class groups a AbstractMatchingSe and its associated SeReader<br>
  * TODO This class should be final.<br>
- * For the moment, it is not, awaiting the rewriting of the code of a client
- * class in Keyple-Calypso.
+ * For the moment, it is not, awaiting the rewriting of the code of a client class in
+ * Keyple-Calypso.
  */
 template <typename T>
 class SeResource {
@@ -39,8 +37,8 @@ public:
     /**
      * Constructor
      *
-     * @param seReader the {@link SeReader} with which the SE is communicating
-     * @param matchingSe the {@link AbstractMatchingSe} information structure
+     * @param seReader the keyple::core::seproxy::SeReader with which the SE is communicating
+     * @param matchingSe the keyple::core::selection::AbstractMatchingSe information structure
      */
     SeResource(std::shared_ptr<SeReader> seReader,
                std::shared_ptr<T> matchingSe)
@@ -56,7 +54,7 @@ public:
     virtual ~SeResource() {}
 
     /**
-     * @return the current {@link SeReader} for this SE
+     * @return the current keyple::core::seproxy::SeReader for this SE
      */
     virtual const std::shared_ptr<SeReader> getSeReader() const
     {
@@ -64,7 +62,7 @@ public:
     }
 
     /**
-     * @return the {@link AbstractMatchingSe}
+     * @return the keyple::core::selection::AbstractMatchingSe
      */
     virtual const std::shared_ptr<T> getMatchingSe() const
     {

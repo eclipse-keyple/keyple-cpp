@@ -32,7 +32,7 @@ using namespace keyple::common;
 using namespace keyple::core::seproxy;
 
 /**
- * Implementation of Sam Resource Manager working a {@link ReaderPoolPlugin}
+ * Implementation of Sam Resource Manager working a keyple::core::seproxy::ReaderPoolPlugin
  */
 class KEYPLECALYPSO_API SamResourceManagerPool : public SamResourceManager {
 public:

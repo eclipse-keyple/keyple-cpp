@@ -36,7 +36,7 @@ using namespace keyple::calypso::command::sam::builder::security;
 class KEYPLECALYPSO_API UnlockRespPars final : public AbstractSamResponseParser {
 public:
     /**
-     * Instantiates a new {@link UnlockRespPars}.
+     * Instantiates a new keyple::calypso::command::sam::parser::security::UnlockRespPars
      *
      * @param response the response
      * @param builder the reference to the builder that created this parser

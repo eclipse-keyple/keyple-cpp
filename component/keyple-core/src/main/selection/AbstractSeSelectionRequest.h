@@ -120,7 +120,7 @@ public:
      * Virtual parse method
      *
      * @param seResponse the SE response received
-     * @return a {@link AbstractMatchingSe}
+     * @return a keyple::core::selection::AbstractMatchingSe
      * @throw KeypleException if an error occurs while parsing the SE response
      *
      * Note: protected in Java, triggers error when used in SeSelection.cpp
@@ -129,13 +129,13 @@ public:
         = 0;
 
     /**
-     * Add an additional {@link AbstractApduCommandBuilder} for the command to be executed after the
+     * Add an additional keyple::core::seproxy::SeReader for the command to be executed after the
      * selection process if it succeeds.
      * <p>
-     * If more than one {@link AbstractApduCommandBuilder} is added, all will be executed in the
+     * If more than one keyple::core::seproxy::SeReader is added, all will be executed in the
      * order in which they were added.
      *
-     * @param commandBuilder an {@link AbstractApduCommandBuilder}
+     * @param commandBuilder an keyple::core::seproxy::SeReader
      *
      * /!\ C++ vs. Java: this function is protected in Java
      */

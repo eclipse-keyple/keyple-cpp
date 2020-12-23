@@ -36,7 +36,7 @@ public:
     /**
      * Instantiates a new SvPrepareDebitCmdBuild to prepare a debit transaction.
      *
-     * @param samRevision the SAM revision
+     * @param revision the SAM revision
      * @param svGetHeader the SV Get command header
      * @param svGetData a byte array containing the data from the SV get command and response
      * @param svDebitCmdBuildData the SV debit command builder data

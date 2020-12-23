@@ -46,8 +46,8 @@ public:
      * Returns the current readers name instance map.
      *
      * The map is initialized in the constructor and may be updated in
-     * background in the case of a threaded plugin {@link
-     * AbstractThreadedObservablePlugin}
+     * background in the case of a threaded plugin
+     * keyple::core::seproxy::plugin::AbstractThreadedObservablePlugin
      *
      * @return the current readers map, can be an empty
      */
@@ -97,9 +97,9 @@ protected:
 
     /**
      * Init connected native readers (from third party library) and returns a
-     * map of corresponding {@link SeReader} whith their name as key.
+     * map of corresponding keyple::core::seproxy::SeReader whith their name as key.
      * <p>
-     * {@link SeReader} are new instances.
+     * keyple::core::seproxy::SeReader are new instances.
      * <p>
      * this method is called once in the plugin constructor.
      *

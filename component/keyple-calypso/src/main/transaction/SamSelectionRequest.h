@@ -40,18 +40,18 @@ using namespace keyple::core::seproxy::message;
 
 /**
  * Specialized selection request to manage the specific characteristics of Calypso SAMs<br>
- * Beyond the creation of a {@link CalypsoSam} object, this class also allows to execute a command
- * to Unlock the SAM if unlockData are present in the {@link SamSelector}.<br>
+ * Beyond the creation of a keyple::calypso::transaction::CalypsoSam object, this class also allows
+ * to execute a command to Unlock the SAM if unlockData are present in the
+ * keyple::calypso::transaction::SamSelector.<br>
  * This unlock command is currently the only one allowed during the SAM selection process.
  */
 class KEYPLECALYPSO_API SamSelectionRequest
 : public AbstractSeSelectionRequest<AbstractSamCommandBuilder<AbstractSamResponseParser>> {
 public:
     /**
-     * Create a {@link SamSelectionRequest}
+     * Create a keyple::calypso::transaction::SamSelectionRequest
      *
      * @param samSelector the SAM selector
-     * @param channelState the action to take after (close or keep open)
      */
     explicit SamSelectionRequest(std::shared_ptr<SamSelector> samSelector);
 
@@ -60,7 +60,7 @@ public:
      * If an Unlock command has been prepared, its status is checked.
      *
      * @param seResponse the SE response received
-     * @return a {@link CalypsoSam}
+     * @return a keyple::calypso::transaction::CalypsoSam
      * @throw CalypsoDesynchronizedExchangesException if the APDU SAM exchanges are out of sync
      * @throw CalypsoSamCommandException if the SAM has responded with an error status
      *

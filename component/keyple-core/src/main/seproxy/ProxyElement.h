@@ -22,7 +22,8 @@ namespace seproxy {
 
 /**
  * (package-private)<br>
- * Allow {@link ProxyReader}s and {@link ReaderPlugin}s to receive configuration parameters
+ * Allow keyple::core::seproxy::message::ProxyReader and keyple::core::seproxy::ReaderPlugin to
+ * receive configuration parameters
  */
 class ProxyElement {
 public:
