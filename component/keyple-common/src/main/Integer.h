@@ -127,10 +127,10 @@ public:
      * @return the parsed int value
      * @throw NumberFormatException if there is an error
      * @throw NullPointerException if decode is true and str if null
-     * @see #parseInt(String, int)
-     * @see #decode(String)
-     * @see Byte#parseByte(String, int)
-     * @see Short#parseShort(String, int)
+     * @see parseInt()
+     * @see decode()
+     * @see parseByte()
+     * @see parseShort()
      */
     static int parseInt(const std::string& str, int radix, const bool decode)
     {

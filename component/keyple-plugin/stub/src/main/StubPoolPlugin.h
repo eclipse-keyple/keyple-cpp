@@ -28,13 +28,13 @@ namespace stub {
 using namespace keyple::core::seproxy;
 
 /**
- * StubPoolPlugin allows to simulate a {@link
- * keyple::core::seproxy::ReaderPoolPlugin} and a {@link StubSecureElement}
+ * StubPoolPlugin allows to simulate a keyple::core::seproxy::ReaderPoolPlugin and a
+ * keyple::plugin::stub::StubSecureElement
  */
 class StubPoolPlugin : public ReaderPoolPlugin {
 public:
     /**
-     * Plug synchronously a new @{@link StubReaderImpl} in Pool with
+     * Plug synchronously a new keyple::core::seproxy::protocol::TransmissionMode in Pool with
      * groupReference and a StubSE. A READER_CONNECTED event will be raised.
      *
      * @param groupReference : group refence of the new stub reader

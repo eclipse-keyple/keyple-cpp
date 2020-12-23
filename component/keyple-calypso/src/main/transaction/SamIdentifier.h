@@ -28,7 +28,7 @@ using namespace keyple::calypso::command::sam;
 /**
  * Holds the needed data to proceed a SAM selection.
  * <p>
- * SAM Revision (see {@link SamRevision})
+ * SAM Revision (see keyple::calypso::command::sam::SamRevision)
  * <p>
  * Serial Number (may be a regular expression)
  * <p>
@@ -37,7 +37,7 @@ using namespace keyple::calypso::command::sam;
 class KEYPLECALYPSO_API SamIdentifier {
 public:
     /**
-     * Builder for a {@link SamIdentifier}
+     * Builder for a keyple::calypso::transaction::SamIdentifier
      *
      * @since 0.9
      */
@@ -51,7 +51,7 @@ public:
         /**
          * Sets the targeted SAM revision
          *
-         * @param samRevision the {@link SamRevision} of the targeted SAM
+         * @param samRevision the keyple::calypso::command::sam::SamRevision of the targeted SAM
          * @return the builder instance
          */
         SamIdentifierBuilder& samRevision(const SamRevision& samRevision);
@@ -122,9 +122,9 @@ public:
     /**
      * Compare two SamIdentifiers with the following rules:
      * <ul>
-     * <li>when the provided {@link SamIdentifier} is null the result is
+     * <li>when the provided keyple::calypso::transaction::SamIdentifier is null the result is
      * true</li>
-     * <li>when the provided {@link SamIdentifier} is not null
+     * <li>when the provided keyple::calypso::transaction::SamIdentifier is not null
      * <ul>
      * <li>the AUTO revision matches any revision</li>
      * <li>if not null, the serial number is used as a regular expression to
@@ -134,7 +134,7 @@ public:
      * </li>
      * </ul>
      *
-     * @param samIdentifier the {@link SamIdentifier} object to be compared to
+     * @param samIdentifier the keyple::calypso::transaction::SamIdentifier object to be compared to
      *        the current object
      * @return true if the identifier provided matches the current identifier
      */

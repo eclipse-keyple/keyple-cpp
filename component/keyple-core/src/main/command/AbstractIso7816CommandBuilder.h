@@ -47,7 +47,7 @@ class KEYPLECORE_API AbstractIso7816CommandBuilder
 public:
     /**
      * Abstract constructor to build a command with a command reference and an
-     * {@link ApduRequest}.
+     * keyple::core::seproxy::message::ApduRequest.
      *
      * @param commandReference command reference
      * @param request ApduRequest
@@ -58,7 +58,7 @@ public:
 
     /**
      * Abstract constructor to build a command with a command name and an
-     * {@link ApduRequest}
+     * keyple::core::seproxy::message::ApduRequest
      *
      * @param name name of command
      * @param request ApduRequest
@@ -99,10 +99,6 @@ protected:
      * @param dataIn bytes sent in the data field of the command. dataIn.limit
      *        will be Lc (Number of bytes present in the data field of the
      *        command)
-     * @param le maximum number of bytes expected in the data field of the
-     *        response to the command (set to 0 is the case where ingoing and
-     *        outgoing are present. Let the lower layer to handle the actual
-     *        length [case4])
      * @return an ApduRequest
      */
     virtual std::shared_ptr<ApduRequest> setApduRequest(

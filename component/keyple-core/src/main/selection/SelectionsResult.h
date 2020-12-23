@@ -31,7 +31,7 @@ namespace selection {
 /**
  * The SelectionsResult class holds the result of a selection process.
  * <p>
- * Embeds a map of {@link AbstractMatchingSe}. At most one of these matching SE
+ * Embeds a map of keyple::core::selection::AbstractMatchingSe. At most one of these matching SE
  * is active.<br>
  * Provides a set of methods to retrieve the active selection
  * (getActiveMatchingSe) or a particular matching SE specified by its index.
@@ -45,7 +45,7 @@ public:
     SelectionsResult();
 
     /**
-     * Append a {@link AbstractMatchingSe} to the internal list
+     * Append a keyple::core::selection::AbstractMatchingSe to the internal list
      *
      * @param selectionIndex the index of the selection that resulted in the
      *                       matching SE
@@ -67,18 +67,18 @@ public:
     const std::shared_ptr<AbstractMatchingSe> getActiveMatchingSe();
 
     /**
-     * @return the {@link AbstractMatchingSe} map
+     * @return the keyple::core::selection::AbstractMatchingSe map
      */
     const std::map<int, std::shared_ptr<AbstractMatchingSe>>&
         getMatchingSelections() const;
 
     /**
-     * Gets the {@link AbstractMatchingSe} for the specified index.
+     * Gets the keyple::core::selection::AbstractMatchingSe for the specified index.
      * <p>
-     * Returns null if no {@link AbstractMatchingSe} was found.
+     * Returns null if no keyple::core::selection::AbstractMatchingSe was found.
      *
      * @param selectionIndex the selection index
-     * @return the {@link AbstractMatchingSe} or null
+     * @return the keyple::core::selection::AbstractMatchingSe or null
      */
     const std::shared_ptr<AbstractMatchingSe> getMatchingSe(int selectionIndex);
 

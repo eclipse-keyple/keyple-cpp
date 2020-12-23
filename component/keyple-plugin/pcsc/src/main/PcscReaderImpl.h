@@ -45,7 +45,7 @@ public:
     /**
      * This constructor should only be called by PcscPlugin PCSC reader
      * parameters are initialized with their default values as defined in
-     * setParameter. See  {@link Configurable#setParameter(String, String)} for
+     * setParameter. See setParameter() for
      * more details
      *
      * @param pluginName the name of the plugin

@@ -23,8 +23,8 @@ namespace plugin {
 using namespace keyple::core::seproxy::event;
 
 /**
- * The {@link ObservableReaderNotifier} interface provides the API to notify the observers of a
- * {@link ObservableReader}
+ * The keyple::core::seproxy::plugin::ObservableReaderNotifier interface provides the API to notify the observers of a
+ * keyple::core::seproxy::event::ObservableReader
  */
 class ObservablePluginNotifier : public virtual ObservablePlugin {
 public:
@@ -34,10 +34,10 @@ public:
     virtual ~ObservablePluginNotifier() = default;
 
     /**
-     * Push a ReaderEvent of the {@link ObservableReaderNotifier} to its
+     * Push a ReaderEvent of the keyple::core::seproxy::plugin::ObservableReaderNotifier to its
      * registered observers.
      *
-     * @param event the event (see {@link ReaderEvent})
+     * @param event the event (see keyple::core::seproxy::event::ReaderEvent)
      */
     virtual void notifyObservers(const std::shared_ptr<PluginEvent> event) = 0;
 };

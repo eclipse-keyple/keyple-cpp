@@ -46,7 +46,8 @@ public:
      * Constructor.
      *
      * @param selectionResponse the selection response from the SAM
-     * @param transmissionMode the current {@link TransmissionMode} (contacts or contactless)
+     * @param transmissionMode the current keyple::core::seproxy::protocol::TransmissionMode
+     *        (contacts or contactless)
      */
     CalypsoSam(std::shared_ptr<SeResponse> selectionResponse,
                const TransmissionMode& transmissionMode);

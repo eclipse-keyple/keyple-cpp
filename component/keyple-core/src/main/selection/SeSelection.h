@@ -55,8 +55,6 @@ public:
      * Constructor.
      *
      * @param multiSeRequestProcessing the multi se processing mode
-     * @param channelControl indicates if the channel has to be closed at the
-     *        end of the processing
      */
     SeSelection(MultiSeRequestProcessing multiSeRequestProcessing);
 
@@ -86,22 +84,24 @@ public:
     void prepareReleaseSeChannel();
 
     /**
-     * Parses the response to a selection operation sent to a SE and return a list of {@link
-     * AbstractMatchingSe}
+     * Parses the response to a selection operation sent to a SE and return a list of
+     * keyple::core::selection::AbstractMatchingSe
      * <p>
      * Selection cases that have not matched the current SE are set to null.
      *
-     * @param defaultSelectionsResponse the response from the reader to the {@link
-     *        AbstractDefaultSelectionsRequest}
-     * @return the {@link SelectionsResult} containing the result of all prepared selection cases,
-     *         including {@link AbstractMatchingSe} and {@link SeResponse}.
+     * @param defaultSelectionsResponse the response from the reader to the
+     *        keyple::core::seproxy::event::AbstractDefaultSelectionsRequest
+     * @return the keyple::core::selection::SelectionsResult containing the result of all prepared
+     *         selection cases, including keyple::core::selection::AbstractMatchingSe and
+     *         keyple::core::seproxy::message::SeResponse.
      * @throw KeypleException if an error occurs during the selection process
      */
     std::shared_ptr<SelectionsResult> processDefaultSelection(
         std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse);
 
     /**
-     * Execute the selection process and return a list of {@link AbstractMatchingSe}.
+     * Execute the selection process and return a list of
+     * keyple::core::selection::AbstractMatchingSe.
      * <p>
      * Selection requests are transmitted to the SE through the supplied SeReader.
      * <p>
@@ -114,20 +114,22 @@ public:
      * <p>
      *
      * @param seReader the SeReader on which the selection is made
-     * @return the {@link SelectionsResult} containing the result of all prepared selection cases,
-     *         including {@link AbstractMatchingSe} and {@link SeResponse}.
+     * @return the keyple::core::selection::SelectionsResult containing the result of all prepared
+     *         selection cases, including keyple::core::selection::AbstractMatchingSe and
+     *         keyple::core::seproxy::message::SeResponse.
      * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
      * @throw KeypleException if an error occurs during the selection process
      */
     std::shared_ptr<SelectionsResult> processExplicitSelection(std::shared_ptr<SeReader> seReader);
 
     /**
-     * The SelectionOperation is the {@link AbstractDefaultSelectionsRequest} to process in ordered
-     * to select a SE among others through the selection process. This method is useful to build the
-     * prepared selection to be executed by a reader just after a SE insertion.
+     * The SelectionOperation is the keyple::core::seproxy::event::AbstractDefaultSelectionsRequest
+     * to process in ordered to select a SE among others through the selection process. This method
+     * is useful to build the prepared selection to be executed by a reader just after a SE
+     * insertion.
      *
-     * @return the {@link AbstractDefaultSelectionsRequest} previously prepared with
-     *         prepareSelection
+     * @return the keyple::core::seproxy::event::AbstractDefaultSelectionsRequest previously
+     *         prepared with prepareSelection
      */
     std::shared_ptr<AbstractDefaultSelectionsRequest> getSelectionOperation();
 
@@ -185,13 +187,13 @@ private:
      * The responses from the List of {@link SeResponseSet} is parsed and
      * checked.
      * <p>
-     * A {@link AbstractMatchingSe} list is build and returned. Non matching SE
+     * A keyple::core::selection::AbstractMatchingSe list is build and returned. Non matching SE
      * are signaled by a null element in the list
      *
      * @param defaultSelectionsResponse the selection response
-     * @return the {@link SelectionsResult} containing the result of all
-     *         prepared selection cases, including {@link AbstractMatchingSe}
-     *         and {@link SeResponse}.
+     * @return the keyple::core::selection::SelectionsResult containing the result of all
+     *         prepared selection cases, including keyple::core::selection::AbstractMatchingSe
+     *         and keyple::core::seproxy::message::SeResponse.
      * @throws KeypleException if the selection process failed
      */
     std::shared_ptr<SelectionsResult> processSelection(

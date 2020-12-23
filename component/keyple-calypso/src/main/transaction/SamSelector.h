@@ -60,7 +60,7 @@ public:
         /**
          * Sets the SAM revision
          *
-         * @param samRevision the {@link SamRevision} of the targeted SAM
+         * @param samRevision the keyple::calypso::command::sam::SamRevision of the targeted SAM
          * @return the builder instance
          */
         SamSelectorBuilder& samRevision(const SamRevision samRevision);
@@ -76,7 +76,7 @@ public:
         /**
          * Sets the SAM identifier
          *
-         * @param samIdentifier the {@link SamIdentifier} of the targeted SAM
+         * @param samIdentifier the keyple::calypso::transaction::SamIdentifier of the targeted SAM
          * @return the builder instance
          */
         SamSelectorBuilder& samIdentifier(

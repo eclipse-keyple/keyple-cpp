@@ -50,15 +50,16 @@ using namespace keyple::common;
 class KEYPLECORE_API AbstractReader : public AbstractSeProxyComponent, public virtual ProxyReader {
 public:
     /**
-     * Execute the transmission of a list of {@link SeRequest} and returns a list of
-     * {@link SeResponse}
+     * Execute the transmission of a list of keyple::core::seproxy::message::SeRequest and returns a
+     * list of keyple::core::seproxy::message::SeResponse
      * <p>
-     * The {@link MultiSeRequestProcessing} parameter indicates whether all requests are to be sent
-     * regardless of their result (PROCESS_ALL) or whether the process should stop at the first
-     * request whose result is a success (FIRST_MATCH).
+     * The keyple::core::seproxy::MultiSeRequestProcessing parameter indicates whether all requests
+     * are to be sent regardless of their result (PROCESS_ALL) or whether the process should stop at
+     * the first request whose result is a success (FIRST_MATCH).
      * <p>
-     * The {@link ChannelControl} parameter specifies whether the physical channel should be closed
-     * (CLOSE_AFTER) or not (KEEP_OPEN) after all requests have been transmitted.
+     * The keyple::core::seproxy::message::ChannelControl parameter specifies whether the physical
+     * channel should be closed (CLOSE_AFTER) or not (KEEP_OPEN) after all requests have been
+     * transmitted.
      * <p>
      * The global execution time (inter-exchange and communication) and the Set of SeRequest content
      * is logged (DEBUG level).
@@ -77,10 +78,11 @@ public:
         const ChannelControl& channelControl) override;
 
     /**
-     * Execute the transmission of a {@link SeRequest} and returns a {@link SeResponse}
+     * Execute the transmission of a keyple::core::seproxy::message::SeRequest and returns a
+     * keyple::core::seproxy::message::SeResponse
      * <p>
-     * The individual execution time (inter-exchange and communication) and the {@link SeRequest}
-     * content is logged (DEBUG level).
+     * The individual execution time (inter-exchange and communication) and the
+     * keyple::core::seproxy::message::SeRequest content is logged (DEBUG level).
      * <p>
      * As the method is final, it cannot be extended.
      *
@@ -130,7 +132,7 @@ protected:
      * Initialize the time measurement
      *
      * @param pluginName the name of the plugin that instantiated the reader
-     * @param readerName the name of the reader
+     * @param name the name of the reader
      */
     AbstractReader(const std::string& pluginName, const std::string& name);
 
@@ -145,12 +147,12 @@ protected:
      * <p>
      * This method is handled by transmitSet.
      *
-     * @param seRequests a {@link List} of {@link SeRequest} to be processed
+     * @param seRequests a list of keyple::core::seproxy::message::SeRequest to be processed
      * @param multiSeRequestProcessing the multi se processing mode
      * @param channelControl indicates if the channel has to be closed at the
      *        end of the processing
-     * @return the List of {@link SeResponse} (responses to the Set of {@link
-     *         SeRequest})
+     * @return the List of keyple::core::seproxy::message::SeResponse (responses to the Set of
+     *         keyple::core::seproxy::message::SeRequest)
      * @throws KeypleReaderIOException if the communication with the reader or
      *         the SE has failed
      */
@@ -160,15 +162,15 @@ protected:
         const ChannelControl& channelControl) = 0;
 
     /**
-     * Abstract method implemented by the AbstractLocalReader and VirtualReader
-     * classes.
+     * Abstract method implemented by the AbstractLocalReader and VirtualReader classes.
      * <p>
      * This method is handled by transmit.
      *
-     * @param seRequest the {@link SeRequest} to be processed
+     * @param seRequest the keyple::core::seproxy::message::SeRequest to be processed
      * @param channelControl a flag indicating if the channel has to be closed
-     *        after the processing of the {@link SeRequest}
-     * @return the {@link SeResponse} (responses to the {@link SeRequest})
+     *        after the processing of the keyple::core::seproxy::message::SeRequest
+     * @return the keyple::core::seproxy::message::SeResponse (responses to the
+     *         keyple::core::seproxy::message::SeRequest)
      * @throws KeypleReaderIOException if the communication with the reader or
      *         the SE has failed
      */

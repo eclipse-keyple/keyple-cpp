@@ -64,8 +64,9 @@ public:
      * <p>
      * Set up a mini state machine to manage the scheduling of Stored Value commands.
      * <p>
-     * The {@link PoTransaction.SvSettings.Operation} and {@link PoTransaction.SvSettings.Action}
-     * are also used to check the consistency of the SV process.
+     * The keyple::calypso::transaction::PoTransaction::SvSettings::Operation and
+     * keyple::calypso::transaction::PoTransaction::SvSettings::Action are also used to check the
+     * consistency of the SV process.
      * <p>
      * The svOperationPending flag is set when an SV operation (Reload/Debit/Undebit) command is
      * added.
@@ -100,7 +101,7 @@ public:
     /**
      * (package-private)<br>
      *
-     * @return true if the {@link PoCommandManager} has commands
+     * @return true if the keyple::calypso::transaction::PoCommandManager has commands
      */
     bool hasCommands() const;
 

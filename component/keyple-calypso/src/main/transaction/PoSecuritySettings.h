@@ -196,7 +196,8 @@ public:
          * Sets the SV Get log read mode to indicate whether only one or both log files are to be
          * read
          *
-         * @param svGetLogReadMode the {@link PoTransaction.SvSettings.LogRead} mode
+         * @param svGetLogReadMode the
+         *        keyple::calypso::transaction::PoTransaction::SvSettings::LogRead mode
          * @return the builder instance
          */
         PoSecuritySettingsBuilder& svGetLogReadMode(const LogRead svGetLogReadMode);
@@ -206,7 +207,8 @@ public:
          * Sets the SV negative balance mode to indicate whether negative balances are allowed or
          * not
          *
-         * @param svNegativeBalance the {@link PoTransaction.SvSettings.NegativeBalance} mode
+         * @param svNegativeBalance the
+         *        keyple::calypso::transaction::PoTransaction::SvSettings::NegativeBalance mode
          * @return the builder instance
          */
         PoSecuritySettingsBuilder& svNegativeBalance(const NegativeBalance svNegativeBalance);

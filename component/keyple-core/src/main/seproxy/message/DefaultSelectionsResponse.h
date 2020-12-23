@@ -28,8 +28,8 @@ namespace message {
 using namespace keyple::core::seproxy::event;
 
 /**
- * Class containing the List of {@link SeResponse} used from a default selection
- * made at the {@link ObservableReader} level.<br>
+ * Class containing the List of keyple::core::seproxy::message::SeResponse used from a default selection
+ * made at the keyple::core::seproxy::event::ObservableReader level.<br>
  * It implements the {@link AbstractDefaultSelectionsResponse} class by
  * providing it with a public constructor.
  */

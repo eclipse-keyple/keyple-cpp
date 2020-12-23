@@ -36,7 +36,7 @@ using namespace keyple::core::seproxy::message;
  * The default selection is defined by:
  * <ul>
  * <li>a set of requests corresponding to one or more selection cases
- * <li>a {@link MultiSeRequestProcessing} indicator specifying whether all planned selections are to
+ * <li>a keyple::core::seproxy::MultiSeRequestProcessing indicator specifying whether all planned selections are to
  * be executed or whether to stop at the first one that is successful
  * <li>an indicator to control the physical channel to stipulate whether it should be closed or left
  * open at the end of the selection process

@@ -65,9 +65,8 @@ public:
         /**
          * Constructor
          *
-         * @param seReader the {@link SeReader} with which the SE is
-         *        communicating
-         * @param calypsoSam the {@link CalypsoSam} information structure
+         * @param seReader the keyple::core::seproxy::SeReader with which the SE is communicating
+         * @param calypsoSam the keyple::calypso::transaction::CalypsoSam information structure
          */
         ManagedSamResource(std::shared_ptr<SeReader> seReader,
                            std::shared_ptr<CalypsoSam> calypsoSam);
@@ -80,31 +79,28 @@ public:
         bool isSamResourceFree() const;
 
         /**
-         * Defines the {@link SamIdentifier} of the current {@link
-         * ManagedSamResource}
+         * Defines the keyple::calypso::transaction::SamIdentifier of the current
+         * keyple::calypso::transaction::SamResourceManager::ManagedSamResource
          *
          * @param samIdentifier the SAM identifier
          */
         void setSamIdentifier(std::shared_ptr<SamIdentifier> samIdentifier);
 
         /**
-         * Indicates whether the ManagedSamResource matches the provided SAM
-         * identifier.
+         * Indicates whether the ManagedSamResource matches the provided SAM identifier.
          * <p>
-         * The test includes the {@link SamRevision}, serial number and group
-         * reference provided by the {@link SamIdentifier}.
+         * The test includes the keyple::calypso::command::sam::SamRevision, serial number and group
+         * reference provided by the keyple::calypso::transaction::SamIdentifier.
          * <p>
-         * The SAM serial number can be null or empty, in this case all serial
-         * numbers are accepted. It can also be a regular expression target one
-         * or more specific serial numbers.
+         * The SAM serial number can be null or empty, in this case all serial numbers are accepted.
+         * It can also be a regular expression target one or more specific serial numbers.
          * <p>
-         * The groupe reference can be null or empty to let all group references
-         * match but not empty the group reference must match the {@link
-         * SamIdentifier} to have the method returning true.
+         * The groupe reference can be null or empty to let all group references match but not empty
+         * the group reference must match the keyple::calypso::transaction::SamIdentifier to have
+         * the method returning true.
          *
          * @param samIdentifier the SAM identifier
-         * @return true or false according to the result of the correspondence
-         *         test
+         * @return true or false according to the result of the correspondence test
          */
         bool isSamMatching(const std::shared_ptr<SamIdentifier> samIdentifier) const;
 
@@ -177,7 +173,7 @@ protected:
      *
      * @param samReader the SAM reader with which the APDU exchanges will be
      *        done.
-     * @return a {@link SeResource}
+     * @return a keyple::core::selection::SeResource<T>
      * @throw CalypsoNoSamResourceAvailableException if an error occurs while
      *        doing the selection
      */

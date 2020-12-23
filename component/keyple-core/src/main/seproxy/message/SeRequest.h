@@ -40,7 +40,7 @@ namespace message {
 using namespace keyple::core::seproxy;
 
 /**
- * List of APDU requests that will result in a {@link SeResponse}
+ * List of APDU requests that will result in a keyple::core::seproxy::message::SeResponse
  *
  * @see SeResponse
  */
@@ -48,27 +48,22 @@ class KEYPLECORE_API SeRequest final
 : public std::enable_shared_from_this<SeRequest> {
 public:
     /**
-     * The constructor called by a ProxyReader in order to open a logical
-     * channel, to send a set of APDU commands to a SE application, or both of
-     * them.
+     * The constructor called by a ProxyReader in order to open a logical channel, to send a set of
+     * APDU commands to a SE application, or both of them.
      *
-     * @param seSelector the SeSelector containing the selection information to
-     *        process the SE selection
-     * @param apduRequests a optional list of {@link ApduRequest} to execute
+     * @param seSelector the SeSelector containing the selection information to process the SE
+     *        selection
+     * @param apduRequests a optional list of keyple::core::seproxy::message::ApduRequest to execute
      *        after a successful selection process
-     * @param channelState the channel management parameter allowing to close or
-     *        keep the channel open after the request execution
      */
     SeRequest(const std::shared_ptr<SeSelector> seSelector,
               const std::vector<std::shared_ptr<ApduRequest>>& apduRequests);
 
     /**
-     * Constructor to be used when the SE is already selected (without {@link
-     * SeSelector})
+     * Constructor to be used when the SE is already selected (without
+     * keyple::core::seproxy::SeSelector)
      *
      * @param apduRequests a list of ApudRequest
-     * @param channelState a flag to tell if the channel has to be closed at the
-     *        end
      */
     SeRequest(const std::vector<std::shared_ptr<ApduRequest>>& apduRequests);
 
@@ -82,8 +77,8 @@ public:
     /**
      * Gets the apdu requests.
      *
-     * @return the group of APDUs to be transmitted to the SE application for
-     *         this instance of SERequest.
+     * @return the group of APDUs to be transmitted to the SE application for this instance of
+     *         SERequest.
      */
     const std::vector<std::shared_ptr<ApduRequest>>& getApduRequests() const;
 

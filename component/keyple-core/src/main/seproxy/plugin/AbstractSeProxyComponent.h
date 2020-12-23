@@ -50,7 +50,7 @@ public:
     /**
      * Sets at once a set of parameters for a reader
      * <p>
-     * See {@link #setParameter(String, String)} for more details
+     * See setParameter() for more details
      *
      * @param parameters a Map &lt;String, String&gt; parameter set
      * @throw KeypleBaseException if one of the parameters could not be set up

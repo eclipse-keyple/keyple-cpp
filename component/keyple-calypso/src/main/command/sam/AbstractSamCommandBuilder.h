@@ -70,7 +70,7 @@ public:
      * Create the response parser matching the builder
      *
      * @param apduResponse the response data from the SE
-     * @return an {@link AbstractApduResponseParser}
+     * @return an keyple::core::command::AbstractApduResponseParser
      */
     virtual std::shared_ptr<T> createResponseParser(
         const std::shared_ptr<ApduResponse> apduResponse) = 0;

@@ -34,7 +34,7 @@ public:
     }
 
     /**
-     * See {@link #isWhitespace(int)}.
+     * See isWhitespace().
      */
     static bool isWhitespace(char c)
     {
@@ -45,8 +45,8 @@ public:
      * Returns true if the given code point is a Unicode whitespace character.
      * The exact set of characters considered as whitespace varies with Unicode version.
      * Note that non-breaking spaces are not considered whitespace.
-     * Note also that line separators are considered whitespace; see {@link #isSpaceChar}
-     * for an alternative.
+     * Note also that line separators are considered whitespace; see isSpaceChar() for an
+     * alternative.
      */
     static bool isWhitespace(int codePoint)
     {

@@ -37,7 +37,7 @@ public:
      * Waits for a SE. Returns true if a SE is detected before the end of the provided timeout.
      * <p>
      * This method must be implemented by the plugin's reader class when it implements the
-     * {@link SmartInsertionReader} interface.
+     * keyple::core::seproxy::plugin::SmartInsertionReader interface.
      * <p>
      * Returns false if no SE is detected
      *

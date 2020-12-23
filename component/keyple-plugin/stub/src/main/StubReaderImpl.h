@@ -59,6 +59,7 @@ public:
     /**
      * Do not use directly
      *
+     * @param pluginName
      * @param readerName
      */
     StubReaderImpl(const std::string& pluginName, const std::string& readerName);
@@ -132,8 +133,7 @@ public:
     void stopWaitForCard() override;
 
     /**
-     * Defined in the {@link
-     * keyple::core::seproxy::plugin::local::SmartRemovalReader} interface, this
+     * Defined in the keyple::core::seproxy::plugin::local::SmartRemovalReader interface, this
      * method is called by the monitoring thread to check SE absence
      *
      * @return true if the SE is absent

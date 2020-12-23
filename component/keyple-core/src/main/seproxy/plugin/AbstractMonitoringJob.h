@@ -31,7 +31,7 @@ class AbstractObservableState;
  * Observable readers can instantiate {@link AbstractMonitoringJob} to perform background processing
  * during the different states of the generic state machine.
  * <p>
- * Internal events ({@link AbstractObservableLocalReader.InternalEvent}) can be fired to change the
+ * Internal events (keyple::core::seproxy::plugin::InternalEvent) can be fired to change the
  * state of the machine via the {@link AbstractObservableState} class passed as a constructor's
  * argument.
  * <p>

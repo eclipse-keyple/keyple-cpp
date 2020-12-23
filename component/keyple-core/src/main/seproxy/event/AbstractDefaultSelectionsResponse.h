@@ -31,7 +31,7 @@ using namespace keyple::core::seproxy::message;
  * The abstract class defining the default selections response in return to the default selection
  * made when the SE was inserted..
  * <p>
- * The default selections response provides a list of {@link SeResponse}<br>
+ * The default selections response provides a list of keyple::core::seproxy::message::SeResponse<br>
  * The purpose of this abstract class is to hide the constructor that is defined as public in its
  * implementation {@link keyple::core::seproxy::message::DefaultSelectionsRequest}.
  */
@@ -43,7 +43,7 @@ public:
     virtual ~AbstractDefaultSelectionsResponse() {}
 
     /**
-     * @return the list of {@link SeResponse}
+     * @return the list of keyple::core::seproxy::message::SeResponse
      */
     virtual const std::vector<std::shared_ptr<SeResponse>>& getSelectionSeResponses() const;
 
