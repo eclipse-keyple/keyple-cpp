@@ -46,7 +46,7 @@ using namespace keyple::core::util;
 PoSelectionRequest::PoSelectionRequest(std::shared_ptr<PoSelector> poSelector)
 : AbstractSeSelectionRequest(poSelector), poClass(PoClass::LEGACY)
 {
-    commandIndex = 0;
+    mCommandIndex = 0;
 
     /* No AID selector for a legacy Calypso PO */
     if (seSelector->getAidSelector() == nullptr) {
@@ -60,7 +60,8 @@ PoSelectionRequest::PoSelectionRequest(std::shared_ptr<PoSelector> poSelector)
 
 int PoSelectionRequest::prepareReadRecordsCmdInternal(
     uint8_t sfi, ReadDataStructure readDataStructureEnum,
-    uint8_t firstRecordNumber, int expectedLength, const std::string& extraInfo)
+    uint8_t firstRecordNumber, uint8_t expectedLength,
+    const std::string& extraInfo)
 {
     /*
      * the readJustOneRecord flag is set to false only in case of multiple read
@@ -86,19 +87,20 @@ int PoSelectionRequest::prepareReadRecordsCmdInternal(
 		          readJustOneRecord, expectedLength);
 
     /* keep read record parameters in the dedicated Maps */
-    readRecordFirstRecordNumberMap.emplace(commandIndex, firstRecordNumber);
-    readRecordDataStructureMap.emplace(commandIndex, readDataStructureEnum);
+    readRecordFirstRecordNumberMap.emplace(mCommandIndex, firstRecordNumber);
+    readRecordDataStructureMap.emplace(mCommandIndex, readDataStructureEnum);
 
     /* set the parser for the response of this command */
     parsingClassList.push_back(typeid(ReadRecordsRespPars).name());
 
     /* return and post increment the command index */
-    return commandIndex++;
+    return mCommandIndex++;
 }
 
 int PoSelectionRequest::prepareReadRecordsCmd(
     uint8_t sfi, ReadDataStructure readDataStructureEnum,
-    uint8_t firstRecordNumber, int expectedLength, const std::string& extraInfo)
+    uint8_t firstRecordNumber, uint8_t expectedLength,
+    const std::string& extraInfo)
 {
     if (expectedLength < 1 || expectedLength > 250) {
         throw std::invalid_argument("Bad length.");
@@ -115,8 +117,7 @@ int PoSelectionRequest::prepareReadRecordsCmd(
 {
     logger->debug("prepareReadRecordsCmd\n");
 
-    if (seSelector->getSeProtocol().ordinalValue ==
-        SeCommonProtocols::PROTOCOL_ISO7816_3.ordinal()) {
+    if (seSelector->getSeProtocol() == SeCommonProtocols::PROTOCOL_ISO7816_3) {
         throw std::invalid_argument("In contacts mode, the expected length "
                                     "must be specified.");
     }
@@ -141,7 +142,7 @@ int PoSelectionRequest::prepareSelectFileCmd(const std::vector<uint8_t>& path,
     parsingClassList.push_back(typeid(SelectFileRespPars).name());
 
     /* return and post increment the command index */
-    return commandIndex++;
+    return mCommandIndex++;
 }
 
 int PoSelectionRequest::prepareSelectFileCmd(
@@ -160,7 +161,7 @@ int PoSelectionRequest::prepareSelectFileCmd(
     parsingClassList.push_back(typeid(SelectFileRespPars).name());
 
     /* return and post increment the command index */
-    return commandIndex++;
+    return mCommandIndex++;
 }
 
 int PoSelectionRequest::preparePoCustomReadCmd(const std::string& name,
@@ -176,7 +177,7 @@ int PoSelectionRequest::preparePoCustomReadCmd(const std::string& name,
     logger->trace("CustomReadCommand: APDUREQUEST = %\n", apduRequest);
 
     /* return and post increment the command index */
-    return commandIndex++;
+    return mCommandIndex++;
 }
 
 int PoSelectionRequest::preparePoCustomModificationCmd(
@@ -189,7 +190,7 @@ int PoSelectionRequest::preparePoCustomModificationCmd(
     logger->trace("CustomModificationCommand: APDUREQUEST = %\n", apduRequest);
 
     /* return and post increment the command index */
-    return commandIndex++;
+    return mCommandIndex++;
 }
 
 std::shared_ptr<AbstractApduResponseParser>
@@ -225,15 +226,15 @@ PoSelectionRequest::getCommandParser(std::shared_ptr<SeResponse> seResponse,
 }
 
 //std::shared_ptr<CalypsoPo> PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse) {
-std::shared_ptr<AbstractMatchingSe>
-PoSelectionRequest::parse(std::shared_ptr<SeResponse> seResponse)
+const std::shared_ptr<AbstractMatchingSe> PoSelectionRequest::parse(
+    std::shared_ptr<SeResponse> seResponse)
 {
     /*
      * Return an AbstractMatchingSe but *instanciate* a CalypsoPo otherwise some
      * members won't be initialized
      */
     return std::make_shared<CalypsoPo>(
-               seResponse, seSelector->getSeProtocol().getTransmissionMode(),
+               seResponse, seSelector->getSeProtocol()->getTransmissionMode(),
                seSelector->getExtraInfo());
 }
 

@@ -19,7 +19,7 @@
 namespace keyple {
 namespace common {
 
-Logger::Level Logger::level = Logger::Level::logDebug;
+Logger::Level Logger::mLevel = Logger::Level::logDebug;
 
 Logger::Logger(const std::string& className, std::mutex* mtx)
 : className(demangle(className.c_str())), mtx(mtx)
@@ -37,7 +37,7 @@ std::string Logger::getClassName()
 
 void Logger::setLoggerLevel(Logger::Level level)
 {
-    Logger::level = level;
+    mLevel = level;
 }
 
 const std::string Logger::getCurrentTimestamp()

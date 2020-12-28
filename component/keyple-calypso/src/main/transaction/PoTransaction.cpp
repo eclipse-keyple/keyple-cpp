@@ -90,8 +90,10 @@ const uint8_t PoTransaction::CHALLENGE_LENGTH_REV32      = 0x08;
 const uint8_t PoTransaction::SIGNATURE_LENGTH_REV_INF_32 = 0x04;
 const uint8_t PoTransaction::SIGNATURE_LENGTH_REV32      = 0x08;
 
-std::vector<uint8_t> PoTransaction::ratificationCmdApduLegacy;
-std::vector<uint8_t> PoTransaction::ratificationCmdApdu;
+std::vector<uint8_t> PoTransaction::ratificationCmdApduLegacy =
+    {0x94, 0xB2, 0x00, 0x00, 0x00};
+std::vector<uint8_t> PoTransaction::ratificationCmdApdu =
+    {0x00, 0xB2, 0x00, 0x00, 0x00};
 
 PoTransaction::PoTransaction(std::shared_ptr<PoResource> poResource,
                              std::shared_ptr<SamResource> samResource,
@@ -508,7 +510,7 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
         PoBuilderParser<AbstractPoCommandBuilder<AbstractPoResponseParser>>>>&
         poModificationCommands,
     std::vector<std::shared_ptr<ApduResponse>>& poAnticipatedResponses,
-    TransmissionMode transmissionMode, ChannelControl channelControl)
+    const TransmissionMode& transmissionMode, ChannelControl channelControl)
 {
     if (sessionState != SessionState::SESSION_OPEN) {
         throw IllegalStateException(StringHelper::formatSimple(
@@ -808,7 +810,8 @@ std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
 std::shared_ptr<SeResponse> PoTransaction::processAtomicClosing(
     std::vector<std::shared_ptr<PoBuilderParser<
         AbstractPoCommandBuilder<AbstractPoResponseParser>>>>& poBuilderParsers,
-    TransmissionMode transmissionMode, ChannelControl channelControl)
+    const TransmissionMode& transmissionMode,
+    ChannelControl channelControl)
 {
     std::vector<std::shared_ptr<ApduResponse>> poAnticipatedResponses =
         AnticipatedResponseBuilder::getResponses(poBuilderParsers);
@@ -1196,9 +1199,9 @@ PoTransaction::AnticipatedResponseBuilder::getResponses(
                             currentCounterValue + addSubtractValue;
                     }
 
-                    response[0] = (newCounterValue & 0x00FF0000) >> 16;
-                    response[1] = (newCounterValue & 0x0000FF00) >> 8;
-                    response[2] = (newCounterValue & 0x000000FF) >> 0;
+                    response[0] = static_cast<uint8_t>((newCounterValue & 0x00FF0000) >> 16);
+                    response[1] = static_cast<uint8_t>((newCounterValue & 0x0000FF00) >> 8);
+                    response[2] = static_cast<uint8_t>((newCounterValue & 0x000000FF) >> 0);
                     response[3] = 0x90;
                     response[4] = 0x00;
 

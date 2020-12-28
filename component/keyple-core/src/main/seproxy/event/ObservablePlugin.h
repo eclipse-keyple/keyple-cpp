@@ -95,7 +95,7 @@ public:
     /**
      * @return the number of observers
      */
-    virtual int countObservers() = 0;
+    virtual int countObservers() const = 0;
 };
 
 }

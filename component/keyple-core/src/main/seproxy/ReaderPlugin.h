@@ -48,31 +48,14 @@ public:
     /**
      *
      */
-    ReaderPlugin()
-    {
-    }
-
-    /**
-     *
-     */
-    ReaderPlugin(const ReaderPlugin& o) : Nameable(), Configurable()
-    {
-        (void)o;
-    }
-
-    /**
-     *
-     */
-    virtual ~ReaderPlugin()
-    {
-    }
+    virtual ~ReaderPlugin() {}
 
     /**
      * Gets the list of names of all readers
      *
      * @return a list of String
      */
-    virtual const std::set<std::string> getReaderNames() = 0;
+    virtual const std::set<std::string> getReaderNames() const = 0;
 
     /**
      * Gets the readers.
@@ -89,7 +72,8 @@ public:
      * @return the SeReader object.
      * @throws KeypleReaderNotFoundException if the wanted reader is not found
      */
-    virtual std::shared_ptr<SeReader> getReader(const std::string& name) = 0;
+    virtual const std::shared_ptr<SeReader> getReader(const std::string& name)
+        const = 0;
 };
 
 }

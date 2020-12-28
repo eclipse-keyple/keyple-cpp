@@ -99,7 +99,8 @@ std::vector<uint8_t> StubReaderImpl::transmitApdu(
     return se->processApdu(apduIn);
 }
 
-bool StubReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
+bool StubReaderImpl::protocolFlagMatches(
+    const std::shared_ptr<SeProtocol> protocolFlag)
 {
     bool result;
 
@@ -163,12 +164,12 @@ void StubReaderImpl::setParameter(const std::string& name,
 }
 
 const std::map<const std::string, const std::string>
-StubReaderImpl::getParameters()
+    StubReaderImpl::getParameters() const
 {
     return parameters;
 }
 
-TransmissionMode StubReaderImpl::getTransmissionMode()
+const TransmissionMode& StubReaderImpl::getTransmissionMode() const
 {
     return transmissionMode;
 }

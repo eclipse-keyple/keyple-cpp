@@ -52,7 +52,8 @@ const std::string PcscReaderImpl::PROTOCOL_ANY  = "T=0";
 PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
                                PcscTerminal& terminal)
 : AbstractObservableLocalReader(pluginName, terminal.getName()),
-  loopWaitSeRemoval(true), terminal(terminal)
+  loopWaitSeRemoval(true), terminal(terminal),
+  transmissionMode(TransmissionMode::NONE)
 {
     this->executorService = std::make_shared<MonitoringPool>();
     this->stateService    = initStateService();
@@ -77,19 +78,6 @@ PcscReaderImpl::PcscReaderImpl(const std::string& pluginName,
         /* Can not fail with null value */
     }
 }
-
-/*
-PcscReaderImpl::PcscReaderImpl(const PcscReaderImpl& o)
-: Nameable(), Configurable(),
-  AbstractObservableLocalReader(o.pluginName, o.terminal.getName()),
-  loopWaitSeRemoval(true), executorService(o.executorService), terminal(o.terminal),
-  parameterCardProtocol(o.parameterCardProtocol),
-  cardExclusiveMode(o.cardExclusiveMode), cardReset(o.cardReset),
-  transmissionMode(o.transmissionMode)
-{
-    this->stateService = o.stateService;
-}
-*/
 
 std::shared_ptr<ObservableReaderStateService> PcscReaderImpl::initStateService()
 {
@@ -210,7 +198,7 @@ bool PcscReaderImpl::waitForCardAbsentNative()
                     /* Card removed */
                     return true;
                 }
-            } 
+            }
 
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
@@ -251,22 +239,18 @@ std::vector<uint8_t> PcscReaderImpl::transmitApdu(
     return response;
 }
 
-bool PcscReaderImpl::protocolFlagMatches(const SeProtocol& protocolFlag)
+bool PcscReaderImpl::protocolFlagMatches(
+    const std::shared_ptr<SeProtocol> protocolFlag)
 {
     bool result;
 
     /* Test protocolFlag to check if ATR based protocol filtering is required */
-    //if (protocolFlag != nullptr) {
-    if (!isPhysicalChannelOpen()) {
-        logger->debug("protocolFlagMatches - physical channel not open, "
-                      "opening it\n");
-        openPhysicalChannel();
-    }
-
-    std::map<SeProtocol, std::string>::iterator it = protocolsMap.begin();
-    while (it != protocolsMap.end()) {
-        SeProtocol p = it->first;
-        it++;
+    if (protocolFlag) {
+        if (!isPhysicalChannelOpen()) {
+            logger->debug("protocolFlagMatches - physical channel not open, "
+                        "opening it\n");
+            openPhysicalChannel();
+        }
     }
 
     /*
@@ -315,7 +299,7 @@ void PcscReaderImpl::setParameter(const std::string& name,
      */
     if (name == "transmission_mode") {
         if (value == "")
-            transmissionMode = static_cast<TransmissionMode>(0);
+            transmissionMode = TransmissionMode::NONE;
         else if (value == "contacts")
             transmissionMode = TransmissionMode::CONTACTS;
         else if (value == "contactless")
@@ -335,6 +319,18 @@ void PcscReaderImpl::setParameter(const std::string& name,
             parameterCardProtocol = "T=CL";
         else
             throw std::invalid_argument("Bad protocol " + name + " : " + value);
+
+        /*
+         * /!\ Java diff
+         *
+         * Actualize 'transmissionMode' according to 'parameterCardProtocol'.
+         */
+        if (parameterCardProtocol == PROTOCOL_T1 ||
+            parameterCardProtocol == PROTOCOL_T_CL) {
+            transmissionMode = TransmissionMode::CONTACTLESS;
+        } else {
+            transmissionMode = TransmissionMode::CONTACTS;
+        }
 
     } else if (name == "mode") {
         if (value == "" || value == "shared") {
@@ -374,7 +370,7 @@ void PcscReaderImpl::setParameter(const std::string& name,
 }
 
 const std::map<const std::string, const std::string>
-PcscReaderImpl::getParameters()
+    PcscReaderImpl::getParameters() const
 {
     std::map<const std::string, const std::string> parameters;
 
@@ -434,18 +430,24 @@ void PcscReaderImpl::openPhysicalChannel()
     this->channelOpen = true;
 }
 
-TransmissionMode PcscReaderImpl::getTransmissionMode()
+const TransmissionMode& PcscReaderImpl::getTransmissionMode() const
 {
-    if (transmissionMode != static_cast<TransmissionMode>(0)) {
-        return transmissionMode;
-    } else {
-        if (!parameterCardProtocol.compare(PROTOCOL_T1) ||
-            !parameterCardProtocol.compare(PROTOCOL_T_CL)) {
-            return TransmissionMode::CONTACTLESS;
-        } else {
-            return TransmissionMode::CONTACTS;
-        }
-    }
+    /*
+     * /!\ Java diff
+     *
+     * getTransmissionMode() is Java can either return the actual value of
+     * 'transmissionMode' or a value deducted from 'parameterCardProtocol' if
+     * not set.
+     *
+     * This is a bit deceiving and 'transmissionMode' could never be set
+     * correctly. Instead, I made sure 'transmissionMode' is set correctly
+     * whenever 'parameterCardProtocol' changes (e.g. in setParameter())
+     *
+     * This allows getTranmissionMode() to be 'const', which seems right for a
+     * 'getter'.
+     */
+
+    return transmissionMode;
 }
 
 }

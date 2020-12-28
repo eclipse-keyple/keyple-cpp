@@ -46,39 +46,20 @@ bool SelectionStatus::hasMatched() const
     return isMatching;
 }
 
-bool SelectionStatus::equals(std::shared_ptr<void> o)
+bool SelectionStatus::operator==(const SelectionStatus& o) const
 {
-    if (o == shared_from_this()) {
-        return true;
-    }
-
-    if (!(std::static_pointer_cast<SelectionStatus>(o) != nullptr)) {
-        return false;
-    }
-
-    std::shared_ptr<SelectionStatus> selectionStatus =
-        std::static_pointer_cast<SelectionStatus>(o);
-
-    return selectionStatus->getAtr() == nullptr
-               ? this->atr == nullptr
-               : selectionStatus->getAtr()->equals(this->atr) &&
-                         selectionStatus->getFci() == nullptr
-                     ? this->fci == nullptr
-                     : selectionStatus->getFci()->equals(this->fci) &&
-                           selectionStatus->hasMatched() == isMatching;
+    return /* Both pointers are null or equal */
+           ((!this->atr && !o.atr) ||
+            *(this->atr.get()) == *(o.atr.get())) &&
+           /* Both pointers are null or equal */
+           ((!this->fci && !o.fci) ||
+            *(this->fci.get()) == *(o.fci.get())) &&
+           this->isMatching == o.isMatching;
 }
 
-int SelectionStatus::hashCode()
+bool SelectionStatus::operator!=(const SelectionStatus& o) const
 {
-    int hash = 17;
-    hash     = 19 * hash + (isMatching ? 0 : 1);
-    hash = 31 * hash + (atr == nullptr ? 0 : Arrays::hashCode(atr->getBytes()));
-    hash = 7 * hash + (fci == nullptr ? 0 : Arrays::hashCode(fci->getBytes()));
-    return hash;
-}
-
-void SelectionStatus::finalize()
-{
+    return !(*this == o);
 }
 
 std::ostream& operator<<(std::ostream& os, const SelectionStatus& s)

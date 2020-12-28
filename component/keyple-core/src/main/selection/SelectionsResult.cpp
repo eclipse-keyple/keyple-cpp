@@ -22,8 +22,6 @@ namespace keyple {
 namespace core {
 namespace selection {
 
-using namespace keyple::core::selection;
-
 SelectionsResult::SelectionsResult()
 {
 }
@@ -31,6 +29,9 @@ SelectionsResult::SelectionsResult()
 void SelectionsResult::addMatchingSelection(
     std::shared_ptr<MatchingSelection> matchingSelection)
 {
+    if (!matchingSelection)
+        return;
+
     matchingSelectionList.push_back(matchingSelection);
 
     /* Test if the current selection is active */
@@ -40,7 +41,8 @@ void SelectionsResult::addMatchingSelection(
     }
 }
 
-std::shared_ptr<MatchingSelection> SelectionsResult::getActiveSelection()
+const std::shared_ptr<MatchingSelection> SelectionsResult::getActiveSelection()
+    const
 {
     std::shared_ptr<MatchingSelection> activeSelection = nullptr;
 
@@ -54,14 +56,14 @@ std::shared_ptr<MatchingSelection> SelectionsResult::getActiveSelection()
     return activeSelection;
 }
 
-std::vector<std::shared_ptr<MatchingSelection>>
-SelectionsResult::getMatchingSelections()
+const  std::vector<std::shared_ptr<MatchingSelection>>&
+    SelectionsResult::getMatchingSelections() const
 {
     return matchingSelectionList;
 }
 
-std::shared_ptr<MatchingSelection>
-SelectionsResult::getMatchingSelection(int selectionIndex)
+const std::shared_ptr<MatchingSelection>
+    SelectionsResult::getMatchingSelection(int selectionIndex) const
 {
     for (auto matchingSelection : matchingSelectionList) {
         if (matchingSelection->getSelectionIndex() == selectionIndex) {
@@ -71,9 +73,30 @@ SelectionsResult::getMatchingSelection(int selectionIndex)
     return nullptr;
 }
 
-bool SelectionsResult::hasActiveSelection()
+bool SelectionsResult::hasActiveSelection() const
 {
     return hasActiveSelection_Renamed;
+}
+
+std::ostream& operator<<(std::ostream& os, const SelectionsResult& sr)
+{
+    os << "SELECTIONSRESULT: {"
+       << "HASACTIVESELECTION = " << sr.hasActiveSelection() << ", "
+       << sr.getMatchingSelections()
+       << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::shared_ptr<SelectionsResult>& sr)
+{
+    if (sr)
+        os << *sr.get();
+    else
+        os << "SELECTIONSRESULT = null";
+
+    return os;
 }
 
 }

@@ -79,18 +79,24 @@ std::vector<int> const
         311743, 370727, 440871, 524288, 623487, 741455, 881743, 1048576};
 
 const std::shared_ptr<Tag> GetDataFciRespPars::TAG_FCI_TEMPLATE =
-    std::make_shared<Tag>(0x0F, Tag::APPLICATION, Tag::TagType::CONSTRUCTED);
+    std::make_shared<Tag>(0x0F, Tag::TagClass::APPLICATION,
+                          Tag::TagType::CONSTRUCTED);
 const std::shared_ptr<Tag> GetDataFciRespPars::TAG_DF_NAME =
-    std::make_shared<Tag>(0x04, Tag::CONTEXT, Tag::TagType::PRIMITIVE);
+    std::make_shared<Tag>(0x04, Tag::TagClass::CONTEXT,
+                          Tag::TagType::PRIMITIVE);
 const std::shared_ptr<Tag> GetDataFciRespPars::TAG_FCI_PROPRIETARY_TEMPLATE =
-    std::make_shared<Tag>(0x05, Tag::CONTEXT, Tag::TagType::CONSTRUCTED);
+    std::make_shared<Tag>(0x05, Tag::TagClass::CONTEXT,
+                          Tag::TagType::CONSTRUCTED);
 const std::shared_ptr<Tag>
     GetDataFciRespPars::TAG_FCI_ISSUER_DISCRETIONARY_DATA =
-        std::make_shared<Tag>(0x0C, Tag::CONTEXT, Tag::TagType::CONSTRUCTED);
+        std::make_shared<Tag>(0x0C, Tag::TagClass::CONTEXT,
+                              Tag::TagType::CONSTRUCTED);
 const std::shared_ptr<Tag> GetDataFciRespPars::TAG_APPLICATION_SERIAL_NUMBER =
-    std::make_shared<Tag>(0x07, Tag::PRIVATE, Tag::TagType::PRIMITIVE);
+    std::make_shared<Tag>(0x07, Tag::TagClass::PRIVATE,
+                          Tag::TagType::PRIMITIVE);
 const std::shared_ptr<Tag> GetDataFciRespPars::TAG_DISCRETIONARY_DATA =
-    std::make_shared<Tag>(0x13, Tag::APPLICATION, Tag::TagType::PRIMITIVE);
+    std::make_shared<Tag>(0x13, Tag::TagClass::APPLICATION,
+                          Tag::TagType::PRIMITIVE);
 
 GetDataFciRespPars::GetDataFciRespPars(
     std::shared_ptr<ApduResponse> selectApplicationResponse)

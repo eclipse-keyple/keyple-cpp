@@ -40,7 +40,7 @@ using namespace keyple::common;
  * Single APDU response wrapper
  */
 class KEYPLECORE_API ApduResponse
-: public std::enable_shared_from_this<ApduResponse>, public Object {
+: public std::enable_shared_from_this<ApduResponse> {
 public:
     /**
      * Create a new ApduResponse from the provided byte array
@@ -57,13 +57,6 @@ public:
      */
     ApduResponse(const std::vector<uint8_t>& buffer,
                  std::shared_ptr<std::set<int>> successfulStatusCodes);
-
-    /**
-     *
-     */
-    virtual ~ApduResponse()
-    {
-    }
 
     /**
      * Checks if is successful.
@@ -92,12 +85,12 @@ public:
     /**
      *
      */
-    bool equals(std::shared_ptr<void> o) override;
+    bool operator==(const ApduResponse& o) const;
 
     /**
      *
      */
-    int hashCode() override;
+    bool operator!=(const ApduResponse& o) const;
 
     /**
      *
@@ -116,12 +109,6 @@ public:
 	 */
     friend KEYPLECORE_API std::ostream& operator<<(
 		std::ostream& os, const std::vector<std::shared_ptr<ApduResponse>>& v);
-
-protected:
-    /**
-     *
-     */
-    void finalize() override;
 
 private:
     /***

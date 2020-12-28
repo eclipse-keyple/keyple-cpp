@@ -63,11 +63,20 @@ public:
      */
     virtual std::list<std::shared_ptr<SeResponse>>& getSeResponseSet();
 
-    virtual void
-    setSeResponseSet(std::list<std::shared_ptr<SeResponse>> seResponseList);
+    /**
+     *
+     */
+    virtual void setSeResponseSet(
+        std::list<std::shared_ptr<SeResponse>> seResponseList);
 
+    /**
+     *
+     */
     virtual std::shared_ptr<SeResponse> getSeResponse();
 
+    /**
+     *
+     */
     virtual void setSeResponse(std::shared_ptr<SeResponse> seResponse);
 
 private:
@@ -75,12 +84,12 @@ private:
      * SeResponse and List of SeResponse objects to carry partial responses in
      * the event of a breakdown in communication with the SE.
      */
-    std::list<std::shared_ptr<SeResponse>> seResponseList;
+    std::list<std::shared_ptr<SeResponse>> mSeResponseList;
 
     /**
      *
      */
-    std::shared_ptr<SeResponse> seResponse;
+    std::shared_ptr<SeResponse> mSeResponse;
 };
 
 }

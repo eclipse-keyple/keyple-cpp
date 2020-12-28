@@ -59,8 +59,8 @@ public:
     }
 
     std::shared_ptr<ApduRequest> setApduRequest(
-        const uint8_t cla, const CommandsTable& command, const uint8_t p1,
-        const uint8_t p2, const std::vector<uint8_t>& dataIn, const uint8_t le)
+        uint8_t cla, const CommandsTable& command, uint8_t p1,
+        uint8_t p2, const std::vector<uint8_t>& dataIn, uint8_t le)
     {
         return AbstractIso7816CommandBuilder::setApduRequest(cla, command, p1,
 	                                                     p2, dataIn, le);
@@ -107,7 +107,8 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     AbstractIso7816CommandBuilderMock builder(table, request);
 
-    EXPECT_CALL(table, getInstructionByte()).WillRepeatedly(Return(0x11));
+    EXPECT_CALL(table, getInstructionByte())
+        .WillRepeatedly(Return(static_cast < uint8_t>(0x11)));
 
     /* case 2: dataIn = null, le != null */
     std::shared_ptr<ApduRequest> req =
@@ -135,7 +136,8 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     AbstractIso7816CommandBuilderMock builder(table, request);
 
-    EXPECT_CALL(table, getInstructionByte()).WillRepeatedly(Return(0x11));
+    EXPECT_CALL(table, getInstructionByte())
+        .WillRepeatedly(Return(static_cast<uint8_t>(0x11)));
 
     /* case 3: dataIn != null, le = null*/
     std::shared_ptr<ApduRequest> req =
@@ -163,7 +165,8 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     AbstractIso7816CommandBuilderMock builder(table, request);
 
-    EXPECT_CALL(table, getInstructionByte()).WillRepeatedly(Return(0x11));
+    EXPECT_CALL(table, getInstructionByte())
+        .WillRepeatedly(Return(static_cast<uint8_t>(0x11)));
 
     /* case 4: dataIn = null, le = 0 */
     std::shared_ptr<ApduRequest> req =
@@ -201,7 +204,8 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     AbstractIso7816CommandBuilderMock builder(name, request);
 
-    EXPECT_CALL(table, getInstructionByte()).WillRepeatedly(Return(0x11));
+    EXPECT_CALL(table, getInstructionByte())
+        .WillRepeatedly(Return(static_cast<uint8_t>(0x11)));
 
     /* case 2: dataIn = null, le != null */
     std::shared_ptr<ApduRequest> req =
@@ -229,7 +233,8 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     AbstractIso7816CommandBuilderMock builder(name, request);
 
-    EXPECT_CALL(table, getInstructionByte()).WillRepeatedly(Return(0x11));
+    EXPECT_CALL(table, getInstructionByte())
+        .WillRepeatedly(Return(static_cast<uint8_t>(0x11)));
 
     /* case 3: dataIn != null, le = null*/
     std::shared_ptr<ApduRequest> req =
@@ -257,7 +262,8 @@ TEST(AbstractIso7816CommandBuilderTest,
 
     AbstractIso7816CommandBuilderMock builder(name, request);
 
-    EXPECT_CALL(table, getInstructionByte()).WillRepeatedly(Return(0x11));
+    EXPECT_CALL(table, getInstructionByte())
+        .WillRepeatedly(Return(static_cast<uint8_t>(0x11)));
 
     /* case 4: dataIn = null, le = 0 */
     std::shared_ptr<ApduRequest> req =

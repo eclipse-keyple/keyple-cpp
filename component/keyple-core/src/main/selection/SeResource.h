@@ -24,7 +24,6 @@ namespace keyple {
 namespace core {
 namespace selection {
 
-using namespace keyple::core::selection;
 using namespace keyple::core::seproxy;
 
 /**

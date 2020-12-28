@@ -32,7 +32,6 @@ namespace calypso {
 namespace transaction {
 
 using namespace keyple::calypso::command::sam;
-using namespace keyple::calypso::transaction;
 using namespace keyple::core::selection;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
@@ -68,8 +67,8 @@ protected:
      * @param seResponse the SE response received
      * @return a {@link CalypsoSam}
      */
-    std::shared_ptr<AbstractMatchingSe>
-    parse(std::shared_ptr<SeResponse> seResponse) override;
+    const std::shared_ptr<AbstractMatchingSe> parse(
+        std::shared_ptr<SeResponse> seResponse) override;
 
     /**
      *

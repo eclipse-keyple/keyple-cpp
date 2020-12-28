@@ -67,7 +67,7 @@ public:
      *
      */
     SamReadKeyParametersCmdBuild(SamRevision& revision, SourceRef& sourceKeyRef,
-                                 int recordNumber);
+                                 uint8_t recordNumber);
 
     /**
      *

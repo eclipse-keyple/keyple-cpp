@@ -56,7 +56,7 @@ public:
      *
      */
     SamReadCeilingsCmdBuild(SamRevision& revision,
-                            CeilingsOperationType operationType, int index);
+                            CeilingsOperationType operationType, uint8_t index);
 
 private:
     /**

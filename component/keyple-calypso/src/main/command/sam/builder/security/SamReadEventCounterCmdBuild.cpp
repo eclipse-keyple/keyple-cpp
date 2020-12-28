@@ -33,7 +33,7 @@ const int SamReadEventCounterCmdBuild::MAX_COUNTER_REC_NUMB = 3;
 
 SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
     SamRevision& revision, SamEventCounterOperationType operationType,
-    int index)
+    uint8_t index)
 : AbstractSamCommandBuilder(command, nullptr)
 {
     this->defaultRevision = revision;
@@ -53,7 +53,7 @@ SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
         break;
     case SINGLE_COUNTER:
 
-        if (index < 0 || index > MAX_COUNTER_NUMB) {
+        if (index > MAX_COUNTER_NUMB) {
             throw IllegalArgumentException(StringHelper::formatSimple(
                 "Counter Number must be between 0 and %d", MAX_COUNTER_NUMB));
         }

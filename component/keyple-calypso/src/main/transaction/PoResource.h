@@ -31,7 +31,6 @@ namespace calypso {
 namespace transaction {
 
 using namespace keyple::core::selection;
-using namespace keyple::calypso::transaction;
 using namespace keyple::core::seproxy;
 
 class KEYPLECALYPSO_API PoResource : public SeResource<CalypsoPo> {

@@ -159,7 +159,7 @@ StubPoolPluginImpl::listAllocatedReaders()
     return allocatedReader;
 }
 
-const std::set<std::string> StubPoolPluginImpl::getReaderNames()
+const std::set<std::string> StubPoolPluginImpl::getReaderNames() const
 {
     return stubPlugin.getReaderNames();
 }
@@ -169,7 +169,8 @@ std::set<std::shared_ptr<SeReader>>& StubPoolPluginImpl::getReaders()
     return stubPlugin.getReaders();
 }
 
-std::shared_ptr<SeReader> StubPoolPluginImpl::getReader(const std::string& name)
+const std::shared_ptr<SeReader> StubPoolPluginImpl::getReader(
+    const std::string& name) const
 {
     return stubPlugin.getReader(name);
 }
@@ -180,7 +181,7 @@ int StubPoolPluginImpl::compareTo(std::shared_ptr<ReaderPlugin> plugin)
 }
 
 const std::map<const std::string, const std::string>
-StubPoolPluginImpl::getParameters()
+    StubPoolPluginImpl::getParameters() const
 {
     return stubPlugin.getParameters();
 }
@@ -192,7 +193,7 @@ void StubPoolPluginImpl::setParameter(const std::string& key,
 }
 
 void StubPoolPluginImpl::setParameters(
-    const std::map<std::string, std::string>& parameters)
+    const std::map<const std::string, const std::string>& parameters)
 {
     stubPlugin.setParameters(parameters);
 }

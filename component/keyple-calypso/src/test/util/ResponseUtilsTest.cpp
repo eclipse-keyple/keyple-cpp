@@ -42,7 +42,8 @@ void ResponseUtilsTest::TestToSecureSession()
     std::vector<uint8_t> transactionCounter = {0x8F, 0x05, 0x75};
     std::vector<uint8_t> randomNumber       = {0x1A, 0x00, 0x00, 0x00, 0x00};
     uint8_t kif                             = 0x00;
-    std::shared_ptr<Byte> kvc = std::make_shared<Byte>(0x00);
+    std::shared_ptr<Byte> kvc =
+        std::make_shared<Byte>(static_cast < uint8_t>(0x00));
 
     bool isPreviousSessionRatifiedExpected       = true;
     bool isManageSecureSessionAuthorizedExpected = false;
@@ -84,7 +85,8 @@ void ResponseUtilsTest::TestToSecureSessionRev2()
     std::vector<uint8_t> apduResponse       = {0x7E, 0x03, 0x0D, 0x14, 0x53};
     std::vector<uint8_t> transactionCounter = {0x03, 0x0D, 0x14};
     std::vector<uint8_t> randomNumber       = {0x53};
-    std::shared_ptr<Byte> kvc = std::make_shared<Byte>(0x7E);
+    std::shared_ptr<Byte> kvc =
+        std::make_shared<Byte>(static_cast<uint8_t>(0x7E));
 
     bool isPreviousSessionRatifiedExpected       = false;
     bool isManageSecureSessionAuthorizedExpected = false;

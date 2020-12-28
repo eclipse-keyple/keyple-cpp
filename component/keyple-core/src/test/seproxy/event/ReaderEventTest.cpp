@@ -12,33 +12,43 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "ReaderEventTest.h"
+#include <algorithm>
+
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
 #include "ReaderEvent.h"
 
-namespace org {
-namespace eclipse {
-namespace keyple {
-namespace seproxy {
-namespace event_Renamed {
+using namespace testing;
 
-void ReaderEventTest::testReaderEvent()
+using namespace keyple::core::seproxy::event;
+
+using EventType = ReaderEvent::EventType;
+
+
+TEST(ReaderEventTest, ReaderEvent)
 {
-    std::shared_ptr<ReaderEvent> event_Renamed = std::make_shared<ReaderEvent>(
-        "plugin", "reader", ReaderEvent::EventType::IO_ERROR, nullptr);
-    assertNotNull(event_Renamed);
+    ReaderEvent event("plugin", "reader", EventType::SE_INSERTED, nullptr);
 }
 
-void ReaderEventTest::testGetEvent()
+TEST(ReaderEventTest, getPluginName)
 {
-    std::shared_ptr<ReaderEvent> event_Renamed = std::make_shared<ReaderEvent>(
-        "plugin", "reader", ReaderEvent::EventType::IO_ERROR, nullptr);
-    assertEquals(event_Renamed->getReaderName(), "reader");
-    assertEquals(event_Renamed->getPluginName(), "plugin");
-    assertEquals(event_Renamed->getEventType(),
-                 ReaderEvent::EventType::IO_ERROR);
+    ReaderEvent event("plugin", "reader", EventType::SE_INSERTED, nullptr);
+
+    ASSERT_EQ(event.getPluginName(), "plugin");
 }
+
+TEST(ReaderEventTest, getReaderName)
+{
+    ReaderEvent event("plugin", "reader", EventType::SE_INSERTED, nullptr);
+
+    ASSERT_EQ(event.getReaderName(), "reader");
 }
+
+TEST(ReaderEventTest, getEventType)
+{
+    ReaderEvent event("plugin", "reader", EventType::SE_INSERTED, nullptr);
+
+    ASSERT_EQ(event.getEventType(), EventType::SE_INSERTED);
 }
-}
-}
-}
+

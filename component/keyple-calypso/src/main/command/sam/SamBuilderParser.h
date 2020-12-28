@@ -26,7 +26,6 @@ namespace command {
 namespace sam {
 
 using namespace keyple::calypso::command;
-using namespace keyple::calypso::command::sam;
 
 class SamBuilderParser
 : public std::enable_shared_from_this<SamBuilderParser>,

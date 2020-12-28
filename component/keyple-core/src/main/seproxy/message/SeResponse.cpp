@@ -93,41 +93,19 @@ std::ostream& operator<<(std::ostream& os,
 	return os;
 }
 
-bool SeResponse::equals(std::shared_ptr<void> o)
+bool SeResponse::operator==(const SeResponse& o) const
 {
-    if (o == shared_from_this()) {
-        return true;
-    }
-    if (!(std::static_pointer_cast<SeResponse>(o) != nullptr)) {
-        return false;
-    }
-
-    std::shared_ptr<SeResponse> seResponse =
-        std::static_pointer_cast<SeResponse>(o);
-
-    return seResponse->getSelectionStatus() == (selectionStatus) &&
-           (seResponse->getApduResponses().empty()
-                ? apduResponses.empty()
-                : seResponse->getApduResponses() == (apduResponses)) &&
-           seResponse->isLogicalChannelOpen() == logicalChannelIsOpen &&
-           seResponse->wasChannelPreviouslyOpen() == channelPreviouslyOpen;
+    return this->channelPreviouslyOpen == o.channelPreviouslyOpen &&
+           this->logicalChannelIsOpen == o.logicalChannelIsOpen &&
+           this->apduResponses == o.apduResponses &&
+           /* Both pointers are null or equal */
+           ((!this->selectionStatus && !o.selectionStatus) ||
+            *(this->selectionStatus.get()) == *(o.selectionStatus.get()));
 }
 
-int SeResponse::hashCode()
+bool SeResponse::operator!=(const SeResponse& o) const
 {
-    int hash = 17;
-    hash     = 31 * hash + (selectionStatus->getAtr() == nullptr
-                            ? 0
-                            : selectionStatus->getAtr()->hashCode());
-    hash     = 7 * hash +
-           (apduResponses.empty() ? 0 : 1); //this->apduResponses.hashCode());
-    hash = 29 * hash + (this->channelPreviouslyOpen ? 1 : 0);
-    hash = 37 * hash + (this->logicalChannelIsOpen ? 1 : 0);
-    return hash;
-}
-
-void SeResponse::finalize()
-{
+    return !(*this == o);
 }
 
 }

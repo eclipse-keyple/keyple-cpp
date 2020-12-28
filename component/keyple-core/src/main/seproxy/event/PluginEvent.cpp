@@ -21,8 +21,6 @@ namespace core {
 namespace seproxy {
 namespace event {
 
-using namespace keyple::core::seproxy::event;
-
 using EventType = PluginEvent::EventType;
 
 const EventType EventType::READER_CONNECTED("READER_CONNECTED",
@@ -50,15 +48,9 @@ EventType::EventType(const std::string& nameValue, InnerEnum innerEnum,
     this->name = name;
 }
 
-EventType::EventType(const EventType& o)
-: innerEnumValue(o.innerEnumValue), nameValue(o.nameValue),
-  ordinalValue(o.ordinalValue)
+const std::string& EventType::getName() const
 {
-}
-
-std::string EventType::getName()
-{
-    return this->name;
+    return name;
 }
 
 bool EventType::operator==(const EventType& other) const
@@ -107,17 +99,17 @@ PluginEvent::PluginEvent(const std::string& pluginName,
     this->readerNames.insert(readerNames->begin(), readerNames->end());
 }
 
-std::string PluginEvent::getPluginName()
+const std::string& PluginEvent::getPluginName() const
 {
     return pluginName;
 }
 
-std::set<std::string>& PluginEvent::getReaderNames()
+const std::set<std::string>& PluginEvent::getReaderNames() const
 {
     return readerNames;
 }
 
-PluginEvent::EventType PluginEvent::getEventType()
+const PluginEvent::EventType& PluginEvent::getEventType() const
 {
     return eventType;
 }

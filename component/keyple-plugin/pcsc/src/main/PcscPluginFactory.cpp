@@ -26,7 +26,7 @@ namespace keyple {
 namespace plugin {
 namespace pcsc {
 
-const std::string& PcscPluginFactory::getPluginName()
+const std::string& PcscPluginFactory::getPluginName() const
 {
     return PcscPlugin::PLUGIN_NAME;
 }

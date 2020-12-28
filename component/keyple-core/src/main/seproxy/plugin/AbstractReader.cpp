@@ -13,14 +13,18 @@
  ******************************************************************************/
 
 #include "AbstractReader.h"
-#include "ReaderEvent.h"
-#include "SeRequest.h"
-#include "SeResponse.h"
+
 #include "KeypleReaderException.h"
 #include "KeypleChannelControlException.h"
 #include "KeypleIOReaderException.h"
 #include "MultiSeRequestProcessing.h"
+#include "ReaderEvent.h"
 #include "SeReader.h"
+#include "SeRequest.h"
+#include "SeResponse.h"
+
+/* Common */
+#include "exceptionhelper.h"
 #include "LoggerFactory.h"
 #include "System.h"
 
@@ -37,7 +41,7 @@ using namespace keyple::core::seproxy::message;
 AbstractReader::AbstractReader(const std::string& pluginName,
                                const std::string& name)
 : AbstractSeProxyComponent(name),
-  notificationMode(ObservableReader::NotificationMode::ALWAYS),
+  mNotificationMode(ObservableReader::NotificationMode::ALWAYS),
   pluginName(pluginName)
 {
     /*
@@ -48,7 +52,7 @@ AbstractReader::AbstractReader(const std::string& pluginName,
     this->before = System::nanoTime();
 }
 
-const std::string& AbstractReader::getPluginName()
+const std::string& AbstractReader::getPluginName() const
 {
     return pluginName;
 }
@@ -58,10 +62,10 @@ int AbstractReader::compareTo(std::shared_ptr<SeReader> seReader)
     return this->getName().compare(seReader->getName());
 }
 
-std::list<std::shared_ptr<SeResponse>>
-AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
-                            MultiSeRequestProcessing multiSeRequestProcessing,
-                            ChannelControl channelControl)
+std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
+    const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+    const MultiSeRequestProcessing& multiSeRequestProcessing,
+    const ChannelControl& channelControl)
 {
     /*
      * Alex:
@@ -81,7 +85,7 @@ AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
     double elapsedMs =
         static_cast<double>((timeStamp - this->before) / 100000) / 10;
     this->before = timeStamp;
-    logger->debug("[%] transmit => SEREQUESTSET = %, elapsed % ms\n",
+    logger->trace("[%] transmit => SEREQUESTSET = %, elapsed % ms\n",
                   getName(), requestSet, elapsedMs);
 
     try {
@@ -113,14 +117,14 @@ AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet,
     timeStamp = System::nanoTime();
     elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
     this->before = timeStamp;
-    logger->debug("[%] transmit => SERESPONSESET = %, elapsed % ms\n",
+    logger->trace("[%] transmit => SERESPONSESET = %, elapsed % ms\n",
                   getName(), responseSet, elapsedMs);
 
     return responseSet;
 }
 
-std::list<std::shared_ptr<SeResponse>>
-AbstractReader::transmitSet(std::set<std::shared_ptr<SeRequest>>& requestSet)
+std::list<std::shared_ptr<SeResponse>> AbstractReader::transmitSet(
+    const std::vector<std::shared_ptr<SeRequest>>& requestSet)
 {
     return transmitSet(requestSet, MultiSeRequestProcessing::FIRST_MATCH,
                        ChannelControl::KEEP_OPEN);
@@ -131,7 +135,7 @@ AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest,
                          ChannelControl channelControl)
 {
     if (seRequest == nullptr) {
-        throw std::invalid_argument("seRequest must not be null\n");
+        throw IllegalArgumentException("seRequest must not be null\n");
     }
 
     /* Sets the forceClosing flag */
@@ -144,7 +148,7 @@ AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest,
         static_cast<double>((timeStamp - this->before) / 100000) / 10;
     this->before = timeStamp;
 
-    logger->debug("[%] transmit => SEREQUEST = %, elapsed % ms\n",
+    logger->trace("[%] transmit => SEREQUEST = %, elapsed % ms\n",
                   this->getName(), seRequest, elapsedMs);
 
     try {
@@ -183,7 +187,7 @@ AbstractReader::transmit(std::shared_ptr<SeRequest> seRequest,
     elapsedMs = static_cast<double>((timeStamp - before) / 100000) / 10;
     this->before = timeStamp;
 
-    logger->debug("[%] transmit => SERESPONSE = %, elapsed % ms\n",
+    logger->trace("[%] transmit => SERESPONSE = %, elapsed % ms\n",
                   this->getName(), seResponse, elapsedMs);
 
     return seResponse;

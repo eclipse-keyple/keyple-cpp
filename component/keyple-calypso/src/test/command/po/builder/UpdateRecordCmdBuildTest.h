@@ -57,7 +57,7 @@ class UpdateRecordCmdBuildTest
 : public std::enable_shared_from_this<UpdateRecordCmdBuildTest> {
 
 private:
-    const char record_number = 0x01;
+    const uint8_t record_number = 0x01;
 
     std::vector<uint8_t> newRecordData = {0x00, 0x01, 0x02, 0x03, 0x04};
 

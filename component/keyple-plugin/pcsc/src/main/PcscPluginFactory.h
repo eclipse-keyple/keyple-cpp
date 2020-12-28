@@ -34,7 +34,7 @@ public:
     /**
      *
      */
-    const std::string& getPluginName() override;
+    const std::string& getPluginName() const override;
 
 protected:
     /**

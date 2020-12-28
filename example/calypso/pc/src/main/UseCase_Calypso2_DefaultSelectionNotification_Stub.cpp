@@ -200,7 +200,7 @@ public:
     /**
      *
      */
-    void update(std::shared_ptr<ReaderEvent> event)
+    void update(const std::shared_ptr<ReaderEvent> event)
     {
         ReaderEvent::EventType type = event->getEventType();
 

@@ -21,45 +21,25 @@ namespace seproxy {
 namespace message {
 
 AnswerToReset::AnswerToReset(const std::vector<uint8_t>& atrBytes)
+: atrBytes(atrBytes)
 {
-    this->atrBytes.assign(atrBytes.begin(), atrBytes.end());
 }
 
-const std::vector<uint8_t>& AnswerToReset::getBytes()
+const std::vector<uint8_t>& AnswerToReset::getBytes() const
 {
     return atrBytes;
 }
 
-bool AnswerToReset::equals(std::shared_ptr<void> o)
+bool AnswerToReset::operator==(const AnswerToReset& o) const
 {
-    if (o == shared_from_this()) {
-        return true;
-    }
-
-    if (!(std::static_pointer_cast<AnswerToReset>(o) != nullptr)) {
-        return false;
-    }
-
-    std::shared_ptr<AnswerToReset> atr =
-        std::static_pointer_cast<AnswerToReset>(o);
-
-    return Arrays::equals(atr->getBytes(), this->atrBytes);
+    return Arrays::equals(o.getBytes(), this->atrBytes);
 }
 
-int AnswerToReset::hashCode()
+bool AnswerToReset::operator!=(const AnswerToReset& o) const
 {
-    int hash = 17;
-    hash     = 19 * hash + (atrBytes.empty() ? 0 : Arrays::hashCode(atrBytes));
-    return hash;
+    return !(*this == o);
 }
 
-void AnswerToReset::finalize()
-{
-}
-
-/**
- * 
- */
 std::ostream& operator<<(std::ostream& os, const AnswerToReset& atr)
 {
     os << "ATR = " << atr.atrBytes;
@@ -67,9 +47,6 @@ std::ostream& operator<<(std::ostream& os, const AnswerToReset& atr)
 	return os;
 }
 
-/**
- *
- */
 std::ostream& operator<<(std::ostream& os,
                          const std::shared_ptr<AnswerToReset>& atr)
 {

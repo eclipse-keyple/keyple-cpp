@@ -65,14 +65,14 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string>
-    getParameters() override;
+    const std::map<const std::string, const std::string> getParameters() const
+        override;
 
     /**
      *
      */
-    void setParameter(const std::string& key,
-                      const std::string& value) override;
+    void setParameter(const std::string& key, const std::string& value)
+        override;
 
 protected:
     /**
@@ -104,8 +104,8 @@ protected:
      * @return the reader object
      * @throws KeypleReaderException if a reader error occurs
      */
-    std::shared_ptr<SeReader>
-        fetchNativeReader(const std::string& name) override;
+    std::shared_ptr<SeReader> fetchNativeReader(const std::string& name)
+        override;
 
 private:
     /**
@@ -125,14 +125,9 @@ private:
     static PcscPluginImpl uniqueInstance;
 
     /**
-     * /!\ clang compiler warning - not used
-     */
-    //bool logging = false;
-
-    /**
      *
      */
-    std::vector<PcscTerminal> terminals;
+    std::vector<PcscTerminal> mTerminals;
 
     /**
      *

@@ -104,7 +104,7 @@ public:
         /**
          *
          */
-        virtual std::string getName();
+        virtual const std::string& getName() const;
 
         /**
          *
@@ -199,17 +199,17 @@ public:
     /**
      *
      */
-    std::string getPluginName();
+    const std::string& getPluginName() const;
 
     /**
      *
      */
-    std::string getReaderName();
+    const std::string& getReaderName() const;
 
     /**
      *
      */
-    EventType getEventType();
+    const EventType& getEventType() const;
 
 	/**
 	 *

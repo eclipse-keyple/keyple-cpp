@@ -39,7 +39,7 @@ void SamGetChallengeCmdBuildTest::getChallengeCmdBuild()
 
     std::shared_ptr<AbstractApduCommandBuilder> apduCommandBuilder =
         std::make_shared<SamGetChallengeCmdBuild>(
-            SamRevision::S1D, 0x04); // 94
+            SamRevision::S1D, static_cast < uint8_t>(0x04)); // 94
     std::shared_ptr<ApduRequest> apduRequest =
         apduCommandBuilder->getApduRequest();
 

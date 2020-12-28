@@ -14,9 +14,10 @@
 
 #include <typeinfo>
 
+#include "AbstractLocalReader.h"
+
 #include "AbstractDefaultSelectionsRequest.h"
 #include "AbstractObservableLocalReader.h"
-#include "AbstractLocalReader.h"
 #include "ApduRequest.h"
 #include "ApduResponse.h"
 #include "Arrays.h"
@@ -49,7 +50,6 @@ using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::protocol;
 using namespace keyple::core::seproxy::message;
-using namespace keyple::core::seproxy::plugin::local;
 
 using NotificationMode = ObservableReader::NotificationMode;
 
@@ -192,7 +192,7 @@ void AbstractLocalReader::cardRemoved()
 
 void AbstractLocalReader::setForceGetDataFlag(bool forceGetDataFlag)
 {
-    this->forceGetDataFlag = forceGetDataFlag;
+    mForceGetDataFlag = forceGetDataFlag;
 }
 
 std::shared_ptr<SelectionStatus>
@@ -319,34 +319,34 @@ void AbstractLocalReader::closeLogicalChannel()
     currentSelectionStatus.reset();
 }
 
-void AbstractLocalReader::addSeProtocolSetting(SeProtocol& seProtocol,
-                                               const std::string& protocolRule)
+void AbstractLocalReader::addSeProtocolSetting(
+    std::shared_ptr<SeProtocol> seProtocol, const std::string& protocolRule)
 {
-    logger->debug("setSeProcotolSetting - adding 1 protocol to map: % : %\n",
-                  seProtocol.getName(), protocolRule);
+    logger->trace("setSeProcotolSetting - adding 1 protocol to map: % : %\n",
+                  seProtocol->getName(), protocolRule);
 
     this->protocolsMap.emplace(seProtocol, protocolRule);
 }
 
 void AbstractLocalReader::setSeProtocolSetting(
-    const std::map<SeProtocol, std::string>& protocolSetting)
+    const std::map<std::shared_ptr<SeProtocol>, std::string>& protocolSetting)
 {
-    logger->debug("setSeProcotolSetting - adding % protocols to map\n",
+    logger->trace("setSeProcotolSetting - adding % protocols to map\n",
                   protocolSetting.size());
 
     this->protocolsMap.insert(protocolSetting.begin(), protocolSetting.end());
 }
 
 std::list<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequestSet(
-    std::set<std::shared_ptr<SeRequest>>& requestSet,
-    MultiSeRequestProcessing multiSeRequestProcessing,
-    ChannelControl channelControl)
+    const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+    const MultiSeRequestProcessing& multiSeRequestProcessing,
+    const ChannelControl& channelControl)
 {
     std::vector<bool> requestMatchesProtocol(requestSet.size());
     int requestIndex = 0, lastRequestIndex;
 
     /* Determine which requests are matching the current ATR */
-    logger->debug("processSeRequestSet - determining which requests are "
+    logger->trace("processSeRequestSet - determining which requests are "
                   "matching the ATR\n");
 
     for (auto request : requestSet) {
@@ -477,8 +477,9 @@ std::list<std::shared_ptr<SeResponse>> AbstractLocalReader::processSeRequestSet(
 }
 
 std::shared_ptr<SeResponse>
-AbstractLocalReader::processSeRequest(std::shared_ptr<SeRequest> seRequest,
-                                      ChannelControl channelControl)
+AbstractLocalReader::processSeRequest(
+    const std::shared_ptr<SeRequest> seRequest,
+    const ChannelControl& channelControl)
 {
     std::shared_ptr<SeResponse> seResponse = nullptr;
 
@@ -713,9 +714,6 @@ AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
 {
     logger->debug("case4HackGetResponse\n");
 
-    std::vector<uint8_t> getResponseHackRequestBytes =
-        ByteArrayUtil::fromHex("00C0000000");
-
     /*
      * Build a get response command the actual length expected by the SE in the
      * get response command is handled in transmitApdu
@@ -744,9 +742,9 @@ AbstractLocalReader::case4HackGetResponse(int originalStatusCode)
     if (getResponseHackResponse->isSuccessful()) {
         /* Replace the two last status word bytes by the original status word */
         getResponseHackResponseBytes[getResponseHackResponseBytes.size() - 2] =
-            originalStatusCode >> 8;
+            static_cast<uint8_t>((originalStatusCode & 0xff00) >> 8);
         getResponseHackResponseBytes[getResponseHackResponseBytes.size() - 1] =
-            originalStatusCode & 0xFF;
+            static_cast<uint8_t>(originalStatusCode & 0x00ff);
     }
 
     return getResponseHackResponse;

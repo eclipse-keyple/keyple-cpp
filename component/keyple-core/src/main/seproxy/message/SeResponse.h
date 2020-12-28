@@ -59,7 +59,7 @@ using namespace keyple::common;
  * @see SeRequest
  */
 class KEYPLECORE_API SeResponse final
-: public std::enable_shared_from_this<SeResponse>, public Object {
+: public std::enable_shared_from_this<SeResponse> {
 public:
     /**
      * the constructor called by a ProxyReader during the processing of the
@@ -106,12 +106,11 @@ public:
     /**
      *
      */
-    bool equals(std::shared_ptr<void> o) override;
-
+    bool operator==(const SeResponse& o) const;
     /**
      *
      */
-    int hashCode() override;
+    bool operator!=(const SeResponse& o) const;
 
 	/**
 	 *
@@ -124,18 +123,12 @@ public:
 	 */
     friend KEYPLECORE_API std::ostream& operator<<(
 		std::ostream& os, const std::shared_ptr<SeResponse>& sr);
-   
+
 	/**
 	 *
 	 */
     friend KEYPLECORE_API std::ostream& operator<<(
 		std::ostream& os, const std::list<std::shared_ptr<SeResponse>>& sr);
-
-protected:
-    /**
-     *
-     */
-    void finalize() override;
 
 private:
     /**

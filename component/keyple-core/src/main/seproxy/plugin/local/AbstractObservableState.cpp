@@ -42,7 +42,7 @@ AbstractObservableState::AbstractObservableState(
 : state(state), reader(reader), monitoringEvent(nullptr), cancellationFlag(){
 }
 
-MonitoringState AbstractObservableState::getMonitoringState()
+const MonitoringState& AbstractObservableState::getMonitoringState() const
 {
     return state;
 }

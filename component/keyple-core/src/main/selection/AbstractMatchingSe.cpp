@@ -26,8 +26,8 @@ using namespace keyple::core::seproxy::message;
 using namespace keyple::core::seproxy::protocol;
 
 AbstractMatchingSe::AbstractMatchingSe(
-    std::shared_ptr<SeResponse> selectionResponse,
-    TransmissionMode transmissionMode, const std::string& extraInfo)
+    const std::shared_ptr<SeResponse> selectionResponse,
+    const TransmissionMode& transmissionMode, const std::string& extraInfo)
 : selectionResponse(selectionResponse), transmissionMode(transmissionMode),
   selectionExtraInfo(extraInfo)
 {
@@ -57,7 +57,7 @@ std::shared_ptr<SelectionStatus> AbstractMatchingSe::getSelectionStatus()
     return selectionStatus;
 }
 
-TransmissionMode AbstractMatchingSe::getTransmissionMode() const
+const TransmissionMode& AbstractMatchingSe::getTransmissionMode() const
 {
     return transmissionMode;
 }
@@ -69,14 +69,25 @@ std::string AbstractMatchingSe::getSelectionExtraInfo()
 
 std::ostream& operator<<(std::ostream& os, const AbstractMatchingSe& ams)
 {
-	os << "ABSTRACTMATCHINGSE: {"
-	   << "SELECTIONRESPONSE = " << ams.selectionResponse << ", "
-	   << "TRANSMISSIONMODE = " << ams.transmissionMode << ", "
-	   << "SELECTIONSTATUS = " << ams.selectionStatus << ", "
-	   << "EXTRAINFO = " << ams.selectionExtraInfo
-	   << "}";
+    os << "ABSTRACTMATCHINGSE: {"
+        << "SELECTIONRESPONSE = " << ams.selectionResponse << ", "
+        << "TRANSMISSIONMODE = " << ams.transmissionMode << ", "
+        << "SELECTIONSTATUS = " << ams.selectionStatus << ", "
+        << "EXTRAINFO = " << ams.selectionExtraInfo
+        << "}";
 
-	return os;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::shared_ptr<AbstractMatchingSe>& ams)
+{
+    if (ams)
+        os << *ams.get();
+    else
+        os << "ABSTRACTMATCHINGSE = null";
+
+    return os;
 }
 
 }

@@ -41,14 +41,14 @@ protected:
     /**
      *
      */
-    std::shared_ptr<AbstractMatchingSe>
-        parse(std::shared_ptr<SeResponse> seResponse) override;
+    const std::shared_ptr<AbstractMatchingSe> parse(
+        std::shared_ptr<SeResponse> seResponse) override;
 
 private:
     /**
      *
      */
-    TransmissionMode transmissionMode;
+    const TransmissionMode transmissionMode;
 
     /**
      *
@@ -59,7 +59,7 @@ private:
          * Constructor
          */
         GenericMatchingSe(std::shared_ptr<SeResponse> selectionResponse,
-                          TransmissionMode transmissionMode,
+                          const TransmissionMode& transmissionMode,
                           std::string& extraInfo);
 
         /**

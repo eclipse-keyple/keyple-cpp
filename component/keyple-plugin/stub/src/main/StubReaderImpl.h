@@ -93,19 +93,19 @@ public:
     /**
      *
      */
-    void setParameter(const std::string& name,
-                      const std::string& value) override;
+    void setParameter(const std::string& name, const std::string& value)
+        override;
 
     /**
      *
      */
-    const std::map<const std::string, const std::string>
-    getParameters() override;
+    const std::map<const std::string, const std::string> getParameters() const
+        override;
 
     /**
      * @return the current transmission mode
      */
-    TransmissionMode getTransmissionMode() override;
+    const TransmissionMode& getTransmissionMode() const override;
 
     /**
      * STATE CONTROLLERS FOR INSERTING AND REMOVING SECURE ELEMENT
@@ -177,7 +177,8 @@ protected:
     /**
      *
      */
-    bool protocolFlagMatches(const SeProtocol& protocolFlag) override;
+    bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
+        override;
 
     /**
      *

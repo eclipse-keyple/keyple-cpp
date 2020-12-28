@@ -119,19 +119,14 @@ public:
      *
      * @return Name of the APDU request
      */
-    std::string getName() const;
+    const std::string& getName() const;
 
     /**
      * Get the buffer of this APDU
      *
      * @return Name of the APDU request
      */
-    const std::vector<uint8_t>& getBytes();
-
-    /**
-     *
-     */
-    std::string toString() const;
+    const std::vector<uint8_t>& getBytes() const;
 
     /**
      *
@@ -150,7 +145,7 @@ public:
      */
     friend KEYPLECORE_API std::ostream& operator<<(
 		std::ostream& os, const std::vector<std::shared_ptr<ApduRequest>>& se);
-	
+
 
 private:
     /**
@@ -175,7 +170,7 @@ private:
     /**
      * Name of the request being sent
      */
-    std::string name;
+    std::string mName;
 };
 
 }

@@ -63,16 +63,14 @@ public:
      * @param transmissionMode the transmission mode, contact or contactless
      * @param extraInfo information string
      */
-    AbstractMatchingSe(std::shared_ptr<SeResponse> selectionResponse,
-                       TransmissionMode transmissionMode,
+    AbstractMatchingSe(const std::shared_ptr<SeResponse> selectionResponse,
+                       const TransmissionMode& transmissionMode,
                        const std::string& extraInfo);
 
     /**
      *
      */
-    virtual ~AbstractMatchingSe()
-    {
-    }
+    virtual ~AbstractMatchingSe() {}
 
     /**
      * Indicates whether the current SE has been identified as selected: the
@@ -91,18 +89,24 @@ public:
     /**
      * @return the SE {@link TransmissionMode} (contacts or contactless)
      */
-    virtual TransmissionMode getTransmissionMode() const;
+    virtual const TransmissionMode& getTransmissionMode() const;
 
     /**
      * @return the selection extra info string
      */
     virtual std::string getSelectionExtraInfo();
 
-	/**
-	 *
-	 */
+    /**
+     *
+     */
     friend KEYPLECORE_API std::ostream& operator<<(
         std::ostream& os, const AbstractMatchingSe& ams);
+
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os, const std::shared_ptr<AbstractMatchingSe>& ams);
 
 private:
     /**

@@ -235,7 +235,7 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
                   protocol, connectProtocol, sharingMode);
 
     rv = SCardConnect(context, name.c_str(), sharingMode,
-                      connectProtocol, &handle, &this->protocol);
+                      connectProtocol, &handle, &mProtocol);
     if (rv != SCARD_S_SUCCESS) {
         logger->error("openAndConnect - SCardConnect failed (%)\n",
                       std::string(pcsc_stringify_error(rv)));
@@ -243,7 +243,7 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
         throw PcscTerminalException("openAndConnect failed");
     }
 
-    switch (this->protocol) {
+    switch (mProtocol) {
     case SCARD_PROTOCOL_T0:
         this->pioSendPCI = *SCARD_PCI_T0;
         break;
@@ -253,7 +253,7 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
     }
 
     rv = SCardStatus(this->handle, (LPSTR)reader, &readerLen, &this->state,
-                     &this->protocol, _atr, &atrLen);
+                     &mProtocol, _atr, &atrLen);
     if (rv != SCARD_S_SUCCESS) {
         logger->error("openAndConnect - SCardStatus failed (s)\n",
                       std::string(pcsc_stringify_error(rv)));
@@ -332,8 +332,8 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
      * be a copy of the application provided data
      */
     int n   = _apduIn.size();
-    bool t0 = this->protocol == SCARD_PROTOCOL_T0;
-    bool t1 = this->protocol == SCARD_PROTOCOL_T1;
+    bool t0 = mProtocol == SCARD_PROTOCOL_T0;
+    bool t1 = mProtocol == SCARD_PROTOCOL_T1;
     if (t0 && (n >= 7) && (_apduIn[4] == 0)) {
         throw PcscTerminalException("Extended len. not supported for T=0");
     }

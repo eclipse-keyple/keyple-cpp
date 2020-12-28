@@ -27,7 +27,6 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::po;
-using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::core::command;
 

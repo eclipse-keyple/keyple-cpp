@@ -26,7 +26,7 @@ StubPoolPluginFactory::StubPoolPluginFactory(const std::string& pluginName)
 {
 }
 
-const std::string& StubPoolPluginFactory::getPluginName()
+const std::string& StubPoolPluginFactory::getPluginName() const
 {
     return pluginName;
 }

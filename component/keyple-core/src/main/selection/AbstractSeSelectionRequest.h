@@ -126,12 +126,12 @@ public:
      * @param seResponse the SE response received
      * @return a {@link AbstractMatchingSe}
      */
-    virtual std::shared_ptr<AbstractMatchingSe>
-    parse(std::shared_ptr<SeResponse> seResponse) = 0;
+    virtual const std::shared_ptr<AbstractMatchingSe> parse(
+        std::shared_ptr<SeResponse> seResponse) = 0;
 
-	/**
-	 *
-	 */
+    /**
+     *
+     */
     friend std::ostream& operator<<(std::ostream& os,
                                     const AbstractSeSelectionRequest& asr);
 

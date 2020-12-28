@@ -19,17 +19,17 @@ namespace core {
 namespace seproxy {
 
 AbstractSeProxyComponent::AbstractSeProxyComponent(const std::string& name)
-: name(name)
+: mName(name)
 {
 }
 
 const std::string& AbstractSeProxyComponent::getName() const
 {
-    return name;
+    return mName;
 }
 
 void AbstractSeProxyComponent::setParameters(
-    const std::map<std::string, std::string>& parameters)
+    const std::map<const std::string, const std::string>& parameters)
 {
     for (const auto& en : parameters)
         setParameter(en.first, en.second);

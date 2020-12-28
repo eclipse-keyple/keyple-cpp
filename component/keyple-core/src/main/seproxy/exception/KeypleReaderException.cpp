@@ -40,24 +40,24 @@ KeypleReaderException::KeypleReaderException(const KeypleReaderException& o)
 std::list<std::shared_ptr<SeResponse>>&
 KeypleReaderException::getSeResponseSet()
 {
-    return seResponseList;
+    return mSeResponseList;
 }
 
 void KeypleReaderException::setSeResponseSet(
     std::list<std::shared_ptr<SeResponse>> seResponseList)
 {
-    this->seResponseList = seResponseList;
+    mSeResponseList = seResponseList;
 }
 
 std::shared_ptr<SeResponse> KeypleReaderException::getSeResponse()
 {
-    return seResponse;
+    return mSeResponse;
 }
 
 void KeypleReaderException::setSeResponse(
     std::shared_ptr<SeResponse> seResponse)
 {
-    this->seResponse = seResponse;
+    mSeResponse = seResponse;
 }
 
 }

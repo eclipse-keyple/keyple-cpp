@@ -31,7 +31,6 @@ namespace transaction {
 
 using namespace keyple::core::selection;
 using namespace keyple::calypso;
-using namespace keyple::calypso::transaction;
 using namespace keyple::core::seproxy;
 
 class KEYPLECALYPSO_API SamResource : public SeResource<CalypsoSam> {
@@ -113,12 +112,12 @@ private:
     /**
      * The free/busy status of the resource
      */
-    SamResourceStatus samResourceStatus;
+    SamResourceStatus mSamResourceStatus;
 
     /**
      * The sam identifier
      */
-    SamIdentifier* samIdentifier;
+    SamIdentifier* mSamIdentifier;
 };
 
 }

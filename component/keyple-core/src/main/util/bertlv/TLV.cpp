@@ -18,6 +18,7 @@
 
 /* Common */
 #include "Arrays.h"
+#include "Logger.h" /* operator<< on std::vector<uint8_t> */
 #include "stringhelper.h"
 #include "System.h"
 
@@ -28,9 +29,10 @@ namespace bertlv {
 
 using namespace keyple::core::util;
 
-TLV::TLV(std::vector<uint8_t>& binary) : binary(binary)
+TLV::TLV(const std::vector<uint8_t>& binary) : binary(binary)
 {
-    tag    = std::make_shared<Tag>(0, 0, Tag::TagType::PRIMITIVE);
+    mTag = std::make_shared<Tag>(0, static_cast<Tag::TagClass>(0),
+                                 Tag::TagType::PRIMITIVE);
     length = 0;
 }
 
@@ -41,16 +43,16 @@ bool TLV::parse(const std::shared_ptr<Tag> tag, int offset)
     }
 
     try {
-        this->tag = std::make_shared<Tag>(binary, offset);
+        mTag = std::make_shared<Tag>(binary, offset);
     } catch (const std::out_of_range& e) {
         (void)e;
         throw std::invalid_argument("TLV parsing: index is too large.");
     }
 
     length = 0;
-    if (tag->equals(this->tag)) {
-        offset += this->tag->getSize();
-        position += this->tag->getSize();
+    if (*tag.get() == *(mTag.get())) {
+        offset += mTag->getSize();
+        position += mTag->getSize();
         if ((binary[offset] & 0x80) == 0x00) {
             /* short form: single octet length */
             length += static_cast<int>(binary[offset]);
@@ -78,7 +80,7 @@ bool TLV::parse(const std::shared_ptr<Tag> tag, int offset)
     }
 }
 
-std::vector<uint8_t> TLV::getValue()
+const std::vector<uint8_t> TLV::getValue()
 {
     std::vector<uint8_t> value;
 
@@ -88,17 +90,22 @@ std::vector<uint8_t> TLV::getValue()
     return value;
 }
 
-int TLV::getPosition()
+int TLV::getPosition() const
 {
     return position;
 }
 
-std::string TLV::toString()
+std::ostream& operator<<(std::ostream& os, const TLV& tlv)
 {
-    return StringHelper::formatSimple("TAG: %s, LENGTH: %d, VALUE: %s",
-                                      tag->toString(), length,
-                                      ByteArrayUtil::toHex(getValue()));
+    os << "TLV: {"
+       << tlv.mTag << ", "
+       << "LENGTH = " << tlv.length << ", "
+       << "VALUE = " << tlv.binary
+       << "}";
+
+    return os;
 }
+
 
 }
 }

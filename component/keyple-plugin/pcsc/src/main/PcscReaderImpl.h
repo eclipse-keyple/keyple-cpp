@@ -111,8 +111,8 @@ public:
     /**
      *
      */
-    const std::map<const std::string, const std::string>
-    getParameters() override;
+    const std::map<const std::string, const std::string> getParameters() const
+        override;
 
     /**
      * The transmission mode can set with
@@ -127,7 +127,7 @@ public:
      *
      * @return the current transmission mode
      */
-    TransmissionMode getTransmissionMode() override;
+    const TransmissionMode& getTransmissionMode() const override;
 
     /**
      *
@@ -187,7 +187,8 @@ protected:
      * @return true if the current SE matches the protocol flag
      * @throws KeypleReaderException if the protocol mask is not found
      */
-    bool protocolFlagMatches(const SeProtocol& protocolFlag) override;
+    bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
+        override;
 
     /**
      *
@@ -299,7 +300,7 @@ private:
     /**
      *
      */
-    TransmissionMode transmissionMode = static_cast<TransmissionMode>(0);
+    TransmissionMode transmissionMode;
 
     /**
      *

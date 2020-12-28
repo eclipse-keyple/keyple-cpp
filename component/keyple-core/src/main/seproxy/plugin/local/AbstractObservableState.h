@@ -55,7 +55,7 @@ public:
      *
      * @return the current state identifier
      */
-    MonitoringState getMonitoringState();
+    const MonitoringState& getMonitoringState() const;
 
     /**
      * Handle Internal Event Usually state is switched using method
