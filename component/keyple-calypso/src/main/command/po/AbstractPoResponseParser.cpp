@@ -1,18 +1,20 @@
-/******************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "AbstractPoResponseParser.h"
+
+/* Common */
+#include "KeypleStd.h"
 
 /* Core */
 #include "ApduResponse.h"
@@ -78,11 +80,8 @@ const KeypleSeCommandException AbstractPoResponseParser::buildCommandException(
         return CalypsoPoSecurityContextException(message, command, statusCode);
     } else if (exceptionClass == typeid(CalypsoPoSecurityDataException)) {
         return CalypsoPoSecurityDataException(message, command, statusCode);
-    } else if (exceptionClass ==
-                   typeid(CalypsoPoSessionBufferOverflowException)) {
-        return CalypsoPoSessionBufferOverflowException(message,
-                                                       command,
-                                                       statusCode);
+    } else if (exceptionClass == typeid(CalypsoPoSessionBufferOverflowException)) {
+        return CalypsoPoSessionBufferOverflowException(message, command, statusCode);
     } else if (exceptionClass == typeid(CalypsoPoTerminatedException)) {
         return CalypsoPoTerminatedException(message, command, statusCode);
     } else {
@@ -95,9 +94,7 @@ void AbstractPoResponseParser::checkStatus() const
     try {
         AbstractApduResponseParser::checkStatus();
     } catch (const KeypleSeCommandException& e) {
-        throw CalypsoPoCommandException(e.getMessage(),
-                                        std::dynamic_pointer_cast<CalypsoPoCommand>(e.getCommand()),
-                                        e.getStatusCode());
+        throw static_cast<const CalypsoPoCommandException&>(e);
     }
 }
 
