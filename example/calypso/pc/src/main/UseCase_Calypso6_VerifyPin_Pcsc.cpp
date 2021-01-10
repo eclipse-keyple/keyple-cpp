@@ -183,8 +183,8 @@ int main(int argc, char** argv)
         poTransaction.processOpening(AccessLevel::SESSION_LVL_DEBIT);
         try {
             poTransaction.processVerifyPin(pinKo);
-        } catch (const CalypsoPoPinException& ex) {
-            logger->error("PIN Exception: %\n", ex.getMessage());
+        } catch (const CalypsoPoCommandException& ex) {
+            logger->error("PO Exception: %\n", ex.getMessage());
         }
         poTransaction.processCancel();
         /* Log the current counter value (should be 2) */

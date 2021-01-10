@@ -308,7 +308,7 @@ std::shared_ptr<VerifyPinRespPars> CalypsoPoUtils::updateCalypsoVerifyPin(
 
     try {
         verifyPinRespPars->checkStatus();
-    } catch (const KeypleSeCommandException& ex) {
+    } catch (const CalypsoPoCommandException& ex) {
         /*
          * Forward the exception if the operation do not target the reading of the attempt counter.
          * Catch it silently otherwise
