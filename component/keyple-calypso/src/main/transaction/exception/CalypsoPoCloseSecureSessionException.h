@@ -52,7 +52,7 @@ public:
     const CalypsoPoCommandException& getCause() //override
     {
         std::exception e = CalypsoPoTransactionException::getCause();
-        return std::move(dynamic_cast<CalypsoPoCommandException&>(e));
+        return std::move(reinterpret_cast<CalypsoPoCommandException&>(e));
     }
 };
 
