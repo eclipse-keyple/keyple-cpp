@@ -1,52 +1,30 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
 #include <string>
 #include <memory>
 #include <mutex>
-#include <set>
-
-#include "exceptionhelper.h"
+#include <map>
 
 /* Common */
 #include "LoggerFactory.h"
-#include "Object.h"
 
 /* Core */
-#include "AbstractPluginFactory.h"
+#include "PluginFactory.h"
 #include "KeypleCoreExport.h"
 #include "KeyplePluginNotFoundException.h"
-
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-class ReaderPlugin;
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace exception {
-class KeyplePluginNotFoundException;
-}
-}
-}
-}
 
 namespace keyple {
 namespace core {
@@ -55,13 +33,10 @@ namespace seproxy {
 using namespace keyple::core::seproxy::exception;
 
 /**
- * The Class SeProxyService. This singleton is the entry point of the SE Proxy
- * Service, its instance has to be called by a ticketing application in order to
- * establish a link with a SE’s application.
- *
+ * The Class SeProxyService. This singleton is the entry point of the SE Proxy Service, its instance
+ * has to be called by a ticketing application in order to establish a link with a SE’s application.
  */
-class KEYPLECORE_API SeProxyService final
-: public std::enable_shared_from_this<SeProxyService> {
+class KEYPLECORE_API SeProxyService final {
 public:
     /**
      * Gets the single instance of SeProxyService.
@@ -75,13 +50,13 @@ public:
     }
 
     /**
-     * Register a new plugin to be available in the platform if not registered
-     * yet
+     * Register a new plugin to be available in the platform if not registered yet
      *
      * @param pluginFactory : plugin factory to instantiate plugin to be added
-     * @throws KeyplePluginInstantiationException if instantiation failed
+     * @throw KeyplePluginInstantiationException if instantiation failed
+     * @return ReaderPlugin : registered reader plugin
      */
-    void registerPlugin(AbstractPluginFactory* pluginFactory);
+    std::shared_ptr<ReaderPlugin> registerPlugin(std::shared_ptr<PluginFactory> pluginFactory);
 
     /**
      * Unregister plugin from platform
@@ -102,18 +77,19 @@ public:
     /**
      * Gets the plugins.
      *
-     * @return the plugins the list of interfaced reader’s plugins.
+     * @return the plugin names and plugin instances map of interfaced reader’s
+     *         plugins.
      */
-    std::set<ReaderPlugin*>& getPlugins();
+    const std::map<const std::string, std::shared_ptr<ReaderPlugin>>& getPlugins() const;
 
     /**
      * Gets the plugin whose name is provided as an argument.
      *
      * @param name the plugin name
      * @return the plugin
-     * @throws KeyplePluginNotFoundException if the wanted plugin is not found
+     * @throw KeyplePluginNotFoundException if the wanted plugin is not found
      */
-    ReaderPlugin* getPlugin(const std::string& name);
+    std::shared_ptr<ReaderPlugin> getPlugin(const std::string& name);
 
     /**
      * Gets the version API, (the version of the sdk).
@@ -126,7 +102,7 @@ private:
     /**
      * The list of readers’ plugins interfaced with the SE Proxy Service
      */
-    std::set<ReaderPlugin*> plugins;
+    std::map<const std::string, std::shared_ptr<ReaderPlugin>> mPlugins;
 
     /**
      * Instantiates a new SeProxyService.
@@ -136,7 +112,7 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(SeProxyService));
 
     /**

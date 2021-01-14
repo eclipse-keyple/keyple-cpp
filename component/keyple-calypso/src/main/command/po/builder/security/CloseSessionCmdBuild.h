@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -19,9 +18,12 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
-#include "CalypsoPoCommands.h"
-#include "CloseSessionRespPars.h"
 #include "PoClass.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { namespace security { class CloseSessionRespPars; } } } }
+    } }
 
 namespace keyple {
 namespace calypso {
@@ -49,12 +51,13 @@ public:
      * @param poClass indicates which CLA byte should be used for the Apdu
      * @param ratificationAsked the ratification asked
      * @param terminalSessionSignature the sam half session signature
-     * @throws IllegalArgumentException - if the signature is null or has a
+     * @throw IllegalArgumentException - if the signature is null or has a
      *         wrong length
-     * @throws IllegalArgumentException - if the command is inconsistent
+     * @throw IllegalArgumentException - if the command is inconsistent
      */
-    CloseSessionCmdBuild(PoClass poClass, bool ratificationAsked,
-                         std::vector<uint8_t>& terminalSessionSignature);
+    CloseSessionCmdBuild(const PoClass& poClass,
+                         const bool ratificationAsked,
+                         const std::vector<uint8_t>& terminalSessionSignature);
 
     /**
      * Instantiates a new CloseSessionCmdBuild based on the revision of the PO
@@ -68,24 +71,21 @@ public:
     /**
      *
      */
-    std::shared_ptr<CloseSessionRespPars>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<CloseSessionRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
-protected:
     /**
+     * This command can't be executed in session and therefore doesn't uses the session buffer.
      *
+     * @return false
      */
-    std::shared_ptr<CloseSessionCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<CloseSessionCmdBuild>(
-            AbstractPoCommandBuilder<CloseSessionRespPars>::shared_from_this());
-    }
+    virtual bool isSessionBufferUsed() const override;
 
 private:
     /**
      * The command
      */
-    CalypsoPoCommands& command = CalypsoPoCommands::CLOSE_SESSION;
+    const CalypsoPoCommand& mCommand = CalypsoPoCommand::CLOSE_SESSION;
 };
 
 }

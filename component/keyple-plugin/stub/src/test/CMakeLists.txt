@@ -17,50 +17,45 @@ ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/eclipse/keyple
-    ${CMAKE_CURRENT_SOURCE_DIR}/eclipse/keyple/plugin/stub 
-    ${CMAKE_CURRENT_SOURCE_DIR}/eclipse/keyple/seproxy/exception
-    ${CMAKE_CURRENT_SOURCE_DIR}/eclipse/keyple/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/eclipse/keyple
+	${CMAKE_CURRENT_SOURCE_DIR}/eclipse/keyple/plugin/stub
+	${CMAKE_CURRENT_SOURCE_DIR}/eclipse/keyple/seproxy/exception
+	${CMAKE_CURRENT_SOURCE_DIR}/eclipse/keyple/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/eclipse/keyple/seproxy/event
 	${CMAKE_CURRENT_SOURCE_DIR}/eclipse/keyple/core/seproxy/plugin
 
-	# Example generic common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../example/generic/common/src/main/
-
 	# Common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main/
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main/exception
 
 	# Core
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/command
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/command/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/util
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/util/bertlv
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/event
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/exception
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/selection
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/transaction
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/command
 
+	# Plugin - stub
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-plugin/stub/src/main/
+
 	# Calypso
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/po
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/po/builder
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/po/builder/security
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/po/parser
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/po/parser/security
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/sam
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/sam/builder
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/sam/builder/security
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/sam/parser
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/command/sam/parser/security
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/transaction
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-calypso/src/main/transaction/exception
-
-	# Plugin - stub
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-plugin/stub/src/main/
 
 	# google test and mock
 	${GOOGLETEST_DIRECTORY}/googletest-src
@@ -68,19 +63,15 @@ INCLUDE_DIRECTORIES(
 	${GOOGLETEST_DIRECTORY}/googletest-src/googletest/include
 )
 
-ADD_EXECUTABLE(TU_plugin_stub_test
+ADD_EXECUTABLE(keyplepluginstub_ut
 	# TU Stub
 	${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/BaseStubTest.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/StubPluginTest.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/StubReaderTest.cpp
-
-	#${CMAKE_CURRENT_SOURCE_DIR}/StubPlugin.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/StubProtocolSetting.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/StubReader.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/StubSecureElement.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/StubPluginAsyncTest.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/StubPoolPluginTest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/StubReaderTest.cpp
 )
 
-SET(LINK_LIBS gtest gmock keyplepluginstub keyplecore ${WINSCARD} )
+SET(LINK_LIBS gtest gmock keyplepluginstub keyplecore keyplecalypso)
 
-TARGET_LINK_LIBRARIES(TU_plugin_stub_test ${LINK_LIBS})
+TARGET_LINK_LIBRARIES(keyplepluginstub_ut ${LINK_LIBS})

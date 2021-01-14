@@ -1,18 +1,23 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
+
 
 #include "SeProxyService.h"
+
+/* Common */
+#include "IllegalArgumentException.h"
+
+/* Core */
 #include "ReaderPlugin.h"
 #include "KeyplePluginInstantiationException.h"
 #include "KeyplePluginNotFoundException.h"
@@ -21,80 +26,69 @@ namespace keyple {
 namespace core {
 namespace seproxy {
 
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::exception;
 
-SeProxyService::SeProxyService()
-{
-}
+SeProxyService::SeProxyService() {}
 
-void SeProxyService::registerPlugin(AbstractPluginFactory* pluginFactory)
+std::shared_ptr<ReaderPlugin> SeProxyService::registerPlugin(
+    std::shared_ptr<PluginFactory> pluginFactory)
 {
     if (pluginFactory == nullptr)
         throw IllegalArgumentException("Factory must not be null");
 
-    if (!isRegistered(pluginFactory->getPluginName())) {
-        std::lock_guard<std::mutex> guard(MONITOR);
-        logger->info("Registering a new Plugin to the platform : %\n",
-                     pluginFactory->getPluginName());
-        ReaderPlugin& newPlugin = pluginFactory->getPluginInstance();
-        this->plugins.insert(&newPlugin);
+    std::lock_guard<std::mutex> guard(MONITOR);
 
+    const std::string& pluginName = pluginFactory->getPluginName();
+
+    if (mPlugins.count(pluginName)) {
+        mLogger->warn("Plugin has already been registered to the platform : %\n", pluginName);
+        return mPlugins.find(pluginName)->second;
     } else {
-        logger->warn("Plugin has already been registered to the platform "
-                     ": %\n", pluginFactory->getPluginName());
+        std::shared_ptr<ReaderPlugin> pluginInstance = pluginFactory->getPlugin();
+        mLogger->info("Registering a new Plugin to the platform : %\n", pluginName);
+        mPlugins.insert({pluginName, pluginInstance});
+        return pluginInstance;
     }
 }
 
 bool SeProxyService::unregisterPlugin(const std::string& pluginName)
 {
-    bool ret = false;
-    ReaderPlugin* readerPlugin = nullptr;
+    std::lock_guard<std::mutex> guard(MONITOR);
 
-    try {
-
-        std::lock_guard<std::mutex> guard(MONITOR);
-        readerPlugin = this->getPlugin(pluginName);
-        logger->info("Unregistering a plugin from the platform : %\n",
-                     readerPlugin->getName());
-        ret = plugins.erase(readerPlugin);
-
-    } catch (KeyplePluginNotFoundException& e) {
-        logger->info("Plugin is not registered to the platform : %. %\n",
-                     pluginName, e);
+    if (mPlugins.count(pluginName)) {
+        mPlugins.erase(pluginName);
+        mLogger->info("Unregistering a plugin from the platform : %\n", pluginName);
+        return true;
+    } else {
+        mLogger->warn("Plugin is not registered to the platform : %\n", pluginName);
+        return false;
     }
-
-    return ret;
 }
 
 bool SeProxyService::isRegistered(const std::string& pluginName)
 {
-    bool ret = false;
-
     std::lock_guard<std::mutex> guard(MONITOR);
 
-    for (ReaderPlugin* registeredPlugin : plugins) {
-        if (registeredPlugin->getName().compare(pluginName) == 0) {
-            ret = true;
-            break;
-        }
-    }
-
-    return ret;
+    return mPlugins.count(pluginName) ? true : false;
 }
 
-std::set<ReaderPlugin*>& SeProxyService::getPlugins()
+const std::map<const std::string, std::shared_ptr<ReaderPlugin>>& SeProxyService::getPlugins() const
 {
-    return plugins;
+    return mPlugins;
 }
 
-ReaderPlugin* SeProxyService::getPlugin(const std::string& name)
+std::shared_ptr<ReaderPlugin> SeProxyService::getPlugin(const std::string& name)
 {
-    for (auto plugin : plugins) {
-        if (plugin->getName() == name) {
-            return plugin;
-        }
-    }
-    throw KeyplePluginNotFoundException(name);
+    std::lock_guard<std::mutex> guard(MONITOR);
+
+    ConcurrentMap<const std::string, std::shared_ptr<ReaderPlugin>>
+        ::const_iterator it;
+
+    if ((it = mPlugins.find(name)) != mPlugins.end())
+        return it->second;
+    else
+        throw KeyplePluginNotFoundException(name);
 }
 
 std::string SeProxyService::getVersion()

@@ -1,43 +1,32 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
 #include <memory>
 
-#include "Configurable.h"
-#include "Nameable.h"
+/* Core */
+#include "ProxyElement.h"
 #include "SeProtocol.h"
 #include "TransmissionMode.h"
 
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace protocol {
-class SeProtocolSetting;
-}
-}
-}
-}
+/* Common */
+#include "KeypleStd.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 
-using namespace keyple::core::util;
-using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::protocol;
 
 /**
@@ -50,20 +39,19 @@ using namespace keyple::core::seproxy::protocol;
  * </ul>
  * Interface used by applications processing SE.
  */
-class SeReader : public virtual Nameable, public virtual Configurable {
+class SeReader : public virtual ProxyElement {
 public:
     /**
      *
      */
-    virtual ~SeReader()
-    {
-    }
+    virtual ~SeReader() {}
 
     /**
      * Checks if is SE present.
      *
      * @return true if a Secure Element is present in the reader
-     * @throws KeypleIOReaderException if error while reading SE
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     virtual bool isSePresent() = 0;
 
@@ -87,13 +75,11 @@ public:
      * A reader plugin will handle a list of protocol settings in order to
      * target multiple types of SE.
      *
-     * @param seProtocol the protocol key identifier to be added to the plugin
-     *        internal list
+     * @param seProtocol the protocol key identifier to be added to the plugin internal list
      * @param protocolRule a string use to define how to identify the protocol
      */
-    virtual void addSeProtocolSetting(
-        std::shared_ptr<SeProtocol> seProtocol,
-        const std::string& protocolRule) = 0;
+    virtual void addSeProtocolSetting(std::shared_ptr<SeProtocol> seProtocol,
+                                      const std::string& protocolRule) = 0;
 
     /**
      * Complete the current setting map with the provided map
@@ -101,8 +87,7 @@ public:
      * @param protocolSetting the protocol setting map
      */
     virtual void setSeProtocolSetting(
-        const std::map<std::shared_ptr<SeProtocol>,
-                       std::string>& protocolSetting) = 0;
+        const std::map<std::shared_ptr<SeProtocol>, std::string>& protocolSetting) = 0;
 
     /**
      * @return the transmission mode in use with this SE reader
@@ -112,7 +97,26 @@ public:
     /**
      *
      */
-    bool operator==(const SeReader& o);
+    virtual bool operator==(const SeReader& o) const
+    {
+        return this->getParameters() ==  o.getParameters();
+    }
+
+    /**
+     *
+     */
+    friend std::ostream& operator<<(std::ostream& os, const std::shared_ptr<SeReader> sr)
+    {
+        if (sr == nullptr) {
+            os << "SEREADER = null";
+        } else {
+            os << "SEREADER: {"
+               << "PARAMETERS: " << sr->getParameters()
+               << "}";
+        }
+
+        return  os;
+    }
 };
 
 }

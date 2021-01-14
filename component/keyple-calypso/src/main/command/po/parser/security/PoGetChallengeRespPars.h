@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -17,11 +17,10 @@
 #include <vector>
 #include <memory>
 
-/* Core */
-#include "AbstractApduResponseParser.h"
-
 /* Calypso */
+#include "AbstractPoResponseParser.h"
 #include "KeypleCalypsoExport.h"
+#include "PoGetChallengeCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -30,6 +29,7 @@ namespace po {
 namespace parser {
 namespace security {
 
+using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
@@ -38,29 +38,21 @@ using namespace keyple::core::seproxy::message;
  * challenge
  */
 class KEYPLECALYPSO_API PoGetChallengeRespPars final
-: public AbstractApduResponseParser {
+: public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new PoGetChallengeRespPars.
      *
      * @param response the response from PO Get Challenge APDU Command
+     * @param builder the reference to the builder that created this parser
      */
-    PoGetChallengeRespPars(std::shared_ptr<ApduResponse> response);
+    PoGetChallengeRespPars(std::shared_ptr<ApduResponse> response,
+                           PoGetChallengeCmdBuild* builder);
 
     /**
      *
      */
     std::vector<uint8_t> getPoChallenge() const;
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<PoGetChallengeRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<PoGetChallengeRespPars>(
-            AbstractApduResponseParser::shared_from_this());
-    }
 };
 
 }

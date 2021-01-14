@@ -1,23 +1,24 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <memory>
 
+/* Calypso */
 #include "AbstractPoResponseParser.h"
+#include "AppendRecordCmdBuild.h"
 #include "KeypleCalypsoExport.h"
 
 namespace keyple {
@@ -27,6 +28,7 @@ namespace po {
 namespace parser {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
 using namespace keyple::core::seproxy::message;
 
 /**
@@ -35,40 +37,14 @@ using namespace keyple::core::seproxy::message;
  */
 class KEYPLECALYPSO_API AppendRecordRespPars final
 : public AbstractPoResponseParser {
-private:
-    /**
-     *
-     */
-    static std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
-
-private:
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        /**
-         *
-         */
-        StaticConstructor();
-    };
-
-private:
-    /**
-     *
-     */
-    static AppendRecordRespPars::StaticConstructor staticConstructor;
-
 public:
     /**
      * Instantiates a new AppendRecordRespPars.
      *
      * @param response the response from the PO
+     * @param builder the reference to the builder that created this parser
      */
-    AppendRecordRespPars(std::shared_ptr<ApduResponse> response);
+    AppendRecordRespPars(std::shared_ptr<ApduResponse> response, AppendRecordCmdBuild* builder);
 
 protected:
     /**
@@ -76,18 +52,13 @@ protected:
      *
      * @return Status table
      */
-    std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    getStatusTable() const override;
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable() const override;
 
+private:
     /**
      *
      */
-    std::shared_ptr<AppendRecordRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<AppendRecordRespPars>(
-            AbstractPoResponseParser::shared_from_this());
-    }
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

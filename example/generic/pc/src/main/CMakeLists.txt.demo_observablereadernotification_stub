@@ -13,36 +13,14 @@ IF(WIN32)
 	ADD_COMPILE_OPTIONS(/wd4275 /wd4251)
 ENDIF(WIN32)
 
-INCLUDE_DIRECTORIES(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/stub/se
-
-	# Example generic common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main
-
-	# Core
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/event
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/exception
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/message
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/protocol
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/transaction
-
-	# Plugin - Stub
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/stub/src/main
-)
-
 ADD_EXECUTABLE(demo_observablereadernotification_stub
 
 	# Example - Common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/ObservableReaderNotificationEngine.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/ObservableReaderNotificationEngine.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/stub/StubSe1.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/stub/StubSe2.cpp
 
 	# Example - PC
-	${CMAKE_CURRENT_SOURCE_DIR}/stub/se/StubSe1.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/stub/se/StubSe2.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Demo_ObservableReaderNotification_Stub.cpp
 )
 

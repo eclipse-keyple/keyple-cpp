@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,13 +14,14 @@
 
 #pragma once
 
-#include <vector>
+#include <map>
 #include <memory>
+#include <vector>
 
-/* Core */
+/* Calypso */
 #include "AbstractSamResponseParser.h"
-
 #include "KeypleCalypsoExport.h"
+#include "SamGetChallengeCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -30,44 +31,43 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::security;
 using namespace keyple::core::seproxy::message;
 
 /**
  * SAM get challenge. See specs: Calypso / Page 108 / 9.5.4 - Get challenge
  */
-class KEYPLECALYPSO_API SamGetChallengeRespPars
+class KEYPLECALYPSO_API SamGetChallengeRespPars final
 : public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new SamGetChallengeRespPars .
      *
      * @param response of the SamGetChallengeCmdBuild
+     * @param builder the reference to the builder that created this parser
      */
-    SamGetChallengeRespPars(std::shared_ptr<ApduResponse> response);
-
-    /**
-     *
-     */
-    virtual ~SamGetChallengeRespPars()
-    {
-    }
+    SamGetChallengeRespPars(const std::shared_ptr<ApduResponse> response,
+                            SamGetChallengeCmdBuild* builder);
 
     /**
      * Gets the challenge.
      *
      * @return the challenge
      */
-    virtual std::vector<uint8_t> getChallenge() const;
+    const std::vector<uint8_t> getChallenge() const;
 
 protected:
     /**
      *
      */
-    std::shared_ptr<SamGetChallengeRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<SamGetChallengeRespPars>(
-            AbstractSamResponseParser::shared_from_this());
-    }
+    const std::map<int, std::shared_ptr<StatusProperties>>&
+        getStatusTable() const override;
+
+private:
+    /**
+     *
+     */
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

@@ -1,54 +1,44 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
 #include <set>
 #include <string>
 
+/* Common */
+#include "ConcurrentMap.h"
+
 /* Core */
-#include "Configurable.h"
 #include "KeypleCoreExport.h"
 #include "KeypleReaderNotFoundException.h"
-#include "Nameable.h"
-
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-class SeReader;
-}
-}
-}
+#include "SeReader.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 
 using namespace keyple::core::seproxy::exception;
-using namespace keyple::core::util;
 
 /**
-    * Card readers plugin interface.
-    */
-class KEYPLECORE_API ReaderPlugin
-: public virtual Nameable, public virtual Configurable {
+ * Card readers plugin interface.
+ */
+class KEYPLECORE_API ReaderPlugin : public virtual ProxyElement {
 public:
     /**
      *
      */
-    virtual ~ReaderPlugin() {}
+    virtual ~ReaderPlugin() = default;
 
     /**
      * Gets the list of names of all readers
@@ -60,10 +50,10 @@ public:
     /**
      * Gets the readers.
      *
-     * @return list of connected readers in this plugin, can be an empty list,
-     *         can not be null;
+     * @return the map of this plugin's connected reader's name and instance,
+     *         can be an empty list, can not be null;
      */
-    virtual std::set<std::shared_ptr<SeReader>>& getReaders() = 0;
+    virtual ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& getReaders() = 0;
 
     /**
      * Gets the reader whose name is provided as an argument
@@ -72,8 +62,7 @@ public:
      * @return the SeReader object.
      * @throws KeypleReaderNotFoundException if the wanted reader is not found
      */
-    virtual const std::shared_ptr<SeReader> getReader(const std::string& name)
-        const = 0;
+    virtual const std::shared_ptr<SeReader> getReader(const std::string& name) = 0;
 };
 
 }

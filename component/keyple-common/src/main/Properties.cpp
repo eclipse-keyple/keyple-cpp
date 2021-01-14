@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #include <fstream>
 
@@ -184,12 +186,16 @@ void Properties::load(std::ifstream& inStream)
     }
 }
 
-std::string Properties::getProperty(std::string key)
+std::string Properties::getProperty(const std::string& key) const
 {
-    return (std::string)props[key];
+    const auto& it = props.find(key);
+    if (it != props.end())
+        return it->second;
+    else
+        return "";
 }
 
-std::string Properties::getProperty(std::string key, std::string defaultValue)
+std::string Properties::getProperty(const std::string& key, const std::string& defaultValue) const
 {
     std::string prop = getProperty(key);
     if (prop.empty())

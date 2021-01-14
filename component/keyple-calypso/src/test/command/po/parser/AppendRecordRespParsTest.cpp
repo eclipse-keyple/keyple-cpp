@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -12,67 +12,42 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "AppendRecordRespParsTest.h"
-#include "ApduResponse.h"
-#include "SelectionStatus.h"
-#include "SeResponse.h"
-#include "ByteArrayUtil.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
 #include "AppendRecordRespPars.h"
-#include "AbstractApduResponseParser.h"
 
-using namespace keyple::calypso::command::po::parser::security;
+/* Core */
+#include "ApduResponse.h"
+#include "ByteArrayUtil.h"
+#include "KeypleSeCommandException.h"
 
-namespace keyple {
-namespace calypso {
-namespace command {
-namespace po {
-namespace parser {
-namespace security {
+using namespace testing;
 
-using AbstractApduResponseParser =
-    keyple::core::command::AbstractApduResponseParser;
-using ApduResponse    = keyple::core::seproxy::message::ApduResponse;
-using SeResponse      = keyple::core::seproxy::message::SeResponse;
-using SelectionStatus = keyple::core::seproxy::message::SelectionStatus;
-using ByteArrayUtils  = keyple::core::util::ByteArrayUtil;
+using namespace keyple::calypso::command::po::parser;
+using namespace keyple::core::command::exception;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::util;
 
-void AppendRecordRespParsTest::appendRecordRespPars()
+static const std::string SW1SW2_KO = "6A82";
+static const std::string SW1SW2_OK = "9000";
+
+TEST(AppendRecordRespParsTest, appendRecordRespPars_badStatus)
 {
-    std::vector<std::shared_ptr<ApduResponse>> responses;
-    std::vector<uint8_t> ApduRequest = {90, 0};
-    std::shared_ptr<ApduResponse> apduResponse =
-        std::make_shared<ApduResponse>(ApduRequest, nullptr);
-    responses.push_back(apduResponse);
-    std::vector<uint8_t> cResp1 = ByteArrayUtils::fromHex("9000");
-    std::shared_ptr<keyple::core::seproxy::message::AnswerToReset> atrBytes = {
-        0};
+    AppendRecordRespPars appendRecordRespPars(
+            std::make_shared<ApduResponse>(
+                ByteArrayUtil::fromHex(SW1SW2_KO), nullptr),
+            nullptr);
 
-    std::shared_ptr<SeResponse> seResponse =
-        std::make_shared<SeResponse>(
-            true, true,
-            std::make_shared<SelectionStatus>(
-                atrBytes, std::make_shared<ApduResponse>(cResp1, nullptr),
-                true),
-            responses);
-
-    std::shared_ptr<AbstractApduResponseParser> apduResponseParser =
-        std::make_shared<AppendRecordRespPars>(apduResponse);
-    apduResponseParser->setApduResponse(
-        seResponse->getApduResponses()[0]);
-    ASSERT_EQ(ByteArrayUtils::toHex(ApduRequest),
-              ByteArrayUtils::toHex(
-                  apduResponseParser->getApduResponse()->getBytes()));
-}
-}
-}
-}
-}
-}
+    EXPECT_THROW(appendRecordRespPars.checkStatus(), KeypleSeCommandException);
 }
 
-TEST(AppendRecordRespParsTest, testA)
+TEST(AppendRecordRespParsTest, appendRecordRespPars_goodStatus)
 {
-    std::shared_ptr<AppendRecordRespParsTest> LocalTest =
-        std::make_shared<AppendRecordRespParsTest>();
-    LocalTest->appendRecordRespPars();
+    AppendRecordRespPars appendRecordRespPars(
+            std::make_shared<ApduResponse>(
+                ByteArrayUtil::fromHex(SW1SW2_OK), nullptr),
+            nullptr);
+
+    appendRecordRespPars.checkStatus();
 }

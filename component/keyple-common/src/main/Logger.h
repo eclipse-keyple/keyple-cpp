@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -25,6 +24,7 @@
 #include <ostream>
 #include <sstream>
 #include <vector>
+#include <set>
 
 #ifdef __GNUG__ // gnu C++ compiler
 #include <cxxabi.h>
@@ -54,11 +54,6 @@ public:
      * Constructor
      */
     Logger(const std::string& className, std::mutex* mtx);
-
-    /**
-     * Destructor
-     */
-    ~Logger();
 
     /**
      *
@@ -214,7 +209,7 @@ private:
     template <typename... Args>
     void log(const std::string& label, const std::string& format, Args... args)
     {
-        mtx->lock();
+        const std::lock_guard<std::mutex> lock(*mtx);
 
         /* Header */
         std::printf("[%s]   [%5s]   [%-100s]   ", getCurrentTimestamp().c_str(),
@@ -225,19 +220,8 @@ private:
         printf(os, format.c_str(), args...);
         const std::string& str = os.str();
         std::printf("%s", str.c_str());
-
-        mtx->unlock();
     }
 };
 
 }
-}
-
-
-namespace std {
-/**
- * Helper functions
- */
-KEYPLECOMMON_API std::ostream& operator<<(std::ostream& os,
-                                const std::vector<uint8_t>& v);
 }

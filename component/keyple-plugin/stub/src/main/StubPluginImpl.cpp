@@ -1,18 +1,20 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "StubPluginImpl.h"
+
+/* Common */
+#include "KeypleStd.h"
 
 /* Core */
 #include "AbstractObservableState.h"
@@ -28,29 +30,25 @@ StubPluginImpl::StubPluginImpl(const std::string& pluginName)
 : AbstractThreadedObservablePlugin(pluginName)
 {
     /*
-     * Monitoring is not handled by a lower layer (as in PC/SC), reduce the
-     * threading period to 10 ms to speed up responsiveness.
+     * Monitoring is not handled by a lower layer (as in PC/SC), reduce the threading period to 10
+     * ms to speed up responsiveness.
      */
-    threadWaitTimeout = 10;
+    mThreadWaitTimeout = 10;
 
-    this->readers = initNativeReaders();
+    initNativeReaders();
 }
 
-const std::map<const std::string, const std::string>
-    StubPluginImpl::getParameters() const
+const std::map<const std::string, const std::string>& StubPluginImpl::getParameters() const
 {
-    return parameters;
+    return mParameters;
 }
 
-void StubPluginImpl::setParameter(const std::string& key,
-                                  const std::string& value)
+void StubPluginImpl::setParameter(const std::string& key, const std::string& value)
 {
-    parameters.insert(
-        std::pair<const std::string, const std::string>(key, value));
+    mParameters.insert({key, value});
 }
 
-void StubPluginImpl::plugStubReader(const std::string& readerName,
-                                    bool synchronous)
+void StubPluginImpl::plugStubReader(const std::string& readerName, bool synchronous)
 {
     plugStubReader(readerName, TransmissionMode::CONTACTLESS, synchronous);
 }
@@ -59,163 +57,139 @@ void StubPluginImpl::plugStubReader(const std::string& readerName,
                                     TransmissionMode transmissionMode,
                                     bool synchronous)
 {
-    logger->info("Plugging a new reader with readerName %s\n",
-                 readerName.c_str());
+    mLogger->info("Plugging a new reader with readerName %\n", readerName);
 
     /* Add the native reader to the native readers list */
-    bool exist =
-        connectedStubNames.find(readerName) != connectedStubNames.end();
+    bool exist =  mConnectedStubNames.find(readerName) != mConnectedStubNames.end();
 
     if (!exist && synchronous) {
         /* add the reader as a new reader to the readers list */
-        logger->debug("Inserting reader %s into 'readers' list\n",
-                 readerName.c_str());
-        readers.insert(std::make_shared<StubReaderImpl>(
-            this->getName(), readerName, transmissionMode));
+        auto reader = std::make_shared<StubReaderImpl>(getName(), readerName, transmissionMode);
+        mNativeReaders.insert({readerName, reader});
     }
 
-    connectedStubNames.insert(readerName);
+    mConnectedStubNames.insert(readerName);
 
     if (exist) {
-        logger->error("Reader with readerName %s was already plugged\n",
-                      readerName.c_str());
+        mLogger->error("Reader with readerName % was already plugged\n", readerName);
     }
 }
 
 void StubPluginImpl::plugStubReaders(const std::set<std::string>& readerNames,
                                      bool synchronous)
 {
-    logger->debug("Plugging %d readers\n", readerNames.size());
+    mLogger->debug("Plugging % readers\n", readerNames.size());
 
-    /*
-     * Plug stub readers that were not plugged already
-     * Duplicate readerNames
-     */
+    /* Plug stub readers that were not plugged already duplicate readerNames */
     std::set<std::string> newNames = readerNames;
 
     /* Remove already connected stubNames */
-    for (auto& connected : connectedStubNames)
+    for (auto& connected : mConnectedStubNames)
         newNames.erase(connected);
 
-    logger->debug("New readers to be created #%d\n", newNames.size());
+    mLogger->debug("New readers to be created #%\n", newNames.size());
 
-    /*
-     * Add new readerNames to the connectedStubNames
-     */
+    /* Add new readerNames to the connectedStubNames */
     if (newNames.size() > 0) {
         if (synchronous) {
-            std::list<std::shared_ptr<StubReaderImpl>> newReaders;
-            for (auto& name : newNames) {
-                newReaders.push_back(
-                    std::make_shared<StubReaderImpl>(this->getName(), name));
-            }
+            ConcurrentMap<const std::string, std::shared_ptr<StubReaderImpl>> newReaders;
 
-            std::copy(newReaders.begin(), newReaders.end(),
-                      std::inserter(readers, readers.end()));
+            for (auto& name : newNames)
+                newReaders.insert({name, std::make_shared<StubReaderImpl>(this->getName(), name)});
+
+            std::copy(newReaders.begin(),
+                      newReaders.end(),
+                      std::inserter(mNativeReaders, mNativeReaders.end()));
         }
 
-        std::copy(readerNames.begin(), readerNames.end(),
-                  std::inserter(connectedStubNames, connectedStubNames.end()));
+        std::copy(readerNames.begin(),
+                  readerNames.end(),
+                  std::inserter(mConnectedStubNames, mConnectedStubNames.end()));
     } else {
-        logger->error("All %s readers were already plugged\n",
-                      readerNames.size());
+        mLogger->error("All % readers were already plugged\n", readerNames.size());
     }
 }
 
 void StubPluginImpl::unplugStubReader(const std::string& readerName,
                                       bool synchronous)
 {
-    if (connectedStubNames.find(readerName) == connectedStubNames.end()) {
-        logger->warn("unplugStubReader() No reader found with name %s\n",
-                     readerName.c_str());
+    if (mConnectedStubNames.find(readerName) == mConnectedStubNames.end()) {
+        mLogger->warn("unplugStubReader() No reader found with name %\n", readerName);
     } else {
         /* Remove the reader from the readers list */
         if (synchronous) {
-            logger->debug("synchronous unplug\n");
-            connectedStubNames.erase(readerName);
-            std::shared_ptr<SeReader> readerToErase = getReader(readerName);
-
-            /* In case where Reader was detecting SE */
-            std::shared_ptr<AbstractObservableLocalReader> observableR =
-                std::dynamic_pointer_cast<AbstractObservableLocalReader>(
-                    readerToErase);
-            observableR->stopSeDetection();
-
-            readers.erase(readerToErase);
+            mConnectedStubNames.erase(readerName);
+            mNativeReaders.erase(readerName);
         } else {
-            logger->debug("asynchronous unplug\n");
-            connectedStubNames.erase(readerName);
+            mConnectedStubNames.erase(readerName);
         }
 
         /* Remove the native reader from the native readers list */
-        logger->info("Unplugged reader with name %s, connectedStubNames size" \
-                     ": %d\n", readerName.c_str(), connectedStubNames.size());
+        mLogger->info("Unplugged reader with name %, connectedStubNames size : %\n",
+                      readerName,
+                      mConnectedStubNames.size());
     }
 }
 
 void StubPluginImpl::unplugStubReaders(const std::set<std::string>& readerNames,
-                                       bool synchronous)
+                                       const bool synchronous)
 {
-    logger->info("Unplug %d stub readers\n", readerNames.size());
-    logger->debug("Unplug stub readers.. %s", "readerNames <fixme>");
+    mLogger->info("Unplug % stub readers\n", readerNames.size());
+    mLogger->debug("Unplug stub readers.. %\n", readerNames);
 
     std::list<std::shared_ptr<StubReaderImpl>> readersToDelete;
 
     for (const std::string name : readerNames) {
         try {
-            std::shared_ptr<SeReader> seReader = getReader(name);
-            std::shared_ptr<StubReaderImpl> stubReaderImpl =
-                std::dynamic_pointer_cast<StubReaderImpl>(seReader);
-            readersToDelete.push_back(stubReaderImpl);
+            readersToDelete.push_back(std::dynamic_pointer_cast<StubReaderImpl>(getReader(name)));
         } catch (KeypleReaderNotFoundException& e) {
             (void)e;
-            logger->warn("unplugStubReaders() No reader found with name %s\n",
-                         name.c_str());
+            mLogger->warn("unplugStubReaders() No reader found with name %\n", name);
         }
     }
 
     for (const auto& readerName : readerNames)
-        connectedStubNames.erase(readerName);
+        mConnectedStubNames.erase(readerName);
 
     if (synchronous) {
-        for (const auto& readerToDelete : readersToDelete)
-            readers.erase(readerToDelete);
+        for (const auto& reader : readersToDelete)
+            mNativeReaders.erase(reader->getName());
     }
 }
 
 const std::set<std::string>& StubPluginImpl::fetchNativeReadersNames()
 {
-    logger->debug("fetching native reader names\n");
+    mLogger->debug("fetching native reader names\n");
 
-    if (connectedStubNames.size() == 0) {
-        logger->trace("No reader available\n");
+    if (mConnectedStubNames.size() == 0) {
+        mLogger->trace("No reader available\n");
     }
 
-    return connectedStubNames;
+    return mConnectedStubNames;
 }
 
-std::set<std::shared_ptr<SeReader>> StubPluginImpl::initNativeReaders()
+ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& StubPluginImpl::initNativeReaders()
 {
     /* Init Stub Readers response object */
-    std::set<std::shared_ptr<SeReader>> newNativeReaders;
+    mNativeReaders.clear();
 
-    return newNativeReaders;
+    return mNativeReaders;
 }
 
-std::shared_ptr<SeReader>
-StubPluginImpl::fetchNativeReader(const std::string& readerName)
+std::shared_ptr<SeReader> StubPluginImpl::fetchNativeReader(
+    const std::string& readerName)
 {
-    for (const auto& reader : readers) {
-        if (!reader->getName().compare(readerName)) {
-            return reader;
-        }
-    }
-
     std::shared_ptr<SeReader> reader = nullptr;
 
-    if (connectedStubNames.find(readerName) != connectedStubNames.end()) {
-        reader = std::make_shared<StubReaderImpl>(this->getName(), readerName);
-    }
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>>
+        ::const_iterator it = mNativeReaders.find(readerName);
+
+    if (it != mNativeReaders.end())
+        reader = it->second;
+
+    if (reader == nullptr &&
+        mConnectedStubNames.find(readerName) != mConnectedStubNames.end())
+        reader = std::make_shared<StubReaderImpl>(getName(), readerName);
 
     return reader;
 }

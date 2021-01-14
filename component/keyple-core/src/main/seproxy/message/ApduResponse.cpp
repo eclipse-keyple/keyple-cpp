@@ -1,92 +1,92 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "ApduResponse.h"
+
+/* Core */
 #include "ByteArrayUtil.h"
+#include "KeypleStd.h"
 
 /* Common */
 #include "Arrays.h"
-#include "stringhelper.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace message {
 
+using namespace keyple::common;
 using namespace keyple::core::util;
 
 ApduResponse::ApduResponse(
   const std::vector<uint8_t>& buffer,
   const std::shared_ptr<std::set<int>> successfulStatusCodes)
-: bytes(buffer)
+: mBytes(buffer)
 {
     if (buffer.empty()) {
-        this->successful = false;
+        mSuccessful = false;
     } else {
-        if (buffer.size() < 2) {
+        if (buffer.size() < 2)
             throw std::invalid_argument("Bad buffer (length < 2): " +
-                                        StringHelper::to_string(buffer.size()));
-        }
+                                        std::to_string(buffer.size()));
 
         int statusCode = ((buffer[buffer.size() - 2] & 0x000000FF) << 8) +
                          (buffer[buffer.size() - 1] & 0x000000FF);
 
-        if (successfulStatusCodes != nullptr) {
-            this->successful = statusCode == 0x9000 ||
-                               (successfulStatusCodes->find(statusCode) !=
-                                successfulStatusCodes->end());
-        } else {
-            this->successful = statusCode == 0x9000;
-        }
+        if (successfulStatusCodes != nullptr)
+            mSuccessful = statusCode == 0x9000 ||
+                          (successfulStatusCodes->find(statusCode) !=
+                           successfulStatusCodes->end());
+        else
+            mSuccessful = statusCode == 0x9000;
     }
 }
 
 bool ApduResponse::isSuccessful() const
 {
-    return successful;
+    return mSuccessful;
 }
 
-int ApduResponse::getStatusCode() const
+uint16_t ApduResponse::getStatusCode() const
 {
-    if (bytes.size() < 2) {
-        logger->debug("bad response length (%)\n", bytes.size());
+    if (mBytes.size() < 2) {
+        mLogger->debug("bad response length (%)\n", mBytes.size());
         return 0;
     }
 
-    int code = ((bytes[bytes.size() - 2] & 0x000000FF) << 8) +
-               (bytes[bytes.size() - 1] & 0x000000FF);
+    uint16_t code = ((mBytes[mBytes.size() - 2] & 0x000000FF) << 8) +
+                     (mBytes[mBytes.size() - 1] & 0x000000FF);
 
     return code;
 }
 
 const std::vector<uint8_t>& ApduResponse::getBytes() const
 {
-    return this->bytes;
+    return mBytes;
 }
 
 std::vector<uint8_t> ApduResponse::getDataOut() const
 {
-    if (this->bytes.size() < 2)
+    if (mBytes.size() < 2)
         return std::vector<uint8_t>();
 
-    return Arrays::copyOfRange(this->bytes, 0, this->bytes.size() - 2);
+    return Arrays::copyOfRange(mBytes, 0, mBytes.size() - 2);
 }
 
 bool ApduResponse::operator==(const ApduResponse& o) const
 {
-    return this->bytes == o.bytes &&
-           this->successful == o.successful;
+    return mBytes == o.mBytes &&
+           mSuccessful == o.mSuccessful;
 }
 
 bool ApduResponse::operator!=(const ApduResponse& o) const
@@ -96,11 +96,11 @@ bool ApduResponse::operator!=(const ApduResponse& o) const
 
 std::ostream& operator<<(std::ostream& os, const ApduResponse& r)
 {
-    const std::string status = r.successful ? "SUCCESS" : "FAILURE";
+    const std::string status = r.mSuccessful ? "SUCCESS" : "FAILURE";
 
 	os << "R-APDU: {"
 	   << "STATUS = " << status << ", "
-	   << "BYTES (" << r.bytes.size() << ") = " << r.bytes
+	   << "BYTES (" << r.mBytes.size() << ") = " << r.mBytes
 	   << "}";
 
 	return os;

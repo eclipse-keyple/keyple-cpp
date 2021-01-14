@@ -22,8 +22,8 @@ namespace message {
 
 SelectionStatus::SelectionStatus(std::shared_ptr<AnswerToReset> atr,
                                  std::shared_ptr<ApduResponse> fci,
-                                 bool isMatching)
-: atr(atr), fci(fci), isMatching(isMatching)
+                                 const bool isMatching)
+: mAtr(atr), mFci(fci), mIsMatching(isMatching)
 {
     if (atr == nullptr && fci == nullptr) {
         throw std::invalid_argument(
@@ -31,30 +31,30 @@ SelectionStatus::SelectionStatus(std::shared_ptr<AnswerToReset> atr,
     }
 }
 
-std::shared_ptr<AnswerToReset> SelectionStatus::getAtr()
+std::shared_ptr<AnswerToReset> SelectionStatus::getAtr() const
 {
-    return atr;
+    return mAtr;
 }
 
-std::shared_ptr<ApduResponse> SelectionStatus::getFci()
+std::shared_ptr<ApduResponse> SelectionStatus::getFci() const
 {
-    return fci;
+    return mFci;
 }
 
 bool SelectionStatus::hasMatched() const
 {
-    return isMatching;
+    return mIsMatching;
 }
 
 bool SelectionStatus::operator==(const SelectionStatus& o) const
 {
     return /* Both pointers are null or equal */
-           ((!this->atr && !o.atr) ||
-            *(this->atr.get()) == *(o.atr.get())) &&
+           ((!mAtr && !o.mAtr) ||
+            *(mAtr.get()) == *(o.mAtr.get())) &&
            /* Both pointers are null or equal */
-           ((!this->fci && !o.fci) ||
-            *(this->fci.get()) == *(o.fci.get())) &&
-           this->isMatching == o.isMatching;
+           ((!mFci && !o.mFci) ||
+            *(mFci.get()) == *(o.mFci.get())) &&
+           mIsMatching == o.mIsMatching;
 }
 
 bool SelectionStatus::operator!=(const SelectionStatus& o) const
@@ -65,9 +65,9 @@ bool SelectionStatus::operator!=(const SelectionStatus& o) const
 std::ostream& operator<<(std::ostream& os, const SelectionStatus& s)
 {
     os << "SELECTIONSTATUS: {"
-       << "ATR = " << s.atr << ", "
-       << "FCI = " << s.fci << ", "
-       << "HASMATCHED = " << s.isMatching << "}";
+       << "ATR = " << s.mAtr << ", "
+       << "FCI = " << s.mFci << ", "
+       << "HASMATCHED = " << s.mIsMatching << "}";
 
     return os;
 }

@@ -1,81 +1,111 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <iostream>
 
+/* Common */
+#include "IllegalStateException.h"
+
+/* Core */
 #include "AbstractMatchingSe.h"
 #include "SelectionsResult.h"
-#include "MatchingSelection.h"
 
 namespace keyple {
 namespace core {
 namespace selection {
 
-SelectionsResult::SelectionsResult()
+using namespace keyple::common::exception;
+
+SelectionsResult::SelectionsResult() {}
+
+void SelectionsResult::addMatchingSe(int selectionIndex,
+                                     const std::shared_ptr<AbstractMatchingSe> matchingSe,
+                                     bool isSelected)
 {
+    if (matchingSe)
+        mMatchingSeMap.insert({selectionIndex, matchingSe});
+
+    /* If the current selection is active, we keep its index */
+    if (isSelected)
+        mActiveSelectionIndex = selectionIndex;
 }
 
-void SelectionsResult::addMatchingSelection(
-    std::shared_ptr<MatchingSelection> matchingSelection)
+const std::shared_ptr<AbstractMatchingSe> SelectionsResult::getActiveMatchingSe()
 {
-    if (!matchingSelection)
-        return;
+    std::shared_ptr<AbstractMatchingSe> matchingSe = nullptr;
 
-    matchingSelectionList.push_back(matchingSelection);
+    /*
+     * Do not use operator[] to check existence. This would alter the map with a null element if not
+     * exiting.
+     */
+    if (mMatchingSeMap.find(mActiveSelectionIndex) != mMatchingSeMap.end())
+        matchingSe = mMatchingSeMap[mActiveSelectionIndex];
 
-    /* Test if the current selection is active */
-    if (matchingSelection->getMatchingSe() != nullptr &&
-        matchingSelection->getMatchingSe()->isSelected()) {
-        hasActiveSelection_Renamed = true;
-    }
+    if (!matchingSe)
+        throw IllegalStateException("No active Matching SE is available");
+
+    return matchingSe;
 }
 
-const std::shared_ptr<MatchingSelection> SelectionsResult::getActiveSelection()
-    const
-{
-    std::shared_ptr<MatchingSelection> activeSelection = nullptr;
-
-    for (auto matchingSelection : matchingSelectionList) {
-        if (matchingSelection != nullptr &&
-            matchingSelection->getMatchingSe()->isSelected()) {
-            activeSelection = matchingSelection;
-            break;
-        }
-    }
-    return activeSelection;
-}
-
-const  std::vector<std::shared_ptr<MatchingSelection>>&
+const std::map<int, std::shared_ptr<AbstractMatchingSe>>&
     SelectionsResult::getMatchingSelections() const
 {
-    return matchingSelectionList;
+    return mMatchingSeMap;
 }
 
-const std::shared_ptr<MatchingSelection>
-    SelectionsResult::getMatchingSelection(int selectionIndex) const
+const std::shared_ptr<AbstractMatchingSe> SelectionsResult::getMatchingSe(int selectionIndex)
 {
-    for (auto matchingSelection : matchingSelectionList) {
-        if (matchingSelection->getSelectionIndex() == selectionIndex) {
-            return matchingSelection;
-        }
-    }
-    return nullptr;
+    /*
+     * Do not use operator[] to check existence. This would alter the map with a null element if not
+     * exiting.
+     */
+    if (mMatchingSeMap.find(selectionIndex) != mMatchingSeMap.end())
+        return mMatchingSeMap[selectionIndex];
+    else
+        return nullptr;
 }
 
 bool SelectionsResult::hasActiveSelection() const
 {
-    return hasActiveSelection_Renamed;
+    return mActiveSelectionIndex >= 0 ? true : false;
+}
+
+bool SelectionsResult::hasSelectionMatched(int selectionIndex) const
+{
+    return mMatchingSeMap.count(selectionIndex) ? true : false;
+}
+
+
+int SelectionsResult::getActiveSelectionIndex() const
+{
+    if (hasActiveSelection())
+        return mActiveSelectionIndex;
+
+    throw IllegalStateException("No active Matching SE is available");
+}
+
+
+std::ostream& operator<<(std::ostream& os,
+                         const std::map<int, std::shared_ptr<AbstractMatchingSe>>& sr)
+{
+    os << "MATCHINGSELECTIONS: {";
+
+    for (const auto& p : sr)
+        os << p.first << "-" << p.second << " ";
+
+    os << "}";
+
+    return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const SelectionsResult& sr)
@@ -88,8 +118,7 @@ std::ostream& operator<<(std::ostream& os, const SelectionsResult& sr)
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os,
-                         const std::shared_ptr<SelectionsResult>& sr)
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<SelectionsResult>& sr)
 {
     if (sr)
         os << *sr.get();

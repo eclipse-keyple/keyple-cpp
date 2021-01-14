@@ -26,7 +26,9 @@ SET(CMAKE_CXX_COMPILER cl.exe)
 
 # Compiler flags
 #SET(CMAKE_CXX_FLAGS "")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")          # multi proces
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")          # warning level
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")          # warning as error
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")          # debug symbols
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Od")          # disables optimization
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Ob0")         # controls inline expans.
@@ -54,6 +56,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4290")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4250")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4309")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4834")
 
 # Linker
 #SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} --sysroot=${CLANG_SYSROOT_DIR}")

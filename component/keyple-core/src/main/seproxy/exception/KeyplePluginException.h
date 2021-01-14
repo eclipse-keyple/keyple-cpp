@@ -1,20 +1,19 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
-#include "KeypleBaseException.h"
+#include "KeypleException.h"
 
 namespace keyple {
 namespace core {
@@ -22,30 +21,24 @@ namespace seproxy {
 namespace exception {
 
 /**
- * Base Exceptions thrown in a {@link org.eclipse.keyple.seproxy.ReaderPlugin}
- * context
+ * The exception KeyplePluginException is the parent abstract class of all Keyple plugins
+ * exceptions.
  */
-class KeyplePluginException : public KeypleBaseException {
-public:
+class KeyplePluginException : public KeypleException {
+protected:
     /**
-     * New plugin exception to be thrown
-     *
-     * @param message : message to identify the exception and the context
+     * @param msg the message to identify the exception context
      */
-    KeyplePluginException(const std::string& msg) : KeypleBaseException(msg)
-    {
-    }
+    KeyplePluginException(const std::string& msg) : KeypleException(msg) {}
 
     /**
-     * Encapsulate a lower level plugin exception
+     * Encapsulates a lower level plugin exception
      *
-     * @param message : message to add some context to the exception
-     * @param cause : lower level exception
+     * @param msg message to identify the exception context
+     * @param cause the cause
      */
-    KeyplePluginException(const std::string& msg, std::runtime_error cause)
-    : KeypleBaseException(msg, cause)
-    {
-    }
+    KeyplePluginException(const std::string& msg, const std::exception& cause)
+    : KeypleException(msg, cause) {}
 };
 
 }

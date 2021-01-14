@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "TestsUtilsResponseTabByteGenerator.h"
 #include "ByteArrayUtil.h"
@@ -24,7 +23,7 @@ using ApduResponse   = keyple::core::seproxy::message::ApduResponse;
 using ByteArrayUtils = keyple::core::util::ByteArrayUtil;
 
 std::vector<uint8_t>
-TestsUtilsResponseTabByteGenerator::append(std::vector<uint8_t>& arrays)
+TestsUtilsResponseTabByteGenerator::append(const std::vector<uint8_t>& arrays)
 {
     //std::shared_ptr<ByteArrayOutputStream> * const out =
     //    std::make_shared<ByteArrayOutputStream>();
@@ -39,12 +38,14 @@ TestsUtilsResponseTabByteGenerator::append(std::vector<uint8_t>& arrays)
     return arrays;
 }
 
+#if 0
 std::vector<uint8_t>
 TestsUtilsResponseTabByteGenerator::generate4MultiRecordsTabByte()
 {
     return std::vector<uint8_t>{0x01, 0x01, 0x01, 0x01, 0x30, 0x01, 0x01,
                                 0x30, 0x01, 0x01, 0x30, 0x01, 0x01, 0x30};
 }
+#endif
 
 std::vector<uint8_t>
 TestsUtilsResponseTabByteGenerator::generateResponseOkTabByteRev2_4()
@@ -140,6 +141,7 @@ TestsUtilsResponseTabByteGenerator::generateApduResponseValidRev3_2()
     return std::make_shared<ApduResponse>(cResult, nullptr);
 }
 
+#if 0
 std::shared_ptr<ApduResponse>
 TestsUtilsResponseTabByteGenerator::generateApduResponseOpenSessionCmd()
 {
@@ -229,6 +231,8 @@ TestsUtilsResponseTabByteGenerator::generateApduResponseFciCmdError()
     std::vector<uint8_t> cResult = append(cCmd);
     return std::make_shared<ApduResponse>(cResult, nullptr);
 }
+#endif
+
 }
 }
 }

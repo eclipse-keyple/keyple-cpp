@@ -1,22 +1,20 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
 #include <memory>
-#include <set>
-#include <string>
+#include <map>
 
 /* Core*/
 #include "AbstractReader.h"
@@ -24,17 +22,7 @@
 #include "KeypleCoreExport.h"
 #include "ReaderPlugin.h"
 #include "ProxyReader.h"
-
-/* Forward declaration */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace plugin {
-class AbstractObservableReader;
-}
-}
-}
-}
+#include "SeReader.h"
 
 namespace keyple {
 namespace core {
@@ -50,31 +38,20 @@ using namespace keyple::common;
 /**
  * Observable plugin. These plugin can report when a reader is added or removed.
  */
-class KEYPLECORE_API AbstractPlugin
-: public AbstractSeProxyComponent, public virtual ReaderPlugin {
+class KEYPLECORE_API AbstractPlugin : public AbstractSeProxyComponent, public virtual ReaderPlugin {
 public:
-    /**
-     *
-     */
-    void initReaders();
+    using AbstractSeProxyComponent::getName;
 
     /**
-     * Returns the current readers list.
+     * Returns the current readers name instance map.
      *
-     * The list is initialized in the constructor and may be updated in
-     * background in the case of a threaded plugin {@link
-     * AbstractThreadedObservablePlugin}
+     * The map is initialized in the constructor and may be updated in
+     * background in the case of a threaded plugin
+     * keyple::core::seproxy::plugin::AbstractThreadedObservablePlugin
      *
-     * @return the current reader list, can be null if the
-     *
-     * Alex: Java implementation returns a set of AbstractObservableReader(s)
-     *       when the base class function returns.a set of SeReader(s). C++
-     *       doesn't like this covariant return type even though
-     *       AbstractObservableReader is derived from SeReader. That's probably
-     *       due to set::set or std::shared_ptr preventing the base-derived
-     *       mechanism to work.
+     * @return the current readers map, can be an empty
      */
-    virtual std::set<std::shared_ptr<SeReader>>& getReaders() override;
+    virtual ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& getReaders() override;
 
     /**
      * Returns the current list of reader names.
@@ -84,16 +61,6 @@ public:
      * @return a list of String
      */
     virtual const std::set<std::string> getReaderNames() const override;
-
-    /**
-     * Compare the name of the current ReaderPlugin to the name of the
-     * ReaderPlugin provided in argument
-     *
-     * @param plugin a {@link ReaderPlugin} object
-     * @return true if the names match (The method is needed for the std::set
-     * lists)
-     */
-    virtual int compareTo(std::shared_ptr<ReaderPlugin> plugin);
 
     /**
      * Gets a specific reader designated by its name in the current readers list
@@ -107,37 +74,46 @@ public:
      *       be looked into, maybe returning a reference would
      *       could be best here?
      */
-    const std::shared_ptr<SeReader> getReader(const std::string& name) const
-        override;
+    const std::shared_ptr<SeReader> getReader(const std::string& name) final;
 
 protected:
     /**
-     * The list of readers
-     */
-    std::set<std::shared_ptr<SeReader>> readers;
-
-    /**
      * Instanciates a new ReaderPlugin. Retrieve the current readers list.
      *
-     * Gets the list for the native method the first time (null)
+     * Initialize the list of readers calling the abstract method
+     * initNativeReaders
+     *
+     * When readers initialisation failed, a KeypleReaderException is thrown
      *
      * @param name name of the plugin
+     * @throw KeypleReaderException when an issue is raised with reader
      */
-    AbstractPlugin(const std::string& name);
+    explicit AbstractPlugin(const std::string& name);
 
     /**
-     * Fetch connected native readers (from third party library) and returns a
-     * list of corresponding
-     * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader}
-     * {@link org.eclipse.keyple.seproxy.plugin.AbstractObservableReader} are
-     * new instances.
      *
-     * @return the list of AbstractObservableReader objects.
-     * @throws KeypleReaderException if a reader error occurs
-     *
-     * Alex: using SeReader instead of AbstractObservableReader
      */
-    virtual std::set<std::shared_ptr<SeReader>> initNativeReaders() = 0;
+    virtual ~AbstractPlugin() = default;
+
+    /**
+     * Init connected native readers (from third party library) and returns a
+     * map of corresponding keyple::core::seproxy::SeReader whith their name as key.
+     * <p>
+     * keyple::core::seproxy::SeReader are new instances.
+     * <p>
+     * this method is called once in the plugin constructor.
+     *
+     * @return the map of AbstractReader objects.
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
+     */
+    virtual ConcurrentMap<const std::string, std::shared_ptr<SeReader>>& initNativeReaders() = 0;
+
+protected:
+    /**
+     * C++ vs. Java: store list in class to avoid copy or move operations on ConcurrentMap
+     */
+    ConcurrentMap<const std::string, std::shared_ptr<SeReader>> mNativeReaders;
 };
 
 }

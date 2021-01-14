@@ -1,19 +1,24 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
-#include "CalypsoSamCommands.h"
 #include "CardGenerateKeyCmdBuild.h"
+
+/* Common */
+#include "IllegalArgumentException.h"
+
+/* Calypso */
+#include "CardGenerateKeyRespPars.h"
+#include "CalypsoSamCommand.h"
 #include "KeyReference.h"
 
 namespace keyple {
@@ -25,20 +30,23 @@ namespace security {
 
 using namespace keyple::calypso;
 using namespace keyple::calypso::command::sam;
+using namespace keyple::common::exception;
 
 CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
-    SamRevision revision, std::shared_ptr<KeyReference> cipheringKey,
-    std::shared_ptr<KeyReference> sourceKey)
-: AbstractSamCommandBuilder(CalypsoSamCommands::CARD_GENERATE_KEY, nullptr)
+  const SamRevision& revision,
+  const std::shared_ptr<KeyReference> cipheringKey,
+  const std::shared_ptr<KeyReference> sourceKey)
+: AbstractSamCommandBuilder(
+      std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::CARD_GENERATE_KEY),
+      nullptr)
 {
-    //if (revision != nullptr) {
-    this->defaultRevision = revision;
-    //}
-    if (sourceKey == nullptr) {
-        throw std::invalid_argument("The source key reference can't be null.");
-    }
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
-    uint8_t cla = this->defaultRevision.getClassByte();
+    if (sourceKey == nullptr)
+        throw IllegalArgumentException("The source key reference can't be null.");
+
+    const uint8_t cla = mDefaultRevision.getClassByte();
 
     uint8_t p1, p2;
     std::vector<uint8_t> data;
@@ -64,7 +72,13 @@ CardGenerateKeyCmdBuild::CardGenerateKeyCmdBuild(
         data[4] = 0x90;
     }
 
-    request = setApduRequest(cla, command, p1, p2, data);
+    mRequest = setApduRequest(cla, mCommand, p1, p2, data);
+}
+
+std::shared_ptr<CardGenerateKeyRespPars> CardGenerateKeyCmdBuild::createResponseParser(
+    std::shared_ptr<ApduResponse> apduResponse)
+{
+    return std::make_shared<CardGenerateKeyRespPars>(apduResponse, this);
 }
 
 }

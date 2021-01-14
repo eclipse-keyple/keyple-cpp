@@ -1,6 +1,6 @@
 
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -35,11 +35,11 @@ TEST(TLVTest, parse)
 {
     std::shared_ptr<Tag> tag1 =
         std::make_shared<Tag>(0x04, Tag::TagClass::CONTEXT,
-                              Tag::TagType::PRIMITIVE);
+                              Tag::TagType::PRIMITIVE, 1);
     std::shared_ptr<Tag> tag2 =
         std::make_shared<Tag>(0x04, Tag::TagClass::CONTEXT,
-                              Tag::TagType::CONSTRUCTED);
-    
+                              Tag::TagType::CONSTRUCTED, 1);
+
     TLV tlv({0x84, 0x05, 0x00, 0x11, 0x22, 0x33, 0x44});
 
     /* 1st parsing */
@@ -61,7 +61,7 @@ TEST(TLVTest, parse_TooLargeIndex)
 {
     std::shared_ptr<Tag> tag1 =
         std::make_shared<Tag>(0x04, Tag::TagClass::CONTEXT,
-                              Tag::TagType::PRIMITIVE);
+                              Tag::TagType::PRIMITIVE, 1);
 
     TLV tlv({ 0x84, 0x05, 0x00, 0x11, 0x22, 0x33, 0x44 });
 
@@ -73,7 +73,7 @@ TEST(TLVTest, getValue)
     const std::vector<uint8_t> value = {0x00, 0x11, 0x22, 0x33, 0x44};
     std::shared_ptr<Tag> tag1 =
         std::make_shared<Tag>(0x04, Tag::TagClass::CONTEXT,
-                              Tag::TagType::PRIMITIVE);
+                              Tag::TagType::PRIMITIVE, 1);
 
     TLV tlv1({0x84, 0x05, 0x00, 0x11, 0x22, 0x33, 0x44});
 
@@ -93,14 +93,14 @@ TEST(TLVTest, getPosition)
     const std::vector<uint8_t> value2 = {0x55, 0x66, 0x77, 0x88, 0x99};
     std::shared_ptr<Tag> tag1 =
         std::make_shared<Tag>(0x04, Tag::TagClass::CONTEXT,
-                              Tag::TagType::PRIMITIVE);
+                              Tag::TagType::PRIMITIVE, 1);
 
     /* Two TLV */
     TLV tlv({0x84, 0x05, 0x00, 0x11, 0x22, 0x33, 0x44,
              0x84, 0x05, 0x55, 0x66, 0x77, 0x88, 0x99});
 
     ASSERT_TRUE(tlv.parse(tag1, 0));
-    
+
     /* Test position before getValue() */
     ASSERT_EQ(tlv.getPosition(), 2);
     ASSERT_EQ(tlv.getValue(), value1);

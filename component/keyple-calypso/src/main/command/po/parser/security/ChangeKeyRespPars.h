@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,11 +14,12 @@
 
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <memory>
 #include <string>
 
 #include "AbstractPoResponseParser.h"
+#include "ChangeKeyCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -28,66 +29,39 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::core::seproxy::message;
 
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
+
 class KEYPLECALYPSO_API ChangeKeyRespPars : public AbstractPoResponseParser {
-private:
-    /**
-     *
-     */
-    static std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
-
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        /**
-         *
-         */
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static ChangeKeyRespPars::StaticConstructor staticConstructor;
-
 public:
     /**
      * Instantiates a new ChangeKeyRespPars
      *
      * @param response the response from the PO
+     * @param builder the reference to the builder that created this parser
      */
-    ChangeKeyRespPars(std::shared_ptr<ApduResponse> response);
+    ChangeKeyRespPars(std::shared_ptr<ApduResponse> response,
+                      ChangeKeyCmdBuild* builder);
 
     /**
      *
      */
-    virtual ~ChangeKeyRespPars()
-    {
-    }
-
-protected:
-    /**
-     *
-     */
-    std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    getStatusTable() const override;
+    virtual ~ChangeKeyRespPars() = default;
 
 protected:
     /**
      *
      */
-    std::shared_ptr<ChangeKeyRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<ChangeKeyRespPars>(
-            AbstractPoResponseParser::shared_from_this());
-    }
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
+        const override;
+
+private:
+    /**
+     *
+     */
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

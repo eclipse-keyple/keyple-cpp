@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -21,10 +20,9 @@
 /* Core */
 #include "AbstractSeProxyComponent.h"
 #include "DefaultSelectionsRequest.h"
-#include "KeypleChannelControlException.h"
 #include "KeypleCoreExport.h"
-#include "KeypleIOReaderException.h"
-#include "KeypleReaderException.h"
+#include "KeypleReaderIOException.h"
+#include "ObservableReader.h"
 #include "ProxyReader.h"
 
 namespace keyple {
@@ -37,10 +35,7 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
-using namespace keyple::core::util;
 using namespace keyple::common;
-
-using ReaderObserver = ObservableReader::ReaderObserver;
 
 /**
  * Abstract definition of an observable reader.
@@ -52,84 +47,52 @@ using ReaderObserver = ObservableReader::ReaderObserver;
  * <li>Plugin naming management</li>
  * </ul>
  */
-class KEYPLECORE_API AbstractReader
-: public AbstractSeProxyComponent, public ProxyReader {
+class KEYPLECORE_API AbstractReader : public AbstractSeProxyComponent, public virtual ProxyReader {
 public:
     /**
-     * Compare the name of the current SeReader to the name of the SeReader
-     * provided in argument
-     *
-     * @param seReader a SeReader object
-     * @return true if the names match (The method is needed for the SortedSet
-     *         lists)
-     */
-    int compareTo(std::shared_ptr<SeReader> seReader);
-
-    /**
-     * Execute the transmission of a list of {@link SeRequest} and returns a
-     * list of {@link SeResponse}
+     * Execute the transmission of a list of keyple::core::seproxy::message::SeRequest and returns a
+     * list of keyple::core::seproxy::message::SeResponse
      * <p>
-     * The {@link MultiSeRequestProcessing} parameter indicates whether all
-     * requests are to be sent regardless of their result (PROCESS_ALL) or
-     * whether the process should stop at the first request whose result is a
-     * success (FIRST_MATCH).
+     * The keyple::core::seproxy::MultiSeRequestProcessing parameter indicates whether all requests
+     * are to be sent regardless of their result (PROCESS_ALL) or whether the process should stop at
+     * the first request whose result is a success (FIRST_MATCH).
      * <p>
-     * The {@link ChannelControl} parameter specifies whether the physical
-     * channel should be closed (CLOSE_AFTER) or not (KEEP_OPEN) after all
-     * requests have been transmitted.
+     * The keyple::core::seproxy::message::ChannelControl parameter specifies whether the physical
+     * channel should be closed (CLOSE_AFTER) or not (KEEP_OPEN) after all requests have been
+     * transmitted.
      * <p>
-     * The global execution time (inter-exchange and communication) and the Set
-     * of SeRequest content is logged (DEBUG level).
+     * The global execution time (inter-exchange and communication) and the Set of SeRequest content
+     * is logged (DEBUG level).
      * <p>
      * As the method is final, it cannot be extended.
      *
-     * @param requestSet the request set
+     * @param seRequests the request set
      * @param multiSeRequestProcessing the multi SE request processing mode
      * @param channelControl the channel control indicator
      * @return the response set
-     * @throws KeypleReaderException if a reader error occurs
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
      */
-    std::list<std::shared_ptr<SeResponse>> transmitSet(
-        const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+    std::vector<std::shared_ptr<SeResponse>> transmitSeRequests(
+        const std::vector<std::shared_ptr<SeRequest>>& seRequests,
         const MultiSeRequestProcessing& multiSeRequestProcessing,
         const ChannelControl& channelControl) override;
 
     /**
-     * Simplified version of transmitSet for standard use.
-     *
-     * @param requestSet the request set
-     * @return the response set
-     * @throws KeypleReaderException if a reader error occurs
-     */
-    std::list<std::shared_ptr<SeResponse>> transmitSet(
-        const std::vector<std::shared_ptr<SeRequest>>& requestSet) override;
-
-    /**
-     * Execute the transmission of a {@link SeRequest} and returns a
-     * {@link SeResponse}
+     * Execute the transmission of a keyple::core::seproxy::message::SeRequest and returns a
+     * keyple::core::seproxy::message::SeResponse
      * <p>
      * The individual execution time (inter-exchange and communication) and the
-     * SeRequestSet content is logged (DEBUG level).
+     * keyple::core::seproxy::message::SeRequest content is logged (DEBUG level).
      * <p>
      * As the method is final, it cannot be extended.
      *
      * @param seRequest the request to be transmitted
+     * @param channelControl indicates if the channel has to be closed at the end of the processing
      * @return the received response
-     * @throws KeypleReaderException if a reader error occurs
+     * @throws KeypleReaderIOException if the communication with the reader or the SE has failed
      */
-    std::shared_ptr<SeResponse>transmit(
-        std::shared_ptr<SeRequest> seRequest, ChannelControl channelControl)
-        override;
-
-    /**
-     * Simplified version of transmit for standard use.
-     *
-     * @param seRequest the request to be transmitted
-     * @return the received response
-     * @throws KeypleReaderException if a reader error occurs
-     */
-    std::shared_ptr<SeResponse> transmit(std::shared_ptr<SeRequest> seRequest)
-        override;
+    std::shared_ptr<SeResponse> transmitSeRequest(std::shared_ptr<SeRequest> seRequest,
+                                                  const ChannelControl& channelControl) override;
 
     /**
      * Gets the name of plugin provided in the constructor.
@@ -141,18 +104,16 @@ public:
      */
     const std::string& getPluginName() const;
 
-protected:
     /**
-     * This flag is used with transmit or transmitSet
-     * <p>
-     * It will be used by the notifySeProcessed method
-     * (AbstractObservableLocalReader) to determine if a request to close the
-     * physical channel has been already made and therefore to switch directly
-     * to the removal sequence for the observed readers.<br>
-     * TODO find a better way to manage this need
+     * C++ vs. Java: have to override the method here to link ProxyElement interface to actual
+     *               implementation
      */
-    bool forceClosing = true;
+    const std::string& getName() const override
+    {
+        return AbstractSeProxyComponent::getName();
+    }
 
+protected:
     /**
      * The default DefaultSelectionsRequest to be executed upon SE insertion
      */
@@ -171,9 +132,14 @@ protected:
      * Initialize the time measurement
      *
      * @param pluginName the name of the plugin that instantiated the reader
-     * @param readerName the name of the reader
+     * @param name the name of the reader
      */
     AbstractReader(const std::string& pluginName, const std::string& name);
+
+    /**
+     *
+     */
+    virtual ~AbstractReader() = default;
 
     /**
      * Abstract method implemented by the AbstractLocalReader and VirtualReader
@@ -181,30 +147,32 @@ protected:
      * <p>
      * This method is handled by transmitSet.
      *
-     * @param requestSet the Set of {@link SeRequest} to be processed
+     * @param seRequests a list of keyple::core::seproxy::message::SeRequest to be processed
      * @param multiSeRequestProcessing the multi se processing mode
      * @param channelControl indicates if the channel has to be closed at the
      *        end of the processing
-     * @return the List of {@link SeResponse} (responses to the Set of {@link
-     *         SeRequest})
-     * @throws KeypleReaderException if reader error occurs
+     * @return the List of keyple::core::seproxy::message::SeResponse (responses to the Set of
+     *         keyple::core::seproxy::message::SeRequest)
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
-    virtual std::list<std::shared_ptr<SeResponse>> processSeRequestSet(
-        const std::vector<std::shared_ptr<SeRequest>>& requestSet,
+    virtual std::vector<std::shared_ptr<SeResponse>> processSeRequests(
+        const std::vector<std::shared_ptr<SeRequest>>& seRequests,
         const MultiSeRequestProcessing& multiSeRequestProcessing,
         const ChannelControl& channelControl) = 0;
 
     /**
-     * Abstract method implemented by the AbstractLocalReader and VirtualReader
-     * classes.
+     * Abstract method implemented by the AbstractLocalReader and VirtualReader classes.
      * <p>
      * This method is handled by transmit.
      *
-     * @param seRequest the {@link SeRequest} to be processed
+     * @param seRequest the keyple::core::seproxy::message::SeRequest to be processed
      * @param channelControl a flag indicating if the channel has to be closed
-     *        after the processing of the {@link SeRequest}
-     * @return the {@link SeResponse} (responses to the {@link SeRequest})
-     * @throws KeypleReaderException if reader error occurs
+     *        after the processing of the keyple::core::seproxy::message::SeRequest
+     * @return the keyple::core::seproxy::message::SeResponse (responses to the
+     *         keyple::core::seproxy::message::SeRequest)
+     * @throws KeypleReaderIOException if the communication with the reader or
+     *         the SE has failed
      */
     virtual std::shared_ptr<SeResponse> processSeRequest(
         const std::shared_ptr<SeRequest> seRequest,
@@ -214,18 +182,18 @@ private:
     /**
      * Logger
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(AbstractReader));
 
     /**
      * Timestamp recorder
      */
-    long long before = 0;
+    long long mBefore = 0;
 
     /**
      *  Contains the name of the plugin
      */
-    const std::string pluginName;
+    const std::string mPluginName;
 };
 
 }

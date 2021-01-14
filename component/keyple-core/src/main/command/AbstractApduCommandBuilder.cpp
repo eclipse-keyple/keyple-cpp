@@ -1,22 +1,21 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <iostream>
 
 #include "AbstractApduCommandBuilder.h"
+
 #include "ApduRequest.h"
-#include "CommandsTable.h"
 
 namespace keyple {
 namespace core {
@@ -25,47 +24,46 @@ namespace command {
 using namespace keyple::core::seproxy::message;
 
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
-    CommandsTable& commandReference, std::shared_ptr<ApduRequest> request)
+  const std::shared_ptr<SeCommand> commandRef,
+  const std::shared_ptr<ApduRequest> request)
+: mCommandRef(commandRef), mRequest(request), mName(commandRef->getName())
 {
-    this->name    = commandReference.getName();
-    this->request = request;
-
-    // set APDU name for non null request
-    if (request != nullptr) {
-        this->request->setName(commandReference.getName());
-    }
+    /* Set APDU name for non null request */
+    if (request != nullptr)
+        mRequest->setName(commandRef->getName());
 }
 
 AbstractApduCommandBuilder::AbstractApduCommandBuilder(
-    const std::string& name, std::shared_ptr<ApduRequest> request)
+  const std::string& name, std::shared_ptr<ApduRequest> request)
+: mCommandRef(nullptr), mRequest(request), mName(name)
 {
-    this->name    = name;
-    this->request = request;
-
-    // set APDU name for non null request
-    if (request != nullptr) {
-        this->request->setName(name);
-    }
+    /* Set APDU name for non null request */
+    if (request != nullptr)
+        mRequest->setName(name);
 }
 
 void AbstractApduCommandBuilder::addSubName(const std::string& subName)
 {
     if (subName.length() != 0) {
-        this->name = this->name + " - " + subName;
-        if (request != nullptr) {
-            this->request->setName(this->name);
-        }
+        mName += " - " + subName;
+        if (mRequest != nullptr)
+            mRequest->setName(mName);
     }
 }
 
-std::string AbstractApduCommandBuilder::getName() const
+const std::shared_ptr<SeCommand> AbstractApduCommandBuilder::getCommandRef() const
 {
-    return this->name;
+    return mCommandRef;
 }
 
-std::shared_ptr<ApduRequest> AbstractApduCommandBuilder::getApduRequest() const
+const std::string& AbstractApduCommandBuilder::getName() const
 {
-    return request;
+    return mName;
+}
+
+const std::shared_ptr<ApduRequest> AbstractApduCommandBuilder::getApduRequest() const
+{
+    return mRequest;
 }
 
 }

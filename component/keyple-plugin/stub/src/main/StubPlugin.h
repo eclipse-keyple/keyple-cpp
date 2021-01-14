@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -27,7 +27,6 @@
 #include "LoggerFactory.h"
 #include "InterruptedException.h"
 #include "ObservablePlugin.h"
-#include "KeypleBaseException.h"
 
 /* Plugin */
 #include "KeyplePluginStubExport.h"
@@ -45,7 +44,7 @@ using namespace keyple::core::seproxy::protocol;
 
 /**
  * Stubplugin allows to simulate a {@link keyple::core::seproxy::ReaderPlugin}
- * and a {@link StubSecureElement}
+ * and a keyple::plugin::stub::StubSecureElement
  */
 class KEYPLEPLUGINSTUB_API StubPlugin : public virtual ObservablePlugin {
 public:

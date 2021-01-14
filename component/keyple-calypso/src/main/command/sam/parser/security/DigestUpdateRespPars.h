@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -14,11 +14,14 @@
 
 #pragma once
 
+#include <map>
 #include <memory>
 
 /* Core */
 #include "AbstractSamResponseParser.h"
 
+/* Calypso */
+#include "DigestUpdateCmdBuild.h"
 #include "KeypleCalypsoExport.h"
 
 namespace keyple {
@@ -29,6 +32,7 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::security;
 using namespace keyple::core::seproxy::message;
 
 /**
@@ -42,25 +46,23 @@ public:
      * Instantiates a new DigestUpdateRespPars.
      *
      * @param response the response
+     * @param builder the reference to the builder that created this parser
      */
-    DigestUpdateRespPars(std::shared_ptr<ApduResponse> response);
-
-    /**
-     *
-     */
-    virtual ~DigestUpdateRespPars()
-    {
-    }
+    DigestUpdateRespPars(const std::shared_ptr<ApduResponse> response,
+                         DigestUpdateCmdBuild* builder);
 
 protected:
     /**
      *
      */
-    std::shared_ptr<DigestUpdateRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<DigestUpdateRespPars>(
-            AbstractSamResponseParser::shared_from_this());
-    }
+    const std::map<int, std::shared_ptr<StatusProperties>>&
+        getStatusTable() const override;
+
+private:
+    /**
+     *
+     */
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

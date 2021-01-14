@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,12 +18,14 @@
 #include <vector>
 #include <memory>
 
+/* Calypso */
 #include "AbstractPoCommandBuilder.h"
-#include "AppendRecordRespPars.h"
-#include "PoModificationCommand.h"
-#include "PoSendableInSession.h"
-#include "CalypsoPoCommands.h"
+#include "CalypsoPoCommand.h"
 #include "PoClass.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class AppendRecordRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -35,22 +37,12 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AppendRecordCmdBuild. This class provides the dedicated constructor
  * to build the Update Record APDU command.
- *
  */
 class KEYPLECALYPSO_API AppendRecordCmdBuild final
-: public AbstractPoCommandBuilder<AppendRecordRespPars>,
-  public PoSendableInSession,
-  public PoModificationCommand {
-private:
-    /**
-     * The command
-     */
-    CalypsoPoCommands& command = CalypsoPoCommands::APPEND_RECORD;
-
+: public AbstractPoCommandBuilder<AppendRecordRespPars> {
 public:
     /**
      * Instantiates a new UpdateRecordCmdBuild.
@@ -58,29 +50,48 @@ public:
      * @param poClass indicates which CLA byte should be used for the Apdu
      * @param sfi the sfi to select
      * @param newRecordData the new record data to write
-     * @param extraInfo extra information included in the logs (can be null or
-     *        empty)
-     * @throws IllegalArgumentException - if the command is inconsistent
+     * @throw IllegalArgumentException - if the command is inconsistent
      */
-    AppendRecordCmdBuild(PoClass poClass, uint8_t sfi,
-                         const std::vector<uint8_t>& newRecordData,
-                         const std::string& extraInfo);
+    AppendRecordCmdBuild(const PoClass poClass,
+                         const uint8_t sfi,
+                         const std::vector<uint8_t>& newRecordData);
 
     /**
      *
      */
-    std::shared_ptr<AppendRecordRespPars>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<AppendRecordRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
-protected:
     /**
      *
+     * This command can modify the contents of the PO in session and therefore
+     * uses the session buffer.
+     *
+     * @return true
      */
-    std::shared_ptr<AppendRecordCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<AppendRecordCmdBuild>(
-            AbstractPoCommandBuilder<AppendRecordRespPars>::shared_from_this());
-    }
+    virtual bool isSessionBufferUsed() const override;
+
+    /**
+     * @return the SFI of the accessed file
+     */
+    uint8_t getSfi() const;
+
+    /**
+     * @return the data sent to the PO
+     */
+    const std::vector<uint8_t>& getData() const;
+
+private:
+    /**
+     * The command
+     */
+    const CalypsoPoCommand& command = CalypsoPoCommand::APPEND_RECORD;
+
+    /**
+     * Construction arguments
+     */
+    const uint8_t mSfi;
+    const std::vector<uint8_t> mData;
 };
 
 }

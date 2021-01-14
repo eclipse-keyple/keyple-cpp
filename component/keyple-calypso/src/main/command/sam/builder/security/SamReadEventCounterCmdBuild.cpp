@@ -1,23 +1,24 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
+
+#include "SamReadEventCounterCmdBuild.h"
 
 /* Common */
-#include "exceptionhelper.h"
-#include "stringhelper.h"
+#include "IllegalArgumentException.h"
+#include "IllegalStateException.h"
 
 /* Calypso */
-#include "SamReadEventCounterCmdBuild.h"
+#include "SamReadEventCounterRespPars.h"
 
 namespace keyple {
 namespace calypso {
@@ -27,45 +28,45 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
-
-const int SamReadEventCounterCmdBuild::MAX_COUNTER_NUMB     = 26;
-const int SamReadEventCounterCmdBuild::MAX_COUNTER_REC_NUMB = 3;
+using namespace keyple::common::exception;
 
 SamReadEventCounterCmdBuild::SamReadEventCounterCmdBuild(
-    SamRevision& revision, SamEventCounterOperationType operationType,
-    uint8_t index)
-: AbstractSamCommandBuilder(command, nullptr)
+  const SamRevision& revision,
+  const SamEventCounterOperationType operationType,
+  const uint8_t index)
+: AbstractSamCommandBuilder(
+    std::make_shared<CalypsoSamCommand>(CalypsoSamCommand::READ_EVENT_COUNTER),
+    nullptr)
 {
-    this->defaultRevision = revision;
+    if (revision != SamRevision::NO_REV)
+        mDefaultRevision = revision;
 
-    uint8_t cla = this->defaultRevision.getClassByte();
-    uint8_t p2  = 0x00;
+    const uint8_t cla = mDefaultRevision.getClassByte();
+    uint8_t p2;
 
-    switch (operationType) {
-    case COUNTER_RECORD:
-        if (index < 1 || index > MAX_COUNTER_REC_NUMB) {
-            throw IllegalArgumentException(StringHelper::formatSimple(
-                "Record Number must be between 1 and %d",
-                MAX_COUNTER_REC_NUMB));
-        }
+    if (operationType == SamEventCounterOperationType::COUNTER_RECORD) {
+        if (index < 1 || index > MAX_COUNTER_REC_NUMB)
+            throw IllegalArgumentException("Record Number must be between 1 and " +
+                                           std::to_string(MAX_COUNTER_REC_NUMB));
 
         p2 = 0xE0 + index;
-        break;
-    case SINGLE_COUNTER:
 
-        if (index > MAX_COUNTER_NUMB) {
-            throw IllegalArgumentException(StringHelper::formatSimple(
-                "Counter Number must be between 0 and %d", MAX_COUNTER_NUMB));
-        }
+    /* SINGLE_COUNTER */
+    } else {
+        if (index > MAX_COUNTER_NUMB)
+            throw IllegalArgumentException("Counter Number must be between 0 and " +
+                                           std::to_string(MAX_COUNTER_NUMB));
 
-        p2 = 0x81 + index;
-        break;
-    default:
-        throw IllegalStateException(StringHelper::formatSimple(
-            "Unsupported OperationType parameter %d", operationType));
+        p2 = 0x80 + index;
     }
 
-    request = setApduRequest(cla, command, 0x00, p2, 0x00);
+    mRequest = setApduRequest(cla, mCommand, 0x00, p2, 0x00);
+}
+
+std::shared_ptr<SamReadEventCounterRespPars> SamReadEventCounterCmdBuild::createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse)
+{
+    return std::make_shared<SamReadEventCounterRespPars>(apduResponse, this);
 }
 
 }

@@ -1,115 +1,79 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "PoClass.h"
 
 #include <iomanip>
 
+/* Common */
+#include "IllegalArgumentException.h"
+
 namespace keyple {
 namespace calypso {
 namespace command {
 
-PoClass PoClass::LEGACY("LEGACY", InnerEnum::LEGACY, static_cast<char>(0x94));
-PoClass PoClass::ISO("ISO", InnerEnum::ISO, static_cast<char>(0x00));
+using namespace keyple::common::exception;
 
-std::vector<PoClass> PoClass::valueList;
+const PoClass PoClass::LEGACY("LEGACY", 0x94);
+const PoClass PoClass::ISO("ISO", 0x00);
 
-PoClass::StaticConstructor::StaticConstructor()
+
+
+PoClass::PoClass(const std::string& name, const uint8_t cla) : mName(name), mCla(cla) {}
+
+PoClass::PoClass(const PoClass& o) : mName(o.mName), mCla(o.mCla) {}
+
+PoClass& PoClass::operator=(const PoClass& o)
 {
-    valueList.push_back(LEGACY);
-    valueList.push_back(ISO);
+    mCla = o.mCla;
+    mName = o.mName;
+
+    return *this;
 }
-
-PoClass::StaticConstructor PoClass::staticConstructor;
-int PoClass::nextOrdinal = 0;
-
-char PoClass::getValue()
+uint8_t PoClass::getValue() const
 {
-    return cla;
-}
-
-PoClass::PoClass(const std::string& name, InnerEnum innerEnum, char cla)
-: innerEnumValue(innerEnum), nameValue(name), ordinalValue(nextOrdinal++),
-  cla(cla)
-{
-}
-
-PoClass::PoClass(const PoClass& o)
-: innerEnumValue(o.innerEnumValue), nameValue(o.nameValue),
-  ordinalValue(o.ordinalValue), cla(o.cla)
-{
+    return mCla;
 }
 
 bool PoClass::operator==(const PoClass& o) const
 {
-    return this->ordinalValue == o.ordinalValue;
+    return mCla == o.mCla &&
+           mName == o.mName;
 }
 
 bool PoClass::operator!=(const PoClass& o) const
 {
-    return this->ordinalValue != o.ordinalValue;
+    return !(*this == o);
 }
 
-PoClass& PoClass::operator=(const PoClass o)
+const PoClass& PoClass::valueOf(const std::string& name)
 {
-    this->innerEnumValue = o.innerEnumValue;
-    this->nameValue      = o.nameValue;
-    this->ordinalValue   = o.ordinalValue;
-    this->cla            = o.cla;
-
-    return *this;
-}
-
-std::vector<PoClass> PoClass::values()
-{
-    return valueList;
-}
-
-int PoClass::ordinal()
-{
-    return ordinalValue;
-}
-
-PoClass PoClass::valueOf(const std::string& name)
-{
-    for (auto enumInstance : PoClass::valueList) {
-        if (enumInstance.nameValue == name) {
-            return enumInstance;
-        }
-    }
-
-    /* Compiler fix */
-    return PoClass("Dummy", InnerEnum::ISO, 0);
+    if (name == LEGACY.mName)
+        return LEGACY;
+    else if (name == ISO.mName)
+        return ISO;
+    else
+        throw IllegalArgumentException("PoClass " + name + "doesn't exist");
 }
 
 std::ostream& operator<<(std::ostream& os, const PoClass& pc)
 {
-	std::string value;
-	if (pc == PoClass::LEGACY)
-		value = "LEGACY";
-    else if (pc == PoClass::ISO)
-		value = "ISO";
+    os << "POCLASS: {"
+       << "NAME = "  << pc.mName << ", "
+       << "CLASS = " << std::hex << std::setfill('0') << std::setw(2) << pc.mCla
+       << "}";
 
-	os << "POCLASS: {"
-	   << "VALUE = " << value << ", "
-	   << "NAME = " << pc.nameValue << ", "
-	   << "ORDINAL = " << pc.ordinalValue << ", "
-	   << "CLASS = " << std::hex << std::setfill('0') << std::setw(2)
-		             << static_cast<int>(pc.cla)
-	   << "}";
-
-	return os;
+    return os;
 }
 
 }

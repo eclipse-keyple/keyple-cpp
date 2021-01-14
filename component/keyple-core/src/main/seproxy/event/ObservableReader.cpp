@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "ObservableReader.h"
 #include "ReaderEvent.h"
@@ -25,8 +24,9 @@ using namespace keyple::core::seproxy;
 
 using NotificationMode = ObservableReader::NotificationMode;
 
-NotificationMode NotificationMode::ALWAYS("ALWAYS", InnerEnum::ALWAYS,
-                                          "always");
+/* NOTIFICATION MODE ---------------------------------------------------------------------------- */
+
+NotificationMode NotificationMode::ALWAYS("ALWAYS", InnerEnum::ALWAYS, "always");
 NotificationMode NotificationMode::MATCHED_ONLY("MATCHED_ONLY",
                                                 InnerEnum::MATCHED_ONLY,
                                                 "matched_only");
@@ -35,9 +35,9 @@ std::vector<NotificationMode> NotificationMode::valueList;
 int NotificationMode::nextOrdinal = 0;
 
 NotificationMode::NotificationMode(const std::string& nameValue,
-                                   InnerEnum innerEnum, const std::string& name)
-: innerEnumValue(innerEnum), name(name), nameValue(nameValue),
-  ordinalValue(nextOrdinal++)
+                                   InnerEnum innerEnum,
+                                   const std::string& name)
+: innerEnumValue(innerEnum), name(name), nameValue(nameValue), ordinalValue(nextOrdinal++)
 {
 }
 
@@ -102,17 +102,17 @@ std::string NotificationMode::toString()
 
 NotificationMode NotificationMode::valueOf(const std::string& name)
 {
-    for (auto enumInstance : NotificationMode::valueList) {
-        if (enumInstance.nameValue == name) {
-            return enumInstance;
-        }
-    }
+    const auto& it = std::find_if(NotificationMode::valueList.begin(),
+                                  NotificationMode::valueList.end(),
+                                  [name](const NotificationMode& mode) {return name == mode.nameValue;});
 
-    return NotificationMode::ALWAYS;
+    if (it != NotificationMode::valueList.end())
+        return *it;
+    else
+        return NotificationMode::ALWAYS;
 }
 
-std::ostream& operator<<(std::ostream& os,
-                         const ObservableReader::PollingMode& pm)
+std::ostream& operator<<(std::ostream& os, const ObservableReader::PollingMode& pm)
 {
     switch (pm) {
     case ObservableReader::PollingMode::REPEATING:

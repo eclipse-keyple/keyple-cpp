@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -29,17 +29,23 @@ using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
 using namespace keyple::core::seproxy::message;
 
-GetDataFciCmdBuild::GetDataFciCmdBuild(PoClass poClass)
-: AbstractPoCommandBuilder<GetDataFciRespPars>(CalypsoPoCommands::GET_DATA_FCI,
-                                               nullptr)
+GetDataFciCmdBuild::GetDataFciCmdBuild(const PoClass poClass)
+: AbstractPoCommandBuilder<GetDataFciRespPars>(
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::GET_DATA_FCI),
+      nullptr)
 {
-    request = setApduRequest(poClass.getValue(), command, 0, 0x6F, 0x00);
+    mRequest = setApduRequest(poClass.getValue(), command, 0x00, 0x6F, 0x00);
 }
 
 std::shared_ptr<GetDataFciRespPars> GetDataFciCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<GetDataFciRespPars>(apduResponse);
+    return std::make_shared<GetDataFciRespPars>(apduResponse, this);
+}
+
+bool GetDataFciCmdBuild::isSessionBufferUsed() const
+{
+    return false;
 }
 
 }

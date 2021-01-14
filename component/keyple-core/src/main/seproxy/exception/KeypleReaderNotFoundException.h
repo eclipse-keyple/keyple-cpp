@@ -17,7 +17,6 @@
 
 /* Common */
 #include "KeypleCoreExport.h"
-#include "stringhelper.h"
 
 namespace keyple {
 namespace core {
@@ -25,15 +24,17 @@ namespace seproxy {
 namespace exception {
 
 /**
- * Exception thrown when {@link org.eclipse.keyple.seproxy.message.ProxyReader}
- * is not found
+ * The exception {@code KeypleReaderNotFoundException} indicates that the reader
+ * is not found by its name, generally when it is not connected to the terminal.
  */
 class KEYPLECORE_API KeypleReaderNotFoundException
 : public KeypleReaderException {
 public:
+    /**
+     * @param readerName the name of the reader that has not been found
+     */
     KeypleReaderNotFoundException(const std::string& readerName)
-    : KeypleReaderException(StringHelper::formatSimple(
-          "Reader with name %s was not found", readerName))
+    : KeypleReaderException("Reader with name " + readerName + " was not found")
     {
     }
 };

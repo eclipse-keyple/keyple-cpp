@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -27,6 +26,7 @@
 
 /* Core */
 #include "ApduRequest.h"
+#include "ByteArrayUtil.h"
 #include "ChannelControl.h"
 #include "KeypleCoreExport.h"
 #include "SeProtocol.h"
@@ -40,53 +40,46 @@ using namespace keyple::core::seproxy::protocol;
 using namespace keyple::common;
 
 /**
- * The SeSelector class groups the information and methods used to select a
- * particular secure element
+ * The SeSelector class groups the information and methods used to select a particular secure
+ * element
  */
-class KEYPLECORE_API SeSelector
-: public std::enable_shared_from_this<SeSelector> {
+class KEYPLECORE_API SeSelector {
 public:
     /**
-     * Static nested class to hold the data elements used to perform an AID
-     * based selection
+     * AID’s bytes of the SE application to select. In case the SE application
+     * is currently not selected, a logical channel is established and the
+     * corresponding SE application is selected by the SE reader, otherwise keep
+     * the current channel. - optional {@link FileOccurrence} and
+     * {@link FileControlInformation} defines selections modes according to
+     * ISO7816-4 - optional successfulSelectionStatusCodes define a list of
+     * accepted SW1SW2 codes (in addition to 9000). Allows, for example, to
+     * manage the selection of the invalidated cards. - AidSelector could be
+     * missing in SeSelector when operating SE which don’t support the Select
+     * Application command (as it is the case for SAM).
      */
-    class KEYPLECORE_API AidSelector
-    : public std::enable_shared_from_this<AidSelector> {
+    class KEYPLECORE_API AidSelector final {
     public:
         /**
-         *
-         */
-        friend std::ostream& operator<<(std::ostream& os, const AidSelector& a);
-
-        /**
-         * FileOccurrence indicates how to carry out the file occurrence in
-         * accordance with ISO7816-4
+         * FileOccurrence indicates how to carry out the file occurrence in accordance with
+         * ISO7816-4
          * <p>
-         * The getIsoBitMask method provides the bit mask to be used to set P2
-         * in the select command (ISO/IEC 7816-4.2)
+         * The getIsoBitMask method provides the bit mask to be used to set P2 in the select command
+         * (ISO/IEC 7816-4.2)
          */
         class KEYPLECORE_API FileOccurrence final {
         public:
-            static FileOccurrence FIRST;
-            static FileOccurrence LAST;
-            static FileOccurrence NEXT;
-            static FileOccurrence PREVIOUS;
+            /**
+             *
+             */
+            static const FileOccurrence FIRST;
+            static const FileOccurrence LAST;
+            static const FileOccurrence NEXT;
+            static const FileOccurrence PREVIOUS;
 
             /**
              *
              */
-            enum class InnerEnum { FIRST, LAST, NEXT, PREVIOUS };
-
-            /**
-             *
-             */
-            const InnerEnum innerEnumValue;
-
-            /**
-             *
-             */
-            FileOccurrence(const std::string& name, InnerEnum innerEnum,
-                           char isoBitMask);
+            FileOccurrence(const uint8_t isoBitMask);
 
             /**
              *
@@ -96,82 +89,38 @@ public:
             /**
              *
              */
-            virtual ~FileOccurrence()
-            {
-            }
+            uint8_t getIsoBitMask() const;
 
             /**
              *
              */
-            virtual char getIsoBitMask();
+            bool operator==(const FileOccurrence& o) const;
 
             /**
              *
              */
-            bool operator==(const FileOccurrence& other) const;
+            bool operator!=(const FileOccurrence& o) const;
 
             /**
              *
              */
-            bool operator!=(const FileOccurrence& other) const;
+            FileOccurrence& operator=(const FileOccurrence& o);
 
             /**
              *
              */
-            static std::vector<FileOccurrence> values();
-
-            /**
-             *
-             */
-            int ordinal();
-
-            /**
-             *
-             */
-            static FileOccurrence valueOf(const std::string& name);
+            friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                           const FileOccurrence& fc);
 
         private:
             /**
              *
              */
-            static std::vector<FileOccurrence> valueList;
-
-            /**
-             *
-             */
-            class StaticConstructor {
-            public:
-                StaticConstructor();
-            };
-
-            /**
-             *
-             */
-            static StaticConstructor staticConstructor;
-
-            /**
-             *
-             */
-            const std::string nameValue;
-
-            /**
-             *
-             */
-            const int ordinalValue;
-
-            /**
-             *
-             */
-            static int nextOrdinal;
-
-            /**
-             *
-             */
-            char isoBitMask;
+            uint8_t mIsoBitMask;
         };
 
         /**
-         * FileOccurrence indicates how to which template is expected in
+         * FileControlInformation indicates how to which template is expected in
          * accordance with ISO7816-4
          * <p>
          * The getIsoBitMask method provides the bit mask to be used to set P2
@@ -179,21 +128,19 @@ public:
          */
         class KEYPLECORE_API FileControlInformation final {
         public:
-            static FileControlInformation FCI;
-            static FileControlInformation FCP;
-            static FileControlInformation FMD;
-            static FileControlInformation NO_RESPONSE;
-
             /**
              *
              */
-            enum class InnerEnum { FCI, FCP, FMD, NO_RESPONSE };
+            static const FileControlInformation FCI;
+            static const FileControlInformation FCP;
+            static const FileControlInformation FMD;
+            static const FileControlInformation NO_RESPONSE;
+
         public:
             /**
              *
              */
-            FileControlInformation(const std::string& name, InnerEnum innerEnum,
-                                   char isoBitMask);
+            FileControlInformation(const uint8_t isoBitMask);
 
             /**
              *
@@ -203,264 +150,213 @@ public:
             /**
              *
              */
-            virtual ~FileControlInformation()
-            {
-            }
+            uint8_t getIsoBitMask() const;
 
             /**
              *
              */
-            virtual char getIsoBitMask();
+            bool operator==(const FileControlInformation& o) const;
 
             /**
              *
              */
-            bool operator==(const FileControlInformation& other) const;
+            bool operator!=(const FileControlInformation& o) const;
 
             /**
              *
              */
-            bool operator!=(const FileControlInformation& other) const;
+            FileControlInformation& operator=(const FileControlInformation& o);
 
             /**
              *
              */
-            static std::vector<FileControlInformation> values();
-
-            /**
-             *
-             */
-            int ordinal();
-
-            /**
-             *
-             */
-            static FileControlInformation valueOf(const std::string& name);
+            friend KEYPLECORE_API std::ostream& operator<<(
+                std::ostream& os, const FileControlInformation& fci);
 
         private:
-            /**
-             *
-             */
-            static std::vector<FileControlInformation> valueList;
 
             /**
              *
              */
-            class StaticConstructor {
-            public:
-                StaticConstructor();
-            };
-
-            /**
-             *
-             */
-            static StaticConstructor staticConstructor;
-
-            /**
-             *
-             */
-            const InnerEnum innerEnumValue;
-
-            /**
-             *
-             */
-            const std::string nameValue;
-
-            /**
-             *
-             */
-            const int ordinalValue;
-
-            /**
-             *
-             */
-            static int nextOrdinal;
-
-            /**
-             *
-             */
-            char isoBitMask;
+            uint8_t mIsoBitMask;
         };
 
         /**
+         * Builder of keyple::core::seproxy::SeSelector::AidSelector
          *
+         * @since 0.9
          */
-        class KEYPLECORE_API IsoAid
-        : public std::enable_shared_from_this<IsoAid> {
+        class KEYPLECORE_API AidSelectorBuilder {
         public:
             /**
-             *
+             * Friend declaration to allow access to private members to
+             * AisSelector
              */
-            static constexpr int AID_MIN_LENGTH = 5;
-            static constexpr int AID_MAX_LENGTH = 16;
+            friend AidSelector;
 
             /**
-             * Build an IsoAid and check length from a byte array
+             * Sets the AID
              *
-             * @param aid byte array containing the AID value
-             * @throws IllegalArgumentException if the byte length array is not
-             *         within the allowed range.
+             * @param aid the AID as an array of bytes
+             * @return the builder instance
              */
-            IsoAid(const std::vector<uint8_t>& aid);
+            AidSelectorBuilder& aidToSelect(const std::vector<uint8_t>& aid);
 
             /**
-             * Build an IsoAid and check length from an hex string
+             * Sets the AID
              *
-             * @param aid hex string containing the AID value
-             * @throws IllegalArgumentException if the byte length array is not
-             *         within the allowed range.
+             * @param aid the AID as an hex string
+             * @return the builder instance
              */
-            IsoAid(const std::string& aid);
+            AidSelectorBuilder& aidToSelect(const std::string& aid);
 
             /**
+             * Sets the file occurence mode (see ISO7816-4)
              *
+             * @param fileOccurrence the {@link FileOccurrence}
+             * @return the builder instance
              */
-            virtual ~IsoAid()
-            {
-            }
+            AidSelectorBuilder& fileOccurrence(
+                const FileOccurrence& fileOccurrence);
 
             /**
+             * Sets the file control mode (see ISO7816-4)
              *
+             * @param fileControlInformation the {@link FileControlInformation}
+             * @return the builder instance
              */
-            virtual const std::vector<uint8_t>& getValue();
+            AidSelectorBuilder& fileControlInformation(
+                const FileControlInformation& fileControlInformation);
 
             /**
-             * Compares two IsoAid objects.
-             * <p>
-             * Tells if the current AID starts with the value contained in
-             * the provided AID
+             * Build a new {@code AidSelector}.
              *
-             * @param aid an other AID
-             * @return true or false
+             * @return a new instance
              */
-            virtual bool startsWith(std::shared_ptr<IsoAid> aid);
+            std::shared_ptr<AidSelector> build();
 
             /**
-             *
+             * /!\ C++ vs. Java: variable is private in JAva
              */
-            friend std::ostream& operator<<(std::ostream& os, const IsoAid& a);
+            std::vector<uint8_t> mAidToSelect;
+
+            /**
+             * /!\ C++ vs. Java: variable is private in JAva
+             */
+            FileOccurrence mFileOccurrence = FileOccurrence::FIRST;
+
+            /**
+             * /!\ C++ vs. Java: variable is private in JAva
+             */
+            FileControlInformation mFileControlInformation =
+                FileControlInformation::FCI;
 
         private:
             /**
-             *
+             * Private constructor
              */
-            std::vector<uint8_t> value;
+            AidSelectorBuilder() {}
         };
 
         /**
-         * AidSelector with additional select application successful status
-         * codes, file occurrence and file control information.
-         * <p>
-         * The fileOccurrence parameter defines the selection options P2 of the
-         * SELECT command message
-         * <p>
-         * The fileControlInformation parameter defines the expected command
-         * output template.
-         * <p>
-         * Refer to ISO7816-4.2 for detailed information about these parameters
          *
-         * @param aidToSelect IsoAid
-         * @param successfulSelectionStatusCodes list of successful status codes
-         *        for the select application response
-         * @param fileOccurrence the occurrence parameter (see ISO7816-4
-         *        definition)
-         * @param fileControlInformation the file control information (see
-         *        ISO7816-4 definition)
          */
-        AidSelector(
-            std::shared_ptr<IsoAid> aidToSelect,
-            std::shared_ptr<std::set<int>> successfulSelectionStatusCodes,
-            FileOccurrence fileOccurrence,
-            FileControlInformation fileControlInformation);
+        friend AidSelectorBuilder;
 
         /**
-         * AidSelector with additional select application successful status
-         * codes
-         * <p>
-         * The fileOccurrence field is set by default to FIRST
-         * <p>
-         * The fileControlInformation field is set by default to FCI
          *
-         * @param aidToSelect IsoAid
-         * @param successfulSelectionStatusCodes list of successful status codes
-         *        for the select application response
          */
-        AidSelector(
-            std::shared_ptr<IsoAid> aidToSelect,
-            std::shared_ptr<std::set<int>> successfulSelectionStatusCodes);
+        static const int AID_MIN_LENGTH = 5;
 
         /**
-         * Copy constructor
+         *
          */
-        AidSelector(const AidSelector& o);
+        static const int AID_MAX_LENGTH = 16;
 
         /**
-         * Destructor
+         *
          */
-        virtual ~AidSelector();
+        friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                       const AidSelector& a);
+
+        /**
+         * Gets a new builder.
+         *
+         * @return a new builder instance
+         */
+        static std::unique_ptr<AidSelectorBuilder> builder();
 
         /**
          * Getter for the AID provided at construction time
          *
          * @return byte array containing the AID
          */
-        virtual std::shared_ptr<IsoAid> getAidToSelect();
+        const std::vector<uint8_t>& getAidToSelect() const;
 
         /**
          * @return the file occurrence parameter
          */
-        virtual FileOccurrence getFileOccurrence();
+        FileOccurrence getFileOccurrence() const;
 
         /**
          * @return the file control information parameter
          */
-        virtual FileControlInformation getFileControlInformation();
+        FileControlInformation getFileControlInformation() const;
 
         /**
          * Gets the list of successful selection status codes
          *
          * @return the list of status codes
          */
-        virtual std::shared_ptr<std::set<int>>
-            getSuccessfulSelectionStatusCodes();
+        std::shared_ptr<std::set<int>> getSuccessfulSelectionStatusCodes()
+            const;
+
+        /**
+         * Add as status code to be accepted to the list of successful selection
+         * status codes
+         *
+         * @param statusCode the status code to be accepted
+         */
+        void addSuccessfulStatusCode(int statusCode);
+
+        /**
+         * Private constructor
+         *
+         * C++ vs. Java: Should be private but would forbid usage of make_shared
+         *               from SeSelector class. Setting it public for now. Could
+         *               use an intermediate derived class otherwise if need be.
+         */
+        AidSelector(AidSelectorBuilder* builder);
 
     private:
         /**
          *
          */
-        FileOccurrence fileOccurrence = FileOccurrence::FIRST;
+        const FileOccurrence mFileOccurrence;
 
         /**
          *
          */
-        FileControlInformation fileControlInformation =
-            FileControlInformation::FCI;
+        const FileControlInformation mFileControlInformation;
 
         /**
-         * - AID’s bytes of the SE application to select. In case the SE
-         * application is currently not selected, a logical channel is
-         * established and the corresponding SE application is selected by the
-         * SE reader, otherwise keep the current channel.
          *
-         * - Could be missing when operating SE which don’t support the Select
-         * Application command (as it is the case for SAM).
          */
-        std::shared_ptr<IsoAid> aidToSelect;
+        const std::vector<uint8_t> mAidToSelect;
 
         /**
          * List of status codes in response to the select application command
          * that should be considered successful although they are different from
          * 9000
          */
-        std::shared_ptr<std::set<int>> successfulSelectionStatusCodes =
-            std::make_shared<std::set<int>>();
+        std::shared_ptr<std::set<int>> mSuccessfulSelectionStatusCodes;
     };
 
     /**
      * Static nested class to hold the data elements used to perform an ATR
      * based filtering
      */
-    class KEYPLECORE_API AtrFilter
+    class KEYPLECORE_API AtrFilter final
     : public std::enable_shared_from_this<AtrFilter> {
     public:
         /**
@@ -503,7 +399,8 @@ public:
         /**
          *
          */
-        friend std::ostream& operator<<(std::ostream& os, const AtrFilter& af);
+        friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                       const AtrFilter& af);
 
     private:
         /**
@@ -514,67 +411,115 @@ public:
     };
 
     /**
-     * Create a SeSelector to perform the SE selection
-     * <p>
-     * if seProtocol is null, all protocols will match and the selection process
-     * will continue
+     * Create a SeSelector to perform the SE selection<br>
      *
-     * <p>
-     * if seProtocol is not null, the current SE protocol will checked and the
-     * selection process will continue only if the protocol matches.
-     *
-     * <p>
-     * if aidSelector is null, no 'select application' command is generated. In
-     * this case the SE must have a default application selected. (e.g. SAM or
-     * Rev1 Calypso cards)
-     * <p>
-     * if aidSelector is not null, a 'select application' command is generated
-     * and performed. Furthermore, the status code is checked against the list
-     * of successful status codes in the {@link AidSelector} to determine if the
-     * SE matched or not the selection data.
-     * <p>
-     * if atrFilter is null, no check of the ATR is performed. All SE will
-     * match.
-     * <p>
-     * if atrFilter is not null, the ATR of the SE is compared with the regular
-     * expression provided in the {@link AtrFilter} in order to determine if the
-     * SE match or not the expected ATR.
-     *
-     * @param seProtocol the SE communication protocol
-     * @param atrFilter the ATR filter
-     * @param aidSelector the AID selection data
-     * @param extraInfo information string (to be printed in logs)
+     * @since 0.9
      */
-    SeSelector(const std::shared_ptr<SeProtocol> seProtocol,
-               std::shared_ptr<AtrFilter> atrFilter,
-               std::shared_ptr<AidSelector> aidSelector,
-               const std::string& extraInfo);
+    class KEYPLECORE_API SeSelectorBuilder {
+    public:
+        /**
+         *
+         */
+        friend SeSelector;
+
+        /**
+         *
+         */
+        virtual ~SeSelectorBuilder() = default;
+
+        /**
+         * Sets the SE protocol
+         *
+         * @param seProtocol the keyple::core::seproxy::protocol::SeProtocol of the targeted SE
+         * @return the builder instance
+         */
+        virtual SeSelectorBuilder& seProtocol(const std::shared_ptr<SeProtocol> seProtocol);
+
+        /**
+         * Sets the SE ATR Filter
+         *
+         * @param atrFilter the keyple::core::seproxy::SeSelector::AtrFilter of the targeted SE
+         * @return the builder instance
+         */
+        virtual SeSelectorBuilder& atrFilter(const std::shared_ptr<AtrFilter> atrFilter);
+
+        /**
+         * Sets the SE AID Selector
+         *
+         * @param aidSelector the keyple::core::seproxy::SeSelector::AidSelector of the targeted SE
+         * @return the builder instance
+         */
+        virtual SeSelectorBuilder& aidSelector(const std::shared_ptr<AidSelector> aidSelector);
+
+        /**
+         * Build a new keyple::core::seproxy::SeSelector.
+         *
+         * @return a new instance
+         */
+        virtual std::shared_ptr<SeSelector> build();
+
+        /**
+         * Private constructor
+         *
+         * C++ vs. Java: Should be private but would forbid usage of make_shared
+         *               from SeSelector class. Setting it public for now. Could
+         *               use an intermediate derived class otherwise if need be.
+         */
+        SeSelectorBuilder() {}
+
+    protected:
+        /**
+         *
+         */
+        std::shared_ptr<AtrFilter> mAtrFilter;
+
+    private:
+        /**
+         *
+         */
+        std::shared_ptr<SeProtocol> mSeProtocol;
+
+        /**
+         *
+         */
+        std::shared_ptr<AidSelector> mAidSelector;
+    };
+
+    /**
+     * Gets a new builder.
+     *
+     * @return a new builder instance
+     */
+    static std::shared_ptr<SeSelectorBuilder> builder();
 
     /**
      *
      */
-    virtual ~SeSelector()
-    {
-    }
+    SeSelector(const SeSelector& o) = default;
+
+    /**
+     *
+     */
+    virtual ~SeSelector() {}
 
     /**
      * Getter
      *
-     * @return the {@link SeProtocol} provided at construction time
+     * @return the keyple::core::seproxy::protocol::SeProtocol provided at construction time
      */
     virtual const std::shared_ptr<SeProtocol> getSeProtocol() const;
 
     /**
      * Getter
      *
-     * @return the {@link AtrFilter} provided at construction time
+     * @return the keyple::core::seproxy::SeSelector::AtrFilter provided at construction time
      */
     virtual std::shared_ptr<AtrFilter> getAtrFilter() const;
 
     /**
      * Getter
      *
-     * @return the {@link AidSelector} provided at construction time
+     * @return the keyple::core::seproxy::SeSelector::AidSelector provided at construction time
      */
     virtual std::shared_ptr<AidSelector> getAidSelector() const;
 
@@ -597,32 +542,34 @@ public:
      friend KEYPLECORE_API std::ostream& operator<<(
         std::ostream& os, const std::shared_ptr<SeSelector>& ss);
 
+    /**
+     * (Private) constructor
+     *
+     * @param builder the SeSelector builder
+     */
+    SeSelector(SeSelectorBuilder* builder);
+
 private:
     /**
      * Logger
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(SeSelector));
 
     /**
      * Keep it as a pointer to allow derived classes overloaded functions
      */
-    const std::shared_ptr<SeProtocol> seProtocol;
+    const std::shared_ptr<SeProtocol> mSeProtocol;
 
     /**
      *
      */
-    const std::shared_ptr<AidSelector> aidSelector;
+    const std::shared_ptr<AidSelector> mAidSelector;
 
     /**
      *
      */
-    const std::shared_ptr<AtrFilter> atrFilter;
-
-    /**
-     *
-     */
-    const std::string extraInfo;
+    const std::shared_ptr<AtrFilter> mAtrFilter;
 };
 
 }

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -20,7 +19,12 @@
 #include <memory>
 
 #include "AbstractOpenSessionCmdBuild.h"
-#include "OpenSession31RespPars.h"
+#include "AbstractOpenSessionRespPars.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { namespace security { class OpenSession31RespPars; } } } }
+    } }
 
 namespace keyple {
 namespace calypso {
@@ -33,7 +37,7 @@ using namespace keyple::calypso::command::po::parser::security;
 using namespace keyple::core::seproxy::message;
 
 class KEYPLECALYPSO_API OpenSession31CmdBuild final
-: public AbstractOpenSessionCmdBuild<OpenSession31RespPars> {
+: public AbstractOpenSessionCmdBuild<AbstractOpenSessionRespPars> {
 public:
     /**
      * Instantiates a new AbstractOpenSessionCmdBuild.
@@ -41,33 +45,50 @@ public:
      * @param keyIndex the key index
      * @param samChallenge the sam challenge returned by the SAM Get Challenge
      *        APDU command
-     * @param sfiToSelect the sfi to select
-     * @param recordNumberToRead the record number to read
-     * @param extraInfo extra information included in the logs (can be null or
-     *        empty)
-     * @throws IllegalArgumentException - if the request is inconsistent
+     * @param sfi the sfi to select
+     * @param recordNumber the record number to read
+     * @throw IllegalArgumentException - if the request is inconsistent
      */
-    OpenSession31CmdBuild(uint8_t keyIndex,
+    OpenSession31CmdBuild(const uint8_t keyIndex,
                           const std::vector<uint8_t>& samChallenge,
-                          uint8_t sfiToSelect, uint8_t recordNumberToRead,
-                          const std::string& extraInfo);
+                          const uint8_t sfi,
+                          const uint8_t recordNumber);
+
+    /**
+     * Return type should be
+     *   std::shared_ptr<OpenSession31RespPars>
+     * ... but moved to
+     *   std::shared_ptr<AbstractOpenSessionRespPars>
+     * ... because of invalid covariant return type error
+     */
+    std::shared_ptr<AbstractOpenSessionRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
+
+    /**
+     *
+     * This command can't be executed in session and therefore doesn't uses the
+     * session buffer.
+     *
+     * @return false
+     */
+    virtual bool isSessionBufferUsed() const override;
 
     /**
      *
      */
-    std::shared_ptr<OpenSession31RespPars>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    virtual uint8_t getSfi() const override;
 
-protected:
     /**
      *
      */
-    std::shared_ptr<OpenSession31CmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<OpenSession31CmdBuild>(
-            AbstractOpenSessionCmdBuild<
-                OpenSession31RespPars>::shared_from_this());
-    }
+    virtual uint8_t getRecordNumber() const override;
+
+private:
+    /**
+     * Construction arguments used for parsing
+     */
+    const uint8_t mSfi;
+    const uint8_t mRecordNumber;
 };
 
 }

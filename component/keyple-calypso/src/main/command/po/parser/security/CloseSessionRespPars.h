@@ -1,28 +1,25 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <vector>
-#include <stdexcept>
 #include <memory>
 
-/* Core */
-#include "AbstractApduResponseParser.h"
-
 /* Calypso */
+#include "AbstractPoResponseParser.h"
+#include "CloseSessionCmdBuild.h"
 #include "KeypleCalypsoExport.h"
 
 namespace keyple {
@@ -32,22 +29,24 @@ namespace po {
 namespace parser {
 namespace security {
 
+using namespace keyple::calypso::command::po::builder::security;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy::message;
 
+using StatusProperties = AbstractApduResponseParser::StatusProperties;
 /**
  * Close Secure Session (008E) response parser. See specs: Calypso / page 104 /
  * 9.5.2 - Close Secure Session
  */
-class KEYPLECALYPSO_API CloseSessionRespPars final
-: public AbstractApduResponseParser {
+class KEYPLECALYPSO_API CloseSessionRespPars final : public AbstractPoResponseParser {
 public:
     /**
      * Instantiates a new CloseSessionRespPars from the response.
      *
      * @param response from CloseSessionCmdBuild
+     * @param builder the reference to the builder that created this parser
      */
-    CloseSessionRespPars(std::shared_ptr<ApduResponse> response);
+    CloseSessionRespPars(std::shared_ptr<ApduResponse> response, CloseSessionCmdBuild* builder);
 
     /**
      *
@@ -63,53 +62,23 @@ protected:
     /**
      *
      */
-    std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-    getStatusTable() const override;
-
-    /**
-     *
-     */
-    std::shared_ptr<CloseSessionRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<CloseSessionRespPars>(
-            AbstractApduResponseParser::shared_from_this());
-    }
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable() const override;
 
 private:
     /**
      * The signatureLo
      */
-    std::vector<uint8_t> signatureLo;
+    std::vector<uint8_t> mSignatureLo;
 
     /**
      * The postponed data
      */
-    std::vector<uint8_t> postponedData;
+    std::vector<uint8_t> mPostponedData;
 
     /**
      *
      */
-    static std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
-
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        /**
-         *
-         */
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static CloseSessionRespPars::StaticConstructor staticConstructor;
+    static const  std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 
     /**
      *

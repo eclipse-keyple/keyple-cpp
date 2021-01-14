@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 20120Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "AbstractOpenSessionRespPars.h"
-#include "exceptionhelper.h"
+#include "OpenSession10CmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -33,31 +33,25 @@ class KEYPLECALYPSO_API OpenSession10RespPars final
 : public AbstractOpenSessionRespPars {
 public:
     /**
+     * Instantiates a new OpenSession10RespPars from the response.
      *
+     * @param response from OpenSession10RespPars
+     * @param builder the reference to the builder that created this parser
      */
-    OpenSession10RespPars(std::shared_ptr<ApduResponse> response);
+    OpenSession10RespPars(std::shared_ptr<ApduResponse> response,
+                          OpenSession10CmdBuild* builder);
 
     /**
      *
      */
-    std::shared_ptr<SecureSession>
-    toSecureSession(const std::vector<uint8_t>& apduResponseData);
+    std::shared_ptr<SecureSession> toSecureSession(
+        const std::vector<uint8_t>& apduResponseData) override;
 
     /**
      *
      */
-    static std::shared_ptr<SecureSession>
-    createSecureSession(const std::vector<uint8_t>& apduResponseData);
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<OpenSession10RespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<OpenSession10RespPars>(
-            AbstractOpenSessionRespPars::shared_from_this());
-    }
+    static std::shared_ptr<SecureSession> createSecureSession(
+        const std::vector<uint8_t>& apduResponseData);
 };
 
 }

@@ -38,13 +38,14 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/message
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local/state
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local/state
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/plugin/local/monitoring
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/seproxy/protocol
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-core/src/main/transaction
 
 	# Helpers
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main/exception
 
 	# pcsc (Linux / macOS)
 	/usr/include/PCSC
@@ -67,18 +68,18 @@ IF(WIN32)
 	SET(CMAKE_FIND_LIBRARY_PREFIXES "")
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
 	SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
-	SET(WINSCARD winscard.lib)
+	SET(PCSC winscard.lib)
 ENDIF(WIN32)
 
 IF(APPLE)
 	SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
 	SET(CMAKE_BUILD_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../../../../..")
-	SET(WINSCARD "-framework PCSC")
+	SET(PCSC "-framework PCSC")
 ENDIF(APPLE)
 
 IF(UNIX)
-	FIND_LIBRARY(WINSCARD pcsclite)
+	FIND_LIBRARY(PCSC pcsclite)
 ENDIF(UNIX)
 
 #FIND_LIBRARY(KEYPLECORE
@@ -86,6 +87,4 @@ ENDIF(UNIX)
 #	PATHS ${CMAKE_BUILD_DIRECTORY}
 #	PATH_SUFFIXES bin)
 
-SET(LINK_LIBS ${WINSCARD} keyplecore)
-
-TARGET_LINK_LIBRARIES(keyplepluginpcsc ${LINK_LIBS})
+TARGET_LINK_LIBRARIES(keyplepluginpcsc ${PCSC} keyplecore)

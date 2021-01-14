@@ -1,14 +1,28 @@
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
+
 #pragma once
 
 #include <string>
 
 /* Common */
 #include "Character.h"
-#include "exceptionhelper.h"
-#include "stringhelper.h"
+#include "NumberFormatException.h"
 
 namespace keyple {
 namespace common {
+
+using namespace keyple::common::exception;
 
 class Integer {
 private:
@@ -32,13 +46,13 @@ private:
 public:
     /*
      * Constructor
-     * 
+     *
      * Constructs a newly allocated Integer object that represents the
      * specified int value.
-     * 
+     *
      * @param value the value to be represeneed by the Integer object
      */
-    Integer(int value)
+    explicit Integer(int value)
     {
         this->value = value;
     }
@@ -50,7 +64,7 @@ public:
     static std::string toString(int i, int radix)
     {
         if (radix == 10)
-            return StringHelper::to_string(i);
+            return std::to_string(i);
         else
             return "radix != 10 not handled yet";
     }
@@ -60,9 +74,9 @@ public:
      * is converted to signed decimal representation and returned as a string,
      * exactly as if the argument and radix 10 were given as arguments to the
      * method.
-     * 
+     *
      * @param i an integer to be converted
-     * 
+     *
      * @return a string representation of the argument in base 10
      */
     static std::string toString(int i)
@@ -75,7 +89,7 @@ public:
      * converted to signed decimal representation and returned as a string,
      * exactly as if the integer value were given as an argument to the
      * toString method.
-     * 
+     *
      * @return a string representation of the value of this object in base 10
      */
     std::string toString()
@@ -99,7 +113,7 @@ public:
      * @throws NumberFormatException if <code>s</code> cannot be parsed as an
      *         <code>int</code>
      */
-    static int parseInt(std::string str, int radix)
+    static int parseInt(const std::string& str, const int radix)
     {
         return parseInt(str, radix, false);
     }
@@ -111,14 +125,14 @@ public:
      * @param radix the radix to use, must be 10 if decode is true
      * @param decode if called from decode
      * @return the parsed int value
-     * @throws NumberFormatException if there is an error
-     * @throws NullPointerException if decode is true and str if null
-     * @see #parseInt(String, int)
-     * @see #decode(String)
-     * @see Byte#parseByte(String, int)
-     * @see Short#parseShort(String, int)
+     * @throw NumberFormatException if there is an error
+     * @throw NullPointerException if decode is true and str if null
+     * @see parseInt()
+     * @see decode()
+     * @see parseByte()
+     * @see parseShort()
      */
-    static int parseInt(std::string str, int radix, bool decode)
+    static int parseInt(const std::string& str, int radix, const bool decode)
     {
         if (!decode && str.empty())
             throw new NumberFormatException();
@@ -165,14 +179,18 @@ public:
         int val = 0;
         while (index < len) {
             if (val < 0 || val > max)
-                throw NumberFormatException(StringHelper::formatSimple(
-                    "number overflow (pos= %d) : %s", index, str));
+                throw NumberFormatException("number overflow (pos= " +
+                                            std::to_string(index) +
+                                            ") : " +
+                                            str);
 
             ch  = Character::digit(str.at(index++), radix);
             val = val * radix + ch;
             if (ch < 0 || (val < 0 && (!isNeg || val != MIN_VALUE)))
-                throw NumberFormatException(StringHelper::formatSimple(
-                    "invalid character at position %d in %s", index, str));
+                throw NumberFormatException("invalid character at position " +
+                                            std::to_string(index) +
+                                            " in " +
+                                            str);
         }
 
         return isNeg ? -val : val;

@@ -13,46 +13,17 @@ IF(WIN32)
 	ADD_COMPILE_OPTIONS(/wd4275 /wd4251 /wd4290)
 ENDIF(WIN32)
 
-INCLUDE_DIRECTORIES(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/stub/se
-
-	# Example generic common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/example/generic/common
-
-	# Common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-common/src/main
-
-	# Core
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/command
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/event
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/exception
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/message
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/plugin/local
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/seproxy/protocol
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/transaction
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-core/src/main/util
-
-	# Calypso
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/transaction
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-calypso/src/main/command/po/parser
-
-	# Plugin - Pcsc
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../component/keyple-plugin/stub/src/main/plugin/pcsc
-)
-
 ADD_EXECUTABLE(usecase_generic1_explicitselectionaid_pcsc
 
 	# Example - Common
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../common/src/main/GenericSeSelectionRequest.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/ReaderUtilities.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/PcscReadersSettings.cpp
+
+	# Example - Common - Generic
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../common/generic/GenericSeSelectionRequest.cpp
 
 	# Example - PC
 	${CMAKE_CURRENT_SOURCE_DIR}/UseCase_Generic1_ExplicitSelectionAid_Pcsc.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/PcscReadersSettings.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/ReaderUtilities.cpp
 )
 
 IF(WIN32)

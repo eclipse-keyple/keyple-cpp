@@ -25,25 +25,13 @@ namespace bertlv {
 
 using namespace keyple::common;
 
-Tag::Tag(int tagNumber, TagClass tagClass, TagType tagType)
-: tagNumber(tagNumber), tagClass(tagClass), tagType(tagType)
+Tag::Tag(
+  int tagNumber, const TagClass tagClass, const TagType tagType, int tagSize)
+: mTagNumber(tagNumber), mTagClass(tagClass), mTagType(tagType),
+  mTagSize(tagSize)
 {
- 
-    if (tagClass > Tag::TagClass::PRIVATE) {
+    if (tagClass > TagClass::PRIVATE)
         throw std::invalid_argument("TLV Tag: unknown tag class.");
-    }
-
-    if (tagNumber < 0x1F) {
-        size = 1;
-    } else if (tagNumber < 0x80) {
-        size = 2;
-    } else if (tagNumber < 0x4000) {
-        size = 3;
-    } else if (tagNumber < 0x200000) {
-        size = 4;
-    } else {
-        size = 5;
-    }
 }
 
 Tag::Tag(const std::vector<uint8_t>& binary, int offset)
@@ -52,64 +40,55 @@ Tag::Tag(const std::vector<uint8_t>& binary, int offset)
         throw std::invalid_argument("offset out of bound");
 
     /* the 2 first bits (b7b6) of the first byte defines the class */
-    tagClass = static_cast<TagClass>((binary[offset] & 0xC0) >> 6);
+    mTagClass = static_cast<TagClass>((binary[offset] & 0xC0) >> 6);
 
     /* the type bit is the third bit (b5) */
     if ((binary[offset] & 0x20) == 0x20) {
-        tagType = TagType::CONSTRUCTED;
+        mTagType = TagType::CONSTRUCTED;
     } else {
-        tagType = TagType::PRIMITIVE;
+        mTagType = TagType::PRIMITIVE;
     }
 
-    /*
-     * The tag number is defined in the following bits (b4-b0) and possibly
-     * following octets.
-     */
-    int index  = offset;
-    int number = 0;
-    if ((binary[index] & 0x1F) == 0x1F) {
-        /* all bits of tag number are set: multi-octet tag */
-        do {
-            index++;
-            number <<= 7;
-            number += binary[index] & 0x7F;
-            /* loop while the "more bit" (b7) is set */
-        } while ((binary[index] & 0x80) == 0x80);
+    /* */
+    int number = binary[offset] & 0x1F;
+    if (number == 0x1F) {
+        /* two-byte tag */
+        number = binary[offset + 1];
+        mTagSize = 2;
     } else {
-        /* single octet tag */
-        number = binary[index] & 0x1F;
+        /* one-byte tag */
+        mTagSize = 1;
     }
 
-    tagNumber = number;
-    size      = index + 1 - offset;
+    mTagNumber = number;
 }
 
 int Tag::getTagNumber() const
 {
-    return tagNumber;
+    return mTagNumber;
 }
 
 Tag::TagClass Tag::getTagClass() const
 {
-    return tagClass;
+    return mTagClass;
 }
 
 Tag::TagType Tag::getTagType() const
 {
-    return tagType;
+    return mTagType;
 }
 
-int Tag::getSize() const
+int Tag::getTagSize() const
 {
-    return size;
+    return mTagSize;
 }
 
 
 bool Tag::operator==(const Tag& o) const
 {
-    return this->tagNumber == o.tagNumber &&
-           this->tagClass == o.tagClass &&
-           this->tagType == o.tagType;
+    return this->mTagNumber == o.mTagNumber &&
+           this->mTagClass == o.mTagClass &&
+           this->mTagType == o.mTagType;
            /* Do not compare size for now - buggy */
            //this->size == o.size;
 }
@@ -166,10 +145,10 @@ std::ostream& operator<<(std::ostream& os, const Tag::TagType& tt)
 std::ostream& operator<<(std::ostream& os, const Tag& t)
 {
     os << "TAG: {"
-       << "SIZE = " << t.size << ", "
-       << t.tagClass << ", "
-       << t.tagType << ", "
-       << "NUMBER = " << t.tagNumber
+       << "SIZE = " << t.mTagSize << ", "
+       << t.mTagClass << ", "
+       << t.mTagType << ", "
+       << "NUMBER = " << t.mTagNumber
        << "}";
 
     return os;

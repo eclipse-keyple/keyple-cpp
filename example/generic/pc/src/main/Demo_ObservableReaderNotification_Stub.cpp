@@ -1,25 +1,24 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
-/* Example - Generic - Common */
+/* Example */
 #include "ObservableReaderNotificationEngine.h"
 
-/* Core - Seproxy */
+/* Core */
 #include "SeProxyService.h"
 #include "ReaderPlugin.h"
 
-/* Plugin - Stub */
+/* Plugin */
 #include "StubPlugin.h"
 #include "StubReader.h"
 #include "StubSecureElement.h"
@@ -27,13 +26,18 @@
 #include "StubSe2.h"
 #include "StubPluginFactory.h"
 
+using namespace keyple::example::common::calypso::stub;
 using namespace keyple::example::generic::common;
-using namespace keyple::example::generic::pc::stub::se;
 using namespace keyple::plugin::stub;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
 
 static const std::shared_ptr<void> waitBeforeEnd = nullptr;
+
+class Demo_ObservableReaderNotification_Stub {};
+
+static const std::shared_ptr<Logger> logger =
+    LoggerFactory::getLogger(typeid(Demo_ObservableReaderNotification_Stub));
 
 int main(int argc, char** argv)
 {
@@ -45,85 +49,81 @@ int main(int argc, char** argv)
     /* Set Stub plugin */
     SeProxyService& seProxyService = SeProxyService::getInstance();
 
-    const std::string stubPluginName = "stub1";
-    std::unique_ptr<StubPluginFactory> stubPluginFactory =
-        std::unique_ptr<StubPluginFactory>(
-            new StubPluginFactory(stubPluginName));
+    const std::string STUB_PLUGIN_NAME = "stub1";
+    const std::string READER1_NAME = "Reader1";
+    const std::string READER2_NAME = "Reader2";
 
     /* Register Stub plugin in the platform */
-    seProxyService.registerPlugin(stubPluginFactory.get());
-    ReaderPlugin* stubPlugin = seProxyService.getPlugin(stubPluginName);
+    auto stubFactory = std::make_shared<StubPluginFactory>(STUB_PLUGIN_NAME);
+    auto factory = std::dynamic_pointer_cast<PluginFactory>(stubFactory);
+    std::shared_ptr<ReaderPlugin> readerPlugin = seProxyService.registerPlugin(factory);
 
-    // Set observers
-    std::cout << "Set plugin observer." << std::endl;
+    /* Set observers */
+    logger->info("Set plugin observer\n");
     demoEngine.setPluginObserver();
 
-    std::cout << "Wait a little to see the \"no reader available message\"."
-              << std::endl;
+    logger->info("Wait a little to see the \"no reader available message\n");
     Thread::sleep(200);
 
-    std::cout << "Plug reader 1." << std::endl;
-    (dynamic_cast<StubPlugin *>(stubPlugin))->plugStubReader("Reader1", true);
+    logger->info("Plug reader 1\n");
+    std::dynamic_pointer_cast<StubPlugin>(readerPlugin)->plugStubReader(READER1_NAME, true);
 
     Thread::sleep(100);
 
-    std::cout << "Plug reader 2." << std::endl;
-    (dynamic_cast<StubPlugin *>(stubPlugin))->plugStubReader("Reader2", true);
+    logger->info("Plug reader 2\n");
+    std::dynamic_pointer_cast<StubPlugin>(readerPlugin)->plugStubReader(READER2_NAME, true);
 
     Thread::sleep(1000);
 
-    std::shared_ptr<StubReader> reader1 =
-        std::dynamic_pointer_cast<StubReader>(stubPlugin->getReader("Reader1"));
-
-    std::shared_ptr<StubReader> reader2 =
-        std::dynamic_pointer_cast<StubReader>(stubPlugin->getReader("Reader2"));
+    auto reader1 = std::dynamic_pointer_cast<StubReader>(readerPlugin->getReader(READER1_NAME));
+    auto reader2 = std::dynamic_pointer_cast<StubReader>(readerPlugin->getReader(READER1_NAME));
 
     /* Create 'virtual' Hoplink and SAM SE */
     std::shared_ptr<StubSecureElement> se1 = std::make_shared<StubSe1>();
     std::shared_ptr<StubSecureElement> se2 = std::make_shared<StubSe2>();
 
-    std::cout << "Insert SE into reader 1." << std::endl;
+    logger->info("Insert SE into reader 1\n");
     reader1->insertSe(se1);
 
     Thread::sleep(100);
 
-    std::cout << "Insert SE into reader 2." << std::endl;
+    logger->info("Insert SE into reader 2\n");
     reader2->insertSe(se2);
 
     Thread::sleep(100);
 
-    std::cout << "Remove SE from reader 1." << std::endl;
+    logger->info("Remove SE from reader 1\n");
     reader1->removeSe();
 
     Thread::sleep(100);
 
-    std::cout << "Remove SE from reader 2." << std::endl;
+    logger->info("Remove SE from reader 2\n");
     reader2->removeSe();
 
     Thread::sleep(100);
 
-    std::cout << "Plug reader 1 again (twice)." << std::endl;
-    (dynamic_cast<StubPlugin *>(stubPlugin))->plugStubReader("Reader1", true);
+    logger->info("Plug reader 1 again (twice)\n");
+    std::dynamic_pointer_cast<StubPlugin>(readerPlugin)->plugStubReader("Reader1", true);
 
-    std::cout << "Unplug reader 1." << std::endl;
-    (dynamic_cast<StubPlugin *>(stubPlugin))->unplugStubReader("Reader1", true);
-
-    Thread::sleep(100);
-
-    std::cout << "Plug reader 1 again." << std::endl;
-    (dynamic_cast<StubPlugin *>(stubPlugin))->plugStubReader("Reader1", true);
+    logger->info("Unplug reader 1\n");
+    std::dynamic_pointer_cast<StubPlugin>(readerPlugin)->unplugStubReader("Reader1", true);
 
     Thread::sleep(100);
 
-    std::cout << "Unplug reader 1." << std::endl;
-    (dynamic_cast<StubPlugin *>(stubPlugin))->unplugStubReader("Reader1", true);
+    logger->info("Plug reader 1 again\n");
+    std::dynamic_pointer_cast<StubPlugin>(readerPlugin)->plugStubReader("Reader1", true);
 
     Thread::sleep(100);
 
-    std::cout << "Unplug reader 2." << std::endl;
-    (dynamic_cast<StubPlugin *>(stubPlugin))->unplugStubReader("Reader2", true);
+    logger->info("Unplug reader 1\n");
+    std::dynamic_pointer_cast<StubPlugin>(readerPlugin)->unplugStubReader("Reader1", true);
 
-    std::cout << "END." << std::endl;
+    Thread::sleep(100);
+
+    logger->info("Unplug reader 2\n");
+    std::dynamic_pointer_cast<StubPlugin>(readerPlugin)->unplugStubReader("Reader2", true);
+
+    logger->info("END\n");
 
     return 0;
 }

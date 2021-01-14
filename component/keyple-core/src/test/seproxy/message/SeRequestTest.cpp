@@ -22,6 +22,7 @@
 
 using namespace testing;
 
+using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
 
 static const std::vector<std::shared_ptr<ApduRequest>> apdus;
@@ -37,31 +38,36 @@ static std::shared_ptr<std::set<int>> getSuccessFulStatusCode()
     return successfulStatusCodes;
 }
 
-static std::shared_ptr<SeSelector> getSeSelector()
+static std::shared_ptr<SeSelector> getSeSelector(
+    std::shared_ptr<std::set<int>> successfulStatusCodes)
 {
-    const std::vector<uint8_t> aid = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
-    const std::shared_ptr<SeSelector> seSelector =
-       std::make_shared<SeSelector>(
-           SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
-           std::make_shared<SeSelector::AidSelector>(
-               std::make_shared<SeSelector::AidSelector::IsoAid>(aid),
-                getSuccessFulStatusCode(),
-                SeSelector::AidSelector::FileOccurrence::NEXT,
-                SeSelector::AidSelector::FileControlInformation::FCI),
-            "Test Selection");
+    /*
+     * We can use a fake AID here because it is not fully interpreted, the
+     * purpose of this unit test is to verify the proper format of the request.
+     */
+    std::shared_ptr<SeSelector::AidSelector> aidSelector =
+        SeSelector::AidSelector::builder()->aidToSelect("AABBCCDDEEFF")
+            .build();
 
-    return seSelector;
+    if (successfulStatusCodes) {
+        for (const auto& code : *successfulStatusCodes.get())
+            aidSelector->addSuccessfulStatusCode(code);
+    }
+
+    return SeSelector::builder()
+               ->seProtocol(SeCommonProtocols::PROTOCOL_ISO14443_4)
+               .aidSelector(aidSelector).build();
 }
 
 TEST(SeRequestTest, SeRequest)
 {
     SeRequest request1(nullptr, apdus);
-    SeRequest request2(getSeSelector(), apdus);
+    SeRequest request2(getSeSelector(nullptr), apdus);
 }
 
 TEST(SeRequestTest, getSelector)
 {
-    std::shared_ptr<SeSelector> selector = getSeSelector();
+    std::shared_ptr<SeSelector> selector = getSeSelector(nullptr);
 
     SeRequest request1(nullptr, apdus);
     SeRequest request2(selector, apdus);
@@ -72,7 +78,7 @@ TEST(SeRequestTest, getSelector)
 
 TEST(SeRequestTest, getApduRequests)
 {
-    std::shared_ptr<SeSelector> selector = getSeSelector();
+    std::shared_ptr<SeSelector> selector = getSeSelector(nullptr);
 
     SeRequest request1(nullptr, apdus);
     SeRequest request2(selector, apdus);
@@ -83,7 +89,7 @@ TEST(SeRequestTest, getApduRequests)
 
 TEST(SeRequestTest, getSeProtocol)
 {
-    std::shared_ptr<SeSelector> selector = getSeSelector();
+    std::shared_ptr<SeSelector> selector = getSeSelector(nullptr);
 
     SeRequest request2(selector, apdus);
 
@@ -93,7 +99,8 @@ TEST(SeRequestTest, getSeProtocol)
 
 TEST(SeRequestTest, getSuccessfulSelectionStatusCodes)
 {
-    std::shared_ptr<SeSelector> selector = getSeSelector();
+    std::shared_ptr<SeSelector> selector =
+        getSeSelector(getSuccessFulStatusCode());
 
     SeRequest request2(selector, apdus);
 

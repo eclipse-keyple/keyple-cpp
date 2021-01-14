@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -17,13 +17,15 @@
 
 #include "SelectionsResult.h"
 
+#include "AbstractApduResponseParser.h"
 #include "AbstractMatchingSe.h"
 #include "AbstractSeSelectionRequest.h"
-#include "MatchingSelection.h"
+#include "IllegalStateException.h"
 #include "SeCommonProtocols.h"
 #include "SelectionStatus.h"
 #include "SeResponse.h"
 
+using namespace keyple::core::command;
 using namespace keyple::core::selection;
 
 using namespace testing;
@@ -31,62 +33,21 @@ using namespace testing;
 class MatchingSeMock : public AbstractMatchingSe {
 public:
     MatchingSeMock(std::shared_ptr<SeResponse> selectionResponse,
-                   const TransmissionMode& transmissionMode,
-                   const std::string& extraInfo)
-    : AbstractMatchingSe(selectionResponse, transmissionMode, extraInfo)
-    {
-    }
+                   const TransmissionMode& transmissionMode)
+    : AbstractMatchingSe(selectionResponse, transmissionMode) {}
 };
 
-class SeSelectionRequestMock : public AbstractSeSelectionRequest {
-public:
-    SeSelectionRequestMock(
-      std::shared_ptr<SeSelector> seSelector)
-    : AbstractSeSelectionRequest(seSelector)
-    {
-    }
-
-    class ApduResponseParser : public AbstractApduResponseParser {
-    public:
-        ApduResponseParser(std::shared_ptr<ApduResponse> response)
-        : AbstractApduResponseParser(response)
-        {
-        }
-    };
-
-    std::shared_ptr<AbstractApduResponseParser> getCommandParser(
-        std::shared_ptr<SeResponse> seResponse, int commandIndex) override
-    {
-        return std::make_shared<ApduResponseParser>(
-                   seResponse->getApduResponses()[commandIndex]);
-    }
-
-protected:
-    const std::shared_ptr<AbstractMatchingSe> parse(
-        std::shared_ptr<SeResponse> seResponse) override
-    {
-        return std::make_shared<MatchingSeMock>(
-                   seResponse,
-                   seSelector->getSeProtocol()->getTransmissionMode(),
-                   seSelector->getExtraInfo());
-    }
-};
-
-static const std::vector<uint8_t> aid =
-    {0x31, 0x54, 0x49, 0x43, 0x2E, 0x49, 0x43, 0x41};
+static const std::string aid = "315449432E494341";
 static std::vector<std::shared_ptr<ApduResponse>> emptyApduResponseVector;
 static const std::vector<uint8_t> emptyUint8tVector;
 
-static std::shared_ptr<SeSelectionRequestMock> selectionRequest =
-    std::make_shared<SeSelectionRequestMock>(
-        std::make_shared<SeSelector>(
-            SeCommonProtocols::PROTOCOL_ISO14443_4, nullptr,
-            std::make_shared<SeSelector::AidSelector>(
-                std::make_shared<SeSelector::AidSelector::IsoAid>(aid),
-                nullptr,
-                SeSelector::AidSelector::FileOccurrence::NEXT,
-                SeSelector::AidSelector::FileControlInformation::FCI),
-            "Initial selection #2"));
+static std::shared_ptr<SeSelector::AidSelector> aidSelector =
+    SeSelector::AidSelector::builder()
+        ->aidToSelect(aid)
+        .fileControlInformation(SeSelector::AidSelector::FileControlInformation
+                                ::FCI)
+        .fileOccurrence(SeSelector::AidSelector::FileOccurrence::NEXT)
+        .build();
 
 static std::shared_ptr<SeResponse> seResponse =
         std::make_shared<SeResponse>(true, true, nullptr,
@@ -112,26 +73,11 @@ static std::shared_ptr<SeResponse> unmatchedSeResponse =
 
 static std::shared_ptr<MatchingSeMock> activeMatchingSe =
     std::make_shared<MatchingSeMock>(matchedSeResponse,
-                                     TransmissionMode::CONTACTLESS,
-                                     "extrainfo");
+                                     TransmissionMode::CONTACTLESS);
 
-/*
- * For a MatchingSe to be "inactive" either the SelectionStatus has not matched
- * or the SelectionResponse does not have its logical channel open. Let's use
- * the first option.
- */
 static std::shared_ptr<MatchingSeMock> inactiveMatchingSe =
     std::make_shared<MatchingSeMock>(unmatchedSeResponse,
-                                     TransmissionMode::CONTACTLESS,
-                                     "extrainfo");
-
-static std::shared_ptr<MatchingSelection> inactiveMatchingSelection =
-    std::make_shared<MatchingSelection>(0, selectionRequest,
-                                        inactiveMatchingSe, seResponse);
-
-static std::shared_ptr<MatchingSelection> activeMatchingSelection =
-    std::make_shared<MatchingSelection>(1, selectionRequest,
-                                        activeMatchingSe, seResponse);
+                                     TransmissionMode::CONTACTLESS);
 
 TEST(SelectionsResultTest, SelectionsResult)
 {
@@ -142,12 +88,13 @@ TEST(SelectionsResultTest, addMatchingSelection_NullPtr)
 {
     SelectionsResult selectionResult;
 
-    selectionResult.addMatchingSelection(nullptr);
+    selectionResult.addMatchingSe(0, nullptr, false);
 
-    ASSERT_EQ(selectionResult.getMatchingSelection(0), nullptr);
-    ASSERT_EQ(selectionResult.getActiveSelection(), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(0), nullptr);
 
-    std::vector<std::shared_ptr<MatchingSelection>> matchingSelections =
+    EXPECT_THROW(selectionResult.getActiveMatchingSe(), IllegalStateException);
+
+    std::map<int, std::shared_ptr<AbstractMatchingSe>> matchingSelections =
         selectionResult.getMatchingSelections();
 
     ASSERT_EQ(static_cast<int>(matchingSelections.size()), 0);
@@ -157,14 +104,12 @@ TEST(SelectionsResultTest, addMatchingSelection_Inactive)
 {
     SelectionsResult selectionResult;
 
-    selectionResult.addMatchingSelection(inactiveMatchingSelection);
+    selectionResult.addMatchingSe(0, inactiveMatchingSe, false);
 
-    ASSERT_EQ(selectionResult.getMatchingSelection(0),
-              inactiveMatchingSelection);
-    ASSERT_EQ(selectionResult.getMatchingSelection(1), nullptr);
-    ASSERT_EQ(selectionResult.getActiveSelection(), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(0), inactiveMatchingSe);
+    ASSERT_EQ(selectionResult.getMatchingSe(1), nullptr);
 
-    std::vector<std::shared_ptr<MatchingSelection>> matchingSelections =
+    std::map<int, std::shared_ptr<AbstractMatchingSe>> matchingSelections =
         selectionResult.getMatchingSelections();
 
     ASSERT_EQ(static_cast<int>(matchingSelections.size()), 1);
@@ -174,13 +119,13 @@ TEST(SelectionsResultTest, addMatchingSelection_Active)
 {
     SelectionsResult selectionResult;
 
-    selectionResult.addMatchingSelection(activeMatchingSelection);
+    selectionResult.addMatchingSe(1, activeMatchingSe, true);
 
-    ASSERT_EQ(selectionResult.getMatchingSelection(0), nullptr);
-    ASSERT_EQ(selectionResult.getMatchingSelection(1), activeMatchingSelection);
-    ASSERT_EQ(selectionResult.getActiveSelection(), activeMatchingSelection);
+    ASSERT_EQ(selectionResult.getMatchingSe(0), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(1), activeMatchingSe);
+    ASSERT_EQ(selectionResult.getActiveMatchingSe(), activeMatchingSe);
 
-    std::vector<std::shared_ptr<MatchingSelection>> matchingSelections =
+    std::map<int, std::shared_ptr<AbstractMatchingSe>> matchingSelections =
         selectionResult.getMatchingSelections();
 
     ASSERT_EQ(static_cast<int>(matchingSelections.size()), 1);
@@ -190,23 +135,23 @@ TEST(SelectionsResultTest, getActiveSelection_Empty)
 {
     SelectionsResult selectionResult;
 
-    ASSERT_EQ(selectionResult.getActiveSelection(), nullptr);
+    EXPECT_THROW(selectionResult.getActiveMatchingSe(), IllegalStateException);
 }
 
 TEST(SelectionsResultTest, getActiveSelection_NotEmpty)
 {
     SelectionsResult selectionResult;
 
-    selectionResult.addMatchingSelection(activeMatchingSelection);
+    selectionResult.addMatchingSe(0, activeMatchingSe, true);
 
-    ASSERT_EQ(selectionResult.getActiveSelection(), activeMatchingSelection);
+    ASSERT_EQ(selectionResult.getActiveMatchingSe(), activeMatchingSe);
 }
 
 TEST(SelectionsResultTest, getMatchingSelections_Empty)
 {
     SelectionsResult selectionResult;
 
-    std::vector<std::shared_ptr<MatchingSelection>> matchingSelections =
+    std::map<int, std::shared_ptr<AbstractMatchingSe>> matchingSelections =
         selectionResult.getMatchingSelections();
 
     ASSERT_EQ(static_cast<int>(matchingSelections.size()), 0);
@@ -216,10 +161,10 @@ TEST(SelectionsResultTest, getMatchingSelections_Two)
 {
     SelectionsResult selectionResult;
 
-    selectionResult.addMatchingSelection(inactiveMatchingSelection);
-    selectionResult.addMatchingSelection(activeMatchingSelection);
+    selectionResult.addMatchingSe(0, inactiveMatchingSe, false);
+    selectionResult.addMatchingSe(1, activeMatchingSe, true);
 
-    std::vector<std::shared_ptr<MatchingSelection>> matchingSelections =
+    std::map<int, std::shared_ptr<AbstractMatchingSe>> matchingSelections =
         selectionResult.getMatchingSelections();
 
     ASSERT_EQ(static_cast<int>(matchingSelections.size()), 2);
@@ -229,32 +174,30 @@ TEST(SelectionsResultTest, getMatchingSelection_NoMatching)
 {
     SelectionsResult selectionResult;
 
-    ASSERT_EQ(selectionResult.getMatchingSelection(0), nullptr);
-    ASSERT_EQ(selectionResult.getMatchingSelection(1), nullptr);
-    ASSERT_EQ(selectionResult.getMatchingSelection(2), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(0), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(1), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(2), nullptr);
 }
 
 TEST(SelectionsResultTest, getMatchingSelection_Matching)
 {
     SelectionsResult selectionResult;
 
-    ASSERT_EQ(selectionResult.getMatchingSelection(0), nullptr);
-    ASSERT_EQ(selectionResult.getMatchingSelection(1), nullptr);
-    ASSERT_EQ(selectionResult.getMatchingSelection(2), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(0), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(1), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(2), nullptr);
 
-    selectionResult.addMatchingSelection(inactiveMatchingSelection);
+    selectionResult.addMatchingSe(0, inactiveMatchingSe, false);
 
-    ASSERT_EQ(selectionResult.getMatchingSelection(0),
-              inactiveMatchingSelection);
-    ASSERT_EQ(selectionResult.getMatchingSelection(1), nullptr);
-    ASSERT_EQ(selectionResult.getMatchingSelection(2), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(0), inactiveMatchingSe);
+    ASSERT_EQ(selectionResult.getMatchingSe(1), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(2), nullptr);
 
-    selectionResult.addMatchingSelection(activeMatchingSelection);
+    selectionResult.addMatchingSe(1, activeMatchingSe, true);
 
-    ASSERT_EQ(selectionResult.getMatchingSelection(0),
-              inactiveMatchingSelection);
-    ASSERT_EQ(selectionResult.getMatchingSelection(1), activeMatchingSelection);
-    ASSERT_EQ(selectionResult.getMatchingSelection(2), nullptr);
+    ASSERT_EQ(selectionResult.getMatchingSe(0), inactiveMatchingSe);
+    ASSERT_EQ(selectionResult.getMatchingSe(1), activeMatchingSe);
+    ASSERT_EQ(selectionResult.getMatchingSe(2), nullptr);
 }
 
 TEST(SelectionsResultTest, hasActivateSelection_Not)
@@ -263,7 +206,7 @@ TEST(SelectionsResultTest, hasActivateSelection_Not)
 
     ASSERT_FALSE(selectionResult.hasActiveSelection());
 
-    selectionResult.addMatchingSelection(inactiveMatchingSelection);
+    selectionResult.addMatchingSe(0, inactiveMatchingSe, false);
 
     ASSERT_FALSE(selectionResult.hasActiveSelection());
 }
@@ -272,7 +215,7 @@ TEST(SelectionsResultTest, hasActivateSelection)
 {
     SelectionsResult selectionResult;
 
-    selectionResult.addMatchingSelection(activeMatchingSelection);
+    selectionResult.addMatchingSe(0, activeMatchingSe, true);
 
     ASSERT_TRUE(selectionResult.hasActiveSelection());
 }

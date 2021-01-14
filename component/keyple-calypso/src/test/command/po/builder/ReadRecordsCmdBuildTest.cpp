@@ -12,99 +12,107 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "ReadRecordsCmdBuildTest.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
+#include "ReadRecordsCmdBuild.h"
+
+/* Calypso */
+#include "PoClass.h"
+
+using namespace testing;
+
+using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po::builder;
 
-namespace keyple {
-namespace calypso {
-namespace command {
-namespace po {
-namespace builder {
+using ReadMode = ReadRecordsCmdBuild::ReadMode;
 
-using PoClass = keyple::calypso::command::PoClass;
-using AbstractApduCommandBuilder =
-    keyple::core::command::AbstractApduCommandBuilder;
-using ApduRequest = keyple::core::seproxy::message::ApduRequest;
+static const uint8_t record_number = 0x01;
+static const uint8_t expectedLength = 0x00;
 
-void ReadRecordsCmdBuildTest::readRecords_rev2_4()
+TEST(ReadRecordsCmdBuildTest, readRecords_rev2_4)
 {
+    const uint8_t cla = 0x94;
+    const uint8_t cmd = 0xB2;
+    const uint8_t sfi = 0x08;
+    const uint8_t p2 = (sfi * 8) + 4; /* One record */
 
-    uint8_t cla               = (0x94);
-    uint8_t cmd               = (0xB2);
-    bool readJustOneRecord = false;
-    uint8_t sfi               = (0x08);
-    uint8_t p2                = ((sfi * 8) + 5);
-    ReadDataStructure readDataStructure;
+    /* Revision 2.4 */
+    const std::vector<uint8_t> request2_4 = {cla, cmd, record_number, p2, 0x00};
+    ReadRecordsCmdBuild readRecordsCmdBuilder(PoClass::LEGACY,
+                                              sfi,
+                                              record_number,
+                                              ReadMode::ONE_RECORD,
+                                              expectedLength);
+
+    std::shared_ptr<ApduRequest> apduRequest =
+        readRecordsCmdBuilder.getApduRequest();
+
+    ASSERT_EQ(apduRequest->getBytes(), request2_4);
+    ASSERT_EQ(readRecordsCmdBuilder.getReadMode(), ReadMode::ONE_RECORD);
+}
+
+TEST(ReadRecordsCmdBuildTest, readRecords_rev2_4_2)
+{
+    const uint8_t cla = 0x94;
+    const uint8_t cmd = 0xB2;
+    const uint8_t sfi = 0x08;
+    const uint8_t p2 = (sfi * 8 + 5); /* All records */
 
     // revision 2.4
-    std::vector<uint8_t> request2_4 = {cla, cmd, record_number, p2, 0x00};
-    apduCommandBuilder           = std::make_shared<ReadRecordsCmdBuild>(
-        PoClass::LEGACY, sfi, readDataStructure, record_number,
-        readJustOneRecord, expectedLength, "TestRev2_4");
-    apduRequest = apduCommandBuilder->getApduRequest();
-    ASSERT_EQ(request2_4, apduRequest->getBytes());
+    const std::vector<uint8_t> request2_4 = {cla, cmd, record_number, p2, 0x00};
+    ReadRecordsCmdBuild readRecordsCmdBuilder(PoClass::LEGACY,
+                                              sfi,
+                                              record_number,
+                                              ReadMode::MULTIPLE_RECORD,
+                                              expectedLength);
+
+    std::shared_ptr<ApduRequest> apduRequest =
+        readRecordsCmdBuilder.getApduRequest();
+
+    ASSERT_EQ(apduRequest->getBytes(), request2_4);
+    ASSERT_EQ(readRecordsCmdBuilder.getReadMode(), ReadMode::MULTIPLE_RECORD);
 }
 
-void ReadRecordsCmdBuildTest::readRecords_rev3_1()
+TEST(ReadRecordsCmdBuildTest, readRecords_rev3_1)
 {
+    const uint8_t cla = 0x00;
+    const uint8_t cmd = 0xB2;
+    const uint8_t sfi = 0x08;
+    const uint8_t p2 =  sfi * 8 + 5; /* All records */
 
-    uint8_t cla               = (0x00);
-    uint8_t cmd               = (0xB2);
-    bool readJustOneRecord = false;
-    uint8_t sfi               = (0x08);
-    uint8_t p2                = ((sfi * 8) + 5);
-    ReadDataStructure readDataStructure;
+    /* Revision 3.1 */
+    const std::vector<uint8_t> request3_1 = {cla, cmd, record_number, p2, 0x00};
+    ReadRecordsCmdBuild readRecordsCmdBuilder(PoClass::ISO,
+                                              sfi,
+                                              record_number,
+                                              ReadMode::MULTIPLE_RECORD,
+                                              expectedLength);
 
-    // revision 3.1
-    std::vector<uint8_t> request3_1 = {cla, cmd, record_number, p2, 0x00};
-    apduCommandBuilder           = std::make_shared<ReadRecordsCmdBuild>(
-        PoClass::ISO, sfi, readDataStructure, record_number, readJustOneRecord,
-        expectedLength, "TestRev3_1");
-    apduRequest = apduCommandBuilder->getApduRequest();
-    ASSERT_EQ(request3_1, apduRequest->getBytes());
+    std::shared_ptr<ApduRequest> apduRequest =
+        readRecordsCmdBuilder.getApduRequest();
+
+    ASSERT_EQ(apduRequest->getBytes(), request3_1);
+    ASSERT_EQ(readRecordsCmdBuilder.getReadMode(), ReadMode::MULTIPLE_RECORD);
 }
 
-void ReadRecordsCmdBuildTest::readRecords_rev3_2()
+TEST(ReadRecordsCmdBuildTest, readRecords_rev3_2)
 {
-    uint8_t cla               = (0x00);
-    uint8_t cmd               = (0xB2);
-    bool readJustOneRecord = false;
-    uint8_t sfi               = (0x08);
-    uint8_t p2                = ((sfi * 8) + 5);
-    ReadDataStructure readDataStructure;
+    const uint8_t cla = 0x00;
+    const uint8_t cmd = 0xB2;
+    const uint8_t sfi = 0x08;
+    const uint8_t p2 = sfi * 8 + 5; /* All records */
 
-    // revision 3.2
-    std::vector<uint8_t> request3_2 = {cla, cmd, record_number, p2, 0x00};
-    apduCommandBuilder           = std::make_shared<ReadRecordsCmdBuild>(
-        PoClass::ISO, sfi, readDataStructure, record_number, readJustOneRecord,
-        expectedLength, "TestRev3_2");
-    apduRequest = apduCommandBuilder->getApduRequest();
-    ASSERT_EQ(request3_2, apduRequest->getBytes());
-}
-}
-}
-}
-}
-}
+    /* Revision 3.2 */
+    const std::vector<uint8_t> request3_2 = {cla, cmd, record_number, p2, 0x00};
+    ReadRecordsCmdBuild readRecordsCmdBuilder(PoClass::ISO,
+                                              sfi,
+                                              record_number,
+                                              ReadMode::MULTIPLE_RECORD,
+                                              expectedLength);
+    std::shared_ptr<ApduRequest> apduRequest =
+        readRecordsCmdBuilder.getApduRequest();
 
-TEST(ReadRecordsCmdBuildTest, testA)
-{
-    std::shared_ptr<ReadRecordsCmdBuildTest> LocalTest =
-        std::make_shared<ReadRecordsCmdBuildTest>();
-    LocalTest->readRecords_rev2_4();
-}
-
-TEST(ReadRecordsCmdBuildTest, testB)
-{
-    std::shared_ptr<ReadRecordsCmdBuildTest> LocalTest =
-        std::make_shared<ReadRecordsCmdBuildTest>();
-    LocalTest->readRecords_rev3_1();
-}
-
-TEST(ReadRecordsCmdBuildTest, testC)
-{
-    std::shared_ptr<ReadRecordsCmdBuildTest> LocalTest =
-        std::make_shared<ReadRecordsCmdBuildTest>();
-    LocalTest->readRecords_rev3_2();
+    ASSERT_EQ(apduRequest->getBytes(), request3_2);
+    ASSERT_EQ(readRecordsCmdBuilder.getReadMode(), ReadMode::MULTIPLE_RECORD);
 }

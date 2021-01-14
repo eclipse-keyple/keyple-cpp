@@ -24,27 +24,9 @@
 #include "Object.h"
 
 /* Core */
+#include "ApduResponse.h"
 #include "KeypleCoreExport.h"
-
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SelectionStatus;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class ApduResponse;
-}
-}
-}
-}
+#include "SelectionStatus.h"
 
 namespace keyple {
 namespace core {
@@ -54,12 +36,11 @@ namespace message {
 using namespace keyple::common;
 
 /**
- * Group of SE responses received in response to a {@link SeRequest}.
+ * Group of SE responses received in response to a keyple::core::seproxy::message::SeRequest.
  *
  * @see SeRequest
  */
-class KEYPLECORE_API SeResponse final
-: public std::enable_shared_from_this<SeResponse> {
+class KEYPLECORE_API SeResponse final {
 public:
     /**
      * the constructor called by a ProxyReader during the processing of the
@@ -70,9 +51,10 @@ public:
      * @param selectionStatus the SE selection status
      * @param apduResponses the apdu responses
      */
-    SeResponse(bool logicalChannelIsOpen, bool channelPreviouslyOpen,
+    SeResponse(const bool logicalChannelIsOpen,
+               const bool channelPreviouslyOpen,
                std::shared_ptr<SelectionStatus> selectionStatus,
-               std::vector<std::shared_ptr<ApduResponse>>& apduResponses);
+               const std::vector<std::shared_ptr<ApduResponse>>& apduResponses);
 
     /**
      * Was channel previously open.
@@ -91,7 +73,7 @@ public:
     /**
      * Gets the selection status and its associated data.
      *
-     * @return a {@link SelectionStatus} object.
+     * @return a keyple::core::seproxy::message::SelectionStatus object.
      */
     const std::shared_ptr<SelectionStatus> getSelectionStatus() const;
 
@@ -101,7 +83,7 @@ public:
      * @return the group of APDUs responses returned by the SE application for
      *         this instance of SEResponse.
      */
-    std::vector<std::shared_ptr<ApduResponse>> getApduResponses() const;
+    std::vector<std::shared_ptr<ApduResponse>>& getApduResponses();
 
     /**
      *
@@ -119,39 +101,39 @@ public:
                                                    const SeResponse& sr);
 
     /**
-	 *
-	 */
+     *
+     */
     friend KEYPLECORE_API std::ostream& operator<<(
-		std::ostream& os, const std::shared_ptr<SeResponse>& sr);
+		    std::ostream& os, const std::shared_ptr<SeResponse>& sr);
 
-	/**
-	 *
-	 */
+    /**
+     *
+     */
     friend KEYPLECORE_API std::ostream& operator<<(
-		std::ostream& os, const std::list<std::shared_ptr<SeResponse>>& sr);
+		    std::ostream& os, const std::vector<std::shared_ptr<SeResponse>>& sr);
 
 private:
     /**
      * is defined as true by the SE reader in case a logical channel was already
      * open with the target SE application.
      */
-    bool channelPreviouslyOpen = false;
+    const bool mChannelPreviouslyOpen;
 
     /**
      * true if the channel is open
      */
-    const bool logicalChannelIsOpen;
+    const bool mLogicalChannelIsOpen;
 
     /**
      *
      */
-    const std::shared_ptr<SelectionStatus> selectionStatus;
+    const std::shared_ptr<SelectionStatus> mSelectionStatus;
 
     /**
      * could contain a group of APDUResponse returned by the selected SE
      * application on the SE reader.
      */
-    std::vector<std::shared_ptr<ApduResponse>> apduResponses;
+    std::vector<std::shared_ptr<ApduResponse>> mApduResponses;
 };
 
 }

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -19,8 +18,14 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
+#include "KeypleCalypsoExport.h"
 #include "SamRevision.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class DigestUpdateMultipleRespPars;
+    } } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -30,39 +35,38 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * This class provides the dedicated constructor to build the SAM Digest Update
  * Multiple APDU command.
- *
  */
-class DigestUpdateMultipleCmdBuild : public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API DigestUpdateMultipleCmdBuild final
+: public AbstractSamCommandBuilder<DigestUpdateMultipleRespPars> {
 public:
     /**
      * Instantiates a new DigestUpdateMultipleCmdBuild.
      *
      * @param revision the revision
+     * @param encryptedSession the encrypted session flag, true if encrypted
      * @param digestData the digest data
-     * @throws IllegalArgumentException - if the request is inconsistent
      */
-    DigestUpdateMultipleCmdBuild(SamRevision revision,
-                                 std::vector<uint8_t>& digestData);
+    DigestUpdateMultipleCmdBuild(const SamRevision revision,
+                                 const bool encryptedSession,
+                                 const std::vector<uint8_t>& digestData);
 
-protected:
     /**
      *
      */
-    std::shared_ptr<DigestUpdateMultipleCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<DigestUpdateMultipleCmdBuild>(
-            AbstractSamCommandBuilder::shared_from_this());
-    }
+    std::shared_ptr<DigestUpdateMultipleRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_UPDATE_MULTIPLE;
+    const CalypsoSamCommand& mCommand =
+        CalypsoSamCommand::DIGEST_UPDATE_MULTIPLE;
 };
 
 }

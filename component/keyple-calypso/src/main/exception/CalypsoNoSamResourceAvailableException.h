@@ -17,39 +17,27 @@
 #include <string>
 #include <memory>
 
-#include "KeypleBaseException.h"
+#include "KeypleException.h"
 
 namespace keyple {
-namespace core {
-namespace seproxy {
+namespace calypso {
 namespace exception {
+
+using namespace keyple::core::seproxy::exception;
 
 /**
  * The exception {@code CalypsoNoSamResourceAvailableException} indicates that
  * there are no SAM resources available.
  */
-class CalypsoNoSamResourceAvailableException : public KeypleBaseException {
+class CalypsoNoSamResourceAvailableException : public KeypleException {
 public:
     /**
      * @param message the message to identify the exception context
      */
     CalypsoNoSamResourceAvailableException(const std::string& message)
-    : KeypleBaseException(message)
-    {
-    }
-
-    /**
-     * @param message the message to identify the exception context
-     * @param t the cause
-     */
-    CalypsoNoSamResourceAvailableException(const std::string& message,
-                                          const std::exception& cause)
-    : KeypleBaseException(message, cause)
-    {
-    }
+    : KeypleException(message) {}
 };
 
-}
 }
 }
 }

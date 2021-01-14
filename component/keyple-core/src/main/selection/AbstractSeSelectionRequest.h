@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -21,140 +20,151 @@
 
 /* Common */
 #include "KeypleCoreExport.h"
-#include "exceptionhelper.h"
+#include "IllegalArgumentException.h"
 
 /* Core */
-#include "AbstractApduResponseParser.h"
+#include "AbstractApduCommandBuilder.h"
+#include "AbstractMatchingSe.h"
+#include "KeypleException.h"
+#include "SeRequest.h"
 #include "SeSelector.h"
 
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class ApduRequest;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SeRequest;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace seproxy {
-namespace message {
-class SeResponse;
-}
-}
-}
-}
-namespace keyple {
-namespace core {
-namespace selection {
-class AbstractMatchingSe;
-}
-}
-}
+/* Calypso */
+#include "AbstractPoCommandBuilder.h"
+#include "AbstractPoResponseParser.h"
+#include "AbstractSamCommandBuilder.h"
+#include "AbstractSamResponseParser.h"
 
 namespace keyple {
 namespace core {
 namespace selection {
 
+using namespace keyple::common::exception;
 using namespace keyple::core::command;
 using namespace keyple::core::seproxy;
-//using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::message;
+
+using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::sam;
 
 /**
- * The AbstractSeSelectionRequest class combines a SeSelector with additional
- * helper methods useful to the selection process done in {@link SeSelection}.
+ * The AbstractSeSelectionRequest class combines a SeSelector with additional helper methods useful
+ * to the selection process done in {@link SeSelection}.
  * <p>
- * This class may also be extended to add particular features specific to a SE
- * family.
+ * This class may also be extended to add particular features specific to a SE family.
  */
-class KEYPLECORE_API AbstractSeSelectionRequest
-: public std::enable_shared_from_this<AbstractSeSelectionRequest> {
+template<class T>
+class KEYPLECORE_API AbstractSeSelectionRequest {
 public:
     /**
      *
      */
-    const std::shared_ptr<SeSelector> seSelector;
+    const std::shared_ptr<SeSelector> mSeSelector;
 
     /**
      *
      */
-    AbstractSeSelectionRequest(std::shared_ptr<SeSelector> seSelector);
+    explicit AbstractSeSelectionRequest<T>(std::shared_ptr<SeSelector> seSelector)
+    : mSeSelector(seSelector) {}
 
     /**
      *
      */
-    virtual ~AbstractSeSelectionRequest();
+    virtual ~AbstractSeSelectionRequest<T>() = default;
 
     /**
-     * Returns a selection SeRequest built from the information provided in the
-     * constructor and possibly completed with the seSelectionApduRequestList
+     * Returns a selection SeRequest built from the information provided in the constructor and
+     * possibly completed with the commandBuilders list
      *
      * @return the selection SeRequest
      */
-    std::shared_ptr<SeRequest> getSelectionRequest();
+    virtual std::shared_ptr<SeRequest> getSelectionRequest()
+    {
+        std::vector<std::shared_ptr<ApduRequest>> seSelectionrApduRequests;
+
+        for (const auto& commandBuilder : mCommandBuilders) {
+
+            /* C++ specific. Java uses a template with "extends" keyword */
+            auto builder = std::static_pointer_cast<AbstractApduCommandBuilder>(commandBuilder);
+            if (!builder)
+                throw IllegalArgumentException("template class does not extend" \
+                                               "AbstractApduCommandBuilder");
+
+            seSelectionrApduRequests.push_back(commandBuilder->getApduRequest());
+        }
+
+        return std::make_shared<SeRequest>(mSeSelector, seSelectionrApduRequests);
+    }
 
     /**
      *
      */
-    virtual std::shared_ptr<SeSelector> getSeSelector();
+    virtual std::shared_ptr<SeSelector> getSeSelector()
+    {
+        return mSeSelector;
+    }
 
     /**
-     * Return the parser corresponding to the command whose index is provided.
      *
-     * @param seResponse the received SeResponse containing the commands raw
-     *        responses
-     * @param commandIndex the command index
-     * @return a parser of the type matching the command
      */
-    virtual std::shared_ptr<AbstractApduResponseParser>
-    getCommandParser(std::shared_ptr<SeResponse> seResponse, int commandIndex);
+    friend std::ostream& operator<<(std::ostream& os, const AbstractSeSelectionRequest<T>& asr)
+    {
+        os << "ABSTRACTSELECTIONREQUEST: {"
+        << asr.mSeSelector
+        << "}";
+
+        return os;
+    }
 
     /**
      * Virtual parse method
      *
      * @param seResponse the SE response received
-     * @return a {@link AbstractMatchingSe}
-     */
-    virtual const std::shared_ptr<AbstractMatchingSe> parse(
-        std::shared_ptr<SeResponse> seResponse) = 0;
-
-    /**
+     * @return a keyple::core::selection::AbstractMatchingSe
+     * @throw KeypleException if an error occurs while parsing the SE response
      *
+     * Note: protected in Java, triggers error when used in SeSelection.cpp
      */
-    friend std::ostream& operator<<(std::ostream& os,
-                                    const AbstractSeSelectionRequest& asr);
+    virtual const std::shared_ptr<AbstractMatchingSe> parse(std::shared_ptr<SeResponse> seResponse)
+        = 0;
 
-protected:
     /**
-     * Add an additional {@link ApduRequest} to be executed after the selection
-     * process if it succeeds.
+     * Add an additional keyple::core::seproxy::SeReader for the command to be executed after the
+     * selection process if it succeeds.
      * <p>
-     * If more than one {@link ApduRequest} is added, all will be executed in
-     * the order in which they were added.
+     * If more than one keyple::core::seproxy::SeReader is added, all will be executed in the
+     * order in which they were added.
      *
-     * @param apduRequest an {@link ApduRequest}
+     * @param commandBuilder an keyple::core::seproxy::SeReader
+     *
+     * /!\ C++ vs. Java: this function is protected in Java
      */
-    void addApduRequest(std::shared_ptr<ApduRequest> apduRequest);
+    void addCommandBuilder(std::shared_ptr<T> commandBuilder)
+    {
+        mCommandBuilders.push_back(commandBuilder);
+    }
 
     /**
-     * Optional apdu requests list to be executed following the selection
-     * process
+     * @return the current command builder list
+     *
+     * /!\ C++ vs. Java: this function is protected in Java
      */
+    const std::vector<std::shared_ptr<T>> getCommandBuilders() const
+    {
+        return mCommandBuilders;
+    }
+
 private:
-    std::vector<std::shared_ptr<ApduRequest>> seSelectionApduRequestList =
-        std::vector<std::shared_ptr<ApduRequest>>();
+    /**
+     * Optional command nuilber list of command to be executed following the selection process
+     */
+    std::vector<std::shared_ptr<T>> mCommandBuilders;
 };
+
+/* Explicit template instanciation */
+template class AbstractSeSelectionRequest<AbstractApduCommandBuilder>;
+template class AbstractSeSelectionRequest<AbstractPoCommandBuilder<AbstractPoResponseParser>>;
+template class AbstractSeSelectionRequest<AbstractSamCommandBuilder<AbstractSamResponseParser>>;
 
 }
 }

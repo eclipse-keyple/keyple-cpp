@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -45,8 +44,9 @@ using namespace keyple::common;
 /**
  * The SeSelection class handles the SE selection process.
  * <p>
- * It provides a way to do explicit SE selection or to post process a default SE
- * selection.
+ * It provides a way to do explicit SE selection or to post process a default SE selection. <br>
+ * The channel is kept open by default, but can be closed after each selection cases (see
+ * PrepareReleaseSeChannel).
  */
 class KEYPLECORE_API SeSelection final
 : public std::enable_shared_from_this<SeSelection> {
@@ -55,11 +55,8 @@ public:
      * Constructor.
      *
      * @param multiSeRequestProcessing the multi se processing mode
-     * @param channelControl indicates if the channel has to be closed at the
-     *        end of the processing
      */
-    SeSelection(MultiSeRequestProcessing multiSeRequestProcessing,
-                ChannelControl channelControl);
+    SeSelection(MultiSeRequestProcessing multiSeRequestProcessing);
 
     /**
      * Alternate constructor for standard usages.
@@ -67,39 +64,46 @@ public:
     SeSelection();
 
     /**
-     * Prepare a selection: add the selection request from the provided selector
-     * to the selection request set.
+     * Prepare a selection: add the selection request from the provided selector to the selection
+     * request set.
      * <p>
      *
      * @param seSelectionRequest the selector to prepare
-     * @return the selection index giving the current selection position in the
-     *         selection request.
+     * @return the selection index giving the current selection position in the selection request.
      */
     int prepareSelection(
-        std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest);
+        std::shared_ptr<AbstractSeSelectionRequest<AbstractApduCommandBuilder>> seSelectionRequest);
 
     /**
-     * Parses the response to a selection operation sent to a SE and return a
-     * list of {@link AbstractMatchingSe}
+     * Prepare to close the SE channel.<br>
+     * If this command is called before a "process" selection command then the last transmission to
+     * the PO will be associated with the indication CLOSE_AFTER in order to close the SE
+     * channel.<br>
+     * This makes it possible to chain several selections on the same SE if necessary.
+     */
+    void prepareReleaseSeChannel();
+
+    /**
+     * Parses the response to a selection operation sent to a SE and return a list of
+     * keyple::core::selection::AbstractMatchingSe
      * <p>
      * Selection cases that have not matched the current SE are set to null.
      *
      * @param defaultSelectionsResponse the response from the reader to the
-     *        {@link AbstractDefaultSelectionsRequest}
-     * @return the {@link SelectionsResult} containing the result of all
-     *         prepared selection cases, including {@link AbstractMatchingSe}
-     *         and {@link SeResponse}.
+     *        keyple::core::seproxy::event::AbstractDefaultSelectionsRequest
+     * @return the keyple::core::selection::SelectionsResult containing the result of all prepared
+     *         selection cases, including keyple::core::selection::AbstractMatchingSe and
+     *         keyple::core::seproxy::message::SeResponse.
+     * @throw KeypleException if an error occurs during the selection process
      */
-    std::shared_ptr<SelectionsResult>
-    processDefaultSelection(std::shared_ptr<AbstractDefaultSelectionsResponse>
-                                defaultSelectionsResponse);
+    std::shared_ptr<SelectionsResult> processDefaultSelection(
+        std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse);
 
     /**
-     * Execute the selection process and return a list of {@link
-     * AbstractMatchingSe}.
+     * Execute the selection process and return a list of
+     * keyple::core::selection::AbstractMatchingSe.
      * <p>
-     * Selection requests are transmitted to the SE through the supplied
-     * SeReader.
+     * Selection requests are transmitted to the SE through the supplied SeReader.
      * <p>
      * The process stops in the following cases:
      * <ul>
@@ -110,42 +114,41 @@ public:
      * <p>
      *
      * @param seReader the SeReader on which the selection is made
-     * @return the {@link SelectionsResult} containing the result of all
-     *         prepared selection cases, including {@link AbstractMatchingSe}
-     *         and {@link SeResponse}.
-     * @throws KeypleReaderException if the requests transmission failed
+     * @return the keyple::core::selection::SelectionsResult containing the result of all prepared
+     *         selection cases, including keyple::core::selection::AbstractMatchingSe and
+     *         keyple::core::seproxy::message::SeResponse.
+     * @throw KeypleReaderIOException if the communication with the reader or the SE has failed
+     * @throw KeypleException if an error occurs during the selection process
      */
-    std::shared_ptr<SelectionsResult>
-    processExplicitSelection(std::shared_ptr<SeReader> seReader);
+    std::shared_ptr<SelectionsResult> processExplicitSelection(std::shared_ptr<SeReader> seReader);
 
     /**
-     * The SelectionOperation is the {@link AbstractDefaultSelectionsRequest} to
-     * process in ordered to select a SE among others through the selection
-     * process. This method is useful to build the prepared selection to be
-     * executed by a reader just after a SE insertion.
+     * The SelectionOperation is the keyple::core::seproxy::event::AbstractDefaultSelectionsRequest
+     * to process in ordered to select a SE among others through the selection process. This method
+     * is useful to build the prepared selection to be executed by a reader just after a SE
+     * insertion.
      *
-     * @return the {@link AbstractDefaultSelectionsRequest} previously prepared
-     *         with prepareSelection
+     * @return the keyple::core::seproxy::event::AbstractDefaultSelectionsRequest previously
+     *         prepared with prepareSelection
      */
     std::shared_ptr<AbstractDefaultSelectionsRequest> getSelectionOperation();
 
     /**
      *
      */
-    friend KEYPLECORE_API std::ostream& operator<<(
-        std::ostream& os, const SeSelection& ss);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os, const SeSelection& ss);
 
     /**
      *
      */
-    friend KEYPLECORE_API std::ostream& operator<<(
-        std::ostream& os, const std::unique_ptr<SeSelection>& ss);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const std::unique_ptr<SeSelection>& ss);
 
     /**
      *
      */
-    friend KEYPLECORE_API std::ostream& operator<<(
-        std::ostream& os, const std::shared_ptr<SeSelection>& ss);
+    friend KEYPLECORE_API std::ostream& operator<<(std::ostream& os,
+                                                   const std::shared_ptr<SeSelection>& ss);
 
 private:
     /**
@@ -155,32 +158,26 @@ private:
         LoggerFactory::getLogger(typeid(SeSelection));
 
     /*
-     * list of target classes and selection requests used to build the
-     * AbstractMatchingSe list in return of processSelection methods
+     * list of selection requests used to build the AbstractMatchingSe list in
+     * return of processSelection methods
      */
-    std::vector<std::shared_ptr<AbstractSeSelectionRequest>>
-        seSelectionRequestList =
-            std::vector<std::shared_ptr<AbstractSeSelectionRequest>>();
+    std::vector<std::shared_ptr<AbstractSeSelectionRequest<AbstractApduCommandBuilder>>>
+        mSeSelectionRequests;
 
     /**
      *
      */
-    std::vector<std::shared_ptr<SeRequest>> selectionRequestSet;
+    //int mSelectionIndex = 0; // not used
 
     /**
      *
      */
-    int selectionIndex = 0;
+    const MultiSeRequestProcessing mMultiSeRequestProcessing;
 
     /**
      *
      */
-    MultiSeRequestProcessing multiSeRequestProcessing;
-
-    /**
-     *
-     */
-    ChannelControl channelControl;
+    ChannelControl mChannelControl = ChannelControl::KEEP_OPEN;
 
     /**
      * Process the selection response either from a
@@ -190,17 +187,18 @@ private:
      * The responses from the List of {@link SeResponseSet} is parsed and
      * checked.
      * <p>
-     * A {@link AbstractMatchingSe} list is build and returned. Non matching SE
+     * A keyple::core::selection::AbstractMatchingSe list is build and returned. Non matching SE
      * are signaled by a null element in the list
      *
      * @param defaultSelectionsResponse the selection response
-     * @return the {@link SelectionsResult} containing the result of all
-     *         prepared selection cases, including {@link AbstractMatchingSe}
-     *         and {@link SeResponse}.
+     * @return the keyple::core::selection::SelectionsResult containing the result of all
+     *         prepared selection cases, including keyple::core::selection::AbstractMatchingSe
+     *         and keyple::core::seproxy::message::SeResponse.
+     * @throws KeypleException if the selection process failed
      */
-    std::shared_ptr<SelectionsResult>
-    processSelection(std::shared_ptr<AbstractDefaultSelectionsResponse>
-                         defaultSelectionsResponse);
+    std::shared_ptr<SelectionsResult> processSelection(
+        std::shared_ptr<AbstractDefaultSelectionsResponse>
+            defaultSelectionsResponse);
 };
 
 }

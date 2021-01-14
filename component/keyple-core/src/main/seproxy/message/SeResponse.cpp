@@ -25,41 +25,41 @@ namespace message {
 using namespace keyple::core::util;
 
 SeResponse::SeResponse(
-    bool logicalChannelIsOpen, bool channelPreviouslyOpen,
-    std::shared_ptr<SelectionStatus> selectionStatus,
-    std::vector<std::shared_ptr<ApduResponse>>& apduResponses)
-: logicalChannelIsOpen(logicalChannelIsOpen), selectionStatus(selectionStatus)
-{
-    this->channelPreviouslyOpen = channelPreviouslyOpen;
-    this->apduResponses         = apduResponses;
-}
+  const bool logicalChannelIsOpen,
+  const bool channelPreviouslyOpen,
+  std::shared_ptr<SelectionStatus> selectionStatus,
+  const std::vector<std::shared_ptr<ApduResponse>>& apduResponses)
+: mChannelPreviouslyOpen(channelPreviouslyOpen),
+  mLogicalChannelIsOpen(logicalChannelIsOpen),
+  mSelectionStatus(selectionStatus),
+  mApduResponses(apduResponses) {}
 
 bool SeResponse::wasChannelPreviouslyOpen() const
 {
-    return channelPreviouslyOpen;
+    return mChannelPreviouslyOpen;
 }
 
 bool SeResponse::isLogicalChannelOpen() const
 {
-    return logicalChannelIsOpen;
+    return mLogicalChannelIsOpen;
 }
 
 const std::shared_ptr<SelectionStatus> SeResponse::getSelectionStatus() const
 {
-    return selectionStatus;
+    return mSelectionStatus;
 }
 
-std::vector<std::shared_ptr<ApduResponse>> SeResponse::getApduResponses() const
+std::vector<std::shared_ptr<ApduResponse>>& SeResponse::getApduResponses()
 {
-    return apduResponses;
+    return mApduResponses;
 }
 
 std::ostream& operator<<(std::ostream& os, const SeResponse& sr)
 {
      os << "SERESPONSE: {"
-        << "RESPONSES = " << sr.apduResponses << ", "
-        << "SELECTIONSTATUS = " << sr.selectionStatus << ", "
-        << "CHANNELWASOPEN = " << sr.channelPreviouslyOpen
+        << "RESPONSES = " << sr.mApduResponses << ", "
+        << "SELECTIONSTATUS = " << sr.mSelectionStatus << ", "
+        << "CHANNELWASOPEN = " << sr.mChannelPreviouslyOpen
 	    << "}";
 
     return os;
@@ -77,7 +77,7 @@ std::ostream& operator<<(std::ostream& os,
 }
 
 std::ostream& operator<<(std::ostream& os,
-                         const std::list<std::shared_ptr<SeResponse>>& sr)
+                         const std::vector<std::shared_ptr<SeResponse>>& sr)
 {
 	os << "SERESPONSES: { ";
 	for (const auto& r : sr) {
@@ -95,12 +95,12 @@ std::ostream& operator<<(std::ostream& os,
 
 bool SeResponse::operator==(const SeResponse& o) const
 {
-    return this->channelPreviouslyOpen == o.channelPreviouslyOpen &&
-           this->logicalChannelIsOpen == o.logicalChannelIsOpen &&
-           this->apduResponses == o.apduResponses &&
+    return mChannelPreviouslyOpen == o.mChannelPreviouslyOpen &&
+           mLogicalChannelIsOpen == o.mLogicalChannelIsOpen &&
+           mApduResponses == o.mApduResponses &&
            /* Both pointers are null or equal */
-           ((!this->selectionStatus && !o.selectionStatus) ||
-            *(this->selectionStatus.get()) == *(o.selectionStatus.get()));
+           ((!mSelectionStatus && !o.mSelectionStatus) ||
+            *(mSelectionStatus.get()) == *(o.mSelectionStatus.get()));
 }
 
 bool SeResponse::operator!=(const SeResponse& o) const

@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -25,7 +24,7 @@
 #include "ApduRequest.h"
 
 /* Calypso */
-#include "CommandsTable.h"
+#include "SeCommand.h"
 
 namespace keyple {
 namespace core {
@@ -38,42 +37,33 @@ using namespace keyple::core::seproxy::message;
  * <p>
  * It provides the generic getters to retrieve:
  * <ul>
- * <li>the name of the command,</li>
+ * <li>the SE command reference,</li>
  * <li>the built APDURequest,</li>
  * <li>the corresponding AbstractApduResponseParser class.</li>
  * </ul>
  */
-class KEYPLECORE_API AbstractApduCommandBuilder
-: public std::enable_shared_from_this<AbstractApduCommandBuilder> {
-
-private:
-    /**
-     * The command name (will appear in logs)
-     */
-    std::string name;
-
-protected:
-    /**
-     * The byte array APDU request
-     */
-    std::shared_ptr<ApduRequest> request;
-
+class KEYPLECORE_API AbstractApduCommandBuilder {
 public:
     /**
-    * the generic abstract constructor to build an APDU request with a command
-    * reference and a byte array.
-    *
-    * @param commandReference command reference
-    * @param request request
-    */
-    AbstractApduCommandBuilder(CommandsTable& commandReference,
-                               std::shared_ptr<ApduRequest> request);
+     * the generic abstract constructor to build an APDU request with a command reference and a byte
+     * array.
+     *
+     * @param commandRef command reference
+     * @param request request
+     */
+    AbstractApduCommandBuilder(const std::shared_ptr<SeCommand> commandRef,
+                               const std::shared_ptr<ApduRequest> request);
 
     /**
      *
      */
     AbstractApduCommandBuilder(const std::string& name,
-                               std::shared_ptr<ApduRequest> request);
+                               const std::shared_ptr<ApduRequest> request);
+
+    /**
+     *
+     */
+    virtual ~AbstractApduCommandBuilder() = default;
 
     /**
     * Append a string to the current name
@@ -83,18 +73,42 @@ public:
     virtual void addSubName(const std::string& subName);
 
     /**
-    * Gets the name.
-    *
-    * @return the name of the APDU command from the CalypsoCommands information.
-    */
-    virtual std::string getName() const;
+     * @return the current command identification
+     */
+    virtual const std::shared_ptr<SeCommand> getCommandRef() const;
 
     /**
-    * Gets the request.
-    *
-    * @return the request
-    */
-    virtual std::shared_ptr<ApduRequest> getApduRequest() const;
+     * @return the name of the APDU command from the CalypsoCommands
+     *         information.
+     */
+    virtual const std::string& getName() const;
+
+    /**
+     * @return the request
+     */
+    virtual const std::shared_ptr<ApduRequest> getApduRequest() const;
+
+protected:
+    /**
+     * The reference field is used to find the type of command concerned when
+     * manipulating a list of abstract builder objects. Unfortunately, the
+     * diversity of these objects does not allow the use of simple generic
+     * methods.
+     */
+    const std::shared_ptr<SeCommand> mCommandRef;
+
+    /**
+     * The byte array APDU request
+     */
+    std::shared_ptr<ApduRequest> mRequest;
+
+private:
+    /**
+     * The command name (will appear in logs)
+     *
+     * @deprecated use {@code reference} field instead
+     */
+    std::string mName;
 };
 
 }

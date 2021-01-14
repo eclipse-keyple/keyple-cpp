@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -12,72 +12,109 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-#include "ReadRecordsRespParsTest.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
+#include "ReadRecordsRespPars.h"
+
+#include <map>
+
+/* Core */
+#include "ByteArrayUtil.h"
+#include "KeypleSeCommandException.h"
+
+/* Common */
+#include "stringhelper.h"
+
+using namespace testing;
 
 using namespace keyple::calypso::command::po::parser;
+using namespace keyple::common;
+using namespace keyple::core::util;
+using namespace keyple::core::seproxy::exception;
 
-namespace keyple {
-namespace calypso {
-namespace command {
-namespace po {
-namespace parser {
+using ReadMode = ReadRecordsCmdBuild::ReadMode;
 
-void ReadRecordsRespParsTest::readRecordRespPars_one_record()
+static const std::string SW1SW2_KO = "6A82";
+static const std::string SW1SW2_OK = "9000";
+static const std::string REC1 = "112233445566778899AABBCCDDEEFF00";
+static const std::string REC2 = "00FFEEDDCCBBAA998877665544332211";
+static const std::string APDU_BAD_SW1SW2 = SW1SW2_KO;
+static const std::string APDU_ONE_RECORD = REC1 + SW1SW2_OK;
+static const std::string APDU_TWO_RECORDS =
+    "01" +
+    StringHelper::uint8ToHexString(static_cast<uint8_t>(REC1.length()) / 2) +
+    REC1 +
+    "02" +
+    StringHelper::uint8ToHexString(static_cast<uint8_t>(REC2.length()) / 2) +
+    REC2 +
+    SW1SW2_OK;
+static const int SFI1 = 1;
+static const int FIRST_REC1 = 1;
+static const uint8_t EXPECTED_LENGTH1 = static_cast<uint8_t>(REC1.length());
+static const uint8_t EXPECTED_LENGTH2 = static_cast<uint8_t>((REC1.length() + REC2.length()) / 2);
+
+TEST(ReadRecordsRespParsTest, readRecordRespPars_badStatus)
 {
+    ReadRecordsRespPars readRecordRespPars(
+        std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(APDU_BAD_SW1SW2),
+                                       nullptr),
+        nullptr);
+
+    EXPECT_THROW(readRecordRespPars.checkStatus(), KeypleSeCommandException);
 }
 
-void ReadRecordsRespParsTest::readRecordRespPars_records()
+TEST(ReadRecordsRespParsTest, readRecordRespPars_goodStatus)
 {
+    ReadRecordsRespPars readRecordRespPars(
+        std::make_shared<ApduResponse>(ByteArrayUtil::fromHex(APDU_ONE_RECORD),
+                                       nullptr),
+        nullptr);
+
+    readRecordRespPars.checkStatus();
 }
 
-void ReadRecordsRespParsTest::sampleMultipleRecordsParsing()
+TEST(ReadRecordsRespParsTest, readRecordRespPars_getRecords_singleRecord)
 {
+    ReadRecordsCmdBuild readRecordsCmdBuild(PoClass::ISO,
+                                            SFI1,
+                                            FIRST_REC1,
+                                            ReadMode::ONE_RECORD,
+                                            EXPECTED_LENGTH1);
+
+    std::shared_ptr<ReadRecordsRespPars> readRecordRespPars =
+        readRecordsCmdBuild.createResponseParser(
+            std::make_shared<ApduResponse>(
+                ByteArrayUtil::fromHex(APDU_ONE_RECORD), nullptr));
+
+    readRecordRespPars->checkStatus();
+
+    std::map<int, std::vector<uint8_t>> records =
+        readRecordRespPars->getRecords();
+
+    ASSERT_EQ(static_cast<int>(records.size()), 1);
+    ASSERT_EQ(records[FIRST_REC1], ByteArrayUtil::fromHex(REC1));
 }
 
-void ReadRecordsRespParsTest::readRecordRespPars_one_record_sfi()
+TEST(ReadRecordsRespParsTest, readRecordRespPars_getRecords_twoRecords)
 {
-}
+    ReadRecordsCmdBuild readRecordsCmdBuild(PoClass::ISO,
+                                            SFI1,
+                                            FIRST_REC1,
+                                            ReadMode::MULTIPLE_RECORD,
+                                            EXPECTED_LENGTH2);
 
-void ReadRecordsRespParsTest::readRecordRespPars_records_sfi()
-{
-}
-}
-}
-}
-}
-}
+    std::shared_ptr<ReadRecordsRespPars>  readRecordRespPars =
+        readRecordsCmdBuild.createResponseParser(
+            std::make_shared<ApduResponse>(
+                ByteArrayUtil::fromHex(APDU_TWO_RECORDS), nullptr));
 
-TEST(ReadRecordsRespParsTest, testA)
-{
-    std::shared_ptr<ReadRecordsRespParsTest> LocalTest =
-        std::make_shared<ReadRecordsRespParsTest>();
-    LocalTest->readRecordRespPars_one_record();
-}
+    readRecordRespPars->checkStatus();
 
-TEST(ReadRecordsRespParsTest, testB)
-{
-    std::shared_ptr<ReadRecordsRespParsTest> LocalTest =
-        std::make_shared<ReadRecordsRespParsTest>();
-    LocalTest->readRecordRespPars_records();
-}
+    std::map<int, std::vector<uint8_t>> records =
+        readRecordRespPars->getRecords();
 
-TEST(ReadRecordsRespParsTest, testC)
-{
-    std::shared_ptr<ReadRecordsRespParsTest> LocalTest =
-        std::make_shared<ReadRecordsRespParsTest>();
-    LocalTest->sampleMultipleRecordsParsing();
-}
-
-TEST(ReadRecordsRespParsTest, testD)
-{
-    std::shared_ptr<ReadRecordsRespParsTest> LocalTest =
-        std::make_shared<ReadRecordsRespParsTest>();
-    LocalTest->readRecordRespPars_one_record_sfi();
-}
-
-TEST(ReadRecordsRespParsTest, testE)
-{
-    std::shared_ptr<ReadRecordsRespParsTest> LocalTest =
-        std::make_shared<ReadRecordsRespParsTest>();
-    LocalTest->readRecordRespPars_records_sfi();
+    ASSERT_EQ(static_cast<int>(records.size()), 2);
+    ASSERT_EQ(records[FIRST_REC1], ByteArrayUtil::fromHex(REC1));
+    ASSERT_EQ(records[FIRST_REC1 + 1], ByteArrayUtil::fromHex(REC2));
 }

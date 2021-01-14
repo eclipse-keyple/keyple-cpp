@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -25,43 +25,35 @@ static std::vector<std::shared_ptr<SeRequest>> requests;
 
 TEST(DefaultSelectionsRequestTest, DefaultSelectionsRequest)
 {
-    DefaultSelectionsRequest request1(requests,
+    DefaultSelectionsRequest request(requests,
                                       MultiSeRequestProcessing::PROCESS_ALL,
                                       ChannelControl::CLOSE_AFTER);
-    DefaultSelectionsRequest request2(requests);
 }
 
 TEST(DefaultSelectionsRequestTest, getMultiSeRequestProcessing)
 {
-    DefaultSelectionsRequest request1(requests,
+    DefaultSelectionsRequest request(requests,
                                       MultiSeRequestProcessing::PROCESS_ALL,
                                       ChannelControl::CLOSE_AFTER);
-    DefaultSelectionsRequest request2(requests);
 
-    ASSERT_EQ(request1.getMultiSeRequestProcessing(),
+    ASSERT_EQ(request.getMultiSeRequestProcessing(),
               MultiSeRequestProcessing::PROCESS_ALL);
-    ASSERT_EQ(request2.getMultiSeRequestProcessing(),
-              MultiSeRequestProcessing::FIRST_MATCH);
 }
 
 TEST(DefaultSelectionsRequestTest, getChannelControl)
 {
-    DefaultSelectionsRequest request1(requests,
+    DefaultSelectionsRequest request(requests,
                                       MultiSeRequestProcessing::PROCESS_ALL,
                                       ChannelControl::CLOSE_AFTER);
-    DefaultSelectionsRequest request2(requests);
 
-    ASSERT_EQ(request1.getChannelControl(), ChannelControl::CLOSE_AFTER);
-    ASSERT_EQ(request2.getChannelControl(), ChannelControl::KEEP_OPEN);
+    ASSERT_EQ(request.getChannelControl(), ChannelControl::CLOSE_AFTER);
 }
 
 TEST(DefaultSelectionsRequestTest, getSelectionSeRequestSet)
 {
-    DefaultSelectionsRequest request1(requests,
+    DefaultSelectionsRequest request(requests,
                                       MultiSeRequestProcessing::PROCESS_ALL,
                                       ChannelControl::CLOSE_AFTER);
-    DefaultSelectionsRequest request2(requests);
 
-    ASSERT_EQ(request1.getSelectionSeRequestSet(), requests);
-    ASSERT_EQ(request2.getSelectionSeRequestSet(), requests);
+    ASSERT_EQ(request.getSelectionSeRequests(), requests);
 }

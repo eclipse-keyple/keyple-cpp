@@ -13,7 +13,12 @@
  ******************************************************************************/
 
 #include "ApduRequest.h"
+
+/* Core */
 #include "ByteArrayUtil.h"
+
+/* Common */
+#include "KeypleStd.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -21,6 +26,7 @@ namespace core {
 namespace seproxy {
 namespace message {
 
+using namespace keyple::common;
 using namespace keyple::core::util;
 
 
@@ -84,12 +90,6 @@ bool equals(std::shared_ptr<void> o)
     return false;
 }
 
-int hashCode()
-{
-    /* To be implemented */
-    return 0;
-}
-
 std::ostream& operator<<(std::ostream& os, const ApduRequest& se)
 {
 	os << "APDUREQUEST: {"
@@ -107,7 +107,7 @@ std::ostream& operator<<(std::ostream& os, const ApduRequest& se)
             if (iterator != se.successfulStatusCodes->end()) {
                 os << ", ";
             }
-            iterator++;
+            ++iterator;
         }
 		os << "}";
     }

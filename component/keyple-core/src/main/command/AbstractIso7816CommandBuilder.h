@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -47,30 +47,29 @@ class KEYPLECORE_API AbstractIso7816CommandBuilder
 public:
     /**
      * Abstract constructor to build a command with a command reference and an
-     * {@link ApduRequest}.
+     * keyple::core::seproxy::message::ApduRequest.
      *
      * @param commandReference command reference
      * @param request ApduRequest
      */
-    AbstractIso7816CommandBuilder(CommandsTable& commandReference,
-                                  std::shared_ptr<ApduRequest> request);
+    AbstractIso7816CommandBuilder(
+        const std::shared_ptr<SeCommand> commandReference,
+        const std::shared_ptr<ApduRequest> request);
 
     /**
      * Abstract constructor to build a command with a command name and an
-     * {@link ApduRequest}
+     * keyple::core::seproxy::message::ApduRequest
      *
      * @param name name of command
      * @param request ApduRequest
      */
     AbstractIso7816CommandBuilder(const std::string& name,
-                                  std::shared_ptr<ApduRequest> request);
+                                  const std::shared_ptr<ApduRequest> request);
 
     /**
      *
      */
-    virtual ~AbstractIso7816CommandBuilder()
-    {
-    }
+    virtual ~AbstractIso7816CommandBuilder() = default;
 
 protected:
     /**
@@ -102,9 +101,12 @@ protected:
      *        command)
      * @return an ApduRequest
      */
-    virtual std::shared_ptr<ApduRequest>
-    setApduRequest(uint8_t cla, const CommandsTable& command, uint8_t p1,
-                   uint8_t p2, const std::vector<uint8_t>& dataIn);
+    virtual std::shared_ptr<ApduRequest> setApduRequest(
+        const uint8_t cla,
+        const SeCommand& command,
+        const uint8_t p1,
+        const uint8_t p2,
+        const std::vector<uint8_t>& dataIn);
 
     /**
      * Helper method to create an ApduRequest from separated elements.
@@ -136,9 +138,12 @@ protected:
      *        length [case4])
      * @return an ApduRequest
      */
-    virtual std::shared_ptr<ApduRequest>
-    setApduRequest(uint8_t cla, const CommandsTable& command, uint8_t p1,
-                   uint8_t p2, uint8_t le);
+    virtual std::shared_ptr<ApduRequest> setApduRequest(
+        const uint8_t cla,
+        const SeCommand& command,
+        const uint8_t p1,
+        const uint8_t p2,
+        const uint8_t le);
 
     /**
      * Helper method to create an ApduRequest from separated elements.
@@ -173,18 +178,13 @@ protected:
      *        length [case4])
      * @return an ApduRequest
      */
-    virtual std::shared_ptr<ApduRequest>
-    setApduRequest(uint8_t cla, const CommandsTable& command, uint8_t p1,
-                   uint8_t p2, const std::vector<uint8_t>& dataIn, uint8_t le);
-
-    /**
-     *
-     */
-    std::shared_ptr<AbstractIso7816CommandBuilder> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractIso7816CommandBuilder>(
-            AbstractApduCommandBuilder::shared_from_this());
-    }
+    virtual std::shared_ptr<ApduRequest> setApduRequest(
+        const uint8_t cla,
+        const SeCommand& command,
+        const uint8_t p1,
+        const uint8_t p2,
+        const std::vector<uint8_t>& dataIn,
+        const uint8_t le);
 };
 
 }

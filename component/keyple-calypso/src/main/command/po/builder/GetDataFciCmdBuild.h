@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,12 +18,15 @@
 
 /* Calypso */
 #include "AbstractPoCommandBuilder.h"
-#include "CalypsoPoCommands.h"
-#include "GetDataFciRespPars.h"
+#include "CalypsoPoCommand.h"
 #include "PoClass.h"
 
 /* Calypso */
 #include "KeypleCalypsoExport.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class GetDataFciRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -46,12 +49,6 @@ using namespace keyple::core::seproxy::message;
 */
 class KEYPLECALYPSO_API GetDataFciCmdBuild final
 : public AbstractPoCommandBuilder<GetDataFciRespPars> {
-private:
-    /**
-     *
-     */
-    CalypsoPoCommands& command = CalypsoPoCommands::GET_DATA_FCI;
-
 public:
     /**
      * Instantiates a new GetDataFciCmdBuild.
@@ -63,18 +60,22 @@ public:
     /**
      *
      */
-    std::shared_ptr<GetDataFciRespPars>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<GetDataFciRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
-protected:
+    /**
+     * This command doesn't modify the contents of the PO and therefore doesn't
+     * uses the session buffer.
+     *
+     * @return false
+     */
+    bool isSessionBufferUsed() const override;
+
+private:
     /**
      *
      */
-    std::shared_ptr<GetDataFciCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<GetDataFciCmdBuild>(
-            AbstractPoCommandBuilder<GetDataFciRespPars>::shared_from_this());
-    }
+    const CalypsoPoCommand& command = CalypsoPoCommand::GET_DATA_FCI;
 };
 
 }

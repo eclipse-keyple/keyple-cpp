@@ -1,23 +1,17 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
-
-#include <string>
-#include <unordered_set>
-#include <vector>
-#include <memory>
 
 /* Core */
 #include "SeSelector.h"
@@ -33,128 +27,111 @@ using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::protocol;
 
 /**
- * The {@link PoSelector} class extends {@link SeSelector} to handle specific PO
- * features such as the additional successful status codes list (in response to
+ * The keyple::calypso::transaction::PoSelector class extends keyple::core::seproxy::SeSelector to
+ * handle specific PO features such as the additional successful status codes list (in response to
  * a select application command)
  */
 class KEYPLECALYPSO_API PoSelector final : public SeSelector {
-public: /**
+public:
+    /**
      * Indicates if an invalidated PO should be selected or not.
      * <p>
-     * The acceptance of an invalid PO is determined with the additional
-     * successful status codes specified in the {@link AidSelector}
+     * The acceptance of an invalid PO is determined with the additional successful status codes
+     * specified in the keyple::core::seproxy::SeSelector::AidSelector
      */
-    enum class InvalidatedPo { REJECT, ACCEPT };
+    enum class InvalidatedPo {
+        REJECT,
+        ACCEPT
+    };
 
     /**
-     * PoAidSelector embedding the Calypo PO additional successful codes list
+     * Builder of PoSelector
+     *
+     * @since 0.9
      */
-    class KEYPLECALYPSO_API PoAidSelector : public SeSelector::AidSelector {
+    class KEYPLECALYPSO_API PoSelectorBuilder final : public SeSelector::SeSelectorBuilder {
     public:
         /**
-         * Create a {@link PoAidSelector} to select a Calypso PO with an AID
-         * through a select application command.
          *
-         * @param aidToSelect the application identifier
-         * @param invalidatedPo an enum value to indicate if an invalidated PO
-         *        should be accepted or not
-         * @param fileOccurrence the ISO7816-4 file occurrence parameter (see
-         *        {@link FileOccurrence})
-         * @param fileControlInformation the ISO7816-4 file control information
-         *        parameter (see {@link FileControlInformation})
          */
-        PoAidSelector(std::shared_ptr<IsoAid> aidToSelect,
-                      InvalidatedPo invalidatedPo,
-                      FileOccurrence fileOccurrence,
-                      FileControlInformation fileControlInformation);
+        friend PoSelector;
 
         /**
-         * Simplified constructor with default values for the FileOccurrence and
-         * FileControlInformation (see {@link AidSelector})
+         * Sets the desired behaviour in case of invalidated POs
          *
-         * @param aidToSelect the application identifier
-         * @param invalidatedPo an enum value to indicate if an invalidated PO
-         *        should be accepted or not
+         * @param invalidatedPo the keyple::calypso::transaction::PoSelector::InvalidatedPo wanted
+         *        behaviour
+         * @return the builder instance
          */
-        PoAidSelector(std::shared_ptr<IsoAid> aidToSelect,
-                      InvalidatedPo invalidatedPo);
+        PoSelectorBuilder& invalidatedPo(const InvalidatedPo invalidatedPo);
 
-    protected:
         /**
-         *
+         * {@inheritDoc}
          */
-        std::shared_ptr<PoAidSelector> shared_from_this()
-        {
-            return std::static_pointer_cast<PoAidSelector>(
-                AidSelector::shared_from_this());
-        }
+        PoSelectorBuilder& seProtocol(const std::shared_ptr<SeProtocol> seProtocol) override;
+
+        /**
+         * {@inheritDoc}
+         */
+        PoSelectorBuilder& atrFilter(const std::shared_ptr<AtrFilter> atrFilter)
+            override;
+
+        /**
+         * {@inheritDoc}
+         */
+        PoSelectorBuilder& aidSelector(
+            const std::shared_ptr<AidSelector> aidSelector) override;
+
+        /**
+         * Build a new {@code PoSelector}.
+         *
+         * @return a new instance
+         *
+         * Return type should be
+         *   std::shared_ptr<PoSelector>
+         * ... but invalid covariant return type
+         */
+        std::shared_ptr<SeSelector> build() override;
+
+        /**
+         * Private constructor
+         *
+         * C++ vs. Java: Should be private but would forbid usage of make_shared
+         *               from PoSelectorBuilder class. Setting it public for
+         *               now. Could use an intermediate derived class otherwise
+         *               if need be.
+         */
+        PoSelectorBuilder();
 
     private:
         /**
          *
          */
-        static const std::shared_ptr<std::set<int>>
-            successfulSelectionStatusCodes;
-
-        /**
-         *
-         */
-        class HashSetAnonymousInnerClass
-        : public std::unordered_set<int>,
-          public std::enable_shared_from_this<HashSetAnonymousInnerClass> {
-            //            {
-            //                add(0x6283);
-            //            }
-        };
+        InvalidatedPo mInvalidatedPo;
     };
 
     /**
-     * PoAtrFilter to perform a PO selection based on its ATR
-     * <p>
-     * Could be completed to handle Calypso specific ATR filtering process.
+     * Gets a new builder.
+     *
+     * @return a new builder instance
      */
-    class KEYPLECALYPSO_API PoAtrFilter : public SeSelector::AtrFilter {
-    public:
-        /**
-         * Regular expression based filter
-         *
-         * @param atrRegex String hex regular expression
-         */
-        PoAtrFilter(const std::string& atrRegex);
-
-    protected:
-        /**
-         *
-         */
-        std::shared_ptr<PoAtrFilter> shared_from_this()
-        {
-            return std::static_pointer_cast<PoAtrFilter>(
-                AtrFilter::shared_from_this());
-        }
-    };
+    static std::shared_ptr<PoSelectorBuilder> builder();
 
     /**
-     * Create a PoSelector to perform the PO selection. See {@link SeSelector}
+     * Private constructor
      *
-     * @param seProtocol the SE communication protocol
-     * @param poAtrFilter the ATR filter
-     * @param poAidSelector the AID selection data
-     * @param extraInfo information string (to be printed in logs)
+     * C++ vs. Java: Should be private but would forbid usage of make_shared
+     *               from PoSelectorBuilder class. Setting it public for now.
+     *               Could use an intermediate derived class otherwise if need
+     *               be.
      */
-    PoSelector(std::shared_ptr<SeProtocol> seProtocol,
-               std::shared_ptr<PoAtrFilter> poAtrFilter,
-               std::shared_ptr<PoAidSelector> poAidSelector,
-               const std::string& extraInfo);
+    PoSelector(PoSelectorBuilder* builder);
 
-protected:
+private:
     /**
      *
      */
-    std::shared_ptr<PoSelector> shared_from_this()
-    {
-        return std::static_pointer_cast<PoSelector>(
-            SeSelector::shared_from_this());
-    }
+    static const int SW_PO_INVALIDATED = 0x6283;
 };
 
 }

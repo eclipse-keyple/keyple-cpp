@@ -13,7 +13,6 @@
  ******************************************************************************/
 
 #include "DefaultSelectionsRequest.h"
-#include "ObservableReader.h"
 
 namespace keyple {
 namespace core {
@@ -23,39 +22,12 @@ namespace message {
 using namespace keyple::core::seproxy::event;
 
 DefaultSelectionsRequest::DefaultSelectionsRequest(
-    std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet,
-    MultiSeRequestProcessing multiSeRequestProcessing,
-    ChannelControl channelControl)
-: selectionSeRequestSet(selectionSeRequestSet),
-  multiSeRequestProcessing(multiSeRequestProcessing),
-  channelControl(channelControl)
-{
-}
+  const std::vector<std::shared_ptr<SeRequest>>& selectionSeRequests,
+  const MultiSeRequestProcessing& multiSeRequestProcessing,
+  const ChannelControl& channelControl)
+: AbstractDefaultSelectionsRequest(selectionSeRequests,
+  multiSeRequestProcessing, channelControl) {}
 
-DefaultSelectionsRequest::DefaultSelectionsRequest(
-    std::vector<std::shared_ptr<SeRequest>>& selectionSeRequestSet)
-: DefaultSelectionsRequest(selectionSeRequestSet,
-                           MultiSeRequestProcessing::FIRST_MATCH,
-                           ChannelControl::KEEP_OPEN)
-{
-}
-
-const MultiSeRequestProcessing&
-    DefaultSelectionsRequest::getMultiSeRequestProcessing() const
-{
-    return multiSeRequestProcessing;
-}
-
-const ChannelControl& DefaultSelectionsRequest::getChannelControl() const
-{
-    return channelControl;
-}
-
-const std::vector<std::shared_ptr<SeRequest>>&
-    DefaultSelectionsRequest::getSelectionSeRequestSet() const
-{
-    return selectionSeRequestSet;
-}
 
 }
 }
