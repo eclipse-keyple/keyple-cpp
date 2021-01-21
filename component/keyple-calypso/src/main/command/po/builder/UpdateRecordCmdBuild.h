@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -20,12 +20,13 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
-#include "CalypsoPoCommands.h"
-#include "PoModificationCommand.h"
-#include "PoSendableInSession.h"
+#include "CalypsoPoCommand.h"
 #include "PoClass.h"
 #include "SelectFileRespPars.h"
-#include "UpdateRecordRespPars.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class UpdateRecordRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -40,12 +41,9 @@ using namespace keyple::calypso::command::po::parser;
 /**
  * The Class UpdateRecordCmdBuild. This class provides the dedicated constructor
  * to build the Update Record APDU command.
- *
  */
 class KEYPLECALYPSO_API UpdateRecordCmdBuild final
-: public AbstractPoCommandBuilder<UpdateRecordRespPars>,
-  public PoSendableInSession,
-  public PoModificationCommand {
+: public AbstractPoCommandBuilder<UpdateRecordRespPars> {
 public:
     /**
      * Instantiates a new UpdateRecordCmdBuild.
@@ -54,36 +52,54 @@ public:
      * @param sfi the sfi to select
      * @param recordNumber the record number to update
      * @param newRecordData the new record data to write
-     * @param extraInfo extra information included in the logs (can be null or
-     *        empty)
-     * @throws IllegalArgumentException - if record number is &lt; 1
-     * @throws IllegalArgumentException - if the request is inconsistent
+     * @throw IllegalArgumentException - if record number is &lt; 1
+     * @throw IllegalArgumentException - if the request is inconsistent
      */
-    UpdateRecordCmdBuild(PoClass poClass, uint8_t sfi, uint8_t recordNumber,
-                         const std::vector<uint8_t>& newRecordData,
-                         const std::string& extraInfo);
+    UpdateRecordCmdBuild(const PoClass poClass, const uint8_t sfi,
+                         const uint8_t recordNumber,
+                         const std::vector<uint8_t>& newRecordData);
 
     /**
      *
      */
-    std::shared_ptr<UpdateRecordRespPars>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<UpdateRecordRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
-protected:
     /**
+     * This command can modify the contents of the PO in session and therefore
+     * uses the session buffer.
      *
+     * @return true
      */
-    std::shared_ptr<UpdateRecordCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<UpdateRecordCmdBuild>(
-            AbstractPoCommandBuilder<UpdateRecordRespPars>::shared_from_this());
-    }
+    bool isSessionBufferUsed() const override;
+
+    /**
+     * @return the SFI of the accessed file
+     */
+    uint8_t getSfi() const;
+
+    /**
+     * @return the number of the accessed record
+     */
+    uint8_t getRecordNumber() const;
+
+    /**
+     * @return the data sent to the PO
+     */
+    const std::vector<uint8_t>& getData() const;
 
 private:
     /**
      * The command
      */
-    CalypsoPoCommands& command = CalypsoPoCommands::UPDATE_RECORD;
+    const CalypsoPoCommand& command = CalypsoPoCommand::UPDATE_RECORD;
+
+    /**
+     * Construction arguments
+     */
+    const uint8_t mSfi;
+    const uint8_t mRecordNumber;
+    const std::vector<uint8_t> mData;
 };
 
 }

@@ -1,14 +1,16 @@
-/********************************************************************************
-* Copyright (c) 2019 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                            *
+ * https://www.calypsonet-asso.org/                                           *
+ *                                                                            *
+ * See the NOTICE file(s) distributed with this work for additional           *
+ * information regarding copyright ownership.                                 *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the Eclipse Public License 2.0 which is available at              *
+ * http://www.eclipse.org/legal/epl-2.0                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: EPL-2.0                                           *
+ ******************************************************************************/
 
 #pragma once
 
@@ -32,7 +34,8 @@ using namespace keyple::common;
 
 /**
  * This class represent a TAG as defined by the Basic Encoding Rules for ASN.1
- * <p>
+ * <br>
+ * This implementation limits the tag size to 2.<br>
  * (ITU-T X.690 / ISO 8825)
  */
 class KEYPLECORE_API Tag : public std::enable_shared_from_this<Tag> {
@@ -40,7 +43,10 @@ public:
     /**
      *
      */
-    enum class TagType { PRIMITIVE, CONSTRUCTED };
+    enum class TagType {
+        PRIMITIVE,
+        CONSTRUCTED
+    };
 
     /**
      *
@@ -60,8 +66,10 @@ public:
      * @param tagNumber the tag value.
      * @param tagClass the tag class.
      * @param tagType constructed or primitive
+     * @param tagSize the tag size (1 or 2)
      */
-    Tag(int tagNumber, Tag::TagClass tagClass, TagType tagType);
+    Tag(int tagNumber, const TagClass tagClass, const TagType tagType,
+        int tagSize);
 
     /**
      * Create a tag from a binary stream.
@@ -91,7 +99,7 @@ public:
     /**
      *
      */
-    int getSize() const;
+    int getTagSize() const;
 
     /**
      *
@@ -125,22 +133,22 @@ private:
     /**
      *
      */
-    int tagNumber;
+    int mTagNumber;
 
     /**
      *
      */
-    TagClass tagClass;
+    TagClass mTagClass;
 
     /**
      *
      */
-    TagType tagType;
+    TagType mTagType;
 
     /**
      *
      */
-    int size;
+    int mTagSize;
 };
 
 }

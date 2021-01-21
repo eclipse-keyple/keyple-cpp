@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,7 +18,7 @@
 
 /* Common */
 #include "Arrays.h"
-#include "Logger.h" /* operator<< on std::vector<uint8_t> */
+#include "KeypleStd.h"
 #include "stringhelper.h"
 #include "System.h"
 
@@ -29,11 +29,11 @@ namespace bertlv {
 
 using namespace keyple::core::util;
 
-TLV::TLV(const std::vector<uint8_t>& binary) : binary(binary)
+TLV::TLV(const std::vector<uint8_t>& binary)
+: mLength(0), mBinary(binary), mPosition(0)
 {
     mTag = std::make_shared<Tag>(0, static_cast<Tag::TagClass>(0),
-                                 Tag::TagType::PRIMITIVE);
-    length = 0;
+                                 Tag::TagType::PRIMITIVE, 1);
 }
 
 bool TLV::parse(const std::shared_ptr<Tag> tag, int offset)
@@ -43,33 +43,33 @@ bool TLV::parse(const std::shared_ptr<Tag> tag, int offset)
     }
 
     try {
-        mTag = std::make_shared<Tag>(binary, offset);
+        mTag = std::make_shared<Tag>(mBinary, offset);
     } catch (const std::out_of_range& e) {
         (void)e;
         throw std::invalid_argument("TLV parsing: index is too large.");
     }
 
-    length = 0;
+    mLength = 0;
     if (*tag.get() == *(mTag.get())) {
-        offset += mTag->getSize();
-        position += mTag->getSize();
-        if ((binary[offset] & 0x80) == 0x00) {
+        offset += mTag->getTagSize();
+        mPosition += mTag->getTagSize();
+        if ((mBinary[offset] & 0x80) == 0x00) {
             /* short form: single octet length */
-            length += static_cast<int>(binary[offset]);
-            position++;
+            mLength += static_cast<int>(mBinary[offset]);
+            mPosition++;
         } else {
             /*
              * Long form: first octet (b6-b0)) gives the number of following
              * length octets
              */
-            int following = (binary[offset] & 0x7F);
-            position++;
+            int following = (mBinary[offset] & 0x7F);
+            mPosition++;
             while (following > 0) {
                 offset++;
-                position++;
-                length += (binary[offset] & 0xFF);
+                mPosition++;
+                mLength += (mBinary[offset] & 0xFF);
                 if (following > 1) {
-                    length <<= 8;
+                    mLength <<= 8;
                 }
                 following--;
             }
@@ -84,23 +84,23 @@ const std::vector<uint8_t> TLV::getValue()
 {
     std::vector<uint8_t> value;
 
-    value = Arrays::copyOfRange(binary, position, position + length);
-    position += length;
+    value = Arrays::copyOfRange(mBinary, mPosition, mPosition + mLength);
+    mPosition += mLength;
 
     return value;
 }
 
 int TLV::getPosition() const
 {
-    return position;
+    return mPosition;
 }
 
 std::ostream& operator<<(std::ostream& os, const TLV& tlv)
 {
     os << "TLV: {"
        << tlv.mTag << ", "
-       << "LENGTH = " << tlv.length << ", "
-       << "VALUE = " << tlv.binary
+       << "LENGTH = " << tlv.mLength << ", "
+       << "VALUE = " << tlv.mBinary
        << "}";
 
     return os;

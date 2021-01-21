@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -12,11 +12,17 @@
  * SPDX-License-Identifier: EPL-2.0                                           *
  ******************************************************************************/
 
-/* Calypso */
 #include "CardGenerateKeyRespPars.h"
 
 /* Core */
 #include "ApduResponse.h"
+
+/* Calypso */
+#include "CalypsoSamAccessForbiddenException.h"
+#include "CalypsoSamDataAccessException.h"
+#include "CalypsoSamIllegalParameterException.h"
+#include "CalypsoSamIncorrectInputDataException.h"
+#include "CalypsoSamSecurityDataException.h"
 
 namespace keyple {
 namespace calypso {
@@ -26,56 +32,60 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::exception;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::command;
 
 using StatusProperties = AbstractApduResponseParser::StatusProperties;
 
-std::unordered_map<int, std::shared_ptr<StatusProperties>>
-    CardGenerateKeyRespPars::STATUS_TABLE;
-
-CardGenerateKeyRespPars::StaticConstructor::StaticConstructor()
-{
-    std::unordered_map<int, std::shared_ptr<StatusProperties>> m(
-        AbstractSamResponseParser::STATUS_TABLE);
-
-    m.emplace(0x6700, std::make_shared<StatusProperties>(
-                          false, "Lc value not supported"));
-    m.emplace(0x6985, std::make_shared<StatusProperties>(
-                          false, "Preconditions not satisfied"));
-    m.emplace(0x6A00,
-              std::make_shared<StatusProperties>(false, "Incorrect P1 or P2"));
-    m.emplace(
+const std::map<int, std::shared_ptr<StatusProperties>>
+    CardGenerateKeyRespPars::STATUS_TABLE = {
+    {
+        0x6700,
+        std::make_shared<StatusProperties>(
+            "Incorrect Lc.",
+            typeid(CalypsoSamIllegalParameterException))
+    }, {
+        0x6985,
+        std::make_shared<StatusProperties>(
+            "Preconditions not satisfied",
+            typeid(CalypsoSamAccessForbiddenException))
+    }, {
+        0x6A00,
+        std::make_shared<StatusProperties>(
+            "Incorrect P1 or P2",
+            typeid(CalypsoSamIllegalParameterException))
+    }, {
         0x6A80,
         std::make_shared<StatusProperties>(
-            false, "Incorrect incoming data: unknown or incorrect format"));
-    m.emplace(
+            "Incorrect incoming data: unknown or incorrect format",
+            typeid(CalypsoSamIncorrectInputDataException))
+    }, {
         0x6A83,
         std::make_shared<StatusProperties>(
-            false,
-            "Record not found: ciphering key or key to cipher not found"));
-    m.emplace(0x9000, std::make_shared<StatusProperties>(
-                          true, "Successful execution."));
+            "Record not found: ciphering key or key to cipher not found",
+            typeid(CalypsoSamDataAccessException))
+    }, {
+        0x9000,
+        std::make_shared<StatusProperties>("Success")
+    }
+};
 
-    STATUS_TABLE = m;
-}
+CardGenerateKeyRespPars::CardGenerateKeyRespPars(
+  const std::shared_ptr<ApduResponse> response,
+  CardGenerateKeyCmdBuild* builder)
+: AbstractSamResponseParser(
+   response,
+   reinterpret_cast<AbstractSamCommandBuilder<AbstractSamResponseParser>*>(
+       builder)) {}
 
-CardGenerateKeyRespPars::StaticConstructor
-    CardGenerateKeyRespPars::staticConstructor;
-
-std::unordered_map<int, std::shared_ptr<StatusProperties>>
-CardGenerateKeyRespPars::getStatusTable() const
+const std::map<int, std::shared_ptr<StatusProperties>>&
+    CardGenerateKeyRespPars::getStatusTable() const
 {
     return STATUS_TABLE;
 }
 
-CardGenerateKeyRespPars::CardGenerateKeyRespPars(
-    std::shared_ptr<ApduResponse> response)
-: AbstractSamResponseParser(response)
-{
-}
-
-std::vector<uint8_t> CardGenerateKeyRespPars::getCipheredData() const
+const std::vector<uint8_t> CardGenerateKeyRespPars::getCipheredData() const
 {
     return isSuccessful() ? mResponse->getDataOut() : std::vector<uint8_t>();
 }

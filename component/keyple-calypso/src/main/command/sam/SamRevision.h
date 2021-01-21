@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -35,22 +35,22 @@ public:
     /**
      * The revision of C1 and S1E SAM. CLA 0x00 or 0x80
      */
-    static SamRevision C1;
+    static const SamRevision C1;
 
     /**
      * The revision of S1E SAM. CLA 0x00 or 0x80
      */
-    static SamRevision S1E;
+    static const SamRevision S1E;
 
     /**
      * The revision of S1D SAM SAM. CLA 0x94
      */
-    static SamRevision S1D;
+    static const SamRevision S1D;
 
     /**
      *
      */
-    static SamRevision NO_REV;
+    static const SamRevision NO_REV;
 
     /**
      * Joker value matching any application type.
@@ -59,24 +59,7 @@ public:
      * <p>
      * The actual revision will be retrieved from the ATR historical bytes.
      */
-    static SamRevision AUTO;
-
-    /**
-     *
-     */
-    enum class InnerEnum { NO_REV, C1, S1E, S1D, AUTO };
-
-    /**
-     *
-     */
-    InnerEnum innerEnumValue;
-
-    /**
-     *
-     */
-    SamRevision(const std::string& nameValue, InnerEnum innerEnum,
-                const std::string& name, const std::string& applicationTypeMask,
-                char classByte);
+    static const SamRevision AUTO;
 
     /**
      *
@@ -86,58 +69,37 @@ public:
     /**
      *
      */
-    virtual ~SamRevision()
-    {
-    }
+    const std::string& getName() const;
 
     /**
      *
      */
-    virtual std::string getName();
+    const std::string& getApplicationTypeMask() const;
 
     /**
      *
      */
-    virtual const std::string& getApplicationTypeMask() const;
+    uint8_t getClassByte() const;
 
     /**
      *
      */
-    virtual char getClassByte();
+    bool operator==(const SamRevision& o) const;
 
     /**
      *
      */
-    bool operator==(const SamRevision& other) const;
+    bool operator!=(const SamRevision& o) const;
 
     /**
      *
      */
-    bool operator!=(const SamRevision& other) const;
+    SamRevision& operator=(const SamRevision& o);
 
     /**
      *
      */
-    SamRevision& operator=(SamRevision o);
-    /**
-     *
-     */
-    static std::vector<SamRevision> values();
-
-    /**
-     *
-     */
-    int ordinal();
-
-    /**
-     *
-     */
-    std::string toString();
-
-    /**
-     *
-     */
-    static SamRevision valueOf(const std::string& name);
+    static const SamRevision& valueOf(const std::string& name);
 
 	/**
 	 *
@@ -149,53 +111,25 @@ private:
     /**
      *
      */
-    static std::vector<SamRevision> valueList;
+    std::string mName;
 
     /**
      *
      */
-    class StaticConstructor {
-    public:
-        /**
-         *
-         */
-        StaticConstructor();
-    };
+    std::string mApplicationTypeMask;
 
     /**
      *
      */
-    static StaticConstructor staticConstructor;
+    uint8_t mClassByte;
 
+private:
     /**
      *
      */
-    std::string nameValue;
-
-    /**
-     *
-     */
-    int ordinalValue;
-
-    /**
-     *
-     */
-    static int nextOrdinal;
-
-    /**
-     *
-     */
-    std::string name;
-
-    /**
-     *
-     */
-    std::string applicationTypeMask;
-
-    /**
-     *
-     */
-    char classByte;
+    SamRevision(const std::string& name,
+                const std::string& applicationTypeMask,
+                const uint8_t classByte);
 };
 
 }

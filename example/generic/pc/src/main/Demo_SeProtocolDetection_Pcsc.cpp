@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 /* Core */
 #include "SeProtocol.h"
@@ -28,42 +27,47 @@
 #include "SeProtocolDetectionEngine.h"
 #include "PcscReadersSettings.h"
 
+/* Common */
+#include "IOException.h"
+
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::protocol;
+using namespace keyple::example::common;
 using namespace keyple::example::generic::common;
-using namespace keyple::example::generic::pc;
 using namespace keyple::plugin::pcsc;
+
+class Demo_SeProtocolDetection_Pcsc {};
+
+static const std::shared_ptr<Logger> logger =
+    LoggerFactory::getLogger(typeid(Demo_SeProtocolDetection_Pcsc));
 
 int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
 
-    /* get the SeProxyService instance */
+    /* Get the SeProxyService instance */
     SeProxyService& seProxyService = SeProxyService::getInstance();
 
     /* Assign PcscPlugin to the SeProxyService */
-    seProxyService.registerPlugin(new PcscPluginFactory());
+    auto pcscFactory = std::make_shared<PcscPluginFactory>();
+    auto factory = std::dynamic_pointer_cast<PluginFactory>(pcscFactory);
+    seProxyService.registerPlugin(factory);
 
-    /* attempt to get the SeReader (the right reader should be ready here) */
-    std::shared_ptr<SeReader> poReader = ReaderUtilities::getReaderByName(
-        PcscReadersSettings::PO_READER_NAME_REGEX);
+    /* Attempt to get the SeReader (the right reader should be ready here) */
+    std::shared_ptr<SeReader> poReader =
+        ReaderUtilities::getReaderByName(PcscReadersSettings::PO_READER_NAME_REGEX);
 
-    if (poReader == nullptr) {
-        throw IllegalStateException("Bad PO/SAM setup");
-    }
+    logger->info("PO Reader  : %\n", poReader->getName());
 
-    std::cout << "PO Reader : " << poReader->getName() << std::endl;
-
-    /* create an observer class to handle the SE operations */
-    std::shared_ptr<SeProtocolDetectionEngine> observer =
-        std::make_shared<SeProtocolDetectionEngine>();
-
+    /* Create an observer class to handle the SE operations */
+    auto observer = std::make_shared<SeProtocolDetectionEngine>();
     observer->setReader(poReader);
 
-    /* configure reader */
+    /* Configure reader */
     poReader->setParameter(PcscReader::SETTING_KEY_PROTOCOL,
                            PcscReader::SETTING_PROTOCOL_T1);
 
@@ -79,17 +83,17 @@ int main(int argc, char** argv)
      * Method 1
      * add several settings at once with settings an unordered_set
      */
-    std::set<std::shared_ptr<SeCommonProtocol>> commonProtocols{
+    std::set<std::shared_ptr<SeCommonProtocol>> commonProtocols = {
         SeCommonProtocols::PROTOCOL_MIFARE_CLASSIC,
-        SeCommonProtocols::PROTOCOL_MIFARE_UL};
+        SeCommonProtocols::PROTOCOL_MIFARE_UL
+    };
+
     std::map<std::shared_ptr<SeProtocol>, std::string> map;
     std::map<std::shared_ptr<SeCommonProtocol>, std::string> specificSettings =
         PcscProtocolSetting::getSpecificSettings(commonProtocols);
 
     for (auto pair : specificSettings)
-        map.insert(
-            std::pair<std::shared_ptr<SeProtocol>, std::string>(
-                pair.first, pair.second));
+        map.insert(std::pair<std::shared_ptr<SeProtocol>, std::string>(pair.first, pair.second));
 
     poReader->setSeProtocolSetting(map);
 
@@ -99,19 +103,16 @@ int main(int argc, char** argv)
      */
     poReader->addSeProtocolSetting(
         SeCommonProtocols::PROTOCOL_MEMORY_ST25,
-        PcscProtocolSetting::PCSC_PROTOCOL_SETTING
-            [SeCommonProtocols::PROTOCOL_MEMORY_ST25]);
+        PcscProtocolSetting::PCSC_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_MEMORY_ST25]);
 
     /* Regex extended */
     poReader->addSeProtocolSetting(
         SeCommonProtocols::PROTOCOL_ISO14443_4,
-        PcscProtocolSetting::PCSC_PROTOCOL_SETTING
-                [SeCommonProtocols::PROTOCOL_ISO14443_4] +
-            "|3B8D.*");
+        PcscProtocolSetting::PCSC_PROTOCOL_SETTING[SeCommonProtocols::PROTOCOL_ISO14443_4] +
+        "|3B8D.*");
 
     /* Set terminal as Observer of the first reader */
-    (std::dynamic_pointer_cast<ObservableReader>(poReader))
-        ->addObserver(observer);
+    (std::dynamic_pointer_cast<ObservableReader>(poReader))->addObserver(observer);
 
     /* Set Default selection */
     (std::dynamic_pointer_cast<ObservableReader>(poReader))
@@ -120,7 +121,7 @@ int main(int argc, char** argv)
                                      ObservableReader::PollingMode::REPEATING);
 
     /* Wait for Enter key to exit */
-    std::cout << "Press Enter to exit" << std::endl;
+    logger->info("Press Enter to exit\n");
 
     while (true) {
         char c = 0;
@@ -131,11 +132,10 @@ int main(int argc, char** argv)
                 c = input[0];
 
         } catch (const IOException& e) {
-            (void)e;
-            //e.printStackTrace();
+            logger->error("IO Exception: \n", e.getMessage());
         }
         if (c == 0x0A) {
-            std::cout << "Exiting..." << std::endl;
+            logger->info("Exiting...\n");
             exit(0);
         }
     }

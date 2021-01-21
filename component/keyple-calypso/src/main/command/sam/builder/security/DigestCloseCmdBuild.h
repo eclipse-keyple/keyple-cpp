@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -18,11 +17,13 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
 #include "SamRevision.h"
 
-/* Common */
-#include "stringhelper.h"
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class DigestCloseRespPars; } } } }
+    } }
 
 namespace keyple {
 namespace calypso {
@@ -32,44 +33,36 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Digest Close APDU command.
  */
-class KEYPLECALYPSO_API DigestCloseCmdBuild : public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API DigestCloseCmdBuild final
+: public AbstractSamCommandBuilder<DigestCloseRespPars> {
 public:
     /**
      * Instantiates a new DigestCloseCmdBuild .
      *
      * @param revision of the SAM
      * @param expectedResponseLength the expected response length
-     * @throws IllegalArgumentException - if the expected response length is
+     * @throw IllegalArgumentException - if the expected response length is
      *         wrong.
      */
-    DigestCloseCmdBuild(SamRevision revision, uint8_t expectedResponseLength);
+    DigestCloseCmdBuild(const SamRevision& revision,
+                        const uint8_t expectedResponseLength);
 
     /**
      *
      */
-    virtual ~DigestCloseCmdBuild()
-    {
-    }
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<DigestCloseCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<DigestCloseCmdBuild>(
-            AbstractSamCommandBuilder::shared_from_this());
-    }
+    std::shared_ptr<DigestCloseRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::DIGEST_CLOSE;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::DIGEST_CLOSE;
 };
 
 }

@@ -1,22 +1,20 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "StubPluginFactory.h"
 
 /* Core */
 #include "KeyplePluginInstantiationException.h"
-#include "KeypleRuntimeException.h"
 
 /* Stub Plugin */
 #include "StubPluginImpl.h"
@@ -25,19 +23,22 @@ namespace keyple {
 namespace plugin {
 namespace stub {
 
-StubPluginFactory::StubPluginFactory(const std::string pluginName)
-: pluginName(pluginName)
+StubPluginFactory::StubPluginFactory(const std::string& pluginName) : mPluginName(pluginName)
 {
 }
 
 const std::string& StubPluginFactory::getPluginName() const
 {
-    return pluginName;
+    return mPluginName;
 }
 
-ReaderPlugin& StubPluginFactory::getPluginInstance()
+std::shared_ptr<ReaderPlugin> StubPluginFactory::getPlugin() const
 {
-    return *(new StubPluginImpl(pluginName));
+    try {
+        return std::make_shared<StubPluginImpl>(mPluginName);
+    } catch (const Exception& e) {
+        throw KeyplePluginInstantiationException("Cannot access StubPlugin", e);
+    }
 }
 
 }

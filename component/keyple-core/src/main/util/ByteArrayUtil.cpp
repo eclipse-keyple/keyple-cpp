@@ -1,28 +1,30 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "ByteArrayUtil.h"
-#include "Pattern.h"
+
 #include "Character.h"
+#include "IllegalArgumentException.h"
+#include "Pattern.h"
 #include "stringbuilder.h"
 
 namespace keyple {
 namespace core {
 namespace util {
 
-const std::vector<std::string> ByteArrayUtil::byteToHex =
-    std::vector<std::string>{
+using namespace keyple::common::exception;
+
+const std::vector<std::string> ByteArrayUtil::byteToHex = {
         "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B",
         "0C", "0D", "0E", "0F", "10", "11", "12", "13", "14", "15", "16", "17",
         "18", "19", "1A", "1B", "1C", "1D", "1E", "1F", "20", "21", "22", "23",
@@ -46,7 +48,7 @@ const std::vector<std::string> ByteArrayUtil::byteToHex =
         "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB",
         "FC", "FD", "FE", "FF"};
 
-Pattern* ByteArrayUtil::HEX_IGNORED_CHARS = Pattern::compile(" |h");
+std::unique_ptr<Pattern> ByteArrayUtil::HEX_IGNORED_CHARS = Pattern::compile(" |h");
 
 std::vector<uint8_t> ByteArrayUtil::fromHex(const std::string& hex)
 {
@@ -54,14 +56,12 @@ std::vector<uint8_t> ByteArrayUtil::fromHex(const std::string& hex)
     for (auto& c : _hex)
         c = static_cast<char>(toupper((unsigned char)c));
 
-    if (_hex.length() % 2 != 0) {
-        throw std::invalid_argument("Odd numbered hex array");
-    }
+    if (_hex.length() % 2 != 0)
+        throw IllegalArgumentException("Odd numbered hex array");
 
     std::vector<uint8_t> byteArray(_hex.length() / 2);
     for (int i = 0; i < (int)_hex.length(); i += 2) {
-        byteArray[i / 2] = (Character::digit(_hex[i], 16) << 4) +
-                           Character::digit(_hex[i + 1], 16);
+        byteArray[i / 2] = (Character::digit(_hex[i], 16) << 4) + Character::digit(_hex[i + 1], 16);
     }
 
     return byteArray;
@@ -69,43 +69,87 @@ std::vector<uint8_t> ByteArrayUtil::fromHex(const std::string& hex)
 
 std::string ByteArrayUtil::toHex(const std::vector<char>& byteArray)
 {
-    if (byteArray.empty()) {
+    if (byteArray.empty())
         return "";
-    }
 
-    std::shared_ptr<StringBuilder> hexStringBuilder =
-        std::make_shared<StringBuilder>();
-    for (int i = 0; i < (int)byteArray.size(); i++) {
+    auto hexStringBuilder = std::make_shared<StringBuilder>();
+    for (int i = 0; i < (int)byteArray.size(); i++)
         hexStringBuilder->append(byteToHex[byteArray[i] & 0xFF]);
-    }
 
     return hexStringBuilder->toString();
 }
 
 std::string ByteArrayUtil::toHex(const std::vector<uint8_t>& byteArray)
 {
-    if (byteArray.empty()) {
+    if (byteArray.empty())
         return "";
-    }
 
-    std::shared_ptr<StringBuilder> hexStringBuilder =
-        std::make_shared<StringBuilder>();
-    for (int i = 0; i < (int)byteArray.size(); i++) {
+    auto hexStringBuilder = std::make_shared<StringBuilder>();
+    for (int i = 0; i < (int)byteArray.size(); i++)
         hexStringBuilder->append(byteToHex[byteArray[i] & 0xFF]);
-    }
 
     return hexStringBuilder->toString();
 }
 
-int ByteArrayUtil::threeBytesToInt(std::vector<uint8_t>& bytes, int offset)
+int ByteArrayUtil::twoBytesToInt(const std::vector<uint8_t>& bytes, const int offset)
 {
-    if (bytes.empty() || (int)bytes.size() < offset + 3 || offset < 0) {
-        throw std::invalid_argument("Bad data for converting 3-byte integers.");
-    }
+    if (static_cast<int>(bytes.size()) < offset + 2 || offset < 0)
+        throw IllegalArgumentException("Bad data for converting 2-byte integers.");
 
-    return ((static_cast<int>(bytes[offset])) << 16) +
+    return (bytes[offset] & 0xFF) << 8 | (bytes[offset + 1] & 0xFF);
+}
+
+int ByteArrayUtil::twoBytesSignedToInt(const std::vector<uint8_t>& bytes, const int offset)
+{
+    if (static_cast<int>(bytes.size()) < offset + 2 || offset < 0)
+        throw IllegalArgumentException("Bad data for converting 2-byte integers.");
+
+    if (static_cast<int8_t>(bytes[offset]) >= 0)
+        /* Positive number */
+        return (bytes[offset] & 0xFF) << 8 | (bytes[offset + 1] & 0xFF);
+    else
+        /* Negative number */
+        return 0xFFFF0000 | (bytes[offset] & 0xFF) << 8 | (bytes[offset + 1] & 0xFF);
+}
+
+int ByteArrayUtil::threeBytesToInt(const std::vector<uint8_t>& bytes, const int offset)
+{
+    if (bytes.empty() || static_cast<int>(bytes.size()) < offset + 3 || offset < 0)
+        throw IllegalArgumentException("Bad data for converting 3-byte integers.");
+
+    return ((static_cast<int>(bytes[offset])) << 16)    +
            ((static_cast<int>(bytes[offset + 1])) << 8) +
-           (static_cast<int>(bytes[offset + 2]));
+            (static_cast<int>(bytes[offset + 2]));
+}
+
+int ByteArrayUtil::threeBytesSignedToInt(const std::vector<uint8_t>& bytes, const int offset)
+{
+    if (static_cast<int>(bytes.size()) < offset + 3 || offset < 0)
+        throw IllegalArgumentException("Bad data for converting 3-byte integers.");
+
+    if (static_cast<int8_t>(bytes[offset]) >= 0) {
+        /* Positive number */
+        return (bytes[offset] & 0xFF) << 16    |
+               (bytes[offset + 1] & 0xFF) << 8 |
+               (bytes[offset + 2] & 0xFF);
+    } else {
+        /* Negative number */
+        return 0xFF000000                      |
+               (bytes[offset] & 0xFF) << 16    |
+               (bytes[offset + 1] & 0xFF) << 8 |
+               (bytes[offset + 2] & 0xFF);
+    }
+}
+
+int ByteArrayUtil::fourBytesToInt(const std::vector<uint8_t>& bytes, const int offset)
+{
+    if (static_cast<int>(bytes.size()) < offset + 4 || offset < 0)
+        throw IllegalArgumentException("Bad data for converting 4-byte integers.");
+
+    return (bytes[offset] & 0xFF) << 24     |
+           (bytes[offset + 1] & 0xFF) << 16 |
+           (bytes[offset + 2] & 0xFF) << 8  |
+           (bytes[offset + 3] & 0xFF);
 }
 
 }

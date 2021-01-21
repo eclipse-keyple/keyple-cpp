@@ -1,142 +1,122 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <iostream>
 
 #include "PluginEvent.h"
+
+/* Common */
+#include "IllegalArgumentException.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace event {
 
+using namespace keyple::common::exception;
+
 using EventType = PluginEvent::EventType;
 
-const EventType EventType::READER_CONNECTED("READER_CONNECTED",
-                                            InnerEnum::READER_CONNECTED,
-                                            "Reader connected");
-const EventType EventType::READER_DISCONNECTED("READER_DISCONNECTED",
-                                               InnerEnum::READER_DISCONNECTED,
-                                               "Reader disconnected");
+/* EVENT TYPE --------------------------------------------------------------- */
 
-std::vector<EventType> EventType::valueList;
+const EventType EventType::READER_CONNECTED("Reader connected");
+const EventType EventType::READER_DISCONNECTED("Reader disconnected");
 
-EventType::StaticConstructor::StaticConstructor()
-{
-    valueList.push_back(READER_CONNECTED);
-    valueList.push_back(READER_DISCONNECTED);
-}
-
-EventType::StaticConstructor EventType::staticConstructor;
-int EventType::nextOrdinal = 0;
-
-EventType::EventType(const std::string& nameValue, InnerEnum innerEnum,
-                     const std::string& name)
-: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++)
-{
-    this->name = name;
-}
+EventType::EventType(const std::string& name) : mName(name) {}
 
 const std::string& EventType::getName() const
 {
-    return name;
+    return mName;
 }
 
-bool EventType::operator==(const EventType& other) const
+bool EventType::operator==(const EventType& o) const
 {
-    return this->ordinalValue == other.ordinalValue;
+    return this->mName == o.mName;
 }
 
-bool EventType::operator!=(const EventType& other) const
+bool EventType::operator!=(const EventType& o) const
 {
-    return this->ordinalValue != other.ordinalValue;
+    return !(*this == o);
 }
 
-std::vector<EventType> EventType::values()
+const EventType& EventType::valueOf(const std::string& name)
 {
-    return valueList;
-}
-
-int EventType::ordinal()
-{
-    return ordinalValue;
-}
-
-EventType EventType::valueOf(const std::string& name)
-{
-    for (auto enumInstance : EventType::valueList) {
-        if (enumInstance.nameValue == name) {
-            return enumInstance;
-        }
-    }
-
-    return EventType::READER_DISCONNECTED;
-}
-
-PluginEvent::PluginEvent(const std::string& pluginName,
-                         const std::string& readerName, EventType eventType)
-: readerName(readerName), eventType(eventType), pluginName(pluginName)
-{
-    this->readerNames.insert(readerName);
-}
-
-PluginEvent::PluginEvent(const std::string& pluginName,
-                         std::shared_ptr<std::set<std::string>> readerNames,
-                         EventType eventType)
-: eventType(eventType), pluginName(pluginName)
-{
-    this->readerNames.insert(readerNames->begin(), readerNames->end());
-}
-
-const std::string& PluginEvent::getPluginName() const
-{
-    return pluginName;
-}
-
-const std::set<std::string>& PluginEvent::getReaderNames() const
-{
-    return readerNames;
-}
-
-const PluginEvent::EventType& PluginEvent::getEventType() const
-{
-    return eventType;
+    if (name == READER_CONNECTED.mName)
+        return READER_CONNECTED;
+    else if (name == READER_DISCONNECTED.mName)
+        return READER_DISCONNECTED;
+    else
+        throw IllegalArgumentException("No event named " + name);
 }
 
 std::ostream& operator<<(std::ostream& os, const PluginEvent::EventType& et)
 {
-    std::string value;
-
-    if (et == PluginEvent::EventType::READER_CONNECTED)
-        value = "READER_CONNECTED";
-    else if (et == PluginEvent::EventType::READER_DISCONNECTED)
-        value = "READER_DISCONNECTED";
-
     os << "EVENTTYPE: {"
-       << "NAME = " << et.name << ", "
-       << "VALUE = " << value << ", "
-       << "ORDINAL = " << et.ordinalValue << "}";
+       << "NAME = " << et.mName
+       << "}";
 
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const PluginEvent& re)
+/* PLUGIN EVENT ------------------------------------------------------------- */
+
+PluginEvent::PluginEvent(const std::string& pluginName,
+                         const std::string& readerName,
+                         const EventType& eventType)
+: mReaderName(readerName), mEventType(eventType), mPluginName(pluginName)
 {
-    os << "READEREVENT: {"
-       << "EVENTTYPE = " << re.eventType << ", "
-       << "PLUGINNAME = " << re.pluginName << ", "
-       << "READERNAME = " << re.readerName << "}";
+    mReaderNames.insert(readerName);
+}
+
+PluginEvent::PluginEvent(const std::string& pluginName,
+                         std::shared_ptr<std::set<std::string>> readerNames,
+                         const EventType& eventType)
+: mEventType(eventType), mPluginName(pluginName)
+{
+    mReaderNames.insert(readerNames->begin(), readerNames->end());
+}
+
+const std::string& PluginEvent::getPluginName() const
+{
+    return mPluginName;
+}
+
+const std::set<std::string>& PluginEvent::getReaderNames() const
+{
+    return mReaderNames;
+}
+
+const EventType& PluginEvent::getEventType() const
+{
+    return mEventType;
+}
+
+std::ostream& operator<<(std::ostream& os, const PluginEvent& pe)
+{
+    os << "PLUGINEVENT: {"
+       << "EVENTTYPE = " << pe.mEventType << ", "
+       << "PLUGINNAME = " << pe.mPluginName << ", "
+       << "READERNAME = " << pe.mReaderName << "}";
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<PluginEvent>& pe)
+{
+    if (pe == nullptr)
+        os << "PLUGINEVENT = null";
+    else
+        os << *pe.get();
 
     return os;
 }

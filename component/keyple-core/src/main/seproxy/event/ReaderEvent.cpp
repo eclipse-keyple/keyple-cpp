@@ -1,168 +1,149 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "ReaderEvent.h"
-#include "DefaultSelectionsResponse.h"
+
+/* Core */
 #include "AbstractDefaultSelectionsResponse.h"
+#include "DefaultSelectionsResponse.h"
+#include "SeProxyService.h"
+
+/* Common */
+#include "IllegalArgumentException.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace event {
 
+using namespace keyple::common::exception;
+using namespace keyple::core::seproxy;
 using namespace keyple::core::seproxy::message;
 
 using EventType = ReaderEvent::EventType;
 
-EventType EventType::TIMEOUT_ERROR("TIMEOUT_ERROR", InnerEnum::TIMEOUT_ERROR,
-                                   "SE Reader timeout Error");
-EventType EventType::SE_INSERTED("SE_INSERTED", InnerEnum::SE_INSERTED,
-                                 "SE insertion");
-EventType EventType::SE_MATCHED("SE_MATCHED", InnerEnum::SE_MATCHED,
-                                "SE matched");
-EventType EventType::SE_REMOVED("SE_REMOVED", InnerEnum::SE_REMOVAL,
-                                "SE removed");
+/* EVENT TYPE ----------------------------------------------------------------------------------- */
 
-std::vector<EventType> EventType::valueList;
+const EventType EventType::TIMEOUT_ERROR("SE Reader timeout Error");
+const EventType EventType::SE_INSERTED("SE insertion");
+const EventType EventType::SE_MATCHED("SE matched");
+const EventType EventType::SE_REMOVED("SE removed");
 
-EventType::StaticConstructor::StaticConstructor()
-{
-    valueList.push_back(TIMEOUT_ERROR);
-    valueList.push_back(SE_INSERTED);
-    valueList.push_back(SE_MATCHED);
-    valueList.push_back(SE_REMOVED);
-}
-
-EventType::StaticConstructor EventType::staticConstructor;
-int EventType::nextOrdinal = 0;
-
-EventType::EventType(const std::string& nameValue, InnerEnum innerEnum,
-                     const std::string& name)
-: innerEnumValue(innerEnum), nameValue(nameValue), ordinalValue(nextOrdinal++),
-  name(name)
-{
-}
-
-EventType::EventType(const EventType& o)
-: innerEnumValue(o.innerEnumValue), nameValue(o.nameValue),
-  ordinalValue(o.ordinalValue), name(o.name)
-{
-}
+EventType::EventType(const std::string& name) : mName(name) {}
 
 const std::string& EventType::getName() const
 {
-    return name;
+    return mName;
 }
 
 bool EventType::operator==(const EventType& other) const
 {
-    return this->ordinalValue == other.ordinalValue;
+    return mName == other.mName;
 }
 
 bool EventType::operator!=(const EventType& other) const
 {
-    return this->ordinalValue != other.ordinalValue;
+    return !(*this == other);
 }
 
-std::vector<EventType> EventType::values()
+const EventType& EventType::valueOf(const std::string& name)
 {
-    return valueList;
+    if (name == TIMEOUT_ERROR.mName)
+        return TIMEOUT_ERROR;
+    else if (name == SE_INSERTED.mName)
+        return SE_INSERTED;
+    else if (name == SE_MATCHED.mName)
+        return SE_MATCHED;
+    else if (name == SE_REMOVED.mName)
+        return SE_REMOVED;
+    else
+        throw IllegalArgumentException("No event named " + name);
 }
 
-int EventType::ordinal()
+std::ostream& operator<<(std::ostream& os, const EventType& et)
 {
-    return ordinalValue;
+    os << "EVENTTYPE: {"
+       << "NAME = " << et.mName
+       << "}";
+
+    return os;
 }
 
-std::string EventType::toString()
-{
-    return nameValue;
-}
+/* READER EVENT --------------------------------------------------------------------------------- */
 
-EventType EventType::valueOf(const std::string& name)
-{
-    for (auto enumInstance : EventType::valueList) {
-        if (enumInstance.nameValue == name) {
-            return enumInstance;
-        }
-    }
-
-    /* Should not end up here */
-    return EventType::TIMEOUT_ERROR;
-}
-
-ReaderEvent::ReaderEvent(const std::string& pluginName,
-                         const std::string& readerName, EventType eventType,
-                         std::shared_ptr<AbstractDefaultSelectionsResponse>
-                             defaultSelectionsResponse)
-: eventType(eventType), pluginName(pluginName), readerName(readerName),
-  defaultResponseSet(std::static_pointer_cast<DefaultSelectionsResponse>(
+ReaderEvent::ReaderEvent(
+  const std::string& pluginName,
+  const std::string& readerName,
+  const EventType& eventType,
+  std::shared_ptr<AbstractDefaultSelectionsResponse> defaultSelectionsResponse)
+: mEventType(eventType),
+  mPluginName(pluginName),
+  mReaderName(readerName),
+  mDefaultResponses(std::static_pointer_cast<DefaultSelectionsResponse>(
       defaultSelectionsResponse))
 {
 }
 
 const std::string& ReaderEvent::getPluginName() const
 {
-    return pluginName;
+    return mPluginName;
 }
 
 const std::string& ReaderEvent::getReaderName() const
 {
-    return readerName;
+    return mReaderName;
 }
 
 const ReaderEvent::EventType& ReaderEvent::getEventType() const
 {
-    return eventType;
+    return mEventType;
 }
 
-std::ostream& operator<<(std::ostream& os, const ReaderEvent::EventType& et)
+const std::shared_ptr<ReaderPlugin> ReaderEvent::getPlugin() const
 {
-    std::string value;
+    return SeProxyService::getInstance().getPlugin(mPluginName);
+}
 
-    if (et == ReaderEvent::EventType::TIMEOUT_ERROR)
-        value = "TIMEOUT_ERROR";
-    else if (et == ReaderEvent::EventType::SE_INSERTED)
-        value = "SE_INSERTED";
-    else if (et == ReaderEvent::EventType::SE_MATCHED)
-        value = "SE_MATCHED";
-    else if (et == ReaderEvent::EventType::SE_REMOVED)
-        value = "SE_REMOVED";
-
-    os << "EVENTTYPE: {"
-       << "NAME = " << et.name << ", "
-       << "VALUE = " << value << ", "
-       << "ORDINAL = " << et.ordinalValue << "}";
-
-    return os;
+const std::shared_ptr<SeReader> ReaderEvent::getReader() const
+{
+    return getPlugin()->getReader(mReaderName);
 }
 
 std::ostream& operator<<(std::ostream& os, const ReaderEvent& re)
 {
-	os << "READEREVENT: {"
-	   << "EVENTTYPE = " << re.eventType << ", "
-	   << "PLUGINNAME = " << re.pluginName << ", "
-	   << "READERNAME = " << re.readerName
-	   << "}";
+    os << "READEREVENT: {"
+        << "EVENTTYPE = " << re.mEventType << ", "
+        << "PLUGINNAME = " << re.mPluginName << ", "
+        << "READERNAME = " << re.mReaderName
+        << "}";
 
-	return os;
+    return os;
 }
 
-const std::shared_ptr<AbstractDefaultSelectionsResponse>
-ReaderEvent::getDefaultSelectionsResponse() const
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<ReaderEvent>& re)
 {
-    return defaultResponseSet;
+    if (re == nullptr)
+        os << "READEREVENT = null";
+    else
+        os << *re.get();
+
+    return os;
+}
+
+const std::shared_ptr<AbstractDefaultSelectionsResponse> ReaderEvent::getDefaultSelectionsResponse()
+    const
+{
+    return mDefaultResponses;
 }
 
 }

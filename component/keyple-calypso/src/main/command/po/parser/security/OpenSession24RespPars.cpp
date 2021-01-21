@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include "OpenSession24RespPars.h"
 #include "ApduResponse.h"
@@ -18,6 +17,7 @@
 
 /* Common */
 #include "Arrays.h"
+#include "IllegalStateException.h"
 #include "stringhelper.h"
 
 namespace keyple {
@@ -27,27 +27,33 @@ namespace po {
 namespace parser {
 namespace security {
 
-using namespace keyple::common;
 using namespace keyple::calypso::command::po;
+using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::core::seproxy::message;
 
+using SecureSession = AbstractOpenSessionRespPars::SecureSession;
+
 OpenSession24RespPars::OpenSession24RespPars(
-    std::shared_ptr<ApduResponse> response)
-: AbstractOpenSessionRespPars(response, PoRevision::REV2_4)
+  std::shared_ptr<ApduResponse> response, OpenSession24CmdBuild* builder)
+: AbstractOpenSessionRespPars(response, builder, PoRevision::REV2_4)
 {
-    std::vector<uint8_t> data = response->getDataOut();
-    this->secureSession       = toSecureSession(data);
+    /**
+     * C++ vs. Java: Do not remove. This code is required as the base class
+     *               constructor cannot call a derived class member function.
+     */
+    const std::vector<uint8_t> dataOut = response->getDataOut();
+    if (dataOut.size())
+       mSecureSession = toSecureSession(dataOut);
 }
 
-std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-OpenSession24RespPars::toSecureSession(
+std::shared_ptr<SecureSession> OpenSession24RespPars::toSecureSession(
     const std::vector<uint8_t>& apduResponseData)
 {
     return createSecureSession(apduResponseData);
 }
 
-std::shared_ptr<AbstractOpenSessionRespPars::SecureSession>
-OpenSession24RespPars::createSecureSession(
+std::shared_ptr<SecureSession> OpenSession24RespPars::createSecureSession(
     const std::vector<uint8_t>& apduResponseData)
 {
     bool previousSessionRatified;
@@ -84,30 +90,30 @@ OpenSession24RespPars::createSecureSession(
         break;
     case 34:
         previousSessionRatified = true;
-        data                    = Arrays::copyOfRange(apduResponseData, 5, 34);
+        data = Arrays::copyOfRange(apduResponseData, 5, 34);
         break;
     case 7:
         previousSessionRatified = false;
         break;
     case 36:
         previousSessionRatified = false;
-        data                    = Arrays::copyOfRange(apduResponseData, 7, 36);
+        data = Arrays::copyOfRange(apduResponseData, 7, 36);
         break;
     default:
-        throw IllegalStateException(
-            "Bad response length to Open Secure Session: " +
-            StringHelper::to_string(apduResponseData.size()));
+        throw IllegalStateException("Bad response length to Open Secure Session: " +
+                                    std::to_string(apduResponseData.size()));
     }
 
-    std::vector<uint8_t> challengeTransactionCounter =
-        Arrays::copyOfRange(apduResponseData, 1, 4);
-    std::vector<uint8_t> challengeRandomNumber =
-        Arrays::copyOfRange(apduResponseData, 4, 5);
+    std::vector<uint8_t> challengeTransactionCounter = Arrays::copyOfRange(apduResponseData, 1, 4);
+    std::vector<uint8_t> challengeRandomNumber = Arrays::copyOfRange(apduResponseData, 4, 5);
 
-    return std::make_shared<SecureSession>(
-        challengeTransactionCounter, challengeRandomNumber,
-        previousSessionRatified, false,
-        std::make_shared<Byte>(apduResponseData[0]), data, apduResponseData);
+    return std::make_shared<SecureSession>(challengeTransactionCounter,
+                                           challengeRandomNumber,
+                                           previousSessionRatified,
+                                           false,
+                                           apduResponseData[0],
+                                           data,
+                                           apduResponseData);
 }
 
 }

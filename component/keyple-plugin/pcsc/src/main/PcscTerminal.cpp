@@ -1,21 +1,21 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #include <cstring>
 
 /* Common */
-#include "exceptionhelper.h"
+#include "IllegalArgumentException.h"
+#include "KeypleStd.h"
 #include "System.h"
 #include "Thread.h"
 
@@ -26,6 +26,9 @@
 namespace keyple {
 namespace plugin {
 namespace pcsc {
+
+using namespace keyple::common;
+using namespace keyple::common::exception;
 
 #ifdef WIN32
 std::string pcsc_stringify_error(LONG rv)
@@ -38,14 +41,14 @@ std::string pcsc_stringify_error(LONG rv)
 #endif
 
 PcscTerminal::PcscTerminal(const std::string& name)
-: context(0), handle(0), state(0), name(name), contextEstablished(false)
+: mContext(0), mHandle(0), mState(0), mName(name), mContextEstablished(false)
 {
-    memset(&pioSendPCI, 0, sizeof(SCARD_IO_REQUEST));
+    memset(&mPioSendPCI, 0, sizeof(SCARD_IO_REQUEST));
 }
 
 const std::string& PcscTerminal::getName() const
 {
-    return this->name;
+    return mName;
 }
 
 const std::vector<std::string>& PcscTerminal::listTerminals()
@@ -104,57 +107,51 @@ const std::vector<std::string>& PcscTerminal::listTerminals()
 
 void PcscTerminal::establishContext()
 {
-    LONG ret;
-
-    if (this->contextEstablished)
+    if (mContextEstablished)
         return;
 
-    ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &this->context);
+    LONG ret = SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &mContext);
     if (ret != SCARD_S_SUCCESS) {
-        this->contextEstablished = false;
-        logger->error("SCardEstablishContext failed with error: %\n",
-                      std::string(pcsc_stringify_error(ret)));
+        mContextEstablished = false;
+        mLogger->error("SCardEstablishContext failed with error: %\n",
+                     std::string(pcsc_stringify_error(ret)));
         throw PcscTerminalException("SCardEstablishContext failed");
     }
 
-    this->contextEstablished = true;
+    mContextEstablished = true;
 }
 
 void PcscTerminal::releaseContext()
 {
-    logger->debug("releaseContext - contextEstablished: %\n",
-                  contextEstablished ? "yes" : "no");
-
-    if (!this->contextEstablished)
+    if (!mContextEstablished)
         return;
 
-    logger->debug("releaseContext - releasing context\n");
-
-    SCardReleaseContext(this->context);
-    this->contextEstablished = false;
+    SCardReleaseContext(mContext);
+    mContextEstablished = false;
 }
 
 bool PcscTerminal::isCardPresent(bool release)
 {
-    DWORD protocol;
-    SCARDHANDLE hCard;
-    LONG rv;
-
     try {
         establishContext();
     } catch (PcscTerminalException& e) {
-        logger->error("isCardPresent - caught PcscTerminalException %\n", e);
-        throw e;
+        mLogger->error("isCardPresent - caught PcscTerminalException %\n", e);
+        throw;
     }
 
-    rv = SCardConnect(this->context, (LPCSTR)this->name.c_str(),
-                      SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
-                      &hCard, &protocol);
+    DWORD protocol;
+    SCARDHANDLE hCard;
+    LONG rv = SCardConnect(mContext,
+                           (LPCSTR)mName.c_str(),
+                           SCARD_SHARE_SHARED,
+                           SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
+                           &hCard,
+                           &protocol);
     if (rv != SCARD_S_SUCCESS) {
         if (rv != static_cast<LONG>(SCARD_E_NO_SMARTCARD) &&
             rv != static_cast<LONG>(SCARD_W_REMOVED_CARD))
-            logger->debug("isCardPresent - error connecting to card (%)\n",
-                          std::string(pcsc_stringify_error(rv)));
+            mLogger->debug("isCardPresent - error connecting to card (%)\n",
+                           std::string(pcsc_stringify_error(rv)));
 
         if (release)
             releaseContext();
@@ -168,36 +165,6 @@ bool PcscTerminal::isCardPresent(bool release)
     return true;
 }
 
-bool PcscTerminal::waitForCardPresent(long long timeout)
-{
-    bool present;
-    long long current;
-    long long start = System::currentTimeMillis();
-
-    logger->trace("waitForCardPresent - waiting for card insertion for % ms\n",
-                  timeout);
-
-    do {
-        present = isCardPresent(false);
-        if (present) {
-            logger->trace("waitForCardPresent - card present\n");
-            return true;
-        }
-
-        Thread::sleep(100);
-
-        if (timeout == INFINITE)
-            continue;
-
-        current = System::currentTimeMillis();
-        if (current > (start + timeout)) {
-            logger->trace("waitForCardPresent - timeout\n");
-            return false;
-        }
-
-    } while (1);
-}
-
 void PcscTerminal::openAndConnect(const std::string& protocol)
 {
     LONG rv;
@@ -208,13 +175,13 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
     BYTE _atr[33];
     DWORD atrLen = sizeof(_atr);
 
-    logger->debug("openAndConnect - protocol: %\n", protocol);
+    mLogger->debug("[%] openAndConnect - protocol: %\n", mName, protocol);
 
     try {
         establishContext();
     } catch (PcscTerminalException& e) {
-        logger->error("openAndConnect - caught PcscTerminalException %\n", e);
-        throw e;
+        mLogger->error("openAndConnect - caught PcscTerminalException %\n", e);
+        throw;
     }
 
     if (!protocol.compare("*")) {
@@ -230,14 +197,17 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
         throw IllegalArgumentException("Unsupported protocol " + protocol);
     }
 
-    logger->debug("openAndConnect - connecting tp % with protocol: %, "
-                  "connectProtocol: % and sharingMode: %\n", name,
-                  protocol, connectProtocol, sharingMode);
+    mLogger->debug("openAndConnect - connecting tp % with protocol: %, "
+                   "connectProtocol: % and sharingMode: %\n",
+                   mName,
+                   protocol,
+                   connectProtocol,
+                   sharingMode);
 
-    rv = SCardConnect(context, name.c_str(), sharingMode,
-                      connectProtocol, &handle, &mProtocol);
+    rv = SCardConnect(mContext, mName.c_str(), sharingMode,
+                      connectProtocol, &mHandle, &mProtocol);
     if (rv != SCARD_S_SUCCESS) {
-        logger->error("openAndConnect - SCardConnect failed (%)\n",
+        mLogger->error("openAndConnect - SCardConnect failed (%)\n",
                       std::string(pcsc_stringify_error(rv)));
         releaseContext();
         throw PcscTerminalException("openAndConnect failed");
@@ -245,74 +215,43 @@ void PcscTerminal::openAndConnect(const std::string& protocol)
 
     switch (mProtocol) {
     case SCARD_PROTOCOL_T0:
-        this->pioSendPCI = *SCARD_PCI_T0;
+        mPioSendPCI = *SCARD_PCI_T0;
         break;
     case SCARD_PROTOCOL_T1:
-        this->pioSendPCI = *SCARD_PCI_T1;
+        mPioSendPCI = *SCARD_PCI_T1;
         break;
     }
 
-    rv = SCardStatus(this->handle, (LPSTR)reader, &readerLen, &this->state,
+    rv = SCardStatus(mHandle, (LPSTR)reader, &readerLen, &mState,
                      &mProtocol, _atr, &atrLen);
     if (rv != SCARD_S_SUCCESS) {
-        logger->error("openAndConnect - SCardStatus failed (s)\n",
+        mLogger->error("openAndConnect - SCardStatus failed (s)\n",
                       std::string(pcsc_stringify_error(rv)));
         releaseContext();
         throw PcscTerminalException("openAndConnect failed");
     } else {
-        logger->debug("openAndConnect - card state: %\n", state);
+        mLogger->debug("openAndConnect - card state: %\n", mState);
     }
 
-    this->atr.clear();
-    this->atr.insert(this->atr.end(), _atr, _atr + atrLen);
+    mAtr.clear();
+    mAtr.insert(mAtr.end(), _atr, _atr + atrLen);
 }
 
 void PcscTerminal::closeAndDisconnect(bool reset)
 {
-    logger->debug("closeAndDisconnect - reset: %\n", reset ? "yes" : "no");
+    mLogger->debug("[%] closeAndDisconnect - reset: %\n", mName, reset ? "yes" : "no");
 
-    SCardDisconnect(this->context, reset ? SCARD_LEAVE_CARD : SCARD_RESET_CARD);
+    SCardDisconnect(mContext, reset ? SCARD_LEAVE_CARD : SCARD_RESET_CARD);
 
     releaseContext();
 }
 
-bool PcscTerminal::waitForCardAbsent(long long timeout)
-{
-    bool present;
-    long long current;
-    long long start = System::currentTimeMillis();
-
-    logger->trace("waitForCardAbsent - waiting for card removal for % ms\n",
-                  timeout);
-
-    do {
-        present = isCardPresent(false);
-        if (!present) {
-            logger->trace("waitForCardAbsent - card absent\n");
-            return true;
-        }
-
-        Thread::sleep(100);
-
-        if (timeout == INFINITE)
-            continue;
-
-        current = System::currentTimeMillis();
-        if (current > (start + timeout)) {
-            logger->trace("waitForCardAbsent - timeout\n");
-            return false;
-        }
-
-    } while (1);
-}
-
 const std::vector<uint8_t>& PcscTerminal::getATR()
 {
-    return this->atr;
+    return mAtr;
 }
 
-std::vector<uint8_t>
-PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
+std::vector<uint8_t> PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
 {
     if (apduIn.size() == 0)
         throw IllegalArgumentException("command cannot be empty");
@@ -325,18 +264,17 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
     bool t1GetResponse = true;
     bool t1StripLe     = true;
 
-    logger->debug("transmitApdu - c-apdu >> %\n", apduIn);
-
     /*
-     * Note that we modify the 'command' array in some cases, so it must
-     * be a copy of the application provided data
+     * Note that we modify the 'command' array in some cases, so it must be a copy of the
+     * application provided data
      */
     int n   = _apduIn.size();
     bool t0 = mProtocol == SCARD_PROTOCOL_T0;
     bool t1 = mProtocol == SCARD_PROTOCOL_T1;
-    if (t0 && (n >= 7) && (_apduIn[4] == 0)) {
+
+    if (t0 && (n >= 7) && (_apduIn[4] == 0))
         throw PcscTerminalException("Extended len. not supported for T=0");
-    }
+
     if ((t0 || (t1 && t1StripLe)) && (n >= 7)) {
         int lc = _apduIn[4] & 0xff;
         if (lc != 0) {
@@ -352,52 +290,66 @@ PcscTerminal::transmitApdu(const std::vector<uint8_t>& apduIn)
     }
 
     bool getresponse = (t0 && t0GetResponse) || (t1 && t1GetResponse);
-    int k            = 0;
+    int k = 0;
     std::vector<uint8_t> result;
 
     while (true) {
         if (++k >= 32) {
             throw PcscTerminalException("Could not obtain response");
         }
+
         char r_apdu[261];
         DWORD dwRecv = sizeof(r_apdu);
         long rv;
-        rv = SCardTransmit(this->handle, &this->pioSendPCI, (LPCBYTE)_apduIn.data(),
-                      _apduIn.size(), NULL, (LPBYTE)r_apdu, &dwRecv);
+
+        mLogger->debug("[%] transmitApdu - c-apdu >> %\n", mName, _apduIn);
+
+        rv = SCardTransmit(mHandle,
+                           &mPioSendPCI,
+                           (LPCBYTE)_apduIn.data(),
+                           _apduIn.size(),
+                           NULL,
+                           (LPBYTE)r_apdu,
+                           &dwRecv);
         if (rv != SCARD_S_SUCCESS) {
-            logger->error("SCardEstablishContext failed with error: %\n",
-                          std::string(pcsc_stringify_error(rv)));
+            mLogger->error("SCardTransmit failed with error: %\n",
+                           std::string(pcsc_stringify_error(rv)));
             throw PcscTerminalException("ScardTransmit failed");
         }
+
         std::vector<uint8_t> response(r_apdu, r_apdu + dwRecv);
+
+        mLogger->debug("[%] transmitApdu - r-apdu << %\n", mName, response);
+
         int rn = response.size();
         if (getresponse && (rn >= 2)) {
-            // see ISO 7816/2005, 5.1.3
+            /* See ISO 7816/2005, 5.1.3 */
             if ((rn == 2) && (response[0] == 0x6c)) {
                 // Resend command using SW2 as short Le field
                 _apduIn[n - 1] = response[1];
                 continue;
             }
+
             if (response[rn - 2] == 0x61) {
-                // Issue a GET RESPONSE command with the same CLA
-                // using SW2 as short Le field
-                if (rn > 2) {
-                    result.insert(result.end(), response.begin(),
-                                  response.begin() + rn - 2);
-                }
-                _apduIn[1] = 0xC0;
-                _apduIn[2] = 0;
-                _apduIn[3] = 0;
-                _apduIn[4] = response[rn - 1];
+                /* Issue a GET RESPONSE command with the same CLA using SW2 as short Le field */
+                if (rn > 2)
+                    result.insert(result.end(), response.begin(), response.begin() + rn - 2);
+
+                std::vector<uint8_t> getResponse(5);
+                getResponse[0] = _apduIn[0];
+                getResponse[1] = 0xC0;
+                getResponse[2] = 0;
+                getResponse[3] = 0;
+                getResponse[4] = response[rn - 1];
                 n          = 5;
+                _apduIn.swap(getResponse);
                 continue;
             }
         }
+
         result.insert(result.end(), response.begin(), response.begin() + rn);
         break;
     }
-
-    logger->debug("transmitApdu - r-apdu << %\n", result);
 
     return result;
 }
@@ -412,7 +364,7 @@ void PcscTerminal::endExclusive()
 
 bool PcscTerminal::operator==(const PcscTerminal& o) const
 {
-    return !name.compare(o.name);
+    return !mName.compare(o.mName);
 }
 
 bool PcscTerminal::operator!=(const PcscTerminal& o) const
@@ -423,7 +375,7 @@ bool PcscTerminal::operator!=(const PcscTerminal& o) const
 std::ostream& operator<<(std::ostream& os, const PcscTerminal& t)
 {
     os << "PCSCTERMINAL: {"
-       << "NAME = " << t.name
+       << "NAME = " << t.mName
 	   << "}";
 
     return os;

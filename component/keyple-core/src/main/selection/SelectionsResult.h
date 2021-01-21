@@ -14,19 +14,15 @@
 
 #pragma once
 
-#include <vector>
+#include <map>
 #include <memory>
 
-#include "KeypleCoreExport.h"
+/* Common */
+#include "Integer.h"
 
-/* Forward class declarations */
-namespace keyple {
-namespace core {
-namespace selection {
-class MatchingSelection;
-}
-}
-}
+/* Core */
+#include "AbstractMatchingSe.h"
+#include "KeypleCoreExport.h"
 
 namespace keyple {
 namespace core {
@@ -35,10 +31,10 @@ namespace selection {
 /**
  * The SelectionsResult class holds the result of a selection process.
  * <p>
- * embeds a list of {@link MatchingSelection}
- * <p>
- * provides a set of methods to retrieve the active selection
- * (getActiveSelection) or a particular selection specified by its index.
+ * Embeds a map of keyple::core::selection::AbstractMatchingSe. At most one of these matching SE
+ * is active.<br>
+ * Provides a set of methods to retrieve the active selection
+ * (getActiveMatchingSe) or a particular matching SE specified by its index.
  */
 class KEYPLECORE_API SelectionsResult final
 : public std::enable_shared_from_this<SelectionsResult> {
@@ -46,43 +42,66 @@ public:
     /**
      * Constructor
      */
-
     SelectionsResult();
 
     /**
-     * Append a {@link MatchingSelection} to the internal list
+     * Append a keyple::core::selection::AbstractMatchingSe to the internal list
      *
-     * @param matchingSelection the item to add
+     * @param selectionIndex the index of the selection that resulted in the
+     *                       matching SE
+     * @param matchingSe the matching SE to add
+     * @param isSelected true if the currently added matching SE is selected
+     *                   (its logical channel is open)
      */
-    void addMatchingSelection(
-        std::shared_ptr<MatchingSelection> matchingSelection);
+    void addMatchingSe(
+        int selectionIndex,
+        const std::shared_ptr<AbstractMatchingSe> matchingSe, bool isSelected);
 
     /**
-     * @return the currently active (matching) selection
+     * Get the active matching SE. I.e. the SE that has been selected. <br>
+     * The hasActiveSelection method should be called before.
+     *
+     * @return the currently active matching SE
+     * @throws IllegalStateException if no active matching SE is found
      */
-    const std::shared_ptr<MatchingSelection> getActiveSelection() const;
+    const std::shared_ptr<AbstractMatchingSe> getActiveMatchingSe();
 
     /**
-     * @return the {@link MatchingSelection} list
+     * @return the keyple::core::selection::AbstractMatchingSe map
      */
-    const std::vector<std::shared_ptr<MatchingSelection>>&
+    const std::map<int, std::shared_ptr<AbstractMatchingSe>>&
         getMatchingSelections() const;
 
     /**
-     * Gets the {@link MatchingSelection} for the specified index.
+     * Gets the keyple::core::selection::AbstractMatchingSe for the specified index.
      * <p>
-     * Returns null if no {@link MatchingSelection} was found.
+     * Returns null if no keyple::core::selection::AbstractMatchingSe was found.
      *
      * @param selectionIndex the selection index
-     * @return the {@link MatchingSelection} or null
+     * @return the keyple::core::selection::AbstractMatchingSe or null
      */
-    const std::shared_ptr<MatchingSelection>
-        getMatchingSelection(int selectionIndex) const;
+    const std::shared_ptr<AbstractMatchingSe> getMatchingSe(int selectionIndex);
 
     /**
      * @return true if an active selection is present
      */
     bool hasActiveSelection() const;
+
+    /**
+     * Get the matching status of a selection for which the index is provided.
+     * <br>
+     * Checks for the presence of an entry in the MatchingSe Map for the given
+     * index
+     *
+     * @param selectionIndex the selection index
+     * @return true if the selection has matched
+     */
+    bool hasSelectionMatched(int selectionIndex) const;
+
+    /**
+     * @return the index of the active selection
+     */
+    int getActiveSelectionIndex() const;
 
     /**
      *
@@ -96,17 +115,23 @@ public:
     friend KEYPLECORE_API std::ostream& operator<<(
         std::ostream& os, const std::shared_ptr<SelectionsResult>& sr);
 
+    /**
+     *
+     */
+    friend KEYPLECORE_API std::ostream& operator<<(
+        std::ostream& os,
+        const std::map<int, std::shared_ptr<AbstractMatchingSe>>& sr);
+
 private:
     /**
      *
      */
-    bool hasActiveSelection_Renamed = false;
+    int mActiveSelectionIndex = -1;
 
     /**
      *
      */
-    std::vector<std::shared_ptr<MatchingSelection>> matchingSelectionList =
-        std::vector<std::shared_ptr<MatchingSelection>>();
+    std::map<int, std::shared_ptr<AbstractMatchingSe>> mMatchingSeMap;
 };
 
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -21,6 +21,7 @@
 
 /* Calypso */
 #include "AbstractSamResponseParser.h"
+#include "DigestInitCmdBuild.h"
 #include "KeypleCalypsoExport.h"
 
 namespace keyple {
@@ -31,37 +32,37 @@ namespace parser {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::builder::security;
 using namespace keyple::core::seproxy::message;
 
 /**
  * Digest init response parser. See specs: Calypso / page 54 / 7.4.2 -
  * Session MAC computation
  */
-class KEYPLECALYPSO_API DigestInitRespPars : public AbstractSamResponseParser {
+class KEYPLECALYPSO_API DigestInitRespPars final
+: public AbstractSamResponseParser {
 public:
     /**
      * Instantiates a new DigestInitRespPars.
      *
      * @param response from DigestInitCmdBuild
+     * @param builder the reference to the builder that created this parser
      */
-    DigestInitRespPars(std::shared_ptr<ApduResponse> response);
-
-    /**
-     *
-     */
-    virtual ~DigestInitRespPars()
-    {
-    }
+    DigestInitRespPars(const std::shared_ptr<ApduResponse> response,
+                       DigestInitCmdBuild* builder);
 
 protected:
     /**
      *
      */
-    std::shared_ptr<DigestInitRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<DigestInitRespPars>(
-            AbstractSamResponseParser::shared_from_this());
-    }
+    const std::map<int, std::shared_ptr<StatusProperties>>&
+        getStatusTable() const override;
+
+private:
+    /**
+     *
+     */
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 };
 
 }

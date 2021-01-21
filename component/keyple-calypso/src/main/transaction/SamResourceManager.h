@@ -1,103 +1,146 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
-#include <list>
-#include <mutex>
-
-/* Common */
-#include "LoggerFactory.h"
-
 /* Core */
-#include "ObservablePlugin.h"
-#include "ObservableReader.h"
-#include "PluginEvent.h"
-#include "ReaderEvent.h"
-#include "ReaderPlugin.h"
+#include "SeReader.h"
+#include "SeResource.h"
 
 /* Calypso */
+#include "CalypsoSam.h"
 #include "KeypleCalypsoExport.h"
 #include "SamIdentifier.h"
-#include "SamResource.h"
 
 namespace keyple {
 namespace calypso {
 namespace transaction {
 
-using namespace keyple::common;
+using namespace keyple::core::selection;
 using namespace keyple::core::seproxy;
-using namespace keyple::core::seproxy::event;
 
 /**
  * Management of SAM resources:
+ *
  * <p>
  * Provides methods fot the allocation/deallocation of SAM resources
  */
-class SamResourceManager {
+class KEYPLECALYPSO_API SamResourceManager {
 public:
     /**
      *
      */
-    enum class AllocationMode { BLOCKING, NON_BLOCKING };
+    enum class AllocationMode {
+        BLOCKING,
+        NON_BLOCKING
+    };
 
     /**
-     * Instantiate a new SamResourceManager.
-     * <p>
-     * The samReaderPlugin is used to retrieve the available SAM according to
-     * the provided filter.
-     * <p>
-     * Setup a plugin observer if the reader plugin is observable.
+     * (package-private)<br>
+     * Inner class to handle specific attributes associated with an {@code
+     * SeResource<CalypsoSam>} in the {@link SamResourceManager} context.
      *
-     * @param samReaderPlugin the plugin through which SAM readers are
-     *        accessible
-     * @param samReaderFilter the regular expression defining how to identify
-     *        SAM readers among others.
-     * @param maxBlockingTime the maximum duration for which the
-     *        allocateSamResource method will attempt to allocate a new reader
-     *        by retrying (in milliseconds)
-     * @throws KeypleReaderException thrown if an error occurs while getting the
-     *         readers list.
-     * @since 0.8.1
+     * @since 0.9
      */
-    SamResourceManager(std::shared_ptr<ReaderPlugin> samReaderPlugin,
-                       const std::string& samReaderFilter,
-                       int maxBlockingTime);
+    class KEYPLECALYPSO_API ManagedSamResource final : public SeResource<CalypsoSam> {
+    public:
+        /**
+         * The free/busy enum status
+         */
+        enum class SamResourceStatus {
+            FREE,
+            BUSY
+        };
+
+        /**
+         * Constructor
+         *
+         * @param seReader the keyple::core::seproxy::SeReader with which the SE is communicating
+         * @param calypsoSam the keyple::calypso::transaction::CalypsoSam information structure
+         */
+        ManagedSamResource(std::shared_ptr<SeReader> seReader,
+                           std::shared_ptr<CalypsoSam> calypsoSam);
+
+        /**
+         * Indicates whether the ManagedSamResource is FREE or BUSY
+         *
+         * @return the busy status
+         */
+        bool isSamResourceFree() const;
+
+        /**
+         * Defines the keyple::calypso::transaction::SamIdentifier of the current
+         * keyple::calypso::transaction::SamResourceManager::ManagedSamResource
+         *
+         * @param samIdentifier the SAM identifier
+         */
+        void setSamIdentifier(std::shared_ptr<SamIdentifier> samIdentifier);
+
+        /**
+         * Indicates whether the ManagedSamResource matches the provided SAM identifier.
+         * <p>
+         * The test includes the keyple::calypso::command::sam::SamRevision, serial number and group
+         * reference provided by the keyple::calypso::transaction::SamIdentifier.
+         * <p>
+         * The SAM serial number can be null or empty, in this case all serial numbers are accepted.
+         * It can also be a regular expression target one or more specific serial numbers.
+         * <p>
+         * The groupe reference can be null or empty to let all group references match but not empty
+         * the group reference must match the keyple::calypso::transaction::SamIdentifier to have
+         * the method returning true.
+         *
+         * @param samIdentifier the SAM identifier
+         * @return true or false according to the result of the correspondence test
+         */
+        bool isSamMatching(const std::shared_ptr<SamIdentifier> samIdentifier) const;
+
+        /**
+         * Sets the free/busy status of the ManagedSamResource
+         *
+         * @param samResourceStatus FREE/BUSY enum value
+         */
+        void setSamResourceStatus(const SamResourceStatus& samResourceStatus);
+
+    private:
+        /**
+         * The free/busy status of the resource
+         */
+        SamResourceStatus mSamResourceStatus;
+
+        /**
+         * The sam identifier
+         */
+        std::shared_ptr<SamIdentifier> mSamIdentifier;
+    };
 
     /**
-     * Alternate constructor with default max blocking time value
      *
-     * @param samReaderPlugin the plugin through which SAM readers are
-     *        accessible
-     * @param samReaderFilter the regular expression defining how to identify
-     *        SAM readers among others.
-     * @throws KeypleReaderException thrown if an error occurs while getting the
-     *         readers list.
      */
-    SamResourceManager(std::shared_ptr<ReaderPlugin> samReaderPlugin,
-                       const std::string& samReaderFilter);
+    virtual ~SamResourceManager() = default;
 
     /**
      * Allocate a SAM resource from the specified SAM group.
+     *
      * <p>
      * In the case where the allocation mode is BLOCKING, this method will wait
      * until a SAM resource becomes free and then return the reference to the
      * allocated resource. However, the BLOCKING mode will wait a maximum time
-     * defined in tenths of a second by MAX_BLOCKING_TIME.
+     * defined in milliseconds by MAX_BLOCKING_TIME.
+     *
      * <p>
      * In the case where the allocation mode is NON_BLOCKING and no SAM resource
-     * is available, this method will return null.
+     * is available, this method will return an exception.
+     *
      * <p>
      * If the samGroup argument is null, the first available SAM resource will
      * be selected and returned regardless of its group.
@@ -105,161 +148,37 @@ public:
      * @param allocationMode the blocking/non-blocking mode
      * @param samIdentifier the targeted SAM identifier
      * @return a SAM resource
-     * @throws KeypleReaderException if a reader error occurs
-     * @throws CalypsoNoSamResourceAvailableException if the reader allocation
-     *         failed
+     * @throw CalypsoNoSamResourceAvailableException if no resource is available
+     * @throw KeypleReaderException if a reader error occurs
+     * @throw KeypleAllocationReaderException if reader allocation fails
      */
-    std::unique_ptr<SamResource>
-    allocateSamResource(const AllocationMode allocationMode,
-                        const SamIdentifier& samIdentifier);
+    virtual std::shared_ptr<SeResource<CalypsoSam>> allocateSamResource(
+        const AllocationMode allocationMode,
+        const std::shared_ptr<SamIdentifier> samIdentifier) = 0;
 
     /**
      * Free a previously allocated SAM resource.
      *
      * @param samResource the SAM resource reference to free
      */
-    void freeSamResource(std::unique_ptr<SamResource> samResource);
+    virtual void freeSamResource(const SeResource<CalypsoSam>& samResource) = 0;
 
-    /**
-     *
-     */
-    const std::shared_ptr<Logger> logger =
-        LoggerFactory::getLogger(typeid(SamResourceManager));
-
-private:
-    /*
-     * The default maximum time (in milliseconds) during which the BLOCKING mode
-     * will wait.
-     */
-    static const int MAX_BLOCKING_TIME;
-
-    /**
-     *
-     */
-    const int maxBlockingTime;
-
-    /**
-     *
-     */
-    std::shared_ptr<ReaderPlugin> samReaderPlugin;
-
-    /**
-     *
-     */
-    std::list<std::unique_ptr<SamResource>> localSamResources;
-
-    /**
-     *
-     */
-    bool dynamicAllocationPlugin;
-
-    /**
-     *
-     */
-    std::mutex mtx;
-
+protected:
     /**
      * Create a SAM resource from the provided SAM reader.
+     *
      * <p>
-     * Proceed with the SAM selection and combine the SAM reader and the
-     * Calypso SAM resulting from the selection.
+     * Proceed with the SAM selection and combine the SAM reader and the Calypso
+     * SAM resulting from the selection.
      *
      * @param samReader the SAM reader with which the APDU exchanges will be
      *        done.
-     * @return a {@link SamResource}
-     * @throws KeypleReaderException if an reader error occurs while doing the
-     *         selection
+     * @return a keyple::core::selection::SeResource<T>
+     * @throw CalypsoNoSamResourceAvailableException if an error occurs while
+     *        doing the selection
      */
-    std::unique_ptr<SamResource>
-    createSamResource(std::shared_ptr<SeReader> samReader);
-
-    /**
-     * Remove a {@link SamResource}from the current SamResource list
-     *
-     * @param samReader the SAM reader of the resource to remove from the list.
-     */
-    void removeResource(std::shared_ptr<SeReader> samReader);
-
-    /**
-     * Reader observer to handle SAM insertion/withdraw
-     */
-    class ReaderObserver : public ObservableReader::ReaderObserver {
-    public:
-        /**
-         * Handle {@link ReaderEvent}
-         * <p>
-         * Create {@link SamResource}
-         *
-         * @param event the reader event
-         */
-        void update(std::shared_ptr<ReaderEvent> event) override;
-
-        /**
-         *
-         */
-        ReaderObserver(SamResourceManager* parent);
-
-    private:
-        /**
-         *
-         */
-        const std::shared_ptr<Logger> logger;
-
-        /**
-         *
-         */
-        SamResourceManager* parent;
-    };
-
-    /**
-     * Plugin observer to handle SAM reader connection/disconnection.
-     * <p>
-     * Add or remove readers
-     * <p>
-     * Add a reader observer when an {@link ObservableReader} is connected.
-     */
-    class PluginObserver : public ObservablePlugin::PluginObserver {
-    public:
-        /**
-         * Handle {@link PluginEvent}
-         *
-         * @param event the plugin event
-         */
-        void update(std::shared_ptr<PluginEvent> event) override;
-
-        /**
-         *
-         */
-        PluginObserver(SamResourceManager* parent,
-                       std::shared_ptr<ReaderObserver> readerObserver,
-                       const std::string samReaderFilter);
-
-    private:
-        /**
-         *
-         */
-        std::shared_ptr<ReaderObserver> readerObserver;
-
-        /**
-         *
-         */
-        const std::string samReaderFilter;
-
-        /**
-         *
-         */
-        Pattern* p;
-
-        /**
-         *
-         */
-        const std::shared_ptr<Logger> logger;
-
-        /**
-         *
-         */
-        SamResourceManager* parent;
-    };
+    virtual std::shared_ptr<ManagedSamResource> createSamResource(
+        std::shared_ptr<SeReader> samReader);
 };
 
 }

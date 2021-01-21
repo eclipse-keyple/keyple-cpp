@@ -1,14 +1,15 @@
-/********************************************************************************
-* Copyright (c) 2018 Calypso Networks Association https://www.calypsonet-asso.org/
-*
-* See the NOTICE file(s) distributed with this work for additional information regarding copyright
-* ownership.
-*
-* This program and the accompanying materials are made available under the terms of the Eclipse
-* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
-*
-* SPDX-License-Identifier: EPL-2.0
-********************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -16,11 +17,13 @@
 #include <memory>
 
 #include "AbstractSamCommandBuilder.h"
-#include "CalypsoSamCommands.h"
+#include "CalypsoSamCommand.h"
 #include "SamRevision.h"
 
-/* Common */
-#include "stringhelper.h"
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace sam {
+    namespace parser { namespace security { class SamGetChallengeRespPars; } } }
+    } } }
 
 namespace keyple {
 namespace calypso {
@@ -30,12 +33,13 @@ namespace builder {
 namespace security {
 
 using namespace keyple::calypso::command::sam;
+using namespace keyple::calypso::command::sam::parser::security;
 
 /**
  * Builder for the SAM Get Challenge APDU command.
  */
-class KEYPLECALYPSO_API SamGetChallengeCmdBuild
-: public AbstractSamCommandBuilder {
+class KEYPLECALYPSO_API SamGetChallengeCmdBuild final
+: public AbstractSamCommandBuilder<SamGetChallengeRespPars> {
 public:
     /**
      * Instantiates a new SamGetChallengeCmdBuild.
@@ -45,31 +49,20 @@ public:
      * @throws IllegalArgumentException - if the expected response length has
      *         wrong value.
      */
-    SamGetChallengeCmdBuild(SamRevision revision,
-                            uint8_t expectedResponseLength);
+    SamGetChallengeCmdBuild(const SamRevision& revision,
+                            const uint8_t expectedResponseLength);
 
     /**
      *
      */
-    virtual ~SamGetChallengeCmdBuild()
-    {
-    }
-
-protected:
-    /**
-     *
-     */
-    std::shared_ptr<SamGetChallengeCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<SamGetChallengeCmdBuild>(
-            AbstractSamCommandBuilder::shared_from_this());
-    }
+    std::shared_ptr<SamGetChallengeRespPars> createResponseParser(
+        const std::shared_ptr<ApduResponse> apduResponse) override;
 
 private:
     /**
      * The command reference
      */
-    CalypsoSamCommands& command = CalypsoSamCommands::GET_CHALLENGE;
+    const CalypsoSamCommand& mCommand = CalypsoSamCommand::GET_CHALLENGE;
 };
 
 }

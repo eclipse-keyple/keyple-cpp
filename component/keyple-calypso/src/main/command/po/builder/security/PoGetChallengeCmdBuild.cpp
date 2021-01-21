@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -13,7 +13,12 @@
  ******************************************************************************/
 
 #include "PoGetChallengeCmdBuild.h"
+
+/* Calypso */
+#include "CalypsoPoCommand.h"
 #include "PoGetChallengeRespPars.h"
+
+/* Core */
 #include "ApduResponse.h"
 
 namespace keyple {
@@ -30,17 +35,25 @@ using namespace keyple::core::seproxy::message;
 
 PoGetChallengeCmdBuild::PoGetChallengeCmdBuild(PoClass poClass)
 : AbstractPoCommandBuilder<PoGetChallengeRespPars>(
-      CalypsoPoCommands::GET_CHALLENGE, nullptr)
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::GET_CHALLENGE), nullptr)
 {
-    this->request =
-        setApduRequest(poClass.getValue(), command, 0x01, 0x10, 0x08);
+    const uint8_t p1 = 0x00;
+    const uint8_t p2 = 0x00;
+    const uint8_t le = 0x08;
+
+    mRequest = setApduRequest(poClass.getValue(), command, p1, p2, le);
 }
 
 std::shared_ptr<PoGetChallengeRespPars>
-PoGetChallengeCmdBuild::createResponseParser(
-    std::shared_ptr<ApduResponse> apduResponse)
+    PoGetChallengeCmdBuild::createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<PoGetChallengeRespPars>(apduResponse);
+    return std::make_shared<PoGetChallengeRespPars>(apduResponse, this);
+}
+
+bool PoGetChallengeCmdBuild::isSessionBufferUsed() const
+{
+    return false;
 }
 
 }

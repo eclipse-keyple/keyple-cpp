@@ -1,16 +1,17 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
+
+#include "SeSelection.h"
 
 #include "AbstractDefaultSelectionsResponse.h"
 #include "AbstractDefaultSelectionsRequest.h"
@@ -19,10 +20,8 @@
 #include "DefaultSelectionsRequest.h"
 #include "DefaultSelectionsResponse.h"
 #include "KeypleReaderException.h"
-#include "KeypleIOReaderException.h"
-#include "MatchingSelection.h"
+#include "KeypleReaderIOException.h"
 #include "ProxyReader.h"
-#include "SeSelection.h"
 #include "SeRequest.h"
 #include "SelectionsResult.h"
 #include "SelectionStatus.h"
@@ -38,34 +37,26 @@ using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::exception;
 using namespace keyple::core::seproxy::message;
 
-SeSelection::SeSelection(MultiSeRequestProcessing multiSeRequestProcessing,
-                         ChannelControl channelControl)
-: selectionIndex(0), multiSeRequestProcessing(multiSeRequestProcessing),
-  channelControl(channelControl)
-{
-}
+SeSelection::SeSelection(MultiSeRequestProcessing multiSeRequestProcessing)
+: mMultiSeRequestProcessing(multiSeRequestProcessing) {}
 
-SeSelection::SeSelection()
-: SeSelection(MultiSeRequestProcessing::FIRST_MATCH, ChannelControl::KEEP_OPEN)
-{
-}
+SeSelection::SeSelection() : SeSelection(MultiSeRequestProcessing::FIRST_MATCH) {}
 
 int SeSelection::prepareSelection(
-    std::shared_ptr<AbstractSeSelectionRequest> seSelectionRequest)
+    std::shared_ptr<AbstractSeSelectionRequest<AbstractApduCommandBuilder>> seSelectionRequest)
 {
-    logger->trace("AbstractSeSelectionRequest: {REQUEST = %, EXTRAINFO = %}\n",
-                  seSelectionRequest->getSelectionRequest(),
-                  seSelectionRequest->getSeSelector()->getExtraInfo());
-
-    /* build the SeRequest set transmitted to the SE */
-    selectionRequestSet.push_back(
-        seSelectionRequest->getSelectionRequest());
+    logger->trace("SELECTORREQUEST = %\n", seSelectionRequest->getSelectionRequest());
 
     /* keep the selection request */
-    seSelectionRequestList.push_back(seSelectionRequest);
+    mSeSelectionRequests.push_back(seSelectionRequest);
 
-    /* return and post increment the selection index */
-    return selectionIndex++;
+    /* return and post increment the selection index (starting at 0) */
+    return mSeSelectionRequests.size() - 1;
+}
+
+void SeSelection::prepareReleaseSeChannel()
+{
+    mChannelControl = ChannelControl::CLOSE_AFTER;
 }
 
 std::shared_ptr<SelectionsResult> SeSelection::processSelection(
@@ -80,7 +71,7 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(
     for (const auto& seResponse :
          (std::dynamic_pointer_cast<DefaultSelectionsResponse>(
               defaultSelectionsResponse))
-             ->getSelectionSeResponseSet()) {
+             ->getSelectionSeResponses()) {
         /*
          * Test if the selection is successful: we should have either a FCI
          * or an ATR
@@ -93,12 +84,19 @@ std::shared_ptr<SelectionsResult> SeSelection::processSelection(
              * selection request during the selection preparation
              */
             const std::shared_ptr<AbstractMatchingSe> matchingSe =
-                seSelectionRequestList[index]->parse(seResponse);
+                mSeSelectionRequests[index]->parse(seResponse);
 
-            selectionsResult->addMatchingSelection(
-                std::make_shared<MatchingSelection>(
-                    index, seSelectionRequestList[index], matchingSe,
-                    seResponse));
+            /* Determine if the current matching SE is selected */
+            std::shared_ptr<SelectionStatus> selectionStatus =
+                seResponse->getSelectionStatus();
+            bool isSelected;
+            if (selectionStatus)
+                isSelected = selectionStatus->hasMatched() &&
+                             seResponse->isLogicalChannelOpen();
+            else
+                isSelected = false;
+
+            selectionsResult->addMatchingSe(index, matchingSe, isSelected);
         }
 
         index++;
@@ -119,21 +117,25 @@ std::shared_ptr<SelectionsResult> SeSelection::processDefaultSelection(
     logger->trace("Process default SELECTIONRESPONSE (% response(s))\n",
                   (std::static_pointer_cast<DefaultSelectionsResponse>(
                        defaultSelectionsResponse))
-                      ->getSelectionSeResponseSet()
-                      .size());
+                      ->getSelectionSeResponses().size());
 
     return processSelection(defaultSelectionsResponse);
 }
 
-std::shared_ptr<SelectionsResult>
-SeSelection::processExplicitSelection(std::shared_ptr<SeReader> seReader)
+std::shared_ptr<SelectionsResult> SeSelection::processExplicitSelection(
+    std::shared_ptr<SeReader> seReader)
 {
-    /*
-     * Removed 'if (logger-isTraceEnabled())', that check will be done in the
-     * trace function already.
-     */
+    std::vector<std::shared_ptr<SeRequest>> selectionRequests;
+
+    std::for_each(mSeSelectionRequests.begin(),
+                  mSeSelectionRequests.end(),
+                  [&](const std::shared_ptr<AbstractSeSelectionRequest<
+                          AbstractApduCommandBuilder>>& r) {
+                      selectionRequests.push_back(r->getSelectionRequest());
+                  });
+
     logger->trace("Transmit SELECTIONREQUEST (% request(s))\n",
-                  selectionRequestSet.size());
+                  selectionRequests.size());
 
     if (!seReader) {
         logger->error("processExplicitSelection - seReader is null\n");
@@ -141,20 +143,31 @@ SeSelection::processExplicitSelection(std::shared_ptr<SeReader> seReader)
     }
 
     /* Communicate with the SE to do the selection */
-    std::list<std::shared_ptr<SeResponse>> seResponseList =
-        (std::dynamic_pointer_cast<ProxyReader>(seReader))
-            ->transmitSet(selectionRequestSet, multiSeRequestProcessing,
-                          channelControl);
+    auto proxyReader = std::dynamic_pointer_cast<ProxyReader>(seReader);
+    std::vector<std::shared_ptr<SeResponse>> seResponses =
+        proxyReader->transmitSeRequests(selectionRequests,
+                                        mMultiSeRequestProcessing,
+                                        mChannelControl);
 
     return processSelection(
-        std::make_shared<DefaultSelectionsResponse>(seResponseList));
+        std::make_shared<DefaultSelectionsResponse>(seResponses));
 }
 
 std::shared_ptr<AbstractDefaultSelectionsRequest>
 SeSelection::getSelectionOperation()
 {
-    return std::make_shared<DefaultSelectionsRequest>(
-        selectionRequestSet, multiSeRequestProcessing, channelControl);
+    std::vector<std::shared_ptr<SeRequest>> selectionRequests;
+
+    std::for_each(mSeSelectionRequests.begin(),
+                  mSeSelectionRequests.end(),
+                  [&](const std::shared_ptr<AbstractSeSelectionRequest<
+                          AbstractApduCommandBuilder>>& r) {
+                      selectionRequests.push_back(r->getSelectionRequest());
+                  });
+
+    return std::make_shared<DefaultSelectionsRequest>(selectionRequests,
+                                                      mMultiSeRequestProcessing,
+                                                      mChannelControl);
 }
 
 std::ostream& operator<<(std::ostream& os, const SeSelection& ss)

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -13,7 +13,14 @@
  ******************************************************************************/
 
 #include "IncreaseCmdBuild.h"
+
+/* Common */
+#include "stringhelper.h"
+
+/* Calypso */
 #include "IncreaseRespPars.h"
+
+/* Core */
 #include "ApduResponse.h"
 
 namespace keyple {
@@ -25,44 +32,72 @@ namespace builder {
 using namespace keyple::calypso::command;
 using namespace keyple::calypso::command::po;
 using namespace keyple::calypso::command::po::parser;
+using namespace keyple::common;
 using namespace keyple::core::seproxy::message;
 
-IncreaseCmdBuild::IncreaseCmdBuild(PoClass poClass, char sfi,
-                                   char counterNumber, int incValue,
-                                   const std::string& extraInfo)
-: AbstractPoCommandBuilder<IncreaseRespPars>(CalypsoPoCommands::INCREASE,
-                                             nullptr)
+IncreaseCmdBuild::IncreaseCmdBuild(
+  const PoClass poClass,
+  const uint8_t sfi,
+  const uint8_t counterNumber,
+  const int incValue)
+: AbstractPoCommandBuilder<IncreaseRespPars>(
+      std::make_shared<CalypsoPoCommand>(CalypsoPoCommand::INCREASE), nullptr),
+  mSfi(sfi),
+  mCounterNumber(counterNumber),
+  mIncValue(incValue)
 {
+    const uint8_t cla = poClass.getValue();
 
-    // only counter number >= 1 are allowed
-    if (counterNumber < 1) {
-        throw std::invalid_argument("Counter number out of range!");
-    }
-
-    // check if the incValue is in the allowed interval
-    if (incValue < 0 || incValue > 0xFFFFFF) {
-        throw std::invalid_argument("Increment value out of range!");
-    }
-
-    // convert the integer value into a 3-byte buffer
+    /* Convert the integer value into a 3-byte buffer */
     std::vector<uint8_t> incValueBuffer(3);
     incValueBuffer[0] = (incValue >> 16) & 0xFF;
     incValueBuffer[1] = (incValue >> 8) & 0xFF;
     incValueBuffer[2] = incValue & 0xFF;
 
+    const uint8_t p2 = sfi * 8;
+
     /* this is a case4 command, we set Le = 0 */
-    this->request = setApduRequest(poClass.getValue(), command, counterNumber,
-                                   sfi * 8, incValueBuffer, 0x00);
-    if (extraInfo != "") {
-        this->addSubName(extraInfo);
-    }
+    mRequest = setApduRequest(cla,
+                              command,
+                              counterNumber,
+                              p2,
+                              incValueBuffer,
+                              0x00);
+
+    const std::string extraInfo =
+        "SFI=" + StringHelper::uint8ToHexString(sfi) + ", " +
+        "COUNTER=" + std::to_string(counterNumber) + ", " +
+        "INCREMENT=" + std::to_string(incValue);
+    addSubName(extraInfo);
 }
 
 std::shared_ptr<IncreaseRespPars> IncreaseCmdBuild::createResponseParser(
     std::shared_ptr<ApduResponse> apduResponse)
 {
-    return std::make_shared<IncreaseRespPars>(apduResponse);
+    return std::make_shared<IncreaseRespPars>(apduResponse, this);
 }
+
+bool IncreaseCmdBuild::isSessionBufferUsed() const
+{
+    return true;
+}
+
+uint8_t IncreaseCmdBuild::getSfi() const
+{
+    return mSfi;
+}
+
+uint8_t IncreaseCmdBuild::getCounterNumber() const
+{
+    return mCounterNumber;
+}
+
+int IncreaseCmdBuild::getIncValue() const
+{
+    return mIncValue;
+}
+
+
 }
 }
 }

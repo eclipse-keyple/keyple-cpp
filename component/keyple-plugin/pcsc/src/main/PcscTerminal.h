@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -39,7 +39,7 @@ public:
     /**
      *
      */
-    PcscTerminal(const std::string& name);
+    explicit PcscTerminal(const std::string& name);
 
     /**
      *
@@ -50,16 +50,6 @@ public:
      *
      */
     bool isCardPresent(bool release);
-
-    /**
-     *
-     */
-    bool waitForCardPresent(long long timeout);
-
-    /**
-     *
-     */
-    bool waitForCardAbsent(long long timeout);
 
     /**
      *
@@ -121,18 +111,18 @@ private:
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(PcscTerminal));
 
     /**
      *
      */
-    SCARDCONTEXT context;
+    SCARDCONTEXT mContext;
 
     /**
      *
      */
-    SCARDHANDLE handle;
+    SCARDHANDLE mHandle;
 
     /**
      *
@@ -142,27 +132,27 @@ private:
     /**
      *
      */
-    SCARD_IO_REQUEST pioSendPCI;
+    SCARD_IO_REQUEST mPioSendPCI;
 
     /**
      *
      */
-    DWORD state;
+    DWORD mState;
 
     /**
      *
      */
-    const std::string name;
+    const std::string mName;
 
     /**
      *
      */
-    std::vector<uint8_t> atr;
+    std::vector<uint8_t> mAtr;
 
     /**
      *
      */
-    bool contextEstablished;
+    bool mContextEstablished;
 
     /**
      *

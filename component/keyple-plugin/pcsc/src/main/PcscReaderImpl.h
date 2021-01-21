@@ -1,27 +1,24 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
 /* Common */
-#include "exceptionhelper.h"
 #include "LoggerFactory.h"
-#include "stringhelper.h"
 
 /* Core */
 #include "AbstractObservableLocalReader.h"
-#include "MonitoringPool.h"
+#include "ExecutorService.h"
 #include "ReaderEvent.h"
 #include "SmartInsertionReader.h"
 #include "SmartRemovalReader.h"
@@ -39,7 +36,6 @@ namespace pcsc {
 using namespace keyple::common;
 using namespace keyple::core::seproxy::event;
 using namespace keyple::core::seproxy::plugin;
-using namespace keyple::core::seproxy::plugin::local;
 using namespace keyple::core::seproxy::protocol;
 
 class KEYPLEPLUGINPCSC_API PcscReaderImpl
@@ -49,24 +45,18 @@ public:
     /**
      * This constructor should only be called by PcscPlugin PCSC reader
      * parameters are initialized with their default values as defined in
-     * setParameter. See {@link #setParameter(String, String)} for more details
+     * setParameter. See setParameter() for
+     * more details
      *
      * @param pluginName the name of the plugin
      * @param terminal the PC/SC terminal
      */
-    PcscReaderImpl(const std::string& pluginName, PcscTerminal& terminal);
+    PcscReaderImpl(const std::string& pluginName, const PcscTerminal& terminal);
 
     /**
      *
      */
-    //PcscReaderImpl(const PcscReaderImpl& o);
-
-    /**
-     *
-     */
-    virtual ~PcscReaderImpl()
-    {
-    }
+    ~PcscReaderImpl();
 
     /**
      * Set a parameter.
@@ -94,25 +84,22 @@ public:
      * <li>eject: Eject</li>
      * </ul>
      * </li>
-     * <li><strong>thread_wait_timeout</strong>: Number of milliseconds towait</li>
+     * <li><strong>thread_wait_timeout</strong>: Number of milliseconds towait
+     * </li>
      * </ul>
      *
      * @param name Parameter name
      * @param value Parameter value
-     * @throws KeypleBaseException This method can fail when disabling the
-     *         exclusive mode as it's executed instantly
-     * @throws IllegalArgumentException when parameter is wrong
-     *
-     *
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed, when disabling the exclusive mode as it's
+     *        executed instantly
      */
-    void setParameter(const std::string& name,
-                      const std::string& value) override;
+    void setParameter(const std::string& name, const std::string& value) override;
 
     /**
      *
      */
-    const std::map<const std::string, const std::string> getParameters() const
-        override;
+    const std::map<const std::string, const std::string>& getParameters() const override;
 
     /**
      * The transmission mode can set with
@@ -133,6 +120,23 @@ public:
      *
      */
     std::shared_ptr<ObservableReaderStateService> initStateService() override;
+
+    /**
+     * C++ vs. Java: temp hack
+     */
+    virtual const std::string& getName() const final
+    {
+        return AbstractObservableLocalReader::getName();
+    }
+
+    /**
+     *  C++ vs Java: temp hack
+     */
+    virtual void setParameters(const std::map<const std::string, const std::string>& parameters)
+        final
+    {
+        AbstractSeProxyComponent::setParameters(parameters);
+    }
 
 protected:
     /**
@@ -185,7 +189,8 @@ protected:
      *
      * @param protocolFlag the protocol flag
      * @return true if the current SE matches the protocol flag
-     * @throws KeypleReaderException if the protocol mask is not found
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     bool protocolFlagMatches(const std::shared_ptr<SeProtocol> protocolFlag)
         override;
@@ -216,7 +221,8 @@ protected:
      * exclusivity is granted for a limited time (ex. 5 seconds). After this
      * delay, the card is automatically resetted.
      *
-     * @throws KeypleChannelStateException if a reader error occurs
+     * @throw KeypleReaderIOException if the communication with the reader or
+     *        the SE has failed
      */
     void openPhysicalChannel() override;
 
@@ -235,32 +241,32 @@ private:
      * execute. This will correspond to the capacity to react to the interrupt
      * signal of the thread (see cancel method of the Future object).
      */
-    const long insertLatency = 500;
+    static const long INSERT_LATENCY = 10;
 
     /**
      *
      */
-    const long removalLatency = 500;
+    static const long REMOVAL_LATENCY = 10;
 
     /**
      * clang compiler warning - not used
      */
-    //const long insertWaitTimeout = 200;
+    //static const long INSERT_WAIT_TIMEOUT = 200;
 
     /**
      *
      */
-    std::atomic<bool> loopWaitSe;
+    std::atomic<bool> mLoopWaitSe;
 
     /**
      *
      */
-    std::atomic<bool> loopWaitSeRemoval;
+    std::atomic<bool> mLoopWaitSeRemoval;
 
     /**
      *
      */
-    std::shared_ptr<MonitoringPool> executorService;
+    std::shared_ptr<ExecutorService> mExecutorService;
 
     /**
      * clang compiler warning - not used
@@ -275,38 +281,43 @@ private:
     /**
      *
      */
-    PcscTerminal& terminal;
+    PcscTerminal mTerminal;
 
     /**
      *
      */
-    std::string parameterCardProtocol;
+    std::string mParameterCardProtocol;
 
     /**
      *
      */
-    bool cardExclusiveMode = false;
+    bool mCardExclusiveMode = false;
 
     /**
      *
      */
-    bool cardReset = false;
+    bool mCardReset = false;
 
     /**
      *
      */
-    bool channelOpen = false;
+    bool mChannelOpen = false;
 
     /**
      *
      */
-    TransmissionMode transmissionMode;
+    TransmissionMode mTransmissionMode;
 
     /**
      *
      */
-    const std::shared_ptr<Logger> logger =
+    const std::shared_ptr<Logger> mLogger =
         LoggerFactory::getLogger(typeid(PcscReaderImpl));
+
+    /**
+     * /!\ C++ vs. Java: Added. See setParameter() and getParameters()
+     */
+    std::map<const std::string, const std::string> mParameters;
 
 };
 

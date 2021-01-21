@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -18,7 +18,7 @@
 #include "ApduRequest.h"
 
 /* Core */
-#include "CommandsTable.h"
+#include "SeCommand.h"
 
 /* Common */
 #include "System.h"
@@ -30,20 +30,20 @@ namespace command {
 using namespace keyple::core::seproxy::message;
 
 AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(
-    CommandsTable& commandReference, std::shared_ptr<ApduRequest> request)
-: AbstractApduCommandBuilder(commandReference, request)
-{
-}
+  const std::shared_ptr<SeCommand> commandReference,
+  std::shared_ptr<ApduRequest> request)
+: AbstractApduCommandBuilder(commandReference, request) {}
 
 AbstractIso7816CommandBuilder::AbstractIso7816CommandBuilder(
     const std::string& name, std::shared_ptr<ApduRequest> request)
-: AbstractApduCommandBuilder(name, request)
-{
-}
+: AbstractApduCommandBuilder(name, request) {}
 
 std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
-    const uint8_t cla, const CommandsTable& command, const uint8_t p1,
-    const uint8_t p2, const std::vector<uint8_t>& dataIn)
+    const uint8_t cla,
+    const SeCommand& command,
+    const uint8_t p1,
+    const uint8_t p2,
+    const std::vector<uint8_t>& dataIn)
 {
     bool case4;
 
@@ -83,8 +83,11 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
 }
 
 std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
-    const uint8_t cla, const CommandsTable& command, const uint8_t p1,
-    const uint8_t p2, const uint8_t le)
+    const uint8_t cla,
+    const SeCommand& command,
+    const uint8_t p1,
+    const uint8_t p2,
+    const uint8_t le)
 {
     bool case4;
 
@@ -121,22 +124,24 @@ std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
 }
 
 std::shared_ptr<ApduRequest> AbstractIso7816CommandBuilder::setApduRequest(
-    const uint8_t cla, const CommandsTable& command, const uint8_t p1,
-    const uint8_t p2, const std::vector<uint8_t>& dataIn, const uint8_t le)
+    const uint8_t cla,
+    const SeCommand& command,
+    const uint8_t p1,
+    const uint8_t p2,
+    const std::vector<uint8_t>& dataIn,
+    const uint8_t le)
 {
     bool case4;
 
     /* sanity check */
-    if (dataIn.size() == 0 || le != 0) {
+    if (dataIn.size() == 0 || le != 0)
         throw std::invalid_argument("Le must be equal to 0 when not null and "
                                     "ingoing data are present.");
-    }
 
     /* Buffer allocation */
     int length = 4; // header
-    if (dataIn.size() > 0) {
+    if (dataIn.size() > 0)
         length += dataIn.size() + 1; // Lc + data
-    }
 
     length += 1; // Le
 

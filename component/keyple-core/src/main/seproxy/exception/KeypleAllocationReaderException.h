@@ -14,25 +14,23 @@
 
 #pragma once
 
-#include "KeypleBaseException.h"
+#include "KeypleException.h"
 
 namespace keyple {
 namespace core {
 namespace seproxy {
 namespace exception {
 
-using namespace keyple::common;
-
 /**
  * Base Exception for all Keyple Checked Exception
  */
-class KeypleAllocationReaderException : public KeypleBaseException {
+class KeypleAllocationReaderException : public KeypleException {
 public:
     /**
      *
      */
     KeypleAllocationReaderException(const std::string& msg)
-    : KeypleBaseException(msg)
+    : KeypleException(msg)
     {
     }
 
@@ -41,7 +39,7 @@ public:
      */
     KeypleAllocationReaderException(const std::string& msg,
                                     const std::exception& cause)
-    : KeypleBaseException(msg, cause)
+    : KeypleException(msg, cause)
     {
     }
 };

@@ -1,20 +1,21 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
 /* Calypso */
+#include "AbstractPoCommandBuilder.h"
+#include "AbstractPoResponseParser.h"
 #include "KeypleCalypsoExport.h"
 
 /* Core */
@@ -32,25 +33,45 @@ class KEYPLECALYPSO_API AbstractPoResponseParser
 : public AbstractApduResponseParser {
 public:
     /**
-     * the generic abstract constructor to build a parser of the APDU response.
+     * The generic abstract constructor to build a parser of the APDU response.
      *
      * @param response response to parse
+     * @param builder the reference of the builder that created the parser
      */
-    AbstractPoResponseParser(std::shared_ptr<ApduResponse> response);
+    AbstractPoResponseParser(std::shared_ptr<ApduResponse> response,
+                             AbstractPoCommandBuilder<AbstractPoResponseParser>* builder);
+
+    /**
+     * Copy Constructor
+     * 
+     * Required by macOS/CLang
+     */
+    AbstractPoResponseParser(const AbstractPoResponseParser& arp) = default;
+      
+    /**
+     *
+     */
+    virtual ~AbstractPoResponseParser() = default;
 
     /**
      *
      */
-    virtual ~AbstractPoResponseParser()
-    {
-    }
+    virtual AbstractPoCommandBuilder<AbstractPoResponseParser>* getBuilder()const override;
+
+    /**
+     *
+     */
+    void checkStatus() const override;
 
 protected:
-    std::shared_ptr<AbstractPoResponseParser> shared_from_this()
-    {
-        return std::static_pointer_cast<AbstractPoResponseParser>(
-            AbstractApduResponseParser::shared_from_this());
-    }
+    /**
+     *
+     */
+    const KeypleSeCommandException buildCommandException(
+        const std::type_info& exceptionClass,
+        const std::string& message,
+        const std::shared_ptr<SeCommand> commandRef,
+        const int statusCode) const override;
 };
 
 }

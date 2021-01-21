@@ -1,7 +1,6 @@
-# Notices for Keyple C++, Tools for Committers
+# Notices for 'Eclipse Keyple' C++ implementation
 
-This content is produced and maintained by the Eclipse keyple, Tools for
-Committers project.
+This content is produced and maintained by the Eclipse keyple.
 
  * Project home: https://projects.eclipse.org/projects/iot.keyple
 
@@ -16,6 +15,12 @@ Committers project.
 - keyple-plugin: source and unit tests for the different plugins: PC/SC, Stub.
 - example: source for the generic and Calypso implementation examples.
 
+## Trademarks
+ 
+ * Eclipse Keyple and the Eclipse Keyple project are Trademarks of the Eclipse Foundation, Inc.
+ * Eclipse® is a Trademark of the Eclipse Foundation, Inc.
+ * Eclipse Foundation is a Trademark of the Eclipse Foundation, Inc.
+ 
 ## Copyright
 
 All content is the property of the respective authors or their employers.
@@ -34,7 +39,11 @@ SPDX-License-Identifier: EPL-2.0
 
 The project maintains the following source code repositories:
 
- * https://github.com/eclipse/keyple.git
+* https://github.com/eclipse/keyple
+* https://github.com/eclipse/keyple-website
+* https://github.com/eclipse/keyple-java
+* https://github.com/eclipse/keyple-cpp
+* https://github.com/eclipse/keyple-ops
  
 ## Contributors
    *   Pierre Terrée - API specification

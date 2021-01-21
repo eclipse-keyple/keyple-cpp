@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -23,26 +23,40 @@ using namespace keyple::core::seproxy;
 
 class RP_ReaderPluginMock : public ReaderPlugin {
 public:
-    MOCK_METHOD((const std::set<std::string>), getReaderNames, (),
+    MOCK_METHOD((const std::set<std::string>),
+                getReaderNames,
+                (),
                 (const, override));
 
-    MOCK_METHOD((std::set<std::shared_ptr<SeReader>>&), getReaders, (),
+    MOCK_METHOD((ConcurrentMap<const std::string, std::shared_ptr<SeReader>>&),
+                getReaders,
+                (),
                 (override));
 
-    MOCK_METHOD((const std::shared_ptr<SeReader>), getReader,
-                (const std::string& name), (const, override));
+    MOCK_METHOD((const std::shared_ptr<SeReader>),
+                getReader,
+                (const std::string&),
+                (override));
 
-    MOCK_METHOD((const std::map<const std::string, const std::string>),
-                getParameters, (), (const, override));
+    MOCK_METHOD((const std::map<const std::string, const std::string>&),
+                getParameters,
+                (),
+                (const, override));
 
-    MOCK_METHOD(void, setParameter,
-                (const std::string& key, const std::string& value), (override));
+    MOCK_METHOD(void,
+                setParameter,
+                (const std::string&, const std::string&),
+                (override));
 
-    MOCK_METHOD(void, setParameters,
-                ((const std::map<const std::string,
-                                const std::string>& parameters)), (override));
+    MOCK_METHOD(void,
+                setParameters,
+                ((const std::map<const std::string, const std::string>&)),
+                (override));
 
-    MOCK_METHOD(const std::string&, getName, (), (const, override));
+    MOCK_METHOD((const std::string&),
+                getName,
+                (),
+                (const, override));
 };
 
 TEST(ReaderPluginTest, ReaderPlugin)

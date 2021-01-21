@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -20,11 +20,12 @@
 #include <memory>
 
 #include "AbstractPoCommandBuilder.h"
-#include "CalypsoPoCommands.h"
-#include "DecreaseRespPars.h"
-#include "PoModificationCommand.h"
-#include "PoSendableInSession.h"
+#include "CalypsoPoCommand.h"
 #include "PoClass.h"
+
+/* Forward declaration */
+namespace keyple { namespace calypso { namespace command { namespace po {
+    namespace parser { class DecreaseRespPars; } } } } }
 
 namespace keyple {
 namespace calypso {
@@ -43,48 +44,66 @@ using namespace keyple::core::seproxy::message;
  *
  */
 class KEYPLECALYPSO_API DecreaseCmdBuild final
-: public AbstractPoCommandBuilder<DecreaseRespPars>,
-  public PoSendableInSession,
-  public PoModificationCommand {
-
-private:
-    /**
-     * The command
-     */
-    CalypsoPoCommands& command = CalypsoPoCommands::DECREASE;
-
+: public AbstractPoCommandBuilder<DecreaseRespPars> {
 public:
     /**
      * Instantiates a new decrease cmd build from command parameters.
      *
      * @param poClass indicates which CLA byte should be used for the Apdu
      * @param sfi SFI of the file to select or 00h for current EF
-     * @param counterNumber &gt;= 01h: Counters file, number of the counter. 00h: Simulated Counter
-     *        file.
-     * @param decValue Value to subtract to the counter (defined as a positive int &lt;= 16777215
-     *        [FFFFFFh])
-     * @param extraInfo extra information included in the logs (can be null or empty)
-     * @throws IllegalArgumentException - if the decrement value is out of range
-     * @throws IllegalArgumentException - if the command is inconsistent
+     * @param counterNumber &gt;= 01h: Counters file, number of the counter.
+     *        00h: Simulated Counter file.
+     * @param decValue Value to subtract to the counter (defined as a positive
+     *        int &lt;= 16777215 [FFFFFFh])
+     * @throw IllegalArgumentException - if the decrement value is out of range
+     * @throw IllegalArgumentException - if the command is inconsistent
      */
-    DecreaseCmdBuild(PoClass poClass, char sfi, char counterNumber,
-                     int decValue, const std::string& extraInfo);
+    DecreaseCmdBuild(const PoClass poClass,
+                     const uint8_t sfi,
+                     const uint8_t counterNumber,
+                     const int decValue);
 
     /**
      *
      */
-    std::shared_ptr<DecreaseRespPars>
-    createResponseParser(std::shared_ptr<ApduResponse> apduResponse) override;
+    std::shared_ptr<DecreaseRespPars> createResponseParser(
+        std::shared_ptr<ApduResponse> apduResponse) override;
 
-protected:
     /**
+     * This command can modify the contents of the PO in session and therefore
+     * uses the session buffer.
      *
+     * @return true
      */
-    std::shared_ptr<DecreaseCmdBuild> shared_from_this()
-    {
-        return std::static_pointer_cast<DecreaseCmdBuild>(
-            AbstractPoCommandBuilder<DecreaseRespPars>::shared_from_this());
-    }
+    bool isSessionBufferUsed() const override;
+
+    /**
+     * @return the SFI of the accessed file
+     */
+    uint8_t getSfi() const;
+
+    /**
+     * @return the counter number
+     */
+    int getCounterNumber() const;
+
+    /**
+     * @return the decrement value
+     */
+    int getDecValue() const;
+
+private:
+    /**
+     * The command
+     */
+    const CalypsoPoCommand& command = CalypsoPoCommand::DECREASE;
+
+    /**
+     * Construction arguments
+     */
+    const uint8_t mSfi;
+    const uint8_t mCounterNumber;
+    const int mDecValue;
 };
 
 }

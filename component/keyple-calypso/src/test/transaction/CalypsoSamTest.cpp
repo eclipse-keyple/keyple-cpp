@@ -1,256 +1,258 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
-#include "CalypsoSamTest.h"
-#include "SeCommonProtocols.h"
-#include "SamSelectionRequest.h"
-#include "ChannelControl.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
 #include "CalypsoSam.h"
-#include "AnswerToReset.h"
-#include "SelectionStatus.h"
-#include "ByteArrayUtil.h"
-#include "SeResponse.h"
 
-#include "LoggerFactory.h"
+/* Calypso */
+#include "SamSelector.h"
+#include "SeResponse.h"
+#include "SamSelectionRequest.h"
+#include "SelectionStatus.h"
+
+/* Common */
+#include "IllegalStateException.h"
+
+/* Core */
+#include "ByteArrayUtil.h"
+#include "TransmissionMode.h"
+
+using namespace testing;
 
 using namespace keyple::calypso::transaction;
+using namespace keyple::common;
+using namespace keyple::core::seproxy::message;
+using namespace keyple::core::seproxy::protocol;
+using namespace keyple::core::util;
 
-namespace keyple {
-namespace calypso {
-namespace transaction {
+static const std::string ATR1 = "3B001122805A0180D002030411223344829000";
+static const std::string ATR2 = "3B001122805A0180D102030411223344829000";
+static const std::string ATR3 = "3B001122805A0180D202030411223344829000";
+static const std::string ATR4 = "3B001122805A0180C102030411223344829000";
+static const std::string ATR5 = "3B001122805A0180E102030411223344829000";
+static const std::string ATR6 = "3B001122805A0180E202030411223344829000";
+static const std::string ATR7 = "3B001122805A0180E202030411223344820000";
 
-using SamSelectionRequest  = keyple::calypso::transaction::SamSelectionRequest;
-using SeSelector           = keyple::core::seproxy::SeSelector;
-using AnswerToReset        = keyple::core::seproxy::message::AnswerToReset;
-using SeResponse           = keyple::core::seproxy::message::SeResponse;
-using SelectionStatus      = keyple::core::seproxy::message::SelectionStatus;
-using ByteArrayUtils       = keyple::core::util::ByteArrayUtil;
-using ContactlessProtocols = SeCommonProtocols;
-
-void CalypsoSamTest::test_CalypsoSam_1()
+/** basic CalypsoSam test: nominal ATR parsing */
+TEST(CalypsoTestSam, test_CalypsoSam_1)
 {
-    std::vector<uint8_t> szAnswerToReset =
-        ByteArrayUtils::fromHex("3B001122805A0180D002030411223344829000");
-    std::shared_ptr<AnswerToReset> lAnswerToReset =
-        std::make_shared<AnswerToReset>(szAnswerToReset);
+    //std::shared_ptr<SamSelector> samSelector =
+    //    std::dynamic_pointer_cast<SamSelector>(
+    //        SamSelector::builder()->samRevision(SamRevision::AUTO).build());
+    //std::shared_ptr<SamSelectionRequest> samSelectionRequest =
+    //    std::make_shared<SamSelectionRequest>(samSelector);
     std::shared_ptr<SelectionStatus> selectionStatus =
-        std::make_shared<SelectionStatus>(lAnswerToReset, nullptr, true);
-    std::vector<std::shared_ptr<ApduResponse>> lResp = {nullptr};
-    std::shared_ptr<SeResponse> seReponse =
-        std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
-    std::shared_ptr<CalypsoSam> calypsoSam =
-        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::CONTACTS, "");
+        std::make_shared<SelectionStatus>(
+            std::make_shared<AnswerToReset>(ByteArrayUtil::fromHex(ATR1)),
+            nullptr,
+            true);
 
-    ASSERT_EQ(SamRevision::S1D, calypsoSam->getSamRevision());
-    ASSERT_EQ(0x80, calypsoSam->getApplicationType());
-    ASSERT_EQ(0xD0, calypsoSam->getApplicationSubType());
-    ASSERT_EQ(0x01, calypsoSam->getPlatform());
-    ASSERT_EQ(0x02, calypsoSam->getSoftwareIssuer());
-    ASSERT_EQ(0x03, calypsoSam->getSoftwareVersion());
-    ASSERT_EQ(0x04, calypsoSam->getSoftwareRevision());
-    ASSERT_EQ("11223344", ByteArrayUtils::toHex(calypsoSam->getSerialNumber()));
+    CalypsoSam calypsoSam(
+        std::make_shared<SeResponse>(
+            true,
+            true,
+            selectionStatus,
+            std::vector<std::shared_ptr<ApduResponse>>{}),
+        TransmissionMode::CONTACTS);
+
+    ASSERT_EQ(calypsoSam.getSamRevision(), SamRevision::S1D);
+    ASSERT_EQ(calypsoSam.getApplicationType(), 0x80);
+    ASSERT_EQ(calypsoSam.getApplicationSubType(), 0xD0);
+    ASSERT_EQ(calypsoSam.getPlatform(), 0x01);
+    ASSERT_EQ(calypsoSam.getSoftwareIssuer(), 0x02);
+    ASSERT_EQ(calypsoSam.getSoftwareVersion(), 0x03);
+    ASSERT_EQ(calypsoSam.getSoftwareRevision(), 0x04);
+    ASSERT_EQ(ByteArrayUtil::toHex(calypsoSam.getSerialNumber()), "11223344");
 }
 
-void CalypsoSamTest::test_CalypsoSam_2()
+/* S1D D1 */
+TEST(CalypsoTestSam, test_CalypsoSam_2)
 {
-    std::vector<uint8_t> szAnswerToReset =
-        ByteArrayUtils::fromHex("3B001122805A0180D102030411223344829000");
-    std::shared_ptr<AnswerToReset> lAnswerToReset =
-        std::make_shared<AnswerToReset>(szAnswerToReset);
+    //std::shared_ptr<SamSelector> samSelector =
+    //    std::dynamic_pointer_cast<SamSelector>(
+    //        SamSelector::builder()->samRevision(SamRevision::AUTO).build());
+    //std::shared_ptr<SamSelectionRequest> samSelectionRequest =
+    //    std::make_shared<SamSelectionRequest>(samSelector);
     std::shared_ptr<SelectionStatus> selectionStatus =
-        std::make_shared<SelectionStatus>(lAnswerToReset, nullptr, true);
+        std::make_shared<SelectionStatus>(
+            std::make_shared<AnswerToReset>(ByteArrayUtil::fromHex(ATR2)),
+            nullptr,
+            true);
 
-    std::vector<std::shared_ptr<ApduResponse>> lResp = {nullptr};
-    std::shared_ptr<SeResponse> seReponse =
-        std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
-    std::shared_ptr<CalypsoSam> calypsoSam =
-        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::CONTACTS, "");
+    CalypsoSam calypsoSam(
+        std::make_shared<SeResponse>(
+            true,
+            true,
+            selectionStatus,
+            std::vector<std::shared_ptr<ApduResponse>>{}),
+        TransmissionMode::CONTACTS);
 
-    ASSERT_EQ(SamRevision::S1D, calypsoSam->getSamRevision());
-    ASSERT_EQ(0xD1, calypsoSam->getApplicationSubType());
+    ASSERT_EQ(calypsoSam.getSamRevision(), SamRevision::S1D);
+    ASSERT_EQ(calypsoSam.getApplicationSubType(), 0xD1);
 }
 
-void CalypsoSamTest::test_CalypsoSam_3()
+/* S1D D2 */
+TEST(CalypsoTestSam, test_CalypsoSam_3)
 {
-    std::vector<uint8_t> szAnswerToReset =
-        ByteArrayUtils::fromHex("3B001122805A0180D202030411223344829000");
-    std::shared_ptr<AnswerToReset> lAnswerToReset =
-        std::make_shared<AnswerToReset>(szAnswerToReset);
+    //std::shared_ptr<SamSelector> samSelector =
+    //    std::dynamic_pointer_cast<SamSelector>(
+    //        SamSelector::builder()->samRevision(SamRevision::AUTO).build());
+    //std::shared_ptr<SamSelectionRequest> samSelectionRequest =
+    //    std::make_shared<SamSelectionRequest>(samSelector);
     std::shared_ptr<SelectionStatus> selectionStatus =
-        std::make_shared<SelectionStatus>(lAnswerToReset, nullptr, true);
+        std::make_shared<SelectionStatus>(
+            std::make_shared<AnswerToReset>(ByteArrayUtil::fromHex(ATR3)),
+            nullptr,
+            true);
 
-    std::vector<std::shared_ptr<ApduResponse>> lResp = {nullptr};
-    std::shared_ptr<SeResponse> seReponse =
-        std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
-    std::shared_ptr<CalypsoSam> calypsoSam =
-        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::CONTACTS, "");
+    CalypsoSam calypsoSam(
+        std::make_shared<SeResponse>(
+            true,
+            true,
+            selectionStatus,
+            std::vector<std::shared_ptr<ApduResponse>>{}),
+        TransmissionMode::CONTACTS);
 
-    ASSERT_EQ(SamRevision::S1D, calypsoSam->getSamRevision());
-    ASSERT_EQ(0xD2, calypsoSam->getApplicationSubType());
+    ASSERT_EQ(calypsoSam.getSamRevision(), SamRevision::S1D);
+    ASSERT_EQ(calypsoSam.getApplicationSubType(), 0xD2);
 }
 
-void CalypsoSamTest::test_CalypsoSam_4()
+/* C1 */
+TEST(CalypsoTestSam, test_CalypsoSam_4)
 {
-    std::vector<uint8_t> szAnswerToReset =
-        ByteArrayUtils::fromHex("3B001122805A0180C102030411223344829000");
-    std::shared_ptr<AnswerToReset> lAnswerToReset =
-        std::make_shared<AnswerToReset>(szAnswerToReset);
+    //std::shared_ptr<SamSelector> samSelector =
+    //    std::dynamic_pointer_cast<SamSelector>(
+    //        SamSelector::builder()->samRevision(SamRevision::AUTO).build());
+    //std::shared_ptr<SamSelectionRequest> samSelectionRequest =
+    //    std::make_shared<SamSelectionRequest>(samSelector);
     std::shared_ptr<SelectionStatus> selectionStatus =
-        std::make_shared<SelectionStatus>(lAnswerToReset, nullptr, true);
+        std::make_shared<SelectionStatus>(
+            std::make_shared<AnswerToReset>(ByteArrayUtil::fromHex(ATR4)),
+            nullptr,
+            true);
 
-    std::vector<std::shared_ptr<ApduResponse>> lResp = {nullptr};
-    std::shared_ptr<SeResponse> seReponse =
-        std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
-    std::shared_ptr<CalypsoSam> calypsoSam =
-        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::CONTACTS, "");
+    CalypsoSam calypsoSam(
+        std::make_shared<SeResponse>(
+            true,
+            true,
+            selectionStatus,
+            std::vector<std::shared_ptr<ApduResponse>>{}),
+        TransmissionMode::CONTACTS);
 
-    ASSERT_EQ(SamRevision::C1, calypsoSam->getSamRevision());
-    ASSERT_EQ(0xC1, calypsoSam->getApplicationSubType());
+    ASSERT_EQ(calypsoSam.getSamRevision(), SamRevision::C1);
+    ASSERT_EQ(calypsoSam.getApplicationSubType(), 0xC1);
 }
 
-void CalypsoSamTest::test_CalypsoSam_5()
+/* E1 */
+TEST(CalypsoTestSam, test_CalypsoSam_5)
 {
-    std::vector<uint8_t> szAnswerToReset =
-        ByteArrayUtils::fromHex("3B001122805A0180E102030411223344829000");
-    std::shared_ptr<AnswerToReset> lAnswerToReset =
-        std::make_shared<AnswerToReset>(szAnswerToReset);
+    //std::shared_ptr<SamSelector> samSelector =
+    //    std::dynamic_pointer_cast<SamSelector>(
+    //        SamSelector::builder()->samRevision(SamRevision::AUTO).build());
+    //std::shared_ptr<SamSelectionRequest> samSelectionRequest =
+    //    std::make_shared<SamSelectionRequest>(samSelector);
     std::shared_ptr<SelectionStatus> selectionStatus =
-        std::make_shared<SelectionStatus>(lAnswerToReset, nullptr, true);
+        std::make_shared<SelectionStatus>(
+            std::make_shared<AnswerToReset>(ByteArrayUtil::fromHex(ATR5)),
+            nullptr,
+            true);
 
-    std::vector<std::shared_ptr<ApduResponse>> lResp = {nullptr};
-    std::shared_ptr<SeResponse> seReponse =
-        std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
-    std::shared_ptr<CalypsoSam> calypsoSam =
-        std::make_shared<CalypsoSam>(seReponse, TransmissionMode::CONTACTS, "");
+    CalypsoSam calypsoSam(
+        std::make_shared<SeResponse>(
+            true,
+            true,
+            selectionStatus,
+            std::vector<std::shared_ptr<ApduResponse>>{}),
+        TransmissionMode::CONTACTS);
 
-    ASSERT_EQ(SamRevision::S1E, calypsoSam->getSamRevision());
-    ASSERT_EQ(0xE1, calypsoSam->getApplicationSubType());
+    ASSERT_EQ(calypsoSam.getSamRevision(), SamRevision::S1E);
+    ASSERT_EQ(calypsoSam.getApplicationSubType(), 0xE1);
 }
 
-void CalypsoSamTest::test_CalypsoSam_6()
+/* Unrecognized E2 */
+TEST(CalypsoTestSam, test_CalypsoSam_6)
 {
-    std::vector<uint8_t> szAnswerToReset =
-        ByteArrayUtils::fromHex("3B001122805A0180E202030411223344829000");
-    std::shared_ptr<AnswerToReset> lAnswerToReset =
-        std::make_shared<AnswerToReset>(szAnswerToReset);
+    //std::shared_ptr<SamSelector> samSelector =
+    //    std::dynamic_pointer_cast<SamSelector>(
+    //        SamSelector::builder()->samRevision(SamRevision::AUTO).build());
+    //std::shared_ptr<SamSelectionRequest> samSelectionRequest =
+    //    std::make_shared<SamSelectionRequest>(samSelector);
     std::shared_ptr<SelectionStatus> selectionStatus =
-        std::make_shared<SelectionStatus>(lAnswerToReset, nullptr, true);
+        std::make_shared<SelectionStatus>(
+            std::make_shared<AnswerToReset>(ByteArrayUtil::fromHex(ATR6)),
+            nullptr,
+            true);
 
-    std::vector<std::shared_ptr<ApduResponse>> lResp = {nullptr};
-    std::shared_ptr<SeResponse> seReponse =
-        std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
-    try {
-        std::shared_ptr<CalypsoSam> calypsoSam = std::make_shared<CalypsoSam>(
-            seReponse, TransmissionMode::CONTACTS, "");
-    } catch (...) {
-    }
+    EXPECT_THROW(
+        std::make_shared<CalypsoSam>(
+            std::make_shared<SeResponse>(
+                true,
+                true,
+                selectionStatus,
+                std::vector<std::shared_ptr<ApduResponse>>{}),
+            TransmissionMode::CONTACTS),
+        IllegalStateException);
 }
 
-void CalypsoSamTest::test_CalypsoSam_7()
+/* Bad Calypso SAM ATR (0000 instead of 9000) */
+TEST(CalypsoTestSam, test_CalypsoSam_7)
 {
-    std::vector<uint8_t> szAnswerToReset =
-        ByteArrayUtils::fromHex("3B001122805A0180E202030411223344820000");
-    std::shared_ptr<AnswerToReset> lAnswerToReset =
-        std::make_shared<AnswerToReset>(szAnswerToReset);
+    //std::shared_ptr<SamSelector> samSelector =
+    //    std::dynamic_pointer_cast<SamSelector>(
+    //        SamSelector::builder()->samRevision(SamRevision::AUTO).build());
+    //std::shared_ptr<SamSelectionRequest> samSelectionRequest =
+    //    std::make_shared<SamSelectionRequest>(samSelector);
     std::shared_ptr<SelectionStatus> selectionStatus =
-        std::make_shared<SelectionStatus>(lAnswerToReset, nullptr, true);
+        std::make_shared<SelectionStatus>(
+            std::make_shared<AnswerToReset>(ByteArrayUtil::fromHex(ATR7)),
+            nullptr,
+            true);
 
-    std::vector<std::shared_ptr<ApduResponse>> lResp = {nullptr};
-    std::shared_ptr<SeResponse> seReponse =
-        std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
-
-    try {
-        /* code */
-        std::shared_ptr<CalypsoSam> calypsoSam = std::make_shared<CalypsoSam>(
-            seReponse, TransmissionMode::CONTACTS, "");
-    } catch (...) {
-    }
+    EXPECT_THROW(
+        std::make_shared<CalypsoSam>(
+            std::make_shared<SeResponse>(
+                true,
+                true,
+                selectionStatus,
+                std::vector<std::shared_ptr<ApduResponse>>{}),
+            TransmissionMode::CONTACTS),
+        IllegalStateException);
 }
 
-void CalypsoSamTest::test_CalypsoSam_8()
+/* Bad Calypso SAM ATR (empty array) */
+TEST(CalypsoTestSam, test_CalypsoSam_8)
 {
-    std::vector<uint8_t> szAnswerToReset = ByteArrayUtils::fromHex("");
-    std::shared_ptr<AnswerToReset> lAnswerToReset =
-        std::make_shared<AnswerToReset>(szAnswerToReset);
+    //std::shared_ptr<SamSelector> samSelector =
+    //    std::dynamic_pointer_cast<SamSelector>(
+    //        SamSelector::builder()->samRevision(SamRevision::AUTO).build());
+    //std::shared_ptr<SamSelectionRequest> samSelectionRequest =
+    //    std::make_shared<SamSelectionRequest>(samSelector);
     std::shared_ptr<SelectionStatus> selectionStatus =
-        std::make_shared<SelectionStatus>(lAnswerToReset, nullptr, true);
+        std::make_shared<SelectionStatus>(
+            std::make_shared<AnswerToReset>(ByteArrayUtil::fromHex("")),
+            nullptr,
+            true);
 
-    std::vector<std::shared_ptr<ApduResponse>> lResp = {nullptr};
-    std::shared_ptr<SeResponse> seReponse =
-        std::make_shared<SeResponse>(true, true, selectionStatus, lResp);
-    try {
-        std::shared_ptr<CalypsoSam> calypsoSam = std::make_shared<CalypsoSam>(
-            seReponse, TransmissionMode::CONTACTS, "");
-    } catch (...) {
-    }
-}
-}
-}
-}
-
-TEST(CalypsoSamTest, testA)
-{
-    std::shared_ptr<CalypsoSamTest> LocalTest =
-        std::make_shared<CalypsoSamTest>();
-    LocalTest->test_CalypsoSam_1();
+    EXPECT_THROW(
+        std::make_shared<CalypsoSam>(
+            std::make_shared<SeResponse>(
+                true,
+                true,
+                selectionStatus,
+                std::vector<std::shared_ptr<ApduResponse>>{}),
+            TransmissionMode::CONTACTS),
+        IllegalStateException);
 }
 
-TEST(CalypsoSamTest, testB)
-{
-    std::shared_ptr<CalypsoSamTest> LocalTest =
-        std::make_shared<CalypsoSamTest>();
-    LocalTest->test_CalypsoSam_2();
-}
-
-TEST(CalypsoSamTest, testC)
-{
-    std::shared_ptr<CalypsoSamTest> LocalTest =
-        std::make_shared<CalypsoSamTest>();
-    LocalTest->test_CalypsoSam_3();
-}
-
-TEST(CalypsoSamTest, testD)
-{
-    std::shared_ptr<CalypsoSamTest> LocalTest =
-        std::make_shared<CalypsoSamTest>();
-    LocalTest->test_CalypsoSam_4();
-}
-
-TEST(CalypsoSamTest, testE)
-{
-    std::shared_ptr<CalypsoSamTest> LocalTest =
-        std::make_shared<CalypsoSamTest>();
-    LocalTest->test_CalypsoSam_5();
-}
-
-TEST(CalypsoSamTest, testF)
-{
-    std::shared_ptr<CalypsoSamTest> LocalTest =
-        std::make_shared<CalypsoSamTest>();
-    LocalTest->test_CalypsoSam_6();
-}
-
-TEST(CalypsoSamTest, testG)
-{
-    std::shared_ptr<CalypsoSamTest> LocalTest =
-        std::make_shared<CalypsoSamTest>();
-    LocalTest->test_CalypsoSam_7();
-}
-
-TEST(CalypsoSamTest, testH)
-{
-    std::shared_ptr<CalypsoSamTest> LocalTest =
-        std::make_shared<CalypsoSamTest>();
-    LocalTest->test_CalypsoSam_8();
-}

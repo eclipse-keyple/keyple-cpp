@@ -1,28 +1,35 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
-#include "CalypsoClassicTransactionEngine.h"
+/* Common */
+#include "IllegalStateException.h"
 #include "LoggerFactory.h"
+
+/* Core */
 #include "SeCommonProtocols.h"
 #include "SeProxyService.h"
-#include "StubCalypsoClassic.h"
-#include "StubSamCalypsoClassic.h"
-#include "StubProtocolSetting.h"
 #include "StubPlugin.h"
 #include "StubPluginFactory.h"
 #include "StubReader.h"
 
+/* Examples */
+#include "CalypsoClassicTransactionEngine.h"
+#include "StubCalypsoClassic.h"
+#include "StubSamCalypsoClassic.h"
+#include "StubProtocolSetting.h"
+
+using namespace keyple::common;
+using namespace keyple::common::exception;
 using namespace keyple::example::calypso::common::transaction;
 using namespace keyple::example::calypso::pc::stub::se;
 using namespace keyple::plugin::stub;
@@ -48,21 +55,20 @@ int main(int argc, char** argv)
     const std::string STUB_PLUGIN_NAME = "stub1";
 
     /* Register Stub plugin in the platform */
-    seProxyService.registerPlugin(new StubPluginFactory(STUB_PLUGIN_NAME));
-    ReaderPlugin* stubPlugin = seProxyService.getPlugin(STUB_PLUGIN_NAME);
+    std::shared_ptr<ReaderPlugin> stubPlugin =
+        seProxyService.registerPlugin(std::make_shared<StubPluginFactory>(STUB_PLUGIN_NAME));
 
     /* Setting up the transaction engine (implements Observer) */
     std::shared_ptr<CalypsoClassicTransactionEngine> transactionEngine =
         std::make_shared<CalypsoClassicTransactionEngine>();
 
 
-    /*
-     * Plug PO and SAM stub readers.
-     */
-    dynamic_cast<StubPlugin*>(stubPlugin)->plugStubReader("poReader", true);
-    dynamic_cast<StubPlugin*>(stubPlugin)->plugStubReader("samReader", true);
+    /* Plug PO and SAM stub readers */
+    std::dynamic_pointer_cast<StubPlugin>(stubPlugin)->plugStubReader("poReader", true);
+    std::dynamic_pointer_cast<StubPlugin>(stubPlugin)->plugStubReader("samReader", true);
 
-    std::shared_ptr<StubReader> poReader = nullptr, samReader = nullptr;
+    std::shared_ptr<StubReader> poReader = nullptr;
+    std::shared_ptr<StubReader> samReader = nullptr;
     try {
         poReader = std::dynamic_pointer_cast<StubReader>(
             stubPlugin->getReader("poReader"));
@@ -73,9 +79,8 @@ int main(int argc, char** argv)
     }
 
     /* Both readers are expected not null */
-    if (poReader == samReader || poReader == nullptr || samReader == nullptr) {
+    if (poReader == samReader || poReader == nullptr || samReader == nullptr)
         throw IllegalStateException("Bad PO/SAM setup");
-    }
 
     logger->info("PO Reader  NAME = %\n", poReader->getName());
     logger->info("SAM Reader  NAME = %\n", samReader->getName());
@@ -102,14 +107,12 @@ int main(int argc, char** argv)
     samReader->insertSe(samSE);
 
     /* Set the default selection operation */
-    (std::static_pointer_cast<ObservableReader>(poReader))
-        ->setDefaultSelectionRequest(
-            transactionEngine->preparePoSelection(),
-            ObservableReader::NotificationMode::MATCHED_ONLY);
+    poReader->setDefaultSelectionRequest(transactionEngine->preparePoSelection(),
+                                         ObservableReader::NotificationMode::MATCHED_ONLY,
+                                         ObservableReader::PollingMode::REPEATING);
 
     /* Set the transactionEngine as Observer of the PO reader */
-    (std::static_pointer_cast<ObservableReader>(poReader))
-        ->addObserver(transactionEngine);
+    poReader->addObserver(transactionEngine);
 
     logger->info("Insert stub PO SE\n");
     poReader->insertSe(calypsoStubSe);

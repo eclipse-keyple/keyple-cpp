@@ -1,103 +1,118 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <memory>
 
 /* Common */
+#include "Integer.h"
 #include "KeypleCoreExport.h"
-#include "exceptionhelper.h"
 
 /* Core */
+#include "AbstractApduCommandBuilder.h"
 #include "ApduResponse.h"
+#include "KeypleSeCommandException.h"
 
 namespace keyple {
 namespace core {
 namespace command {
 
+using namespace keyple::core::command::exception;
 using namespace keyple::core::seproxy::message;
 
 /**
-    * Base class for parsing APDU
-    */
-class KEYPLECORE_API AbstractApduResponseParser
-: public std::enable_shared_from_this<AbstractApduResponseParser> {
+ * Base class for parsing APDU
+ */
+class KEYPLECORE_API AbstractApduResponseParser {
 public:
     /**
      * Status code properties
      */
-    class KEYPLECORE_API StatusProperties
-    : public std::enable_shared_from_this<StatusProperties> {
+    class KEYPLECORE_API StatusProperties final {
     public:
         /**
-         * A map with the double byte of a status as key, and the successful
-         * property and ASCII text information as data.
+         * Create a successful status.
          *
-         * @param successful set successful status
-         * @param information additional information
+         * @param information the status information
          */
-        StatusProperties(bool successful, const std::string& information);
+        StatusProperties(const std::string& information);
 
         /**
+         * Create an error status.<br>
+         * If {@code exceptionClass} is null, then a successful status is created.
          *
+         * @param information the status information
+         * @param exceptionClass the associated exception class
          */
-        virtual ~StatusProperties()
-        {
-        }
+        StatusProperties(const std::string& information, const std::type_info& exceptionClass);
 
         /**
          * Gets the successful.
          *
          * @return the successful
          */
-        virtual bool isSuccessful();
+        bool isSuccessful() const;
 
         /**
-         * Gets the information.
-         *
-         * @return the information
+         * @return the status information
          */
-        virtual std::string getInformation();
+        const std::string& getInformation() const;
+
+        /**
+         * @return the nullable exception class
+         */
+        const std::type_info&  getExceptionClass() const;
 
     private:
         /**
-         * The successful
+         * The successful indicator
          */
-        const bool successful;
+        const bool mSuccessful;
 
         /**
-         * The information
+         * The status information
          */
-        const std::string information;
+        const std::string mInformation;
+
+        /**
+         * The associated exception class in case of error status
+         */
+        const std::type_info& mExceptionClass;
     };
 
     /**
      * the generic abstract constructor to build a parser of the APDU response.
      *
      * @param response response to parse
+     * @param builder the reference of the builder that created the parser
      */
-    AbstractApduResponseParser(const std::shared_ptr<ApduResponse>& response);
+    AbstractApduResponseParser(const std::shared_ptr<ApduResponse> response,
+                               AbstractApduCommandBuilder* builder);
 
+    /**
+     * Copy constructor
+     * 
+     * Required by macOS/CLang...
+     */
+    AbstractApduResponseParser(const AbstractApduResponseParser& aarp) = default;
+    
     /**
      *
      */
-    virtual ~AbstractApduResponseParser()
-    {
-    }
+    virtual ~AbstractApduResponseParser() = default;
 
     /**
      * Sets the Apdu response to parse
@@ -109,25 +124,33 @@ public:
     /**
      * Gets the apdu response.
      *
-     * @return the ApduResponse instance.
+     * @return the APDU response.
      */
     const std::shared_ptr<ApduResponse> getApduResponse() const;
 
     /**
-     * Checks if is successful.
-     *
-     * @return if the status is successful from the statusTable according to the
-     *         current status code.
+     * @return the associated builder reference
+     */
+    virtual AbstractApduCommandBuilder* getBuilder() const;
+
+    /**
+     * @return true if the status is successful from the statusTable according to the current status
+     *         code.
      */
     virtual bool isSuccessful() const;
 
     /**
-     * Gets the status information.
-     *
-     * @return the ASCII message from the statusTable for the current status
-     *         code.
+     * @return the ASCII message from the statusTable for the current status code.
      */
     std::string getStatusInformation() const;
+
+    /**
+     * This method check the status code.<br>
+     * If status code is not referenced, then status is considered unsuccessful.
+     *
+     * @throw KeypleSeCommandException if status is not successful.
+     */
+    virtual void checkStatus() const;
 
 protected:
     /**
@@ -136,43 +159,52 @@ protected:
     std::shared_ptr<ApduResponse> mResponse;
 
     /**
-     *
+     * Parsers are usually created by their associated builder. The CalypsoSam field maintains a
+     * link between the builder and the parser in order to allow the parser to access the builder
+     * parameters that were used to create the command (e.g. SFI, registration number, etc.).
      */
-    static std::unordered_map<int, std::shared_ptr<StatusProperties>>
-        STATUS_TABLE;
+    AbstractApduCommandBuilder* mBuilder;
 
     /**
-     * Get the internal status table
      *
-     * @return Status table
      */
-    virtual std::unordered_map<int, std::shared_ptr<StatusProperties>>
-        getStatusTable() const;
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
+
+    /**
+     * Build a command exception.<br>
+     * This method should be override in subclasses in order to create specific exceptions.
+     *
+     * @param exceptionClass the exception class
+     * @param message the message
+     * @param commandRef the command reference
+     * @param statusCode the status code
+     * @return a new instance not null
+     */
+    virtual const KeypleSeCommandException buildCommandException(
+            const std::type_info& exceptionClass,
+            const std::string& message,
+            const std::shared_ptr<SeCommand> commandRef,
+            const int statusCode) const;
+
+    /**
+     * @return the internal status table
+     */
+    virtual const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable() const;
+
+    /**
+     * Gets the associated command reference.<br>
+     * By default, the command reference is retrieved from the associated builder.
+     *
+     * @return a nullable command reference
+     */
+    virtual const std::shared_ptr<SeCommand> getCommandRef() const;
 
 private:
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        StaticConstructor();
-    };
 
     /**
-     *
+     * @return the properties associated to the response status code
      */
-    static AbstractApduResponseParser::StaticConstructor staticConstructor;
-
-    /**
-     *
-     */
-    int getStatusCode() const;
-
-    /**
-     *
-     */
-    std::shared_ptr<StatusProperties> getPropertiesForStatusCode() const;
+    const std::shared_ptr<StatusProperties> getStatusCodeProperties() const;
 };
 
 }

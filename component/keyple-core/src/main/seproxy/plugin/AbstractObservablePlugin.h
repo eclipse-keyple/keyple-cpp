@@ -1,16 +1,15 @@
-/******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
- * https://www.calypsonet-asso.org/                                           *
- *                                                                            *
- * See the NOTICE file(s) distributed with this work for additional           *
- * information regarding copyright ownership.                                 *
- *                                                                            *
- * This program and the accompanying materials are made available under the   *
- * terms of the Eclipse Public License 2.0 which is available at              *
- * http://www.eclipse.org/legal/epl-2.0                                       *
- *                                                                            *
- * SPDX-License-Identifier: EPL-2.0                                           *
- ******************************************************************************/
+/**************************************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
 
 #pragma once
 
@@ -19,7 +18,7 @@
 /* Core */
 #include "AbstractPlugin.h"
 #include "KeypleCoreExport.h"
-#include "ObservablePlugin.h"
+#include "ObservablePluginNotifier.h"
 #include "PluginEvent.h"
 
 /* Common */
@@ -30,14 +29,15 @@ namespace core {
 namespace seproxy {
 namespace plugin {
 
-
 /**
  * The {@link AbstractObservablePlugin} class provides the means to observe a
  * plugin (insertion/removal of readers).
  */
 class KEYPLECORE_API AbstractObservablePlugin
-: public AbstractPlugin, public virtual ObservablePlugin {
+: public AbstractPlugin, public virtual ObservablePluginNotifier {
 public:
+    using AbstractPlugin::getName;
+
     /**
      * Add a plugin observer.
      * <p>
@@ -46,8 +46,7 @@ public:
      *
      * @param observer the observer object
      */
-    virtual void addObserver(
-        const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+    virtual void addObserver(const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
         override;
 
     /**
@@ -57,8 +56,7 @@ public:
      *
      * @param observer the observer object
      */
-    virtual void removeObserver(
-        const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
+    virtual void removeObserver(const std::shared_ptr<ObservablePlugin::PluginObserver> observer)
         override;
 
     /**
@@ -78,16 +76,21 @@ public:
      *
      * @param event the event
      */
-    virtual void notifyObservers(const std::shared_ptr<PluginEvent> event)
-        final;
+    virtual void notifyObservers(const std::shared_ptr<PluginEvent> event) final;
 
 protected:
     /**
      * Instantiates a observable plugin.
      *
      * @param name name of the plugin
+     * @throw KeypleReaderException when an issue is raised with reader
      */
-    AbstractObservablePlugin(const std::string& name);
+    explicit AbstractObservablePlugin(const std::string& name);
+
+    /**
+     *
+     */
+    virtual ~AbstractObservablePlugin() = default;
 
 private:
     /**

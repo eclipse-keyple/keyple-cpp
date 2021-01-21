@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2018 Calypso Networks Association                            *
+ * Copyright (c) 2020 Calypso Networks Association                            *
  * https://www.calypsonet-asso.org/                                           *
  *                                                                            *
  * See the NOTICE file(s) distributed with this work for additional           *
@@ -29,6 +29,7 @@
 /* Calypso */
 #include "AbstractPoResponseParser.h"
 #include "AbstractApduResponseParser.h"
+#include "GetDataFciCmdBuild.h"
 
 namespace keyple {
 namespace calypso {
@@ -37,6 +38,7 @@ namespace po {
 namespace parser {
 
 using namespace keyple::calypso::command::po;
+using namespace keyple::calypso::command::po::builder;
 using namespace keyple::core::seproxy::message;
 using namespace keyple::core::util::bertlv;
 using namespace keyple::common;
@@ -74,15 +76,16 @@ public:
      * All fields are pre-initialized to handle the case where the parsing fails.
      * <p>
      *
-     * @param selectApplicationResponse the select application response from Get
-     *        Data APDU command
+     * @param response the select application response from Get Data APDU command
+     * @param builder the reference to the builder that created this parser
      */
-    GetDataFciRespPars(std::shared_ptr<ApduResponse> selectApplicationResponse);
+    GetDataFciRespPars(std::shared_ptr<ApduResponse> response,
+                       GetDataFciCmdBuild* builder);
 
     /**
      *
      */
-    bool isValidCalypsoFCI();
+    bool isValidCalypsoFCI() const;
 
     /**
      *
@@ -97,67 +100,12 @@ public:
     /**
      *
      */
-    uint8_t getBufferSizeIndicator();
+    const std::vector<uint8_t>& getDiscretionaryData() const;
 
     /**
      *
      */
-    int getBufferSizeValue();
-
-    /**
-     *
-     */
-    uint8_t getPlatformByte();
-
-    /**
-     *
-     */
-    uint8_t getApplicationTypeByte();
-
-    /**
-     *
-     */
-    bool isRev3_2ModeAvailable();
-
-    /**
-     *
-     */
-    bool isRatificationCommandRequired();
-
-    /**
-     *
-     */
-    bool hasCalypsoStoredValue();
-
-    /**
-     *
-     */
-    bool hasCalypsoPin();
-
-    /**
-     *
-     */
-    uint8_t getApplicationSubtypeByte();
-
-    /**
-     *
-     */
-    uint8_t getSoftwareIssuerByte();
-
-    /**
-     *
-     */
-    uint8_t getSoftwareVersionByte();
-
-    /**
-     *
-     */
-    uint8_t getSoftwareRevisionByte();
-
-    /**
-     *
-     */
-    bool isDfInvalidated();
+    bool isDfInvalidated() const;
 
 protected:
     /**
@@ -169,39 +117,14 @@ protected:
     /**
      *
      */
-    std::unordered_map<int, std::shared_ptr<StatusProperties>>
-    getStatusTable() const override;
-
-    /**
-     *
-     */
-    std::shared_ptr<GetDataFciRespPars> shared_from_this()
-    {
-        return std::static_pointer_cast<GetDataFciRespPars>(
-            AbstractPoResponseParser::shared_from_this());
-    }
+    const std::map<int, std::shared_ptr<StatusProperties>>& getStatusTable()
+        const override;
 
 private:
     /**
      *
      */
-    static std::unordered_map<
-        int, std::shared_ptr<AbstractApduResponseParser::StatusProperties>>
-        STATUS_TABLE;
-
-    /**
-     *
-     */
-    class StaticConstructor
-    : public std::enable_shared_from_this<StaticConstructor> {
-    public:
-        StaticConstructor();
-    };
-
-    /**
-     *
-     */
-    static GetDataFciRespPars::StaticConstructor staticConstructor;
+    static const std::map<int, std::shared_ptr<StatusProperties>> STATUS_TABLE;
 
     /**
      * Buffer indicator to buffer size lookup table
@@ -247,25 +170,12 @@ private:
     /**
      * Attributes result of th FCI parsing
      */
-    bool isDfInvalidated_Renamed   = false;
-    bool isValidCalypsoFCI_Renamed = false;
-    std::vector<uint8_t> dfName;
-    std::vector<uint8_t> applicationSN;
-    uint8_t siBufferSizeIndicator = 0;
-    uint8_t siPlatform            = 0;
-    uint8_t siApplicationType     = 0;
-    uint8_t siApplicationSubtype  = 0;
-    uint8_t siSoftwareIssuer      = 0;
-    uint8_t siSoftwareVersion     = 0;
-    uint8_t siSoftwareRevision    = 0;
+    bool mIsDfInvalidated = false;
+    bool mIsValidCalypsoFCI = false;
 
-    /**
-     * Application type bitmasks features
-     */
-    static constexpr uint8_t APP_TYPE_WITH_CALYPSO_PIN              = 0x01;
-    static constexpr uint8_t APP_TYPE_WITH_CALYPSO_SV               = 0x02;
-    static constexpr uint8_t APP_TYPE_RATIFICATION_COMMAND_REQUIRED = 0x04;
-    static constexpr uint8_t APP_TYPE_CALYPSO_REV_32_MODE           = 0x08;
+    std::vector<uint8_t> mDfName;
+    std::vector<uint8_t> mApplicationSN;
+    std::vector<uint8_t> mDiscretionaryData;
 };
 
 }
