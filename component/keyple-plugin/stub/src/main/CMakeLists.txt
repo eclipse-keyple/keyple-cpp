@@ -48,7 +48,10 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../keyple-common/src/main/exception
 )
 
-ADD_LIBRARY(${LIBRARY_NAME} SHARED
+ADD_LIBRARY(
+	${LIBRARY_NAME}
+
+	${LIBRARY_TYPE}
 
 	${CMAKE_CURRENT_SOURCE_DIR}/StubPluginFactory.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/StubPluginImpl.cpp

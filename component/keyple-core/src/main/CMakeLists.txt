@@ -50,7 +50,10 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-calypso/src/main/command/sam
 )
 
-ADD_LIBRARY(${LIBRARY_NAME} SHARED
+ADD_LIBRARY(
+	${LIBRARY_NAME}
+
+	${LIBRARY_TYPE}
 
 	# command
 	${CMAKE_CURRENT_SOURCE_DIR}/command/AbstractApduCommandBuilder.cpp

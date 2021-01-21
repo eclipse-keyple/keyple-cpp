@@ -68,7 +68,10 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../keyple-common/src/main/exception
 )
 
-ADD_LIBRARY(${LIBRARY_NAME} SHARED
+ADD_LIBRARY(
+	${LIBRARY_NAME}
+
+	${LIBRARY_TYPE}
 
 	# calypso - command
 	${CMAKE_CURRENT_SOURCE_DIR}/command/PoClass.cpp
