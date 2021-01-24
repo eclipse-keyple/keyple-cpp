@@ -7,7 +7,5 @@
 #
 
 # Add projects
-IF(NOT TOOLCHAIN_FILE MATCHES "ios-macos.cmake")
-	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/pcsc/)
-ENDIF()
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/pcsc/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/stub/)
