@@ -139,7 +139,7 @@ void StubPluginImpl::unplugStubReaders(const std::set<std::string>& readerNames,
 
     std::list<std::shared_ptr<StubReaderImpl>> readersToDelete;
 
-    for (const std::string name : readerNames) {
+    for (const std::string& name : readerNames) {
         try {
             readersToDelete.push_back(std::dynamic_pointer_cast<StubReaderImpl>(getReader(name)));
         } catch (KeypleReaderNotFoundException& e) {
