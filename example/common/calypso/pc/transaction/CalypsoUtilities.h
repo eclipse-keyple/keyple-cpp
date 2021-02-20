@@ -43,7 +43,6 @@ public:
     /**
      * Get the default reader for PO communications
      *
-     * @param seProxyService the current ProxyService
      * @return a SeReader object
      * @throw KeypleException if an error occurred
      */
@@ -52,7 +51,6 @@ public:
     /**
      * Get the default reader for SAM communications
      *
-     * @param seProxyService the current ProxyService
      * @return a keyple::core::selection::SeResource<T> object
      * @throw KeypleException if an error occurred
      */

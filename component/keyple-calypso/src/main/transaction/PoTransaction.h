@@ -865,7 +865,6 @@ private:
      * <li>Returns the corresponding PO SeResponse.</li>
      * </ul>
      *
-     * @param poBuilderParsers the po commands inside session
      * @param channelControl indicated if the SE channel of the PO reader must
      *        be closed after the last command
      * @throw CalypsoPoTransactionException if a functional error occurs
