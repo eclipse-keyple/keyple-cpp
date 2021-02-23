@@ -17,6 +17,9 @@
 #include "AbstractMonitoringJob.h"
 #include "AbstractObservableState.h"
 
+/* Common */
+#include "Thread.h"
+
 namespace keyple {
 namespace core {
 namespace seproxy {
@@ -48,6 +51,8 @@ void ExecutorService::run()
             /* Remove from vector */
             mPool.erase(mPool.begin());
         }
+
+        Thread::sleep(100);
     }
 
     mTerminated = true;
