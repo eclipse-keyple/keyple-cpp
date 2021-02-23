@@ -18,6 +18,7 @@ SET(XCODE_IOS_PLATFORM iphoneos)
 SET(IOS_ARCH arm64)
 SET(CMAKE_OSX_ARCHITECTURES ${IOS_ARCH} CACHE STRING "Build architecture for iOS")
 
+
 # If user did not specify the SDK root to use, then query xcodebuild for it.
 EXECUTE_PROCESS(
     COMMAND xcodebuild -version -sdk ${XCODE_IOS_PLATFORM} Path
@@ -36,9 +37,6 @@ EXECUTE_PROCESS(
     OUTPUT_VARIABLE IOS_SDK_VERSION
     ERROR_QUIET
     OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-SET(IOS_DEPLOYMENT_TARGET "${IOS_SDK_VERSION}")
-SET(XCODE_IOS_PLATFORM_VERSION_FLAGS "-m${XCODE_IOS_PLATFORM}-version-min=${IOS_DEPLOYMENT_TARGET}")
 
 # Configure libtool to be used instead of ar + ranlib to build static libraries.
 # This is required on Xcode 7+, but should also work on previous versions of
@@ -76,17 +74,22 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-overloaded-virtual")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic-errors")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${XCODE_IOS_PLATFORM_VERSION_FLAGS}")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mios-version-min=13.0")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden ")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fobjc-abi-version=2")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fobjc-arc")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fembed-bitcode")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++")
+
+SET(CMAKE_OBJCXX_FLAGS "${CMAKE_OBJCXX_FLAGS} -fembed-bitcode")
 
 # Linker
 #SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} --sysroot=${CLANG_SYSROOT_DIR}")
 #SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINK_FLAGS} --sysroot=${CLANG_SYSROOT_DIR} -L${CLANG_SYSROOT_DIR}")
-SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${XCODE_IOS_PLATFORM_VERSION_FLAGS}")
+SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -mios-version-min=13.0")
 SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -Wl,-search_paths_first")
 
 # Libraries type
 SET(LIBRARY_TYPE STATIC)
+
