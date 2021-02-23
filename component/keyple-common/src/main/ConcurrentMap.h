@@ -120,9 +120,9 @@ public:
     }
 
     /**
-     * 
+     *
      */
-    iterator erase (const_iterator position)
+    iterator erase(const_iterator position)
     {
         const std::lock_guard<std::mutex> lock(mMutex);
         return mMap.erase(position);
@@ -208,6 +208,20 @@ public:
     {
         const std::lock_guard<std::mutex> lock(mMutex);
         return mMap.size();
+    }
+
+    /**
+     * Returns a reference to the mapped value of the element with key equivalent to key. If no such
+     * element exists, an exception of type std::out_of_range is thrown.
+     */
+    V& at(const K& key)
+    {
+        return mMap.at(key);
+    }
+
+    const V& at(const K& key) const
+    {
+        return mMap.at(key);
     }
 
     /**
