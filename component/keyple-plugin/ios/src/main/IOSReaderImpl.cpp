@@ -197,7 +197,7 @@ bool IOSReaderImpl::waitForCardPresent()
 
 void IOSReaderImpl::stopWaitForCard()
 {
-    mLogger->trace("[%] waitForCardPresent\n", getName());
+    mLogger->trace("[%] stopWaitForCard\n", getName());
 
     mLoopWaitSe = false;
 

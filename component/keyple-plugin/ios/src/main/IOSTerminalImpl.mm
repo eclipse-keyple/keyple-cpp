@@ -120,7 +120,10 @@ auto logger = LoggerFactory::getLogger(typeid(IOSTerminalImpl));
 
     NFCISO7816APDU *isoApdu = [[NFCISO7816APDU alloc] initWithData:apdu];
     [self.mTags.firstObject sendCommandAPDU:isoApdu
-                            completionHandler:^(NSData *responseData, uint8_t sw1, uint8_t sw2, NSError *error) {
+                            completionHandler:^(NSData *responseData,
+                                                uint8_t sw1,
+                                                uint8_t sw2,
+                                                NSError *error) {
         self.mRApdu = [responseData mutableCopy];
         [self.mRApdu appendBytes:&sw1 length:1];
         [self.mRApdu appendBytes:&sw2 length:1];
@@ -131,7 +134,7 @@ auto logger = LoggerFactory::getLogger(typeid(IOSTerminalImpl));
     return self.mRApdu;
 }
 
-/* CALLBACKS --------------------------------------------------------------------------------------- */
+/* CALLBACKS ------------------------------------------------------------------------------------ */
 
 - (void) tagReaderSession:(nonnull NFCTagReaderSession *)session
             didDetectTags:(nonnull NSArray<__kindof id<NFCTag>> *)tags API_AVAILABLE(ios(13.0))
@@ -153,7 +156,7 @@ auto logger = LoggerFactory::getLogger(typeid(IOSTerminalImpl));
                   std::string([[error localizedDescription] UTF8String]));
 
     /* Guard time to make sure NFCTagReaderSession can be called again immediately ...*/
-    [NSThread sleepForTimeInterval:1.0f];
+    [NSThread sleepForTimeInterval:0.5f];
 
     self.mConnected = false;
     self.mCardPresent = false;
