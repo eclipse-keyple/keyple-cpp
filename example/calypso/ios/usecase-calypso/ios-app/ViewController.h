@@ -10,5 +10,7 @@
 
 @interface ViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UITextView *resultTextView;
+
 @end
 

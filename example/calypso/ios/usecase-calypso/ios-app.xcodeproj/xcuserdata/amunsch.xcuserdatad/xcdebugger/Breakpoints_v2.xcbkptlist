@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "57291469-2624-4C78-A579-C273FC0C4FA1"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "15E57CA8-D532-477F-87FF-59FFD3E421F1"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ios-app/UseCase_Calypso2_DefaultSelectionNotification_IOS.mm"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
+            landmarkName = "UseCase_Calypso2_DefaultSelectionNotification_IOS::update(event)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "61D3BD45-5A7D-422E-9128-FB1FC41E0DCE"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../component/keyple-calypso/src/main/transaction/PoTransaction.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "881"
+            endingLineNumber = "881"
+            landmarkName = "PoTransaction::safePoTransmit(poSeRequest, channelControl)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EE4A9F4F-3236-49BA-B6CD-CB33251BA3F4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ios-app/UseCase_Calypso2_DefaultSelectionNotification_IOS.mm"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "262"
+            endingLineNumber = "262"
+            landmarkName = "UseCase_Calypso2_DefaultSelectionNotification_IOS::success(msg)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "EE4A9F4F-3236-49BA-B6CD-CB33251BA3F4 - 2a26ef266ce18705"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "UseCase_Calypso2_DefaultSelectionNotification_IOS::success(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; const&amp;)"
+                  moduleName = "ios-app"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/macbook-air-extension/repos/eclipse/github.com.eclipse.keyple-cpp/example/calypso/ios/usecase-calypso/ios-app/UseCase_Calypso2_DefaultSelectionNotification_IOS.mm"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "261"
+                  endingLineNumber = "261"
+                  offsetFromSymbolStart = "40">
+               </Location>
+               <Location
+                  uuid = "EE4A9F4F-3236-49BA-B6CD-CB33251BA3F4 - e79308bdf7d7d91f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "invocation function for block in UseCase_Calypso2_DefaultSelectionNotification_IOS::success(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; const&amp;)"
+                  moduleName = "ios-app"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/macbook-air-extension/repos/eclipse/github.com.eclipse.keyple-cpp/example/calypso/ios/usecase-calypso/ios-app/UseCase_Calypso2_DefaultSelectionNotification_IOS.mm"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "261"
+                  endingLineNumber = "261"
+                  offsetFromSymbolStart = "20">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

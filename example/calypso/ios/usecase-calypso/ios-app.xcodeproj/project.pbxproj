@@ -14,6 +14,8 @@
 		B35EC75A25BF7A420077C94C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B35EC75925BF7A420077C94C /* Assets.xcassets */; };
 		B35EC75D25BF7A420077C94C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B35EC75B25BF7A420077C94C /* LaunchScreen.storyboard */; };
 		B36ADEFC25D451000077645D /* libkeyplecalypso.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F203DF25C0B8F500C6F70B /* libkeyplecalypso.a */; };
+		B3D3780F25ECE3A9007512EA /* UseCase_Calypso2_DefaultSelectionNotification_IOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = B3D3780D25ECE3A9007512EA /* UseCase_Calypso2_DefaultSelectionNotification_IOS.mm */; };
+		B3D3781325ECEBB2007512EA /* UseCase_Calypso1_ExplicitSelectionAid_IOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = B3D3781225ECEBB2007512EA /* UseCase_Calypso1_ExplicitSelectionAid_IOS.mm */; };
 		B3F203E225C0B90D00C6F70B /* libkeyplecommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F203E125C0B90C00C6F70B /* libkeyplecommon.a */; };
 		B3F203E425C0B92200C6F70B /* libkeyplecore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F203E325C0B92200C6F70B /* libkeyplecore.a */; };
 		B3F787D425D9349F00EC5795 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F787D325D9349F00EC5795 /* CoreNFC.framework */; };
@@ -33,6 +35,10 @@
 		B35EC75C25BF7A420077C94C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B35EC75E25BF7A420077C94C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B35EC76625BF7ADD0077C94C /* ios-app.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ios-app.entitlements"; sourceTree = "<group>"; };
+		B3D3780D25ECE3A9007512EA /* UseCase_Calypso2_DefaultSelectionNotification_IOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UseCase_Calypso2_DefaultSelectionNotification_IOS.mm; sourceTree = "<group>"; };
+		B3D3780E25ECE3A9007512EA /* UseCase_Calypso2_DefaultSelectionNotification_IOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UseCase_Calypso2_DefaultSelectionNotification_IOS.h; sourceTree = "<group>"; };
+		B3D3781125ECEBB2007512EA /* UseCase_Calypso1_ExplicitSelectionAid_IOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UseCase_Calypso1_ExplicitSelectionAid_IOS.h; sourceTree = "<group>"; };
+		B3D3781225ECEBB2007512EA /* UseCase_Calypso1_ExplicitSelectionAid_IOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UseCase_Calypso1_ExplicitSelectionAid_IOS.mm; sourceTree = "<group>"; };
 		B3F203DF25C0B8F500C6F70B /* libkeyplecalypso.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkeyplecalypso.a; path = "../../../../../build/component/keyple-calypso/src/main/libkeyplecalypso.a"; sourceTree = "<group>"; };
 		B3F203E125C0B90C00C6F70B /* libkeyplecommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkeyplecommon.a; path = "../../../../../build/component/keyple-common/src/main/libkeyplecommon.a"; sourceTree = "<group>"; };
 		B3F203E325C0B92200C6F70B /* libkeyplecore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkeyplecore.a; path = "../../../../../build/component/keyple-core/src/main/libkeyplecore.a"; sourceTree = "<group>"; };
@@ -85,6 +91,7 @@
 		B35EC74F25BF7A420077C94C /* ios-app */ = {
 			isa = PBXGroup;
 			children = (
+				B3D3780C25ECE398007512EA /* usecases */,
 				B33917A325E5642E00EA7CDC /* common */,
 				B3F787FE25DA73C800EC5795 /* main.m */,
 				B35EC76625BF7ADD0077C94C /* ios-app.entitlements */,
@@ -98,6 +105,17 @@
 				B35EC75E25BF7A420077C94C /* Info.plist */,
 			);
 			path = "ios-app";
+			sourceTree = "<group>";
+		};
+		B3D3780C25ECE398007512EA /* usecases */ = {
+			isa = PBXGroup;
+			children = (
+				B3D3781125ECEBB2007512EA /* UseCase_Calypso1_ExplicitSelectionAid_IOS.h */,
+				B3D3781225ECEBB2007512EA /* UseCase_Calypso1_ExplicitSelectionAid_IOS.mm */,
+				B3D3780E25ECE3A9007512EA /* UseCase_Calypso2_DefaultSelectionNotification_IOS.h */,
+				B3D3780D25ECE3A9007512EA /* UseCase_Calypso2_DefaultSelectionNotification_IOS.mm */,
+			);
+			name = usecases;
 			sourceTree = "<group>";
 		};
 		B3F203DC25C0B64000C6F70B /* Frameworks */ = {
@@ -192,6 +210,8 @@
 				B3F787FC25DA73C200EC5795 /* ViewController.mm in Sources */,
 				B3F787FF25DA73C800EC5795 /* main.m in Sources */,
 				B35EC75225BF7A420077C94C /* AppDelegate.mm in Sources */,
+				B3D3780F25ECE3A9007512EA /* UseCase_Calypso2_DefaultSelectionNotification_IOS.mm in Sources */,
+				B3D3781325ECEBB2007512EA /* UseCase_Calypso1_ExplicitSelectionAid_IOS.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
