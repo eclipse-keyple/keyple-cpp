@@ -1,3 +1,7 @@
+# Development has moved to https://github.com/eclipse/keyple-cpp-meta
+
+This repository will no longer see any active work
+
 # 'Eclipse Keyple' C++ implementation
 
 This is the repository for the C++ implementation of the '[Eclipse Keyple](https://keyple.org/)' API.
