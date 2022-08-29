@@ -1,6 +1,8 @@
-# Development has moved to https://github.com/eclipse/keyple-cpp-meta
+# Keyple development has moved to other repositories.
 
 This repository will no longer see any active work
+
+See https://github.com/eclipse/keyple
 
 # 'Eclipse Keyple' C++ implementation
 
